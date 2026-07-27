@@ -198,8 +198,28 @@
             pierde entre despliegues: /api/metrics/daily lee de la base cuando
             está disponible y cae al JSONL si no. El JSONL se conserva a
             propósito, porque sobrevive a que la base no responda.
-            FALTA: dejar correr el motor 7 días SIN interrupciones y escribir la
-            decisión. Ya no hay obstáculo técnico; hay que decidir dónde corre.
+            DÓNDE CORRE, decidido: GitHub Actions cada 30 minutos
+            (.github/workflows/ingest.yml → `npm run ingest:once`). El motor no
+            necesita estar vivo entre ciclos, así que no hace falta pagar un
+            servidor encendido las 24 horas para que despierte cada media hora.
+            Media hora y no una: cada feed solo expone sus últimos 15 titulares,
+            y un medio activo puede publicar más de 15 en una hora. Los
+            artículos que se pierdan no se recuperan, y perderlos sesga
+            justamente lo que se está midiendo.
+            El ciclo aislado rehidrata antes de agrupar. Sin eso vería solo sus
+            propios 15 titulares por feed y el solapamiento acumulado de las 72
+            horas —lo que hay que medir— no aparecería nunca: la serie saldría
+            plana y la conclusión sería falsa.
+            FALTA: dejar correr 7 días y escribir la decisión.
+
+            SEÑAL TEMPRANA (2026-07-27, tres ciclos consecutivos): las historias
+            multifuente pasaron de 14 a 17 a 21, y las que cruzan espectros de 7
+            a 8 a 9. Sube con los ciclos acumulados, que es exactamente la
+            hipótesis que esta tarea quería poner a prueba. Tres puntos no son
+            una serie y no se decide nada con ellos; pero es la primera
+            indicación de que la ventana, y no el tamaño del catálogo, era la
+            restricción. Las historias con cobertura suficiente para afirmar un
+            punto ciego siguen en 0.
 
             PRIMERA MEDICIÓN (2026-07-27, ciclo único, 36 feeds):
               474 artículos · 358 historias · 14 multifuente · 7 cruzan

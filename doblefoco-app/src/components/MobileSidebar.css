@@ -1,0 +1,324 @@
+.mobile-sidebar {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .mobile-sidebar {
+        display: block;
+        padding: 16px 20px 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .mobile-sidebar-inner {
+        background: var(--bg-card);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .mobile-sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 14px 20px;
+        background: none;
+        border: none;
+        border-bottom: 1px solid var(--border-light);
+        cursor: pointer;
+        font-family: inherit;
+        color: var(--primary);
+        transition: background-color 0.2s;
+    }
+
+    .mobile-sidebar-toggle:last-of-type {
+        border-bottom: none;
+    }
+
+    .mobile-sidebar-toggle.active {
+        background-color: var(--bg-subtle);
+    }
+
+    .mobile-sidebar-toggle:hover {
+        background-color: var(--bg-subtle);
+    }
+
+    .mobile-sidebar-toggle-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .mobile-sidebar-toggle-icon {
+        font-size: 1.2rem;
+        font-weight: 300;
+        color: var(--text-muted);
+    }
+
+    .mobile-sidebar-content {
+        padding: 12px 20px 16px;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .mobile-trending-list {
+        list-style: none;
+    }
+
+    .mobile-trend-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 4px;
+        border-bottom: 1px solid var(--border-light);
+        transition: background-color 0.2s;
+        border-radius: 6px;
+    }
+
+    .mobile-trend-link:hover {
+        background-color: var(--bg-subtle);
+    }
+
+    .mobile-trending-list li:last-child .mobile-trend-link {
+        border-bottom: none;
+    }
+
+    .mobile-trend-rank {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--accent);
+        width: 30px;
+    }
+
+    .mobile-trend-name {
+        flex: 1;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--primary);
+    }
+
+    .mobile-trend-count {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: var(--bg-subtle);
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    .mobile-blindspot-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+
+    .mobile-blindspot-item {
+        display: block;
+        background: var(--bg-main);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .mobile-blindspot-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .mobile-blindspot-item:hover {
+        border-color: var(--border-color);
+        background: var(--bg-subtle);
+        transform: translateX(2px);
+    }
+
+    .mobile-blindspot-label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .mobile-blindspot-label.left {
+        color: var(--bias-left);
+    }
+
+    .mobile-blindspot-label.right {
+        color: var(--bias-right);
+    }
+
+    .mobile-blindspot-title {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--primary);
+    }
+
+    /* Diet Calculator Styles */
+    .mobile-diet-message {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-style: italic;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .mobile-diet-active {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .mobile-diet-metrics {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: var(--bg-main);
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .mobile-metric {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .mobile-metric .circular-chart {
+        width: 50px;
+        height: 50px;
+    }
+
+    .mobile-metric .circle-bg {
+        fill: none;
+        stroke: var(--border-color);
+        stroke-width: 3;
+    }
+
+    .mobile-metric .circle {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 3;
+        stroke-linecap: round;
+    }
+
+    .mobile-metric .percentage {
+        fill: var(--text-main);
+        font-family: var(--font-heading);
+        font-size: 9px;
+        font-weight: 800;
+        text-anchor: middle;
+    }
+
+    .mobile-metric-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .mobile-metric-reads {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mobile-reads-count {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    .mobile-reads-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 4px;
+    }
+
+    .mobile-diet-bias {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        background: var(--bg-main);
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .mobile-bias-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .mobile-bias-label strong {
+        color: var(--text-main);
+    }
+
+    .mobile-bias-track {
+        height: 5px;
+        background: linear-gradient(to right, var(--bias-left), var(--bias-objective) 50%, var(--bias-right));
+        border-radius: 3px;
+        position: relative;
+    }
+
+    .mobile-bias-indicator {
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary);
+        border: 2px solid var(--bg-main);
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .mobile-diet-recommendation {
+        border-left: 3px solid var(--accent);
+        padding-left: 10px;
+    }
+
+    .mobile-diet-recommendation h4 {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .mobile-diet-recommendation p {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+    }
+
+    .mobile-clear-btn {
+        background: none;
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        margin: 0 auto;
+        transition: all 0.2s;
+    }
+
+    .mobile-clear-btn:hover {
+        color: var(--accent-2);
+        border-color: rgba(239, 68, 68, 0.2);
+    }
+}

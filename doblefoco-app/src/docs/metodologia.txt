@@ -1,0 +1,168 @@
+﻿METODOLOGÃA DE ANÃLISIS DE COBERTURA â€” DobleFoco.co
+
+Ãšltima revisiÃ³n: 2026-07-27
+Este documento describe lo que el sistema hace HOY. Cuando una parte del
+mÃ©todo todavÃ­a no existe, se dice que no existe en lugar de describirla en
+futuro. La versiÃ³n anterior de esta pÃ¡gina explicaba una fÃ³rmula que el motor
+ya no usaba y clasificaba a Semana en la banda [+0.6, +1.0] mientras el cÃ³digo
+le asignaba +0.45.
+
+--------------------------------------------------------------------------
+1. QUÃ‰ HACE DobleFoco Y QUÃ‰ NO HACE
+--------------------------------------------------------------------------
+DobleFoco agrupa la cobertura de un mismo hecho publicada por medios de
+distinta lÃ­nea editorial y muestra quiÃ©n lo cubriÃ³, quiÃ©n no, y con quÃ©
+palabras.
+
+Reglas que el sistema respeta sin excepciÃ³n:
+
+  Â· NingÃºn titular se reescribe, se recorta ni se completa. Lo que aparece
+    entre comillas es literal del medio, con enlace a la publicaciÃ³n original.
+  Â· Cuando un sector del espectro no cubriÃ³ un hecho, se declara la ausencia.
+    No se sustituye por el titular de otro medio ni por un resumen propio.
+  Â· Cuando un dato no se puede calcular, se omite. No se rellena con un valor
+    por defecto.
+
+Lo que DobleFoco NO hace: no verifica si una noticia es cierta, no puntÃºa la
+calidad de un artÃ­culo concreto y no mide el sesgo de una noticia individual.
+Clasifica organizaciones, no piezas.
+
+--------------------------------------------------------------------------
+2. EL ESPECTRO DE CLASIFICACIÃ“N
+--------------------------------------------------------------------------
+Cada medio recibe un valor entre -1.0 y +1.0. Las bandas son:
+
+  [-1.0 a -0.6)  Izquierda
+  [-0.6 a -0.2)  Centro-izquierda
+  [-0.2 a +0.2)  Centro
+  [+0.2 a +0.6)  Centro-derecha
+  [+0.6 a +1.0]  Derecha
+
+Para agrupar cobertura, el sistema colapsa esas cinco bandas en tres bloques,
+con frontera en Â±0.2: izquierda (â‰¤ -0.2), centro y derecha (â‰¥ +0.2).
+
+La lista completa de medios con su valor, su justificaciÃ³n escrita y su estado
+de revisiÃ³n estÃ¡ en el catÃ¡logo de medios, que se genera automÃ¡ticamente desde
+el mismo archivo que usa el motor. No hay una clasificaciÃ³n para el pÃºblico y
+otra para el sistema: es la misma.
+
+--------------------------------------------------------------------------
+3. CÃ“MO SE ASIGNA EL SESGO DE UN MEDIO
+--------------------------------------------------------------------------
+El valor de cada medio es un JUICIO EDITORIAL DOCUMENTADO, no el resultado de
+un cÃ¡lculo automÃ¡tico. Conviene ser claro en esto: no existe un modelo que
+lea la producciÃ³n de un medio y devuelva un nÃºmero. Cada valor lo asigna una
+persona, siguiendo los criterios de abajo, y queda escrito junto a su
+justificaciÃ³n en el catÃ¡logo.
+
+Criterios que sustentan cada asignaciÃ³n:
+
+  a) Propiedad y estructura econÃ³mica
+     VinculaciÃ³n del medio con grupos econÃ³micos o lÃ­neas polÃ­ticas
+     tradicionales, y quÃ© intereses quedan dentro y fuera de su cobertura.
+
+  b) SelecciÃ³n de agenda
+     QuÃ© temas recibe relevancia sostenida y cuÃ¡les no aparecen. La omisiÃ³n
+     sistemÃ¡tica dice tanto como el Ã©nfasis.
+
+  c) Encuadre
+     Desde quÃ© Ã¡ngulo se presenta un mismo hecho: quÃ© se pone como causa, quÃ©
+     como consecuencia y a quiÃ©n se le atribuye responsabilidad.
+
+  d) Balance de fuentes citadas
+     ProporciÃ³n de voces del gobierno de turno frente a sus opositores y a
+     terceros tÃ©cnicos o independientes.
+
+ESTADO ACTUAL: ningÃºn valor del catÃ¡logo ha pasado por revisiÃ³n editorial
+formal. EstÃ¡n marcados como PROVISIONALES. Unifican lo que antes vivÃ­a
+disperso â€”y en contradicciÃ³nâ€” en cuatro archivos del proyecto, pero nadie los
+ha firmado todavÃ­a. Mientras siga asÃ­, lÃ©alos como lo que son: una propuesta
+argumentada y discutible.
+
+--------------------------------------------------------------------------
+4. QUÃ‰ SE CALCULA SOBRE UNA HISTORIA
+--------------------------------------------------------------------------
+Una "historia" es un conjunto de artÃ­culos de medios distintos sobre el mismo
+hecho. Sobre ese conjunto se calculan cuatro cosas, todas a partir de los
+sesgos de los medios que la componen:
+
+  A) DistribuciÃ³n de cobertura
+     CuÃ¡ntos medios de cada bloque la cubren, y el porcentaje correspondiente.
+     Es la medida principal del producto: responde "Â¿quiÃ©n estÃ¡ contando
+     esto?".
+
+  B) PolarizaciÃ³n
+     DesviaciÃ³n estÃ¡ndar de los sesgos de las fuentes. Una historia se marca
+     como polarizada a partir de 0.25.
+
+     Deliberadamente NO se usa el promedio de los sesgos para resumir una
+     historia. Promediar un medio de -0.6 con uno de +0.6 da 0, que es
+     indistinguible de dos medios de centro: la media cancela justo aquello
+     que se quiere medir. Cuando se usaba, las 200 noticias del catÃ¡logo
+     quedaban comprimidas entre -0.20 y +0.16 y el filtro "Derecha" no
+     devolvÃ­a ningÃºn resultado.
+
+  C) Espectro dominante
+     El bloque con mÃ¡s medios, y solo si supera estrictamente a los otros dos.
+     Si hay empate, no hay dominante y asÃ­ se muestra.
+
+  D) Factualidad media de las fuentes
+     Promedio simple del historial de rigor de los medios que cubren el hecho.
+     Es una propiedad de quiÃ©n lo cuenta, no de lo contado. Si ninguna fuente
+     aporta el dato, no se muestra nada.
+
+--------------------------------------------------------------------------
+5. PUNTOS CIEGOS
+--------------------------------------------------------------------------
+Un punto ciego es un hecho que un sector del espectro prÃ¡cticamente no estÃ¡
+cubriendo. Se declara cuando se cumplen estas dos condiciones:
+
+  Â· La historia tiene AL MENOS 6 FUENTES.
+  Â· Un bloque reÃºne el 15% o menos de la cobertura mientras el bloque opuesto
+    supera ese 15%.
+
+El mÃ­nimo de 6 fuentes es la parte importante. Con 3 o 4 medios, uno solo
+mueve la cobertura de un bloque del 0% al 33%: cualquier conclusiÃ³n serÃ­a
+ruido presentado como hallazgo. Por debajo de ese mÃ­nimo el sistema dice que
+no tiene datos suficientes, en vez de mostrar un punto ciego vacÃ­o.
+
+LIMITACIÃ“N CONOCIDA: la detecciÃ³n de puntos ciegos depende de tener suficientes
+medios de cada bloque cubriendo el mismo hecho. Hoy el catÃ¡logo tiene muchos
+mÃ¡s medios de centro y centro-derecha que de izquierda, asÃ­ que los puntos
+ciegos hacia la izquierda son mÃ¡s difÃ­ciles de detectar que los del otro lado.
+Es una limitaciÃ³n del catÃ¡logo, no del mÃ©todo, y estÃ¡ en el plan corregirla.
+
+--------------------------------------------------------------------------
+6. DE DÃ“NDE SALEN LAS NOTICIAS
+--------------------------------------------------------------------------
+El sistema lee los canales RSS pÃºblicos de los medios del catÃ¡logo. Cuando un
+medio no publica RSS accesible, se usa la bÃºsqueda de Google News restringida
+a su dominio: el titular sigue siendo literal del medio, pero el enlace es una
+redirecciÃ³n de Google y no la URL original.
+
+Los artÃ­culos se agrupan por similitud de titular. El umbral se calibrÃ³ sobre
+195 titulares reales, escogiendo el valor que evita fusionar hechos distintos
+aunque eso cueste perder algunas agrupaciones legÃ­timas. La razÃ³n es
+asimÃ©trica: separar dos versiones del mismo hecho pierde informaciÃ³n, pero
+fusionar dos hechos distintos INVENTA una cobertura que no existe.
+
+Los artÃ­culos se conservan 72 horas.
+
+--------------------------------------------------------------------------
+7. REVISIÃ“N Y CONTROL
+--------------------------------------------------------------------------
+Lo que hoy estÃ¡ automatizado:
+
+  Â· Un verificador comprueba que ningÃºn archivo del proyecto declare un sesgo
+    distinto del catÃ¡logo, que no haya medios duplicados y que ninguna fuente
+    citada quede sin resolver.
+  Â· Otro verificador consulta todos los feeds contra la red y reporta cuÃ¡les
+    responden, con cuÃ¡ntos artÃ­culos y desde quÃ© banda del espectro.
+  Â· El catÃ¡logo pÃºblico que usted puede leer se genera desde el catÃ¡logo del
+    motor, de modo que no pueden divergir.
+
+Lo que todavÃ­a no existe: revisiÃ³n editorial periÃ³dica de los valores de sesgo
+por un panel externo. La versiÃ³n anterior de este documento afirmaba que se
+hacÃ­a cada semestre con analistas externos. No se hacÃ­a. Cuando exista, se
+describirÃ¡ aquÃ­ con su fecha y sus responsables.
+

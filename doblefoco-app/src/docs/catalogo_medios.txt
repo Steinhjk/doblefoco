@@ -1,0 +1,253 @@
+CATÁLOGO DE MEDIOS CLASIFICADOS — SINCUENTO.CO
+======================================================================
+
+Este documento se genera automáticamente desde el catálogo que usa el
+motor (shared/mediaRegistry.js). No se edita a mano: lo que usted lee
+aquí es exactamente el valor con el que el sistema clasifica cada
+noticia. Si los dos pudieran divergir, esta página no serviría de
+nada.
+
+Generado: 2026-07-27
+Medios en el catálogo: 40
+
+ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
+revisión editorial formal. Son juicios documentados —cada uno lleva
+escrita su justificación— que unifican los valores que antes estaban
+dispersos por el código, pero nadie los ha firmado. Se marcan como
+PROVISIONALES hasta que ocurra. Lo decimos aquí porque clasificar a un
+medio real es la afirmación más discutible que hace este sitio.
+
+----------------------------------------------------------------------
+IZQUIERDA  [−1.00 a −0.60)  —  1 medio
+----------------------------------------------------------------------
+
+  Colombia Informa  ·  sesgo −0.65  ·  factualidad 78%
+    colombiainforma.info · Comunicación popular · CO · RSS propio · PROVISIONAL
+    Agencia de comunicación popular ligada a procesos sociales y
+    campesinos; encuadre explícito desde movimientos de base.
+
+----------------------------------------------------------------------
+CENTRO-IZQUIERDA  [−0.60 a −0.20)  —  6 medios
+----------------------------------------------------------------------
+
+  Vorágine  ·  sesgo −0.50  ·  factualidad 90%
+    voragine.co · Investigación independiente · CO · RSS propio · PROVISIONAL
+    Periodismo de investigación centrado en poder económico, conflicto
+    armado y derechos humanos.
+
+  Cuestión Pública  ·  sesgo −0.45  ·  factualidad 89%
+    cuestionpublica.com · Investigación independiente · CO · RSS propio · PROVISIONAL
+    Investigación sobre corrupción y captura del Estado; enfoque de
+    veeduría al poder establecido.
+
+  Razón Pública  ·  sesgo −0.40  ·  factualidad 92%
+    razonpublica.com · Fundación académica · CO · RSS propio · PROVISIONAL
+    Análisis académico con énfasis en política social y crítica al
+    modelo económico vigente.
+
+  Cambio  ·  sesgo −0.40  ·  factualidad 88%
+    cambiocolombia.com · Independiente · CO · vía Google News · PROVISIONAL
+    Revista de investigación; agenda centrada en fiscalización del
+    poder político y económico.
+
+  RTVC Noticias  ·  sesgo −0.35  ·  factualidad 82%
+    rtvcnoticias.com · Medio público nacional · CO · vía Google News · PROVISIONAL
+    Sistema de medios públicos; su línea editorial sigue al gobierno
+    de turno, lo que hace este valor especialmente volátil.
+
+  The New York Times  ·  sesgo −0.25  ·  factualidad 90%
+    nytimes.com · The New York Times Company · US · sin feed (solo referencia) · PROVISIONAL
+    Diario estadounidense de referencia con línea editorial liberal.
+
+----------------------------------------------------------------------
+CENTRO  [−0.20 a +0.20)  —  19 medios
+----------------------------------------------------------------------
+
+  El Espectador  ·  sesgo −0.20  ·  factualidad 88%
+    elespectador.com · Grupo Valorem · CO · vía Google News · PROVISIONAL
+    Diario nacional con tradición liberal; énfasis en derechos humanos
+    y proceso de paz.
+
+  El País (España)  ·  sesgo −0.20  ·  factualidad 88%
+    elpais.com · Grupo PRISA · ES · RSS propio · PROVISIONAL
+    Diario español de referencia con línea editorial socialdemócrata.
+
+  CNN en Español  ·  sesgo −0.15  ·  factualidad 84%
+    cnnespanol.cnn.com · Warner Bros. Discovery · US · sin feed (solo referencia) · PROVISIONAL
+    Cadena internacional; encuadre editorial estadounidense de
+    centro-izquierda.
+
+  La Silla Vacía  ·  sesgo −0.10  ·  factualidad 92%
+    lasillavacia.com · Independiente · CO · RSS propio · PROVISIONAL
+    Análisis de poder político con verificación factual sistemática;
+    encuadre analítico más que militante.
+
+  BBC Mundo  ·  sesgo −0.05  ·  factualidad 92%
+    bbc.com · Servicio público británico · GB · RSS propio · PROVISIONAL
+    Servicio público con obligación estatutaria de imparcialidad y
+    estándares de verificación altos.
+
+  DW Español  ·  sesgo −0.05  ·  factualidad 93%
+    dw.com · Servicio público alemán · DE · RSS propio · PROVISIONAL
+    Radiodifusora pública internacional alemana; encuadre
+    institucional europeo.
+
+  W Radio  ·  sesgo +0.00  ·  factualidad 87%
+    wradio.com.co · Grupo PRISA · CO · vía Google News · PROVISIONAL
+    Radio informativa con entrevistas a todo el arco político;
+    encuadre variable según franja.
+
+  France 24 Español  ·  sesgo +0.00  ·  factualidad 90%
+    france24.com · Servicio público francés · FR · RSS propio · PROVISIONAL
+    Cadena internacional pública francesa; cobertura global con
+    encuadre descriptivo.
+
+  Agencia EFE  ·  sesgo +0.00  ·  factualidad 92%
+    efe.com · Agencia de noticias · ES · sin feed (solo referencia) · PROVISIONAL
+    Agencia de noticias; produce despachos factuales destinados a ser
+    reutilizados por medios de todo el espectro.
+
+  Reuters  ·  sesgo +0.00  ·  factualidad 95%
+    reuters.com · Agencia de noticias · GB · sin feed (solo referencia) · PROVISIONAL
+    Agencia internacional con estándares de neutralidad codificados
+    (Trust Principles).
+
+  El Tiempo  ·  sesgo +0.05  ·  factualidad 88%
+    eltiempo.com · Grupo Sarmiento Angulo · CO · RSS propio · PROVISIONAL
+    Diario de mayor circulación; cobertura institucional amplia y
+    encuadre predominantemente descriptivo.
+
+  Caracol Radio  ·  sesgo +0.05  ·  factualidad 85%
+    caracol.com.co · Grupo PRISA · CO · vía Google News · PROVISIONAL
+    Radio informativa de cobertura nacional con agenda noticiosa
+    amplia.
+
+  Euronews Español  ·  sesgo +0.05  ·  factualidad 87%
+    euronews.com · Paneuropeo · EU · RSS propio · PROVISIONAL
+    Cadena paneuropea; agenda centrada en instituciones de la Unión
+    Europea.
+
+  Noticias Caracol  ·  sesgo +0.10  ·  factualidad 86%
+    noticiascaracol.com · Grupo Valorem · CO · vía Google News · PROVISIONAL
+    Informativo de televisión abierta líder en audiencia; cobertura
+    amplia con encuadre institucional y foco en seguridad y orden
+    público.
+
+  Portafolio  ·  sesgo +0.10  ·  factualidad 89%
+    portafolio.co · Grupo Sarmiento Angulo · CO · RSS propio · PROVISIONAL
+    Diario económico; encuadre desde indicadores y perspectiva
+    empresarial.
+
+  La Vanguardia  ·  sesgo +0.10  ·  factualidad 86%
+    lavanguardia.com · Grupo Godó · ES · sin feed (solo referencia) · PROVISIONAL
+    Diario barcelonés de tradición liberal-conservadora moderada.
+
+  Infobae Colombia  ·  sesgo +0.15  ·  factualidad 80%
+    infobae.com · Infobae · AR · RSS propio · PROVISIONAL
+    Portal regional de alto volumen; cobertura rápida con menor
+    verificación que la prensa tradicional.
+
+  La República  ·  sesgo +0.15  ·  factualidad 88%
+    larepublica.co · Editorial La República · CO · RSS propio · PROVISIONAL
+    Diario económico orientado al sector financiero y empresarial.
+
+  Financial Times  ·  sesgo +0.15  ·  factualidad 91%
+    ft.com · Nikkei · GB · sin feed (solo referencia) · PROVISIONAL
+    Diario económico británico; encuadre desde mercados y liberalismo
+    económico.
+
+----------------------------------------------------------------------
+CENTRO-DERECHA  [+0.20 a +0.60)  —  14 medios
+----------------------------------------------------------------------
+
+  El Heraldo  ·  sesgo +0.20  ·  factualidad 84%
+    elheraldo.co · Regional Caribe · CO · RSS propio · PROVISIONAL
+    Diario regional del Caribe; agenda local con encuadre
+    institucional.
+
+  El Universal  ·  sesgo +0.20  ·  factualidad 86%
+    eluniversal.com.co · Regional Cartagena · CO · RSS propio · PROVISIONAL
+    Diario regional de Cartagena; cobertura local con línea editorial
+    conservadora moderada.
+
+  Blu Radio  ·  sesgo +0.25  ·  factualidad 85%
+    bluradio.com · Grupo Valorem · CO · vía Google News · PROVISIONAL
+    Radio informativa con énfasis en seguridad y orden público.
+
+  Noticias RCN  ·  sesgo +0.25  ·  factualidad 82%
+    noticiasrcn.com · Organización Ardila Lülle · CO · vía Google News · PROVISIONAL
+    Noticiero de televisión nacional; énfasis en seguridad y crítica
+    frecuente al gobierno progresista.
+
+  La Patria  ·  sesgo +0.25  ·  factualidad 85%
+    lapatria.com · Regional Eje Cafetero · CO · RSS propio · PROVISIONAL
+    Diario del Eje Cafetero; línea tradicional con agenda regional
+    agroindustrial.
+
+  Vanguardia  ·  sesgo +0.25  ·  factualidad 85%
+    vanguardia.com · Regional Santander · CO · RSS propio · PROVISIONAL
+    Diario de Santander; cobertura regional con encuadre empresarial.
+
+  La Opinión  ·  sesgo +0.30  ·  factualidad 87%
+    laopinion.com.co · Regional Norte de Santander · CO · RSS propio · PROVISIONAL
+    Diario de Cúcuta; cobertura fronteriza con énfasis en seguridad y
+    migración.
+
+  El País (Cali)  ·  sesgo +0.30  ·  factualidad 85%
+    elpais.com.co · Regional Valle · CO · RSS propio · PROVISIONAL
+    Diario del Valle del Cauca; línea editorial conservadora con
+    agenda empresarial regional.
+
+  KienyKe  ·  sesgo +0.30  ·  factualidad 75%
+    kienyke.com · Digital · CO · RSS propio · PROVISIONAL
+    Portal digital de actualidad y entretenimiento; menor densidad de
+    verificación.
+
+  The Wall Street Journal  ·  sesgo +0.30  ·  factualidad 89%
+    wsj.com · News Corp · US · sin feed (solo referencia) · PROVISIONAL
+    Diario económico estadounidense; página editorial explícitamente
+    conservadora, sección informativa más neutra.
+
+  La FM  ·  sesgo +0.35  ·  factualidad 83%
+    lafm.com.co · Organización Ardila Lülle · CO · vía Google News · PROVISIONAL
+    Radio informativa del grupo RCN; línea editorial crítica con
+    gobiernos progresistas.
+
+  El Colombiano  ·  sesgo +0.35  ·  factualidad 86%
+    elcolombiano.com · Regional Antioquia · CO · RSS propio · PROVISIONAL
+    Diario antioqueño de tradición conservadora; énfasis en empresa
+    privada y orden institucional.
+
+  Semana  ·  sesgo +0.45  ·  factualidad 78%
+    semana.com · Grupo Gilinski · CO · RSS propio · PROVISIONAL
+    Revista de actualidad; tras el cambio de propiedad en 2020 adoptó
+    una línea de oposición marcada al gobierno progresista.
+
+  El Nuevo Siglo  ·  sesgo +0.55  ·  factualidad 80%
+    elnuevosiglo.com.co · Conservador · CO · RSS propio · PROVISIONAL
+    Diario históricamente vinculado al Partido Conservador; línea
+    editorial explícitamente conservadora.
+
+----------------------------------------------------------------------
+DERECHA  [+0.60 a +1.00)  —  0 medios
+----------------------------------------------------------------------
+
+  Ningún medio del catálogo cae en esta banda. La ausencia es un
+  dato, no un olvido: mientras siga vacía, el sistema no puede
+  detectar puntos ciegos que dependan de ella.
+
+----------------------------------------------------------------------
+CÓMO LEER ESTOS NÚMEROS
+----------------------------------------------------------------------
+
+El sesgo describe la línea editorial histórica de una organización, no
+la calidad ni la veracidad de una noticia concreta. Un medio con sesgo
+marcado puede ser riguroso, y uno de centro puede equivocarse.
+
+La factualidad es el historial de rigor del medio: correcciones
+publicadas, rectificaciones, contraste con verificadores. Tampoco
+evalúa la noticia que usted está leyendo.
+
+Si cree que una clasificación está mal, escríbanos con ejemplos
+concretos de cobertura. Los valores están pensados para ser
+discutidos, y por eso cada uno lleva su justificación al lado.

@@ -1,0 +1,369 @@
+import { useEffect, useMemo, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX } from 'lucide-react';
+import { newsData } from '../data/mockData';
+import { getMediaByName } from '../data/mediaLogos';
+import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
+import { fetchStory, isApiConfigured } from '../services/apiClient';
+import { getApprovedStories } from '../services/storageService';
+import { normalizeStory, normalizeStories, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
+import { recordRead } from '../lib/readingHistory';
+import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
+import NewsCard from '../components/NewsCard';
+import CoverageBar from '../components/CoverageBar';
+import MediaLogo from '../components/MediaLogo';
+import UserFeedbackWidget from '../components/UserFeedbackWidget';
+import ShareModal from '../components/ShareModal';
+import './NewsDetail.css';
+
+/**
+ * Tarjeta de perspectiva.
+ *
+ * Cuando `perspective` es null NO se inventa nada. Se declara la ausencia,
+ * que es precisamente la información más valiosa del producto: saber que un
+ * lado del espectro no cubrió un hecho vale más que un titular de relleno.
+ *
+ * La versión anterior, ante la falta de cobertura, atribuía el hecho a El
+ * Espectador o a Semana por defecto y le concatenaba una coletilla inventada
+ * ("— Enfoque en garantías sociales e impacto comunitario"), describiéndola
+ * como "titular auténtico reportado por la redacción".
+ */
+const PerspectiveCard = ({ spectrum, perspective }) => {
+    if (!perspective) {
+        return (
+            <div className={`stacked-perspective-card ${spectrum} is-empty`}>
+                <div className="perspective-card-header">
+                    <span className={`card-spectrum-badge ${spectrum}`}>
+                        {SPECTRUM_LABEL[spectrum]}
+                    </span>
+                </div>
+                <div className="perspective-empty-body">
+                    <SearchX size={20} aria-hidden="true" />
+                    <p>
+                        <strong>Sin cobertura registrada.</strong> Ningún medio de este espectro
+                        entre los que rastreamos ha publicado sobre este hecho.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    const media = getMediaByName(perspective.outlet);
+
+    return (
+        <div className={`stacked-perspective-card ${spectrum}`}>
+            <div className="perspective-card-header">
+                <span className={`card-spectrum-badge ${spectrum}`}>
+                    {SPECTRUM_LABEL[spectrum]}
+                </span>
+                {perspective.url ? (
+                    <a
+                        href={perspective.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="source-with-logo interactive-source-link"
+                        title={`Leer el original en ${perspective.outlet}`}
+                    >
+                        <MediaLogo media={media} size={18} />
+                        <span className="card-source-tag">{perspective.outlet}</span>
+                        <ExternalLink size={11} className="source-external-icon" aria-hidden="true" />
+                    </a>
+                ) : (
+                    <span className="card-source-tag">{perspective.outlet}</span>
+                )}
+            </div>
+
+            {/* Titular literal del medio. Sin prefijos, sin coletillas, sin
+                adjetivos eliminados. Si está entre comillas es porque es
+                textualmente lo que publicó. */}
+            <h4 className="perspective-headline">{perspective.headline}</h4>
+
+            {perspective.snippet && (
+                <p className="perspective-snippet">{perspective.snippet}</p>
+            )}
+
+            {perspective.tone && !perspective.tone.isNeutral && (
+                <p className="perspective-tone-note">
+                    Términos con carga detectados:{' '}
+                    {[...perspective.tone.sensationalTerms, ...perspective.tone.leftTerms, ...perspective.tone.rightTerms].join(', ')}
+                </p>
+            )}
+
+            {perspective.otherOutletsInSpectrum > 0 && (
+                <p className="perspective-more-outlets">
+                    +{perspective.otherOutletsInSpectrum} medio
+                    {perspective.otherOutletsInSpectrum === 1 ? '' : 's'} más en este espectro
+                </p>
+            )}
+        </div>
+    );
+};
+
+const NewsDetail = () => {
+    const { id } = useParams();
+    const [isShareOpen, setIsShareOpen] = useState(false);
+    const [story, setStory] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const fallbackPool = useMemo(
+        () => normalizeStories([...getApprovedStories(), ...newsData]),
+        []
+    );
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const load = async () => {
+            setLoading(true);
+
+            if (isApiConfigured) {
+                const result = await fetchStory(id);
+                if (cancelled) return;
+                if (result.ok && result.story) {
+                    setStory(normalizeStory(result.story));
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            if (cancelled) return;
+            setStory(fallbackPool.find((s) => s.id === String(id)) ?? null);
+            setLoading(false);
+        };
+
+        load();
+        return () => { cancelled = true; };
+    }, [id, fallbackPool]);
+
+    // El historial se registra una sola vez por noticia, no en cada render.
+    useEffect(() => {
+        if (story) recordRead(story);
+    }, [story?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const related = useMemo(() => {
+        if (!story) return [];
+        return fallbackPool
+            .filter((s) => s.category === story.category && s.id !== story.id)
+            .slice(0, 3);
+    }, [story, fallbackPool]);
+
+    if (loading) {
+        return (
+            <div className="news-detail-page">
+                <div className="detail-not-found"><p>Cargando…</p></div>
+            </div>
+        );
+    }
+
+    if (!story) {
+        return (
+            <div className="news-detail-page">
+                <div className="detail-not-found">
+                    <h1>Noticia no encontrada</h1>
+                    <p>La noticia que buscas no existe o ya no está disponible.</p>
+                    <Link to="/" className="back-link">Volver al inicio</Link>
+                </div>
+            </div>
+        );
+    }
+
+    const { coverage } = story;
+    const timeLabel = storyTimeLabel(story);
+    const spectrums = ['left', 'center', 'right'];
+
+    const handleImageError = (e) => {
+        e.target.onerror = null;
+        e.target.src = FALLBACK_NEUTRAL_IMAGE;
+    };
+
+    return (
+        <div className="news-detail-page">
+            <div className="detail-header">
+                <Link to="/" className="back-link">← Volver al feed</Link>
+                <span className="detail-category-badge">{story.category}</span>
+            </div>
+
+            <article className="detail-article detail-split-layout">
+                <div className="detail-main-col">
+                    <div className="detail-hero-header">
+                        <div className="detail-meta-bar">
+                            {timeLabel && (
+                                <time
+                                    className="detail-time"
+                                    dateTime={story.publishedAt ?? undefined}
+                                    title={formatAbsoluteTime(story.publishedAt) ?? undefined}
+                                >
+                                    {timeLabel}
+                                </time>
+                            )}
+                            <button className="share-detail-btn" onClick={() => setIsShareOpen(true)}>
+                                <Share2 size={14} aria-hidden="true" /> Compartir
+                            </button>
+                        </div>
+
+                        <h1 className="detail-title">{story.title}</h1>
+                        {story.summary && <p className="detail-summary">{story.summary}</p>}
+                    </div>
+
+                    <div className="stacked-perspectives-container">
+                        <h2 className="comparison-title">Cómo lo tituló cada espectro</h2>
+                        <p className="comparison-caption">
+                            Titulares literales, tal como los publicó cada medio. Donde no hay
+                            cobertura, lo decimos.
+                        </p>
+
+                        <div className="stacked-perspectives-list">
+                            {spectrums.map((spectrum) => (
+                                <PerspectiveCard
+                                    key={spectrum}
+                                    spectrum={spectrum}
+                                    perspective={story.perspectives[spectrum]}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {story.articles.length > 0 && (
+                        <div className="detail-article-list">
+                            <h2>Todas las coberturas ({story.articles.length})</h2>
+                            <ul>
+                                {story.articles.map((article) => (
+                                    <li key={article.id ?? article.url}>
+                                        <a href={article.url} target="_blank" rel="noopener noreferrer">
+                                            <span className="article-outlet">{article.outlet}</span>
+                                            <span className="article-headline">{article.headline}</span>
+                                            <ExternalLink size={11} aria-hidden="true" />
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {story.body.length > 0 && (
+                        <div className="detail-article-body">
+                            <h2>Contexto</h2>
+                            {story.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+                        </div>
+                    )}
+
+                    <UserFeedbackWidget storyId={story.id} />
+                </div>
+
+                <div className="detail-sidebar-col">
+                    <div className="detail-compact-image-box">
+                        <img
+                            src={getOrRotateNeutralImage(story)}
+                            alt=""
+                            width="600"
+                            height="400"
+                            className="detail-compact-image"
+                            onError={handleImageError}
+                        />
+                        {/* Etiqueta honesta: es una imagen de banco, no una
+                            fotografía del hecho. */}
+                        <span className="detail-image-disclaimer">Imagen ilustrativa</span>
+
+                        {typeof story.factuality === 'number' && (
+                            <div
+                                className="detail-factuality-chip"
+                                title="Promedio de la factualidad histórica de los medios que cubren el hecho. No evalúa esta noticia en particular."
+                            >
+                                <ShieldCheck size={14} aria-hidden="true" />
+                                Factualidad media de fuentes: {Math.round(story.factuality * 100)}%
+                            </div>
+                        )}
+                    </div>
+
+                    {coverage.blindspot && (
+                        <div className={`detail-blindspot-alert ${coverage.blindspot.spectrum}`}>
+                            <div className="blindspot-alert-header">
+                                <EyeOff size={16} aria-hidden="true" />
+                                <strong>{coverage.blindspot.label}</strong>
+                            </div>
+                            <p>{coverage.blindspot.description}</p>
+                        </div>
+                    )}
+
+                    <div className="ground-coverage-box">
+                        <div className="ground-coverage-header">
+                            <Layers size={18} className="coverage-icon" aria-hidden="true" />
+                            <h2>Distribución de cobertura</h2>
+                        </div>
+
+                        <CoverageBar coverage={coverage} />
+
+                        {coverage.insufficientCoverage && (
+                            <p className="coverage-caveat">
+                                <Info size={13} aria-hidden="true" />
+                                Con {coverage.total} medios no es posible afirmar que exista una
+                                omisión: hacen falta al menos {BLINDSPOT_MIN_SOURCES}.
+                            </p>
+                        )}
+
+                        <div className="media-logos-grouped-grid">
+                            {spectrums.map((spectrum) => {
+                                const group = story.sources.filter((s) => {
+                                    const bias = typeof s.bias === 'number' ? s.bias : 0;
+                                    if (spectrum === 'left') return bias <= -0.2;
+                                    if (spectrum === 'right') return bias >= 0.2;
+                                    return bias > -0.2 && bias < 0.2;
+                                });
+
+                                return (
+                                    <div key={spectrum} className={`media-group-col ${spectrum}`}>
+                                        <span className="group-col-title">{SPECTRUM_LABEL[spectrum]}</span>
+                                        <div className="group-logos-list">
+                                            {group.length > 0 ? (
+                                                group.map((s, idx) => {
+                                                    const info = getMediaByName(s.name);
+                                                    return (
+                                                        <a
+                                                            key={`${s.name}-${idx}`}
+                                                            href={s.url || info.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="media-logo-card interactive-media-link"
+                                                            title={`Abrir ${info.name}`}
+                                                        >
+                                                            <MediaLogo media={info} size={16} />
+                                                            <span className="media-logo-name">{info.shortName}</span>
+                                                        </a>
+                                                    );
+                                                })
+                                            ) : (
+                                                <span className="empty-group">Sin cobertura</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <p className="detail-bias-verdict">
+                            Sesgo medio de la cobertura: <strong>{describeBias(coverage.meanBias)}</strong>
+                            <br />
+                            <span className="verdict-note">
+                                Dispersión entre fuentes: {coverage.polarization.toFixed(2)}
+                                {coverage.isHighlyPolarized && ' — cobertura polarizada'}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            {related.length > 0 && (
+                <section className="detail-related">
+                    <h2>Más en {story.category}</h2>
+                    <div className="detail-related-grid">
+                        {related.map((s) => <NewsCard key={s.id} story={s} />)}
+                    </div>
+                </section>
+            )}
+
+            <ShareModal story={story} isOpen={isShareOpen} onClose={() => setIsShareOpen(false)} />
+        </div>
+    );
+};
+
+export default NewsDetail;

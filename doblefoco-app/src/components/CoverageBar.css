@@ -1,0 +1,99 @@
+.coverage-bar-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.coverage-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.coverage-label.left {
+    color: var(--bias-left);
+}
+
+.coverage-label.center {
+    color: var(--text-muted);
+}
+
+.coverage-label.right {
+    color: var(--bias-right);
+}
+
+.coverage-bar {
+    display: flex;
+    width: 100%;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+}
+
+.coverage-bar-box.is-compact .coverage-bar {
+    height: 5px;
+}
+
+.coverage-segment {
+    position: relative;
+    height: 100%;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.coverage-segment.left {
+    background: var(--bias-left);
+}
+
+.coverage-segment.center {
+    background: var(--text-muted);
+}
+
+.coverage-segment.right {
+    background: var(--bias-right);
+}
+
+/* Patrón diferenciador por espectro: la información no depende solo del color.
+   Izquierda lisa, centro rayado, derecha punteado. */
+.coverage-segment-pattern {
+    position: absolute;
+    inset: 0;
+}
+
+.coverage-segment.center .coverage-segment-pattern {
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.28) 0 2px,
+        transparent 2px 5px
+    );
+}
+
+.coverage-segment.right .coverage-segment-pattern {
+    background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.42) 0 1px,
+        transparent 1px 4px
+    );
+}
+
+.coverage-bar-summary {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.coverage-polarized-tag {
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .coverage-segment {
+        transition: none;
+    }
+}

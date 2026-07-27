@@ -1,0 +1,148 @@
+-- =============================================================================
+--  DOBLEFOCO.CO — ESQUEMA DE PERSISTENCIA (tarea F2-01)
+-- =============================================================================
+--  Estado: escrito y sin aplicar. No hay todavía ninguna base de datos
+--  conectada; el motor sigue guardando artículos en memoria y pierde todo al
+--  reiniciar. Lo único que ya persiste es la serie de métricas, en JSONL
+--  (server/services/metricsStore.js), porque no podía esperar a esto.
+--
+--  Orden de aplicación recomendado
+--  -------------------------------
+--   1. ingest_runs  — cinco columnas, y empieza a acumular la serie de F1-01
+--                     desde el primer ciclo. Migra las líneas del JSONL.
+--   2. sources      — deriva de shared/mediaRegistry.js, que sigue siendo la
+--                     fuente de verdad. Esta tabla es una PROYECCIÓN suya, no
+--                     un segundo catálogo: se regenera desde el registro. Si
+--                     alguien edita el sesgo aquí, vuelve el problema F1-04.
+--   3. articles     — lo grande. Requiere reescribir el Map por consultas.
+--   4. stories / story_articles — el agrupamiento, una vez el resto funcione.
+--
+--  Postgres gestionado (Supabase o Neon). Supabase tiene una ventaja que no es
+--  la base de datos: su capa de autenticación cierra también F2-04, y hoy la
+--  clave del panel viaja en el bundle del navegador.
+-- =============================================================================
+
+-- ── 1. Serie de ingesta ──────────────────────────────────────────────────────
+-- Espejo exacto de las líneas del JSONL, para poder migrarlas con un INSERT por
+-- línea sin transformar nada.
+
+CREATE TABLE IF NOT EXISTS ingest_runs (
+    id                      BIGSERIAL PRIMARY KEY,
+    -- UNIQUE para que importar el JSONL sea repetible: la migración se puede
+    -- correr dos veces sin duplicar la serie, y una importación interrumpida se
+    -- reanuda sola. El instante de arranque identifica al ciclo porque el motor
+    -- no permite ciclos solapados (ingestionInProgress).
+    at                      TIMESTAMPTZ NOT NULL UNIQUE,
+    duration_ms             INTEGER,
+    feeds_ok                SMALLINT NOT NULL DEFAULT 0,
+    feeds_failed            SMALLINT NOT NULL DEFAULT 0,
+    active_feeds            SMALLINT NOT NULL DEFAULT 0,
+    new_articles            INTEGER  NOT NULL DEFAULT 0,
+    total_articles          INTEGER  NOT NULL DEFAULT 0,
+    total_stories           INTEGER  NOT NULL DEFAULT 0,
+    multi_source_stories    INTEGER  NOT NULL DEFAULT 0,
+    cross_spectrum_stories  INTEGER  NOT NULL DEFAULT 0,
+    blindspot_stories       INTEGER  NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS ingest_runs_at_idx ON ingest_runs (at DESC);
+
+-- ── 2. Medios ────────────────────────────────────────────────────────────────
+-- PROYECCIÓN de shared/mediaRegistry.js. Se regenera; no se edita a mano.
+-- El sesgo vive en el registro y en ningún otro sitio: esa fue la tarea F1-04 y
+-- costó cuatro documentos contradictorios descubrirlo.
+
+CREATE TABLE IF NOT EXISTS sources (
+    id              TEXT PRIMARY KEY,          -- el mismo id del registro
+    name            TEXT NOT NULL,
+    domain          TEXT NOT NULL UNIQUE,
+    country         CHAR(2) NOT NULL,
+    media_group     TEXT,
+    bias            REAL NOT NULL CHECK (bias BETWEEN -1 AND 1),
+    factuality      REAL NOT NULL CHECK (factuality > 0 AND factuality <= 1),
+    bias_rationale  TEXT NOT NULL,
+    reviewed_at     DATE,                      -- NULL = clasificación provisional
+    synced_at       TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ── 3. Artículos ─────────────────────────────────────────────────────────────
+-- El enlace canónico es la clave natural: es lo que hace la deduplicación
+-- idempotente entre ejecuciones. Ya funciona así en memoria.
+
+CREATE TABLE IF NOT EXISTS articles (
+    id              TEXT PRIMARY KEY,          -- hash FNV-1a del enlace (F1-11)
+    canonical_url   TEXT NOT NULL UNIQUE,
+    source_id       TEXT NOT NULL REFERENCES sources (id),
+    headline        TEXT NOT NULL,             -- LITERAL del medio; nunca editado
+    raw_title       TEXT,
+    snippet         TEXT,                      -- real o NULL; nunca redactado
+    category        TEXT,
+    tone            JSONB,                     -- anotación de carga (headlineTone)
+    published_at    TIMESTAMPTZ,
+    ingested_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS articles_published_idx ON articles (published_at DESC NULLS LAST);
+CREATE INDEX IF NOT EXISTS articles_source_idx    ON articles (source_id);
+
+-- La ventana de retención pasa a ser una consulta, no un barrido en memoria:
+--   DELETE FROM articles WHERE COALESCE(published_at, ingested_at) < now() - interval '72 hours';
+
+-- ── 4. Historias ─────────────────────────────────────────────────────────────
+-- Las métricas de cobertura se guardan CALCULADAS porque dependen del catálogo
+-- en el momento del cálculo. Si mañana se revisa el sesgo de un medio (F1-13),
+-- las historias viejas conservan la medición que se le mostró al lector: se
+-- puede auditar qué decía el sitio y cuándo.
+
+CREATE TABLE IF NOT EXISTS stories (
+    id                   TEXT PRIMARY KEY,
+    title                TEXT NOT NULL,        -- titular del medio representativo
+    title_source_id      TEXT REFERENCES sources (id),
+    title_url            TEXT,
+    category             TEXT,
+    published_at         TIMESTAMPTZ,
+    first_seen_at        TIMESTAMPTZ,
+    mean_bias            REAL,
+    polarization         REAL,
+    coverage_left        SMALLINT NOT NULL DEFAULT 0,
+    coverage_center      SMALLINT NOT NULL DEFAULT 0,
+    coverage_right       SMALLINT NOT NULL DEFAULT 0,
+    dominant_spectrum    TEXT CHECK (dominant_spectrum IN ('left', 'center', 'right')),
+    insufficient_coverage BOOLEAN NOT NULL DEFAULT TRUE,
+    blindspot_spectrum   TEXT CHECK (blindspot_spectrum IN ('left', 'right')),
+    factuality           REAL,                 -- NULL cuando no se puede calcular
+    computed_at          TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS story_articles (
+    story_id    TEXT NOT NULL REFERENCES stories (id) ON DELETE CASCADE,
+    article_id  TEXT NOT NULL REFERENCES articles (id) ON DELETE CASCADE,
+    PRIMARY KEY (story_id, article_id)
+);
+
+CREATE INDEX IF NOT EXISTS story_articles_article_idx ON story_articles (article_id);
+
+-- ── 5. Moderación (F2-02) ────────────────────────────────────────────────────
+-- Hoy las aprobaciones viven en el localStorage de UN navegador: no se
+-- comparten con el equipo ni con los visitantes. El panel no es un CMS, es una
+-- nota adhesiva.
+
+CREATE TABLE IF NOT EXISTS moderation (
+    story_id    TEXT PRIMARY KEY REFERENCES stories (id) ON DELETE CASCADE,
+    state       TEXT NOT NULL CHECK (state IN ('pendiente', 'aprobada', 'rechazada')),
+    reviewer    TEXT NOT NULL,
+    reason      TEXT,
+    decided_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ── 6. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
+-- Ley 1581 de 2012: dato personal. No sale en ninguna exportación pública de
+-- contenido, y `deleted_at` permite atender una solicitud de supresión sin
+-- perder el registro de que se atendió.
+
+CREATE TABLE IF NOT EXISTS waitlist (
+    email        TEXT PRIMARY KEY,
+    joined_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    confirmed_at TIMESTAMPTZ,                  -- doble opt-in; NULL = sin confirmar
+    deleted_at   TIMESTAMPTZ
+);

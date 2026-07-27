@@ -1,0 +1,937 @@
+===============================================================================
+ SINCUENTO.CO — ANÁLISIS TÉCNICO EXHAUSTIVO
+ Auditoría de funcionamiento, arquitectura, UI, backend y fallas detectadas
+===============================================================================
+ Fecha del análisis : 2026-07-26
+ Repositorio        : Proyectos antigravity / sincuentoco / sincuento-app
+ Stack              : React 19.2 + Vite 7.2 + react-router-dom 7.13 +
+                      Express 5.2 + rss-parser 3.13 + lucide-react
+ Estado de build    : ✅ COMPILA (vite build OK, 2.97 s, 1767 módulos)
+ Estado de lint     : ❌ 26 errores + 1 warning (npx eslint .)
+ Tests              : ❌ NO EXISTEN (0 archivos de prueba, sin CI)
+ Volumen de código  : ~5.000 líneas de fuente real + 11.062 líneas de datos
+===============================================================================
+
+
+-------------------------------------------------------------------------------
+ 0. RESUMEN EJECUTIVO (LEER PRIMERO)
+-------------------------------------------------------------------------------
+
+Sincuento.co es un clon funcional de Ground News adaptado a Colombia. La capa
+visual es sólida, coherente y está mejor terminada que la mayoría de MVP: hay
+sistema de diseño con variables CSS, tema claro/oscuro, code-splitting por
+ruta, ErrorBoundary, skip-link y cabeceras de seguridad configuradas.
+
+Sin embargo, hay una brecha grande entre lo que el ROADMAP.txt declara
+("FASE 1 a 4 COMPLETADAS 100%", "Listo para Despliegue") y lo que el código
+hace realmente. Los tres hallazgos que definen el estado del proyecto:
+
+ (1) NO ES UN PRODUCTO DE NOTICIAS, ES UNA MAQUETA CON DATOS FIJOS.
+     Las 200 noticias viven en src/data/mockData.js con marcas de tiempo
+     escritas a mano ("Hace 45 mins", "Ayer") que nunca envejecen. El backend
+     Express que sí lee RSS reales no está desplegado en ninguna parte, no
+     tiene script en package.json y el frontend lo busca en
+     http://localhost:5000 — dirección que en producción está bloqueada por
+     la propia CSP del proyecto. En la práctica el sitio publicado sirve
+     siempre el mismo contenido estático.
+
+ (2) LAS FUNCIONES ESTRELLA ESTÁN VACÍAS POR LOS DATOS, NO POR LA UI.
+     Medido sobre los datos reales del repositorio:
+       · El sesgo de las 200 noticias va de -0.20 a +0.16.
+       · Filtro "Izquierda"  → 1 resultado de 200.
+       · Filtro "Derecha"    → 0 resultados de 200.
+       · Filtro "Centro"     → 199 resultados.
+       · "Puntos Ciegos"     → 2 noticias de 200 califican.
+     Es decir: 3 de los 4 botones de sesgo y todo el "Radar de Omisiones"
+     —el diferenciador del producto— devuelven pantallas vacías.
+
+ (3) EL MOTOR "DE NEUTRALIDAD" FABRICA TITULARES DE MEDIOS REALES.
+     googleNewsEngineService.js y server/services/ingestDaemon.js construyen
+     las perspectivas izquierda/derecha concatenando texto inventado al
+     titular real y lo etiquetan como cita literal del medio. Ejemplo textual
+     del código (googleNewsEngineService.js:151-152):
+
+        headline: `El Espectador: "${rawHeadline} — Enfoque en garantías
+                   sociales e impacto comunitario"`
+        snippet:  `Titular auténtico reportado por la redacción de
+                   El Espectador...`
+
+     Eso es atribución falsa a un medio identificable, en un producto cuya
+     propuesta de valor es precisamente la fidelidad de las fuentes. Es el
+     riesgo más grave del proyecto y no es técnico: es legal y reputacional.
+
+Veredicto: excelente prototipo de UI, arquitectura de datos y de ingesta sin
+terminar, y tres bloqueadores que deben resolverse ANTES de cualquier
+publicación real.
+
+
+-------------------------------------------------------------------------------
+ 1. INVENTARIO Y ARQUITECTURA
+-------------------------------------------------------------------------------
+
+1.1 Estructura de carpetas
+
+  sincuento-app/
+   ├─ index.html                  Meta tags, Google Fonts, favicon
+   ├─ vite.config.js              Configuración mínima (solo plugin react)
+   ├─ vercel.json                 CSP + HSTS + rewrites SPA (Vercel)
+   ├─ public/_headers              CSP para Netlify/Cloudflare (DIVERGE de vercel.json)
+   ├─ public/_redirects            Catch-all SPA
+   ├─ eslint.config.js            Sin globals de Node → falsos errores en server/
+   ├─ server/
+   │   ├─ index.js                API Express (4 GET + 1 POST) + cron interno
+   │   └─ services/ingestDaemon.js Ingesta RSS real de 13 feeds + clustering
+   ├─ scratch/                    4 generadores de datos (basura versionada)
+   └─ src/
+       ├─ main.jsx  App.jsx       Router + ThemeProvider + ErrorBoundary
+       ├─ components/  (11)       Navbar, NewsCard, NewsFeed, Sidebar,
+       │                          MobileSidebar, CompactHeroGrid, ShareModal,
+       │                          UserFeedbackWidget, ErrorBoundary,
+       │                          AnimateIn, HeroSlider (MUERTO)
+       ├─ pages/       (8)        Home, Trending, Categories, About,
+       │                          NewsDetail, SearchResults, AdminDashboard,
+       │                          NotFound
+       ├─ services/    (7)        imageEngine, headlineNeutralizer,
+       │                          googleNewsEngine, newsEngine (MUERTO),
+       │                          newsletter, security, storage
+       ├─ data/                   mockData.js (11.062 líneas / 408 kB),
+       │                          mediaLogos.js (30 medios), pendingData.js
+       ├─ docs/       (4 .txt)    metodologia, criterios, plan_motor, loop
+       └─ hooks/                  useTheme, useInView
+
+  Fuera de sincuento-app/ hay residuos que no deberían estar versionados:
+   · "Ground News_ Análisis Técnico y Replicación.docx"
+   · temp_analysis.zip  y  temp_extracted/  (un .docx descomprimido, con
+     fuentes .ttf de Google Sans — con implicaciones de licencia)
+   · Un archivo llamado "nul" en la raíz del repo (artefacto de una
+     redirección fallida en Windows; borrar con: del "\\?\%CD%\nul")
+
+
+1.2 Flujo de datos REAL (no el declarado)
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ RUTA A — "24/7" (solo funciona en localhost, con el server encendido)│
+  └─────────────────────────────────────────────────────────────────────┘
+   13 feeds RSS  →  ingestDaemon.runIngestionBatch()
+                 →  articlesDatabase[]  (ARRAY EN MEMORIA, se pierde al
+                                         reiniciar el proceso)
+                 →  buildMultisourceStories()  (agrupa por las 3 primeras
+                                                palabras del titular)
+                 →  storiesFeed[]
+                 →  GET /api/feed  →  NewsFeed.jsx:20 fetch localhost:5000
+
+   Se dispara al arrancar (server/index.js:65) y cada 10 minutos
+   (server/index.js:68). No hay persistencia, no hay base de datos, no hay
+   despliegue: vercel.json solo publica estáticos.
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ RUTA B — Producción real (lo que ve un usuario en internet)          │
+  └─────────────────────────────────────────────────────────────────────┘
+   fetch a localhost:5000 → FALLA SIEMPRE (bloqueado por CSP connect-src
+                            en vercel.json:8 + mixed content http/https)
+                          → catch → localStorage 'sincuento-approved-articles'
+                          → normalmente vacío
+                          → NewsFeed.jsx:52  allNews = [...[], ...newsData]
+                          → se renderizan las 200 noticias fijas
+
+   Consecuencia: cada carga de página lanza un fetch condenado a fallar,
+   escupe un error en consola y añade latencia inútil.
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ RUTA C — Panel /admin                                                │
+  └─────────────────────────────────────────────────────────────────────┘
+   Botón "Probador de Ingesta en Vivo"
+     → scrapeGoogleNews() intenta 3 proxies CORS públicos
+     → si todos fallan, DEVUELVE 3 NOTICIAS INVENTADAS EN CÓDIGO
+       (googleNewsEngineService.js:221-240) marcadas como
+       "Generado en Vivo (Motor de Ingesta)" — el usuario no puede
+       distinguir un scrape real de este relleno
+     → sendScrapedToStaging() → localStorage 'sincuento-pending-articles'
+     → aprobar → localStorage 'sincuento-approved-articles'
+     → evento 'sincuento-feed-updated' → NewsFeed recarga
+
+   Toda la "base de datos" del panel es localStorage del navegador: es
+   por-dispositivo, por-navegador, se borra al limpiar caché y no se comparte
+   con ningún otro usuario. No es un CMS, es una nota adhesiva.
+
+
+1.3 Coherencia de la comunicación entre capas
+
+  · Tres orígenes de verdad distintos para el sesgo de un mismo medio:
+      mediaLogos.js (catálogo, 30 medios)
+      googleNewsEngineService.js MEDIA_BIAS_REGISTRY (26 medios)
+      ingestDaemon.js RSS_FEEDS_CONFIG (13 feeds)
+      + los valores embebidos en cada noticia de mockData.js
+    Divergencias medidas entre mockData y el catálogo:
+      Cambio            -0.30 vs -0.40
+      Cuestión Pública  -0.40 vs -0.50
+      Colombia Informa  -0.60 vs -0.70
+      El Colombiano     +0.35 vs +0.40
+      Blu Radio         +0.25 vs +0.35
+      El Nuevo Siglo    +0.30 vs +0.55   ← 0.25 de diferencia
+    Y frente a src/docs/metodologia.txt (documento público, mostrado al
+    usuario en /sobre-nosotros) hay contradicción directa: el documento
+    clasifica a Semana en [+0.6 a +1.0] "Derecha marcada", el código le
+    asigna +0.45 (centro-derecha). El sitio publica una metodología que su
+    propio motor no cumple.
+
+  · Sidebar.jsx:15-17 lee SOLO localStorage; NewsFeed.jsx:20 prioriza el
+    backend. Si el backend responde, el feed muestra noticias que el sidebar
+    ignora: "Tendencias en Vivo" y "Radar de Omisiones" quedan desalineados
+    del contenido visible.
+
+
+===============================================================================
+ 2. FALLAS DETECTADAS
+===============================================================================
+ Clasificación: [C] Crítica  [A] Alta  [M] Media  [B] Baja
+ Todas verificadas ejecutando el código o inspeccionando los datos reales.
+===============================================================================
+
+-------------------------------------------------------------------------------
+ 2.1 [C] CRÍTICAS — bloquean publicación
+-------------------------------------------------------------------------------
+
+C-01  FABRICACIÓN DE TITULARES ATRIBUIDOS A MEDIOS REALES
+      Archivos: src/services/googleNewsEngineService.js:147-166 y 266-282
+                server/services/ingestDaemon.js:158-177
+      El motor toma el titular real de un medio y le concatena texto
+      inventado ("— Enfoque en garantías sociales e impacto comunitario",
+      "— Reacciones en gremios e impacto en la certidumbre económica"),
+      lo firma con el nombre de El Espectador / Semana / Vorágine y lo
+      describe como "Titular auténtico reportado por la redacción de...".
+      Cuando no encuentra una fuente de izquierda o derecha, INVENTA la
+      atribución por defecto (ingestDaemon.js:160-162 fija "El Espectador"
+      y :172-174 fija "Semana" aunque nunca hayan cubierto el hecho).
+      Impacto: atribución falsa a personas jurídicas identificables.
+      Riesgo legal en Colombia y destrucción total de la credibilidad del
+      producto, que se vende como verificador de fuentes.
+      Acción: eliminar toda generación sintética de titulares. Mostrar
+      únicamente el titular literal capturado del feed; si no hay cobertura
+      de un lado del espectro, decirlo explícitamente ("Sin cobertura
+      registrada en este espectro") — que además es la información más
+      valiosa del producto.
+
+C-02  LOS FILTROS DE SESGO Y LOS PUNTOS CIEGOS DEVUELVEN VACÍO
+      Archivos: src/components/NewsFeed.jsx:80-92, src/data/mockData.js
+      Medición sobre los 200 registros reales:
+        rango de bias: [-0.20 , +0.16]   |bias|>=0.2 → 1 noticia
+        filtro Izquierda → 1 · Centro → 199 · Derecha → 0
+        puntos ciegos    → 2 de 200
+      Causa raíz: cada noticia mezcla ~4 fuentes de espectros opuestos, y el
+      promedio aritmético las cancela (634 de 752 fuentes son "centro").
+      Promediar sesgos opuestos no mide polarización, la borra.
+      Impacto: la funcionalidad diferenciadora del producto no funciona
+      aunque la UI esté bien construida.
+      Acción: dejar de usar la media. Modelar la DISPERSIÓN (desviación
+      estándar del sesgo de las fuentes) y la COBERTURA POR ESPECTRO como
+      métricas separadas. Un tema cubierto por Vorágine (-0.5) y Semana
+      (+0.45) es altamente polarizado, no "centro".
+
+C-03  EL BACKEND NO EXISTE EN PRODUCCIÓN Y EL FRONTEND LO LLAMA IGUAL
+      Archivos: src/components/NewsFeed.jsx:20, src/pages/NewsDetail.jsx:22
+                package.json (sin script), vercel.json:8
+      · URL "http://localhost:5000" escrita a mano en dos componentes.
+      · vercel.json:8 declara connect-src 'self' https://api.allorigins.win
+        https://news.google.com — localhost NO está permitido.
+      · public/_headers:8 no declara connect-src → hereda default-src 'self'
+        → bloquea incluso los proxies que sí están permitidos en Vercel.
+      · package.json no tiene script para arrancar el servidor; hay que
+        ejecutar `node server/index.js` a mano.
+      · express/cors/dotenv/rss-parser están en "dependencies" del paquete
+        frontend, mezclando dos runtimes en un mismo package.json.
+      Impacto: en producción el 100% de las peticiones al backend fallan.
+      Acción: variable de entorno VITE_API_URL, separar el servidor en su
+      propio paquete (o migrar la ingesta a funciones serverless / cron de
+      Vercel), y alinear ambas CSP.
+
+C-04  /admin ES PÚBLICO Y SIN AUTENTICACIÓN
+      Archivos: src/App.jsx:38, src/pages/AdminDashboard.jsx
+      Cualquier visitante puede entrar a /admin, aprobar, rechazar y EDITAR
+      el título, el sesgo, la factualidad y los tres titulares por espectro
+      de cualquier noticia (handleFieldChange, handlePerspectiveChange), y
+      descargar el respaldo JSON que incluye los correos de los suscriptores
+      (storageService.js:77-99 → PII expuesta).
+      Además POST /api/ingest/run (server/index.js:50) no exige credenciales
+      y lanza un ciclo completo de scraping: cualquiera puede invocarlo en
+      bucle y convertir el servidor en un ataque de amplificación contra los
+      13 medios del catálogo.
+      Acción: autenticación real antes de exponer el panel (aunque el
+      contenido siga en localStorage), token compartido en /api/ingest/run,
+      y sacar la exportación de suscriptores de una ruta pública.
+
+C-05  SIN SEO NI SSR EN UN PRODUCTO PERIODÍSTICO
+      Archivos: index.html, App.jsx
+      SPA pura, sin SSR ni prerender. No hay sitemap.xml, no hay robots.txt,
+      no hay <title> ni meta description por ruta (todas las páginas comparten
+      el título de index.html), no hay og:image, og:url ni canonical, no hay
+      JSON-LD NewsArticle. ShareModal.jsx:13 comparte window.location.href,
+      así que toda noticia compartida en X o LinkedIn muestra la misma
+      tarjeta genérica sin imagen.
+      Impacto: un agregador de noticias invisible para Google, Google News y
+      Discover. Para este producto el SEO no es una mejora, es el canal de
+      adquisición.
+      Acción: prerender por ruta (vite-plugin-ssg / Astro / Next), meta tags
+      dinámicos por noticia, sitemap generado en build, JSON-LD NewsArticle.
+
+C-06  COLISIÓN DE IDs ENTRE LA COLA DE MODERACIÓN Y EL CATÁLOGO
+      Archivos: src/data/pendingData.js (ids 101, 102, 103)
+                src/data/mockData.js (ids 1..200, incluye 101, 102, 103)
+      Al aprobar cualquiera de las 3 noticias de staging por defecto, el id
+      queda duplicado. NewsFeed.jsx:52 pone las aprobadas primero, así que
+      /noticia/101 deja de mostrar la noticia original y muestra la aprobada;
+      React además emite warning de key duplicada y la lista puede reordenarse
+      de forma inconsistente.
+      Acción: identificadores opacos (crypto.randomUUID / nanoid). Ver A-05.
+
+
+-------------------------------------------------------------------------------
+ 2.2 [A] ALTAS — rompen funcionalidad visible al usuario
+-------------------------------------------------------------------------------
+
+A-01  LA PÁGINA /tendencias RENDERIZA CAMPOS VACÍOS
+      Archivos: src/data/mockData.js:10965-11013 (export trendingTopics)
+                src/pages/Trending.jsx:23-24
+                src/components/MobileSidebar.jsx:99-100
+      Los objetos son { id, topic, count, category } pero el código lee
+      `topic.name` y `topic.articles`. Resultado real en pantalla: los 8
+      "topic-card" salen con el <h3> vacío y el texto " articulos", y el
+      enlace apunta a /buscar?q=undefined → resultados nulos.
+      Idéntico en el acordeón "Tendencias" de móvil.
+      Acción: renombrar a `name`/`articles` en los datos o corregir los
+      accesos. Añadir validación de forma para los tres exports.
+
+A-02  LA PÁGINA /categorias OCULTA LA MITAD DEL CATÁLOGO
+      Archivos: src/data/mockData.js:11016+ (export categories)
+                src/pages/Categories.jsx:44,49,53
+      · Los objetos son { name, count, description }: NO tienen `id` ni
+        `icon`. Por tanto:
+          - Categories.jsx:49  key={category.id}  → undefined en las 9
+            tarjetas (React usa la misma key para todas)
+          - Categories.jsx:53  {category.icon}    → no pinta nada, el
+            contenedor .category-icon queda vacío
+          - Categories.jsx:44  category.id === 'ultimas' → nunca true, la
+            rama de "todas las noticias" es código muerto
+          - active === 'Últimas Noticias' (:32) → inalcanzable, ninguna
+            categoría se llama así
+      · El export categories NO incluye "Internacional", y 100 de las 200
+        noticias (el 50% exacto) son de esa categoría → son inalcanzables
+        desde la página de categorías.
+      · El campo `count` de los datos (22, 18, 12...) no coincide con los
+        conteos reales calculados en :44-46; está muerto y desinforma.
+      Acción: añadir id + icon + la categoría Internacional; derivar los
+      conteos de los datos y borrar el campo `count`.
+
+A-03  MISATRIBUCIÓN DE MEDIOS INTERNACIONALES
+      Archivo: src/data/mediaLogos.js (getMediaByName)
+      La resolución usa coincidencia difusa con `.includes()` en ambos
+      sentidos. Verificado ejecutando la función:
+        "El País (España)"  →  El País (Cali)      ← medio español pintado
+                                                     con logo y datos de un
+                                                     diario colombiano
+        "La Vanguardia"     →  Vanguardia (Bucaramanga)
+      Y 10 de las 32 fuentes usadas no existen en el catálogo, así que caen
+      al fallback que construye la URL del logo a partir del NOMBRE con
+      espacios:
+        The New York Times → .../favicons?domain=the%20new%20york%20times.com
+        BBC Mundo          → .../favicons?domain=bbc%20mundo.com
+        CNN en Español, DW Español, France 24 Español, Reuters Latam,
+        Financial Times, The Wall Street Journal, Euronews, La FM
+      Resultado: iconos roto/genérico en las 100 noticias internacionales.
+      Además getMediaByName devuelve `null` si el nombre es vacío, y los 6
+      lugares que la consumen acceden directo a `.logo` / `.url` → TypeError
+      y pantalla de ErrorBoundary ante un dato incompleto.
+      Acción: buscar por dominio (no por nombre), completar el catálogo con
+      los medios internacionales, y devolver un objeto neutro válido —nunca
+      null— desde el fallback.
+
+A-04  "MÁS RECIENTES" NO ORDENA NADA Y LAS FECHAS NUNCA ENVEJECEN
+      Archivos: src/components/NewsFeed.jsx:105, src/data/mockData.js
+      El comparador de la opción por defecto es `return 0` — no ordena.
+      Y no puede ordenar: `timestamp` es una cadena literal ("Hace 45 mins",
+      "Hace 2 días", "Ayer") sin fecha real. El sitio dirá "Hace 45 mins"
+      indefinidamente, y en el backend todas las historias comparten el
+      literal "Recién procesado por Backend 24/7" (ingestDaemon.js:122).
+      Acción: guardar `publishedAt` ISO-8601 y derivar el texto relativo en
+      render con Intl.RelativeTimeFormat('es-CO').
+
+A-05  IDENTIFICADORES GENERADOS CON Date.now()
+      Archivos: googleNewsEngineService.js:133 y 248 (`Date.now() + idx`)
+                ingestDaemon.js:78 (`art-${Date.now()}-${random(1000)}`)
+      `Date.now() + idx` colisiona entre sí dentro del mismo milisegundo y
+      produce enteros que pueden chocar con los ids de mockData tras
+      aritmética. El del daemon usa Math.random() sin verificar unicidad.
+      Los ids deberían derivarse del contenido (hash del enlace canónico),
+      que además haría la deduplicación idempotente entre ejecuciones.
+
+A-06  EL "PROMEDIO DE SESGO" DEL SCRAPER SIEMPRE DA LO MISMO
+      Archivo: src/services/googleNewsEngineService.js:111-130
+      A cada noticia extraída se le adjunta la MISMA lista fija de 12 medios
+      (Cambio, Vorágine, El Espectador, Razón Pública, El Tiempo, W Radio,
+      Portafolio, La Silla Vacía, Semana, El Colombiano, Blu Radio, RCN) más
+      el medio detectado. El promedio de esos 12 valores es constante, así que
+      el `bias` de toda noticia scrapeada es prácticamente idéntico y las
+      barras de distribución de todas las tarjetas son iguales.
+      Peor: se afirma que esos 12 medios cubrieron el hecho sin haberlo
+      verificado. Es el mismo problema de C-01 en la capa de datos.
+      La variable `isLeftTopic` (:109) se calcula y nunca se usa.
+
+A-07  EL CLUSTERING AGRUPA POR LAS 3 PRIMERAS PALABRAS DEL TITULAR
+      Archivo: server/services/ingestDaemon.js:114-115
+        const words = art.cleanTitle.toLowerCase().split(' ').filter(w=>w.length>3);
+        const topicKey = words.slice(0, 3).join('-');
+      Dos notas sobre hechos distintos que empiezan igual ("Gobierno anuncia
+      nueva...") se fusionan en una sola historia; la misma noticia titulada
+      distinto por dos medios queda separada. La versión del frontend
+      (headlineNeutralizerService.js:97-105) usa solapamiento de palabras con
+      umbral 40% — mejor, pero es O(n²) y no comparte implementación con el
+      backend, así que ambos producen agrupaciones distintas del mismo hecho.
+      Acción: unificar en un único servicio compartido y usar similitud
+      real (TF-IDF + coseno, o shingles/MinHash) sobre titular + entradilla.
+
+A-08  LA "DESADJETIVACIÓN" MUTILA TITULARES DE TERCEROS
+      Archivo: src/services/headlineNeutralizerService.js:35-38
+      Borra por regex palabras del léxico sensacionalista dentro del titular
+      original. "Un dramático rescate en el Chocó" → "Un rescate en el
+      Chocó"; "el polémico decreto" → "el decreto". Se altera una cita
+      textual y se presenta como titular del medio. Ediciones silenciosas de
+      contenido ajeno, con el mismo problema de fondo que C-01.
+      Nota adicional: `sensationalPoints` se calcula en :70-72 y no entra en
+      `calculatedBias` (:74) — la señal se mide y se descarta.
+      Acción: no reescribir el titular ajeno. Mostrarlo íntegro y exponer la
+      carga emocional como una métrica ANOTADA al lado.
+
+A-09  EL FORMULARIO DE BOLETÍN AFIRMA HABER ENVIADO UN CORREO
+      Archivos: src/services/newsletterService.js:31-49
+                src/components/Sidebar.jsx:332
+      No hay backend de correo. subscribeToNewsletter() guarda el email en
+      localStorage y hace `console.log` del contenido. La UI responde:
+      "Se ha enviado la confirmación a X desde el correo oficial
+      sincuentoco@gmail.com". Es una afirmación falsa al usuario sobre el
+      tratamiento de su dato personal.
+      Además: no hay doble opt-in, ni política de privacidad, ni enlace de
+      baja, ni responsable del tratamiento — incumple la Ley 1581 de 2012 de
+      protección de datos (Colombia) desde el primer suscriptor.
+      Acción: o se conecta un proveedor real (Resend/SES/Mailchimp) con
+      doble opt-in y aviso de privacidad, o se retira el widget.
+
+A-10  MÉTRICAS COMUNITARIAS INVENTADAS EN LA INTERFAZ
+      Archivo: src/components/UserFeedbackWidget.jsx:13,59
+      `useState({ agree: 84, disagree: 16 })` y se muestra "84% Validación
+      Comunitarias" como si fuera un dato agregado de lectores. Los votos se
+      guardan en localStorage y nunca se envían a ningún sitio, así que el
+      número es puro decorado. (Erratas de copy en la misma línea:
+      "Validación Comunitarias" → "Validación comunitaria".)
+      Acción: o endpoint real de agregación, o eliminar el porcentaje.
+
+A-11  "PUNTOS CIEGOS" HARDCODEADOS EN EL SIDEBAR MÓVIL
+      Archivo: src/components/MobileSidebar.jsx:172-179
+      Dos enlaces fijos escritos a mano ("Crisis ambiental en el Chocó",
+      "Inversión extranjera en caída") que apuntan a búsquedas, no a
+      noticias. En escritorio el Sidebar sí calcula los puntos ciegos
+      dinámicamente (Sidebar.jsx:46-74). El usuario de móvil —la mayoría del
+      tráfico en Colombia— ve una versión falsa de la función estrella.
+
+A-12  LA SANITIZACIÓN ROMPE LA BÚSQUEDA
+      Archivo: src/pages/SearchResults.jsx:13,40-43
+      `sanitizeInput()` convierte & < > " ' en entidades HTML ANTES de
+      comparar y de renderizar. Pero React ya escapa todo lo que interpola,
+      así que el escapado es redundante y sus efectos son visibles:
+        · buscar "R&D"      → el <h1> muestra 'Resultados para "R&amp;D"'
+        · buscar "Peñalosa & Cía" → nunca coincide con el texto real
+      Es decir: la única consecuencia práctica de la "protección XSS" aquí es
+      corromper la funcionalidad que protege.
+      Acción: quitar sanitizeInput de la ruta de búsqueda (React ya protege);
+      reservarlo exclusivamente para casos de dangerouslySetInnerHTML, que
+      hoy no existen en el proyecto.
+
+A-13  EL LÍMITE DE PETICIONES BLOQUEA EN SILENCIO
+      Archivo: src/pages/SearchResults.jsx:16,20-24
+      `checkRateLimit()` cuenta en una variable en memoria (securityService.js
+      :14) que se reinicia con cada recarga → no limita nada real. Y cuando
+      sí bloquea, `rateLimited` se pone en true pero NUNCA se renderiza
+      (ESLint lo reporta como variable sin usar): el usuario ve "0 noticias
+      encontradas" sin explicación. Un rate limit de cliente no es un control
+      de seguridad; solo puede vivir en el servidor.
+
+
+-------------------------------------------------------------------------------
+ 2.3 [M] MEDIAS — deuda técnica, rendimiento, robustez
+-------------------------------------------------------------------------------
+
+M-01  mockData.js SE CARGA EN CASI TODAS LAS RUTAS (408 kB / 24 kB gzip)
+      Es el chunk más grande del build. Lo importan Home, Trending,
+      Categories, SearchResults, NewsDetail, Sidebar y MobileSidebar, así que
+      no hay ruta que lo evite. Con datos reales crecerá sin techo.
+      Acción: servir el feed por API paginada; mientras siga siendo mock,
+      partirlo por categoría y cargar bajo demanda.
+
+M-02  26 ERRORES DE ESLINT, NINGUNO CORREGIDO
+      Salida real de `npx eslint .`:
+        · 6 errores react-hooks/set-state-in-effect (AdminDashboard:56,
+          Categories:22, SearchResults:22, UserFeedbackWidget:19, ...)
+        · 12 variables sin usar: rightCount (NewsCard:45, NewsFeed:62),
+          right (CompactHeroGrid:22), pubDate/isLeftTopic/lastError/sentiment
+          (googleNewsEngineService), buildDynamicKeywordImageUrl
+          (imageEngineService:62), rightSources (newsEngineService:13),
+          rateLimited (SearchResults:16), 4 imports muertos en
+          AdminDashboard:4, setSearchQuery/Scope/Category (AdminDashboard
+          :15-17 — los estados existen pero no hay controles que los cambien)
+        · 4 errores no-undef en server/index.js:6 y scratch/generate100News.js
+          por falta de globals de Node en eslint.config.js
+        · 1 warning exhaustive-deps en useInView:23
+      Que `no-unused-vars` esté en nivel "error" y aun así haya 12 es señal
+      de que nadie ejecuta el lint. Sin CI no hay quien lo obligue.
+
+M-03  CÓDIGO MUERTO
+      · src/services/newsEngineService.js — 58 líneas, CERO importaciones.
+        Contiene la única implementación decente de detección de puntos
+        ciegos y una URL localhost:5173 embebida (:52).
+      · src/components/HeroSlider.jsx + HeroSlider.css — sin importar.
+      · imageEngineService.js:62-84 buildDynamicKeywordImageUrl — sin usar,
+        y con un bug: genera `?q=80...&sig=N&q=keyword`, parámetro `q`
+        duplicado que Unsplash resolvería con el último valor.
+      · securityService.js:81-87 SECURITY_HEADERS — nunca se aplica (las
+        cabeceras reales están en vercel.json y _headers, y NO coinciden con
+        esta constante). Documentación que miente por triplicado.
+      · scratch/ — 4 generadores versionados (uno .js con `require`, que es
+        lo que provoca los no-undef de M-02).
+
+M-04  LÓGICA DE DISTRIBUCIÓN DE SESGO DUPLICADA 6 VECES
+      El mismo bloque left/center/right + puntos ciegos está copiado en:
+        NewsCard.jsx:42-58, NewsFeed.jsx:59-71, NewsDetail.jsx:91-110,
+        CompactHeroGrid.jsx:18-28, Sidebar.jsx:46-74, newsEngineService.js:7-37
+      Y los umbrales YA divergieron: las tarjetas usan >=65% / <=15%, el
+      Sidebar usa >=60% / <=15%. La misma noticia puede aparecer como punto
+      ciego en el sidebar y no en su tarjeta. Idéntico problema con la
+      "Dieta Informativa", duplicada entre Sidebar.jsx:122-147 y
+      MobileSidebar.jsx:54-79 con textos de recomendación distintos.
+      Acción: extraer un único src/lib/biasAnalysis.js con los umbrales como
+      constantes exportadas, y consumirlo desde los 6 sitios.
+
+M-05  LA BASE DE DATOS EN MEMORIA CRECE SIN LÍMITE Y ES O(n²)
+      Archivo: server/services/ingestDaemon.js:49,76
+      `articlesDatabase` nunca se poda: cada 10 minutos se añaden hasta 130
+      artículos (13 feeds × 10) y la deduplicación hace
+      `articlesDatabase.some(...)` por cada ítem → coste cuadrático. En
+      pocos días son cientos de miles de comparaciones por ciclo y el proceso
+      crece hasta agotar la memoria. Y todo se pierde al reiniciar.
+      Acción: Set/Map indexado por enlace canónico, TTL de retención, y
+      persistencia real (SQLite/Postgres).
+
+M-06  SIN TIMEOUT, SIN REINTENTOS Y CON FEEDS SECUENCIALES
+      Archivo: server/services/ingestDaemon.js:70-96
+      El bucle `for...of` procesa los 13 feeds en serie; con el timeout de
+      10 s de rss-parser, un ciclo puede tardar más de 2 minutos. Sin
+      reintentos con backoff, un fallo transitorio pierde el feed hasta el
+      siguiente ciclo. Y no hay guardas para que dos ciclos se solapen: si
+      uno tarda más de 10 minutos, el setInterval lanza otro encima.
+      Acción: Promise.allSettled con límite de concurrencia, backoff
+      exponencial, y un flag de "ejecución en curso".
+
+M-07  DOS ORÍGENES DE CSP QUE NO COINCIDEN
+      vercel.json:8 permite script-src 'unsafe-inline' 'unsafe-eval' y
+      connect-src a los proxies; public/_headers:8 no permite 'unsafe-eval'
+      y omite connect-src por completo. Según dónde se despliegue, el sitio
+      se comporta distinto. Además 'unsafe-eval' no es necesario en un build
+      de Vite en producción y 'unsafe-inline' en script-src anula buena parte
+      del valor de la CSP.
+      Acción: una sola fuente de verdad, sin unsafe-eval, y hashes o nonces
+      para los inline que realmente se necesiten.
+
+M-08  EL "HASH HMAC DE INTEGRIDAD" NO ES HMAC NI SIRVE
+      Archivo: src/services/securityService.js:38-47
+      El comentario dice "Hash HMAC de Integridad"; la implementación es un
+      djb2 de 32 bits SIN CLAVE, calculado en el cliente. Cualquiera que
+      modifique la noticia puede recalcular la firma con la misma función
+      pública. Y verifyStoryIntegrity() (:52-57) devuelve `true` cuando no
+      hay firma ("noticias legadas"), así que basta con borrar el campo
+      `signature` para saltarse la comprobación. Protección aparente, cero
+      protección real. Nadie la invoca, además.
+
+M-09  DEPENDENCIA DE 3 PROXIES CORS PÚBLICOS DE TERCEROS
+      Archivo: src/services/googleNewsEngineService.js:179-183
+      allorigins / corsproxy.io / thingproxy son servicios gratuitos sin SLA
+      por los que pasaría todo el tráfico de ingesta. Además la constante
+      CORS_PROXY (:16) quedó huérfana y las dos ramas del ternario de :199-201
+      son idénticas (código sin efecto). Un scraper debe correr en servidor,
+      donde CORS no existe.
+
+M-10  FOTOGRAFÍAS DE STOCK PRESENTADAS COMO ILUSTRACIÓN DE NOTICIAS REALES
+      Archivo: src/services/imageEngineService.js:12-43
+      21 fotos de Unsplash rotan entre las 200 noticias (≈10 repeticiones por
+      imagen). En un producto periodístico, poner una foto genérica de un
+      juzgado sobre una noticia judicial concreta sugiere al lector que
+      ilustra ese hecho. No hay crédito al fotógrafo (la licencia de Unsplash
+      pide atribución cuando es viable) ni etiqueta de "imagen ilustrativa".
+      Acción: extraer og:image del artículo original con su crédito, y
+      cuando no exista usar un placeholder tipográfico neutro marcado como
+      ilustrativo — nunca una fotografía que parezca documental.
+
+M-11  ErrorBoundary IGNORA EL TEMA Y FUERZA UNA RECARGA COMPLETA
+      Archivo: src/components/ErrorBoundary.jsx:35-36,20
+      Colores fijos (#18191c / #f8fafc) → en tema claro la pantalla de error
+      aparece oscura, rompiendo la continuidad visual. `handleReset` hace
+      `window.location.href = '/'`, que descarta el estado de la SPA y fuerza
+      recarga completa en lugar de resetear el boundary. Y el error solo va a
+      `console.error`: sin telemetría, los fallos en producción son invisibles.
+
+M-12  SIN TIPOS, SIN VALIDACIÓN DE ESQUEMA, SIN TESTS
+      Nada valida la forma de una noticia. Las fallas A-01 y A-02 (campos
+      `name`/`articles`/`id`/`icon` inexistentes) son exactamente el tipo de
+      error que TypeScript o un esquema Zod detectan en segundos, y que aquí
+      llegaron a producción silenciosamente. Cero tests: ni un caso para el
+      cálculo de sesgo, que es el corazón del producto.
+      Acción: TypeScript o JSDoc + checkJs; esquema Zod en la frontera de
+      datos (API y localStorage); Vitest para biasAnalysis y clustering;
+      GitHub Actions con lint + test + build.
+
+M-13  ESTADO COMPARTIDO MEDIANTE window.dispatchEvent
+      'sincuento-feed-updated', 'sincuento-pending-updated',
+      'sincuento-history-updated', 'sincuento-feedback-submitted': eventos
+      globales del DOM como bus de estado entre componentes React. Funciona,
+      pero no es rastreable, no se testea y no se sincroniza entre pestañas
+      (para eso existe el evento `storage`). Un Context o TanStack Query
+      resolvería esto con menos código.
+
+M-14  RECÁLCULOS SIN MEMOIZAR
+      NewsFeed.jsx:52-108 reconstruye, filtra y ordena las 200 noticias en
+      cada render (cada pulsación de filtro, cada cambio de estado). Los
+      selectores del Sidebar recorren las 200 en cada evento. Hoy es
+      tolerable; con 2.000 noticias reales no lo será. useMemo con
+      dependencias explícitas.
+
+M-15  DATOS SIN CONSISTENCIA INTERNA
+      Los 9 valores `count` del export categories (22, 18, 12, 10, 8, 8, 8,
+      7, 7 = 100) describen solo la mitad nacional del catálogo, mientras el
+      componente calcula los conteos reales sobre las 200. Y el reparto
+      Internacional=100 vs las 9 categorías nacionales=100 delata que los dos
+      lotes se generaron por separado sin reconciliar el esquema.
+
+
+-------------------------------------------------------------------------------
+ 2.4 [B] BAJAS — pulido
+-------------------------------------------------------------------------------
+
+B-01  README.md es la plantilla por defecto de Vite ("React + Vite").
+      Nada sobre Sincuento, cómo arrancar el backend, ni las variables de
+      entorno. Es el primer archivo que abre cualquier colaborador.
+B-02  Ortografía y tildes en la UI: "Categorias" (Navbar.jsx:88),
+      "las ultimas 24 horas" (Trending.jsx:14), "busqueda"
+      (SearchResults.jsx:66), "Validación Comunitarias"
+      (UserFeedbackWidget.jsx:59). En un producto editorial la ortografía
+      ES parte de la credibilidad.
+B-03  `Hace 1 horas` / `Hace 60 mins` en mockData: plurales sin concordancia
+      y unidades que deberían normalizarse (60 mins = 1 hora).
+B-04  About.jsx:42 dice "más de 20 fuentes nacionales"; el catálogo tiene 30
+      y el registro internacional suma más. Cifra desactualizada.
+B-05  About.jsx:99 publica contacto@sincuento.co, newsletterService.js:8 usa
+      sincuentoco@gmail.com y newsEngineService.js:41 escribe a
+      editor@sincuento.co. Tres direcciones distintas, ninguna verificada.
+B-06  El icono Twitter de lucide-react (ShareModal.jsx:2) está deprecado y el
+      texto dice "X / Twitter": conviene usar el logo actual.
+B-07  ROADMAP.txt declara las 4 fases "COMPLETADAS 100%" y "Listo para
+      Despliegue". Este informe documenta 6 fallas críticas. El roadmap está
+      funcionando como brochure, no como instrumento de seguimiento.
+B-08  Residuos versionados: nul, temp_analysis.zip, temp_extracted/, el .docx
+      y scratch/. Las fuentes Google Sans .ttf dentro de temp_extracted/
+      tienen implicaciones de licencia si el repo se hace público.
+
+
+===============================================================================
+ 3. OPORTUNIDADES DE MEJORA — BACKEND Y DATOS
+===============================================================================
+
+3.1 Arquitectura objetivo
+
+  El diseño actual (React + array en memoria + localStorage) no soporta el
+  producto. Propuesta mínima viable y barata:
+
+    ┌──────────────┐   cron 10 min   ┌─────────────────┐
+    │ Worker ingesta├────────────────▶│ Postgres/SQLite │
+    │ (Node + RSS)  │                 │  articles       │
+    └──────────────┘                  │  stories        │
+                                      │  sources        │
+    ┌──────────────┐                  │  subscribers    │
+    │ API REST/tRPC │◀────────────────│  feedback       │
+    └───────┬──────┘                  └─────────────────┘
+            │ JSON paginado + ETag
+    ┌───────▼──────┐
+    │ Frontend SSG/ │  prerender por noticia → SEO real
+    │ ISR (Next/    │
+    │ Astro)        │
+    └──────────────┘
+
+  Opciones concretas por coste:
+   · Supabase o Neon (Postgres gratis) + Vercel Cron → cero servidores.
+   · O el server/ actual desplegado en Railway/Fly.io con volumen SQLite.
+  Lo importante es sacar el estado del navegador y de la memoria del proceso.
+
+3.2 Esquema de datos sugerido
+
+  articles  id(uuid) · canonical_url(unique) · raw_title · clean_title
+            · source_id · published_at(timestamptz) · snippet · og_image
+            · og_image_credit · ingested_at
+  sources   id · name · domain(unique) · bias(numeric) · factuality
+            · bias_updated_at · bias_rationale(text) · country
+  stories   id(uuid) · title · category · published_at · updated_at
+            · bias_mean · bias_stddev · coverage_left/center/right
+            · blindspot(enum: none|left|right)
+  story_articles  story_id · article_id   (N:M — un artículo, una historia)
+
+  Claves del diseño:
+   · `canonical_url` UNIQUE resuelve la deduplicación en la base de datos, no
+     con un .some() cuadrático en memoria (M-05).
+   · `published_at` como timestamp real elimina A-04 de raíz.
+   · `sources` como tabla única elimina las 4 copias divergentes del sesgo
+     (sección 1.3) y `bias_rationale` da la trazabilidad que la metodología
+     publicada promete.
+
+3.3 Motor de sesgo: qué cambiar conceptualmente
+
+  El error de fondo es reducir una historia a un solo número promediando
+  fuentes opuestas. Métricas propuestas:
+
+    bias_mean    media ponderada por peso del medio (alcance/factualidad)
+    bias_stddev  DISPERSIÓN → esto es lo que mide polarización real
+    coverage_*   nº de artículos por tercio del espectro (no porcentajes
+                 sobre 3-4 fuentes, que saltan de 0% a 33%)
+    blindspot    requiere un MÍNIMO ABSOLUTO de cobertura, no solo un
+                 porcentaje: con 3 fuentes cualquier ratio es ruido
+                 estadístico. Sugerido: >=8 artículos y <=1 de un espectro.
+
+  Y la métrica de "Factualidad IA" que hoy se muestra al usuario con dos
+  decimales de precisión (ingestDaemon.js:154 la fija en 0.88 para TODAS las
+  historias) debe salir de la UI hasta que exista un método detrás. Mostrar
+  "Factualidad 88%" sobre una constante es desinformación cuantificada.
+
+3.4 Endurecimiento del servidor
+
+   · CORS con lista blanca de orígenes, no `cors()` abierto (index.js:8).
+   · Autenticación en POST /api/ingest/run + express-rate-limit global.
+   · helmet para las cabeceras (y borrar securityService.SECURITY_HEADERS).
+   · Validación de entrada con Zod en cada handler.
+   · Logging estructurado (pino) en lugar de console.log con emojis, y un
+     endpoint /api/health que reporte de verdad: último ciclo de ingesta,
+     feeds fallidos, tamaño de la base.
+   · Respetar robots.txt de los medios, User-Agent identificable con URL de
+     contacto, y backoff ante 429. Hoy el User-Agent
+     (ingestDaemon.js:5) se disfraza de Chrome con "SincuentoBot/1.0" pegado
+     al final: si se van a scrapear medios ajenos, hay que hacerlo de forma
+     transparente y auditable.
+   · Cachear con ETag/Last-Modified y `If-Modified-Since` en los feeds:
+     reduce carga sobre los medios y el coste de cada ciclo.
+
+
+===============================================================================
+ 4. OPORTUNIDADES DE MEJORA — UI / UX
+===============================================================================
+
+4.1 Lo que ya está bien (conservar)
+   · Sistema de tokens CSS coherente con tema claro/oscuro completo
+     (index.css:1-81) y transición suave.
+   · Code-splitting por ruta con Suspense y loader (App.jsx:7-20).
+   · Skip-link a contenido principal (App.jsx:27) — pocos proyectos lo tienen.
+   · Jerarquía tipográfica editorial con tres familias bien diferenciadas.
+   · La barra de distribución de cobertura es el acierto visual del producto:
+     legible, compacta y comunica de inmediato.
+   · Estados vacíos con acción de recuperación ("Restablecer filtros").
+   · Paginación incremental que evita renderizar 200 tarjetas de golpe.
+
+4.2 Accesibilidad — hallazgos concretos
+
+   A11Y-1  role="meter" sin valores. NewsCard.jsx:109 y NewsDetail.jsx:268
+           declaran role="meter" sin aria-valuenow / aria-valuemin /
+           aria-valuemax. Un lector de pantalla anuncia un medidor sin
+           medida. (Sidebar.jsx:206 sí los pone: replicar ahí.)
+   A11Y-2  Información SOLO por color. Los tres segmentos de la barra se
+           distinguen únicamente por rojo/blanco/azul. Un usuario con
+           deuteranopia o en escala de grises no distingue izquierda de
+           derecha. Añadir patrón/textura o etiquetas de texto embebidas
+           (ya existen los % arriba: asociarlos con aria-describedby).
+   A11Y-3  getBiasSpectrumColor devuelve '#ffffff' para "centro"
+           (mediaLogos.js). En tema claro, --bg-card también es #ffffff:
+           el borde superior blanco del chip es INVISIBLE. Usar un token que
+           dependa del tema, no un literal.
+   A11Y-4  ShareModal sin semántica de diálogo: falta role="dialog"
+           aria-modal="true", cierre con Escape, atrapado de foco y retorno
+           del foco al botón que lo abrió. Hoy con teclado se puede tabular
+           "detrás" del modal.
+   A11Y-5  Botones de filtro sin aria-pressed (NewsFeed.jsx:149-241) y
+           tarjetas de categoría sin aria-pressed (Categories.jsx:48). El
+           estado activo solo se comunica visualmente por clase CSS.
+   A11Y-6  El menú hamburguesa tiene aria-expanded (Navbar.jsx:59) pero no
+           aria-controls apuntando al id del panel.
+   A11Y-7  Sin `@media (prefers-reduced-motion: reduce)`. Todo entra con
+           fadeSlideUp + blur (index.css:168-188). Para usuarios con
+           sensibilidad vestibular es hostil, y es 4 líneas de CSS.
+   A11Y-8  RIESGO DE CONTENIDO INVISIBLE: `.animate-in { opacity: 0 }`
+           (index.css:182) y la visibilidad depende de IntersectionObserver.
+           Si el observer no dispara (JS con error, navegador antiguo, algún
+           bloqueador), el contenido queda con opacidad 0 y la página parece
+           vacía. Patrón correcto: visible por defecto y animar solo cuando
+           el observer confirma que puede.
+   A11Y-9  Sin gestión de foco al navegar entre rutas: el foco se queda donde
+           estaba y el lector de pantalla no anuncia la página nueva.
+   A11Y-10 Imágenes de CompactHeroGrid sin width/height (líneas 48-53 y
+           119-124) → salto de layout (CLS) al cargar. NewsCard.jsx:76-78 sí
+           las declara: replicar.
+
+4.3 UX — mejoras de producto
+
+   UX-1  Comparación de perspectivas en columnas paralelas. Hoy
+         NewsDetail.jsx:148-208 apila izquierda/centro/derecha en vertical,
+         que es justo lo que impide comparar. En escritorio, tres columnas
+         lado a lado con los titulares alineados hacen visible la diferencia
+         de encuadre de un vistazo — que es el producto entero.
+   UX-2  Decir explícitamente "Sin cobertura en este espectro". Es la
+         información más valiosa y hoy se tapa inventando una fuente (C-01).
+         Un hueco honesto comunica más que un relleno sintético.
+   UX-3  Filtros en la URL (?sesgo=izq&ambito=nacional). Hoy todo el estado
+         del feed vive en useState: no se puede compartir un filtro, ni
+         volver atrás, ni recargar sin perderlo.
+   UX-4  Vista de "línea de tiempo" de un tema: cómo evolucionó la cobertura
+         y en qué momento entró cada espectro. Diferenciador real frente a
+         Ground News en el mercado local.
+   UX-5  La "Dieta Informativa" es la mejor idea del producto y está
+         escondida al final del sidebar. Merece página propia con evolución
+         semanal y objetivos ("lee 2 fuentes del otro lado esta semana").
+   UX-6  Densidad del feed: la tarjeta actual ocupa mucho vertical. Ofrecer
+         alternador compacto/cómodo; en móvil, priorizar titular + barra de
+         distribución y diferir la fila de logos.
+   UX-7  Sin skeletons: durante la carga solo hay un spinner global
+         (App.jsx:16-20). Skeletons por tarjeta reducen la percepción de
+         espera y evitan el salto de layout.
+   UX-8  CompactHeroGrid.jsx:10-11 fija newsData[0] y [1..4] — la portada es
+         siempre idéntica. Debería elegir por relevancia (volumen de
+         cobertura, recencia, polarización) y refrescarse.
+   UX-9  Onboarding de 3 pasos explicando qué significan la barra, el
+         "punto ciego" y la factualidad. Sin ese contexto, la propuesta de
+         valor no se entiende en la primera visita.
+   UX-10 Prometer menos en el copy. "Motor de Ingesta Automática 24/7 (En
+         Vivo)" con "● Sincronización Automática Activa" en verde
+         (AdminDashboard.jsx:180-186) se muestra igual esté el backend
+         encendido o apagado. Ese indicador debe reflejar el estado real de
+         /api/health, o desaparecer.
+
+4.4 Rendimiento
+   · Chunk mockData de 408 kB en todas las rutas (M-01).
+   · 30 logos remotos desde google.com/s2/favicons, uno por chip, sin
+     preconnect ni sprite: decenas de peticiones por pantalla de feed.
+     Descargarlos en build y servirlos como sprite local o data-URI.
+   · Imágenes de Unsplash a w=1200 para miniaturas que se muestran a ~400 px
+     (NewsCard.jsx:77): usar srcset/sizes con anchos reales.
+   · Google Fonts con 3 familias y ~12 pesos (index.html:32-34): auditar qué
+     pesos se usan de verdad y autoalojar con font-display:swap.
+   · Sin useMemo en el pipeline de filtros (M-14).
+
+
+===============================================================================
+ 5. SEGURIDAD Y CUMPLIMIENTO — RESUMEN
+===============================================================================
+
+ Vector                             Estado    Referencia
+ ---------------------------------- --------- --------------------------------
+ Panel /admin sin autenticación     CRÍTICO   C-04
+ Ingesta sin auth (amplificación)   CRÍTICO   C-04, server/index.js:50
+ Exposición de PII (suscriptores)   CRÍTICO   storageService.js:77-99
+ CORS abierto en el servidor        ALTO      server/index.js:8
+ CSP divergente + unsafe-eval       ALTO      M-07
+ "Integridad" sin clave, evadible   MEDIO     M-08
+ Rate limit solo en cliente         MEDIO     A-13
+ Sanitización que rompe la búsqueda MEDIO     A-12
+ Sin telemetría de errores          MEDIO     M-11
+ Ley 1581/2012 (datos personales)   ALTO      A-09
+ Atribución falsa a medios reales   CRÍTICO   C-01, A-06, A-08
+
+ Aspectos positivos: no hay `dangerouslySetInnerHTML` en todo el proyecto;
+ todos los enlaces externos llevan rel="noopener noreferrer"; existe
+ ErrorBoundary; HSTS, X-Frame-Options, nosniff, Referrer-Policy y
+ Permissions-Policy están configurados.
+
+ Nota de cumplimiento sobre C-01: en Colombia, atribuir a un medio
+ identificable un titular que no publicó puede constituir daño a la buena
+ reputación comercial, y contradice de forma frontal la promesa editorial del
+ sitio. Esto debe corregirse antes de cualquier publicación, no después.
+
+
+===============================================================================
+ 6. PLAN DE ACCIÓN PRIORIZADO
+===============================================================================
+
+ FASE 0 — DETENER LO PELIGROSO (1-2 días) ← antes de publicar nada
+   [ ] Eliminar toda generación sintética de titulares y perspectivas
+       (C-01: googleNewsEngine:147-166,266-282 · ingestDaemon:158-177)
+   [ ] Sustituirlas por "Sin cobertura registrada en este espectro" (UX-2)
+   [ ] Dejar de mutilar titulares ajenos (A-08)
+   [ ] Proteger /admin y POST /api/ingest/run (C-04)
+   [ ] Quitar la exportación de suscriptores de una ruta pública (C-04)
+   [ ] Retirar el widget de boletín o conectar proveedor real con doble
+       opt-in y aviso de privacidad (A-09)
+   [ ] Quitar el "84% Validación Comunitaria" inventado (A-10)
+   [ ] Quitar la "Factualidad IA" mientras sea una constante 0.88 (3.3)
+
+ FASE 1 — QUE LO VISIBLE FUNCIONE (3-5 días)
+   [ ] Arreglar trendingTopics: name/articles (A-01)
+   [ ] Arreglar categories: id, icon, categoría Internacional (A-02)
+   [ ] Completar el catálogo con medios internacionales y buscar por
+       dominio en getMediaByName; nunca devolver null (A-03)
+   [ ] publishedAt ISO + Intl.RelativeTimeFormat; ordenar de verdad (A-04)
+   [ ] Rediseñar la métrica de sesgo: dispersión + cobertura + mínimo
+       absoluto para puntos ciegos (C-02, 3.3)
+   [ ] ids opacos y unicidad garantizada (A-05, C-06)
+   [ ] Puntos ciegos dinámicos también en móvil (A-11)
+   [ ] Quitar sanitizeInput de la búsqueda; mostrar el aviso de rate
+       limit o eliminarlo (A-12, A-13)
+   [ ] VITE_API_URL y CSP alineada entre vercel.json y _headers (C-03, M-07)
+
+ FASE 2 — CIMIENTOS (1-2 semanas)
+   [ ] Base de datos real con el esquema de 3.2; sacar el estado de
+       localStorage y de la memoria del proceso (M-05)
+   [ ] Extraer src/lib/biasAnalysis.js único y borrar las 6 copias (M-04)
+   [ ] TypeScript o JSDoc+checkJs; Zod en la frontera de datos (M-12)
+   [ ] Vitest sobre biasAnalysis y clustering; GitHub Actions con
+       lint + test + build (M-02, M-12)
+   [ ] Ingesta concurrente con backoff, TTL y guarda de solapamiento (M-06)
+   [ ] Scraping desde el servidor: fuera los 3 proxies CORS (M-09)
+   [ ] Borrar código muerto y residuos del repo (M-03, B-08)
+   [ ] Corregir los 26 errores de ESLint y añadir globals de Node (M-02)
+
+ FASE 3 — CRECIMIENTO (2-4 semanas)
+   [ ] Prerender/SSR por noticia + sitemap + JSON-LD NewsArticle +
+       Open Graph por historia (C-05)
+   [ ] Los 10 hallazgos de accesibilidad de 4.2
+   [ ] Comparación de perspectivas en columnas paralelas (UX-1)
+   [ ] Filtros en la URL (UX-3)
+   [ ] "Dieta Informativa" como página propia con histórico (UX-5)
+   [ ] Feed paginado por API; eliminar mockData del bundle (M-01)
+   [ ] Logos y fuentes autoalojados; srcset en imágenes (4.4)
+   [ ] Telemetría de errores en producción (M-11)
+   [ ] Publicar la trazabilidad del sesgo por medio (bias_rationale) para
+       cumplir de verdad la metodología que ya se publica (1.3)
+
+
+===============================================================================
+ 7. CIERRE
+===============================================================================
+
+ Lo que hay construido tiene valor real: el diseño visual, el sistema de
+ tokens, la barra de distribución de cobertura y la idea de la "Dieta
+ Informativa" son buenas y difíciles de conseguir. El trabajo pendiente no es
+ rehacer la interfaz, es poner debajo de ella datos que existan de verdad.
+
+ La distancia entre el ROADMAP ("4 fases completadas, listo para desplegar")
+ y este informe (6 fallas críticas) se explica por una sola causa: se
+ construyó la apariencia de cada función antes que su mecanismo. Los "24/7",
+ el "Motor IA", la "Factualidad 88%" y el "84% de validación comunitaria"
+ son etiquetas sobre constantes.
+
+ La decisión más importante del proyecto es aceptar mostrar menos. Un sitio
+ que dice "esta noticia solo la cubrió un lado del espectro" con 30 fuentes
+ reales vale mucho más que uno que aparenta 200 noticias con perspectivas
+ inventadas. La honestidad no es solo el requisito ético aquí: es
+ literalmente el producto.
+
+===============================================================================
+ FIN DEL INFORME
+===============================================================================

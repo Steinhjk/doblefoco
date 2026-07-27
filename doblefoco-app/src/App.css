@@ -1,0 +1,394 @@
+.main-content {
+  flex: 1;
+}
+
+/* Separador Estético Sobrio antes del Footer */
+.footer-top-divider {
+  width: 100%;
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-color) 50%, transparent 100%);
+}
+
+.divider-badge {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+
+footer {
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  margin-bottom: 4px;
+  display: block;
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.footer-logo span {
+  color: var(--text-muted);
+  font-weight: 900;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.footer-admin-link {
+  font-size: 0.75rem;
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.footer-admin-link:hover {
+  background: var(--text-main);
+  color: var(--bg-main);
+  border-color: var(--text-main);
+}
+
+/* Page loader for Suspense */
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+
+.loader-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------------------------
+   Añadidos de la tanda de correcciones críticas
+   --------------------------------------------------------------------------- */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Aviso de datos de demostración: debe ser imposible confundirlo con
+   cobertura periodística real. */
+.feed-fixture-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.feed-fixture-notice svg,
+.feed-coverage-caveat svg,
+.coverage-caveat svg,
+.news-card-coverage-note svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.feed-coverage-caveat,
+.coverage-caveat,
+.news-card-coverage-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 8px 0;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.filter-btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Perspectiva sin cobertura: la ausencia se declara, no se rellena. */
+.stacked-perspective-card.is-empty {
+    border-style: dashed;
+    opacity: 0.85;
+}
+
+.perspective-empty-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 0 4px;
+    color: var(--text-muted);
+}
+
+.perspective-empty-body svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.perspective-empty-body p {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.perspective-tone-note,
+.perspective-more-outlets {
+    margin-top: 8px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.comparison-caption {
+    margin: -6px 0 16px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.detail-image-disclaimer {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 3px;
+}
+
+.detail-article-list ul {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 12px;
+}
+
+.detail-article-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-light);
+    transition: background 0.2s ease;
+}
+
+.detail-article-list a:hover {
+    background: var(--bg-subtle);
+}
+
+.article-outlet {
+    flex-shrink: 0;
+    min-width: 110px;
+    font-size: 0.73rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+.article-headline {
+    flex: 1;
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.verdict-note {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+/* Puerta del panel de moderación */
+.admin-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 60vh;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.admin-gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 12px;
+    text-align: left;
+}
+
+.admin-gate-form label {
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.admin-gate-form input {
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.admin-gate-form button {
+    padding: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    color: var(--bg-main);
+    background: var(--text-main);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.admin-gate-form span[role='alert'] {
+    font-size: 0.78rem;
+    color: var(--bias-left);
+}
+
+.admin-gate-note {
+    max-width: 340px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.admin-storage-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--bias-left);
+    border-radius: var(--radius-sm);
+}
+
+.admin-storage-warning svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.admin-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.scraper-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.scraper-badge.tone-ok { color: #22c55e; border-color: #22c55e; }
+.scraper-badge.tone-warn { color: #f59e0b; border-color: #f59e0b; }
+.scraper-badge.tone-off { color: var(--text-muted); border-color: var(--border-color); }
+
+.scraper-status { font-size: 0.8rem; font-weight: 600; }
+.scraper-status.tone-ok { color: #22c55e; }
+.scraper-status.tone-error { color: var(--bias-left); }
+
+.editing-note {
+    padding: 10px 12px;
+    margin: 12px 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+}
+
+.category-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* Respeto a la preferencia de movimiento reducido. No existía: todo entraba
+   con desplazamiento y desenfoque, sin alternativa para quien tiene
+   sensibilidad vestibular. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .animate-in {
+        opacity: 1 !important;
+    }
+}

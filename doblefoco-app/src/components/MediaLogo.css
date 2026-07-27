@@ -1,0 +1,19 @@
+.media-logo-img-el {
+    flex-shrink: 0;
+    object-fit: contain;
+    border-radius: 2px;
+}
+
+.media-logo-fallback {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+}

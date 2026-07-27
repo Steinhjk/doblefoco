@@ -1,0 +1,79 @@
+﻿====================================================================
+DobleFoco.co: PLAN DE DESARROLLO DEL MOTOR DE INGESTION Y MODERACION
+====================================================================
+
+Este documento detalla la planificaciÃ³n, las limitaciones tÃ©cnicas de un entorno
+real, y los pasos para el desarrollo de la simulaciÃ³n interactiva del motor de 
+ingestiÃ³n (scrapers + clasificaciÃ³n IA) y la cola de moderaciÃ³n (Staging Area)
+dentro del proyecto React de DobleFoco.co.
+
+--------------------------------------------------------------------
+1. LIMITACIONES DE UN MOTOR EN PRODUCCION (ENTORNO REAL)
+--------------------------------------------------------------------
+
+Al implementar un motor de scraping y clasificaciÃ³n automatizado en producciÃ³n,
+existen limitaciones y retos estructurales a considerar:
+
+A. Bloqueo de IP y Firewalls de Medios:
+   * Los principales portales colombianos (Semana, El Tiempo, El Espectador)
+     utilizan servicios de protecciÃ³n (Cloudflare, Akamai). Scrapers basados
+     en peticiones HTTP puras (como Axios o Request) serÃ¡n bloqueados de 
+     inmediato.
+   * SoluciÃ³n tÃ©cnica: Requiere rotaciÃ³n de proxies residenciales y el uso
+     de navegadores automatizados (Puppeteer/Playwright) con firmas humanas
+     para evadir detecciones. Esto incrementa los costos de infraestructura.
+
+B. Mantenimiento por Cambios de DiseÃ±o (HTML Drift):
+   * Los periÃ³dicos modifican sus diseÃ±os, selectores CSS y layouts con 
+     frecuencia. Un scraper configurado para leer "div.article-body" puede 
+     romperse de la noche a la maÃ±ana.
+   * SoluciÃ³n tÃ©cnica: Depender de fuentes sindicadas (Feeds RSS) que son
+     estables, o usar LLMs con capacidad de lectura de HTML plano para
+     extraer el texto independientemente del diseÃ±o del sitio web.
+
+C. Costos y Latencia de la API de Inteligencia Artificial:
+   * Enviar mÃºltiples artÃ­culos al dÃ­a a modelos como GPT-4, Claude o Gemini
+     para clasificaciÃ³n de sesgo y generaciÃ³n de perspectivas cruzadas genera
+     costos recurrentes por tokens consumidos.
+   * SoluciÃ³n tÃ©cnica: Implementar cachÃ© de artÃ­culos repetidos y clasificar
+     Ãºnicamente historias relevantes con alta cobertura cruzada.
+
+D. Consumo y Almacenamiento en Cliente (LocalStorage):
+   * Para la simulaciÃ³n en localhost dentro de esta SPA en React, usaremos 
+     LocalStorage para la persistencia del Staging y el Feed de producciÃ³n.
+   * LimitaciÃ³n: LocalStorage tiene un lÃ­mite estricto de 5MB. En producciÃ³n
+     esto se debe migrar obligatoriamente a una base de datos real (PostgreSQL/MongoDB).
+
+--------------------------------------------------------------------
+2. FLUJO DE LA IMPLEMENTACION TECNICA (SIMULACION EN FRONTEND)
+--------------------------------------------------------------------
+
+Para hacer este flujo realidad y completamente funcional en local sin requerir
+servidores externos, estructuraremos los siguientes pasos en el frontend:
+
+Paso 1: Definir la Cola de IngestiÃ³n Pendiente
+   * Creamos un conjunto de datos en un nuevo archivo `src/data/pendingData.js`
+     que emule las historias crudas que el robot "acaba de recolectar e
+     identificar con IA". Estas noticias no estarÃ¡n en el feed pÃºblico inicial.
+
+Paso 2: Desarrollar el Panel de Control del Moderador
+   * Crear una nueva pÃ¡gina en `src/pages/AdminDashboard.jsx` y su estilo.
+   * Cargar las historias de la cola pendiente desde LocalStorage (o inicializarlas).
+   * Permitir al moderador revisar las perspectivas cruzadas, modificar datos
+     (como tÃ­tulos o porcentajes de sesgo) y presionar "Aprobar" o "Rechazar".
+
+Paso 3: Integrar las Noticias Aprobadas al Feed PÃºblico
+   * Modificar `NewsFeed.jsx` y `mockData.js` para que el feed principal combine
+     las 20 noticias base con los artÃ­culos que el moderador apruebe desde el
+     panel de control.
+
+Paso 4: Rutas y NavegaciÃ³n
+   * Registrar la ruta `/admin` en `App.jsx` y enlazarla de manera discreta
+     en el pie de pÃ¡gina o barra de navegaciÃ³n para que el controlador tenga
+     fÃ¡cil acceso.
+
+Paso 5: ValidaciÃ³n y Build
+   * Probar el flujo completo: ir a `/admin`, editar una noticia pendiente,
+     aprobarla, y validar que se visualice de inmediato en la secciÃ³n principal
+     con los filtros correspondientes.
+

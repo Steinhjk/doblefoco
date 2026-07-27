@@ -1,0 +1,659 @@
+===============================================================================
+ DOBLEFOCO.CO — ROADMAP DE PRODUCTO E INGENIERÍA
+===============================================================================
+ El proyecto se llamaba Sincuento.co hasta el 2026-07-27. El nombre anterior
+ sobrevive solo en comentarios que describen decisiones de esa época; el
+ User-Agent con el que nos presentamos ante los medios ya es DobleFocoBot/1.0
+ y apunta a https://doblefoco.co/transparencia.
+ Versión           : 2.2
+ Última revisión   : 2026-07-27 (F2-01 cerrada y verificada contra la base real)
+ Reemplaza a       : ROADMAP v1 (declaraba "4 fases completadas 100%" y "listo
+                     para desplegar"; una auditoría posterior documentó 6
+                     fallas críticas, entre ellas fabricación de titulares
+                     atribuidos a medios reales)
+ Documento fuente  : ../ANALISIS_EXHAUSTIVO.txt
+
+-------------------------------------------------------------------------------
+ CÓMO SE USA ESTE DOCUMENTO
+-------------------------------------------------------------------------------
+ Estados:   [x] hecho y verificado   [~] en curso   [ ] pendiente   [!] bloqueado
+
+ Reglas de higiene, aprendidas del roadmap anterior:
+   1. Una tarea solo se marca [x] cuando se puede DEMOSTRAR. Cada una lleva su
+      criterio de verificación. "Se implementó" no es criterio; "el comando X
+      imprime Y" sí lo es.
+   2. Prohibido marcar una fase como completa mientras tenga tareas abiertas.
+   3. Si algo se descarta, se mueve a "DECISIONES Y DESCARTES" con su razón.
+      No se borra: el historial de por qué NO se hizo algo vale tanto como el
+      de lo que sí.
+   4. Los identificadores (F1-04, F2-01…) están citados dentro del código
+      fuente. Si renombras una tarea, actualiza también esas referencias.
+
+-------------------------------------------------------------------------------
+ PRINCIPIO RECTOR DEL PRODUCTO
+-------------------------------------------------------------------------------
+ Nunca se publica un titular, una cita o una cifra que el sistema no pueda
+ verificar contra su fuente original.
+
+ Cuando falta un dato, se declara la ausencia. "Ningún medio de derecha ha
+ cubierto este hecho" es el producto. Rellenarlo con texto plausible destruye
+ la única razón por la que alguien usaría Sincuento en vez de ir directo a un
+ periódico.
+
+ Este principio no es negociable por plazos. La versión anterior lo violó en
+ tres lugares del código y esa es la causa raíz de la mayoría de las tareas de
+ la Fase 0.
+
+===============================================================================
+ ESTADO ACTUAL — MEDIDO, NO DECLARADO
+===============================================================================
+
+  Build de producción ................ ✅ correcto (vite build)
+  ESLint ............................. ✅ 0 errores (antes: 26 errores)
+  Catálogo de medios ................. ✅ fuente única, verificada por script
+  Tests automatizados ................ ❌ no existen
+  Integración continua ............... ❌ no existe
+  Persistencia de datos .............. ✅ Postgres 17.6 (Supabase, sa-east-1)
+                                          artículos e historias sobreviven al
+                                          reinicio; moderación sigue en
+                                          localStorage (F2-02)
+  Autenticación real ................. ❌ solo cerrojo provisional
+  SEO / renderizado en servidor ...... ❌ SPA sin prerender
+  Motor de ingesta ................... ✅ operativo, verificado contra la red
+  Revisión editorial del sesgo ....... ❌ 40 valores, ninguno firmado
+
+  Última verificación de feeds (2026-07-27, `npm run check:feeds`):
+    33 de 33 medios respondiendo · 36 de 36 feeds · 2 116 artículos disponibles
+    reparto: 1 izquierda · 5 centro-izq. · 14 centro · 13 centro-der. · 0 derecha
+
+  Última verificación de ingesta real (2026-07-26):
+    15 de 16 feeds respondiendo · 180 artículos · 132 historias
+    2 historias multifuente que cruzan espectros
+    0 titulares fabricados
+
+  Sobre esas 2 historias multifuente: es el número correcto, no un defecto. Una
+  sola captura instantánea de 15 titulares por medio cubre temas dispersos y
+  produce poco solapamiento real. La cifra crece con los ciclos acumulados en
+  la ventana de retención de 72 h. Se seguirá midiendo (tarea F1-01). Esa
+  medición se hizo con 16 feeds; ahora hay 36, así que hay que repetirla.
+
+  Herramientas de verificación disponibles:
+    npm run check:registry   integridad del catálogo, sin tocar la red
+    npm run check:feeds      sondea los 36 feeds contra la red (lento)
+    npm run docs:catalog     regenera el catálogo público desde el registro
+    npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
+    npm run db:migrate       aplica el esquema, proyecta el catálogo sobre
+                             `sources` y vuelca el JSONL a `ingest_runs`.
+                             Idempotente: se puede correr en cada despliegue.
+
+  RIESGO MEDIDO HOY: el máximo de medios distintos sobre un mismo hecho es 3, y
+  hacen falta 6 para poder afirmar un punto ciego. La función principal del
+  producto está hoy fuera de alcance. Ver la medición en F1-01.
+
+===============================================================================
+ FASE 0 — DETENER LO PELIGROSO                                    [x] COMPLETADA
+===============================================================================
+ Objetivo: eliminar todo aquello que no puede estar en línea ni un día más.
+ Área: integridad editorial, seguridad, cumplimiento.
+
+ [x] F0-01  Eliminar la fabricación de titulares
+            El motor concatenaba texto inventado al titular real y lo firmaba
+            como cita literal de El Espectador o Semana. Cuando faltaba
+            cobertura de un espectro, atribuía el hecho a un medio por defecto.
+            Hecho: reescrito server/services/ingestDaemon.js. `pickPerspective`
+            devuelve null si ningún medio de ese espectro cubrió el hecho.
+            Eliminados src/services/googleNewsEngineService.js y
+            headlineNeutralizerService.js.
+            VERIFICACIÓN: la ingesta real imprime "SIN COBERTURA (null)" en los
+            espectros sin artículos. Ningún titular contiene texto añadido.
+
+ [x] F0-02  Declarar la ausencia de cobertura en la interfaz
+            NewsDetail muestra "Sin cobertura registrada. Ningún medio de este
+            espectro entre los que rastreamos ha publicado sobre este hecho."
+            VERIFICACIÓN: componente PerspectiveCard con `perspective = null`.
+
+ [x] F0-03  Dejar de mutilar titulares ajenos
+            El "motor de desadjetivación" borraba adjetivos del titular
+            original por expresión regular y presentaba el resultado como
+            titular del medio. Sustituido por shared/headlineTone.js, que MIDE
+            la carga y la anota sin tocar el texto.
+            VERIFICACIÓN: analyzeHeadlineTone() no retorna texto modificado.
+
+ [x] F0-04  Cerrar el panel /admin
+            Era una ruta pública donde cualquiera podía editar sesgos,
+            factualidad y titulares, y descargar los correos de suscriptores.
+            Sin VITE_ADMIN_PASSPHRASE la ruta ni se registra ni se descarga al
+            navegador; con ella, pasa por AdminGate.
+            VERIFICACIÓN: build sin la variable → no aparece /admin en el
+            bundle de rutas.
+
+ [x] F0-05  Proteger POST /api/ingest/run
+            Era público y lanza un ciclo contra 15 medios: cualquiera podía
+            usarlo como amplificador. Ahora exige Bearer token y responde 503
+            si INGEST_TOKEN no está configurado (negar por defecto).
+            VERIFICACIÓN: petición sin cabecera → 401; sin token en el
+            servidor → 503.
+
+ [x] F0-06  Sacar los datos personales de la exportación pública
+            exportContentBackup() ya no incluye correos. Los suscriptores solo
+            salen por exportSubscribersForOperator({confirmed:true}), con
+            advertencia explícita de Ley 1581 de 2012.
+            VERIFICACIÓN: el JSON de contenido no contiene el campo waitlist.
+
+ [x] F0-07  Dejar de afirmar envíos de correo que no ocurren
+            El boletín decía "confirmación enviada desde sincuentoco@gmail.com"
+            sin que existiera envío alguno. Convertido en lista de espera
+            explícita, con aviso de dónde se guarda el dato y cómo borrarlo.
+            VERIFICACIÓN: joinWaitlist() devuelve emailSent:false siempre.
+
+ [x] F0-08  Retirar métricas comunitarias inventadas
+            "84% Validación Comunitarias" salía de una constante escrita a
+            mano. Eliminado hasta que exista agregación real (F2-07).
+
+ [x] F0-09  Retirar la factualidad falsa
+            El motor fijaba 0.88 para todas las historias y la UI lo mostraba
+            como "Factualidad IA: 88%". Ahora se calcula como promedio real de
+            las fuentes, se etiqueta "Factualidad media de fuentes" y devuelve
+            null cuando no puede calcularse.
+
+ [x] F0-10  Etiquetar las imágenes de banco
+            Las fotos de Unsplash se mostraban sin distintivo sobre noticias
+            concretas. Añadido el rótulo "Imagen ilustrativa".
+
+ [x] F0-11  Marcar el catálogo de demostración
+            Cuando no hay backend conectado, el feed muestra un aviso
+            inequívoco de que son datos de muestra y no cobertura real.
+
+===============================================================================
+ FASE 1 — QUE LO VISIBLE FUNCIONE                              [~] EN CURSO (9/13)
+===============================================================================
+ Objetivo: que cada elemento de la interfaz haga lo que dice hacer.
+
+ ── 1A. Métrica de sesgo ──────────────────────────────────────────────────────
+
+ [x] F1-02  Rediseñar la medición de sesgo
+            La media de los sesgos de las fuentes cancelaba los extremos: las
+            200 noticias caían en [-0.20, +0.16], el filtro "Derecha" devolvía
+            0 resultados y el de "Izquierda" devolvía 1.
+            Ahora shared/biasAnalysis.js separa tres señales: cobertura por
+            espectro, dispersión (desviación estándar) y espectro dominante.
+            RESULTADO MEDIDO: el filtro por espectro dominante devuelve
+            13 izquierda / 132 centro / 30 derecha / 25 sin dominante, y
+            65 historias quedan clasificadas como polarizadas.
+
+ [x] F1-03  Exigir cobertura mínima para afirmar un punto ciego
+            Con 3 o 4 fuentes, una sola mueve la cobertura del 0% al 33%:
+            cualquier conclusión es ruido. BLINDSPOT_MIN_SOURCES = 6, y por
+            debajo la UI explica por qué no puede evaluar en lugar de mostrar
+            una lista vacía.
+
+ [~] F1-01  Medir la tasa real de historias multifuente durante 7 días
+            INSTRUMENTACIÓN HECHA: cada ciclo registra una línea en
+            data/ingest_runs.jsonl (server/services/metricsStore.js) con
+            artículos, historias, multifuente, cuántas cruzan espectros y
+            cuántas alcanzan cobertura para afirmar un punto ciego.
+            `npm run report:ingest` imprime la tabla por días;
+            GET /api/metrics/daily la expone.
+            DESDE F2-01 la serie también se guarda en `ingest_runs` y ya no se
+            pierde entre despliegues: /api/metrics/daily lee de la base cuando
+            está disponible y cae al JSONL si no. El JSONL se conserva a
+            propósito, porque sobrevive a que la base no responda.
+            FALTA: dejar correr el motor 7 días SIN interrupciones y escribir la
+            decisión. Ya no hay obstáculo técnico; hay que decidir dónde corre.
+
+            PRIMERA MEDICIÓN (2026-07-27, ciclo único, 36 feeds):
+              474 artículos · 358 historias · 14 multifuente · 7 cruzan
+              espectros · 0 con cobertura suficiente para un punto ciego
+
+            Comparación con la medición de 16 feeds: las historias que cruzan
+            espectros pasaron de 2 a entre 7 y 9 según el ciclo. Más del triple.
+            Ampliar el catálogo sirvió.
+
+            PERO el dato que manda es otro. Distribución de medios por historia:
+              1 medio → 344    2 medios → 13    3 medios → 1    4 o más → 0
+            El máximo del catálogo entero son 3 medios sobre un mismo hecho, y
+            el umbral para poder afirmar un punto ciego es 6 (F1-03). Con estos
+            números los puntos ciegos no son difíciles de detectar: son
+            imposibles, y esa es la función principal del producto.
+            La causa más probable no es el número de medios sino la ventana: una
+            foto instantánea de 15 titulares por feed apenas se solapa. La serie
+            de 7 días dirá si el solapamiento acumulado en 72 h lo resuelve
+            solo. Si no lo resuelve, la decisión no es cosmética: hay que subir
+            ITEMS_PER_FEED, alargar la retención o rehacer el agrupamiento
+            (F1-05). No conviene decidirlo hasta tener los 7 días.
+
+ [ ] F1-05  Sustituir el agrupamiento por similitud semántica
+            Hoy: Jaccard sobre tokens, umbral 0.34 calibrado sobre 195
+            titulares reales (la calibración está documentada en
+            shared/clustering.js). Funciona pero pierde reformulaciones.
+            Siguiente paso: TF-IDF + coseno, o embeddings si F1-01 muestra que
+            hace falta. Requisito: no aumentar las fusiones incorrectas, que
+            son peores que las separaciones incorrectas.
+            CRITERIO: conjunto de prueba etiquetado a mano con precisión y
+            exhaustividad medidas antes y después.
+
+ ── 1B. Catálogo de medios ────────────────────────────────────────────────────
+
+ [x] F1-04  Unificar el catálogo de medios en una sola fuente de verdad
+            El sesgo de un mismo medio vivía en CUATRO lugares con valores
+            distintos: mediaLogos.js, RSS_FEEDS_CONFIG, los valores embebidos
+            en cada noticia y —el peor— la prosa de
+            src/docs/criterios_clasificacion_medios.txt, que es lo que leía el
+            público. Ese cuarto lugar era sistemáticamente el más extremo:
+            Semana +0.65 ante el lector y +0.45 en el motor; Noticias RCN
+            +0.45 vs +0.25; RTVC -0.50 vs -0.35. El sitio prometía una
+            severidad que no aplicaba.
+            HECHO: shared/mediaRegistry.js es la única fuente. El motor
+            (getIngestFeeds), la presentación (mediaLogos.js), la
+            normalización (src/lib/story.js) y la página /nosotros derivan de
+            él. src/docs/catalogo_medios.txt se GENERA desde el registro, así
+            que el documento público no puede divergir del código.
+            VERIFICACIÓN: `npm run check:registry` comprueba ids y dominios
+            únicos, campos obligatorios, rangos, que toda fuente citada
+            resuelva, que ningún documento de src/docs declare un sesgo
+            distinto del registro y que el catálogo público esté sincronizado.
+            Probado con una divergencia inyectada a propósito: falla y sale 1.
+
+ [x] F1-06  Resolver medios inaccesibles y ampliar cobertura
+            De 16 feeds a 36. Incorporados W Radio, Caracol Radio, Noticias
+            Caracol, Blu Radio, Noticias RCN, La FM, El País (Cali), La
+            Patria, El Universal, La Opinión, Vanguardia, El Heraldo, KienyKe,
+            Infobae Colombia y cinco internacionales.
+            VERIFICACIÓN (2026-07-27, `npm run check:feeds`): 33 de 33 medios
+            y 36 de 36 feeds responden, con 2 116 artículos disponibles en la
+            pasada. El criterio se cumple: 33 medios activos (objetivo 25),
+            6 de izquierda/centro-izquierda y 13 de derecha/centro-derecha
+            (objetivo 6 de cada lado).
+            LO QUE EL NÚMERO NO DICE: el reparto está sesgado. 1 medio en la
+            banda "Izquierda", 0 en "Derecha", y 27 de 33 entre centro y
+            centro-derecha. Se cumple la letra del criterio, no su intención.
+            Sigue abierto en F1-12.
+
+ [x] F1-07  Corregir la resolución de medios
+            getMediaByName() usaba coincidencia difusa en ambos sentidos:
+            "El País (España)" resolvía a "El País (Cali)" y "La Vanguardia"
+            (Barcelona) a "Vanguardia" (Bucaramanga). Otras 10 de 32 fuentes
+            caían a un respaldo que construía la URL del logo con el nombre y
+            sus espacios (…favicons?domain=the%20new%20york%20times.com).
+            HECHO: la resolución es exacta —nombre normalizado o alias
+            explícito— y nunca devuelve null: un medio no catalogado se pinta
+            con su monograma y se marca `isKnown: false`, sin inventarle
+            dominio ni logo.
+            HALLAZGO AL VERIFICAR: el alias "Noticias Caracol" apuntaba a
+            Caracol Radio. Son empresas distintas de dueños distintos (Valorem
+            y PRISA). Era la misma clase de misatribución, dentro del propio
+            catálogo. Noticias Caracol es ahora una entrada aparte.
+            VERIFICACIÓN: los 9 casos límite resuelven al medio correcto y la
+            entrada desconocida degrada sin romper.
+
+ [ ] F1-12  Equilibrar el catálogo por banda del espectro
+            El reparto actual de los 33 medios activos: 1 izquierda, 5
+            centro-izquierda, 14 centro, 13 centro-derecha, 0 derecha. Un
+            agregador que promete mostrar "todas las perspectivas" con un solo
+            medio en un extremo y ninguno en el otro no puede cumplirlo, y sus
+            puntos ciegos hacia la izquierda son estructuralmente más difíciles
+            de detectar que los del otro lado.
+            Dos caminos, y hay que decidir cuál:
+              a) Ampliar el catálogo en los extremos. Candidatos por evaluar:
+                 Contagio Radio, El Turbión, Rebelión y Prensa Rural por la
+                 izquierda; PanamPost y medios de opinión conservadora por la
+                 derecha. Riesgo: los extremos suelen tener menor factualidad,
+                 y meterlos sin criterio degrada el catálogo entero.
+              b) Aceptar que el ecosistema colombiano de medios con RSS ES
+                 así, y decirlo en la interfaz en lugar de disimularlo.
+            La opción (b) es honesta y barata; la (a) es la que hace funcionar
+            el producto. Probablemente ambas.
+            CRITERIO: una decisión escrita, y si es (a), 3 medios por banda
+            extrema verificados contra la red.
+
+ [ ] F1-13  Revisión editorial firmada de los valores de sesgo
+            Los 40 valores del catálogo llevan justificación escrita pero
+            ninguno está firmado: `reviewedAt` es null en los 40 y el catálogo
+            público los muestra como PROVISIONALES. Es el estado honesto, pero
+            no puede ser el definitivo: clasificar organizaciones reales es la
+            afirmación más discutible que hace el sitio.
+            CRITERIO: cada medio con `reviewedAt` y responsable identificado.
+            `npm run check:registry` ya lista uno por uno los que faltan.
+
+ ── 1C. Datos e interfaz ──────────────────────────────────────────────────────
+
+ [x] F1-08  Reparar la página /tendencias
+            Los datos exponían { id, topic, count } y los componentes leían
+            .name y .articles: los 8 titulares salían vacíos y enlazaban a
+            /buscar?q=undefined.
+
+ [x] F1-09  Reparar la página /categorias
+            Faltaban `id` e `icon` (la key de React era undefined en las 10
+            tarjetas) y faltaba la categoría Internacional, que dejaba 100 de
+            las 200 noticias inalcanzables. Verificado: 0 categorías huérfanas.
+
+ [x] F1-10  Fechas reales en lugar de cadenas fijas
+            "Hace 45 mins" estaba escrito en los datos y no envejecía nunca.
+            Ahora se usa publishedAt en ISO-8601 y el texto relativo se calcula
+            en cada render con Intl.RelativeTimeFormat. El orden "Más
+            recientes" ordena de verdad (su comparador era `return 0`).
+
+ [x] F1-11  Identificadores estables y sin colisiones
+            Eran `Date.now() + idx`, que colisiona dentro del mismo
+            milisegundo y cambia en cada ciclo. Ahora derivan del contenido
+            (hash FNV-1a del enlace canónico). Corregidas también las
+            colisiones entre pendingData (101,102,103) y el catálogo.
+
+===============================================================================
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (1/11)
+===============================================================================
+ Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
+ reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
+
+ La mitad "sobrevivir a un reinicio" ya está (F2-01). La mitad "más de una
+ persona" no: sigue habiendo una sola clave compartida que además viaja en el
+ bundle (F2-04), y el trabajo de moderación vive en el navegador de quien lo
+ hizo (F2-02).
+
+ ── 2A. Persistencia ──────────────────────────────────────────────────────────
+
+ [x] F2-01  Base de datos real (Postgres gestionado)
+            Postgres 17.6 en Supabase, región sa-east-1. Las siete tablas de
+            server/db/schema.sql aplicadas: sources, articles, stories,
+            story_articles, ingest_runs, moderation y waitlist.
+
+            CÓMO QUEDÓ REPARTIDO. La memoria no desapareció, y no por descuido:
+            el agrupamiento compara cada artículo con todos los demás y necesita
+            el conjunto completo a mano. Lo que cambió es que ya no es el único
+            sitio donde viven los datos:
+              arranque → hydrate()        → Map en memoria
+              ciclo    → Map en memoria   → articles / stories / story_articles
+
+            La base es una MEJORA, no un requisito. Sin DATABASE_URL el sistema
+            arranca igual, en memoria, y lo advierte por consola en vez de
+            disimularlo. Ninguna operación de escritura lanza hacia el motor:
+            una base caída degrada el producto a lo que era ayer; una excepción
+            sin capturar lo apaga.
+
+            VERIFICACIÓN (2026-07-27, contra la base real):
+              · `npm run db:migrate` → 7 tablas, 40 medios, 3 ciclos del JSONL
+                importados. Reejecutado: 0 nuevos, 40 actualizados, 0 ciclos
+                duplicados. Es idempotente y se puede correr en cada despliegue.
+              · Ciclo de ingesta: 475 artículos y 354 historias persistidas,
+                36/36 feeds.
+              · Proceso matado y rearrancado → "406 artículos recuperados de la
+                base", y GET /api/feed devolvió 398 historias ANTES de que
+                corriera ningún ciclo nuevo. El criterio se cumple.
+              · Ciclo siguiente: −91 artículos caducados y −1 historia obsoleta
+                borrados por SQL. La ventana de 72 h ya la aplica la base.
+
+            DOS DECISIONES QUE CONVIENE RECORDAR:
+              · El JSONL no se retiró: ahora se escribe por duplicado. Añadir
+                una línea al final de un archivo local sobrevive a que Supabase
+                no responda, y esta serie no se puede reconstruir hacia atrás.
+                El seguro cuesta cinco campos.
+              · Una historia con decisión de moderación no se borra aunque el
+                agrupamiento deje de producirla. Sin esa salvaguarda, un cambio
+                de clustering borraría trabajo editorial en silencio. Es
+                PROVISIONAL: F2-02 tiene que decidir qué significa moderar una
+                historia cuyo agrupamiento cambió.
+
+            LO QUE ESTO NO RESUELVE: la tabla `moderation` existe pero el panel
+            sigue escribiendo en el localStorage de un navegador concreto. Las
+            aprobaciones no se comparten con el equipo ni con los visitantes:
+            el panel sigue sin ser un CMS. Eso es F2-02.
+
+            PENDIENTE DE SEGURIDAD: la conexión va cifrada pero sin verificar el
+            certificado del servidor (protege del espionaje pasivo, no de un
+            intermediario activo). Se cierra poniendo DATABASE_CA_CERT con el
+            certificado que publica Supabase. El arranque lo avisa cada vez.
+
+ [ ] F2-02  Migrar el panel de moderación a la base de datos
+            Depende de F2-01.
+
+ [ ] F2-03  Feed paginado desde la API y retirar mockData del bundle
+            El fixture pesa 417 kB (27 kB comprimido) y se carga en casi todas
+            las rutas. Depende de F2-01.
+
+ ── 2B. Seguridad ─────────────────────────────────────────────────────────────
+
+ [ ] F2-04  Autenticación real del panel
+            AdminGate es un cerrojo, no una cerradura: la passphrase viaja en
+            el bundle y cualquiera puede leerla. Sustituir por sesión de
+            servidor con contraseñas hasheadas y cookie httpOnly.
+            CRITERIO: la clave no aparece en ningún artefacto del cliente.
+
+ [ ] F2-05  Rotar el token de ingesta fuera del cliente
+            VITE_INGEST_TOKEN es público por construcción. Una vez exista
+            F2-04, el disparo de ingesta debe autorizarse con la sesión.
+
+ [ ] F2-06  Límite de peticiones compartido
+            El actual es un Map en memoria: sirve para un proceso único, no
+            para varias instancias. Mover a Redis cuando haya más de una.
+
+ [ ] F2-07  Endpoint de agregación del feedback comunitario
+            Los votos del lector se quedan en localStorage y no se agregan.
+            Hasta que exista, la UI no muestra ningún porcentaje (F0-08).
+
+ ── 2C. Calidad ───────────────────────────────────────────────────────────────
+
+ [ ] F2-08  TypeScript o JSDoc + checkJs, y validación con Zod en las fronteras
+            Las fallas F1-08 y F1-09 (campos que no existían) son exactamente
+            lo que un sistema de tipos detecta en segundos, y llegaron a
+            producción sin que nadie se enterara.
+
+ [ ] F2-09  Pruebas con Vitest
+            Prioridad: shared/biasAnalysis.js y shared/clustering.js. Son el
+            corazón del producto y hoy no tienen ni una prueba.
+            CRITERIO: cobertura de las funciones puras de shared/.
+
+ [ ] F2-10  Integración continua en GitHub Actions
+            lint + test + build en cada push. Sin esto nada de lo anterior se
+            sostiene: el proyecto ya acumuló 26 errores de ESLint con la regla
+            en nivel "error" precisamente porque nadie ejecutaba el lint.
+
+ [ ] F2-11  Telemetría de errores en producción
+            Hoy los fallos solo van a console.error: en producción son
+            invisibles.
+
+===============================================================================
+ FASE 3 — CRECIMIENTO                                               [ ] PENDIENTE
+===============================================================================
+ Objetivo: que el producto se pueda encontrar, usar y entender.
+
+ ── 3A. Visibilidad ───────────────────────────────────────────────────────────
+
+ [ ] F3-01  Prerenderizado por noticia (SSG/ISR)
+            SPA sin renderizado en servidor: para Google, Google News y
+            Discover el sitio está prácticamente vacío. En un agregador de
+            noticias el SEO no es una mejora, es el canal de adquisición.
+            Opciones: migrar a Next.js o Astro, o prerenderizar con Vite.
+
+ [ ] F3-02  Metadatos por ruta, Open Graph por historia y JSON-LD NewsArticle
+            Hoy todas las páginas comparten el título de index.html y no hay
+            og:image ni canonical, así que toda noticia compartida muestra la
+            misma tarjeta genérica.
+
+ [ ] F3-03  sitemap.xml y robots.txt generados en el build.
+
+ ── 3B. Experiencia ───────────────────────────────────────────────────────────
+
+ [ ] F3-04  Comparación de perspectivas en columnas paralelas
+            Hoy se apilan en vertical, que es justo lo que impide comparar. En
+            escritorio, tres columnas con los titulares alineados hacen visible
+            la diferencia de encuadre de un vistazo, que es el producto entero.
+
+ [ ] F3-05  Boletín real con proveedor de correo
+            Resend o SES, con doble opt-in, política de privacidad publicada,
+            enlace de baja y responsable del tratamiento identificado
+            (Ley 1581 de 2012). Hasta entonces sigue siendo lista de espera.
+
+ [ ] F3-06  Filtros reflejados en la URL
+            Hoy el estado del feed vive en useState: no se puede compartir un
+            filtro, ni volver atrás, ni recargar sin perderlo.
+
+ [ ] F3-07  "Dieta informativa" como sección propia
+            Es la mejor idea del producto y está enterrada al final del
+            sidebar. Merece página con evolución semanal y objetivos.
+
+ [ ] F3-08  Línea de tiempo de cobertura de un tema
+            Cómo evolucionó y en qué momento entró cada espectro. Es el
+            diferenciador real frente a Ground News en el mercado local.
+
+ [x] F3-13  Mapa mediático (/mapa-medios)
+            Dispersión de los 40 medios: sesgo en el eje horizontal,
+            factualidad en el vertical, con ficha por medio que muestra su
+            justificación escrita, su grupo propietario y su estado de
+            revisión. Misma información disponible como tabla ordenable, que
+            no es un extra de accesibilidad: es la forma correcta de leer 40
+            valores exactos.
+            DECISIÓN DE COLOR: se codifican tres bloques, no las cinco bandas.
+            Con cinco pasos el validador de paleta rechaza el resultado (los
+            vecinos quedan por debajo del umbral de distinción incluso con
+            visión de color normal). La banda fina la lleva la posición en X,
+            y esa redundancia es lo que hace el gráfico legible sin depender
+            del color. Paleta validada contra ambas superficies.
+            VERIFICACIÓN: 0 puntos fuera de marco y 0 solapamientos por debajo
+            de 9 px, con el catálogo completo y con el filtro colombiano.
+
+ [x] F3-14  Página de transparencia (/transparencia)
+            Objetivo del proyecto, modelo de financiación con sus condiciones
+            escritas de antemano, tratamiento de datos personales, declaración
+            contra la posverdad y —la parte que sostiene todo lo demás— la
+            lista de lo que todavía no funciona.
+            Los patrocinadores salen de una lista que hoy está vacía: cuando
+            no hay, la página dice que no hay. Cuando entre el primero,
+            aparece con nombre, monto y fecha.
+
+ [ ] F3-15  Documentar las fichas de propiedad de los medios
+            shared/mediaOwnership.js tiene la estructura y el contrato; el
+            contenido está vacío en los 40 medios. Falta lo que el lector
+            realmente quiere saber: quiénes son las personas dueñas, qué otros
+            negocios tiene el grupo y qué señalamientos registra.
+            NO SE RELLENA SIN FUENTES. Son afirmaciones sobre personas y
+            empresas identificables; publicarlas sin poder enlazar dónde
+            constan es lo mismo que fabricar un titular, con el agravante de
+            que aquí el sujeto puede demandar. `npm run check:registry` falla
+            si alguna ficha afirma algo con `sources` vacío.
+            MÉTODO: registros mercantiles y de la Superintendencia, informes
+            de la FLIP y de Reporteros sin Fronteras, investigaciones ya
+            publicadas (Cuestión Pública, Vorágine, La Silla Vacía) y
+            comunicados del propio medio. Una fuente por afirmación.
+            CRITERIO: los 27 medios colombianos con al menos una fuente
+            consultable, y `verifiedAt` con fecha.
+
+ [ ] F3-09  Mostrar la anotación de tono en la interfaz
+            shared/headlineTone.js ya mide carga emocional e ideológica por
+            titular y el motor la adjunta a cada artículo, pero la UI apenas la
+            usa. Es la forma correcta —anotar, no reescribir— de la función que
+            antes mutilaba titulares.
+
+ ── 3C. Accesibilidad y rendimiento ───────────────────────────────────────────
+
+ [x] F3-10  Correcciones de accesibilidad de esta tanda
+            role="meter" con aria-valuenow/min/max; barra de cobertura con
+            patrón además de color y resumen textual; ShareModal con
+            role="dialog", cierre con Escape, foco atrapado y devuelto;
+            aria-pressed en filtros y categorías; aria-controls en el menú
+            móvil; soporte de prefers-reduced-motion; y contenido visible por
+            defecto si IntersectionObserver no está disponible (antes el CSS
+            partía de opacidad 0 y un fallo del observador dejaba la página en
+            blanco).
+
+ [ ] F3-11  Auditoría de accesibilidad completa
+            Pendiente: gestión del foco al cambiar de ruta, contraste
+            verificado en ambos temas, recorrido completo con lector de
+            pantalla. Objetivo: WCAG 2.1 AA.
+
+ [ ] F3-12  Optimización de recursos
+            Logos servidos desde google.com/s2/favicons uno por chip (decenas
+            de peticiones por pantalla): descargarlos en el build. Imágenes con
+            srcset. Auditar los ~12 pesos tipográficos que se cargan y
+            autoalojar los que se usen.
+
+===============================================================================
+ DECISIONES Y DESCARTES
+===============================================================================
+
+ · Scraping desde el navegador con proxies CORS públicos — DESCARTADO
+   allorigins / corsproxy.io / thingproxy no tienen SLA y eran el único camino
+   de la función principal del producto. CORS no existe cuando la petición sale
+   del servidor. La ingesta vive en el backend; el panel solo la dispara.
+
+ · Reescribir titulares para "neutralizarlos" — DESCARTADO POR PRINCIPIO
+   Editar la frase de otro y publicarla con su firma no es neutralizar. La
+   carga se mide y se anota (F3-09); el titular no se toca. Esto no se
+   reconsidera.
+
+ · Umbral de agrupamiento en 0.25 — DESCARTADO CON DATOS
+   Duplicaba los emparejamientos (7 → 16 pares entre medios distintos) pero la
+   inspección manual mostró fusiones de hechos diferentes. Fusionar dos hechos
+   inventa una cobertura que no existe, que es peor que perder un agrupamiento.
+   Se mantiene 0.34.
+
+ · Banner de "datos de demostración" sobre las 200 noticias del fixture —
+   SUSTITUIDO POR ALGO MEJOR
+   Se optó por arreglar el motor para que traiga titulares reales. El fixture
+   queda como dato de desarrollo y desaparece con F2-03. El aviso de la interfaz
+   (F0-11) cubre el interín.
+
+ · Las2Orillas — RETIRADO TEMPORALMENTE
+   Responde 403 a nuestro User-Agent. Se retira en lugar de dejar un feed que
+   falla en cada ciclo. Recuperarlo exige acordar acceso con el medio (F1-06).
+
+ · Catálogo público escrito a mano — DESCARTADO
+   Se generó cuatro veces y divergió cuatro veces. src/docs/catalogo_medios.txt
+   se genera desde el registro y el verificador falla si alguien lo edita. La
+   nota histórica de lo que había antes queda en
+   src/docs/criterios_clasificacion_medios.txt.
+
+ · "Modelo matemático que rige cada medición" en la página /nosotros —
+   RETIRADO POR FALSO
+   El sesgo de un medio lo asigna una persona siguiendo criterios escritos. No
+   hay ningún modelo que lo calcule. Lo que sí se calcula es la cobertura de
+   cada historia. La página ahora dice exactamente eso, y la metodología
+   pública distingue una cosa de la otra.
+
+===============================================================================
+ RIESGOS ABIERTOS
+===============================================================================
+
+ ALTO   Sin autenticación real, el panel depende de una clave pública en el
+        bundle. Mitiga: F2-04.
+ MEDIO  El trabajo de moderación sigue en el localStorage de un navegador: un
+        equipo no puede repartírselo y un borrado de datos del navegador lo
+        pierde. La ingesta ya no: eso lo cerró F2-01. Mitiga: F2-02.
+ MEDIO  La conexión a la base va cifrada pero sin verificar el certificado del
+        servidor. Protege del espionaje pasivo, no de un intermediario activo.
+        Mitiga: DATABASE_CA_CERT (documentado en .env.example).
+ ALTO   Sin SEO, el producto no tiene canal de adquisición. Mitiga: F3-01.
+ MEDIO  Los 40 valores de sesgo ya son públicos, trazables y coherentes en todo
+        el sistema, pero ninguno está firmado por un editor. Se publican
+        marcados como PROVISIONALES. Mitiga: F1-13.
+ MEDIO  El catálogo tiene 1 medio en la banda "Izquierda" y 0 en "Derecha": los
+        puntos ciegos hacia la izquierda son estructuralmente más difíciles de
+        detectar. Mitiga: F1-12.
+ BAJO   Los enlaces vía Google News son redirecciones, no URLs canónicas.
+        Aceptable mientras se muestre con honestidad.
+
+===============================================================================
+ SIGUIENTE PASO RECOMENDADO
+===============================================================================
+ F1-01 (dejar correr la medición 7 días), que ya no tiene nada que la bloquee.
+
+ Razón: las dos restricciones anteriores cayeron. El catálogo dejó de serlo con
+ F1-06 y F1-04 —36 feeds verificados y un solo lugar donde vive el sesgo—, y la
+ volatilidad dejó de serlo con F2-01: la serie de ingesta ya se acumula en
+ `ingest_runs` y sobrevive a los despliegues.
+
+ Falta una decisión operativa que no es de código: DÓNDE corre el motor esos 7
+ días. Un portátil que se apaga por la noche produce una serie con agujeros, y
+ lo que hay que medir es justamente el solapamiento acumulado en la ventana de
+ 72 h. Hace falta un proceso que no se interrumpa. Sin eso, F1-05 y F1-12 se
+ seguirían decidiendo a ojo.
+
+ Detrás, y en este orden:
+   · F2-09 (pruebas) sobre shared/biasAnalysis.js y shared/clustering.js. Son el
+     corazón del producto y hoy no tienen ni una prueba. Ahora hay además SQL
+     que ningún lint revisa.
+   · F2-04 (autenticación real), que es el riesgo ALTO que queda abierto. Con
+     Supabase ya conectado, su capa de auth está a mano.
+   · F2-02 (moderación en la base), que además retira la salvaguarda
+     provisional que hoy protege las historias moderadas del borrado.
+
+===============================================================================

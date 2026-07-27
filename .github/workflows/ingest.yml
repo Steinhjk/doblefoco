@@ -1,0 +1,79 @@
+# =============================================================================
+#  Ciclo de ingesta de DobleFoco — desbloquea la tarea F1-01 del ROADMAP
+# =============================================================================
+#  El motor no necesita un servidor encendido. Lee los 36 feeds, agrupa, escribe
+#  en Postgres y muere. Corriendo aquí, la serie de 7 días que pide F1-01 se
+#  acumula sin depender de que nadie deje un portátil prendido, que era
+#  exactamente el problema: un equipo que se apaga por la noche produce una
+#  serie con agujeros justo en lo que hay que medir.
+#
+#  TRES COSAS QUE CONVIENE SABER
+#
+#  1. El cron de GitHub no es puntual. Se retrasa varios minutos cuando la
+#     plataforma está cargada y de vez en cuando salta un disparo. Para
+#     agregados por día da igual; si algún día hiciera falta cadencia exacta,
+#     esto no sirve.
+#
+#  2. GitHub desactiva los workflows programados tras 60 días sin actividad en
+#     el repositorio. Si la serie se corta sola sin error, mira esto primero.
+#
+#  3. Cada feed solo expone sus últimos 15 titulares. Media hora es la cadencia
+#     elegida porque un medio activo puede publicar más de 15 en una hora, y
+#     esos artículos se perderían para siempre: perder artículos es justo lo que
+#     sesgaría la medición.
+# =============================================================================
+
+name: Ingesta
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  # Para poder dispararlo a mano desde la pestaña Actions sin esperar al cron.
+  workflow_dispatch:
+
+# Dos ciclos a la vez se pisarían: el motor ya se autoprotege del solapamiento,
+# pero aquí serían dos procesos distintos y esa protección no los ve.
+concurrency:
+  group: ingesta
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    # Un ciclo tarda ~1 min. Diez es margen de sobra para una red lenta, y evita
+    # que un feed colgado consuma minutos de la cuenta hasta el tope de 6 horas.
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: doblefoco-app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+
+      # Idempotente y cuesta segundos. Se ejecuta cada vez a propósito: así un
+      # medio nuevo en el registro, o un cambio de esquema, no dependen de que
+      # alguien se acuerde de migrar a mano. Olvidarlo rompería el cron con un
+      # error de clave foránea difícil de leer.
+      - name: Aplicar migraciones
+        run: npm run db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      # Sale con 1 si no pudo persistir. Que falle es lo que se quiere: una
+      # ejecución que lee 36 feeds y no guarda nada saldría en verde y dejaría
+      # un agujero en la serie que nadie notaría hasta ir a analizarla, cuando
+      # ya no se puede reconstruir. Los feeds caídos NO fallan la ejecución:
+      # quedan registrados en ingest_runs.feeds_failed.
+      - name: Ciclo de ingesta
+        run: npm run ingest:once
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

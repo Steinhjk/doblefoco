@@ -1,0 +1,218 @@
+:root {
+  /* Paleta Sobria Neutral de Alta Fidelidad (Gris Pizarra Mate & Blanco Puro) */
+  --primary: #ffffff;
+  --secondary: #94a3b8;
+  --accent: #ffffff; /* Blanco Puro Editorial Sobrio */
+  --accent-hover: #e2e8f0;
+  --accent-2: #ef4444; /* Espectro Izquierda */
+  --accent-3: #3b82f6; /* Espectro Derecha */
+
+  /* Fondos Gris Pizarra Neutrales - Amables y Sobrios */
+  --bg-main: #18191c; /* Gris Pizarra Carbón Elegante (No negro puro) */
+  --bg-card: #202226; /* Gris Pizarra de Superficie Sobria */
+  --bg-subtle: #292c33; /* Capa Neutra Suave */
+
+  /* Texto */
+  --text-main: #f8fafc; /* Blanco Pizarra Luminoso */
+  --text-muted: #94a3b8; /* Slate 400 */
+
+  /* Bordes & Separadores */
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.06);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(24, 25, 28, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.12);
+
+  /* Colores de Espectro */
+  --bias-left: #ef4444;
+  --bias-objective: #cbd5e1;
+  --bias-right: #3b82f6;
+
+  /* Fuentes - Periodismo Moderno de Alta Personalidad */
+  --font-main: 'Outfit', 'Inter', -apple-system, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', 'Playfair Display', Georgia, serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+
+  /* Radios Sobrios */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+
+  /* Sombras y Elevaciones */
+  --shadow-sm: 0 4px 14px -2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 28px -4px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 50px -8px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(255, 255, 255, 0.15);
+
+  --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.25);
+
+  /* Hero Gradients */
+  --hero-from: #18191c;
+  --hero-to: #202226;
+}
+
+[data-theme="light"] {
+  /* Paleta Light de Alta Fidelidad (Crema Suave & Tinta Slate) */
+  --primary: #0f172a;
+  --secondary: #475569;
+  --accent: #0f172a; /* Blanco / Negro Puro */
+  --accent-hover: #334155;
+  --accent-2: #dc2626;
+  --accent-3: #2563eb;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-color: rgba(15, 23, 42, 0.12);
+  --border-light: rgba(15, 23, 42, 0.05);
+  --glass-bg: rgba(248, 250, 252, 0.88);
+  --glass-border: rgba(15, 23, 42, 0.12);
+  --bias-left: #dc2626;
+  --bias-objective: #0f172a;
+  --bias-right: #2563eb;
+  --shadow-sm: 0 4px 14px -2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 10px 28px -4px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0 20px 50px -8px rgba(15, 23, 42, 0.15);
+  --shadow-glow: 0 0 20px rgba(15, 23, 42, 0.1);
+  --hero-from: #f8fafc;
+  --hero-to: #f1f5f9;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography Enhancements - Editorial News Style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 4.5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.12;
+}
+
+/* Global Focus Styles */
+*:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 4px;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 20px;
+  z-index: 9999;
+  background: var(--accent);
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 0 0 12px 12px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-md);
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Fluid Entrance Animations */
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(4px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-in {
+  opacity: 0;
+}
+
+.animate-in.visible {
+  animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-delay-1 {
+  animation-delay: 0.15s;
+}
+
+.animate-delay-2 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-3 {
+  animation-delay: 0.45s;
+}
+
+/* Custom Scrollbar for premium vibe */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}

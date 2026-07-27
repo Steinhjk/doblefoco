@@ -1,0 +1,71 @@
+﻿====================================================================
+CRITERIOS DE CLASIFICACIÃ“N DE MEDIOS â€” NOTA HISTÃ“RICA
+====================================================================
+
+ESTE DOCUMENTO YA NO CONTIENE CLASIFICACIONES.
+
+Hasta el 2026-07-27 aquÃ­ vivÃ­a una tabla con el sesgo y la factualidad de 30
+medios colombianos, escrita a mano. Era uno de los cuatro lugares del proyecto
+donde se declaraban esos valores (los otros: el catÃ¡logo de logos, los datos
+de las noticias y la configuraciÃ³n del motor de ingesta) y no coincidÃ­a con
+ninguno de ellos:
+
+    Medio                este documento    catÃ¡logo del motor
+    Revista Semana           +0.65               +0.45
+    Noticias RCN             +0.45               +0.25
+    RTVC Noticias            -0.50               -0.35
+    Colombia Informa         -0.70               -0.65
+    CuestiÃ³n PÃºblica         -0.50               -0.45
+    El Colombiano            +0.40               +0.35
+    El Espectador            -0.15               -0.20
+
+Un agregador cuya afirmaciÃ³n central es "clasificamos medios con mÃ©todo" no
+puede tener cuatro clasificaciones del mismo medio. Y el problema no era solo
+la incoherencia: el valor de este documento â€”el destinado al lectorâ€” era casi
+siempre mÃ¡s extremo que el que el motor usaba para calcular. El sitio prometÃ­a
+una severidad que no aplicaba.
+
+La divergencia equivalente entre el catÃ¡logo de logos y los datos de las
+noticias estÃ¡ documentada en la cabecera de shared/mediaRegistry.js.
+
+DÃ“NDE ESTÃN AHORA LOS VALORES
+--------------------------------------------------------------------
+En un Ãºnico archivo: shared/mediaRegistry.js. Todo lo demÃ¡s â€”el motor de
+ingesta, los logos, los filtros de la interfaz y el catÃ¡logo pÃºblicoâ€” deriva
+de ahÃ­ y no puede declarar un valor propio.
+
+El catÃ¡logo que se le muestra al pÃºblico (src/docs/catalogo_medios.txt) se
+GENERA desde ese archivo con `npm run docs:catalog`. No se escribe a mano,
+justamente para que no pueda repetirse lo que documenta esta nota.
+
+`npm run check:registry` falla si alguien vuelve a introducir un sesgo fuera
+del registro.
+
+LOS CRITERIOS
+--------------------------------------------------------------------
+Los criterios con los que se asigna cada valor â€”propiedad y estructura
+econÃ³mica, selecciÃ³n de agenda, encuadre, y balance de fuentes citadasâ€” estÃ¡n
+descritos en src/docs/metodologia.txt, que es el documento pÃºblico.
+
+Dos criterios que figuraban en la versiÃ³n anterior de esta pÃ¡gina se retiraron
+porque describÃ­an capacidades inexistentes:
+
+  Â· "Monitoreo computacional de adjetivaciÃ³n en titulares". No existe tal
+    monitoreo aplicado a la clasificaciÃ³n de medios. SÃ­ existe una mediciÃ³n de
+    carga del titular (shared/headlineTone.js), pero anota artÃ­culos
+    individuales y no interviene en el sesgo asignado al medio.
+
+  Â· "AuditorÃ­a semestral" y "contraste con informes de FLIP y CEPER". No se ha
+    realizado ninguna auditorÃ­a. Los valores actuales estÃ¡n marcados como
+    PROVISIONALES en el catÃ¡logo pÃºblico, que es lo que son.
+
+MEDIOS QUE SALIERON DEL CATÃLOGO
+--------------------------------------------------------------------
+La tabla anterior incluÃ­a medios que hoy no se ingieren. Se deja constancia
+para que la ausencia no parezca un descuido:
+
+  Â· Las2Orillas â€” responde 403 a nuestro User-Agent. Recuperarlo exige acordar
+    el acceso con el medio.
+  Â· Canal Capital, PanamPost, Diario del Huila â€” sin feed verificado contra la
+    red. Entran al catÃ¡logo cuando lo tengan.
+

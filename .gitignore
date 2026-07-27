@@ -1,0 +1,38 @@
+# Secretos. `*.local` cubre .env.local, que es donde vive la cadena de conexión
+# a Postgres. Nunca debe salir de la máquina.
+*.local
+.env
+.env.*
+!.env.example
+
+node_modules
+dist
+dist-ssr
+
+# Serie de métricas local. Desde F2-01 el registro que manda es la tabla
+# `ingest_runs`; este archivo es el respaldo de cada instancia y no se comparte.
+data/
+
+# Material de referencia de terceros. Se queda en local: es trabajo ajeno y este
+# repositorio es público.
+*.docx
+*.zip
+temp_extracted/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

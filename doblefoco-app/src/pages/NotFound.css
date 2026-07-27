@@ -1,0 +1,63 @@
+.not-found-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px;
+    min-height: 60vh;
+}
+
+.not-found-code {
+    font-size: 6rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 16px;
+    opacity: 0.3;
+}
+
+.not-found-page h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.not-found-page p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 440px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+.not-found-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.not-found-btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.not-found-btn:hover {
+    opacity: 0.85;
+}
+
+.not-found-btn.primary {
+    background: var(--accent);
+    color: white;
+}
+
+.not-found-btn.secondary {
+    background: var(--bg-card);
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+}

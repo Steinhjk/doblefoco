@@ -1,0 +1,425 @@
+/*
+ * Mapa mediático.
+ *
+ * Los tres colores de espectro son la paleta divergente validada contra ambas
+ * superficies con el script del sistema de diseño (--mode dark --surface
+ * #202226 y --mode light --surface #ffffff, --pairs all porque en una
+ * dispersión cualquier par de puntos puede quedar contiguo).
+ *
+ * Se definen aparte de --bias-left/--bias-right porque aquel par se usa sobre
+ * fondos de tarjeta y este tiene que sostenerse sobre el lienzo del gráfico,
+ * que es otra superficie.
+ */
+:root {
+    --map-left: #ef4444;
+    --map-center: #6b7280;
+    --map-right: #3b82f6;
+}
+
+[data-theme="light"] {
+    --map-left: #dc2626;
+    --map-center: #64748b;
+    --map-right: #2563eb;
+}
+
+.media-map-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+.map-hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    margin-bottom: 0.6rem;
+}
+
+.map-lede {
+    color: var(--text-muted);
+    max-width: 60ch;
+    line-height: 1.65;
+}
+
+.map-warning {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--bg-subtle);
+    border-left: 2px solid var(--map-center);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    max-width: 68ch;
+}
+
+.map-warning svg { flex-shrink: 0; margin-top: 0.15rem; }
+
+/* ── Controles ─────────────────────────────────────────────────────────── */
+
+.map-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1.75rem 0 0.9rem;
+}
+
+.map-view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.map-view-toggle button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.map-view-toggle button.active {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+}
+
+.map-view-toggle button:focus-visible,
+.map-table-link:focus-visible,
+.profile-close:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.map-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.map-legend {
+    display: flex;
+    gap: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* ── Gráfico ───────────────────────────────────────────────────────────── */
+
+.map-figure {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem 0.5rem 0.25rem;
+    overflow-x: auto;
+}
+
+.map-svg {
+    width: 100%;
+    min-width: 560px;
+    height: auto;
+    display: block;
+}
+
+.map-band {
+    fill: var(--bg-subtle);
+    opacity: 0.45;
+}
+
+.map-band:nth-of-type(even) { opacity: 0.25; }
+
+.map-band-label {
+    fill: var(--text-muted);
+    font-size: 9.5px;
+    text-anchor: middle;
+    font-family: var(--font-main);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.map-grid {
+    stroke: var(--border-light);
+    stroke-width: 1;
+}
+
+.map-axis {
+    stroke: var(--border-color);
+    stroke-width: 1;
+}
+
+.map-tick {
+    fill: var(--text-muted);
+    font-size: 10px;
+    text-anchor: end;
+    font-family: var(--font-main);
+}
+
+.map-tick-x { text-anchor: middle; }
+
+.map-axis-label {
+    fill: var(--text-muted);
+    font-size: 10.5px;
+    text-anchor: middle;
+    font-family: var(--font-main);
+    letter-spacing: 0.03em;
+}
+
+.map-point {
+    /* Anillo de superficie: separa los puntos que se solapan. */
+    stroke: var(--bg-card);
+    stroke-width: 2;
+    cursor: pointer;
+    transition: r 120ms ease;
+}
+
+.map-point:hover,
+.map-point:focus-visible {
+    stroke: var(--text-main);
+    outline: none;
+}
+
+.map-point.selected { stroke: var(--text-main); }
+
+.map-nudge-line {
+    stroke: var(--border-color);
+    stroke-width: 1;
+}
+
+.map-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 0.6rem 0.75rem 0.4rem;
+    line-height: 1.5;
+}
+
+/* ── Tabla ─────────────────────────────────────────────────────────────── */
+
+.map-table-wrap {
+    overflow-x: auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+}
+
+.map-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.87rem;
+    min-width: 520px;
+}
+
+.map-table th,
+.map-table td {
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.map-table thead th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.map-table tbody th { font-weight: 600; }
+.map-table .num { font-variant-numeric: tabular-nums; }
+
+.map-table-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-main);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-color);
+}
+
+/* ── Ficha ─────────────────────────────────────────────────────────────── */
+
+.media-profile {
+    margin-top: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.4rem 1.5rem;
+}
+
+.profile-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.profile-identity {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.profile-identity h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.profile-domain {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0.15rem 0 0;
+}
+
+.profile-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.3rem;
+}
+
+.profile-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
+    margin: 1.1rem 0 0.4rem;
+}
+
+.profile-metric {
+    background: var(--bg-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.7rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.metric-value {
+    font-size: 1.35rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.metric-value.small { font-size: 1rem; }
+
+.metric-sub {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+.profile-section { margin-top: 1.2rem; }
+
+.profile-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.profile-section p {
+    line-height: 1.65;
+    font-size: 0.92rem;
+    max-width: 68ch;
+}
+
+.profile-group { margin-bottom: 0.3rem; }
+.owner-type { color: var(--text-muted); font-weight: 400; }
+
+.owner-type-desc {
+    color: var(--text-muted);
+    font-size: 0.86rem !important;
+}
+
+.profile-list {
+    margin: 0.6rem 0 0.6rem 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.profile-sources {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+    padding: 0;
+}
+
+.profile-sources a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.profile-missing {
+    background: var(--bg-subtle);
+    border-left: 2px solid var(--map-center);
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem !important;
+    color: var(--text-muted);
+    margin-top: 0.7rem;
+}
+
+.profile-visit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.3rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-point { transition: none; }
+}
+
+@media (max-width: 640px) {
+    .media-map-page { padding: 1.25rem 0.9rem 3rem; }
+    .map-controls { justify-content: flex-start; }
+}

@@ -22,7 +22,6 @@ import {
     getIngestFeeds,
     getBand,
 } from '../shared/mediaRegistry.js';
-import { newsData } from '../src/data/mockData.js';
 import { renderCatalog, OUTPUT, GENERATED_LINE } from './generateCatalogDoc.mjs';
 import { OWNERSHIP_PROFILES, OWNER_TYPES } from '../shared/mediaOwnership.js';
 
@@ -66,49 +65,22 @@ for (const media of MEDIA_REGISTRY) {
     }
 }
 
-// ── 2. Ninguna fuente del catálogo de noticias queda sin resolver ───────────
-
-const unresolved = new Map();
-
-for (const story of newsData) {
-    for (const source of story.sources ?? []) {
-        if (!findMediaByName(source.name)) {
-            unresolved.set(source.name, (unresolved.get(source.name) ?? 0) + 1);
-        }
-    }
-}
-
-for (const [name, count] of unresolved) {
-    fail(`fuente sin resolver en el registro: "${name}" (${count} apariciones)`);
-}
-
-// ── 3. Ningún sesgo declarado fuera del registro ────────────────────────────
-// Detecta el patrón exacto que causó F1-04: valores de sesgo embebidos en los
-// datos que contradicen el catálogo.
-
-const conflicts = new Map();
-
-for (const story of newsData) {
-    for (const source of story.sources ?? []) {
-        const media = findMediaByName(source.name);
-        if (!media || typeof source.bias !== 'number') continue;
-
-        if (Math.abs(source.bias - media.bias) > 0.001) {
-            const key = `${media.id}|${source.bias}`;
-            if (!conflicts.has(key)) {
-                conflicts.set(key, { name: media.name, embedded: source.bias, registry: media.bias, count: 0 });
-            }
-            conflicts.get(key).count += 1;
-        }
-    }
-}
-
-for (const c of conflicts.values()) {
-    warn(
-        `${c.name}: los datos traen ${c.embedded >= 0 ? '+' : ''}${c.embedded} ` +
-        `pero el registro dice ${c.registry >= 0 ? '+' : ''}${c.registry} (${c.count} apariciones)`
-    );
-}
+// ── 2 y 3. RETIRADAS al desaparecer el fixture (F2-03) ──────────────────────
+//
+// Comprobaban que ninguna fuente de src/data/mockData.js quedara sin resolver
+// contra el registro, y que ningún sesgo embebido en aquellos datos
+// contradijera al catálogo. Era la guarda de F1-04, y su objeto de vigilancia
+// ya no existe: el fixture se eliminó porque contenía citas fabricadas.
+//
+// La garantía que daban NO se perdió, cambió de sitio y es más fuerte:
+//   · `sources` es una PROYECCIÓN del registro que se regenera en cada arranque
+//     y en cada migración (server/db/sourceSync.js). Un UPDATE manual sobre esa
+//     tabla se revierte solo.
+//   · `hydrateArticles` lee el sesgo de `sources` mediante JOIN, nunca del
+//     artículo almacenado, así que un artículo viejo no puede arrastrar un
+//     valor caduco (server/db/contentStore.js).
+// Es decir: ya no hay ningún sitio donde un sesgo pueda vivir fuera del
+// registro, que es lo que aquellas comprobaciones detectaban a posteriori.
 
 // ── 4. Los documentos públicos no declaran sesgos propios ───────────────────
 //
@@ -263,8 +235,6 @@ for (const band of SPECTRUM_BANDS) {
     const count = perBand[band.id] ?? 0;
     console.log(`  ${band.label.padEnd(17)} ${String(count).padStart(2)}  ${'▇'.repeat(count)}`);
 }
-console.log();
-console.log(`fuentes del catálogo de noticias resueltas: ${unresolved.size === 0 ? 'todas' : `faltan ${unresolved.size}`}`);
 console.log();
 
 if (warnings.length) {

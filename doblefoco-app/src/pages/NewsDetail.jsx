@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX } from 'lucide-react';
-import { newsData } from '../data/mockData';
 import { getMediaByName } from '../data/mediaLogos';
 import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
 import { fetchStory, isApiConfigured } from '../services/apiClient';
-import { normalizeStory, normalizeStories, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
+import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
+import { useStories } from '../hooks/useStories';
 import { recordRead } from '../lib/readingHistory';
 import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsCard from '../components/NewsCard';
@@ -104,10 +104,14 @@ const NewsDetail = () => {
     const [story, setStory] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const fallbackPool = useMemo(
-        () => normalizeStories(newsData),
-        []
-    );
+    // Historias reales, para el bloque de relacionadas. Antes esto era el
+    // fixture, y además de alimentar "relacionadas" servía de RESPALDO cuando
+    // la API fallaba: NewsDetail buscaba la noticia entre las 200 inventadas y
+    // la pintaba entera —con sus perspectivas atribuidas a medios reales— sin
+    // ningún aviso. Era el peor sitio donde podía ocurrir, porque es la pantalla
+    // donde la cita fabricada se lee a tamaño completo con el nombre del medio
+    // al lado. Ese respaldo se eliminó: si la API no la tiene, no existe.
+    const { stories: pool } = useStories({ limit: 60 });
 
     useEffect(() => {
         let cancelled = false;
@@ -126,13 +130,13 @@ const NewsDetail = () => {
             }
 
             if (cancelled) return;
-            setStory(fallbackPool.find((s) => s.id === String(id)) ?? null);
+            setStory(null);
             setLoading(false);
         };
 
         load();
         return () => { cancelled = true; };
-    }, [id, fallbackPool]);
+    }, [id]);
 
     // El historial se registra una sola vez por noticia, no en cada render.
     useEffect(() => {
@@ -141,10 +145,10 @@ const NewsDetail = () => {
 
     const related = useMemo(() => {
         if (!story) return [];
-        return fallbackPool
+        return pool
             .filter((s) => s.category === story.category && s.id !== story.id)
             .slice(0, 3);
-    }, [story, fallbackPool]);
+    }, [story, pool]);
 
     if (loading) {
         return (
@@ -239,12 +243,17 @@ const NewsDetail = () => {
                         </div>
                     )}
 
-                    {story.body.length > 0 && (
-                        <div className="detail-article-body">
-                            <h2>Contexto</h2>
-                            {story.body.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
-                        </div>
-                    )}
+                    {/*
+                        Aquí había un bloque "Contexto" que pintaba `story.body`:
+                        párrafos de texto corrido que solo existían en el fixture
+                        y que nadie había escrito. El motor real no produce
+                        cuerpos de noticia —no puede, sin fabricarlos— así que
+                        con el fixture retirado (F2-03) este bloque quedaba
+                        muerto para todo dato real.
+                        Se elimina en vez de dejarlo condicionado: un hueco que
+                        solo se rellena con contenido inventado es una invitación
+                        a volver a inventarlo.
+                    */}
 
                     <UserFeedbackWidget storyId={story.id} />
                 </div>

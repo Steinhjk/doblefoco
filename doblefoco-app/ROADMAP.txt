@@ -580,7 +580,7 @@
             colisiones entre pendingData (101,102,103) y el catálogo.
 
 ===============================================================================
- FASE 2 — CIMIENTOS                                            [~] EN CURSO (6/11)
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (7/11)
 ===============================================================================
  Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
  reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
@@ -730,9 +730,62 @@
             404 y `withheld` marca 1. Devolverla a la cola restaura las dos
             cosas.
 
- [ ] F2-03  Feed paginado desde la API y retirar mockData del bundle
-            El fixture pesa 417 kB (27 kB comprimido) y se carga en casi todas
-            las rutas. Depende de F2-01.
+ [x] F2-03  Feed desde la API y retirar mockData del bundle
+            ENTRÓ COMO TAREA DE PESO Y ERA OTRA COSA. El fixture no era un
+            marcador de posición inofensivo: contenía 200 historias con 600
+            "perspectivas" construidas con la plantilla
+
+                "Desde El Tiempo: Balance normativo y análisis de indicadores…"
+
+            es decir, texto inventado atribuido a 32 medios colombianos REALES,
+            con la portada del medio como supuesto enlace de verificación (500
+            de los 600 enlaces eran solo el dominio raíz). Es exactamente la
+            fabricación que la Fase 0 eliminó del motor (F0-01, F0-03),
+            sobreviviendo en el bundle que descargaba el visitante.
+
+            Y el aviso de "datos de demostración" que añadió F0-11 existía SOLO
+            en el feed principal. Se comprobó una por una: NewsDetail —donde la
+            cita fabricada se lee a tamaño completo con el nombre del medio al
+            lado, y que además usaba el fixture como RESPALDO cuando la API
+            fallaba—, buscador, categorías, tendencias, sidebar y sidebar móvil
+            no advertían nada.
+
+            Un tercer dato falso, no visto hasta ahora: `trendingTopics` traía
+            ocho temas con contadores de artículos inventados ("42 artículos"),
+            presentados como cifras reales. Misma clase que el "84 % de
+            validación comunitaria" de F0-08.
+
+            HECHO:
+              · src/hooks/useStories.js — fuente única para todo el sitio. O hay
+                datos reales de la API, o no hay nada y se dice. No hay tercer
+                estado.
+              · EmptyState distingue avería ("la ingesta no responde") de hecho
+                ("todavía no hay historias"): con el mismo mensaje, una avería
+                se disfrazaría de dato.
+              · Las tendencias se DERIVAN de la cobertura real (medios distintos
+                sobre un mismo hecho), que es lo que el encabezado prometía.
+              · Se conservaron solo las definiciones de categorías, en
+                src/data/categories.js: describen la navegación y no afirman
+                nada sobre ningún medio.
+              · Retirado el bloque "Contexto" de NewsDetail, que pintaba
+                párrafos de texto que solo existían en el fixture. El motor no
+                produce cuerpos de noticia: no puede sin fabricarlos.
+              · Borrada la capa de compatibilidad `legacyTimestamp`/`isFixture`
+                de lib/story.js, que el propio comentario anunciaba retirar.
+
+            VERIFICACIÓN: 0 chunks de mockData y 0 ocurrencias de "Desde El
+            Tiempo:" en dist/. El chunk de 406 kB desapareció; el JS servido
+            queda en 374 kB repartidos en 26 archivos.
+            Y una comprobación en EJECUCIÓN contra la API real, porque lint y
+            build no bastan: se pasó una historia real por normalizeStory y se
+            ejercitaron los 13 accesos que hacen los componentes. Los 13 pasan.
+            Hacía falta: al quitar `body` del normalizador quedó un
+            `story.body.length` en NewsDetail que habría reventado en el
+            navegador sin que lint ni build dijeran nada.
+
+            NOTA SOBRE F0-11: su aviso de "catálogo de demostración" ya no
+            aplica. Era la mitigación correcta mientras el fixture existía; ya
+            no existe.
 
  ── 2B. Seguridad ─────────────────────────────────────────────────────────────
 

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import { categories, newsData } from '../data/mockData';
-import { normalizeStories } from '../lib/story';
+import { categories } from '../data/categories';
+import { useStories } from '../hooks/useStories';
+import EmptyState from '../components/EmptyState';
 import NewsCard from '../components/NewsCard';
 import AnimateIn from '../components/AnimateIn';
 import './Categories.css';
@@ -8,10 +9,7 @@ import './Categories.css';
 const Categories = () => {
     const [active, setActive] = useState(null);
 
-    const stories = useMemo(
-        () => normalizeStories(newsData),
-        []
-    );
+    const { stories, status, reason } = useStories();
 
     // El conteo se deriva de los datos. El campo `count` del catálogo estaba
     // desactualizado (describía solo la mitad nacional) y se eliminó.
@@ -32,6 +30,8 @@ const Categories = () => {
                 <h1>Categorías</h1>
                 <p>Explora la cobertura por sector.</p>
             </div>
+
+            {status === 'sin-datos' && <EmptyState reason={reason} />}
 
             <div className="categories-grid">
                 {categories.map((category) => {

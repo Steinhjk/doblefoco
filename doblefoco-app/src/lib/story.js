@@ -1,14 +1,15 @@
 /**
  * Normalización de historias y formato de fechas.
  *
- * Conviven dos formas de historia:
- *   · la del backend de ingesta (perspectivas reales o null, `publishedAt` ISO)
- *   · la del fixture de desarrollo mockData.js (`timestamp` como texto fijo,
- *     perspectivas siempre presentes)
+ * Existía para reconciliar DOS formas de historia: la del backend de ingesta y
+ * la del fixture de desarrollo, que traía `timestamp` como texto fijo y
+ * perspectivas siempre presentes. Al retirar el fixture (F2-03) queda una sola
+ * forma, y con ella se fueron `legacyTimestamp` e `isFixture`, que eran esa
+ * capa de compatibilidad. El comentario anterior anunciaba justo esto.
  *
- * En lugar de repartir condicionales por toda la UI, todo entra por aquí y los
- * componentes consumen una sola forma. Cuando mockData desaparezca, se borra
- * la rama heredada y nada más cambia.
+ * Sigue teniendo sentido que todo entre por aquí: es donde las fuentes se
+ * resuelven contra el catálogo y donde se calcula la cobertura, de modo que
+ * ningún componente pueda inventarse su propia versión de esas cifras.
  */
 
 import { analyzeCoverage, averageFactuality } from '../../shared/biasAnalysis.js';
@@ -135,9 +136,7 @@ export function normalizeStory(raw) {
         category: raw.category ?? 'Sin categoría',
         summary: raw.summary ?? null,
 
-        // Fecha real si existe; si no, la etiqueta heredada del fixture.
         publishedAt: raw.publishedAt ?? null,
-        legacyTimestamp: raw.publishedAt ? null : (raw.timestamp ?? null),
 
         sources,
         coverage,
@@ -154,11 +153,6 @@ export function normalizeStory(raw) {
         },
 
         articles: Array.isArray(raw.articles) ? raw.articles : [],
-        body: Array.isArray(raw.body) ? raw.body : [],
-
-        // Marca de procedencia: permite advertir en la UI cuando lo que se ve
-        // es el fixture de desarrollo y no cobertura ingerida de verdad.
-        isFixture: !raw.publishedAt,
     };
 }
 
@@ -171,5 +165,27 @@ export function normalizeStories(list) {
 
 /** Etiqueta de tiempo lista para pintar, venga de donde venga. */
 export function storyTimeLabel(story) {
-    return formatRelativeTime(story.publishedAt) ?? story.legacyTimestamp ?? null;
+    return formatRelativeTime(story.publishedAt);
+}
+
+/**
+ * Los hechos con más cobertura simultánea — tarea F2-03.
+ *
+ * Sustituye a `trendingTopics` del fixture, que eran ocho temas escritos a mano
+ * con contadores de artículos INVENTADOS ("42 artículos", "38 artículos")
+ * presentados como cifras reales. Misma clase de dato falso que el "84 % de
+ * validación comunitaria" que retiró F0-08.
+ *
+ * Lo que se cuenta ahora son MEDIOS DISTINTOS sobre un mismo hecho, no
+ * artículos, y sale de la cobertura real. Es además lo que promete el
+ * encabezado de la página: "los temas con más cobertura simultánea".
+ */
+export function topCoveredStories(stories, limit = 8) {
+    return [...stories]
+        .filter((s) => (s.coverage?.total ?? 0) > 1)
+        .sort((a, b) => {
+            if (b.coverage.total !== a.coverage.total) return b.coverage.total - a.coverage.total;
+            return Date.parse(b.publishedAt ?? 0) - Date.parse(a.publishedAt ?? 0);
+        })
+        .slice(0, limit);
 }

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { newsData } from '../data/mockData';
-import { normalizeStories } from '../lib/story';
+import { useStories } from '../hooks/useStories';
+import EmptyState from '../components/EmptyState';
 import NewsCard from '../components/NewsCard';
 import './SearchResults.css';
 
@@ -24,10 +24,7 @@ const SearchResults = () => {
     const query = (searchParams.get('q') ?? '').trim();
     const normalizedQuery = query.toLowerCase();
 
-    const stories = useMemo(
-        () => normalizeStories(newsData),
-        []
-    );
+    const { stories, status, reason } = useStories();
 
     const results = useMemo(() => {
         if (normalizedQuery.length < 2) return [];
@@ -56,7 +53,11 @@ const SearchResults = () => {
                 </p>
             </div>
 
-            {results.length > 0 ? (
+            {status === 'sin-datos' ? (
+                // Sin cobertura no se puede afirmar "no encontramos nada":
+                // sería confundir una avería con un resultado de búsqueda.
+                <EmptyState reason={reason} title="No se puede buscar ahora" />
+            ) : results.length > 0 ? (
                 <div className="search-results-list">
                     {results.map((story) => (
                         <NewsCard key={story.id} story={story} />

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RotateCcw, Award, EyeOff, Info } from 'lucide-react';
-import { newsData, trendingTopics } from '../data/mockData';
-import { normalizeStories } from '../lib/story';
+import { topCoveredStories } from '../lib/story';
+import { useStories } from '../hooks/useStories';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import './MobileSidebar.css';
 
@@ -21,12 +21,12 @@ const MobileSidebar = () => {
 
     useEffect(() => subscribeToHistory(() => setHistory(getHistory())), []);
 
+    const { stories } = useStories({ limit: 60 });
+    const trending = useMemo(() => topCoveredStories(stories, 8), [stories]);
+
     const blindspots = useMemo(
-        () =>
-            normalizeStories(newsData)
-                .filter((s) => s.coverage.blindspot)
-                .slice(0, 3),
-        []
+        () => stories.filter((s) => s.coverage.blindspot).slice(0, 3),
+        [stories]
     );
 
     const diet = useMemo(() => summarizeDiet(history), [history]);
@@ -59,15 +59,18 @@ const MobileSidebar = () => {
                             <div className="mobile-sidebar-content" id={`mobile-panel-${id}`}>
                                 {id === 'trends' && (
                                     <ul className="mobile-trending-list">
-                                        {trendingTopics.map((topic, index) => (
-                                            <li key={topic.id}>
+                                        {trending.length === 0 && (
+                                            <li className="trend-empty">Sin cobertura simultánea todavía.</li>
+                                        )}
+                                        {trending.map((story, index) => (
+                                            <li key={story.id}>
                                                 <Link
-                                                    to={`/buscar?q=${encodeURIComponent(topic.name)}`}
+                                                    to={`/noticia/${story.id}`}
                                                     className="mobile-trend-link"
                                                 >
                                                     <span className="mobile-trend-rank">#{index + 1}</span>
-                                                    <span className="mobile-trend-name">{topic.name}</span>
-                                                    <span className="mobile-trend-count">{topic.articles}</span>
+                                                    <span className="mobile-trend-name">{story.title}</span>
+                                                    <span className="mobile-trend-count">{story.coverage.total}</span>
                                                 </Link>
                                             </li>
                                         ))}

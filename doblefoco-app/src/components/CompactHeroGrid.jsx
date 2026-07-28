@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Layers, Sparkles } from 'lucide-react';
-import { newsData } from '../data/mockData';
+import { useStories } from '../hooks/useStories';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
 import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
-import { normalizeStories, storyTimeLabel } from '../lib/story';
+import { storyTimeLabel } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
 import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
@@ -19,8 +19,12 @@ import './CompactHeroGrid.css';
  * señales son las que hacen que una historia merezca portada en este producto.
  */
 const CompactHeroGrid = () => {
+    // La portada es un destacado: si no hay cobertura real no se pinta nada, y
+    // el aviso de ausencia lo da el feed de debajo una sola vez.
+    const { stories } = useStories({ limit: 40 });
+
     const featured = useMemo(() => {
-        const ranked = normalizeStories(newsData).sort((a, b) => {
+        const ranked = [...stories].sort((a, b) => {
             if (b.coverage.total !== a.coverage.total) {
                 return b.coverage.total - a.coverage.total;
             }
@@ -28,7 +32,7 @@ const CompactHeroGrid = () => {
         });
 
         return { main: ranked[0] ?? null, secondary: ranked.slice(1, 4) };
-    }, []);
+    }, [stories]);
 
     const handleImageError = (e) => {
         e.target.onerror = null;

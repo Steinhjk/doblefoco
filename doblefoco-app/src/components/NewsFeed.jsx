@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown, Info } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown } from 'lucide-react';
 import NewsCard from './NewsCard';
 import AnimateIn from './AnimateIn';
-import { newsData } from '../data/mockData';
-import { fetchFeed, isApiConfigured } from '../services/apiClient';
-import { normalizeStories } from '../lib/story';
+import { useStories } from '../hooks/useStories';
+import EmptyState from './EmptyState';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import './NewsFeed.css';
 
@@ -18,40 +17,11 @@ const NewsFeed = () => {
     const [sortBy, setSortBy] = useState('recent');
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-    const [remoteStories, setRemoteStories] = useState([]);
-    const [source, setSource] = useState(isApiConfigured ? 'loading' : 'fixture');
-
-    useEffect(() => {
-        let cancelled = false;
-
-        // Sin VITE_API_URL no se intenta la petición. Antes se llamaba siempre a
-        // http://localhost:5000, que en producción está bloqueado por CSP y por
-        // contenido mixto: cada carga gastaba una petición condenada a fallar.
-        if (!isApiConfigured) return undefined;
-
-        fetchFeed({ limit: 100 }).then((result) => {
-            if (cancelled) return;
-
-            if (result.ok && result.stories.length) {
-                setRemoteStories(normalizeStories(result.stories));
-                setSource('api');
-            } else {
-                setSource('fixture');
-            }
-        });
-
-        return () => { cancelled = true; };
-    }, []);
-
-    // Ya no se mezclan las historias "aprobadas" del localStorage (F2-02). Eran
-    // visibles únicamente en el navegador de quien las aprobó, así que el sitio
-    // se veía distinto para cada persona y ninguna de esas versiones era la
-    // real. Las decisiones viven ahora en la base; qué hace el feed público con
-    // ellas es una decisión de producto todavía abierta.
-    const allNews = useMemo(() => {
-        if (source === 'api' && remoteStories.length) return remoteStories;
-        return normalizeStories(newsData);
-    }, [source, remoteStories]);
+    // Una sola fuente para todo el sitio (F2-03). Ya no hay respaldo al fixture:
+    // aquel catálogo de demostración contenía 600 citas inventadas atribuidas a
+    // 32 medios reales, y el aviso que lo acompañaba solo existía en esta
+    // pantalla. O hay cobertura real, o se dice que no la hay.
+    const { stories: allNews, status, reason } = useStories({ limit: 100 });
 
     const nationalCount = useMemo(
         () => allNews.filter((s) => s.category !== 'Internacional').length,
@@ -122,22 +92,10 @@ const NewsFeed = () => {
         <div className="news-feed">
             <div className="section-header">
                 <h2>Análisis de Perspectivas</h2>
-                <p>
-                    {allNews.length} historias con cobertura multifuente
-                    {source === 'fixture' && ' · datos de demostración'}
-                </p>
+                <p>{allNews.length} historias con cobertura multifuente</p>
             </div>
 
-            {source === 'fixture' && (
-                <div className="feed-fixture-notice" role="status">
-                    <Info size={15} aria-hidden="true" />
-                    <span>
-                        <strong>Catálogo de demostración.</strong> La ingesta en vivo no está
-                        conectada en este entorno, así que estás viendo un conjunto de datos de
-                        muestra con fines de evaluación, no cobertura periodística real.
-                    </span>
-                </div>
-            )}
+            {status === 'sin-datos' && <EmptyState reason={reason} />}
 
             <div className="scope-tabs-bar">
                 <button

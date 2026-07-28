@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PieChart, EyeOff, RotateCcw, Award, Flame, Mail, Info } from 'lucide-react';
-import { newsData, trendingTopics } from '../data/mockData';
-import { normalizeStories } from '../lib/story';
+import { topCoveredStories } from '../lib/story';
+import { useStories } from '../hooks/useStories';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsletterWidget from './NewsletterWidget';
@@ -15,7 +15,8 @@ const Sidebar = () => {
 
     // Ya no se mezclan las historias "aprobadas" del localStorage (F2-02):
     // solo existían en el navegador de quien las aprobó.
-    const stories = useMemo(() => normalizeStories(newsData), []);
+    const { stories } = useStories({ limit: 60 });
+    const trending = useMemo(() => topCoveredStories(stories, 8), [stories]);
 
     const blindspots = useMemo(
         () =>
@@ -45,12 +46,17 @@ const Sidebar = () => {
                     <h3><Flame size={18} className="flame-pulse-icon" aria-hidden="true" /> Temas frecuentes</h3>
                 </div>
                 <ul className="trending-list">
-                    {trendingTopics.map((topic, index) => (
-                        <li key={topic.id}>
-                            <Link to={`/buscar?q=${encodeURIComponent(topic.name)}`} className="trend-link">
+                    {trending.length === 0 && (
+                        <li className="trend-empty">Sin cobertura simultánea todavía.</li>
+                    )}
+                    {trending.map((story, index) => (
+                        <li key={story.id}>
+                            <Link to={`/noticia/${story.id}`} className="trend-link">
                                 <span className="trend-rank">#{index + 1}</span>
-                                <span className="trend-name">{topic.name}</span>
-                                <span className="trend-count">{topic.articles}</span>
+                                <span className="trend-name">{story.title}</span>
+                                <span className="trend-count" title="medios que lo cubren">
+                                    {story.coverage.total}
+                                </span>
                             </Link>
                         </li>
                     ))}

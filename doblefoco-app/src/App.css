@@ -433,3 +433,41 @@ footer {
         opacity: 1 !important;
     }
 }
+
+/* Ausencia de datos (F2-03). Sustituye al catálogo de demostración. */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    max-width: 460px;
+    margin: 32px auto;
+    padding: 28px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.empty-state h2 {
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.empty-state-reason {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.empty-state-hint {
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.trend-empty {
+    padding: 8px 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}

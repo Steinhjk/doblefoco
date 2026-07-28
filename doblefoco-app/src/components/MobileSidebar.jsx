@@ -4,7 +4,6 @@ import { RotateCcw, Award, EyeOff, Info } from 'lucide-react';
 import { newsData, trendingTopics } from '../data/mockData';
 import { normalizeStories } from '../lib/story';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
-import { getApprovedStories, subscribeToFeed } from '../services/storageService';
 import './MobileSidebar.css';
 
 /**
@@ -19,17 +18,15 @@ import './MobileSidebar.css';
 const MobileSidebar = () => {
     const [expanded, setExpanded] = useState(null);
     const [history, setHistory] = useState(() => getHistory());
-    const [approved, setApproved] = useState(() => getApprovedStories());
 
     useEffect(() => subscribeToHistory(() => setHistory(getHistory())), []);
-    useEffect(() => subscribeToFeed(() => setApproved(getApprovedStories())), []);
 
     const blindspots = useMemo(
         () =>
-            normalizeStories([...approved, ...newsData])
+            normalizeStories(newsData)
                 .filter((s) => s.coverage.blindspot)
                 .slice(0, 3),
-        [approved]
+        []
     );
 
     const diet = useMemo(() => summarizeDiet(history), [history]);

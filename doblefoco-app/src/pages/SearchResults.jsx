@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { newsData } from '../data/mockData';
-import { getApprovedStories } from '../services/storageService';
 import { normalizeStories } from '../lib/story';
 import NewsCard from '../components/NewsCard';
 import './SearchResults.css';
@@ -26,7 +25,7 @@ const SearchResults = () => {
     const normalizedQuery = query.toLowerCase();
 
     const stories = useMemo(
-        () => normalizeStories([...getApprovedStories(), ...newsData]),
+        () => normalizeStories(newsData),
         []
     );
 

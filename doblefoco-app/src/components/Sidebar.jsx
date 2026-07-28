@@ -4,22 +4,18 @@ import { PieChart, EyeOff, RotateCcw, Award, Flame, Mail, Info } from 'lucide-re
 import { newsData, trendingTopics } from '../data/mockData';
 import { normalizeStories } from '../lib/story';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
-import { getApprovedStories, subscribeToFeed } from '../services/storageService';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsletterWidget from './NewsletterWidget';
 import './Sidebar.css';
 
 const Sidebar = () => {
     const [history, setHistory] = useState(() => getHistory());
-    const [approved, setApproved] = useState(() => getApprovedStories());
 
     useEffect(() => subscribeToHistory(() => setHistory(getHistory())), []);
-    useEffect(() => subscribeToFeed(() => setApproved(getApprovedStories())), []);
 
-    const stories = useMemo(
-        () => normalizeStories([...approved, ...newsData]),
-        [approved]
-    );
+    // Ya no se mezclan las historias "aprobadas" del localStorage (F2-02):
+    // solo existían en el navegador de quien las aprobó.
+    const stories = useMemo(() => normalizeStories(newsData), []);
 
     const blindspots = useMemo(
         () =>

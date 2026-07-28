@@ -5,8 +5,9 @@
  sobrevive solo en comentarios que describen decisiones de esa época; el
  User-Agent con el que nos presentamos ante los medios ya es DobleFocoBot/1.0
  y apunta a https://doblefoco.co/transparencia.
- Versión           : 2.2
- Última revisión   : 2026-07-27 (F2-01 cerrada y verificada contra la base real)
+ Versión           : 2.3
+ Última revisión   : 2026-07-28 (F2-02, F2-04, F2-05, F2-09 y F2-10 cerradas
+                     y verificadas)
  Reemplaza a       : ROADMAP v1 (declaraba "4 fases completadas 100%" y "listo
                      para desplegar"; una auditoría posterior documentó 6
                      fallas críticas, entre ellas fabricación de titulares
@@ -54,14 +55,13 @@
   Build de producción ................ ✅ correcto (vite build)
   ESLint ............................. ✅ 0 errores (antes: 26 errores)
   Catálogo de medios ................. ✅ fuente única, verificada por script
-  Tests automatizados ................ ✅ 48 pruebas sobre shared/
-                                          (sesgo, agrupamiento, tono)
+  Tests automatizados ................ ✅ 60 pruebas (sesgo, agrupamiento,
+                                          tono, contraseñas)
   Integración continua ............... ✅ lint + test + build + catálogo
                                           en cada push y cada PR
   Persistencia de datos .............. ✅ Postgres 17.6 (Supabase, sa-east-1)
-                                          artículos e historias sobreviven al
-                                          reinicio; moderación sigue en
-                                          localStorage (F2-02)
+                                          artículos, historias y decisiones de
+                                          moderación sobreviven al reinicio
   Autenticación real ................. ✅ sesión de servidor, cookie httpOnly
                                           scrypt + sesiones revocables
   SEO / renderizado en servidor ...... ❌ SPA sin prerender
@@ -72,16 +72,14 @@
     33 de 33 medios respondiendo · 36 de 36 feeds · 2 116 artículos disponibles
     reparto: 1 izquierda · 5 centro-izq. · 14 centro · 13 centro-der. · 0 derecha
 
-  Última verificación de ingesta real (2026-07-26):
-    15 de 16 feeds respondiendo · 180 artículos · 132 historias
-    2 historias multifuente que cruzan espectros
-    0 titulares fabricados
+  Última verificación de ingesta real (2026-07-28, ingesta acumulada en la base
+  desde el día anterior):
+    36 de 36 feeds respondiendo · 1 000+ artículos · 963 historias
+    51 multifuente · 32 cruzan espectros · 0 titulares fabricados
 
-  Sobre esas 2 historias multifuente: es el número correcto, no un defecto. Una
-  sola captura instantánea de 15 titulares por medio cubre temas dispersos y
-  produce poco solapamiento real. La cifra crece con los ciclos acumulados en
-  la ventana de retención de 72 h. Se seguirá midiendo (tarea F1-01). Esa
-  medición se hizo con 16 feeds; ahora hay 36, así que hay que repetirla.
+  El salto respecto a la medición del 26 de julio (2 historias cruzando
+  espectros) no viene de más medios sino de que la ventana de 72 h por fin se
+  acumula: hasta F2-01 cada reinicio la vaciaba. Ver la serie completa en F1-01.
 
   Herramientas de verificación disponibles:
     npm run check:registry   integridad del catálogo, sin tocar la red
@@ -104,9 +102,16 @@
   de medios distintos sobre un mismo hecho eran 3, con un umbral de 6 para poder
   afirmar un punto ciego (F1-03). La función principal del producto estaba
   literalmente fuera de alcance.
-  Con la ingesta acumulándose en la base, el cuarto ciclo produjo la PRIMERA
-  historia que cruza el umbral. Sigue siendo 1 de 559, así que el riesgo no está
-  cerrado: está cambiando de forma. Ver la tabla en F1-01.
+  Con la ingesta acumulándose en la base aparecieron las primeras historias que
+  cruzan el umbral. Siguen siendo 2 de 963, así que el riesgo no está cerrado:
+  está cambiando de forma. Ver la tabla en F1-01.
+
+  Y hay un sospechoso nuevo. Revisando la cola de moderación aparecieron dos
+  historias distintas sobre EL MISMO hecho ("De la Espriella nombra / designó a
+  Mauricio Gaona"), con 7 medios cada una. Juntas serían 14, muy por encima del
+  umbral de 6. Si el agrupamiento está partiendo hechos así de forma habitual,
+  el número de puntos ciegos está subestimado y la respuesta de F1-01 no será
+  "más ventana" sino F1-05. Hay que medirlo, no suponerlo.
 
 ===============================================================================
  FASE 0 — DETENER LO PELIGROSO                                    [x] COMPLETADA
@@ -397,15 +402,15 @@
             colisiones entre pendingData (101,102,103) y el catálogo.
 
 ===============================================================================
- FASE 2 — CIMIENTOS                                            [~] EN CURSO (5/11)
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (6/11)
 ===============================================================================
  Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
  reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
 
- La mitad "sobrevivir a un reinicio" ya está (F2-01). La mitad "más de una
- persona" no: sigue habiendo una sola clave compartida que además viaja en el
- bundle (F2-04), y el trabajo de moderación vive en el navegador de quien lo
- hizo (F2-02).
+ Las dos mitades están: sobrevivir a un reinicio lo cerró F2-01, y operar entre
+ varias personas, F2-04 y F2-02 —cuentas propias, sesiones revocables y
+ decisiones compartidas y firmadas—. Lo que queda de esta fase es calidad
+ (tipos, telemetría) y el feed paginado desde la API.
 
  ── 2A. Persistencia ──────────────────────────────────────────────────────────
 
@@ -460,8 +465,62 @@
             intermediario activo). Se cierra poniendo DATABASE_CA_CERT con el
             certificado que publica Supabase. El arranque lo avisa cada vez.
 
- [ ] F2-02  Migrar el panel de moderación a la base de datos
-            Depende de F2-01.
+ [x] F2-02  Migrar el panel de moderación a la base de datos
+            Las decisiones viven en `moderation` y quedan firmadas con quién las
+            tomó (`reviewer_id` → admin_users). Se comparten con el equipo,
+            sobreviven al reinicio y las ve cualquier navegador.
+
+            MODELO: una fila es una DECISIÓN sobre una historia, no una copia de
+            ella. La historia sigue en `stories` y se recalcula cada ciclo; lo
+            que se conserva es quién dijo qué y cuándo.
+            "Pendiente" NO es un estado almacenado: es la ausencia de fila. Con
+            estado explícito habría dos representaciones de lo mismo y toda
+            consulta tendría que contemplar las dos.
+
+            SE RETIRÓ LA EDICIÓN DE HISTORIAS, y no por simplificar:
+              · El TÍTULO es el titular literal del medio representativo.
+                Poder reescribirlo era el mismo mecanismo que publicaba
+                titulares que ningún medio escribió y que costó F0-01 y F0-03
+                desmontar. Que estuviera en el panel y no en el motor no lo
+                hacía menos grave: lo publicado era igual de falso.
+              · La CATEGORÍA se recalcula en cada ciclo desde el feed de origen.
+                Una edición se revertía sola en media hora sin avisar. Un
+                control que no hace nada es peor que no ofrecerlo.
+            Moderar es decidir si una historia se publica, no reescribirla.
+
+            LIMPIEZA ASOCIADA: `getApprovedStories` desapareció de los SEIS
+            componentes públicos que la leían (NewsFeed, Sidebar, MobileSidebar,
+            Categorías, NewsDetail, Buscar). Mezclaban las aprobaciones del
+            localStorage con el catálogo, así que cada persona veía un sitio
+            distinto y la versión "real" no existía en ninguna parte.
+
+            VERIFICACIÓN (2026-07-28, contra la base real, con cuenta desechable
+            borrada después):
+              · sin sesión → 401 en todo el router
+              · aprobar, rechazar con motivo y devolver a la cola: los conteos
+                se mueven (905 → 903 pendientes → 904 al deshacer)
+              · estado inválido → 400; historia inexistente → 404
+              · las decisiones se listan con el nombre de quien las firmó
+              · la clave foránea impide borrar una cuenta con decisiones a su
+                nombre. Es lo correcto: saber quién aprobó qué es lo que hace
+                auditable el panel.
+
+            SALVAGUARDA DE BORRADO, probada con un experimento controlado. Un
+            primer intento no concluyó —la historia moderada sobrevivió porque
+            el agrupamiento la volvió a producir, no por la protección—, así que
+            se sembraron dos historias sintéticas que ningún ciclo puede
+            producir, una moderada y otra no. Tras un ciclo completo: la no
+            moderada se borró, la moderada sobrevivió.
+            Sigue siendo PROVISIONAL. Deja historias huérfanas: moderadas pero
+            ya no producidas por el agrupamiento. Hace falta decidir qué se hace
+            con ellas.
+
+            DECISIÓN DE PRODUCTO PENDIENTE, y no la toma el código: hoy
+            /api/feed sirve TODAS las historias, moderadas o no. Filtrar por
+            aprobación dejaría el sitio vacío —963 historias, 0 aprobadas— hasta
+            que alguien revise a mano. Las opciones son moderar solo lo que se
+            destaca, aprobar por lotes, o publicar todo y usar la moderación
+            para retirar. Hay que elegir antes de F3-01.
 
  [ ] F2-03  Feed paginado desde la API y retirar mockData del bundle
             El fixture pesa 417 kB (27 kB comprimido) y se carga en casi todas
@@ -745,9 +804,9 @@
  ALTO   Sin SEO, el producto no tiene canal de adquisición. Es el único ALTO
         que queda: la volatilidad la cerró F2-01 y la autenticación, F2-04.
         Mitiga: F3-01.
- MEDIO  El trabajo de moderación sigue en el localStorage de un navegador: un
-        equipo no puede repartírselo y un borrado de datos del navegador lo
-        pierde. La ingesta ya no: eso lo cerró F2-01. Mitiga: F2-02.
+ MEDIO  Hay historias moderadas que el agrupamiento deja de producir y quedan
+        huérfanas: se conservan por la salvaguarda de F2-02, pero nadie ha
+        decidido qué hacer con ellas.
  MEDIO  La conexión a la base va cifrada pero sin verificar el certificado del
         servidor. Protege del espionaje pasivo, no de un intermediario activo.
         Mitiga: DATABASE_CA_CERT (documentado en .env.example).

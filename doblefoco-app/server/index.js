@@ -28,6 +28,7 @@ import { isDatabaseEnabled } from './db/pool.js';
 import { dailySummaryFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
 import authRoutes, { requireSession } from './auth/routes.js';
+import moderationRoutes from './moderationRoutes.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -125,6 +126,15 @@ app.use((req, res, next) => {
  * una cookie httpOnly que el JavaScript de la página no puede leer.
  */
 app.use('/api/auth', authRoutes);
+
+/**
+ * Moderación (F2-02). Exige sesión en todo el router.
+ *
+ * Las decisiones dejan de vivir en el localStorage de un navegador: se
+ * comparten con el equipo, sobreviven al reinicio y quedan firmadas con quién
+ * las tomó.
+ */
+app.use('/api/moderation', moderationRoutes);
 
 /** Estado real del servicio: qué se ingirió, cuándo y qué feeds fallaron. */
 app.get('/api/health', (req, res) => {

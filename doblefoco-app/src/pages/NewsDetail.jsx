@@ -5,7 +5,6 @@ import { newsData } from '../data/mockData';
 import { getMediaByName } from '../data/mediaLogos';
 import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
 import { fetchStory, isApiConfigured } from '../services/apiClient';
-import { getApprovedStories } from '../services/storageService';
 import { normalizeStory, normalizeStories, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
 import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
@@ -106,7 +105,7 @@ const NewsDetail = () => {
     const [loading, setLoading] = useState(true);
 
     const fallbackPool = useMemo(
-        () => normalizeStories([...getApprovedStories(), ...newsData]),
+        () => normalizeStories(newsData),
         []
     );
 

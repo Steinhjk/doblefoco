@@ -1,56 +1,112 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-    Check, X, ShieldAlert, Edit2, RotateCcw, Download,
-    Loader2, Database, Activity, AlertTriangle, Users,
+    Check, X, ShieldAlert, RotateCcw, Download,
+    Loader2, Users, Activity, AlertTriangle,
 } from 'lucide-react';
-import { pendingIngestionData } from '../data/pendingData';
-import {
-    exportContentBackup,
-    exportSubscribersForOperator,
-    getApprovedStories,
-    getPendingStories,
-    getWaitlistCount,
-    saveApprovedStories,
-    savePendingStories,
-    subscribeToPending,
-} from '../services/storageService';
+import { exportSubscribersForOperator, getWaitlistCount } from '../services/storageService';
 import { fetchHealth, triggerIngestion, isApiConfigured } from '../services/apiClient';
+import {
+    decideStory,
+    fetchCounts,
+    fetchDecided,
+    fetchPending,
+} from '../services/moderationClient';
 import './AdminDashboard.css';
 
+/**
+ * Panel de moderación.
+ *
+ * QUÉ CAMBIÓ (tarea F2-02)
+ * ------------------------
+ * Las decisiones vivían en el localStorage de este navegador. Dos personas del
+ * equipo veían colas distintas, un borrado de datos perdía el trabajo y los
+ * visitantes no veían nada de ello. Ahora vienen y van a la base, se comparten
+ * y quedan firmadas con quién las tomó.
+ *
+ * QUÉ SE RETIRÓ, Y POR QUÉ
+ * ------------------------
+ * La edición de la historia. Eran dos campos y ninguno debía existir:
+ *
+ *   · El TÍTULO es el titular literal del medio representativo del grupo.
+ *     Poder reescribirlo aquí es exactamente el mecanismo que publicaba
+ *     titulares que ningún medio escribió, y que costó las tareas F0-01 y
+ *     F0-03 desmontar. Que el campo estuviera en el panel y no en el motor no
+ *     lo hacía menos grave: el resultado publicado era el mismo.
+ *   · La CATEGORÍA se recalcula en cada ciclo de ingesta a partir del feed de
+ *     origen. Una edición aquí se revertiría sola en menos de media hora, sin
+ *     avisar. Ofrecer un control que no hace nada es peor que no ofrecerlo.
+ *
+ * Moderar es decidir si una historia se publica, no reescribirla.
+ */
 const AdminDashboard = () => {
-    // Estado inicial leído en el render, no en un efecto: así el panel pinta
-    // los datos correctos de una vez en lugar de vacío y luego relleno.
-    const [pending, setPending] = useState(() => {
-        const stored = getPendingStories();
-        return stored.length ? stored : pendingIngestionData;
-    });
-    const [approved, setApproved] = useState(getApprovedStories);
-    const [editingId, setEditingId] = useState(null);
-    const [editData, setEditData] = useState(null);
+    const [pending, setPending] = useState([]);
+    const [decided, setDecided] = useState([]);
+    const [counts, setCounts] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [busyId, setBusyId] = useState(null);
 
     const [health, setHealth] = useState(null);
     const [ingesting, setIngesting] = useState(false);
     const [ingestMessage, setIngestMessage] = useState(null);
 
-    const loadPending = useCallback(() => {
-        const stored = getPendingStories();
-        setPending(stored.length ? stored : pendingIngestionData);
+    /**
+     * Trae los tres listados. No toca el estado: separar la obtención de su
+     * aplicación permite descartar el resultado si el componente ya se
+     * desmontó, y de paso deja el efecto sin llamadas a setState en su cuerpo.
+     */
+    const fetchAll = useCallback(
+        () =>
+            Promise.all([
+                fetchPending({ limit: 50 }),
+                fetchDecided({ limit: 30 }),
+                fetchCounts(),
+            ]),
+        []
+    );
+
+    const apply = useCallback(([pendingResult, decidedResult, countsResult]) => {
+        if (pendingResult.ok) setPending(pendingResult.stories);
+        if (decidedResult.ok) setDecided(decidedResult.stories);
+        if (countsResult.ok) setCounts(countsResult.counts);
+
+        const failure = [pendingResult, decidedResult, countsResult].find((r) => !r.ok);
+        setError(
+            failure
+                ? failure.expired
+                    ? 'La sesión caducó. Vuelve a entrar para seguir moderando.'
+                    : failure.error
+                : null
+        );
+
+        setLoading(false);
     }, []);
 
-    // El efecto solo suscribe a cambios externos, que es para lo que sirven
-    // los efectos. No siembra el estado inicial.
-    useEffect(() => subscribeToPending(loadPending), [loadPending]);
+    /** Recarga desde el servidor. Para el botón y para después de decidir. */
+    const refresh = useCallback(() => {
+        setLoading(true);
+        return fetchAll().then(apply);
+    }, [fetchAll, apply]);
+
+    useEffect(() => {
+        let active = true;
+        fetchAll().then((results) => {
+            if (active) apply(results);
+        });
+        return () => { active = false; };
+    }, [fetchAll, apply]);
 
     // Estado real del motor. Antes el panel mostraba un badge verde fijo que
-    // decía "● Sincronización Automática Activa" estuviera el backend
-    // encendido o apagado.
+    // decía "● Sincronización Automática Activa" estuviera el backend encendido
+    // o apagado.
     useEffect(() => {
         if (!isApiConfigured) return undefined;
 
         let cancelled = false;
-        const check = async () => {
-            const result = await fetchHealth();
-            if (!cancelled) setHealth(result.ok ? result.health : { status: 'inalcanzable' });
+        const check = () => {
+            fetchHealth().then((result) => {
+                if (!cancelled) setHealth(result.ok ? result.health : { status: 'inalcanzable' });
+            });
         };
 
         check();
@@ -58,36 +114,30 @@ const AdminDashboard = () => {
         return () => { cancelled = true; clearInterval(timer); };
     }, []);
 
-    const persistApproved = (list) => {
-        setApproved(list);
-        saveApprovedStories(list);
-    };
+    const handleDecide = async (storyId, state) => {
+        setBusyId(storyId);
 
-    const persistPending = (list) => {
-        setPending(list);
-        savePendingStories(list);
-    };
+        const reason =
+            state === 'rechazada'
+                ? window.prompt('Motivo del rechazo (opcional, queda registrado):') ?? null
+                : null;
 
-    const handleApprove = (storyId) => {
-        const target = pending.find((s) => String(s.id) === String(storyId));
-        if (!target) return;
+        const result = await decideStory(storyId, state, reason);
+        setBusyId(null);
 
-        const finalStory =
-            editingId === storyId && editData ? { ...target, ...editData } : { ...target };
-
-        persistApproved([finalStory, ...approved]);
-        persistPending(pending.filter((s) => String(s.id) !== String(storyId)));
-
-        setEditingId(null);
-        setEditData(null);
-    };
-
-    const handleReject = (storyId) => {
-        persistPending(pending.filter((s) => String(s.id) !== String(storyId)));
-        if (editingId === storyId) {
-            setEditingId(null);
-            setEditData(null);
+        if (!result.ok) {
+            setError(
+                result.expired
+                    ? 'La sesión caducó. Vuelve a entrar para seguir moderando.'
+                    : result.error
+            );
+            return;
         }
+
+        // Se recarga desde el servidor en vez de retocar el estado local: es la
+        // única forma de ver lo que decidió otra persona mientras tanto, que es
+        // justamente el motivo de esta tarea.
+        await refresh();
     };
 
     const handleRunIngestion = async () => {
@@ -107,6 +157,8 @@ const AdminDashboard = () => {
                 }
                 : { tone: 'error', text: result.error }
         );
+
+        if (result.ok) await refresh();
     };
 
     const handleExportSubscribers = () => {
@@ -119,16 +171,6 @@ const AdminDashboard = () => {
         );
         if (confirmed) exportSubscribersForOperator({ confirmed: true });
     };
-
-    const handleRestore = () => {
-        persistPending(pendingIngestionData);
-        persistApproved([]);
-        setEditingId(null);
-        setEditData(null);
-    };
-
-    const updateField = (field, value) =>
-        setEditData((prev) => ({ ...prev, [field]: value }));
 
     const healthTone =
         !isApiConfigured ? 'off' :
@@ -143,35 +185,34 @@ const AdminDashboard = () => {
                     <p>Cola de ingesta y aprobación de contenido.</p>
                 </div>
                 <div className="admin-header-actions">
-                    <button className="restore-defaults-btn" onClick={exportContentBackup}>
-                        <Database size={14} aria-hidden="true" /> Exportar contenido
+                    <button className="restore-defaults-btn" onClick={refresh} disabled={loading}>
+                        <RotateCcw size={14} aria-hidden="true" /> Recargar
                     </button>
                     <button className="restore-defaults-btn" onClick={handleExportSubscribers}>
                         <Users size={14} aria-hidden="true" /> Exportar lista de espera
                     </button>
-                    <button className="restore-defaults-btn" onClick={handleRestore}>
-                        <RotateCcw size={14} aria-hidden="true" /> Restaurar cola
-                    </button>
                 </div>
             </div>
 
-            <div className="admin-storage-warning">
-                <AlertTriangle size={16} aria-hidden="true" />
-                <span>
-                    Las aprobaciones se guardan <strong>solo en este navegador</strong>. No se
-                    comparten con el equipo ni con los visitantes del sitio. Es un puente hasta
-                    que exista la base de datos.
-                </span>
-            </div>
+            {error && (
+                <div className="admin-storage-warning" role="alert">
+                    <AlertTriangle size={16} aria-hidden="true" />
+                    <span>{error}</span>
+                </div>
+            )}
 
             <div className="admin-stats-summary">
                 <div className="admin-stat-card">
-                    <span className="stat-num">{pending.length}</span>
+                    <span className="stat-num">{counts?.pendientes ?? '—'}</span>
                     <span className="stat-lbl">Pendientes</span>
                 </div>
                 <div className="admin-stat-card">
-                    <span className="stat-num">{approved.length}</span>
+                    <span className="stat-num">{counts?.aprobadas ?? '—'}</span>
                     <span className="stat-lbl">Aprobadas</span>
+                </div>
+                <div className="admin-stat-card">
+                    <span className="stat-num">{counts?.rechazadas ?? '—'}</span>
+                    <span className="stat-lbl">Rechazadas</span>
                 </div>
                 <div className="admin-stat-card">
                     <span className="stat-num">{health?.database?.stories ?? '—'}</span>
@@ -205,6 +246,8 @@ const AdminDashboard = () => {
                             {health?.ingestion?.lastRunAt
                                 ? `Último ciclo: ${new Date(health.ingestion.lastRunAt).toLocaleString('es-CO')}.`
                                 : 'Todavía no se ha registrado ningún ciclo de ingesta.'}
+                            {health?.database?.persistent === false &&
+                                ' Sin persistencia: un reinicio borrará lo ingerido.'}
                             {health?.ingestion?.failedFeeds?.length > 0 &&
                                 ` Feeds con error: ${health.ingestion.failedFeeds.map((f) => f.feed).join(', ')}.`}
                         </p>
@@ -231,115 +274,133 @@ const AdminDashboard = () => {
             <div className="staging-queue-section">
                 <h2>Cola de moderación</h2>
 
-                {pending.length === 0 ? (
+                {loading && pending.length === 0 ? (
+                    <div className="empty-queue-alert" role="status">
+                        <Loader2 size={40} className="spin-icon" aria-hidden="true" />
+                        <p>Cargando la cola…</p>
+                    </div>
+                ) : pending.length === 0 ? (
                     <div className="empty-queue-alert">
                         <ShieldAlert size={48} className="empty-icon" aria-hidden="true" />
                         <h3>Cola vacía</h3>
-                        <p>No hay noticias pendientes de revisión.</p>
-                        <button className="secondary-restore-btn" onClick={handleRestore}>
-                            Cargar cola de muestra
-                        </button>
+                        <p>
+                            No hay historias pendientes de revisión. Las nuevas aparecerán aquí
+                            tras el próximo ciclo de ingesta.
+                        </p>
                     </div>
                 ) : (
                     <div className="staging-list">
-                        {pending.map((story) => {
-                            const isEditing = editingId === story.id;
-                            const active = isEditing ? editData : story;
-
-                            return (
-                                <div key={story.id} className="staging-card">
-                                    <div className="staging-card-meta">
-                                        <span className="staging-id">{story.id}</span>
-                                        <span className="staging-timestamp">{story.timestamp}</span>
-                                    </div>
-
-                                    {isEditing ? (
-                                        <div className="editing-form-container">
-                                            <div className="form-group">
-                                                <label htmlFor={`title-${story.id}`}>Título</label>
-                                                <input
-                                                    id={`title-${story.id}`}
-                                                    type="text"
-                                                    value={active.title}
-                                                    onChange={(e) => updateField('title', e.target.value)}
-                                                    className="admin-form-input"
-                                                />
-                                            </div>
-
-                                            <div className="form-row-grid">
-                                                <div className="form-group">
-                                                    <label htmlFor={`cat-${story.id}`}>Categoría</label>
-                                                    <select
-                                                        id={`cat-${story.id}`}
-                                                        value={active.category}
-                                                        onChange={(e) => updateField('category', e.target.value)}
-                                                        className="admin-form-select"
-                                                    >
-                                                        {['Política', 'Economía', 'Salud', 'Justicia', 'Medio Ambiente',
-                                                          'Internacional', 'Educación', 'Tecnología', 'Infraestructura',
-                                                          'Deportes'].map((c) => (
-                                                            <option key={c} value={c}>{c}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            {/* Los titulares por espectro ya no son editables desde
-                                                aquí: son citas literales de terceros. Editarlos era
-                                                exactamente el mecanismo que permitía publicar
-                                                titulares que ningún medio escribió. Lo que se puede
-                                                corregir es la clasificación del medio, no lo que
-                                                el medio dijo. */}
-                                            <p className="editing-note">
-                                                Los titulares de cada medio no son editables: son citas
-                                                literales verificables contra su enlace original.
-                                            </p>
-
-                                            <div className="edit-actions-row">
-                                                <button
-                                                    className="cancel-edit-btn"
-                                                    onClick={() => { setEditingId(null); setEditData(null); }}
-                                                >
-                                                    Cancelar
-                                                </button>
-                                                <button className="save-approve-btn" onClick={() => handleApprove(story.id)}>
-                                                    <Check size={16} aria-hidden="true" /> Guardar y aprobar
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="staging-card-view">
-                                            <h3 className="staging-title">{story.title}</h3>
-                                            <p className="staging-summary">{story.summary}</p>
-
-                                            <div className="staging-specs">
-                                                <span>Categoría: <strong>{story.category}</strong></span>
-                                                <span>Fuentes: <strong>{story.sources?.length ?? 0}</strong></span>
-                                            </div>
-
-                                            <div className="staging-card-actions">
-                                                <button
-                                                    className="admin-btn edit"
-                                                    onClick={() => { setEditingId(story.id); setEditData({ ...story }); }}
-                                                >
-                                                    <Edit2 size={14} aria-hidden="true" /> Editar
-                                                </button>
-                                                <div className="publish-actions">
-                                                    <button className="admin-btn reject" onClick={() => handleReject(story.id)}>
-                                                        <X size={14} aria-hidden="true" /> Rechazar
-                                                    </button>
-                                                    <button className="admin-btn approve" onClick={() => handleApprove(story.id)}>
-                                                        <Check size={14} aria-hidden="true" /> Aprobar
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                        {pending.map((story) => (
+                            <StoryCard
+                                key={story.id}
+                                story={story}
+                                busy={busyId === story.id}
+                                onDecide={handleDecide}
+                            />
+                        ))}
                     </div>
                 )}
+            </div>
+
+            {decided.length > 0 && (
+                <div className="staging-queue-section">
+                    <h2>Decisiones recientes</h2>
+                    <ul className="decided-list">
+                        {decided.map((story) => (
+                            <li key={story.id} className={`decided-row state-${story.state}`}>
+                                <span className={`decided-badge state-${story.state}`}>
+                                    {story.state === 'aprobada' ? 'Aprobada' : 'Rechazada'}
+                                </span>
+                                <span className="decided-title">{story.title}</span>
+                                <span className="decided-meta">
+                                    {story.reviewer} · {new Date(story.decidedAt).toLocaleString('es-CO')}
+                                    {story.reason && ` · ${story.reason}`}
+                                </span>
+                                <button
+                                    type="button"
+                                    className="admin-btn edit"
+                                    onClick={() => handleDecide(story.id, 'pendiente')}
+                                    disabled={busyId === story.id}
+                                >
+                                    <RotateCcw size={14} aria-hidden="true" /> Devolver a la cola
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+};
+
+/**
+ * Tarjeta de una historia en la cola.
+ *
+ * Muestra la cobertura por espectro porque es el dato que decide: una historia
+ * con un solo medio no se puede contrastar, y saberlo antes de aprobarla evita
+ * publicar como "cobertura contrastada" lo que es una nota suelta.
+ */
+const StoryCard = ({ story, busy, onDecide }) => {
+    const total = story.coverage.left + story.coverage.center + story.coverage.right;
+
+    return (
+        <div className="staging-card">
+            <div className="staging-card-meta">
+                <span className="staging-id">{story.id}</span>
+                <span className="staging-timestamp">
+                    {story.publishedAt
+                        ? new Date(story.publishedAt).toLocaleString('es-CO')
+                        : 'sin fecha'}
+                </span>
+            </div>
+
+            <div className="staging-card-view">
+                <h3 className="staging-title">{story.title}</h3>
+                <p className="staging-summary">
+                    Titular de <strong>{story.titleSource ?? 'medio no catalogado'}</strong>.
+                    Cita literal: no es editable.
+                </p>
+
+                <div className="staging-specs">
+                    <span>Categoría: <strong>{story.category ?? '—'}</strong></span>
+                    <span>Medios: <strong>{total}</strong></span>
+                    <span>
+                        Cobertura:{' '}
+                        <strong>
+                            {story.coverage.left} izq · {story.coverage.center} centro ·{' '}
+                            {story.coverage.right} der
+                        </strong>
+                    </span>
+                    {story.insufficientCoverage && (
+                        <span className="staging-warning">
+                            Cobertura insuficiente para afirmar un punto ciego
+                        </span>
+                    )}
+                    {story.blindspotSpectrum && (
+                        <span className="staging-warning">
+                            Punto ciego: {story.blindspotSpectrum === 'left' ? 'izquierda' : 'derecha'}
+                        </span>
+                    )}
+                </div>
+
+                <div className="staging-card-actions">
+                    <div className="publish-actions">
+                        <button
+                            className="admin-btn reject"
+                            onClick={() => onDecide(story.id, 'rechazada')}
+                            disabled={busy}
+                        >
+                            <X size={14} aria-hidden="true" /> Rechazar
+                        </button>
+                        <button
+                            className="admin-btn approve"
+                            onClick={() => onDecide(story.id, 'aprobada')}
+                            disabled={busy}
+                        >
+                            <Check size={14} aria-hidden="true" /> Aprobar
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

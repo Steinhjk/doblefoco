@@ -619,3 +619,65 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ── Decisiones de moderación (F2-02) ────────────────────────────────────── */
+
+.staging-warning {
+    font-weight: 700;
+    color: var(--bias-right, #b4532a);
+}
+
+.decided-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.decided-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px 12px;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left-width: 3px;
+    border-radius: var(--radius-sm);
+}
+
+.decided-row.state-aprobada { border-left-color: #2e7d5b; }
+.decided-row.state-rechazada { border-left-color: #b4532a; }
+
+.decided-badge {
+    padding: 3px 8px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+}
+
+.decided-badge.state-aprobada { color: #2e7d5b; background: rgba(46, 125, 91, 0.12); }
+.decided-badge.state-rechazada { color: #b4532a; background: rgba(180, 83, 42, 0.12); }
+
+.decided-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+/* La firma y la fecha ocupan la fila completa por debajo del título: es
+   contexto, no encabezado, y en móvil no debe competir por el ancho. */
+.decided-meta {
+    grid-column: 1 / -1;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+    .decided-row {
+        grid-template-columns: 1fr;
+    }
+}

@@ -6,7 +6,6 @@ import { newsData } from '../data/mockData';
 import { fetchFeed, isApiConfigured } from '../services/apiClient';
 import { normalizeStories } from '../lib/story';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
-import { getApprovedStories, subscribeToFeed } from '../services/storageService';
 import './NewsFeed.css';
 
 const PAGE_SIZE = 10;
@@ -20,45 +19,39 @@ const NewsFeed = () => {
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
     const [remoteStories, setRemoteStories] = useState([]);
-    const [localStories, setLocalStories] = useState([]);
     const [source, setSource] = useState(isApiConfigured ? 'loading' : 'fixture');
 
     useEffect(() => {
         let cancelled = false;
 
-        const load = async () => {
-            // Sin VITE_API_URL no se intenta la petición. Antes se llamaba
-            // siempre a http://localhost:5000, que en producción está
-            // bloqueado por CSP y por contenido mixto: cada carga gastaba una
-            // petición condenada a fallar y ensuciaba la consola.
-            if (isApiConfigured) {
-                const result = await fetchFeed({ limit: 100 });
-                if (cancelled) return;
+        // Sin VITE_API_URL no se intenta la petición. Antes se llamaba siempre a
+        // http://localhost:5000, que en producción está bloqueado por CSP y por
+        // contenido mixto: cada carga gastaba una petición condenada a fallar.
+        if (!isApiConfigured) return undefined;
 
-                if (result.ok && result.stories.length) {
-                    setRemoteStories(normalizeStories(result.stories));
-                    setSource('api');
-                    return;
-                }
+        fetchFeed({ limit: 100 }).then((result) => {
+            if (cancelled) return;
+
+            if (result.ok && result.stories.length) {
+                setRemoteStories(normalizeStories(result.stories));
+                setSource('api');
+            } else {
                 setSource('fixture');
             }
+        });
 
-            setLocalStories(normalizeStories(getApprovedStories()));
-        };
-
-        load();
-        const unsubscribe = subscribeToFeed(load);
-
-        return () => {
-            cancelled = true;
-            unsubscribe();
-        };
+        return () => { cancelled = true; };
     }, []);
 
+    // Ya no se mezclan las historias "aprobadas" del localStorage (F2-02). Eran
+    // visibles únicamente en el navegador de quien las aprobó, así que el sitio
+    // se veía distinto para cada persona y ninguna de esas versiones era la
+    // real. Las decisiones viven ahora en la base; qué hace el feed público con
+    // ellas es una decisión de producto todavía abierta.
     const allNews = useMemo(() => {
         if (source === 'api' && remoteStories.length) return remoteStories;
-        return [...localStories, ...normalizeStories(newsData)];
-    }, [source, remoteStories, localStories]);
+        return normalizeStories(newsData);
+    }, [source, remoteStories]);
 
     const nationalCount = useMemo(
         () => allNews.filter((s) => s.category !== 'Internacional').length,

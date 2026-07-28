@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { categories, newsData } from '../data/mockData';
-import { getApprovedStories } from '../services/storageService';
 import { normalizeStories } from '../lib/story';
 import NewsCard from '../components/NewsCard';
 import AnimateIn from '../components/AnimateIn';
@@ -10,7 +9,7 @@ const Categories = () => {
     const [active, setActive] = useState(null);
 
     const stories = useMemo(
-        () => normalizeStories([...getApprovedStories(), ...newsData]),
+        () => normalizeStories(newsData),
         []
     );
 

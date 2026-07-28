@@ -123,17 +123,48 @@ CREATE TABLE IF NOT EXISTS story_articles (
 CREATE INDEX IF NOT EXISTS story_articles_article_idx ON story_articles (article_id);
 
 -- ── 5. Moderación (F2-02) ────────────────────────────────────────────────────
--- Hoy las aprobaciones viven en el localStorage de UN navegador: no se
--- comparten con el equipo ni con los visitantes. El panel no es un CMS, es una
--- nota adhesiva.
+-- Antes las aprobaciones vivían en el localStorage de UN navegador: no se
+-- compartían con el equipo ni con los visitantes, y un borrado de datos del
+-- navegador las perdía. El panel no era un CMS, era una nota adhesiva.
+--
+-- Una fila aquí es una DECISIÓN sobre una historia, no una copia de ella. La
+-- historia sigue viviendo en `stories` y se recalcula en cada ciclo; lo que se
+-- guarda es quién dijo qué sobre ella y cuándo.
+
+-- Migración desde la forma anterior de la tabla, que guardaba el revisor como
+-- texto libre porque todavía no existían cuentas. Solo actúa si la tabla está
+-- VACÍA: con decisiones dentro no se toca nada y la aplicación fallará de forma
+-- visible, que es preferible a perder trabajo editorial en silencio. Cuando
+-- haya datos en producción esto pedirá una herramienta de migraciones de
+-- verdad; hoy hay una base y la tabla nació hace horas.
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+         WHERE table_schema = 'public' AND table_name = 'moderation' AND column_name = 'reviewer'
+    ) AND NOT EXISTS (SELECT 1 FROM moderation) THEN
+        DROP TABLE moderation;
+    END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS moderation (
-    story_id    TEXT PRIMARY KEY REFERENCES stories (id) ON DELETE CASCADE,
-    state       TEXT NOT NULL CHECK (state IN ('pendiente', 'aprobada', 'rechazada')),
-    reviewer    TEXT NOT NULL,
-    reason      TEXT,
-    decided_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    story_id     TEXT PRIMARY KEY REFERENCES stories (id) ON DELETE CASCADE,
+    state        TEXT NOT NULL CHECK (state IN ('aprobada', 'rechazada')),
+    -- Quién decidió. Las cuentas se desactivan pero no se borran (admin_users
+    -- .disabled_at), justamente para que esta referencia no se quede huérfana:
+    -- saber quién aprobó qué es lo que hace auditable al panel.
+    reviewer_id  TEXT NOT NULL REFERENCES admin_users (id),
+    reason       TEXT,
+    decided_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE INDEX IF NOT EXISTS moderation_state_idx    ON moderation (state);
+CREATE INDEX IF NOT EXISTS moderation_reviewer_idx ON moderation (reviewer_id);
+
+-- No existe el estado 'pendiente'. Pendiente es la AUSENCIA de fila, y por eso
+-- se quitó del CHECK: si estuviera, habría dos formas de representar lo mismo
+-- —sin fila, o con fila 'pendiente'— y toda consulta tendría que contemplar las
+-- dos. Lo pendiente es un LEFT JOIN sin coincidencia.
 
 -- ── 6. Acceso al panel (F2-04) ───────────────────────────────────────────────
 -- Sustituye a AdminGate, que comparaba una passphrase incrustada en el bundle

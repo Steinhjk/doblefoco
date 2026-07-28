@@ -54,8 +54,10 @@
   Build de producción ................ ✅ correcto (vite build)
   ESLint ............................. ✅ 0 errores (antes: 26 errores)
   Catálogo de medios ................. ✅ fuente única, verificada por script
-  Tests automatizados ................ ❌ no existen
-  Integración continua ............... ❌ no existe
+  Tests automatizados ................ ✅ 48 pruebas sobre shared/
+                                          (sesgo, agrupamiento, tono)
+  Integración continua ............... ✅ lint + test + build + catálogo
+                                          en cada push y cada PR
   Persistencia de datos .............. ✅ Postgres 17.6 (Supabase, sa-east-1)
                                           artículos e historias sobreviven al
                                           reinicio; moderación sigue en
@@ -85,6 +87,8 @@
     npm run check:feeds      sondea los 36 feeds contra la red (lento)
     npm run docs:catalog     regenera el catálogo público desde el registro
     npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
+    npm test                 las 48 pruebas de shared/. `npm run test:watch`
+                             para desarrollo.
     npm run ingest:once      un ciclo de ingesta y salir. Es lo que ejecuta
                              GitHub Actions cada 30 min. Sale con 1 si no pudo
                              persistir.
@@ -389,7 +393,7 @@
             colisiones entre pendingData (101,102,103) y el catálogo.
 
 ===============================================================================
- FASE 2 — CIMIENTOS                                            [~] EN CURSO (1/11)
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (3/11)
 ===============================================================================
  Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
  reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
@@ -486,15 +490,41 @@
             lo que un sistema de tipos detecta en segundos, y llegaron a
             producción sin que nadie se enterara.
 
- [ ] F2-09  Pruebas con Vitest
-            Prioridad: shared/biasAnalysis.js y shared/clustering.js. Son el
-            corazón del producto y hoy no tienen ni una prueba.
-            CRITERIO: cobertura de las funciones puras de shared/.
+ [x] F2-09  Pruebas con Vitest
+            48 pruebas sobre las funciones puras de shared/: biasAnalysis,
+            clustering y headlineTone.
+            No persiguen cobertura de líneas. Persiguen las reglas que costaron
+            caras, cada una atada a su tarea: el umbral de 6 fuentes (F1-03),
+            que la media no cancele los extremos (F1-02), que la factualidad
+            devuelva null en vez de 0.88 (F0-09), que los ids salgan del
+            contenido y no del reloj (F1-11), y sobre todo que el titular no se
+            toque.
+            Esa última está escrita como invariante, no como caso: NINGUNA
+            cadena del resultado de analyzeHeadlineTone puede estar fuera del
+            léxico. Da igual cómo se llame el campo que alguien añada para
+            "limpiar un poco" el titular —el ROADMAP marca esa idea como no
+            reconsiderable, y ahora además es exigible.
+            VERIFICACIÓN, por mutación deliberada: bajar BLINDSPOT_MIN_SOURCES
+            de 6 a 3 y añadir un campo con el titular editado hace fallar 3
+            pruebas. Una suite que no falla al romper el código no verifica
+            nada.
+            HALLAZGO: una prueba escrita esperando que el agrupamiento NO
+            tolerara un cambio de conjugación falló, porque sí lo tolera. La
+            expectativa estaba mal, no el código. Queda documentado dónde está
+            el límite real: la tolerancia no viene de entender el idioma sino
+            de que sobren tokens coincidentes, así que se pierde en titulares
+            cortos. Es justo lo que F1-05 debe medir antes y después.
 
- [ ] F2-10  Integración continua en GitHub Actions
-            lint + test + build en cada push. Sin esto nada de lo anterior se
-            sostiene: el proyecto ya acumuló 26 errores de ESLint con la regla
-            en nivel "error" precisamente porque nadie ejecutaba el lint.
+ [x] F2-10  Integración continua en GitHub Actions
+            .github/workflows/ci.yml: lint + test + build + check:registry en
+            cada push a main y en cada PR. El proyecto llegó a acumular 26
+            errores de ESLint con la regla en nivel "error" precisamente porque
+            nadie ejecutaba el lint: una verificación que depende de que alguien
+            se acuerde no es una verificación.
+            LO QUE NO CUBRE, y conviene no confiarse: el SQL de server/db/ no
+            lo revisa nadie. Un nombre de columna mal escrito pasa lint, pasa
+            las pruebas y pasa el build; solo falla contra una base real.
+            Cubrirlo pide un Postgres de pruebas y es trabajo aparte.
 
  [ ] F2-11  Telemetría de errores en producción
             Hoy los fallos solo van a console.error: en producción son
@@ -696,13 +726,20 @@
  72 h. Hace falta un proceso que no se interrumpa. Sin eso, F1-05 y F1-12 se
  seguirían decidiendo a ojo.
 
- Detrás, y en este orden:
-   · F2-09 (pruebas) sobre shared/biasAnalysis.js y shared/clustering.js. Son el
-     corazón del producto y hoy no tienen ni una prueba. Ahora hay además SQL
-     que ningún lint revisa.
-   · F2-04 (autenticación real), que es el riesgo ALTO que queda abierto. Con
-     Supabase ya conectado, su capa de auth está a mano.
-   · F2-02 (moderación en la base), que además retira la salvaguarda
-     provisional que hoy protege las historias moderadas del borrado.
+ Y en paralelo, F2-04 (autenticación real): es el ÚNICO riesgo ALTO que queda
+ abierto, y además bloquea a los otros dos candidatos obvios.
+
+   · F2-02 (moderación en la base) antes de F2-04 EMPEORA las cosas. Hoy las
+     aprobaciones viven en el navegador de una persona: es inútil, pero es
+     inofensivo. Moverlas a una base compartida mientras la puerta tiene una
+     contraseña que viaja en el bundle convierte un problema de usabilidad en
+     uno de integridad editorial: cualquiera podría aprobar o rechazar.
+   · F3-01 (SEO / prerender) implica publicar el sitio, y publicarlo con esa
+     clave a la vista expone también la descarga de correos de suscriptores.
+     Además es prematuro por otro motivo: indexar un producto cuya función
+     principal aún no sabemos si funciona —2 de 563 historias alcanzan
+     cobertura— es construir el escaparate antes que el producto.
+
+ Con Supabase ya conectado, su capa de autenticación está a mano.
 
 ===============================================================================

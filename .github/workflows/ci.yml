@@ -1,0 +1,66 @@
+# =============================================================================
+#  Verificación continua — tarea F2-10 del ROADMAP
+# =============================================================================
+#  Por qué existe: el proyecto llegó a acumular 26 errores de ESLint con la
+#  regla en nivel "error", precisamente porque nadie ejecutaba el lint. Una
+#  verificación que depende de que alguien se acuerde no es una verificación.
+#
+#  Los tres pasos van en un solo job y en este orden, del más rápido al más
+#  lento, para que el fallo llegue cuanto antes:
+#    lint  (~5 s)  → test (~1 s)  → build (~8 s)
+#
+#  Lo que esto NO cubre, y conviene tener presente antes de confiarse: el SQL
+#  de server/db/ no lo revisa nadie aquí. Un nombre de columna mal escrito pasa
+#  lint, pasa las pruebas y pasa el build; solo falla contra una base real.
+#  Cubrirlo pide un Postgres de pruebas, que es trabajo aparte.
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Empujar dos veces seguidas no necesita dos verificaciones completas: la
+# primera queda obsoleta en cuanto llega la segunda.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: doblefoco-app
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Pruebas
+        run: npm test
+
+      - name: Build de producción
+        run: npm run build
+
+      # Comprueba la integridad del catálogo de medios sin tocar la red: ids y
+      # dominios únicos, campos obligatorios, rangos, y que ningún documento de
+      # src/docs declare un sesgo distinto del registro. Esa divergencia fue la
+      # tarea F1-04 y es la clase de error que reaparece en silencio.
+      - name: Integridad del catálogo
+        run: npm run check:registry

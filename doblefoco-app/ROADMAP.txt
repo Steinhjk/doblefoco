@@ -85,13 +85,20 @@
     npm run check:feeds      sondea los 36 feeds contra la red (lento)
     npm run docs:catalog     regenera el catálogo público desde el registro
     npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
+    npm run ingest:once      un ciclo de ingesta y salir. Es lo que ejecuta
+                             GitHub Actions cada 30 min. Sale con 1 si no pudo
+                             persistir.
     npm run db:migrate       aplica el esquema, proyecta el catálogo sobre
                              `sources` y vuelca el JSONL a `ingest_runs`.
                              Idempotente: se puede correr en cada despliegue.
 
-  RIESGO MEDIDO HOY: el máximo de medios distintos sobre un mismo hecho es 3, y
-  hacen falta 6 para poder afirmar un punto ciego. La función principal del
-  producto está hoy fuera de alcance. Ver la medición en F1-01.
+  RIESGO MEDIDO HOY, y por primera vez a la baja: hasta el 2026-07-27 el máximo
+  de medios distintos sobre un mismo hecho eran 3, con un umbral de 6 para poder
+  afirmar un punto ciego (F1-03). La función principal del producto estaba
+  literalmente fuera de alcance.
+  Con la ingesta acumulándose en la base, el cuarto ciclo produjo la PRIMERA
+  historia que cruza el umbral. Sigue siendo 1 de 559, así que el riesgo no está
+  cerrado: está cambiando de forma. Ver la tabla en F1-01.
 
 ===============================================================================
  FASE 0 — DETENER LO PELIGROSO                                    [x] COMPLETADA
@@ -215,14 +222,33 @@
             plana y la conclusión sería falsa.
             FALTA: dejar correr 7 días y escribir la decisión.
 
-            SEÑAL TEMPRANA (2026-07-27, tres ciclos consecutivos): las historias
-            multifuente pasaron de 14 a 17 a 21, y las que cruzan espectros de 7
-            a 8 a 9. Sube con los ciclos acumulados, que es exactamente la
-            hipótesis que esta tarea quería poner a prueba. Tres puntos no son
-            una serie y no se decide nada con ellos; pero es la primera
-            indicación de que la ventana, y no el tamaño del catálogo, era la
-            restricción. Las historias con cobertura suficiente para afirmar un
-            punto ciego siguen en 0.
+            SEÑAL TEMPRANA (2026-07-27, cuatro ciclos consecutivos):
+
+              ciclo   multifuente   cruzan espectros   con cobertura (≥6)
+                1          14               7                  0
+                2          17               8                  0
+                3          21               9                  0
+                4          29              15                  1
+
+            Las tres columnas suben con los ciclos acumulados, que es
+            exactamente la hipótesis que esta tarea quería poner a prueba.
+
+            EL DATO QUE IMPORTA es ese 1 de la última fila. Hasta ahora la
+            columna había sido 0 en TODAS las mediciones, incluida la de 36
+            feeds: el máximo de medios distintos sobre un mismo hecho eran 3, y
+            el umbral para poder afirmar un punto ciego es 6 (F1-03). Con esos
+            números la función principal del producto no era difícil, era
+            imposible. Es la primera vez que una historia real cruza el umbral.
+
+            Refuerza la sospecha escrita más arriba: la restricción era la
+            VENTANA, no el tamaño del catálogo. Una foto instantánea de 15
+            titulares por feed apenas se solapa; el solapamiento aparece al
+            acumular ciclos dentro de las 72 h.
+
+            Cuatro puntos no son una serie y no se decide nada con ellos —
+            F1-05 y F1-12 siguen esperando los 7 días. Pero cambia qué se está
+            midiendo: ya no es "¿es esto viable?" sino "¿a qué ritmo crece y
+            dónde se estabiliza?".
 
             PRIMERA MEDICIÓN (2026-07-27, ciclo único, 36 feeds):
               474 artículos · 358 historias · 14 multifuente · 7 cruzan

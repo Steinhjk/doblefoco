@@ -12,6 +12,7 @@
 import { Router } from 'express';
 import { requireSession } from './auth/routes.js';
 import { counts, decide, listDecided, listPending, undecide } from './db/moderationStore.js';
+import { refreshModeration } from './services/ingestDaemon.js';
 
 const router = Router();
 
@@ -87,6 +88,9 @@ router.post('/:storyId', async (req, res) => {
     try {
         if (state === 'pendiente') {
             const removed = await undecide(storyId);
+            // El feed público deja de ocultarla de inmediato, sin esperar al
+            // siguiente ciclo: rectificar un rechazo tiene que surtir efecto ya.
+            await refreshModeration();
             return res.json({ success: true, state: 'pendiente', removed: removed > 0 });
         }
 
@@ -100,6 +104,9 @@ router.post('/:storyId', async (req, res) => {
         if (!result) {
             return res.status(404).json({ success: false, error: 'La historia no existe' });
         }
+
+        // Un rechazo retira la historia del feed público en el acto.
+        await refreshModeration();
 
         return res.json({ success: true, ...result });
     } catch (error) {

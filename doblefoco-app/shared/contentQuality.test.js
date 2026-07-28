@@ -36,9 +36,19 @@ describe('lo que SÍ debe descartarse', () => {
         expect(filtra('Los signos del zodiaco con mejor suerte esta semana').indexable).toBe(false);
     });
 
-    it('cotizaciones del día', () => {
+    it('cotizaciones del día en bruto', () => {
         expect(filtra('Precio del dólar hoy en Colombia').indexable).toBe(false);
         expect(filtra('TRM hoy: así cerró la divisa').indexable).toBe(false);
+        // Caso real del corpus que la primera versión NO capturaba, porque
+        // decía el día de la semana en vez de "hoy".
+        expect(filtra('Precio del dólar en casas de cambio para el martes, 28 de julio de 2026').indexable).toBe(false);
+    });
+
+    it('portadas, boletines y programas completos', () => {
+        expect(filtra('Portada 27 de julio del 2026').indexable).toBe(false);
+        expect(filtra('Últimas noticias | 28 julio 2026 - Tarde').indexable).toBe(false);
+        expect(filtra('27 de julio de 2026 - Voz Populi, programa completo').indexable).toBe(false);
+        expect(filtra('Noticias Caracol En Vivo: Últimas noticias de Colombia y el Mundo hoy').indexable).toBe(false);
     });
 
     it('partes meteorológicos', () => {
@@ -81,6 +91,16 @@ describe('lo que NO debe descartarse — el error caro', () => {
         for (const titular of titulares) {
             expect(filtra(titular).indexable, titular).toBe(true);
         }
+    });
+
+    it('no borra noticias por contener "últimas noticias" o una fecha (falso positivo real)', () => {
+        // La versión amplia de la regla `indice` capturaba este titular real
+        // del corpus por contener "últimas noticias" más adelante. Es una
+        // noticia sobre un terremoto: borrarla no habría dejado ningún rastro
+        // visible. Por eso los patrones van anclados al inicio.
+        expect(filtra('Terremoto en Japón | Víctimas, daños y edificios colapsados tras el fuerte sismo').indexable).toBe(true);
+        expect(filtra('Las últimas noticias sobre el paro de transportadores en el Magdalena Medio').indexable).toBe(true);
+        expect(filtra('El 7 de agosto de 2026 será la posesión presidencial en Cali').indexable).toBe(true);
     });
 
     it('deja pasar el ANÁLISIS de mercado, no solo el dato', () => {

@@ -22,6 +22,7 @@ import {
     getLatestFeed,
     getStoryById,
     getDatabaseStats,
+    getRejectedCount,
 } from './services/ingestDaemon.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
@@ -158,6 +159,10 @@ app.get('/api/health', (req, res) => {
             // Qué respalda esos números. `false` significa que un reinicio los
             // pone a cero: es información operativa, no un detalle interno.
             persistent: isDatabaseEnabled(),
+            // Historias retiradas por moderación y por tanto ausentes del feed.
+            // Se publica en vez de esconderse: es una intervención editorial y
+            // el sitio promete decir cuándo interviene.
+            withheld: getRejectedCount(),
         },
         timestamp: new Date().toISOString(),
     });

@@ -54,9 +54,17 @@ const nameIndex = args.indexOf('--name');
 const displayName = nameIndex !== -1 ? args[nameIndex + 1] ?? null : null;
 const toFile = args.includes('--out');
 
-// El primer argumento suelto que no sea el valor de --name.
+/**
+ * El primer argumento suelto que no sea el valor de --name.
+ *
+ * El `nameIndex !== -1` no es defensivo de más: sin `--name`, `indexOf`
+ * devuelve -1, así que `nameIndex + 1` vale 0 y el filtro descartaba el
+ * argumento en posición 0 — que es justamente el correo. El comando solo
+ * funcionaba si se pasaba `--name`.
+ */
+const valorDeName = nameIndex === -1 ? -1 : nameIndex + 1;
 const email = args
-    .filter((a, i) => !a.startsWith('--') && i !== nameIndex + 1)[0]
+    .filter((a, i) => !a.startsWith('--') && i !== valorDeName)[0]
     ?.trim()
     .toLowerCase();
 

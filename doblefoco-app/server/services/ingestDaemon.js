@@ -42,6 +42,7 @@ import {
     pruneExpiredArticles,
     recordRun,
 } from '../db/contentStore.js';
+import { rejectedStoryIds } from '../db/moderationStore.js';
 
 // ---------------------------------------------------------------------------
 // Configuración
@@ -115,6 +116,22 @@ let storiesById = new Map();
 let ingestionInProgress = false;
 let lastRunAt = null;
 let lastRunReport = null;
+
+/**
+ * Historias retiradas por moderación (F2-02).
+ *
+ * El modelo editorial es publicar todo y moderar para RETIRAR, no aprobar para
+ * publicar: con ~1 000 historias y 140 nuevas por ciclo, una cola de aprobación
+ * previa dejaría el sitio permanentemente desactualizado o se despacharía en
+ * bloque sin mirar. Las garantías del producto las da el motor.
+ *
+ * Se mantiene en memoria porque el conjunto es pequeño y se consulta en cada
+ * petición del feed. Se refresca al arrancar, tras cada ciclo y en cuanto
+ * alguien decide algo en el panel.
+ *
+ * @type {Set<string>}
+ */
+let rejected = new Set();
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -270,6 +287,7 @@ async function persistToDatabase(fresh) {
     const expired = await pruneExpiredArticles(RETENTION_MS);
     const saved = await persistArticles(fresh);
     const stories = await persistStories(storiesFeed);
+    await refreshModeration();
 
     const parts = [`db: +${saved} art.`];
     if (stories) parts.push(`${stories.stories} hist.`);
@@ -304,6 +322,7 @@ export async function hydrate() {
     // Se agrupan de inmediato: el sitio debe poder servir contenido desde el
     // primer segundo, sin esperar a que termine el ciclo de ingesta.
     buildMultisourceStories();
+    await refreshModeration();
 
     return recovered.length;
 }
@@ -671,9 +690,30 @@ function buildMultisourceStories() {
 // Lectura
 // ---------------------------------------------------------------------------
 
-export const getLatestFeed = () => storiesFeed;
+/**
+ * Refresca la lista de historias retiradas. Nunca lanza: si la base no
+ * responde, se conserva la última lista conocida en vez de dejar de ocultar lo
+ * que ya estaba retirado.
+ */
+export async function refreshModeration() {
+    if (!isDatabaseEnabled()) return 0;
 
-export const getStoryById = (id) => storiesById.get(id) ?? null;
+    try {
+        rejected = await rejectedStoryIds();
+    } catch (error) {
+        console.warn(`[moderación] no se pudo refrescar la lista de retiradas: ${error.message}`);
+    }
+
+    return rejected.size;
+}
+
+/** Feed público: sin las historias retiradas por el equipo editorial. */
+export const getLatestFeed = () => storiesFeed.filter((s) => !rejected.has(s.id));
+
+export const getStoryById = (id) => (rejected.has(id) ? null : storiesById.get(id) ?? null);
+
+/** Cuántas historias está ocultando la moderación ahora mismo. */
+export const getRejectedCount = () => rejected.size;
 
 export const getDatabaseStats = () => ({
     totalArticles: articlesByLink.size,

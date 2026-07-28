@@ -68,9 +68,12 @@
   Motor de ingesta ................... ✅ operativo, verificado contra la red
   Revisión editorial del sesgo ....... ❌ 40 valores, ninguno firmado
 
-  Última verificación de feeds (2026-07-27, `npm run check:feeds`):
-    33 de 33 medios respondiendo · 36 de 36 feeds · 2 116 artículos disponibles
-    reparto: 1 izquierda · 5 centro-izq. · 14 centro · 13 centro-der. · 0 derecha
+  Última verificación de feeds (2026-07-28):
+    34 feeds activos · 31 medios. Se retiraron W Radio y RTVC Noticias por
+    traer páginas de etiqueta y contenido de hace meses (ver DESCARTES).
+    reparto: 1 izquierda · 4 centro-izq. · 13 centro · 13 centro-der. · 0 derecha
+    ATENCIÓN: con 4 en centro-izquierda, el criterio de F1-06 (6 medios de
+    izquierda o centro-izquierda) dejó de cumplirse. F1-06 vuelve a estar abierta.
 
   Última verificación de ingesta real (2026-07-28, ingesta acumulada en la base
   desde el día anterior):
@@ -374,7 +377,14 @@
             distinto del registro y que el catálogo público esté sincronizado.
             Probado con una divergencia inyectada a propósito: falla y sale 1.
 
- [x] F1-06  Resolver medios inaccesibles y ampliar cobertura
+ [~] F1-06  Resolver medios inaccesibles y ampliar cobertura
+            REABIERTA EL 2026-07-28. Estaba marcada [x] y su criterio dejó de
+            cumplirse al retirar los feeds de RTVC Noticias y W Radio: quedan
+            5 medios de izquierda/centro-izquierda con feed y el criterio pedía
+            6. `npm run check:registry` lo dice en cada ejecución.
+            Se reabre en lugar de reescribir el criterio a la baja, que es la
+            regla 1 de este documento. Lo que sigue es el estado con el que se
+            cerró en su momento.
             De 16 feeds a 36. Incorporados W Radio, Caracol Radio, Noticias
             Caracol, Blu Radio, Noticias RCN, La FM, El País (Cali), La
             Patria, El Universal, La Opinión, Vanguardia, El Heraldo, KienyKe,
@@ -683,12 +693,31 @@
             ya no producidas por el agrupamiento. Hace falta decidir qué se hace
             con ellas.
 
-            DECISIÓN DE PRODUCTO PENDIENTE, y no la toma el código: hoy
-            /api/feed sirve TODAS las historias, moderadas o no. Filtrar por
-            aprobación dejaría el sitio vacío —963 historias, 0 aprobadas— hasta
-            que alguien revise a mano. Las opciones son moderar solo lo que se
-            destaca, aprobar por lotes, o publicar todo y usar la moderación
-            para retirar. Hay que elegir antes de F3-01.
+            MODELO EDITORIAL, decidido el 2026-07-28: PUBLICAR TODO Y MODERAR
+            PARA RETIRAR. /api/feed sirve las historias sin decidir y las
+            aprobadas, y oculta las rechazadas.
+
+            Por qué no al revés. Con ~1 200 historias y unas 140 nuevas por
+            ciclo, una cola de aprobación previa deja el sitio permanentemente
+            desactualizado o se despacha en bloque sin mirar —que es no moderar,
+            con la mentira añadida de que hubo revisión—. Y las garantías que
+            promete el producto (titular literal, enlace verificable, ausencia
+            declarada) las da el motor, no una persona pulsando un botón.
+            Es además el modelo de Ground News: su trabajo humano está en el
+            catálogo de medios, nunca en la historia individual.
+
+            IMPLEMENTACIÓN: el motor mantiene en memoria el conjunto de
+            historias retiradas y lo refresca al arrancar, tras cada ciclo y en
+            cuanto alguien decide en el panel. Un rechazo surte efecto en el
+            acto, no en el ciclo siguiente.
+            /api/health publica `withheld`: cuántas historias está ocultando la
+            moderación. Se declara en vez de esconderse, porque es una
+            intervención editorial y el sitio promete decir cuándo interviene.
+
+            VERIFICADO de punta a punta (2026-07-28): rechazar la historia de
+            cabecera baja el feed de 1 226 a 1 225, su URL directa pasa de 200 a
+            404 y `withheld` marca 1. Devolverla a la cola restaura las dos
+            cosas.
 
  [ ] F2-03  Feed paginado desde la API y retirar mockData del bundle
             El fixture pesa 417 kB (27 kB comprimido) y se carga en casi todas

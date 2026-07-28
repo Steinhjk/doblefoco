@@ -85,14 +85,59 @@ export const QUALITY_RULES = [
     },
     {
         id: 'cotizacion',
-        reason: 'cotización o dato de mercado del día',
-        // El precio del dólar es el mismo en todos los medios. El ANÁLISIS de
-        // por qué subió sí es encuadre, y por eso se exige que el titular sea
-        // el dato en bruto ("hoy", "en vivo", "cierre").
+        reason: 'cotización del día en bruto',
+        /**
+         * El precio del dólar es idéntico en todos los medios. El ANÁLISIS de
+         * por qué se movió sí es encuadre, y encuadres opuestos sobre lo mismo
+         * es el producto entero.
+         *
+         * La primera versión estaba mal en LAS DOS direcciones, y solo se vio
+         * al mirar los titulares reales del corpus:
+         *   · `\b(trm|dolar)\b .{0,20} \bhoy\b` descartaba "Dólar hoy en
+         *     Colombia: mercado se movería entre la expectativa de rebote y la
+         *     incertidumbre", que es análisis y debía publicarse.
+         *   · Y a la vez NO capturaba "Precio del dólar en casas de cambio para
+         *     el martes, 28 de julio", que sí es el dato en bruto, porque no
+         *     dice "hoy" sino el día de la semana.
+         *
+         * Ahora se exige la FORMA del boletín diario recurrente, no la mera
+         * presencia de "dólar" cerca de una marca temporal. Titulares como
+         * "El dólar se sitúa por debajo de los $3.200" quedan fuera del filtro
+         * a propósito: son limítrofes y se prefiere publicarlos.
+         */
         patterns: [
-            /\b(precio|valor|cotizacion)\s+del\s+dolar\b[^.]{0,25}\b(hoy|ahora|en\s+vivo|cierre)\b/,
-            /\b(trm|dolar)\b[^.]{0,20}\b(hoy|de\s+hoy)\b/,
-            /\bprecio\s+del?\s+(euro|bitcoin|cafe|petroleo)\b[^.]{0,20}\bhoy\b/,
+            /^precio\s+del\s+dolar\b/,
+            /^(el\s+)?(dolar|trm)\s+(hoy|de\s+hoy)\b/,
+            /\btrm\b[^.]{0,15}\b(hoy|de\s+hoy)\b/,
+            /\b(dolar|trm)\b[^.]{0,30}\b(asi\s+(abrio|cerro)|apertura\s+de\s+la\s+jornada|cierre\s+de\s+la\s+jornada)\b/,
+            /^precio\s+del?\s+(euro|bitcoin|cafe|petroleo)\b[^.]{0,20}\bhoy\b/,
+        ],
+    },
+    {
+        id: 'indice',
+        reason: 'portada, boletín o programa completo, no una pieza',
+        /**
+         * Páginas índice que los feeds publican como si fueran artículos: la
+         * portada del día, el boletín horario, el programa de radio completo.
+         * No son noticias sino contenedores, y su titular no describe ningún
+         * hecho: "Portada 27 de julio del 2026".
+         *
+         * Además de no aportar nada, envenenan el agrupamiento: al ser
+         * titulares cortos y casi idénticos entre sí, se fusionan formando
+         * historias multifuente falsas con varios medios.
+         *
+         * PATRONES ANCLADOS AL INICIO, no sueltos. La versión amplia que probé
+         * primero capturaba "Terremoto en Japón | Víctimas, daños y edificios
+         * colapsados…" por contener "últimas noticias" más adelante en el
+         * titular. Una noticia real, borrada sin dejar rastro: el mismo error
+         * que "El Dorado".
+         */
+        patterns: [
+            /^portada\b/,
+            /^ultimas\s+noticias\s*[|:—-]/,
+            /\bprograma\s+completo\b/,
+            /\ben\s+vivo\b[^.]{0,20}\bultimas\s+noticias\s+de\b/,
+            /^\d{1,2}\s+de\s+\w+\s+de\s+\d{4}\s*[-–—]/,
         ],
     },
     {

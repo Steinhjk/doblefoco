@@ -125,6 +125,36 @@ export async function undecide(storyId) {
     return rowCount;
 }
 
+/**
+ * Ids de las historias RECHAZADAS.
+ *
+ * Es lo que el feed público tiene que ocultar. Se devuelve la lista de
+ * rechazadas y no la de aprobadas porque el modelo editorial elegido es
+ * publicar todo y moderar para RETIRAR:
+ *
+ *   · Filtrar por aprobación dejaría el sitio vacío hasta que alguien revisara
+ *     un millar de historias a mano, y a ese ritmo o va siempre desactualizado
+ *     o se aprueba en bloque sin mirar, que es lo mismo que no moderar pero con
+ *     la mentira añadida de que hubo revisión.
+ *   · Las garantías del producto —titulares literales, enlace verificable,
+ *     ausencia declarada— las da el motor, no una persona dando a un botón.
+ *
+ * La lista de rechazadas es pequeña por construcción, así que cabe en memoria
+ * y se consulta sin tocar la base en cada petición.
+ *
+ * @returns {Promise<Set<string>>} vacío si no hay base: ante la duda se
+ *   publica, que es el fallo menos grave de los dos.
+ */
+export async function rejectedStoryIds() {
+    const result = await safeQuery(
+        `SELECT story_id FROM moderation WHERE state = 'rechazada'`,
+        [],
+        'lista de rechazadas'
+    );
+
+    return new Set((result?.rows ?? []).map((r) => r.story_id));
+}
+
 /** Cuántas hay en cada estado. Para las cifras de cabecera del panel. */
 export async function counts() {
     const result = await safeQuery(

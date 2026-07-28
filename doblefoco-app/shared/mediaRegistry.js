@@ -97,7 +97,15 @@ export const MEDIA_REGISTRY = [
         domain: 'rtvcnoticias.com', country: 'CO', group: 'Medio público nacional',
         bias: -0.35, factuality: 0.82, reviewedAt: null,
         biasRationale: 'Sistema de medios públicos; su línea editorial sigue al gobierno de turno, lo que hace este valor especialmente volátil.',
-        feed: { url: gnews('rtvcnoticias.com'), via: 'gnews', category: 'Política' },
+        // FEED RETIRADO 2026-07-28. La búsqueda site: en Google News no
+        // devuelve artículos de RTVC sino sus PÁGINAS DE ETIQUETA: los
+        // titulares eran "Gustavo Petro", "reforma pensional", "irán",
+        // "principal". Ingerirlos habría metido decenas de falsos artículos
+        // cuyo título es solo un tema, y al ser tan cortos el agrupamiento los
+        // habría fusionado entre sí.
+        // El rss.xml propio del sitio existe pero lleva 59 días sin actualizar.
+        // Se conserva la ficha del medio —es un canal público relevante— y se
+        // recupera en cuanto haya un feed utilizable. Ver F1-12.
     },
     {
         id: 'el-espectador', name: 'El Espectador', shortName: 'El Espectador',
@@ -132,7 +140,15 @@ export const MEDIA_REGISTRY = [
         domain: 'wradio.com.co', country: 'CO', group: 'Grupo PRISA',
         bias: 0.0, factuality: 0.87, reviewedAt: null,
         biasRationale: 'Radio informativa con entrevistas a todo el arco político; encuadre variable según franja.',
-        feed: { url: gnews('wradio.com.co'), via: 'gnews', category: 'Política' },
+        // FEED RETIRADO 2026-07-28. Google News apenas indexa este dominio:
+        // la búsqueda site: devolvía artículos de hace 197 días, y acotándola
+        // con when:7d bajaba a 4 resultados, dos de ellos con el TÍTULO VACÍO.
+        // Buscar por nombre ("W Radio") sí trae contenido fresco, pero de
+        // OTROS medios que la mencionan —"Claro Sports por W Radio"—, que es
+        // la misma misatribución que costó F1-07.
+        // No se encontró RSS directo: /feed/, /rss/, /rss.xml y
+        // /arc/outboundfeeds/ devuelven 404 y la portada no declara ninguno.
+        // Se conserva la ficha y se recupera si aparece un feed. Ver F1-12.
     },
     {
         id: 'caracol-radio', name: 'Caracol Radio', shortName: 'Caracol',

@@ -83,7 +83,7 @@
 
   Herramientas de verificación disponibles:
     npm run check:registry   integridad del catálogo, sin tocar la red
-    npm run check:feeds      sondea los 36 feeds contra la red (lento)
+    npm run check:feeds      sondea los 34 feeds contra la red (lento)
     npm run docs:catalog     regenera el catálogo público desde el registro
     npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
     npm test                 las 78 pruebas de shared/ y server/auth/.
@@ -94,6 +94,8 @@
     npm run ingest:once      un ciclo de ingesta y salir. Es lo que ejecuta
                              GitHub Actions cada 30 min. Sale con 1 si no pudo
                              persistir.
+    npm run analyze:cocoverage grafo de co-cobertura entre medios, sin usar
+                             el sesgo declarado (F1-15)
     npm run clean:filtered   retira del corpus lo que el filtro descartaría hoy
                              (F1-14). Dry-run por defecto; --apply para borrar.
     npm run db:migrate       aplica el esquema, proyecta el catálogo sobre
@@ -891,6 +893,29 @@
    Se optó por arreglar el motor para que traiga titulares reales. El fixture
    queda como dato de desarrollo y desaparece con F2-03. El aviso de la interfaz
    (F0-11) cubre el interín.
+
+ · W Radio y RTVC Noticias — FEEDS RETIRADOS 2026-07-28
+   Los dos aparecían con CERO artículos y se revisaron a fondo antes de
+   concluir nada sobre ellos. Ninguno es un problema del medio:
+
+   RTVC: la búsqueda site: en Google News no devuelve artículos sino PÁGINAS DE
+   ETIQUETA. Los titulares eran "Gustavo Petro", "reforma pensional", "irán",
+   "principal". Acotar con when:7d subía a 32 resultados en 72 h y empeoraba la
+   cosa: habría inyectado decenas de falsos artículos cuyo título es solo un
+   tema y que, por cortos, el agrupamiento habría fusionado entre sí. Su
+   rss.xml propio existe pero lleva 59 días sin actualizarse.
+
+   W Radio: Google apenas indexa el dominio. site: devolvía artículos de hace
+   197 días; con when:7d bajaba a 4, dos con el TÍTULO VACÍO. Buscar por nombre
+   sí trae contenido fresco pero de OTROS medios que la mencionan ("Claro
+   Sports por W Radio"), que es la misatribución que costó F1-07. No hay RSS
+   directo: /feed/, /rss/, /rss.xml y /arc/outboundfeeds/ dan 404 y la portada
+   no declara ninguno.
+
+   LECCIÓN: el arreglo aparente (añadir when:) habría metido basura. Un feed
+   mudo es mejor que un feed que miente.
+   Se conservan las dos fichas en el catálogo y se recuperan si aparece un feed
+   utilizable. Quedan 34 feeds y 31 medios activos.
 
  · Las2Orillas — RETIRADO TEMPORALMENTE
    Responde 403 a nuestro User-Agent. Se retira en lugar de dejar un feed que

@@ -7,7 +7,7 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-07-27
+Generado: 2026-07-28
 Medios en el catálogo: 40
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
@@ -51,7 +51,7 @@ CENTRO-IZQUIERDA  [−0.60 a −0.20)  —  6 medios
     poder político y económico.
 
   RTVC Noticias  ·  sesgo −0.35  ·  factualidad 82%
-    rtvcnoticias.com · Medio público nacional · CO · vía Google News · PROVISIONAL
+    rtvcnoticias.com · Medio público nacional · CO · sin feed (solo referencia) · PROVISIONAL
     Sistema de medios públicos; su línea editorial sigue al gobierno
     de turno, lo que hace este valor especialmente volátil.
 
@@ -93,7 +93,7 @@ CENTRO  [−0.20 a +0.20)  —  19 medios
     institucional europeo.
 
   W Radio  ·  sesgo +0.00  ·  factualidad 87%
-    wradio.com.co · Grupo PRISA · CO · vía Google News · PROVISIONAL
+    wradio.com.co · Grupo PRISA · CO · sin feed (solo referencia) · PROVISIONAL
     Radio informativa con entrevistas a todo el arco político;
     encuadre variable según franja.
 

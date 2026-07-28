@@ -55,7 +55,7 @@
   Build de producción ................ ✅ correcto (vite build)
   ESLint ............................. ✅ 0 errores (antes: 26 errores)
   Catálogo de medios ................. ✅ fuente única, verificada por script
-  Tests automatizados ................ ✅ 78 pruebas (sesgo, agrupamiento,
+  Tests automatizados ................ ✅ 84 pruebas (sesgo, agrupamiento,
                                           tono, contraseñas, filtro de formatos)
   Integración continua ............... ✅ lint + test + build + catálogo
                                           en cada push y cada PR
@@ -86,7 +86,7 @@
     npm run check:feeds      sondea los 34 feeds contra la red (lento)
     npm run docs:catalog     regenera el catálogo público desde el registro
     npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
-    npm test                 las 78 pruebas de shared/ y server/auth/.
+    npm test                 las 84 pruebas de shared/ y server/auth/.
                              `npm run test:watch` para desarrollo.
     npm run admin:create     crea o restablece una cuenta del panel. La
                              contraseña se genera y se imprime UNA vez.
@@ -94,6 +94,8 @@
     npm run ingest:once      un ciclo de ingesta y salir. Es lo que ejecuta
                              GitHub Actions cada 30 min. Sale con 1 si no pudo
                              persistir.
+    npm run eval:clustering  precisión y exhaustividad del agrupamiento
+                             contra el conjunto etiquetado (F1-05)
     npm run analyze:cocoverage grafo de co-cobertura entre medios, sin usar
                              el sesgo declarado (F1-15)
     npm run clean:filtered   retira del corpus lo que el filtro descartaría hoy
@@ -192,7 +194,7 @@
             inequívoco de que son datos de muestra y no cobertura real.
 
 ===============================================================================
- FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (10/15)
+ FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (11/15)
 ===============================================================================
  Objetivo: que cada elemento de la interfaz haga lo que dice hacer.
 
@@ -288,15 +290,67 @@
             ITEMS_PER_FEED, alargar la retención o rehacer el agrupamiento
             (F1-05). No conviene decidirlo hasta tener los 7 días.
 
- [ ] F1-05  Sustituir el agrupamiento por similitud semántica
-            Hoy: Jaccard sobre tokens, umbral 0.34 calibrado sobre 195
-            titulares reales (la calibración está documentada en
-            shared/clustering.js). Funciona pero pierde reformulaciones.
-            Siguiente paso: TF-IDF + coseno, o embeddings si F1-01 muestra que
-            hace falta. Requisito: no aumentar las fusiones incorrectas, que
-            son peores que las separaciones incorrectas.
-            CRITERIO: conjunto de prueba etiquetado a mano con precisión y
-            exhaustividad medidas antes y después.
+ [x] F1-05  Corregir el agrupamiento — MEDIDO, y no era lo que parecía
+            La tarea decía "sustituir Jaccard por similitud semántica". Se midió
+            con el rigor que pedía el criterio, y la respuesta fue que no: el
+            problema estaba en otro sitio.
+
+            CONJUNTO DE PRUEBA: shared/fixtures/clusteringPairs.js. 72 pares de
+            titulares REALES del corpus, muestreados por bandas de similitud
+            entre 0,20 y 0,60, solo entre medios distintos. 53 mismo hecho, 19
+            distintos. Regla de etiquetado uniforme —mismo hecho solo si ambos
+            reportan el mismo suceso concreto; una reacción es otro suceso— y
+            ante la duda, "distintos", porque fusionar es peor que separar.
+            Las etiquetas son un juicio, están versionadas en texto plano con
+            nota en los casos discutibles, y se pueden discutir.
+
+            TF-IDF + COSENO: implementado, medido y NO ADOPTADO.
+              umbral operativo actual (Jaccard 0,34): 2 fusiones ✗, 19 separ. ✗
+              mejor TF-IDF con ≤2 fusiones (0,50):    1 fusión ✗, 31 separ. ✗
+            A igualdad de fusiones en la zona media TF-IDF gana —con 5 fusiones
+            separa 11 frente a 18—, pero el proyecto opera en el extremo
+            conservador, y ahí no mejora. Se conserva el código
+            (`cosineSimilarity`, `buildIdf`) porque la medición se puede repetir
+            cuando el corpus crezca.
+
+            EL FALLO REAL: faltaba una pasada de fusión de grupos.
+            `clusterArticles` asignaba cada artículo al mejor grupo existente EN
+            ESE MOMENTO y no volvía a mirar los grupos nunca. Dos grupos podían
+            acabar siendo el mismo tema sin que nadie los comparara.
+            Medido con 13 titulares reales sobre el nombramiento de Mauricio
+            Gaona como embajador ante la ONU: salían DOS historias, de 8 y de 5
+            medios, con similitud 0,455 entre sí —muy por encima del umbral—.
+            Trece medios sobre un hecho superan de sobra los 6 que exige un
+            punto ciego; ocho y cinco por separado, no.
+            Cómo ocurría: el vocabulario del grupo se acumula, así que su unión
+            crece y la similitud de Jaccard con titulares nuevos BAJA. Un
+            artículo deja de encajar, abre un segundo grupo, y el reparto ya no
+            tiene vuelta atrás.
+            Cambiar la métrica NO lo arreglaba. Faltaba un paso.
+
+            VERIFICACIÓN: el caso Gaona pasa de 2 historias a 1 con 13 medios.
+            Sobre el corpus completo (1 384 artículos) la fusión actúa UNA vez:
+            1 239 → 1 238 historias, y el máximo de medios en una historia pasa
+            de 8 a 13. Impacto agregado modesto, corrección real.
+
+            EL UMBRAL NO SE TOCÓ. Se revisaron los 8 pares de grupos que quedan
+            entre 0,28 y 0,34: dos deberían fusionarse, tres no —son hechos
+            distintos de una misma saga— y uno es basura. Bajar el umbral
+            arreglaría dos y rompería tres.
+
+            COSTE: la fusión era cuadrática en número de grupos (2 151 ms con
+            1 384 artículos; con el techo de 5 000 habrían sido decenas de
+            segundos por ciclo). Resuelto con un índice invertido token→grupos,
+            que solo compara los que comparten vocabulario: 1 093 ms.
+
+            PRUEBAS: regresión con los titulares reales del caso Gaona, no
+            fusión de hechos distintos, terminación garantizada ante cadenas
+            patológicas, y que la fusión no pierda ni duplique artículos.
+            Hay además una prueba que DOCUMENTA una fusión incorrecta conocida
+            en vez de disimularla: "Petro pidió declarar insubsistente" y "Angie
+            no fue declarada insubsistente" se unen con 0,364 y son dos sucesos
+            distintos. Ya ocurría antes de este cambio. El día que se arregle,
+            esa prueba fallará y obligará a actualizarla.
 
  ── 1B. Catálogo de medios ────────────────────────────────────────────────────
 
@@ -881,6 +935,15 @@
    Editar la frase de otro y publicarla con su firma no es neutralizar. La
    carga se mide y se anota (F3-09); el titular no se toca. Esto no se
    reconsidera.
+
+ · TF-IDF + coseno para el agrupamiento — DESCARTADO CON DATOS
+   Implementado y medido contra 72 pares reales etiquetados a mano (F1-05). En
+   el punto de operación del proyecto —conservador, 2 fusiones incorrectas— no
+   mejora a Jaccard: para igualar las fusiones hay que subir el umbral a 0,50 y
+   ahí las separaciones incorrectas pasan de 19 a 31.
+   En la zona media SÍ gana (con 5 fusiones separa 11 frente a 18), así que la
+   decisión depende de dónde se quiera operar, no de que el método sea peor. El
+   código se conserva y la medición se puede repetir con más corpus.
 
  · Umbral de agrupamiento en 0.25 — DESCARTADO CON DATOS
    Duplicaba los emparejamientos (7 → 16 pares entre medios distintos) pero la

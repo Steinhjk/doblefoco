@@ -19,6 +19,7 @@ import {
     clusterArticles,
     contentHash,
     isSameStory,
+    mergeSimilarClusters,
     similarity,
     storyId,
     tokenize,
@@ -183,6 +184,108 @@ describe('clusterArticles', () => {
     it('no lanza con entradas que no son un array', () => {
         expect(clusterArticles(null)).toEqual([]);
         expect(clusterArticles(undefined)).toEqual([]);
+    });
+});
+
+describe('fusión de grupos (F1-05)', () => {
+    /**
+     * Regresión del caso que destapó el fallo, con titulares REALES del corpus
+     * del 2026-07-28.
+     *
+     * La asignación es de una sola pasada: cada artículo entra en el mejor
+     * grupo que exista en ese momento y nada vuelve a mirar los grupos después.
+     * Estos trece titulares acababan en DOS historias —una de 8 medios y otra
+     * de 5— cuya similitud entre sí era 0,455, muy por encima del umbral. Trece
+     * medios sobre un hecho superan de sobra los 6 que exige afirmar un punto
+     * ciego; ocho y cinco por separado, no.
+     */
+    const GAONA = [
+        'Abelardo de la Espriella designa a Mauricio Gaona como embajador de Colombia ante la ONU',
+        'Abelardo De La Espriella designó a Mauricio Gaona como embajador ante las Naciones Unidas',
+        '¿Quién es Mauricio Gaona, el nuevo embajador de Colombia ante las Naciones Unidas?',
+        'Mauricio Gaona será el embajador de Colombia ante la ONU en el gobierno de De la Espriella',
+        'De la Espriella designó al jurista Mauricio Gaona como embajador ante la ONU',
+        'De la Espriella anuncia al jurista Mauricio Gaona como embajador ante las Naciones Unidas',
+        'Mauricio Gaona, nuevo embajador de Colombia ante la ONU en Nueva York',
+        'Mauricio Gaona será el embajador de Abelardo ante la ONU',
+        'De la Espriella nombra a Mauricio Gaona embajador de Colombia ante la ONU',
+        'Abelardo De La Espriella ya eligió a su embajador ante la ONU: este es Mauricio Gaona',
+    ];
+
+    it('reúne en una sola historia lo que la pasada única partía en dos', () => {
+        const sinFusion = clusterArticles(GAONA.map((t) => ({ cleanTitle: t })), { merge: false });
+        const conFusion = clusterArticles(GAONA.map((t) => ({ cleanTitle: t })));
+
+        expect(sinFusion.length).toBeGreaterThan(1);
+        expect(conFusion).toHaveLength(1);
+        expect(conFusion[0].articles).toHaveLength(GAONA.length);
+    });
+
+    it('NO fusiona hechos distintos de una misma saga', () => {
+        // Dos desarrollos de la saga de Angie Rodríguez que comparten poco
+        // léxico: la petición y la denuncia penal son hechos distintos y así
+        // deben quedar. Si una futura calibración los uniera, esta prueba avisa.
+        const clusters = clusterArticles([
+            { cleanTitle: 'Petro pidió declarar insubsistente a Angie Rodríguez tras sus denuncias' },
+            { cleanTitle: 'Papá Pitufo denunció al presidente Gustavo Petro por injuria y calumnia' },
+        ]);
+
+        expect(clusters).toHaveLength(2);
+    });
+
+    it('DOCUMENTA una fusión incorrecta conocida, no la disimula', () => {
+        // La petición de Petro y el hecho de que NO se ejecutara son dos
+        // sucesos distintos, pero comparten cuatro tokens fuertes —angie,
+        // rodriguez, insubsistente, petro— y Jaccard da 0,364, por encima del
+        // umbral. Se fusionan.
+        //
+        // Es una de las dos fusiones incorrectas que mide `npm run
+        // eval:clustering` sobre el conjunto etiquetado, y NO la introdujo la
+        // fusión de grupos: ya ocurría en la asignación. Queda escrita aquí
+        // para que se sepa que existe y para que, el día que se arregle, esta
+        // prueba falle y obligue a actualizarla.
+        const clusters = clusterArticles([
+            { cleanTitle: 'Petro pidió declarar insubsistente a Angie Rodríguez tras sus denuncias' },
+            { cleanTitle: 'Angie Rodríguez no fue declarada insubsistente, pese a petición del presidente Petro' },
+        ]);
+
+        expect(clusters).toHaveLength(1);
+    });
+
+    it('deja en paz lo que ya estaba bien separado', () => {
+        const clusters = clusterArticles([
+            { cleanTitle: 'Corte Constitucional tumba la reforma pensional del gobierno' },
+            { cleanTitle: 'Selección Colombia venció a Uruguay en el estadio Metropolitano' },
+            { cleanTitle: 'Fuerte terremoto de magnitud 7,1 sacude el sur de Japón' },
+        ]);
+
+        expect(clusters).toHaveLength(3);
+    });
+
+    it('termina aunque se lo pongan difícil', () => {
+        // Cadena de titulares donde cada uno se parece al siguiente. Sin tope de
+        // pasadas, una fusión habilita otra indefinidamente y el ciclo de
+        // ingesta se cuelga.
+        const cadena = Array.from({ length: 40 }, (_, i) => ({
+            cleanTitle: `Reforma pensional avanza en el Congreso etapa ${i} debate ${i + 1} ponencia`,
+        }));
+
+        const inicio = Date.now();
+        const clusters = mergeSimilarClusters(clusterArticles(cadena, { merge: false }));
+
+        expect(Date.now() - inicio).toBeLessThan(3000);
+        expect(clusters.length).toBeGreaterThan(0);
+        // Ningún artículo se pierde ni se duplica al fusionar.
+        expect(clusters.reduce((n, c) => n + c.articles.length, 0)).toBe(cadena.length);
+    });
+
+    it('no pierde ni duplica artículos', () => {
+        const entrada = [...GAONA, 'Terremoto en Japón deja decenas de heridos'].map((t) => ({ cleanTitle: t }));
+        const clusters = clusterArticles(entrada);
+        const titulos = clusters.flatMap((c) => c.articles.map((a) => a.cleanTitle));
+
+        expect(titulos).toHaveLength(entrada.length);
+        expect(new Set(titulos).size).toBe(entrada.length);
     });
 });
 

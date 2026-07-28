@@ -1,3 +1,4 @@
+// @ts-check
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { topCoveredStories } from '../lib/story';

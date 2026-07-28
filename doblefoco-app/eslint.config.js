@@ -35,8 +35,16 @@ export default defineConfig([
 
   // Código de servidor. Antes no existía esta sección, así que `process` se
   // reportaba como no definido en server/index.js.
+  //
+  // `scripts/**` se añadió el 2026-07-28 por una razón concreta: no estaba
+  // cubierto, y al recortar comprobaciones de checkRegistry quedó una
+  // referencia a una variable borrada. `npm run lint` pasó en verde y el fallo
+  // solo apareció al EJECUTAR el script, en CI. Un identificador inexistente es
+  // lo más elemental que detecta un linter; lo único que hacía falta era
+  // mirarlo. Ahí viven el verificador del catálogo, el runner de migraciones y
+  // la creación de cuentas: código con consecuencias.
   {
-    files: ['server/**/*.js'],
+    files: ['server/**/*.js', 'scripts/**/*.mjs'],
     extends: [js.configs.recommended],
     languageOptions: {
       ecmaVersion: 'latest',

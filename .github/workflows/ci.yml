@@ -52,6 +52,14 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Detecta lo que el lint no puede ver: accesos a campos que no existen
+      # en una forma conocida. Se añadió tras dos fallos reales el 2026-07-28
+      # —un `story.body.length` sobre un campo retirado y un `<Info />` cuya
+      # importación se había borrado— que pasaron lint y build y solo habrían
+      # reventado en el navegador de un lector.
+      - name: Tipos
+        run: npm run typecheck
+
       - name: Pruebas
         run: npm test
 

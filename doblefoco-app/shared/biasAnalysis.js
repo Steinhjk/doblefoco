@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Análisis de sesgo y cobertura — ÚNICA FUENTE DE VERDAD.
  *

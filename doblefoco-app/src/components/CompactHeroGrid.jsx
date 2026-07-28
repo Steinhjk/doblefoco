@@ -1,3 +1,4 @@
+// @ts-check
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Layers, Sparkles } from 'lucide-react';

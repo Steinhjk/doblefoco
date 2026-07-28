@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Agrupamiento de artículos en historias multifuente e identificadores estables.
  *

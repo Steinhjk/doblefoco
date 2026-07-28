@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Normalización de historias y formato de fechas.
  *
@@ -53,6 +54,16 @@ function resolveSources(rawSources) {
 
 const rtf = new Intl.RelativeTimeFormat('es-CO', { numeric: 'auto' });
 
+/**
+ * Escalones de tiempo, del mayor al menor.
+ *
+ * La anotación no es adorno: sin ella se infiere `(string | number)[][]` y al
+ * desestructurar `[unit, ms]` ambos quedan como `string | number`. Con la tupla
+ * explícita, una unidad mal escrita —`'dya'` en vez de `'day'`— la detecta el
+ * chequeo en vez de lanzar `Intl.RelativeTimeFormat` en el navegador del lector.
+ *
+ * @type {Array<[Intl.RelativeTimeFormatUnit, number]>}
+ */
 const UNITS = [
     ['year', 365 * 24 * 60 * 60 * 1000],
     ['month', 30 * 24 * 60 * 60 * 1000],
@@ -156,7 +167,33 @@ export function normalizeStory(raw) {
     };
 }
 
-/** Normaliza una lista descartando entradas inválidas. */
+/**
+ * Forma de una historia normalizada.
+ *
+ * Es el contrato entre el motor y toda la interfaz: si un campo no está aquí,
+ * ningún componente puede leerlo. Escribirlo no es documentación decorativa —
+ * es lo que permite que `tsc` detecte un acceso a un campo inexistente, que es
+ * exactamente el fallo que se coló el 2026-07-28 al retirar `body` y dejar un
+ * `story.body.length` vivo en NewsDetail.
+ *
+ * @typedef {Object} Story
+ * @property {string} id
+ * @property {string} title
+ * @property {string} category
+ * @property {string|null} summary
+ * @property {string|null} publishedAt
+ * @property {Array<{name: string, bias: number, url?: string, factuality?: number}>} sources
+ * @property {ReturnType<typeof import('../../shared/biasAnalysis.js').analyzeCoverage>} coverage
+ * @property {number|null} factuality
+ * @property {{left: object|null, center: object|null, right: object|null}} perspectives
+ * @property {Array<object>} articles
+ */
+
+/**
+ * Normaliza una lista descartando entradas inválidas.
+ * @param {Array<object>} list
+ * @returns {Story[]}
+ */
 export function normalizeStories(list) {
     return (Array.isArray(list) ? list : [])
         .map(normalizeStory)

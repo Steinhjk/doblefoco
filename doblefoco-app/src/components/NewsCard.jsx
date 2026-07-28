@@ -1,3 +1,4 @@
+// @ts-check
 import { Link } from 'react-router-dom';
 import { EyeOff, ExternalLink, HelpCircle } from 'lucide-react';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';

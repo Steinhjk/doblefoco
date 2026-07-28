@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Filtro de formatos sin encuadre que comparar — tarea F1-14.
  *

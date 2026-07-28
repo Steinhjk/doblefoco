@@ -1,3 +1,4 @@
+// @ts-check
 import { useMemo, useState } from 'react';
 import { categories } from '../data/categories';
 import { useStories } from '../hooks/useStories';

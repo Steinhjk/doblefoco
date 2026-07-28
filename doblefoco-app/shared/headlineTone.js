@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Medición de carga emocional e ideológica en titulares.
  *

@@ -1,0 +1,45 @@
+{
+    "// Por qué existe": [
+        "Comprobación de tipos sobre JavaScript, sin migrar a TypeScript ni tocar",
+        "el build. `tsc` solo analiza: emit está desactivado y Vite sigue",
+        "compilando igual que antes.",
+        "",
+        "Motivo concreto: el 2026-07-28 se retiró el campo `body` del normalizador",
+        "de historias y quedó un `story.body.length` en NewsDetail. Lint pasó,",
+        "build pasó, y el fallo solo habría aparecido en el navegador de un lector.",
+        "Ese es exactamente el hueco que esto cubre, y es la misma clase de error",
+        "que causó F1-08 y F1-09 (campos que no existían, leídos por la interfaz).",
+        "",
+        "INCREMENTAL A PROPÓSITO: `checkJs` está en false y cada archivo se activa",
+        "poniéndole `// @ts-check` en la primera línea. Encender todo de golpe",
+        "produce cientos de errores, se convierte en una tarea de días y termina",
+        "silenciada con `ignore`. Se empieza por donde un error de forma cuesta",
+        "más caro y se amplía cuando toque."
+    ],
+    "// Sobre strict": [
+        "Desactivado a propósito. Con strict, `noImplicitAny` marca CADA parámetro",
+        "sin anotar del proyecto: cientos de errores que no son fallos, solo",
+        "ausencia de anotaciones. Esa lista se ignora y el chequeo acaba sirviendo",
+        "de nada.",
+        "Lo que sí interesa se conserva sin strict: el acceso a un campo que no",
+        "existe en una forma CONOCIDA (@typedef Story), las variables no definidas",
+        "y los errores de aridad. Se endurece por partes según se anoten módulos."
+    ],
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": true,
+        "strict": false,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "jsx": "react-jsx",
+        "types": ["node"]
+    },
+    "include": ["src/**/*", "shared/**/*", "server/**/*", "scripts/**/*", "types/**/*.d.ts"],
+    "exclude": ["node_modules", "dist"]
+}

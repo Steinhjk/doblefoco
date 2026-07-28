@@ -1,3 +1,4 @@
+// @ts-check
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX } from 'lucide-react';

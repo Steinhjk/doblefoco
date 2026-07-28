@@ -1,5 +1,6 @@
+// @ts-check
 import { useMemo, useState } from 'react';
-import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown } from 'lucide-react';
+import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown, Info } from 'lucide-react';
 import NewsCard from './NewsCard';
 import AnimateIn from './AnimateIn';
 import { useStories } from '../hooks/useStories';

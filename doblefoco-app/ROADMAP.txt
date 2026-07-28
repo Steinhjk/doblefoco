@@ -922,10 +922,55 @@
 
  ── 2C. Calidad ───────────────────────────────────────────────────────────────
 
- [ ] F2-08  TypeScript o JSDoc + checkJs, y validación con Zod en las fronteras
-            Las fallas F1-08 y F1-09 (campos que no existían) son exactamente
-            lo que un sistema de tipos detecta en segundos, y llegaron a
-            producción sin que nadie se enterara.
+ [~] F2-08  Comprobación de tipos sobre JavaScript, incremental
+            HECHA la mitad de JSDoc + checkJs. Queda Zod en las fronteras.
+
+            JUSTIFICADA POR DOS FALLOS DEL MISMO DÍA, no por principio:
+              · al retirar `body` del normalizador quedó vivo un
+                `story.body.length` en NewsDetail;
+              · al quitar el banner de demostración se borró la importación de
+                `Info`, que seguía usándose en un `<Info />` más abajo.
+            Los dos pasaron lint Y build. El segundo se dispara justamente
+            cuando ninguna historia alcanza los 6 medios —el caso normal
+            durante casi toda la vida del proyecto— así que llevaba ahí desde
+            que se tocó el archivo.
+            El lint no puede verlos: `no-undef` no mira dentro de JSX, y ningún
+            linter sabe qué campos tiene un objeto.
+            Es la misma clase de error que causó F1-08 y F1-09.
+
+            CÓMO: `tsc --noEmit` sobre el JavaScript existente. Sin migrar a
+            TypeScript, sin renombrar archivos, sin tocar el build — Vite
+            compila igual que antes.
+
+            INCREMENTAL A PROPÓSITO. `checkJs` está en false y cada archivo se
+            activa con `// @ts-check`. Ya están los cinco módulos de shared/,
+            src/lib/story.js y siete componentes.
+            Y `strict` está DESACTIVADO: con él, `noImplicitAny` marca cada
+            parámetro sin anotar del proyecto entero. Son cientos de avisos que
+            no son fallos sino ausencia de anotaciones, y una lista así se
+            ignora hasta que el chequeo no sirve de nada. Sin strict se
+            conserva lo que importa: campos inexistentes sobre formas conocidas,
+            variables no definidas y errores de aridad.
+
+            LA PIEZA CLAVE es el `@typedef Story` de src/lib/story.js: el
+            contrato entre el motor y la interfaz. Si un campo no está ahí,
+            ningún componente puede leerlo.
+            VERIFICACIÓN: con un archivo de prueba que accede a `story.body` y
+            a `story.inventado`, `tsc` reporta los dos como inexistentes y deja
+            pasar `title`, `coverage.total` y `perspectives.left`. Es decir,
+            detecta el fallo real de hoy y no produce falsos positivos.
+
+            De paso se anotó `UNITS` como tuplas en story.js: sin la anotación
+            se infería `(string | number)[][]`, y una unidad mal escrita
+            —`'dya'` por `'day'`— habría lanzado en el navegador del lector en
+            vez de detectarse aquí.
+
+            `npm run typecheck`, y añadido a CI entre el lint y las pruebas.
+
+            FALTA: validación con Zod en las fronteras (cuerpos de petición y
+            respuestas de la API). Hoy se validan a mano y con cuidado, así que
+            no es urgente; conviene medir si añade algo antes de meter una
+            dependencia.
 
  [x] F2-09  Pruebas con Vitest
             48 pruebas sobre las funciones puras de shared/: biasAnalysis,

@@ -1,3 +1,4 @@
+// @ts-check
 import { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useStories } from '../hooks/useStories';

@@ -18,7 +18,6 @@ import { dirname, resolve, basename } from 'node:path';
 import {
     MEDIA_REGISTRY,
     SPECTRUM_BANDS,
-    findMediaByName,
     getIngestFeeds,
     getBand,
 } from '../shared/mediaRegistry.js';

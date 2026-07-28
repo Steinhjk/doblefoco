@@ -12,6 +12,9 @@ import { Inbox, WifiOff } from 'lucide-react';
  * mundo. "Todavía no hay historias" es un hecho sobre la cobertura. Mostrarlas
  * con el mismo mensaje escondería la avería detrás de un dato.
  */
+/**
+ * @param {{reason?: string|null, title?: string, hint?: string}} props
+ */
 const EmptyState = ({ reason, title, hint }) => {
     const esAveria = Boolean(reason) && !/todav[ií]a no hay/i.test(reason);
     const Icon = esAveria ? WifiOff : Inbox;

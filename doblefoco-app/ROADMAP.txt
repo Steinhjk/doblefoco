@@ -547,6 +547,25 @@
             un efecto secundario de la ingesta.
 
  [ ] F1-13  Revisión editorial firmada de los valores de sesgo
+
+            GUARDIÁN YA INSTALADO (2026-07-28), aunque la revisión siga
+            pendiente: poner `reviewedAt` en un medio OBLIGA a rellenar
+            `biasSources` con al menos un enlace donde conste lo que se afirma.
+            `npm run check:registry` falla si falta, probado inyectando el caso.
+
+            Por qué antes de hacer la revisión y no después: los lectores pueden
+            reportar que un medio está mal clasificado (F2-07). Es información
+            útil y por eso se recoge. Pero una campaña coordinada puede inflar
+            esa señal a voluntad, y aunque los reportes no tocan nada por sí
+            solos, sí dirigen la atención del panel hasta que alguien "corrige"
+            un valor sin más evidencia que la insistencia.
+            La regla cierra ese camino: se puede señalar cuanto se quiera, y
+            cambiar la clasificación sigue exigiendo producir dónde consta. Un
+            recuento de reportes no es una fuente.
+            Es la misma regla que ya regía para las fichas de propiedad, por el
+            mismo motivo: son afirmaciones sobre organizaciones identificables
+            que pueden discutirlas.
+
             Los 40 valores del catálogo llevan justificación escrita pero
             ninguno está firmado: `reviewedAt` es null en los 40 y el catálogo
             público los muestra como PROVISIONALES. Es el estado honesto, pero
@@ -880,6 +899,19 @@
             proporción: una historia con cien "sin objeción" y dos "hechos
             distintos agrupados" merece la misma atención que otra con solo esos
             dos. Interesa la señal, no el respaldo.
+
+            CONTRA LA MANIPULACIÓN, dos defensas de distinta naturaleza:
+              · ESTRUCTURAL. Firmar un valor de sesgo exige citar fuente
+                (F1-13). Los reportes señalan dónde mirar; no pueden servir de
+                evidencia para cambiar nada. Es una regla del verificador, no
+                una buena intención.
+              · VISIBLE. El panel marca en rojo las ráfagas: 3 o más reportes de
+                problema sobre una misma historia en menos de 30 minutos. No
+                pretende detectar coordinación —puede ser un enlace compartido—
+                pero sin ese dato doce reportes en cuatro minutos se ven
+                idénticos a doce repartidos en diez días.
+                VERIFICADO: 5 reportes en 3 minutos se marcan; 4 repartidos en 6
+                días (8 640 minutos) no.
 
             VERIFICACIÓN (2026-07-28, contra la base real): reporte anónimo sin
             sesión → 200; tipo inválido → 400 con la lista de válidos; historia

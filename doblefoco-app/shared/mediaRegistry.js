@@ -30,6 +30,30 @@
  * Antes de publicar, cada valor debe ser revisado y firmado por el equipo
  * editorial, y `reviewedAt` debe dejar de ser null.
  *
+ * FIRMAR EXIGE CITAR
+ * ------------------
+ * Poner `reviewedAt` OBLIGA a rellenar `biasSources` con al menos un enlace
+ * donde conste lo que se afirma. `npm run check:registry` falla si no está, y
+ * está probado inyectando el caso a propósito.
+ *
+ *     reviewedAt: '2026-08-15',
+ *     biasSources: [
+ *         'https://colombia.mom-gmr.org/en/media/detail/outlet/revista-semana/',
+ *         'https://moe.org.co/observatorio/',
+ *     ],
+ *
+ * No es burocracia. Los lectores pueden reportar que un medio está mal
+ * clasificado (F2-07), y eso es útil para saber dónde mirar — pero una campaña
+ * coordinada puede inflar esa señal a voluntad. La regla corta el camino
+ * indirecto: se puede señalar cuanto se quiera, y cambiar la clasificación
+ * sigue exigiendo producir dónde consta. Un recuento de reportes no es fuente.
+ *
+ * Fuentes utilizables para el caso colombiano, ya localizadas: el Media
+ * Ownership Monitor de RSF y FECOLPER (propiedad), el Observatorio de Medios de
+ * la MOE (sesgo de cobertura en elecciones), ColombiaCheck (factualidad) y las
+ * agencias internacionales para los medios que cubran. Donde no haya ancla
+ * externa, se declara como criterio propio en vez de disimularlo.
+ *
  * Escala: -1.0 (izquierda marcada) … 0.0 (centro) … +1.0 (derecha marcada)
  * `factuality` es el historial de rigor factual del medio, NO una evaluación
  * de una noticia concreta.

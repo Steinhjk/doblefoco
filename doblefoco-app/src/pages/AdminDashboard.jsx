@@ -317,6 +317,21 @@ const AdminDashboard = () => {
                                             sin objeción · {r.conformes}
                                         </span>
                                     )}
+                                    {/*
+                                        Ráfaga: varios reportes concentrados en
+                                        muy poco tiempo. No prueba coordinación
+                                        —puede ser un enlace compartido— pero es
+                                        justo el dato que hace desconfiar a
+                                        tiempo, y sin él doce reportes en cuatro
+                                        minutos se ven igual que doce en diez
+                                        días.
+                                    */}
+                                    {r.problemas >= 3 && r.minutosDeRafaga !== null &&
+                                     r.minutosDeRafaga < 30 && (
+                                        <span className="report-tag alerta">
+                                            {r.problemas} en {r.minutosDeRafaga} min — posible ráfaga
+                                        </span>
+                                    )}
                                 </span>
                             </li>
                         ))}

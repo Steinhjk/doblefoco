@@ -59,9 +59,47 @@ for (const media of MEDIA_REGISTRY) {
         fail(`${media.id}: dominio mal formado "${media.domain}"`);
     }
 
-    // El sesgo es un juicio sobre una organización real: debe estar firmado.
+    /**
+     * El sesgo es un juicio sobre una organización real: debe estar firmado.
+     * Mientras no lo esté, el catálogo público lo marca como PROVISIONAL.
+     */
     if (!media.reviewedAt) {
         warn(`${media.id}: sesgo ${media.bias >= 0 ? '+' : ''}${media.bias} SIN revisión editorial`);
+        continue;
+    }
+
+    /**
+     * FIRMAR EXIGE CITAR. Esta es la defensa estructural contra que la
+     * clasificación se mueva desde fuera.
+     *
+     * Los reportes del lector (F2-07) señalan medios posiblemente mal
+     * clasificados, y eso es útil. Pero una campaña coordinada puede inflar esa
+     * señal a voluntad, y aunque los reportes no tocan nada por sí solos, sí
+     * pueden dirigir la atención hasta que alguien "corrija" un valor sin más
+     * evidencia que la insistencia.
+     *
+     * La regla lo corta de raíz: se puede reportar cuanto se quiera, pero
+     * cambiar y firmar una clasificación exige producir dónde consta. Un
+     * recuento de reportes no es una fuente.
+     *
+     * Es la misma regla que ya rige para las fichas de propiedad más abajo, y
+     * por el mismo motivo: son afirmaciones sobre organizaciones identificables
+     * que pueden discutirlas.
+     */
+    if (!Array.isArray(media.biasSources) || media.biasSources.length === 0) {
+        fail(
+            `${media.id}: el sesgo está firmado (reviewedAt ${media.reviewedAt}) pero sin una ` +
+            `sola fuente en "biasSources". Firmar una clasificación exige citar dónde consta; ` +
+            `los reportes de lectores señalan dónde mirar, no sirven de evidencia.`
+        );
+        continue;
+    }
+
+    for (const source of media.biasSources) {
+        const url = typeof source === 'string' ? source : source?.url;
+        if (!/^https?:\/\/\S+$/.test(url ?? '')) {
+            fail(`${media.id}: fuente de sesgo mal formada ${JSON.stringify(source)}`);
+        }
     }
 }
 

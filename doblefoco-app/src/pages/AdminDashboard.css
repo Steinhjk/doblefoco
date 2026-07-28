@@ -739,3 +739,9 @@
     color: var(--text-muted);
     background: var(--bg-subtle);
 }
+
+/* Ráfaga de reportes: rojo, porque aquí sí conviene desconfiar. */
+.report-tag.alerta {
+    color: #a32d2d;
+    background: rgba(163, 45, 45, 0.13);
+}

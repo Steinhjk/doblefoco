@@ -72,7 +72,17 @@ export async function storiesNeedingReview({ days = 14, limit = 20 } = {}) {
                count(*) FILTER (WHERE r.kind = 'medio-mal-clasificado')::int AS "medioMalClasificado",
                count(*) FILTER (WHERE r.kind = 'falta-izquierda')::int       AS "faltaIzquierda",
                count(*) FILTER (WHERE r.kind = 'falta-derecha')::int         AS "faltaDerecha",
-               max(r.created_at) AS "ultimoReporte"
+               min(r.created_at) AS "primerReporte",
+               max(r.created_at) AS "ultimoReporte",
+               -- Minutos entre el primero y el último reporte de PROBLEMA.
+               -- Doce reportes en cuatro minutos y doce repartidos en diez días
+               -- son cosas distintas, y sin este dato se ven idénticas en el
+               -- panel. No pretende detectar coordinación: la hace visible, que
+               -- es lo que un humano necesita para desconfiar a tiempo.
+               EXTRACT(EPOCH FROM (
+                   max(r.created_at) FILTER (WHERE r.kind <> 'preciso') -
+                   min(r.created_at) FILTER (WHERE r.kind <> 'preciso')
+               ))::int / 60 AS "minutosDeRafaga"
           FROM reader_reports r
           JOIN stories s ON s.id = r.story_id
          WHERE r.created_at > now() - ($1::int * interval '1 day')

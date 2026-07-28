@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ThumbsUp, ThumbsDown, MessageSquare, Check } from 'lucide-react';
+import { sendReport } from '../services/reportClient';
 import './UserFeedbackWidget.css';
 
 function readStoredVote(storyId) {
@@ -11,17 +12,27 @@ function readStoredVote(storyId) {
 }
 
 /**
- * Auditoría comunitaria del análisis de cobertura.
+ * Reporte del lector sobre el análisis de cobertura.
  *
- * La versión anterior mostraba "84% Validación Comunitarias" leyendo un
- * `useState({ agree: 84, disagree: 16 })` escrito a mano. Los votos nunca
- * salían de localStorage, así que ese porcentaje era decorado: presentaba una
- * constante como si fuera el resultado agregado de miles de lectores.
+ * TRES VERSIONES, Y CONVIENE SABER POR QUÉ ESTA
+ * ---------------------------------------------
+ * La primera mostraba "84 % Validación Comunitaria" leyendo un `useState`
+ * escrito a mano: una constante presentada como el agregado de miles de
+ * lectores. La retiró F0-08.
  *
- * Aquí no se muestra ningún agregado, porque todavía no existe backend que
- * agregue nada. El voto se guarda localmente y sirve para que el lector vea
- * que ya opinó. Cuando exista el endpoint (tarea F2-07 del ROADMAP), este
- * componente enviará el voto y podrá mostrar cifras reales.
+ * La segunda —honesta pero hueca— guardaba el voto en localStorage y lo decía:
+ * "todavía no la enviamos a ningún servidor". Preguntaba y tiraba la respuesta.
+ *
+ * Esta lo envía (F2-07), y SIGUE sin mostrar ningún porcentaje. No es una
+ * limitación pendiente: es la decisión. Un voto de lectores anónimos no valida
+ * un análisis de cobertura, y publicar el agregado sería volver al problema de
+ * la primera versión con datos de verdad, que no lo hace menos engañoso.
+ *
+ * Lo que sí hace, y es lo valioso: las cuatro categorías de desacuerdo
+ * corresponden con las preguntas abiertas más difíciles del proyecto —falta de
+ * cobertura por banda (F1-12), medio mal clasificado (F1-13), hechos distintos
+ * agrupados como uno (F1-05)— y ahora llegan al panel como pistas de revisión.
+ * Ese último caso es la misma señal que costó etiquetar 72 pares a mano.
  */
 const UserFeedbackWidget = ({ storyId }) => {
     const [reason, setReason] = useState('');
@@ -40,13 +51,27 @@ const UserFeedbackWidget = ({ storyId }) => {
         setReason('');
     }
 
-    const save = (voteType) => {
+    /**
+     * Guarda y envía.
+     *
+     * El localStorage se mantiene por una razón distinta a la de antes: ya no
+     * es el destino del dato sino la memoria de que este lector ya opinó sobre
+     * esta historia, para no volver a preguntárselo.
+     *
+     * El envío no se espera ni se comprueba: si el servidor no responde, el
+     * lector no tiene nada que hacer al respecto y mostrarle un error sobre una
+     * pista de revisión interna sería ruido. La pérdida de un reporte es
+     * asumible; interrumpir la lectura, no.
+     */
+    const save = (kind) => {
         try {
-            localStorage.setItem(`doblefoco-vote-${storyId}`, voteType);
+            localStorage.setItem(`doblefoco-vote-${storyId}`, kind);
         } catch {
             /* sin efecto: no bloquea la interacción */
         }
-        setVote(voteType);
+
+        sendReport(storyId, kind);
+        setVote(kind);
         setSubmitted(true);
     };
 
@@ -66,8 +91,8 @@ const UserFeedbackWidget = ({ storyId }) => {
             {!submitted ? (
                 <div className="feedback-actions">
                     <button
-                        className={`feedback-btn agree ${vote === 'agree' ? 'active' : ''}`}
-                        onClick={() => save('agree')}
+                        className={`feedback-btn agree ${vote === 'preciso' ? 'active' : ''}`}
+                        onClick={() => save('preciso')}
                     >
                         <ThumbsUp size={14} aria-hidden="true" /> Sí, es preciso
                     </button>
@@ -97,7 +122,7 @@ const UserFeedbackWidget = ({ storyId }) => {
                             <button
                                 className="submit-reason-btn"
                                 disabled={!reason}
-                                onClick={() => save('disagree')}
+                                onClick={() => save(reason)}
                             >
                                 Enviar observación
                             </button>
@@ -110,9 +135,9 @@ const UserFeedbackWidget = ({ storyId }) => {
                     <div>
                         <h4>Registrado</h4>
                         <p>
-                            Tu respuesta quedó guardada en este navegador. Todavía no la
-                            enviamos a ningún servidor: la agregación comunitaria está en
-                            desarrollo.
+                            Gracias. Tu observación va al equipo editorial como señal de
+                            revisión. No publicamos porcentajes de acuerdo: un recuento de
+                            votos no valida un análisis, pero sí nos dice dónde mirar.
                         </p>
                     </div>
                 </div>

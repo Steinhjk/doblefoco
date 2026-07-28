@@ -580,7 +580,7 @@
             colisiones entre pendingData (101,102,103) y el catálogo.
 
 ===============================================================================
- FASE 2 — CIMIENTOS                                            [~] EN CURSO (7/11)
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (8/11)
 ===============================================================================
  Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
  reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
@@ -841,9 +841,52 @@
             El actual es un Map en memoria: sirve para un proceso único, no
             para varias instancias. Mover a Redis cuando haya más de una.
 
- [ ] F2-07  Endpoint de agregación del feedback comunitario
-            Los votos del lector se quedan en localStorage y no se agregan.
-            Hasta que exista, la UI no muestra ningún porcentaje (F0-08).
+ [x] F2-07  Reportes del lector como instrumentación, no como validación
+            LA TAREA CAMBIÓ DE NOMBRE Y DE PROPÓSITO. Estaba escrita como
+            "agregación del feedback comunitario", y agregarlo para mostrarlo
+            habría sido volver al problema de F0-08 con datos de verdad: un
+            recuento de votos anónimos no valida un análisis de cobertura, y
+            publicar "el 84 % está de acuerdo" no es menos engañoso por ser
+            cierto el porcentaje.
+
+            LO QUE SÍ VALÍA. Al mirar el widget se vio que las cuatro opciones
+            que ofrece a quien discrepa corresponden UNA A UNA con las preguntas
+            abiertas más difíciles del proyecto:
+
+              falta-izquierda / falta-derecha  → F1-12, equilibrio del catálogo
+              medio-mal-clasificado            → F1-13, valores de sesgo
+              historias-distintas              → F1-05, fusiones incorrectas
+
+            La última es exactamente la señal que costó etiquetar 72 pares a
+            mano, pero continua y sobre tráfico real. Y hasta ahora cada una de
+            esas observaciones se tiraba a la basura.
+
+            HECHO: tabla `reader_reports`, POST /api/report/:storyId público, y
+            la agregación DETRÁS DE LA SESIÓN, en el panel. El sitio público
+            sigue sin mostrar ningún porcentaje, y eso no es una limitación
+            pendiente: es la decisión.
+
+            SIN DATOS PERSONALES POR CONSTRUCCIÓN. La tabla tiene cuatro
+            columnas —id, historia, tipo, fecha— y ninguna identifica a quien
+            reporta: ni IP, ni sesión, ni huella. El abuso lo contiene el límite
+            de peticiones, que vive en memoria y no persiste nada. Así queda
+            fuera del alcance de la Ley 1581 por diseño y no por política, que
+            es la única forma de que siga siendo cierto dentro de un año.
+            CONTRAPARTIDA ASUMIDA: un lector puede reportar más de una vez. Es
+            tolerable porque el dato es una pista para revisión, no un veredicto;
+            el coste de un reporte de más es mirar una historia que estaba bien.
+
+            El panel ordena por número de reportes de PROBLEMA, no por
+            proporción: una historia con cien "sin objeción" y dos "hechos
+            distintos agrupados" merece la misma atención que otra con solo esos
+            dos. Interesa la señal, no el respaldo.
+
+            VERIFICACIÓN (2026-07-28, contra la base real): reporte anónimo sin
+            sesión → 200; tipo inválido → 400 con la lista de válidos; historia
+            inexistente → 404; GET de la agregación sin sesión → 401; con sesión
+            devuelve totales por tipo y las historias ordenadas por problemas.
+            Comprobado además que la tabla no tiene ninguna columna
+            identificativa.
 
  ── 2C. Calidad ───────────────────────────────────────────────────────────────
 

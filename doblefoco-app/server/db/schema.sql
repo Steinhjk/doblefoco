@@ -214,7 +214,46 @@ CREATE INDEX IF NOT EXISTS admin_sessions_expires_idx ON admin_sessions (expires
 -- Las sesiones caducadas se barren al validar, no con un cron:
 --   DELETE FROM admin_sessions WHERE expires_at < now();
 
--- ── 7. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
+-- ── 7. Reportes del lector (F2-07) ───────────────────────────────────────────
+-- Los votos del lector se quedaban en el localStorage de su navegador y no los
+-- veía nadie, ni siquiera él mismo desde otro dispositivo.
+--
+-- NO es "validación comunitaria". Un voto de lectores anónimos no valida un
+-- análisis, y publicar "el 84 % está de acuerdo" sería repetir exactamente el
+-- fallo que corrigió F0-08: una cifra decorativa presentada como medición.
+-- Estos reportes son INSTRUMENTACIÓN: señalan dónde mirar.
+--
+-- Las cuatro categorías de desacuerdo corresponden una a una con las preguntas
+-- abiertas más difíciles del proyecto:
+--   falta-izquierda / falta-derecha  → F1-12, equilibrio del catálogo
+--   medio-mal-clasificado            → F1-13, revisión de los valores de sesgo
+--   historias-distintas              → F1-05, fusiones incorrectas
+-- Esa última es la misma señal que se obtuvo etiquetando 72 pares a mano, pero
+-- continua y sobre tráfico real.
+--
+-- SIN DATOS PERSONALES, y por eso no hay columna de IP ni de identificador de
+-- sesión: solo qué se reportó, sobre qué historia y cuándo. El abuso se
+-- contiene con el límite de peticiones en memoria, que no persiste nada. Así
+-- esta tabla queda fuera del alcance de la Ley 1581 por construcción, no por
+-- política.
+
+CREATE TABLE IF NOT EXISTS reader_reports (
+    id          BIGSERIAL PRIMARY KEY,
+    story_id    TEXT NOT NULL REFERENCES stories (id) ON DELETE CASCADE,
+    kind        TEXT NOT NULL CHECK (kind IN (
+                    'preciso',
+                    'falta-izquierda',
+                    'falta-derecha',
+                    'medio-mal-clasificado',
+                    'historias-distintas'
+                )),
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS reader_reports_story_idx ON reader_reports (story_id);
+CREATE INDEX IF NOT EXISTS reader_reports_kind_idx  ON reader_reports (kind, created_at DESC);
+
+-- ── 8. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
 -- Ley 1581 de 2012: dato personal. No sale en ninguna exportación pública de
 -- contenido, y `deleted_at` permite atender una solicitud de supresión sin
 -- perder el registro de que se atendió.

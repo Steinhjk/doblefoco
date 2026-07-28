@@ -89,6 +89,15 @@ export async function fetchCounts() {
 }
 
 /**
+ * Lo que reportaron los lectores (F2-07). Solo el panel lo ve.
+ */
+export async function fetchReports({ days = 14, limit = 20 } = {}) {
+    const result = await request(`/api/moderation/reports?days=${days}&limit=${limit}`);
+    if (!result.ok) return result;
+    return { ok: true, totals: result.data?.totals ?? null, stories: result.data?.stories ?? [] };
+}
+
+/**
  * Registra una decisión.
  * `state` puede ser 'aprobada', 'rechazada' o 'pendiente' (retira la decisión).
  */

@@ -30,6 +30,7 @@ import { dailySummaryFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
+import { recordReport, REPORT_KINDS } from './db/reportStore.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -166,6 +167,48 @@ app.get('/api/health', (req, res) => {
         },
         timestamp: new Date().toISOString(),
     });
+});
+
+/**
+ * Reporte del lector sobre una historia (F2-07).
+ *
+ * PÚBLICO y sin sesión a propósito: pedir cuenta para señalar un defecto
+ * garantiza que casi nadie lo señale, y lo que se recoge aquí no es una
+ * opinión que haya que atribuir a nadie sino una PISTA sobre dónde mirar.
+ *
+ * No se guarda IP, ni identificador de sesión, ni nada que identifique a quien
+ * reporta: solo qué, sobre qué historia y cuándo. El abuso lo contiene el
+ * límite de peticiones general, que vive en memoria y no persiste nada. Así la
+ * tabla queda fuera del alcance de la Ley 1581 por construcción.
+ *
+ * Como contrapartida asumida, un mismo lector puede reportar más de una vez.
+ * Es tolerable porque estos datos son una pista para revisión editorial, no un
+ * veredicto: el coste de un reporte de más es mirar una historia que estaba
+ * bien.
+ */
+app.post('/api/report/:storyId', async (req, res) => {
+    const { storyId } = req.params;
+    const kind = req.body?.kind;
+
+    if (!REPORT_KINDS.includes(kind)) {
+        return res.status(400).json({
+            success: false,
+            error: `Tipo no válido. Debe ser uno de: ${REPORT_KINDS.join(', ')}`,
+        });
+    }
+
+    if (!isDatabaseEnabled()) {
+        return res.status(503).json({ success: false, error: 'Servicio no disponible' });
+    }
+
+    try {
+        const ok = await recordReport(storyId, kind);
+        if (!ok) return res.status(404).json({ success: false, error: 'La historia no existe' });
+        return res.json({ success: true });
+    } catch (error) {
+        console.error('[api] fallo en /api/report', error);
+        return res.status(500).json({ success: false, error: 'Error interno' });
+    }
 });
 
 /** Feed paginado. */

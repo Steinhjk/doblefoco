@@ -13,6 +13,7 @@ import { Router } from 'express';
 import { requireSession } from './auth/routes.js';
 import { counts, decide, listDecided, listPending, undecide } from './db/moderationStore.js';
 import { refreshModeration } from './services/ingestDaemon.js';
+import { reportTotals, storiesNeedingReview } from './db/reportStore.js';
 
 const router = Router();
 
@@ -61,6 +62,33 @@ router.get('/counts', async (req, res) => {
         return res.json({ success: true, counts: result });
     } catch (error) {
         console.error('[moderación] fallo en /counts', error);
+        return res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+/**
+ * Lo que reportaron los lectores (F2-07).
+ *
+ * Vive detrás de la sesión y NO se expone al público. Un contador visible
+ * invita a inflarlo, y convertiría una pista en un veredicto: los lectores
+ * señalan dónde mirar, no dictaminan si un análisis es correcto.
+ */
+router.get('/reports', async (req, res) => {
+    const days = Math.min(Math.max(Number(req.query.days) || 14, 1), 90);
+
+    try {
+        const [stories, totals] = await Promise.all([
+            storiesNeedingReview({ days, ...paging(req) }),
+            reportTotals({ days }),
+        ]);
+
+        if (!stories || !totals) {
+            return res.status(503).json({ success: false, error: 'Base no disponible' });
+        }
+
+        return res.json({ success: true, days, totals, stories });
+    } catch (error) {
+        console.error('[moderación] fallo en /reports', error);
         return res.status(500).json({ success: false, error: 'Error interno' });
     }
 });

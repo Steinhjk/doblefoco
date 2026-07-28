@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
     Check, X, ShieldAlert, RotateCcw, Download,
     Loader2, Users, Activity, AlertTriangle,
@@ -10,6 +11,7 @@ import {
     fetchCounts,
     fetchDecided,
     fetchPending,
+    fetchReports,
 } from '../services/moderationClient';
 import './AdminDashboard.css';
 
@@ -42,6 +44,7 @@ const AdminDashboard = () => {
     const [pending, setPending] = useState([]);
     const [decided, setDecided] = useState([]);
     const [counts, setCounts] = useState(null);
+    const [reports, setReports] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [busyId, setBusyId] = useState(null);
@@ -61,16 +64,18 @@ const AdminDashboard = () => {
                 fetchPending({ limit: 50 }),
                 fetchDecided({ limit: 30 }),
                 fetchCounts(),
+                fetchReports({ days: 14, limit: 15 }),
             ]),
         []
     );
 
-    const apply = useCallback(([pendingResult, decidedResult, countsResult]) => {
+    const apply = useCallback(([pendingResult, decidedResult, countsResult, reportsResult]) => {
         if (pendingResult.ok) setPending(pendingResult.stories);
         if (decidedResult.ok) setDecided(decidedResult.stories);
         if (countsResult.ok) setCounts(countsResult.counts);
+        if (reportsResult.ok) setReports(reportsResult);
 
-        const failure = [pendingResult, decidedResult, countsResult].find((r) => !r.ok);
+        const failure = [pendingResult, decidedResult, countsResult, reportsResult].find((r) => !r.ok);
         setError(
             failure
                 ? failure.expired
@@ -270,6 +275,54 @@ const AdminDashboard = () => {
                     </>
                 )}
             </div>
+
+            {reports?.stories?.length > 0 && (
+                <div className="staging-queue-section">
+                    <h2>Señalado por lectores</h2>
+                    <p className="reports-caption">
+                        Últimos 14 días. No son votos de validación: son pistas de dónde
+                        mirar. Cada categoría corresponde con una pregunta abierta del
+                        ROADMAP.
+                    </p>
+
+                    <ul className="reports-list">
+                        {reports.stories.map((r) => (
+                            <li key={r.story_id} className="report-row">
+                                <Link to={`/noticia/${r.story_id}`} className="report-title">
+                                    {r.title}
+                                </Link>
+                                <span className="report-tags">
+                                    {r.historiasDistintas > 0 && (
+                                        <span className="report-tag" title="F1-05: posible fusión incorrecta">
+                                            hechos distintos agrupados · {r.historiasDistintas}
+                                        </span>
+                                    )}
+                                    {r.medioMalClasificado > 0 && (
+                                        <span className="report-tag" title="F1-13: revisión del sesgo declarado">
+                                            medio mal clasificado · {r.medioMalClasificado}
+                                        </span>
+                                    )}
+                                    {r.faltaIzquierda > 0 && (
+                                        <span className="report-tag" title="F1-12: equilibrio del catálogo">
+                                            falta izquierda · {r.faltaIzquierda}
+                                        </span>
+                                    )}
+                                    {r.faltaDerecha > 0 && (
+                                        <span className="report-tag" title="F1-12: equilibrio del catálogo">
+                                            falta derecha · {r.faltaDerecha}
+                                        </span>
+                                    )}
+                                    {r.conformes > 0 && (
+                                        <span className="report-tag neutral">
+                                            sin objeción · {r.conformes}
+                                        </span>
+                                    )}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <div className="staging-queue-section">
                 <h2>Cola de moderación</h2>

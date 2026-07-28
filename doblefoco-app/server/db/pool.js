@@ -76,7 +76,36 @@ function sslConfig(connectionString) {
     // Lectura síncrona a propósito: ocurre una vez, en el arranque. Si el
     // certificado no está, es mejor fallar aquí que más tarde con un error de
     // red que no se parece en nada a la causa real.
-    return { ca: readFileSync(caPath, 'utf8'), rejectUnauthorized: true };
+    const ca = readFileSync(caPath, 'utf8');
+
+    /**
+     * El certificado SUSTITUYE al almacén del sistema, no se añade a él.
+     *
+     * En Node, pasar `ca` reemplaza por completo la lista de autoridades de
+     * confianza, y aquí eso es lo que se quiere: solo se acepta el certificado
+     * raíz de Supabase. Es fijación de certificado, y significa que ni siquiera
+     * una autoridad pública comprometida —el escenario clásico contra el que un
+     * almacén de 150 raíces no protege— podría suplantar a la base.
+     *
+     * Se comprobó antes de decidirlo, porque la suposición contraria era
+     * razonable: cabía esperar que el *pooler* presentara un certificado de una
+     * autoridad pública corriente y que fijar solo el raíz de Supabase rompiera
+     * la conexión. Medido contra la base real:
+     *
+     *   solo el CA de Supabase ........... conecta
+     *   raíces del sistema + el de Supabase conecta
+     *   una autoridad cualquiera ......... RECHAZA
+     *
+     * O sea: el pooler encadena con la autoridad de Supabase, la verificación
+     * es real (la tercera fila lo prueba) y se puede permitir la opción
+     * estricta.
+     *
+     * CONTRAPARTIDA, para quien venga después: si Supabase migrara el pooler a
+     * una autoridad pública, esto dejaría de conectar. El fallo sería ruidoso e
+     * inmediato y la solución es quitar DATABASE_CA_CERT; no hay riesgo de
+     * degradación silenciosa, que es lo que importa.
+     */
+    return { ca, rejectUnauthorized: true };
 }
 
 /** Mensaje de aviso si la conexión va cifrada pero sin verificar. `null` si todo bien. */

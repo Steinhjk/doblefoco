@@ -638,10 +638,21 @@
             aprobaciones no se comparten con el equipo ni con los visitantes:
             el panel sigue sin ser un CMS. Eso es F2-02.
 
-            PENDIENTE DE SEGURIDAD: la conexión va cifrada pero sin verificar el
-            certificado del servidor (protege del espionaje pasivo, no de un
-            intermediario activo). Se cierra poniendo DATABASE_CA_CERT con el
-            certificado que publica Supabase. El arranque lo avisa cada vez.
+            TLS CERRADO EL 2026-07-28. DATABASE_CA_CERT apunta al certificado
+            raíz de Supabase, incluido en el repositorio (es público). El
+            certificado SUSTITUYE al almacén del sistema en vez de añadirse: solo
+            se acepta la autoridad de Supabase, de modo que ni una autoridad
+            pública comprometida podría suplantar a la base.
+            Se midió antes de decidirlo, porque la suposición razonable era la
+            contraria —que el pooler usara una autoridad pública y la fijación
+            rompiera la conexión—:
+              solo el CA de Supabase ............ conecta
+              raíces del sistema + el de Supabase  conecta
+              una autoridad cualquiera .......... RECHAZA
+            La tercera fila es la que prueba que la verificación es real.
+            Contrapartida documentada en el código: si Supabase migrara el
+            pooler a otra autoridad, esto dejaría de conectar de forma ruidosa e
+            inmediata. No hay degradación silenciosa.
 
  [x] F2-02  Migrar el panel de moderación a la base de datos
             Las decisiones viven en `moderation` y quedan firmadas con quién las
@@ -1036,9 +1047,6 @@
  MEDIO  Hay historias moderadas que el agrupamiento deja de producir y quedan
         huérfanas: se conservan por la salvaguarda de F2-02, pero nadie ha
         decidido qué hacer con ellas.
- MEDIO  La conexión a la base va cifrada pero sin verificar el certificado del
-        servidor. Protege del espionaje pasivo, no de un intermediario activo.
-        Mitiga: DATABASE_CA_CERT (documentado en .env.example).
  MEDIO  Los 40 valores de sesgo ya son públicos, trazables y coherentes en todo
         el sistema, pero ninguno está firmado por un editor. Se publican
         marcados como PROVISIONALES. Mitiga: F1-13.

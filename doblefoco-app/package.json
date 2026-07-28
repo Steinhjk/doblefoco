@@ -18,7 +18,8 @@
     "db:migrate": "node scripts/migrate.mjs",
     "ingest:once": "node scripts/ingestOnce.mjs",
     "admin:create": "node scripts/createAdmin.mjs",
-    "clean:filtered": "node scripts/cleanFiltered.mjs"
+    "clean:filtered": "node scripts/cleanFiltered.mjs",
+    "analyze:cocoverage": "node scripts/coCoverage.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",

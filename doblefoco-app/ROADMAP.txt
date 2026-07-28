@@ -190,7 +190,7 @@
             inequívoco de que son datos de muestra y no cobertura real.
 
 ===============================================================================
- FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (10/14)
+ FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (10/15)
 ===============================================================================
  Objetivo: que cada elemento de la interfaz haga lo que dice hacer.
 
@@ -350,7 +350,73 @@
             VERIFICACIÓN: los 9 casos límite resuelven al medio correcto y la
             entrada desconocida degrada sin romper.
 
+ [ ] F1-15  Medición empírica del ecosistema por co-cobertura
+            `npm run analyze:cocoverage`. Construye el grafo de qué medios
+            cubren los mismos hechos, a partir de story_articles y de NADA MÁS:
+            ni el sesgo declarado ni el léxico de tono entran en el cálculo.
+
+            POR QUÉ ESTE CAMINO. Deducir el sesgo promediando la carga de los
+            titulares es circular: el léxico de headlineTone lo escribimos
+            nosotros, así que el resultado hereda nuestras suposiciones y las
+            disfraza de medición. "Estos dos medios publicaron sobre el mismo
+            hecho" es un dato observable que no depende de la política de nadie.
+
+            PRIMERA EJECUCIÓN (2026-07-28, 997 historias): SIN PARTICIÓN.
+            Densidad del 22 %, por debajo del 25 % exigido, y el script se negó
+            a agrupar. Es el resultado correcto: cualquier conjunto se puede
+            partir en dos, y hacerlo aquí habría producido ruido con aspecto de
+            hallazgo.
+
+            LA PRIMERA VERSIÓN DEL SCRIPT MEDÍA MAL, y los datos lo delataron:
+            ordenaba los pares por coincidencias en bruto, así que el ranking lo
+            encabezaba Semana con todo el mundo —publica 88 historias— y ponía
+            juntos a El Espectador (−0,20) y Semana (+0,45) como si fueran
+            afines. Corregido con elevación (observadas ÷ esperables por
+            volumen). Con la corrección, El Heraldo·Semana pasa de ser el par
+            número uno a coincidir MENOS de lo que el azar explicaría.
+            Con 2 a 5 historias compartidas por par, la elevación sigue siendo
+            demasiado ruidosa para concluir nada. La densidad crece sola con los
+            ciclos; hay que repetirlo.
+
+            SESGO CONOCIDO: se calcula sobre las historias que produce el
+            agrupamiento, y este parte hechos (F1-05). Subestima la
+            co-cobertura de forma sistemática.
+
  [ ] F1-12  Equilibrar el catálogo por banda del espectro
+
+            HALLAZGO QUE CAMBIA EL PLANTEAMIENTO (2026-07-28, F1-15). El
+            problema de la izquierda del catálogo NO es cuántos medios hay: es
+            cuánto publican. Artículos en la ventana de 72 h:
+
+              Colombia Informa (−0,65) .... 1        Infobae (+0,15) ..... 185
+              Vorágine (−0,50) ............ 0        Semana (+0,45) ...... 88
+              Cuestión Pública (−0,45) .... 3        El Tiempo (+0,05) ... 77
+              Cambio (−0,40) ............. 10        La República ........ 69
+              Razón Pública (−0,40) ...... 12        El Heraldo .......... 63
+              RTVC Noticias (−0,35) ....... 0
+
+            Los seis medios más a la izquierda suman 26 artículos en 72 horas.
+            Uno solo del otro lado suma 185.
+
+            Y no es un defecto suyo: Vorágine y Cuestión Pública hacen
+            investigación, Razón Pública hace análisis. Publican pocas piezas
+            porque ese es su oficio. No son medios de noticia diaria, y el
+            producto está construido sobre la noticia diaria.
+
+            CONSECUENCIA INCÓMODA: un punto ciego de la izquierda exige que 6
+            medios cubran el mismo hecho y que los de izquierda falten. Pero los
+            de izquierda no cubren el hecho diario en absoluto — cubren OTRA
+            AGENDA. Añadir tres medios más del mismo perfil (la opción (a) de
+            abajo) sumaría quizá 15 artículos y no cambiaría nada.
+
+            Esto reabre la pregunta de fondo: si un bloque del espectro no
+            participa del ciclo diario, "punto ciego" quizá no sea la métrica
+            correcta para ese lado. Puede que lo que haya que medir sea agenda
+            divergente, no ausencia.
+            Antes de decidir hay que descartar el sesgo de medición de F1-15 y
+            revisar los 3 medios con feed configurado y CERO artículos
+            (Vorágine, RTVC Noticias, W Radio): puede ser un feed roto y no un
+            hecho sobre el medio.
             El reparto actual de los 33 medios activos: 1 izquierda, 5
             centro-izquierda, 14 centro, 13 centro-derecha, 0 derecha. Un
             agregador que promete mostrar "todas las perspectivas" con un solo

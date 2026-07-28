@@ -521,6 +521,14 @@
             errores de ESLint con la regla en nivel "error" precisamente porque
             nadie ejecutaba el lint: una verificación que depende de que alguien
             se acuerde no es una verificación.
+            SE GANÓ EL SUELDO EN SU PRIMERA EJECUCIÓN. El build falló en CI
+            mientras seguía funcionando en local: el patrón `data/` del
+            .gitignore no estaba anclado y silenciaba también src/data/, así
+            que mockData.js, mediaLogos.js y pendingData.js nunca llegaron al
+            repositorio. En la máquina donde el archivo existe no se nota
+            jamás. Es exactamente la clase de fallo que solo aparece en un
+            clon limpio, y por eso hacía falta alguien que clone limpio.
+
             LO QUE NO CUBRE, y conviene no confiarse: el SQL de server/db/ no
             lo revisa nadie. Un nombre de columna mal escrito pasa lint, pasa
             las pruebas y pasa el build; solo falla contra una base real.

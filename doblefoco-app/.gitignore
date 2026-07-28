@@ -13,9 +13,15 @@ dist-ssr
 *.local
 
 # Serie de métricas de ingesta: se genera en cada despliegue y es local a él.
-# Para conservarla entre reinicios hay que montar DATA_DIR en disco persistente,
-# o migrarla a la tabla ingest_runs (server/db/schema.sql).
-data/
+# Desde F2-01 el registro que manda es la tabla `ingest_runs`; esto es el
+# respaldo local, que sobrevive a que la base no responda.
+#
+# La barra inicial NO es decorativa: ancla el patrón a esta carpeta. Sin ella,
+# `data/` silenciaba también src/data/, donde vive el fixture que el build
+# necesita — y el build seguía funcionando en local, donde el archivo existe,
+# mientras fallaba en cualquier clon limpio. Lo detectó CI en su primera
+# ejecución.
+/data/
 
 # Editor directories and files
 .vscode/*

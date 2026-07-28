@@ -11,7 +11,9 @@ dist-ssr
 
 # Serie de métricas local. Desde F2-01 el registro que manda es la tabla
 # `ingest_runs`; este archivo es el respaldo de cada instancia y no se comparte.
-data/
+# Ruta completa y no `data/` a secas: sin anclar, el patrón silencia cualquier
+# carpeta llamada data a cualquier profundidad, incluida src/data/.
+/doblefoco-app/data/
 
 # Material de referencia de terceros. Se queda en local: es trabajo ajeno y este
 # repositorio es público.

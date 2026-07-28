@@ -11,7 +11,10 @@
                      para desplegar"; una auditoría posterior documentó 6
                      fallas críticas, entre ellas fabricación de titulares
                      atribuidos a medios reales)
- Documento fuente  : ../ANALISIS_EXHAUSTIVO.txt
+ Documento fuente  : ../ANALISIS_EXHAUSTIVO.txt (interno, no se publica: describe
+                     con detalle fallas del sistema y no hay razón para
+                     servírselas a nadie en bandeja. Este ROADMAP recoge todo lo
+                     que hace falta para entender las decisiones)
 
 -------------------------------------------------------------------------------
  CÓMO SE USA ESTE DOCUMENTO

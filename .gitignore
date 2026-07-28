@@ -19,6 +19,17 @@ data/
 *.zip
 temp_extracted/
 
+# Documentos internos de ingeniería y de negocio. No son contenido del sitio y
+# no aportan nada a quien clone el repositorio; la auditoría además describe con
+# detalle fallas del sistema, y no hay razón para servírselas a nadie en bandeja.
+# Lo que SÍ es público vive en doblefoco-app/src/docs/metodologia.txt y
+# catalogo_medios.txt, que se importan en la página /nosotros.
+ANALISIS_EXHAUSTIVO.txt
+PLANTILLA_SOLICITUD_PATROCINIO.md
+doblefoco-app/src/docs/plantilla_solicitud_patrocinio.md
+doblefoco-app/src/docs/plan_motor.txt
+doblefoco-app/src/docs/loop_ingestion_doc.txt
+
 # Logs
 logs
 *.log

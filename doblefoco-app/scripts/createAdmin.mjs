@@ -11,6 +11,16 @@
  * restaurar una cuenta concreta, por ejemplo— se pasa por la variable de
  * entorno ADMIN_PASSWORD, que al menos no aparece en `ps`.
  *
+ *   --out              escribe la contraseña en un archivo en vez de mostrarla
+ *
+ * Para qué sirve `--out`: cuando alguien ejecuta esto por ti —un asistente, un
+ * script de aprovisionamiento, una sesión compartida— la salida queda en un
+ * registro que puede sobrevivir mucho más que la contraseña. Con `--out` la
+ * clave solo toca el disco, en un archivo `.local` que .gitignore ya excluye, y
+ * quien ejecuta el comando no llega a verla.
+ *
+ * Ese archivo hay que borrarlo después de copiarla. El script lo recuerda.
+ *
  * Sobre una cuenta existente actualiza la contraseña y cierra todas sus
  * sesiones abiertas, que es lo que se espera de un restablecimiento: si se
  * cambia la clave porque se sospecha de un acceso, dejar viva la sesión del
@@ -20,6 +30,7 @@
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { writeFileSync, chmodSync } from 'node:fs';
 import dotenv from 'dotenv';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -39,9 +50,18 @@ function fail(message, hint = null) {
 }
 
 const args = process.argv.slice(2);
-const email = args.find((a) => !a.startsWith('--'))?.trim().toLowerCase();
 const nameIndex = args.indexOf('--name');
 const displayName = nameIndex !== -1 ? args[nameIndex + 1] ?? null : null;
+const toFile = args.includes('--out');
+
+// El primer argumento suelto que no sea el valor de --name.
+const email = args
+    .filter((a, i) => !a.startsWith('--') && i !== nameIndex + 1)[0]
+    ?.trim()
+    .toLowerCase();
+
+/** Archivo donde cae la contraseña con --out. La extensión .local ya está en .gitignore. */
+const OUT_FILE = resolve(ROOT, 'credencial-panel.local');
 
 // Validación deliberadamente laxa: exigir la forma exacta de una dirección de
 // correo es un pozo sin fondo, y aquí el correo es un identificador, no un
@@ -83,12 +103,37 @@ if (!email || !email.includes('@')) {
                 console.log(`  ${created ? 'Cuenta creada' : 'Contraseña actualizada'}: ${email}`);
                 if (closed) console.log(`  ${closed} sesión(es) abiertas cerradas.`);
                 console.log('');
-                console.log('  ┌─────────────────────────────────────────────────────┐');
-                console.log(`    contraseña:  ${password}`);
-                console.log('  └─────────────────────────────────────────────────────┘');
-                console.log('');
-                console.log('  No se vuelve a mostrar. Guárdala en un gestor de contraseñas,');
-                console.log('  no en un archivo de texto ni en un chat.');
+
+                if (toFile) {
+                    writeFileSync(
+                        OUT_FILE,
+                        `Panel de DobleFoco\ncorreo:      ${email}\ncontraseña:  ${password}\n\n` +
+                        'Cópiala a tu gestor de contraseñas y BORRA este archivo.\n',
+                        { encoding: 'utf8', mode: 0o600 }
+                    );
+
+                    // En Windows el modo del open() no siempre se aplica; se
+                    // insiste explícitamente y se ignora si el sistema no lo
+                    // soporta. Es defensa en profundidad, no la única barrera:
+                    // el archivo está pensado para durar minutos.
+                    try {
+                        chmodSync(OUT_FILE, 0o600);
+                    } catch { /* sistema sin permisos POSIX */ }
+
+                    console.log(`  Contraseña escrita en:  ${OUT_FILE}`);
+                    console.log('');
+                    console.log('  No se ha mostrado por pantalla, así que no queda en el');
+                    console.log('  historial de quien haya lanzado este comando.');
+                    console.log('  Cópiala a tu gestor de contraseñas y BORRA ese archivo.');
+                } else {
+                    console.log('  ┌─────────────────────────────────────────────────────┐');
+                    console.log(`    contraseña:  ${password}`);
+                    console.log('  └─────────────────────────────────────────────────────┘');
+                    console.log('');
+                    console.log('  No se vuelve a mostrar. Guárdala en un gestor de contraseñas,');
+                    console.log('  no en un archivo de texto ni en un chat.');
+                }
+
                 console.log('');
             }
         }

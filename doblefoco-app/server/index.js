@@ -27,10 +27,10 @@ import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
 import { dailySummaryFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
+import authRoutes, { requireSession } from './auth/routes.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
-const INGEST_TOKEN = process.env.INGEST_TOKEN;
 const INGEST_INTERVAL_MS = Number(process.env.INGEST_INTERVAL_MS) || 10 * 60 * 1000;
 
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173')
@@ -53,9 +53,19 @@ app.use(
             return callback(new Error(`Origen no permitido: ${origin}`));
         },
         methods: ['GET', 'POST'],
+        // La sesión viaja en cookie httpOnly, y el navegador no la envía a otro
+        // origen sin esto. Exige lista blanca de orígenes —nunca '*'— y por eso
+        // ALLOWED_ORIGINS es explícita.
+        credentials: true,
         maxAge: 86_400,
     })
 );
+
+// Necesario para que req.ip sea la IP real detrás del proxy del hosting y no la
+// del propio proxy. Sin esto, el límite de intentos de inicio de sesión contaría
+// todo el tráfico como una sola IP y bastarían ocho intentos de cualquiera para
+// bloquear a todo el mundo.
+app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS) || 1);
 
 app.use(express.json({ limit: '32kb' }));
 
@@ -102,30 +112,19 @@ app.use((req, res, next) => {
     next();
 });
 
-/** Exige el token de ingesta mediante cabecera Authorization: Bearer <token>. */
-function requireIngestToken(req, res, next) {
-    if (!INGEST_TOKEN) {
-        // Negarse por defecto: es preferible una función deshabilitada a una
-        // función de escritura abierta porque falta configurar una variable.
-        return res.status(503).json({
-            success: false,
-            error: 'Ingesta manual deshabilitada: falta configurar INGEST_TOKEN en el servidor.',
-        });
-    }
-
-    const header = req.get('authorization') ?? '';
-    const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-
-    if (!token || token !== INGEST_TOKEN) {
-        return res.status(401).json({ success: false, error: 'No autorizado' });
-    }
-
-    return next();
-}
-
 // ---------------------------------------------------------------------------
 // Rutas
 // ---------------------------------------------------------------------------
+
+/**
+ * Acceso al panel (F2-04).
+ *
+ * Antes esto lo resolvía AdminGate comparando una passphrase incrustada en el
+ * bundle, es decir: pública, y comprobada en la máquina de quien intentaba
+ * entrar. Ahora la contraseña no llega nunca al navegador y la sesión viaja en
+ * una cookie httpOnly que el JavaScript de la página no puede leer.
+ */
+app.use('/api/auth', authRoutes);
 
 /** Estado real del servicio: qué se ingirió, cuándo y qué feeds fallaron. */
 app.get('/api/health', (req, res) => {
@@ -230,8 +229,15 @@ app.get('/api/metrics/daily', async (req, res) => {
     }
 });
 
-/** Dispara un ciclo de ingesta. Requiere token. */
-app.post('/api/ingest/run', requireIngestToken, async (req, res) => {
+/**
+ * Dispara un ciclo de ingesta. Requiere sesión (F2-05).
+ *
+ * Antes exigía un Bearer token que venía de VITE_INGEST_TOKEN, o sea, del
+ * bundle: público por construcción. Servía para que el endpoint no quedara
+ * abierto de par en par, no para autorizar a nadie. Ahora lo autoriza la sesión
+ * del panel, y esa variable desapareció del proyecto.
+ */
+app.post('/api/ingest/run', requireSession, async (req, res) => {
     try {
         const result = await runIngestionBatch();
 
@@ -259,13 +265,6 @@ app.use((error, req, res, _next) => {
 app.listen(PORT, async () => {
     console.log(`[servidor] escuchando en http://localhost:${PORT}`);
     console.log(`[servidor] orígenes permitidos: ${ALLOWED_ORIGINS.join(', ')}`);
-
-    if (!INGEST_TOKEN) {
-        console.warn(
-            '[servidor] INGEST_TOKEN sin definir: POST /api/ingest/run responderá 503. ' +
-            'La ingesta programada sí funciona.'
-        );
-    }
 
     const storage = await prepareStorage((message) => console.log(`[servidor] ${message}`));
 

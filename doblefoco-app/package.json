@@ -16,7 +16,8 @@
     "check:feeds": "node scripts/verifyFeeds.mjs",
     "report:ingest": "node scripts/ingestReport.mjs",
     "db:migrate": "node scripts/migrate.mjs",
-    "ingest:once": "node scripts/ingestOnce.mjs"
+    "ingest:once": "node scripts/ingestOnce.mjs",
+    "admin:create": "node scripts/createAdmin.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",

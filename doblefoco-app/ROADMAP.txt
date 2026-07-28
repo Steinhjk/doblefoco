@@ -62,7 +62,8 @@
                                           artículos e historias sobreviven al
                                           reinicio; moderación sigue en
                                           localStorage (F2-02)
-  Autenticación real ................. ❌ solo cerrojo provisional
+  Autenticación real ................. ✅ sesión de servidor, cookie httpOnly
+                                          scrypt + sesiones revocables
   SEO / renderizado en servidor ...... ❌ SPA sin prerender
   Motor de ingesta ................... ✅ operativo, verificado contra la red
   Revisión editorial del sesgo ....... ❌ 40 valores, ninguno firmado
@@ -87,8 +88,11 @@
     npm run check:feeds      sondea los 36 feeds contra la red (lento)
     npm run docs:catalog     regenera el catálogo público desde el registro
     npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
-    npm test                 las 48 pruebas de shared/. `npm run test:watch`
-                             para desarrollo.
+    npm test                 las 60 pruebas de shared/ y server/auth/.
+                             `npm run test:watch` para desarrollo.
+    npm run admin:create     crea o restablece una cuenta del panel. La
+                             contraseña se genera y se imprime UNA vez.
+                             Uso: npm run admin:create -- correo@ejemplo.co
     npm run ingest:once      un ciclo de ingesta y salir. Es lo que ejecuta
                              GitHub Actions cada 30 min. Sale con 1 si no pudo
                              persistir.
@@ -393,7 +397,7 @@
             colisiones entre pendingData (101,102,103) y el catálogo.
 
 ===============================================================================
- FASE 2 — CIMIENTOS                                            [~] EN CURSO (3/11)
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (5/11)
 ===============================================================================
  Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
  reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
@@ -465,15 +469,53 @@
 
  ── 2B. Seguridad ─────────────────────────────────────────────────────────────
 
- [ ] F2-04  Autenticación real del panel
-            AdminGate es un cerrojo, no una cerradura: la passphrase viaja en
-            el bundle y cualquiera puede leerla. Sustituir por sesión de
-            servidor con contraseñas hasheadas y cookie httpOnly.
-            CRITERIO: la clave no aparece en ningún artefacto del cliente.
+ [x] F2-04  Autenticación real del panel
+            Sesión de servidor con cookie httpOnly. Cuentas en `admin_users`,
+            contraseñas derivadas con scrypt, sesiones en `admin_sessions`.
+            CRITERIO CUMPLIDO: no queda ninguna clave en el cliente.
+            VITE_ADMIN_PASSPHRASE ya no existe en el proyecto.
 
- [ ] F2-05  Rotar el token de ingesta fuera del cliente
-            VITE_INGEST_TOKEN es público por construcción. Una vez exista
-            F2-04, el disparo de ingesta debe autorizarse con la sesión.
+            DECISIÓN: NO se usó Supabase Auth, en contra de lo que recomendaba
+            este mismo documento en F2-01. La razón que lo cambió es que
+            Supabase guarda la sesión en localStorage, que es legible por
+            cualquier XSS. Para un panel que edita valores de sesgo y descarga
+            correos de suscriptores, una cookie httpOnly —que el JavaScript de
+            la página NO puede leer— es estrictamente mejor. De paso evita 40 kB
+            de cliente en un bundle que tiene una tarea abierta para adelgazar
+            (F2-03), y scrypt viene en node:crypto, así que tampoco entra bcrypt.
+
+            Sesiones en tabla y no testigo firmado (JWT), por lo mismo: un JWT
+            no se puede revocar. Aquí `DELETE` es el botón de pánico, y está
+            probado que funciona.
+
+            Detalles que no son adorno:
+              · Se guarda el HASH del testigo, no el testigo. Un volcado de la
+                tabla no entrega ninguna sesión utilizable.
+              · Un correo inexistente gasta el mismo tiempo que uno real
+                (hash de descarte). Sin eso, la diferencia entre 1 ms y 100 ms
+                revela qué cuentas existen sin acertar ninguna contraseña.
+              · Mismo mensaje de error para contraseña mala y correo
+                desconocido.
+              · Ocho intentos por IP y por correo en quince minutos.
+              · `trust proxy`: sin esto el servidor vería la IP del proxy y
+                ocho intentos de cualquiera bloquearían a todo el mundo.
+
+            VERIFICACIÓN (2026-07-28, contra la base real, con una cuenta
+            desechable que se borró después):
+              · /api/auth/me sin cookie → 401; con cookie → 200
+              · contraseña incorrecta → 401; correo inexistente → 401 con el
+                mismo cuerpo
+              · la cookie se guarda con HttpOnly
+              · borrar la fila de admin_sessions → 401 en la siguiente petición
+              · ocho intentos fallidos → 429, y el noveno con la contraseña
+                CORRECTA también → 429. Si dejara pasar la buena, el límite no
+                serviría de nada.
+
+ [x] F2-05  Rotar el token de ingesta fuera del cliente
+            POST /api/ingest/run lo autoriza ahora la sesión del panel.
+            VITE_INGEST_TOKEN e INGEST_TOKEN desaparecieron del proyecto.
+            VERIFICACIÓN: sin sesión → 401. Con sesión → 200 y el ciclo corre.
+            Tras revocar la sesión en la base → 401.
 
  [ ] F2-06  Límite de peticiones compartido
             El actual es un Map en memoria: sirve para un proceso único, no
@@ -700,15 +742,15 @@
  RIESGOS ABIERTOS
 ===============================================================================
 
- ALTO   Sin autenticación real, el panel depende de una clave pública en el
-        bundle. Mitiga: F2-04.
+ ALTO   Sin SEO, el producto no tiene canal de adquisición. Es el único ALTO
+        que queda: la volatilidad la cerró F2-01 y la autenticación, F2-04.
+        Mitiga: F3-01.
  MEDIO  El trabajo de moderación sigue en el localStorage de un navegador: un
         equipo no puede repartírselo y un borrado de datos del navegador lo
         pierde. La ingesta ya no: eso lo cerró F2-01. Mitiga: F2-02.
  MEDIO  La conexión a la base va cifrada pero sin verificar el certificado del
         servidor. Protege del espionaje pasivo, no de un intermediario activo.
         Mitiga: DATABASE_CA_CERT (documentado en .env.example).
- ALTO   Sin SEO, el producto no tiene canal de adquisición. Mitiga: F3-01.
  MEDIO  Los 40 valores de sesgo ya son públicos, trazables y coherentes en todo
         el sistema, pero ninguno está firmado por un editor. Se publican
         marcados como PROVISIONALES. Mitiga: F1-13.
@@ -734,20 +776,19 @@
  72 h. Hace falta un proceso que no se interrumpa. Sin eso, F1-05 y F1-12 se
  seguirían decidiendo a ojo.
 
- Y en paralelo, F2-04 (autenticación real): es el ÚNICO riesgo ALTO que queda
- abierto, y además bloquea a los otros dos candidatos obvios.
+ Detrás, y ya sin nada que lo bloquee, F2-02 (moderación en la base).
 
-   · F2-02 (moderación en la base) antes de F2-04 EMPEORA las cosas. Hoy las
-     aprobaciones viven en el navegador de una persona: es inútil, pero es
-     inofensivo. Moverlas a una base compartida mientras la puerta tiene una
-     contraseña que viaja en el bundle convierte un problema de usabilidad en
-     uno de integridad editorial: cualquiera podría aprobar o rechazar.
-   · F3-01 (SEO / prerender) implica publicar el sitio, y publicarlo con esa
-     clave a la vista expone también la descarga de correos de suscriptores.
-     Además es prematuro por otro motivo: indexar un producto cuya función
-     principal aún no sabemos si funciona —2 de 563 historias alcanzan
-     cobertura— es construir el escaparate antes que el producto.
+ Hasta hoy hacía falta esperar: mover las aprobaciones a una base compartida
+ mientras la puerta tenía una contraseña incrustada en el bundle habría
+ convertido un problema de usabilidad en uno de integridad editorial. F2-04 lo
+ cerró, así que F2-02 ya se puede hacer. Retirará además la salvaguarda
+ provisional que hoy impide borrar una historia moderada cuando el agrupamiento
+ deja de producirla.
 
- Con Supabase ya conectado, su capa de autenticación está a mano.
+ F3-01 (SEO / prerender) sigue siendo el ALTO que queda, pero no es lo
+ siguiente: indexar un producto cuya función principal todavía no sabemos si
+ funciona —2 de 776 historias alcanzan cobertura para afirmar un punto ciego—
+ es construir el escaparate antes que el producto. Primero, la respuesta de
+ F1-01.
 
 ===============================================================================

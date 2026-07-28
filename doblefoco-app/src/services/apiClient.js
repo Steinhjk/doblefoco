@@ -102,23 +102,20 @@ export async function fetchHealth() {
 /**
  * Dispara un ciclo de ingesta en el servidor.
  *
- * El token viaja desde la configuración del build. Esto NO es autenticación
- * real: cualquier token embarcado en un bundle de navegador es público. Sirve
- * únicamente para que el endpoint no quede abierto de par en par mientras
- * llega la autenticación de servidor (tarea F2-04 del ROADMAP). Por eso el
- * panel solo se registra cuando hay passphrase configurada.
+ * Lo autoriza la SESIÓN del panel (tarea F2-05). Antes viajaba un
+ * VITE_INGEST_TOKEN que, por empezar por VITE_, estaba incrustado en el bundle
+ * y era público por construcción: servía para que el endpoint no quedara
+ * abierto de par en par, no para autorizar a nadie. Esa variable ya no existe
+ * en el proyecto.
+ *
+ * `credentials: 'include'` es lo que hace que el navegador adjunte la cookie
+ * httpOnly de sesión, que este código no puede leer.
  */
 export async function triggerIngestion() {
-    const token = import.meta.env.VITE_INGEST_TOKEN;
-
-    if (!token) {
-        return { ok: false, error: 'No hay token de ingesta configurado en este build.' };
-    }
-
     const result = await request('/api/ingest/run', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        timeoutMs: 120_000, // un ciclo completo recorre 14 feeds
+        credentials: 'include',
+        timeoutMs: 120_000, // un ciclo completo recorre 36 feeds
     });
 
     if (!result.ok) return result;

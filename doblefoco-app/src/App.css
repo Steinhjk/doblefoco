@@ -311,10 +311,51 @@ footer {
     color: var(--bias-left);
 }
 
+.admin-gate-form button:disabled {
+    cursor: progress;
+    opacity: 0.6;
+}
+
 .admin-gate-note {
     max-width: 340px;
     font-size: 0.72rem;
     color: var(--text-muted);
+}
+
+/* Barra de sesión: quién está dentro y cómo salir (F2-04) */
+.admin-session-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.admin-logout {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-main);
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.admin-logout:hover {
+    color: var(--bg-main);
+    background: var(--text-main);
 }
 
 .admin-storage-warning {

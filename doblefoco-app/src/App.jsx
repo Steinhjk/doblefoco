@@ -15,14 +15,18 @@ const SearchResults = lazy(() => import('./pages/SearchResults'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 /**
- * El panel de moderación solo existe si el despliegue lo habilitó.
+ * El panel de moderación.
  *
- * Sin VITE_ADMIN_PASSPHRASE la ruta no se registra y, gracias al import
- * dinámico, su código nunca se descarga al navegador. Antes /admin era pública
- * en todos los builds: cualquiera podía entrar, editar sesgos y titulares, y
- * descargar los correos de los suscriptores.
+ * La ruta se registra siempre desde F2-04, y eso es una mejora, no un descuido.
+ * Antes dependía de que existiera VITE_ADMIN_PASSPHRASE: esconder la ruta era
+ * la única defensa real, porque la clave que la protegía viajaba en el propio
+ * bundle y se leía en las herramientas de desarrollo. Ahora la defensa es la
+ * sesión del servidor, así que ocultar la puerta ya no aporta nada.
+ *
+ * El import dinámico se mantiene por peso, no por seguridad: el código del
+ * panel solo se descarga si alguien navega a /admin, y sin sesión no verá más
+ * que el formulario de entrada.
  */
-const adminEnabled = Boolean(import.meta.env.VITE_ADMIN_PASSPHRASE);
 const AdminGate = lazy(() => import('./pages/AdminGate'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
@@ -53,16 +57,14 @@ function App() {
                                 <Route path="/noticia/:id" element={<NewsDetail />} />
                                 <Route path="/buscar" element={<SearchResults />} />
 
-                                {adminEnabled && (
-                                    <Route
-                                        path="/admin"
-                                        element={
-                                            <AdminGate>
-                                                <AdminDashboard />
-                                            </AdminGate>
-                                        }
-                                    />
-                                )}
+                                <Route
+                                    path="/admin"
+                                    element={
+                                        <AdminGate>
+                                            <AdminDashboard />
+                                        </AdminGate>
+                                    }
+                                />
 
                                 <Route path="*" element={<NotFound />} />
                             </Routes>

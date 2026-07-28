@@ -135,7 +135,49 @@ CREATE TABLE IF NOT EXISTS moderation (
     decided_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- ── 6. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
+-- ── 6. Acceso al panel (F2-04) ───────────────────────────────────────────────
+-- Sustituye a AdminGate, que comparaba una passphrase incrustada en el bundle
+-- del navegador. Eso no es una cerradura: cualquiera la lee en las herramientas
+-- de desarrollo. Aquí la contraseña no viaja nunca al cliente y lo que el
+-- navegador guarda es una cookie httpOnly que su propio JavaScript no puede
+-- leer.
+
+CREATE TABLE IF NOT EXISTS admin_users (
+    id             TEXT PRIMARY KEY,
+    email          TEXT NOT NULL UNIQUE,
+    -- scrypt: sal + parámetros + derivada, todo en una cadena. Nunca la
+    -- contraseña. Ver server/auth/passwords.js.
+    password_hash  TEXT NOT NULL,
+    display_name   TEXT,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+    last_login_at  TIMESTAMPTZ,
+    -- Desactivar en vez de borrar: las decisiones de moderación que firmó esta
+    -- persona siguen apuntando aquí, y perder el rastro de quién aprobó qué
+    -- sería perder justo lo que este proyecto promete poder auditar.
+    disabled_at    TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS admin_sessions (
+    -- Se guarda el HASH del testigo, no el testigo. Si alguien se lleva un
+    -- volcado de esta tabla, no se lleva ninguna sesión utilizable: tendría que
+    -- invertir un SHA-256 de 32 bytes aleatorios. Es el mismo razonamiento por
+    -- el que no se guardan contraseñas en claro, aplicado a las sesiones.
+    token_hash   TEXT PRIMARY KEY,
+    user_id      TEXT NOT NULL REFERENCES admin_users (id) ON DELETE CASCADE,
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    expires_at   TIMESTAMPTZ NOT NULL,
+    last_seen_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    user_agent   TEXT,
+    ip           TEXT
+);
+
+CREATE INDEX IF NOT EXISTS admin_sessions_user_idx    ON admin_sessions (user_id);
+CREATE INDEX IF NOT EXISTS admin_sessions_expires_idx ON admin_sessions (expires_at);
+
+-- Las sesiones caducadas se barren al validar, no con un cron:
+--   DELETE FROM admin_sessions WHERE expires_at < now();
+
+-- ── 7. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
 -- Ley 1581 de 2012: dato personal. No sale en ninguna exportación pública de
 -- contenido, y `deleted_at` permite atender una solicitud de supresión sin
 -- perder el registro de que se atendió.

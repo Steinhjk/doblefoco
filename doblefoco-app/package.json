@@ -17,7 +17,8 @@
     "report:ingest": "node scripts/ingestReport.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "ingest:once": "node scripts/ingestOnce.mjs",
-    "admin:create": "node scripts/createAdmin.mjs"
+    "admin:create": "node scripts/createAdmin.mjs",
+    "clean:filtered": "node scripts/cleanFiltered.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",

@@ -1,0 +1,181 @@
+/**
+ * Filtro de formatos sin encuadre que comparar — tarea F1-14.
+ *
+ * POR QUÉ EXISTE
+ * --------------
+ * El motor encontró y agrupó "Resultados del sorteo de La Caribeña Día del
+ * lunes" con cuatro medios distintos. Técnicamente es una historia multifuente
+ * perfecta; editorialmente no es nada. Cuatro medios publican el mismo número
+ * ganador porque es un dato, no porque tengan una posición sobre él.
+ *
+ * Ese es el criterio exacto de este archivo, y conviene enunciarlo con cuidado
+ * porque de otro modo se convierte en censura por la puerta de atrás:
+ *
+ *   NO se filtra por tema, ni por importancia, ni por calidad periodística.
+ *   Se filtra por FORMATO: piezas cuyo contenido es un dato objetivo idéntico
+ *   en todos los medios, donde no existe encuadre que contrastar.
+ *
+ * Un sorteo de lotería, un horóscopo o la TRM del día no tienen "versión de
+ * izquierda" y "versión de derecha". Compararlas no produce información; solo
+ * infla los números de cobertura y empuja hacia abajo las historias que sí
+ * tienen encuadres enfrentados.
+ *
+ * QUÉ NO HACE ESTE FILTRO
+ * -----------------------
+ * No decide qué es importante. Una noticia deportiva, de farándula o de sucesos
+ * SÍ se indexa: se puede cubrir con encuadres distintos y compararla es
+ * legítimo. Lo que se descarta es el resultado del partido en bruto, no la
+ * crónica del partido.
+ *
+ * CÓMO SE VIGILA
+ * --------------
+ * Cada ciclo registra cuántos artículos descartó y por qué motivo. Si el filtro
+ * se vuelve demasiado goloso, se ve en la serie en vez de descubrirse meses
+ * después echando en falta noticias que nadie sabe que faltaron.
+ */
+
+/**
+ * Reglas. Cada una lleva su motivo, y ese motivo se registra: un artículo
+ * descartado siempre puede explicarse.
+ *
+ * Las expresiones se aplican sobre el titular normalizado (sin tildes, en
+ * minúsculas). Se usan fronteras de palabra para que "chance" no cace dentro de
+ * otra palabra y "astro" no descarte una noticia de astronomía.
+ */
+export const QUALITY_RULES = [
+    {
+        id: 'sorteo',
+        reason: 'resultado de sorteo o lotería',
+        // El número ganador es idéntico en los cuatro medios que lo publican.
+        patterns: [
+            /\bresultados?\b[^.]{0,40}\b(sorteo|loteria|chance|baloto|revancha)\b/,
+            /\b(sorteo|loteria)\b[^.]{0,30}\b(hoy|ayer|anoche|lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/,
+            /\bnumeros?\s+ganadores?\b/,
+            /\bloteria\s+de\b/,
+
+            // Marcas inconfundibles: no significan otra cosa en español.
+            /\b(baloto|revancha|super\s?astro|astro\s+(sol|luna)|sinuano|cash\s?three|play\s?four)\b/,
+
+            /**
+             * Marcas AMBIGUAS: solo cuentan junto a una palabra de contexto.
+             *
+             * Aprendido con un falso positivo real. "El Dorado" es una lotería,
+             * pero también el aeropuerto de Bogotá y el nombre de medio país:
+             * el patrón a secas descartó "En Montería iniciaron las obras de
+             * rehabilitación del CDI El Dorado", que es una noticia de
+             * infraestructura perfectamente legítima.
+             *
+             * Ese es el error que este archivo no puede permitirse, porque
+             * borra la noticia sin dejar rastro visible. De ahí la asimetría:
+             * las marcas ambiguas exigen que en el mismo titular aparezca
+             * "sorteo", "resultado", "chance", "premio" o similar.
+             */
+            /\b(caribena|dorado|paisita|culona|chontico|cafeterito|motilon|pijao|antioquenita|fantastica)\b[^.]{0,40}\b(sorteo|resultados?|chance|premio|gano|ganador|numero)\b/,
+            /\b(sorteo|resultados?|chance|premio|ganador|numero)\b[^.]{0,40}\b(caribena|dorado|paisita|culona|chontico|cafeterito|motilon|pijao|antioquenita|fantastica)\b/,
+        ],
+    },
+    {
+        id: 'horoscopo',
+        reason: 'horóscopo o predicción astrológica',
+        patterns: [
+            /\bhoroscopo\b/,
+            /\b(signos?\s+del\s+zodiaco|zodiacal)\b/,
+            /\b(tarot|carta\s+astral|predicciones\s+de\s+(hoy|la\s+semana))\b/,
+        ],
+    },
+    {
+        id: 'cotizacion',
+        reason: 'cotización o dato de mercado del día',
+        // El precio del dólar es el mismo en todos los medios. El ANÁLISIS de
+        // por qué subió sí es encuadre, y por eso se exige que el titular sea
+        // el dato en bruto ("hoy", "en vivo", "cierre").
+        patterns: [
+            /\b(precio|valor|cotizacion)\s+del\s+dolar\b[^.]{0,25}\b(hoy|ahora|en\s+vivo|cierre)\b/,
+            /\b(trm|dolar)\b[^.]{0,20}\b(hoy|de\s+hoy)\b/,
+            /\bprecio\s+del?\s+(euro|bitcoin|cafe|petroleo)\b[^.]{0,20}\bhoy\b/,
+        ],
+    },
+    {
+        id: 'clima',
+        reason: 'parte meteorológico',
+        patterns: [
+            /\b(clima|pronostico\s+del\s+tiempo|estado\s+del\s+tiempo)\b[^.]{0,25}\b(hoy|manana|semana)\b/,
+        ],
+    },
+    {
+        id: 'directo',
+        reason: 'retransmisión en directo, sin pieza cerrada',
+        // No es que no importe: es que el titular cambia cada diez minutos y el
+        // agrupamiento junta actualizaciones sucesivas del mismo acto como si
+        // fueran cobertura de medios distintos.
+        patterns: [
+            /\bminuto\s+a\s+minuto\b/,
+            /\b(siga|sigue|siganlo)\s+(aqui|en\s+vivo)\b/,
+            /\ben\s+vivo\b[^.]{0,25}\b(transmision|streaming|senal)\b/,
+        ],
+    },
+    {
+        id: 'resultado-deportivo',
+        reason: 'marcador o programación deportiva en bruto',
+        // Deliberadamente estrecho. La crónica de un partido y el análisis de
+        // un fichaje SÍ se indexan: tienen encuadre. Lo que se descarta es la
+        // tabla de resultados y la alineación.
+        patterns: [
+            /\b(resultados?|marcador)\b[^.]{0,30}\b(fecha|jornada)\s+\d+\b/,
+            /\b(alineaciones?|formaciones?)\s+(confirmadas?|probables?)\b/,
+            /\btabla\s+de\s+posiciones\b/,
+            /\bhorarios?\s+y\s+donde\s+ver\b/,
+        ],
+    },
+];
+
+/** Quita tildes y baja a minúsculas, para que las reglas no dependan de ellas. */
+function normalize(text) {
+    return String(text)
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase();
+}
+
+/**
+ * ¿Se indexa este artículo?
+ *
+ * @param {{headline?: string, category?: string}} article
+ * @returns {{indexable: boolean, ruleId: string|null, reason: string|null}}
+ */
+export function assessArticle(article) {
+    const headline = article?.headline;
+
+    if (!headline || typeof headline !== 'string' || !headline.trim()) {
+        return { indexable: false, ruleId: 'sin-titular', reason: 'sin titular utilizable' };
+    }
+
+    const text = normalize(headline);
+
+    for (const rule of QUALITY_RULES) {
+        if (rule.patterns.some((pattern) => pattern.test(text))) {
+            return { indexable: false, ruleId: rule.id, reason: rule.reason };
+        }
+    }
+
+    return { indexable: true, ruleId: null, reason: null };
+}
+
+/**
+ * Cuenta descartes por motivo sobre un lote.
+ * Lo que alimenta la vigilancia: sin esta cifra, un filtro demasiado goloso
+ * solo se descubre echando en falta noticias que nadie sabe que faltaron.
+ */
+export function summarizeFiltering(articles) {
+    const byRule = {};
+    let filtered = 0;
+
+    for (const article of articles) {
+        const verdict = assessArticle(article);
+        if (verdict.indexable) continue;
+        filtered += 1;
+        byRule[verdict.ruleId] = (byRule[verdict.ruleId] ?? 0) + 1;
+    }
+
+    return { total: articles.length, filtered, byRule };
+}

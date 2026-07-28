@@ -47,6 +47,12 @@ CREATE TABLE IF NOT EXISTS ingest_runs (
 
 CREATE INDEX IF NOT EXISTS ingest_runs_at_idx ON ingest_runs (at DESC);
 
+-- Artículos descartados por el filtro de formatos (F1-14): sorteos, horóscopos,
+-- cotizaciones del día. Se registra para poder VIGILAR el filtro: uno demasiado
+-- goloso solo se descubre echando en falta noticias que nadie sabe que
+-- faltaron. Con la cifra en la serie, un salto se ve el mismo día.
+ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS filtered_articles INTEGER NOT NULL DEFAULT 0;
+
 -- ── 2. Medios ────────────────────────────────────────────────────────────────
 -- PROYECCIÓN de shared/mediaRegistry.js. Se regenera; no se edita a mano.
 -- El sesgo vive en el registro y en ningún otro sitio: esa fue la tarea F1-04 y

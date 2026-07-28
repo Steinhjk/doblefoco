@@ -358,8 +358,8 @@ export async function recordRun(row) {
         INSERT INTO ingest_runs
             (at, duration_ms, feeds_ok, feeds_failed, active_feeds, new_articles,
              total_articles, total_stories, multi_source_stories,
-             cross_spectrum_stories, blindspot_stories)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+             cross_spectrum_stories, blindspot_stories, filtered_articles)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         ON CONFLICT (at) DO NOTHING
         `,
         [
@@ -374,6 +374,7 @@ export async function recordRun(row) {
             row.multiSourceStories ?? 0,
             row.crossSpectrumStories ?? 0,
             row.blindspotStories ?? 0,
+            row.filteredArticles ?? 0,
         ],
         'registro del ciclo'
     );
@@ -386,6 +387,7 @@ export async function dailySummaryFromDb({ days = 7 } = {}) {
         SELECT to_char(at, 'YYYY-MM-DD')     AS day,
                count(*)::int                 AS cycles,
                sum(new_articles)::int        AS "newArticles",
+               sum(filtered_articles)::int   AS "filteredArticles",
                max(total_articles)::int      AS "peakArticles",
                max(total_stories)::int       AS "peakStories",
                max(multi_source_stories)::int   AS "peakMultiSource",

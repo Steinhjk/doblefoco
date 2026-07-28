@@ -57,6 +57,7 @@ export function recordIngestRun(record) {
         feedsOk: record.feedsOk ?? 0,
         feedsFailed: record.feedsFailed ?? 0,
         newArticles: record.newArticles ?? 0,
+        filteredArticles: record.filteredArticles ?? 0,
         totalArticles: record.totalArticles ?? 0,
         totalStories: record.totalStories ?? 0,
         multiSourceStories: record.multiSourceStories ?? 0,
@@ -132,6 +133,7 @@ export async function dailySummary({ days = 7 } = {}) {
             day,
             cycles: 0,
             newArticles: 0,
+            filteredArticles: 0,
             peakArticles: 0,
             peakStories: 0,
             peakMultiSource: 0,
@@ -142,6 +144,7 @@ export async function dailySummary({ days = 7 } = {}) {
 
         entry.cycles += 1;
         entry.newArticles += run.newArticles ?? 0;
+        entry.filteredArticles += run.filteredArticles ?? 0;
         entry.feedFailures += run.feedsFailed ?? 0;
         entry.peakArticles = Math.max(entry.peakArticles, run.totalArticles ?? 0);
         entry.peakStories = Math.max(entry.peakStories, run.totalStories ?? 0);

@@ -31,6 +31,7 @@ import {
     storyId,
 } from '../../shared/clustering.js';
 import { analyzeHeadlineTone } from '../../shared/headlineTone.js';
+import { assessArticle } from '../../shared/contentQuality.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { recordIngestRun } from './metricsStore.js';
 import { isDatabaseEnabled } from '../db/pool.js';
@@ -338,6 +339,7 @@ export async function runIngestionBatch() {
                 }
 
                 const fresh = [];
+                const discarded = {};
 
                 for (const item of result.items.slice(0, ITEMS_PER_FEED)) {
                     const link = canonicalizeLink(item?.link);
@@ -350,6 +352,18 @@ export async function runIngestionBatch() {
                     // entre ejecuciones. Antes era un .some() sobre todo el
                     // array, con coste cuadrático.
                     if (articlesByLink.has(link)) continue;
+
+                    // Formatos sin encuadre que comparar: sorteos, horóscopos,
+                    // la TRM del día. Cuatro medios publicando el mismo número
+                    // ganador es una historia multifuente perfecta y no
+                    // significa nada. Se descarta antes de indexar y se cuenta
+                    // por motivo, para poder vigilar que el filtro no se vuelva
+                    // goloso (F1-14).
+                    const quality = assessArticle({ headline });
+                    if (!quality.indexable) {
+                        discarded[quality.ruleId] = (discarded[quality.ruleId] ?? 0) + 1;
+                        continue;
+                    }
 
                     const article = {
                         id: articleId(link, headline),
@@ -385,6 +399,7 @@ export async function runIngestionBatch() {
                     ok: true,
                     added: fresh.length,
                     fresh,
+                    discarded,
                 };
             }
         );
@@ -413,10 +428,23 @@ export async function runIngestionBatch() {
 
         const shape = measureStoryShape();
 
+        // Descartes agregados por motivo. Se publican en el informe del ciclo y
+        // en la serie: un filtro editorial que trabaja en silencio es la forma
+        // más discreta de perder noticias.
+        const discardedByRule = {};
+        for (const feed of perFeed) {
+            for (const [rule, count] of Object.entries(feed.discarded ?? {})) {
+                discardedByRule[rule] = (discardedByRule[rule] ?? 0) + count;
+            }
+        }
+        const filteredArticles = Object.values(discardedByRule).reduce((a, b) => a + b, 0);
+
         const report = {
             startedAt: new Date(startedAt).toISOString(),
             durationMs: Date.now() - startedAt,
             newArticles: perFeed.reduce((sum, f) => sum + f.added, 0),
+            filteredArticles,
+            discardedByRule,
             totalArticles: articlesByLink.size,
             totalStories: storiesFeed.length,
             feedsOk: perFeed.filter((f) => f.ok).length,
@@ -434,6 +462,7 @@ export async function runIngestionBatch() {
             feedsFailed: report.feedsFailed.length,
             activeFeeds: RSS_FEEDS_CONFIG.length,
             newArticles: report.newArticles,
+            filteredArticles: report.filteredArticles,
             totalArticles: report.totalArticles,
             totalStories: report.totalStories,
             ...shape,
@@ -453,6 +482,11 @@ export async function runIngestionBatch() {
             `[ingesta] ${report.newArticles} artículos nuevos · ${report.totalStories} historias ` +
             `(${shape.multiSourceStories} multifuente, ${shape.crossSpectrumStories} cruzan espectros) · ` +
             `${report.feedsOk}/${RSS_FEEDS_CONFIG.length} feeds OK · ${report.durationMs} ms` +
+            (report.filteredArticles
+                ? ` · ${report.filteredArticles} filtrados (${Object.entries(report.discardedByRule)
+                    .map(([rule, n]) => `${rule}:${n}`)
+                    .join(', ')})`
+                : '') +
             (persisted ? ` · ${persisted}` : '')
         );
 

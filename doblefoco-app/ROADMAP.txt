@@ -55,8 +55,8 @@
   Build de producción ................ ✅ correcto (vite build)
   ESLint ............................. ✅ 0 errores (antes: 26 errores)
   Catálogo de medios ................. ✅ fuente única, verificada por script
-  Tests automatizados ................ ✅ 60 pruebas (sesgo, agrupamiento,
-                                          tono, contraseñas)
+  Tests automatizados ................ ✅ 78 pruebas (sesgo, agrupamiento,
+                                          tono, contraseñas, filtro de formatos)
   Integración continua ............... ✅ lint + test + build + catálogo
                                           en cada push y cada PR
   Persistencia de datos .............. ✅ Postgres 17.6 (Supabase, sa-east-1)
@@ -86,7 +86,7 @@
     npm run check:feeds      sondea los 36 feeds contra la red (lento)
     npm run docs:catalog     regenera el catálogo público desde el registro
     npm run report:ingest    tabla por días de la serie de ingesta (F1-01)
-    npm test                 las 60 pruebas de shared/ y server/auth/.
+    npm test                 las 78 pruebas de shared/ y server/auth/.
                              `npm run test:watch` para desarrollo.
     npm run admin:create     crea o restablece una cuenta del panel. La
                              contraseña se genera y se imprime UNA vez.
@@ -94,6 +94,8 @@
     npm run ingest:once      un ciclo de ingesta y salir. Es lo que ejecuta
                              GitHub Actions cada 30 min. Sale con 1 si no pudo
                              persistir.
+    npm run clean:filtered   retira del corpus lo que el filtro descartaría hoy
+                             (F1-14). Dry-run por defecto; --apply para borrar.
     npm run db:migrate       aplica el esquema, proyecta el catálogo sobre
                              `sources` y vuelca el JSONL a `ingest_runs`.
                              Idempotente: se puede correr en cada despliegue.
@@ -188,7 +190,7 @@
             inequívoco de que son datos de muestra y no cobertura real.
 
 ===============================================================================
- FASE 1 — QUE LO VISIBLE FUNCIONE                              [~] EN CURSO (9/13)
+ FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (10/14)
 ===============================================================================
  Objetivo: que cada elemento de la interfaz haga lo que dice hacer.
 
@@ -367,6 +369,50 @@
             el producto. Probablemente ambas.
             CRITERIO: una decisión escrita, y si es (a), 3 medios por banda
             extrema verificados contra la red.
+
+ [x] F1-14  Filtrar formatos sin encuadre que comparar
+            El motor agrupó "Resultados del sorteo de La Caribeña Día del lunes"
+            con cuatro medios distintos. Técnicamente una historia multifuente
+            perfecta; editorialmente, nada: los cuatro publican el mismo número
+            ganador porque es un dato, no porque tengan una posición.
+
+            CRITERIO, enunciado con cuidado para que no se convierta en censura
+            por la puerta de atrás: no se filtra por tema, ni por importancia,
+            ni por calidad periodística. Se filtra por FORMATO — piezas cuyo
+            contenido es un dato objetivo idéntico en todos los medios, donde no
+            hay encuadre que contrastar. Sorteos, horóscopos, la TRM del día,
+            partes del clima, retransmisiones minuto a minuto y tablas de
+            resultados. La crónica del partido SÍ se indexa; el marcador, no.
+
+            shared/contentQuality.js, seis reglas, cada una con su motivo. Cada
+            descarte dice por qué y el ciclo registra el recuento por regla en
+            `ingest_runs.filtered_articles`: un filtro editorial que trabaja en
+            silencio es la forma más discreta de perder noticias.
+
+            EL ERROR QUE ESTE FILTRO NO PUEDE COMETER es el contrario, y lo
+            cometió el primer día. "El Dorado" es una lotería, pero también el
+            aeropuerto de Bogotá: el patrón descartó "En Montería iniciaron las
+            obras de rehabilitación del CDI El Dorado". Dejar pasar un sorteo
+            ensucia el feed —molesto y visible—; descartar una noticia real la
+            borra sin que nadie se entere de que existió.
+            Corregido con una asimetría deliberada: las marcas inconfundibles
+            (Baloto, Sinuano, Súper Astro) filtran solas; las ambiguas (Dorado,
+            Caribeña, Fantástica, Paisita) exigen que el titular traiga además
+            "sorteo", "resultado", "premio" o "ganador". Hay prueba de regresión
+            con ese titular exacto.
+
+            MEDIDO sobre 1 135 artículos reales: descarta 39, el 3,4 %.
+            29 sorteos · 3 clima · 2 horóscopos · 2 cotizaciones · 2 directos ·
+            1 tabla deportiva. Revisada la lista entera, un solo caso
+            discutible ("Dólar hoy: mercado se movería entre la expectativa de
+            rebote…", que puede ser análisis y no cotización).
+
+            npm run clean:filtered retira del corpus lo que el filtro
+            descartaría hoy. DRY-RUN POR DEFECTO y lista completa en pantalla:
+            añadir una regla demasiado ancha borraría retroactivamente noticias
+            reales de toda la ventana de retención sin que apareciera nada en
+            ninguna pantalla. El borrado retroactivo es un acto deliberado, no
+            un efecto secundario de la ingesta.
 
  [ ] F1-13  Revisión editorial firmada de los valores de sesgo
             Los 40 valores del catálogo llevan justificación escrita pero

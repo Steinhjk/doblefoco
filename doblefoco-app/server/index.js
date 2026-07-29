@@ -21,7 +21,7 @@ import { getDatabaseStats } from './services/ingestDaemon.js';
 import { countFeed, readFeed, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
-import { dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
+import { countStored, dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
@@ -238,9 +238,12 @@ app.get('/api/health', async (req, res) => {
 
     // Nunca lanza: un fallo al leer la base es en sí mismo señal de degradado,
     // y health tiene que poder responder precisamente cuando algo va mal.
-    const ultimoCiclo = isDatabaseEnabled()
-        ? await lastRunFromDb().catch(() => null)
-        : null;
+    const [ultimoCiclo, conteos] = isDatabaseEnabled()
+        ? await Promise.all([
+            lastRunFromDb().catch(() => null),
+            countStored().catch(() => null),
+        ])
+        : [null, null];
 
     const lastRunAt = ultimoCiclo?.at ?? stats.lastRunAt;
     const staleAfterMs = INGEST_INTERVAL_MS * 3;
@@ -261,8 +264,13 @@ app.get('/api/health', async (req, res) => {
             failedFeeds: stats.lastRunReport?.feedsFailed ?? [],
         },
         database: {
-            articles: stats.totalArticles,
-            stories: stats.totalStories,
+            // Los conteos también salen de la base, por lo mismo que la fecha:
+            // este proceso no hidrata nada, así que sus contadores en memoria
+            // valen 0. Publicaban «0 artículos, 0 historias» con 2 371
+            // historias servidas — una cifra falsa es peor que ninguna, porque
+            // invita a buscar una avería que no existe.
+            articles: conteos?.articles ?? stats.totalArticles,
+            stories: conteos?.stories ?? stats.totalStories,
             // Qué respalda esos números. `false` significa que un reinicio los
             // pone a cero: es información operativa, no un detalle interno.
             persistent: isDatabaseEnabled(),

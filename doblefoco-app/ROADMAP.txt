@@ -1278,7 +1278,7 @@
 
  ── 3A. Visibilidad ───────────────────────────────────────────────────────────
 
- [ ] F3-01  Renderizado en servidor de /noticia/:id — SIGUIENTE TAREA
+ [x] F3-01  Renderizado en servidor de /noticia/:id
             ─────────────────────────────────────────────────────────────────
             EL PROBLEMA, literal y comprobable hoy:
               curl -s https://doblefococo.vercel.app | grep -A2 "<body"
@@ -1380,7 +1380,7 @@
             separar el renderizador en su propio grupo de proceso en fly.toml,
             no agrandar la máquina indefinidamente.
 
- [ ] F3-02  Metadatos por ruta, Open Graph por historia y JSON-LD NewsArticle
+ [x] F3-02  Metadatos por ruta, Open Graph por historia y JSON-LD NewsArticle
             ─────────────────────────────────────────────────────────────────
             DEPENDE DE F3-01 y se hace inmediatamente después, en la misma
             plantilla. Hoy todas las páginas comparten el título de index.html

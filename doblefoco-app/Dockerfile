@@ -1,8 +1,9 @@
-# Imagen de la API de DobleFoco.
+# Imagen de la API y el motor de DobleFoco.
 #
-# Solo el servidor. El sitio estático se construye aparte y se sirve desde
-# Vercel, así que aquí no entran ni React ni Vite ni el bundle: reducirlo no es
-# solo tamaño, es superficie que no hay que parchear.
+# Desde F3-01 incluye también el renderizado en servidor de las noticias, así
+# que la imagen contiene el bundle de servidor (dist-server/) y la plantilla
+# (dist/index.html). El bundle del NAVEGADOR lo sigue sirviendo Vercel: aquí
+# dist/ existe solo como plantilla y como respaldo.
 
 FROM node:22-alpine AS deps
 WORKDIR /app
@@ -14,6 +15,24 @@ COPY package.json package-lock.json ./
 # `npm ci` respeta el lock exactamente; `npm install` podría resolver versiones
 # distintas a las probadas. --omit=dev deja fuera vite, eslint y vitest.
 RUN npm ci --omit=dev && npm cache clean --force
+
+# -----------------------------------------------------------------------------
+# Compilación DENTRO de la imagen, y no copiando dist/ desde fuera.
+#
+# La versión anterior hacía `COPY dist ./dist`, lo que metía en producción lo
+# que hubiera compilado en la máquina de quien desplegaba: de otra rama, o de
+# hace semanas, sin que nada lo delatara. Compilando aquí, la imagen es función
+# únicamente del código del repositorio.
+# -----------------------------------------------------------------------------
+FROM node:22-alpine AS build
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+# Sin --omit=dev: aquí SÍ hacen falta vite y el plugin de React.
+RUN npm ci
+
+COPY . .
+RUN npm run build
 
 FROM node:22-alpine AS runtime
 WORKDIR /app
@@ -27,6 +46,10 @@ COPY server ./server
 COPY shared ./shared
 COPY scripts ./scripts
 COPY certs ./certs
+
+# Producto de la etapa de compilación, nunca del contexto de construcción.
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/dist-server ./dist-server
 
 # Verificación del certificado del servidor de base de datos. La ruta es la del
 # contenedor, no la del repositorio.

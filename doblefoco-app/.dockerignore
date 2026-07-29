@@ -1,15 +1,19 @@
 node_modules
-dist
 .git
 .env
 .env.local
 *.local
 data
-src
-public
-index.html
-vite.config.js
+
+# Se COMPILAN dentro de la imagen (etapa `build`), no se suben desde la máquina
+# de quien despliega. Si entraran por el contexto, la imagen se quedaría con lo
+# que alguien tuviera compilado en su portátil en ese momento — que puede ser de
+# otra rama, o de hace semanas, sin que nada avise.
+dist
+dist-server
+
+# src/, public/, index.html y vite.config.js SÍ entran ahora: la etapa de
+# compilación los necesita para producir dist/ y dist-server/ (F3-01). Antes se
+# excluían porque la imagen era solo la API.
 eslint.config.js
-tsconfig.json
-types
 **/*.test.js

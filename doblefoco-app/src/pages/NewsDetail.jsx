@@ -1,5 +1,5 @@
 // @ts-check
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX } from 'lucide-react';
 import { getMediaByName } from '../data/mediaLogos';
@@ -8,6 +8,7 @@ import { fetchStory, isApiConfigured } from '../services/apiClient';
 import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
 import { useStories } from '../hooks/useStories';
 import { recordRead } from '../lib/readingHistory';
+import { useHistoriaInicial } from '../hooks/datosInicialesContext';
 import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsCard from '../components/NewsCard';
 import CoverageBar from '../components/CoverageBar';
@@ -117,8 +118,22 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
 const NewsDetail = () => {
     const { id } = useParams();
     const [isShareOpen, setIsShareOpen] = useState(false);
-    const [story, setStory] = useState(null);
-    const [loading, setLoading] = useState(true);
+
+    /**
+     * La historia que el SERVIDOR ya cargó, si esta página vino renderizada
+     * (F3-01). Es null en una navegación dentro de la SPA y en desarrollo.
+     */
+    const historiaInicial = useHistoriaInicial(id);
+
+    // Sembrar el estado con lo que ya trae el HTML es lo que hace que el
+    // renderizado en servidor sirva de algo. Sin esto: el servidor pinta la
+    // noticia, el navegador hidrata con `story` en null, se ve «Cargando…» y
+    // se pide a la API un dato que la página ya tenía. Se pagaría el coste del
+    // renderizado y se perdería su beneficio, más un parpadeo.
+    const [story, setStory] = useState(() =>
+        historiaInicial ? normalizeStory(historiaInicial) : null
+    );
+    const [loading, setLoading] = useState(!historiaInicial);
 
     // Historias reales, para el bloque de relacionadas. Antes esto era el
     // fixture, y además de alimentar "relacionadas" servía de RESPALDO cuando
@@ -129,8 +144,23 @@ const NewsDetail = () => {
     // al lado. Ese respaldo se eliminó: si la API no la tiene, no existe.
     const { stories: pool } = useStories({ limit: 60 });
 
+    /**
+     * Qué id tenemos ya cargado.
+     *
+     * Arranca apuntando al de la historia que trajo el servidor (F3-01): así el
+     * efecto sabe que no hace falta pedir nada. Va en una referencia y no en el
+     * estado a propósito — mirar `story` desde el efecto lo obligaría a
+     * depender de `story`, y como el efecto lo escribe, se reejecutaría en
+     * bucle.
+     */
+    const idCargado = useRef(historiaInicial ? id : null);
+
     useEffect(() => {
         let cancelled = false;
+
+        // Ya la tenemos: vino en el HTML que renderizó el servidor. Volver a
+        // pedirla sería una consulta de más en cada visita que llegue indexada.
+        if (idCargado.current === id) return;
 
         const load = async () => {
             setLoading(true);
@@ -140,6 +170,7 @@ const NewsDetail = () => {
                 if (cancelled) return;
                 if (result.ok && result.story) {
                     setStory(normalizeStory(result.story));
+                    idCargado.current = id;
                     setLoading(false);
                     return;
                 }
@@ -147,6 +178,7 @@ const NewsDetail = () => {
 
             if (cancelled) return;
             setStory(null);
+            idCargado.current = id;
             setLoading(false);
         };
 

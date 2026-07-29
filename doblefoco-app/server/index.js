@@ -15,6 +15,9 @@
  *     de la ingesta en lugar de un "ok" fijo.
  */
 
+import { readFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import { getDatabaseStats } from './services/ingestDaemon.js';
@@ -28,6 +31,7 @@ import moderationRoutes from './moderationRoutes.js';
 import { recordReport, REPORT_KINDS } from './db/reportStore.js';
 import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
+import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -552,6 +556,170 @@ app.get('/api/metrics/daily', async (req, res) => {
     } catch (error) {
         console.error('[api] fallo en /api/metrics/daily', error);
         res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+/**
+ * RENDERIZADO EN SERVIDOR DE /noticia/:id — F3-01 y F3-02
+ *
+ * Se carga UNA vez y se guarda. La versión anterior hacía dos existsSync y un
+ * readFileSync sincrónicos en CADA petición: entrada/salida bloqueante dentro
+ * del bucle de eventos, en la ruta que precisamente se quiere que aguante el
+ * tráfico de los buscadores.
+ *
+ * `pathToFileURL` no es adorno: en Windows, `import()` de una ruta absoluta
+ * falla con ERR_UNSUPPORTED_ESM_URL_SCHEME. Sin esto la ruta devuelve 500 en
+ * desarrollo local aunque funcione en el contenedor, y el fallo se descubre en
+ * producción.
+ */
+const RAIZ_APP = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+/**
+ * LA PLANTILLA SE PIDE AL SITIO, NO SE USA LA DE ESTA IMAGEN.
+ *
+ * Y es la decisión menos evidente de todo F3-01. El HTML lo sirve Fly, pero los
+ * `/assets/index-XXXX.js` que ese HTML referencia los sirve VERCEL, desde su
+ * propia compilación. Son dos construcciones independientes: en cuanto sus
+ * hashes divergen —y divergen con cualquier cambio de código—, la página pide
+ * un archivo que Vercel no tiene.
+ *
+ * MEDIDO, y por eso importa tanto: Vercel NO responde 404 a un asset que le
+ * falta. El comodín `/(.*)` → /index.html le hace devolver «200 OK,
+ * Content-Type: text/html». El navegador recibiría HTML donde espera
+ * JavaScript, la página quedaría sin hidratar y sin interactividad, y no habría
+ * un solo código de error en ningún registro.
+ *
+ * Pidiendo la plantilla al propio sitio, las referencias son por construcción
+ * las que Vercel sirve en ese momento. Se refresca cada pocos minutos para que
+ * un despliegue nuevo se recoja solo, y si el sitio no responde se cae a la
+ * plantilla de la imagen, que al menos permite servir la página.
+ */
+const PLANTILLA_TTL_MS = 5 * 60 * 1000;
+let plantillaCache = { html: null, cuando: 0 };
+
+async function obtenerPlantilla() {
+    const ahora = Date.now();
+    if (plantillaCache.html && ahora - plantillaCache.cuando < PLANTILLA_TTL_MS) {
+        return plantillaCache.html;
+    }
+
+    try {
+        // Se pide la RAÍZ, nunca una ruta /noticia/*: esas las redirige Vercel
+        // de vuelta aquí y el servidor se llamaría a sí mismo en bucle.
+        const respuesta = await fetch(`${SITE_URL}/`, {
+            signal: AbortSignal.timeout(5_000),
+            headers: { Accept: 'text/html' },
+        });
+
+        if (respuesta.ok) {
+            const html = await respuesta.text();
+            // Comprobación de forma: si el sitio devolviera una página de error
+            // con 200, usarla como plantilla produciría noticias en blanco.
+            if (html.includes('<div id="root"></div>') && html.includes('</head>')) {
+                plantillaCache = { html, cuando: ahora };
+                return html;
+            }
+            console.warn('[ssr] el sitio devolvió algo que no parece la plantilla');
+        }
+    } catch (error) {
+        console.warn(`[ssr] no se pudo leer la plantilla del sitio: ${error.message}`);
+    }
+
+    const local = await readFile(resolve(RAIZ_APP, 'dist/index.html'), 'utf8');
+    plantillaCache = { html: local, cuando: ahora };
+    return local;
+}
+
+let ssr = null;
+let ssrFallido = false;
+
+async function prepararSsr() {
+    if (ssr) return ssr;
+    if (ssrFallido) return null;
+
+    try {
+        const rutaEntrada = resolve(RAIZ_APP, 'dist-server/entry-server.js');
+        const modulo = await import(pathToFileURL(rutaEntrada).href);
+        ssr = { render: modulo.render };
+        console.log('[ssr] renderizado en servidor listo');
+        return ssr;
+    } catch (error) {
+        // Se marca para no reintentar en cada petición, y se avisa UNA vez con
+        // claridad. Sin dist/ y dist-server/ en la imagen esto es lo que pasa;
+        // el síntoma sería SEO silenciosamente muerto, así que conviene que el
+        // registro lo diga con todas las letras.
+        ssrFallido = true;
+        console.error(
+            `[ssr] NO se pudo cargar el renderizado en servidor: ${error.message}
+` +
+            '      Las noticias se servirán como SPA: funcionan para personas, ' +
+            'pero los rastreadores no verán contenido. Revisa que dist/ y ' +
+            'dist-server/ estén en la imagen.'
+        );
+        return null;
+    }
+}
+
+app.get('/noticia/:id', async (req, res) => {
+    try {
+        const story = await readStory(req.params.id);
+        const motor = await prepararSsr();
+        const plantilla = motor ? await obtenerPlantilla() : null;
+
+        // Sin motor de renderizado se entrega la SPA tal cual. Es peor para el
+        // buscador pero la página sigue funcionando para quien la visita, y
+        // romper el sitio entero por un fallo de SEO sería desproporcionado.
+        // NUNCA devolver JSON aquí: es una URL de HTML, y un rastreador que
+        // reciba JSON lo indexaría como el contenido de la página.
+        if (!motor) {
+            if (!story) res.status(404);
+            res.type('html');
+            return res.send(await readFile(resolve(RAIZ_APP, 'dist/index.html'), 'utf8'));
+        }
+
+        if (!story) {
+            // 404 de verdad, con su código: una historia retirada por moderación
+            // o un id inventado no deben quedarse indexados como página válida.
+            res.status(404).type('html');
+            return res.send(
+                montarPagina({
+                    plantilla,
+                    html: (await motor.render(req.originalUrl, null)).html,
+                    metadatos:
+                        '<title>Noticia no encontrada · DobleFoco.co</title>' +
+                        '\n    <meta name="robots" content="noindex" />',
+                    datos: { story: null },
+                })
+            );
+        }
+
+        const { html } = await motor.render(req.originalUrl, { story });
+
+        // Mismo par de directivas que el sitemap (F3-03), por la misma razón:
+        // el coste de servir a cada rastreador lo absorbe la CDN, no esta
+        // máquina. Es el estándar RFC 5861, equivalente al ISR de Next.js.
+        res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=1800, stale-while-revalidate=3600');
+        res.type('html');
+
+        return res.send(
+            montarPagina({
+                plantilla,
+                html,
+                metadatos: construirMetadatos(story, SITE_URL),
+                datos: { story },
+            })
+        );
+    } catch (error) {
+        console.error('[ssr] fallo al renderizar la noticia', error);
+        // Que no se cachee un error: sin esto, la CDN guardaría media hora una
+        // página rota para todo el mundo.
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(500).type('html').send(
+            '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+            '<title>Error · DobleFoco.co</title><meta name="robots" content="noindex">' +
+            '</head><body><h1>No se pudo mostrar la noticia</h1>' +
+            '<p><a href="/">Volver al inicio</a></p></body></html>'
+        );
     }
 });
 

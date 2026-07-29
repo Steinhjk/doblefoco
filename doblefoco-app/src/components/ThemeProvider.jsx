@@ -4,6 +4,16 @@ import { ThemeContext } from '../hooks/themeContext';
 const STORAGE_KEY = 'doblefoco-theme';
 
 function getInitialTheme() {
+    // En el servidor no hay ni localStorage ni matchMedia. Sin esta guarda, el
+    // renderizado en servidor (F3-01) revienta con «window is not defined»
+    // ANTES de emitir un solo carácter, y la ruta entera devuelve 500.
+    //
+    // Devolver 'light' aquí no produce discrepancia de hidratación porque el
+    // tema no se pinta en el HTML: se aplica como data-theme sobre
+    // documentElement dentro de un useEffect, que en el servidor no corre. El
+    // cliente lo corrige en su primer efecto.
+    if (typeof window === 'undefined') return 'light';
+
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored === 'dark' || stored === 'light') return stored;

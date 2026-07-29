@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "dev:server": "node --env-file=.env.local server/index.js",
-    "build": "vite build",
+    "build:client": "vite build",
+    "build:server": "vite build --ssr src/entry-server.jsx --outDir dist-server",
+    "build": "npm run build:client && npm run build:server",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

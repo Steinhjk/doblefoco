@@ -32,6 +32,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "https://doblefoco.fly.dev/sitemap.xml" },
     { "source": "/robots.txt", "destination": "https://doblefoco.fly.dev/robots.txt" },
+    { "source": "/noticia/(.*)", "destination": "https://doblefoco.fly.dev/noticia/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

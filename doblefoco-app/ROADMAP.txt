@@ -967,10 +967,33 @@
 
             `npm run typecheck`, y añadido a CI entre el lint y las pruebas.
 
-            FALTA: validación con Zod en las fronteras (cuerpos de petición y
-            respuestas de la API). Hoy se validan a mano y con cuidado, así que
-            no es urgente; conviene medir si añade algo antes de meter una
+            ZOD: MEDIDO Y APLAZADO, con la condición escrita.
+            Se contó la superficie real de frontera: 5 campos de cuerpo en 3
+            endpoints, todos planos, y 7 parámetros de consulta. Cada uno está
+            o en lista blanca (→ 400) o acotado a rango, y los feeds RSS ya
+            llevan comprobación defensiva de tipo. No hay ningún camino por el
+            que un valor inesperado se cuele.
+            La ventaja de Zod —que el esquema sea una sola declaración de la que
+            salen validación y tipo— es real pero teórica a esta escala:
+            reescribiría código que funciona y está probado a cambio de una
             dependencia.
+            CUÁNDO REVISARLO, y es concreto: cuando los cuerpos dejen de ser
+            planos. El día que el panel permita editar fichas de medios —con
+            `sources`, `holdings` y objetos anidados— validar eso a mano sí se
+            vuelve frágil.
+
+            LO QUE SÍ SALIÓ DE ESA MEDICIÓN, y era un riesgo real: las listas
+            blancas están declaradas DOS VECES, en JavaScript y en el CHECK de
+            SQL, y nada comprobaba que coincidieran. Añadir un tipo en JS y
+            olvidar el CHECK da un 500 sin explicación en cuanto alguien use el
+            valor nuevo: el endpoint lo acepta y la base lo rechaza.
+            Es la misma clase de problema que F1-04 y se resolvió igual, con una
+            comprobación automática: server/db/schema.test.js lee schema.sql y
+            compara sus CHECK contra las constantes de JavaScript.
+            Cubre `reader_reports.kind`, `moderation.state` y los espectros de
+            `stories`.
+            VERIFICADO INYECTANDO LAS DOS DIVERGENCIAS: añadir un tipo solo en
+            JavaScript falla; renombrar una banda solo en SQL falla.
 
  [x] F2-09  Pruebas con Vitest
             48 pruebas sobre las funciones puras de shared/: biasAnalysis,

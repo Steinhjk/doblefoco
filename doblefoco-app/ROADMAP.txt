@@ -1078,10 +1078,45 @@
 
  ── 3B. Experiencia ───────────────────────────────────────────────────────────
 
- [ ] F3-04  Comparación de perspectivas en columnas paralelas
-            Hoy se apilan en vertical, que es justo lo que impide comparar. En
-            escritorio, tres columnas con los titulares alineados hacen visible
-            la diferencia de encuadre de un vistazo, que es el producto entero.
+ [~] F3-04  Comparación de perspectivas en columnas paralelas
+            HECHO EL LAYOUT. Falta la comprobación visual en navegador.
+
+            EL PROBLEMA NO ERAN LAS COLUMNAS, ERA LA ALINEACIÓN. Poner tres
+            columnas es un `grid-template-columns` de una línea. Pero las
+            tarjetas tienen partes opcionales —extracto, términos con carga,
+            "otros medios en este espectro"— así que puestas en columnas sin
+            más, cada titular arranca a una altura distinta según lo que lleve
+            la de al lado. El ojo no puede compararlos, y se pierde exactamente
+            lo que esta pantalla existe para dar.
+
+            Resuelto con `subgrid`: las tres tarjetas comparten las filas del
+            contenedor, de modo que cabeceras, titulares y extras se alinean
+            entre sí sin importar cuánto ocupe cada uno.
+            Para que funcione, cada tarjeta emite SIEMPRE tres bandas. Lo
+            opcional se agrupó en una sola, y la tarjeta de "sin cobertura"
+            lleva una banda vacía al final para que la retícula cuadre — su
+            mensaje ocupa la banda del TITULAR, no una nota al pie: la ausencia
+            de cobertura debe leerse a la altura de los titulares con los que
+            compite.
+
+            RESPALDO SIN SUBGRID: se vuelve a la pila vertical. Sin subgrid la
+            alineación no se puede garantizar, y desalinear en silencio es peor
+            que apilar — apilando comparar cuesta más, pero nada engaña.
+
+            PRUEBA DE ESTRUCTURA (NewsDetail.layout.test.js): romper el
+            invariante no produce NINGÚN error. No lo ve el lint, ni tsc, ni el
+            build; la página se pinta y simplemente deja de comparar. Por eso
+            hay una prueba que verifica que ambas variantes de tarjeta emitan
+            tres bandas y que lo opcional vaya agrupado.
+            VERIFICADO rompiéndolo: sacar el extracto fuera de la banda de
+            extras hace fallar la prueba.
+
+            LO QUE NO ESTÁ VERIFICADO: no pude abrirlo en un navegador en esta
+            sesión. Está comprobado que las reglas llegan al CSS compilado
+            —subgrid, span 3, el @supports y el breakpoint de 900px— y que la
+            estructura es la que el CSS presupone, pero NADIE HA VISTO la
+            pantalla. Falta mirarla en escritorio y en móvil antes de darla por
+            cerrada.
 
  [ ] F3-05  Boletín real con proveedor de correo
             Resend o SES, con doble opt-in, política de privacidad publicada,

@@ -37,6 +37,11 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
                         {SPECTRUM_LABEL[spectrum]}
                     </span>
                 </div>
+
+                {/* Ocupa la MISMA banda que el titular de las otras columnas.
+                    Es deliberado: la ausencia de cobertura tiene que leerse a la
+                    altura de los titulares con los que compite, no como una nota
+                    al pie. Es la señal que hace valioso al producto. */}
                 <div className="perspective-empty-body">
                     <SearchX size={20} aria-hidden="true" />
                     <p>
@@ -44,6 +49,10 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
                         entre los que rastreamos ha publicado sobre este hecho.
                     </p>
                 </div>
+
+                {/* Banda vacía, para que la retícula de las tres columnas
+                    cuadre y los titulares queden alineados. */}
+                <div className="perspective-extras" />
             </div>
         );
     }
@@ -78,23 +87,29 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
                 textualmente lo que publicó. */}
             <h4 className="perspective-headline">{perspective.headline}</h4>
 
-            {perspective.snippet && (
-                <p className="perspective-snippet">{perspective.snippet}</p>
-            )}
+            {/* Todo lo opcional va en UNA banda. Si cada pieza fuera una fila
+                de la retícula, una columna con extracto y otra sin él
+                desalinearían los titulares, que es exactamente lo que esta
+                pantalla existe para evitar. */}
+            <div className="perspective-extras">
+                {perspective.snippet && (
+                    <p className="perspective-snippet">{perspective.snippet}</p>
+                )}
 
-            {perspective.tone && !perspective.tone.isNeutral && (
-                <p className="perspective-tone-note">
-                    Términos con carga detectados:{' '}
-                    {[...perspective.tone.sensationalTerms, ...perspective.tone.leftTerms, ...perspective.tone.rightTerms].join(', ')}
-                </p>
-            )}
+                {perspective.tone && !perspective.tone.isNeutral && (
+                    <p className="perspective-tone-note">
+                        Términos con carga detectados:{' '}
+                        {[...perspective.tone.sensationalTerms, ...perspective.tone.leftTerms, ...perspective.tone.rightTerms].join(', ')}
+                    </p>
+                )}
 
-            {perspective.otherOutletsInSpectrum > 0 && (
-                <p className="perspective-more-outlets">
-                    +{perspective.otherOutletsInSpectrum} medio
-                    {perspective.otherOutletsInSpectrum === 1 ? '' : 's'} más en este espectro
-                </p>
-            )}
+                {perspective.otherOutletsInSpectrum > 0 && (
+                    <p className="perspective-more-outlets">
+                        +{perspective.otherOutletsInSpectrum} medio
+                        {perspective.otherOutletsInSpectrum === 1 ? '' : 's'} más en este espectro
+                    </p>
+                )}
+            </div>
         </div>
     );
 };

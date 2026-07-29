@@ -434,10 +434,81 @@
     letter-spacing: -0.2px;
 }
 
+/* ── Comparación de perspectivas (F3-04) ──────────────────────────────────
+ *
+ * Apiladas en vertical, comparar exigía desplazarse y recordar, que es
+ * justo lo contrario de comparar. En pantalla ancha van en tres columnas.
+ *
+ * EL PROBLEMA REAL NO ERAN LAS COLUMNAS sino la ALINEACIÓN. Las tarjetas
+ * tienen partes opcionales —extracto, términos con carga, otros medios—, así
+ * que puestas en columnas sin más, cada titular arranca a una altura distinta
+ * y el ojo no puede compararlos: se pierde exactamente lo que esta pantalla
+ * existe para dar.
+ *
+ * Se resuelve con `subgrid`: las tres tarjetas comparten las filas del
+ * contenedor, de modo que las cabeceras se alinean entre sí, los titulares
+ * entre sí y los extras entre sí, sin importar cuánto ocupe cada uno.
+ * Cada tarjeta emite SIEMPRE tres bandas, incluso la de "sin cobertura", que
+ * lleva una vacía al final para que la retícula cuadre.
+ */
 .stacked-perspectives-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+@media (min-width: 900px) {
+    .stacked-perspectives-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        /* cabecera · titular · extras */
+        grid-template-rows: auto auto 1fr;
+        gap: 0 16px;
+        align-items: start;
+    }
+
+    .stacked-perspective-card {
+        display: grid;
+        grid-row: span 3;
+        grid-template-rows: subgrid;
+        gap: 12px;
+        height: 100%;
+    }
+
+    /*
+     * Sin subgrid, la alineación entre columnas no se puede garantizar: cada
+     * tarjeta mediría sus filas por su cuenta. Antes que desalinear los
+     * titulares en silencio —que es el fallo que esto viene a corregir— se
+     * vuelve a la pila vertical, donde comparar cuesta más pero nada engaña.
+     */
+    @supports not (grid-template-rows: subgrid) {
+        .stacked-perspectives-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stacked-perspective-card {
+            display: block;
+            height: auto;
+        }
+    }
+}
+
+/* Ocupa la banda del titular: la ausencia se lee a la altura de los titulares
+   con los que compite, no como una nota al pie. */
+.perspective-empty-body {
+    align-self: start;
+}
+
+.perspective-extras {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-self: start;
+}
+
+.perspective-extras:empty {
+    display: none;
 }
 
 .stacked-perspective-card {

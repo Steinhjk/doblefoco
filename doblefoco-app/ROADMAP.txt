@@ -351,7 +351,7 @@
             inequívoco de que son datos de muestra y no cobertura real.
 
 ===============================================================================
- FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (11/15)
+ FASE 1 — QUE LO VISIBLE FUNCIONE                             [~] EN CURSO (10/15)
 ===============================================================================
  Objetivo: que cada elemento de la interfaz haga lo que dice hacer.
 
@@ -1252,27 +1252,58 @@
             las pruebas y pasa el build; solo falla contra una base real.
             Cubrirlo pide un Postgres de pruebas y es trabajo aparte.
 
- [ ] F2-11  Telemetría de errores en producción
-            Hoy los fallos van a console.error, que en Fly acaba en
-            `flyctl logs` — un registro que nadie mira y que además no se
-            conserva. GANÓ IMPORTANCIA CON EL DESPLIEGUE: el 2026-07-29 se
-            encontraron tres fallos en producción y los tres se descubrieron
-            sondeando a mano, ninguno avisó.
+ [x] F2-11  Telemetría de errores en producción — VERIFICADO (2026-07-29)
 
-            LO MÍNIMO ÚTIL, sin meter un servicio de pago:
-              · capturar `unhandledRejection` y `uncaughtException` en
-                server/index.js y scripts/ingestWorker.mjs y registrarlos con
-                contexto antes de morir;
-              · una tabla `errores` en la base (ya hay Postgres, no hace falta
-                proveedor nuevo) con timestamp, proceso, ruta y mensaje;
-              · mostrarla en el panel, junto a las solicitudes de ciclo.
-            Alternativa si se prefiere producto hecho: Sentry tiene plan
-            gratuito y cubre navegador y servidor. PREGUNTAR A JOSE: implica un
-            tercero más viendo tráfico, y el proyecto ya retiró Google
-            deliberadamente de los navegadores de los lectores.
+            Antes de esto los fallos solo iban a console.error, que en Fly acaba
+            en un registro que nadie mira y que no se conserva. No había ni un
+            manejador de proceso: una excepción no capturada mataba el servicio
+            sin dejar rastro en ninguna parte.
+            LO QUE LO PRECIPITÓ: ese mismo día se encontraron TRES fallos en
+            producción —health en 503 permanente, «0 artículos» sirviendo 2 400
+            historias, y una noticia apuntando a un asset inexistente— y los
+            tres se descubrieron sondeando a mano.
+
+            EN LA BASE, NO EN UN SERVICIO EXTERNO. Sentry lo haría mejor, pero
+            mete a otro tercero a ver el tráfico, y el proyecto acaba de retirar
+            a Google del navegador de sus lectores precisamente por eso. Ya hay
+            Postgres al lado de la API.
+
+            SE AGREGA POR HUELLA, una fila por CLASE de error y no por
+            ocurrencia. Un fallo dentro del ciclo de ingesta —2 600 artículos—
+            escribiría miles de filas idénticas: el incidente original más una
+            base llena. La huella normaliza los tokens con dígitos, de modo que
+            «story_12flvrc no existe» y «story_9xk2ab no existe» comparten fila.
+
+            LOS MENSAJES SE REDACTAN. Los errores de `pg` incluyen la cadena de
+            conexión y esta tabla se ve en el panel: sin esto, la contraseña de
+            Supabase acabaría en pantalla y en cualquier captura que alguien
+            comparta pidiendo ayuda. Se tapa la contraseña, se conserva el host.
+
+            AL CAPTURAR SE SALE con código 1, conservando el comportamiento de
+            Node. Tras una excepción no capturada el proceso queda en estado
+            desconocido, y un agregador que sirve datos incorrectos sin que
+            nadie lo note es peor que unos segundos de caída: la credibilidad es
+            lo único que lo distingue de un montón de titulares. Fly reinicia
+            solo, y ahora el fallo queda escrito antes de morir.
+
+            NO SE REGISTRAN LOS 4xx. Un cliente que pide una noticia inexistente
+            no es un fallo nuestro; anotarlo convertiría la tabla en un registro
+            de tráfico y el panel dejaría de servir para lo que se hizo.
+
+            VERIFICADO contra la base y en producción:
+              · 3 ocurrencias con ids distintos → 1 fila con veces=3
+              · contraseña fuera del mensaje, host conservado
+              · marcar atendido no borra, y si reaparece vuelve a estar viva
+              · promesa rechazada sin manejar → registrada y salida con código 1
+              · GET /api/errors sin sesión → 401
+              · 118 pruebas, typecheck, lint y build limpios
+
+            QUEDA POR VER EN PANTALLA: la sección del panel está escrita pero
+            nadie la ha mirado en un navegador. Va con el resto de
+            comprobaciones visuales aplazadas.
 
 ===============================================================================
- FASE 3 — CRECIMIENTO                                          [~] EN CURSO (4/15)
+ FASE 3 — CRECIMIENTO                                          [~] EN CURSO (6/15)
 ===============================================================================
  Objetivo: que el producto se pueda encontrar, usar y entender.
 

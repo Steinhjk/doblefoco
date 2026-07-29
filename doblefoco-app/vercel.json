@@ -49,10 +49,6 @@
   ],
   "rewrites": [
     {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
-    },
-    {
       "source": "/sitemap.xml",
       "destination": "https://doblefoco.fly.dev/sitemap.xml"
     },
@@ -65,7 +61,7 @@
       "destination": "https://doblefoco.fly.dev/noticia/$1"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
   ]

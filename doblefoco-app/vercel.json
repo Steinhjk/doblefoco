@@ -30,6 +30,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "https://doblefoco.fly.dev/sitemap.xml" },
+    { "source": "/robots.txt", "destination": "https://doblefoco.fly.dev/robots.txt" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

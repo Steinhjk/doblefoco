@@ -18,7 +18,7 @@
 import express from 'express';
 import cors from 'cors';
 import { getDatabaseStats } from './services/ingestDaemon.js';
-import { countFeed, readFeed, readStory } from './db/feedStore.js';
+import { countFeed, readFeed, readSitemapEntries, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
 import { countStored, dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
@@ -280,6 +280,109 @@ app.get('/api/health', async (req, res) => {
         },
         timestamp: new Date().toISOString(),
     });
+});
+
+// ---------------------------------------------------------------------------
+// Descubrimiento para buscadores (F3-03)
+// ---------------------------------------------------------------------------
+
+/**
+ * Dominio PÚBLICO del sitio, que no es el de esta API.
+ *
+ * Un sitemap declara URLs canónicas, y las canónicas son las que ve el lector:
+ * doblefococo.vercel.app. Si aquí se colara el dominio de la API, estaríamos
+ * pidiéndole a Google que indexe un servidor que devuelve JSON — y peor, que
+ * trate ese dominio como el sitio real, partiendo la autoridad entre dos.
+ */
+const SITE_URL = (process.env.SITE_URL ?? 'https://doblefococo.vercel.app').replace(/\/+$/, '');
+
+/** Rutas fijas del sitio. Las de contenido salen de la base. */
+const RUTAS_ESTATICAS = [
+    { ruta: '/', prioridad: '1.0', frecuencia: 'hourly' },
+    { ruta: '/tendencias', prioridad: '0.8', frecuencia: 'hourly' },
+    { ruta: '/categorias', prioridad: '0.6', frecuencia: 'daily' },
+    { ruta: '/mapa-medios', prioridad: '0.6', frecuencia: 'weekly' },
+    { ruta: '/transparencia', prioridad: '0.5', frecuencia: 'monthly' },
+    { ruta: '/sobre-nosotros', prioridad: '0.4', frecuencia: 'monthly' },
+];
+
+const escaparXml = (texto) =>
+    String(texto).replace(/[<>&'"]/g, (c) =>
+        ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]
+    );
+
+/**
+ * sitemap.xml generado desde la base en cada petición.
+ *
+ * NO se genera en el build, y esa es la decisión de fondo. El contenido cambia
+ * cada 30 minutos: un sitemap construido al desplegar nacería obsoleto y habría
+ * que reconstruir el sitio entero para refrescarlo. Generarlo aquí, junto a los
+ * datos, cuesta una consulta de milisegundos.
+ *
+ * El coste de servirlo a cada rastreador lo absorbe la CDN, no esta máquina:
+ * `s-maxage` hace que Vercel lo cachee media hora, y `stale-while-revalidate`
+ * que durante la hora siguiente sirva la copia vieja al instante mientras pide
+ * una nueva por detrás. Ese par de directivas es el estándar RFC 5861, y es el
+ * mismo mecanismo que Next.js vende como ISR — con la diferencia de que
+ * funciona en cualquier CDN y no nos ata a un proveedor.
+ */
+app.get('/sitemap.xml', async (req, res) => {
+    try {
+        const historias = await readSitemapEntries();
+
+        const urls = [
+            ...RUTAS_ESTATICAS.map(
+                ({ ruta, prioridad, frecuencia }) =>
+                    `  <url>\n    <loc>${escaparXml(SITE_URL + ruta)}</loc>\n` +
+                    `    <changefreq>${frecuencia}</changefreq>\n` +
+                    `    <priority>${prioridad}</priority>\n  </url>`
+            ),
+            ...historias.map(
+                ({ id, lastmod }) =>
+                    `  <url>\n    <loc>${escaparXml(`${SITE_URL}/noticia/${id}`)}</loc>\n` +
+                    (lastmod ? `    <lastmod>${escaparXml(lastmod)}</lastmod>\n` : '') +
+                    `    <changefreq>daily</changefreq>\n    <priority>0.7</priority>\n  </url>`
+            ),
+        ];
+
+        res.type('application/xml');
+        res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=1800, stale-while-revalidate=3600');
+        res.send(
+            `<?xml version="1.0" encoding="UTF-8"?>\n` +
+            `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`
+        );
+    } catch (error) {
+        console.error('[api] fallo generando el sitemap', error);
+        res.status(500).type('text/plain').send('Error generando el sitemap');
+    }
+});
+
+/**
+ * robots.txt
+ *
+ * Se sirve desde aquí y no como archivo estático para que el enlace al sitemap
+ * y el dominio salgan de la MISMA constante: dos archivos que hay que acordarse
+ * de cambiar a la vez acaban divergiendo, y el síntoma sería un sitemap que
+ * nadie encuentra.
+ *
+ * /admin va en Disallow. No es una medida de seguridad —quien quiera entrar no
+ * consulta robots.txt, y la puerta la guarda la sesión de F2-04— sino de
+ * higiene: que el panel no aparezca en resultados de búsqueda.
+ */
+app.get('/robots.txt', (req, res) => {
+    res.type('text/plain');
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800');
+    res.send(
+        [
+            'User-agent: *',
+            'Allow: /',
+            'Disallow: /admin',
+            'Disallow: /buscar',
+            '',
+            `Sitemap: ${SITE_URL}/sitemap.xml`,
+            '',
+        ].join('\n')
+    );
 });
 
 /**

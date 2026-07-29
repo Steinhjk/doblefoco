@@ -206,6 +206,48 @@ export async function readStory(id) {
 }
 
 /** Cuántas historias visibles hay. Para la paginación. */
+/**
+ * Historias para el sitemap: solo id y fecha de modificación.
+ *
+ * MISMO FILTRO QUE EL FEED, y no es un detalle. Un sitemap que anuncia páginas
+ * que el sitio no muestra —una historia retirada por moderación, por ejemplo—
+ * le está pidiendo a Google que indexe algo que decidimos no publicar. Eso no
+ * es un descuido técnico: es contradecir una decisión editorial desde otro
+ * archivo.
+ *
+ * `lastmod` sale de la fecha más reciente entre publicación y primera vez que
+ * la vimos. Importa que sea honesta: un sitemap que dice que todo cambió hoy
+ * pierde credibilidad para el rastreador y deja de guiar nada.
+ *
+ * El tope de 50 000 lo fija el protocolo de sitemaps. Hoy hay ~2 400 historias,
+ * así que sobra; cuando no sobre habrá que partirlo en un índice de sitemaps, y
+ * conviene que el límite falle por corte antes que por generar un XML inválido.
+ */
+export async function readSitemapEntries({ limit = 50_000 } = {}) {
+    const resultado = await safeQuery(
+        `
+        SELECT s.id,
+               GREATEST(
+                   COALESCE(s.published_at, s.first_seen_at),
+                   COALESCE(s.first_seen_at, s.published_at)
+               ) AS lastmod
+          FROM stories s
+          LEFT JOIN moderation m ON m.story_id = s.id
+         WHERE (m.state IS NULL OR m.state <> 'rechazada')
+           AND s.source_count > 0
+         ORDER BY lastmod DESC NULLS LAST
+         LIMIT $1
+        `,
+        [limit],
+        'sitemap'
+    );
+
+    return (resultado?.rows ?? []).map((fila) => ({
+        id: fila.id,
+        lastmod: fila.lastmod instanceof Date ? fila.lastmod.toISOString() : fila.lastmod,
+    }));
+}
+
 export async function countFeed() {
     const resultado = await safeQuery(
         `

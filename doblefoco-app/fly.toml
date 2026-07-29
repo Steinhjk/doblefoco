@@ -41,6 +41,14 @@ primary_region = 'gru'
   # y perder artículos sesga la medición de F1-01.
   INGEST_INTERVAL_MS = '1800000'
 
+  # Dominio PÚBLICO del sitio, que no es el de esta API.
+  #
+  # Lo usan sitemap.xml y robots.txt para declarar URLs canónicas, y las
+  # canónicas son las que ve el lector. Si aquí se colara doblefoco.fly.dev,
+  # le estaríamos pidiendo a Google que indexe un servidor que devuelve JSON y
+  # que lo trate como el sitio real, partiendo la autoridad entre dos dominios.
+  SITE_URL = 'https://doblefococo.vercel.app'
+
   # El JSONL de métricas, a un directorio escribible.
   #
   # /app lo posee root y el proceso corre como `node`, así que cada ciclo

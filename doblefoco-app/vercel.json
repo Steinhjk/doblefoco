@@ -12,6 +12,21 @@
     "Faltaba fly.dev y ese solo error habría bloqueado TODA llamada a la API, sin",
     "error de red visible: solo un feed vacío y un aviso en la consola."
   ],
+  "$comment_build": [
+    "VITE_API_URL vive aquí y no en el panel de Vercel a propósito.",
+    "No es un secreto: todo lo que empieza por VITE_ se incrusta en el JavaScript",
+    "que descarga cualquier visitante, así que esconderlo no protegería nada.",
+    "Y en el repositorio es reproducible — quien clone y despliegue obtiene el",
+    "mismo sitio, sin depender de que alguien recuerde rellenar un formulario.",
+    "Si estuviera solo en el panel y se olvidara, el sitio se construiría sin",
+    "fallar y saldría en modo demostración con el catálogo local: una página que",
+    "parece funcionar y muestra datos que no son los reales."
+  ],
+  "build": {
+    "env": {
+      "VITE_API_URL": "https://doblefoco.fly.dev"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

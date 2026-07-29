@@ -5,9 +5,19 @@
  sobrevive solo en comentarios que describen decisiones de esa época; el
  User-Agent con el que nos presentamos ante los medios ya es DobleFocoBot/1.0
  y apunta a https://doblefoco.co/transparencia.
- Versión           : 2.3
- Última revisión   : 2026-07-28 (F2-02, F2-04, F2-05, F2-09 y F2-10 cerradas
-                     y verificadas)
+ Versión           : 2.4
+ Última revisión   : 2026-07-29 — EL PRODUCTO ESTÁ DESPLEGADO Y FUNCIONANDO.
+                     F2-12 y F3-03 cerradas. Ver «OPERACIÓN» más abajo: es la
+                     sección nueva y la que hay que leer primero para tocar
+                     cualquier cosa en producción.
+
+ AVISO A QUIEN CONTINÚE (persona o modelo distinto del que escribió esto):
+   Desde la v2.4 este documento se escribe para ser ejecutado sin contexto
+   previo. Los pasos pendientes llevan comandos literales, rutas de archivo y
+   criterio de verificación. Si un paso no dice cómo comprobar que funcionó,
+   está mal escrito: arréglalo antes de darlo por hecho.
+   Lee «OPERACIÓN» y «TRAMPAS YA PISADAS» antes de desplegar nada. Las tres
+   trampas del despliegue de Vercel no dan error en ninguna pantalla.
  Reemplaza a       : ROADMAP v1 (declaraba "4 fases completadas 100%" y "listo
                      para desplegar"; una auditoría posterior documentó 6
                      fallas críticas, entre ellas fabricación de titulares
@@ -52,11 +62,17 @@
  ESTADO ACTUAL — MEDIDO, NO DECLARADO
 ===============================================================================
 
+  EN PRODUCCIÓN desde 2026-07-29 ..... ✅ sitio, API y motor desplegados
+                                          https://doblefococo.vercel.app
+                                          https://doblefoco.fly.dev
+                                          Sin anunciar: Jose no la ha
+                                          compartido todavía, a propósito.
   Build de producción ................ ✅ correcto (vite build)
   ESLint ............................. ✅ 0 errores (antes: 26 errores)
   Catálogo de medios ................. ✅ fuente única, verificada por script
-  Tests automatizados ................ ✅ 84 pruebas (sesgo, agrupamiento,
+  Tests automatizados ................ ✅ 93 pruebas (sesgo, agrupamiento,
                                           tono, contraseñas, filtro de formatos)
+  Typecheck .......................... ✅ tsc --noEmit limpio
   Integración continua ............... ✅ lint + test + build + catálogo
                                           en cada push y cada PR
   Persistencia de datos .............. ✅ Postgres 17.6 (Supabase, sa-east-1)
@@ -64,8 +80,17 @@
                                           moderación sobreviven al reinicio
   Autenticación real ................. ✅ sesión de servidor, cookie httpOnly
                                           scrypt + sesiones revocables
-  SEO / renderizado en servidor ...... ❌ SPA sin prerender
-  Motor de ingesta ................... ✅ operativo, verificado contra la red
+  Motor de ingesta ................... ✅ proceso propio en Fly, ciclo cada
+                                          30 min, 34/34 feeds, ~13 s por ciclo.
+                                          YA NO depende de que ningún portátil
+                                          esté encendido.
+  Descubrimiento (sitemap/robots) .... ✅ F3-03, generados desde la base
+  SEO / renderizado en servidor ...... ❌ el <body> que recibe un rastreador es
+                                          literalmente <div id="root"></div>.
+                                          F3-01 y F3-02. ES EL ÚNICO RIESGO
+                                          ALTO QUE QUEDA.
+  Telemetría de errores .............. ❌ los fallos solo van a los registros de
+                                          Fly, que nadie mira. F2-11.
   Revisión editorial del sesgo ....... ❌ 40 valores, ninguno firmado
 
   Última verificación de feeds (2026-07-28):
@@ -106,6 +131,135 @@
     npm run db:migrate       aplica el esquema, proyecta el catálogo sobre
                              `sources` y vuelca el JSONL a `ingest_runs`.
                              Idempotente: se puede correr en cada despliegue.
+    npm run worker           el motor de ingesta con su propio reloj. Es lo que
+                             corre en Fly como proceso `worker`.
+
+===============================================================================
+ OPERACIÓN — LEER ANTES DE TOCAR PRODUCCIÓN
+===============================================================================
+
+ DÓNDE VIVE CADA COSA
+ --------------------
+   Sitio estático   Vercel                 https://doblefococo.vercel.app
+                    proyecto `doblefoco.co`, org `steinhjks-projects`
+   API              Fly.io, región `gru`   https://doblefoco.fly.dev
+                    app `doblefoco`, grupo de proceso `api`
+   Motor            Fly.io, región `gru`   app `doblefoco`, proceso `worker`
+                    NO escucha en ningún puerto
+   Base             Supabase sa-east-1     proyecto yjentbcnsuwnnkhfhnxi
+   Código y CI      GitHub                 Steinhjk/doblefoco (PÚBLICO)
+
+ Todo en São Paulo salvo el sitio, que está en la red de distribución. La razón
+ está medida: de los 674 ms que tardaba una página del feed, 280 ms eran las dos
+ idas y vueltas a la base. Con la API al lado, esas consultas bajan a
+ milisegundos. NO mover la API a las funciones de Vercel: pagaría ~240 ms en
+ cada petición para siempre a cambio de ahorrarse una configuración de CORS que
+ ya está escrita y probada.
+
+ CÓMO SE DESPLIEGA
+ -----------------
+   Sitio   automático. Un push a `main` construye y publica en Vercel.
+           Comprobado el 2026-07-29: un push produce un despliegue nuevo.
+   API y motor   NO son automáticos. Hay que ejecutar a mano:
+           cd doblefoco-app
+           flyctl deploy --app doblefoco
+
+   Si `flyctl` no está en el PATH: C:\Users\geren\.fly\bin\flyctl.exe
+   Para desplegar el sitio a mano (rara vez hace falta):
+           cd doblefoco            <-- LA RAÍZ DEL REPOSITORIO, no doblefoco-app
+           npx vercel deploy --prod
+
+ DESPUÉS DE CADA `flyctl deploy`, COMPROBAR EL NÚMERO DE MÁQUINAS:
+           flyctl machines list --app doblefoco
+   Fly crea máquinas de más por su cuenta para alta disponibilidad. La primera
+   vez creó CUATRO donde debía haber dos: ~7 USD/mes en vez de 5,13. Lo correcto
+   hoy son 3 en la lista y 2 encendidas (api, worker, y un suplente del worker
+   PARADO, que solo paga almacenamiento). Si aparecen más:
+           flyctl scale count api=1 --app doblefoco
+
+ CUÁNTO CUESTA, consultado en la tarifa, no estimado
+ ---------------------------------------------------
+   api     shared-cpu-1x 256 MB   1,94 USD/mes
+   worker  shared-cpu-1x 512 MB   3,19 USD/mes
+                                  5,13 USD/mes  + salida a 0,04 USD/GB
+   Supabase, Vercel y GitHub: plan gratuito. El plan gratuito de tres máquinas
+   de Fly YA NO EXISTE para cuentas nuevas.
+   Jose pidió expresamente que se le avise ANTES de cualquier cosa que cueste.
+
+ SECRETOS Y VARIABLES
+ --------------------
+   En Fly (producción):   flyctl secrets list --app doblefoco
+     DATABASE_URL         cadena de Supabase (session pooler)
+     ALLOWED_ORIGINS      https://doblefococo.vercel.app,http://localhost:5173
+   En fly.toml [env] (no son secretos): PORT, TRUST_PROXY_HOPS,
+     INGEST_INTERVAL_MS, SITE_URL, DATA_DIR
+   En vercel.json: VITE_API_URL. Está en el repositorio A PROPÓSITO — todo lo
+     que empieza por VITE_ se incrusta en el bundle público, esconderlo en un
+     panel no protegería nada y el olvido sería silencioso.
+   En local: doblefoco-app/.env.local (nunca se sube; lo cubre el .gitignore
+     de la raíz con *.local y .env.*)
+
+ ROTAR LA CONTRASEÑA DE SUPABASE TOCA TRES SITIOS, y olvidar uno rompe algo:
+   1. doblefoco-app/.env.local
+   2. el secreto DATABASE_URL del repositorio en GitHub (cron de respaldo)
+   3. flyctl secrets set "DATABASE_URL=..." --app doblefoco   <-- el producto real
+ Jose decidió rotarla cuando publique la página, no antes. Recordárselo
+ entonces, sin insistir antes.
+
+ CÓMO SABER SI ALGO VA MAL
+ -------------------------
+   curl https://doblefoco.fly.dev/api/live      200 = el proceso responde
+   curl https://doblefoco.fly.dev/api/health    200 = además la ingesta está al día
+   flyctl logs --app doblefoco                  registro de las dos máquinas
+
+ /api/health devuelve 503 cuando el último ciclo tiene más de 90 minutos.
+ Su campo `ingestion.lastRunSource` debe decir 'base' en producción; si dice
+ 'memoria', la consulta a Postgres falló y el resto de las cifras no valen.
+
+ OJO: la sonda de salud de Fly apunta a /api/live y NO debe cambiarse a
+ /api/health. Health responde 503 por datos viejos, no por proceso muerto; usarlo
+ como sonda haría que Fly matara una máquina sana, y la siguiente respondería
+ 503 igual. Bucle de reinicios permanente sobre un servicio que funciona.
+
+===============================================================================
+ TRAMPAS YA PISADAS — no volver a caer
+===============================================================================
+ Todas estas fallaron SIN dar error en ninguna pantalla. Ese es el patrón que
+ domina este proyecto: lo caro no es arreglar, es enterarse.
+
+ 1. VERCEL CON EL FRAMEWORK EQUIVOCADO. El proyecto se creó con Framework
+    Preset = Next.js siendo Vite. Vercel buscaba una salida inexistente y no
+    publicaba nada: «No Production Deployment», sin error visible. Todos los
+    dominios daban 404. Ya está fijado en vercel.json (`"framework": "vite"`).
+
+ 2. VERCEL SIN REPOSITORIO CONECTADO. Autorizar GitHub a nivel de cuenta NO
+    conecta el repositorio a un proyecto. Cuatro push seguidos no dispararon
+    nada. Se arregló con `npx vercel git connect`.
+
+ 3. vercel.json NO ADMITE COMENTARIOS. Su esquema rechaza cualquier propiedad
+    desconocida; los bloques `$comment` reventaban el despliegue con «should NOT
+    have additional property». Por eso lo que hay que explicar de vercel.json
+    vive en este ROADMAP y no en el archivo.
+
+ 4. LA CLI DE VERCEL DESPLIEGA DESDE LA RAÍZ DEL REPOSITORIO. El Root Directory
+    (`doblefoco-app`) se aplica SOBRE el directorio de origen: lanzándola desde
+    dentro busca `doblefoco-app/doblefoco-app` y falla. El Root Directory es el
+    ÚNICO ajuste que no puede vivir en el repositorio, porque Vercel lo lee
+    antes de mirar el código.
+
+ 5. ESTADO EN MEMORIA EN UN PROCESO QUE NO LO PRODUCE. /api/health leía
+    `lastRunAt` de la memoria de la API, que desde F2-12 no ingiere nunca:
+    respondía 503 PERMANENTE con el motor trabajando sin fallo, y publicaba «0
+    artículos» sirviendo 2 400 historias. Ahora lee de `ingest_runs`.
+    LA LECCIÓN GENERAL: con dos procesos, cualquier dato que uno produce y otro
+    publica tiene que viajar por la base. Revisar esto antes de añadir cualquier
+    indicador nuevo al panel.
+
+ 6. PERMISOS DENTRO DEL CONTENEDOR. /app lo posee root y el proceso corre como
+    `node`: el JSONL de métricas fallaba con EACCES en cada ciclo. Se resolvió
+    con DATA_DIR=/tmp. Es efímero A PROPÓSITO: el registro que manda es la tabla
+    `ingest_runs`, y un archivo que muere en cada despliegue solo daría una
+    falsa sensación de respaldo.
 
   RIESGO MEDIDO HOY, y por primera vez a la baja: hasta el 2026-07-27 el máximo
   de medios distintos sobre un mismo hecho eran 3, con un umbral de 6 para poder
@@ -1099,26 +1253,175 @@
             Cubrirlo pide un Postgres de pruebas y es trabajo aparte.
 
  [ ] F2-11  Telemetría de errores en producción
-            Hoy los fallos solo van a console.error: en producción son
-            invisibles.
+            Hoy los fallos van a console.error, que en Fly acaba en
+            `flyctl logs` — un registro que nadie mira y que además no se
+            conserva. GANÓ IMPORTANCIA CON EL DESPLIEGUE: el 2026-07-29 se
+            encontraron tres fallos en producción y los tres se descubrieron
+            sondeando a mano, ninguno avisó.
+
+            LO MÍNIMO ÚTIL, sin meter un servicio de pago:
+              · capturar `unhandledRejection` y `uncaughtException` en
+                server/index.js y scripts/ingestWorker.mjs y registrarlos con
+                contexto antes de morir;
+              · una tabla `errores` en la base (ya hay Postgres, no hace falta
+                proveedor nuevo) con timestamp, proceso, ruta y mensaje;
+              · mostrarla en el panel, junto a las solicitudes de ciclo.
+            Alternativa si se prefiere producto hecho: Sentry tiene plan
+            gratuito y cubre navegador y servidor. PREGUNTAR A JOSE: implica un
+            tercero más viendo tráfico, y el proyecto ya retiró Google
+            deliberadamente de los navegadores de los lectores.
 
 ===============================================================================
- FASE 3 — CRECIMIENTO                                               [ ] PENDIENTE
+ FASE 3 — CRECIMIENTO                                          [~] EN CURSO (4/15)
 ===============================================================================
  Objetivo: que el producto se pueda encontrar, usar y entender.
 
  ── 3A. Visibilidad ───────────────────────────────────────────────────────────
 
- [ ] F3-01  Prerenderizado por noticia (SSG/ISR)
-            SPA sin renderizado en servidor: para Google, Google News y
-            Discover el sitio está prácticamente vacío. En un agregador de
-            noticias el SEO no es una mejora, es el canal de adquisición.
-            Opciones: migrar a Next.js o Astro, o prerenderizar con Vite.
+ [ ] F3-01  Renderizado en servidor de /noticia/:id — SIGUIENTE TAREA
+            ─────────────────────────────────────────────────────────────────
+            EL PROBLEMA, literal y comprobable hoy:
+              curl -s https://doblefococo.vercel.app | grep -A2 "<body"
+              → <body>\n  <div id="root"></div>\n</body>
+            Eso es TODO lo que recibe un rastreador. Google ejecuta JavaScript
+            con retraso y de forma poco fiable; Google News y Discover —que es
+            de donde vendría el tráfico de un agregador— esperan HTML con
+            contenido. Y los rastreadores de WhatsApp, X y Facebook NO ejecutan
+            JavaScript en absoluto: sin esto, ninguna noticia compartida podrá
+            mostrar nunca su propio título.
+
+            DECISIÓN DE ARQUITECTURA YA TOMADA (2026-07-29), no reabrir sin
+            motivo nuevo: se renderiza en el servidor Express que ya existe en
+            Fly, y NO se migra a Next.js.
+              · El requisito real es HTML servido, cacheado cerca del visitante,
+                revalidado cada media hora. ISR de Next.js es la versión con
+                marca de un mecanismo estándar de HTTP: stale-while-revalidate,
+                RFC 5861. Se usa el estándar directamente.
+              · El renderizador queda junto a los datos (ambos en São Paulo),
+                que es el mismo principio de localidad que ya decidió poner la
+                API en `gru`.
+              · Migrar a Next.js daría lo mismo a cambio de reescribir el
+                frontend entero y arriesgar lo ya verificado.
+              · YA ESTÁ PROBADO EL MECANISMO: F3-03 demostró que Vercel redirige
+                una ruta a Fly y cachea la respuesta en el borde
+                (x-vercel-cache MISS y luego HIT).
+
+            PASOS, en este orden:
+
+            1. Extraer las rutas a un componente compartido.
+               Hoy src/App.jsx envuelve todo en <Router> (BrowserRouter), que en
+               el servidor no existe. Sacar el <Routes>...</Routes> a
+               src/Rutas.jsx y dejar que App.jsx le ponga BrowserRouter.
+               VERIFICAR: `npm run build` y el sitio local sigue navegando.
+
+            2. src/entry-server.jsx
+               export async function render(url, datosIniciales) usando
+               renderToString de react-dom/server y StaticRouter de
+               react-router-dom/server, envolviendo <Rutas />.
+               VERIFICAR: un script que llame a render('/noticia/xxx') imprime
+               HTML con el titular dentro.
+
+            3. Que el cliente HIDRATE en vez de volver a pintar.
+               En src/main.jsx: si document.getElementById('root').hasChildNodes()
+               usar hydrateRoot; si no, createRoot como hoy.
+               VERIFICAR: la consola del navegador no muestra avisos de
+               discrepancia de hidratación.
+
+            4. Pasar los datos ya cargados al cliente SIN violar la CSP.
+               La CSP es script-src 'self': un <script> con JSON incrustado la
+               violaría. Usar el patrón seguro:
+                 <script type="application/json" id="datos-iniciales">…</script>
+               y leerlo con JSON.parse(el.textContent). No se ejecuta, así que
+               la CSP no lo bloquea, y evita que el navegador vuelva a pedir a
+               la API algo que el HTML ya traía.
+               ESCAPAR `<` como < dentro del JSON, o un titular con "</script>"
+               rompería la página. Esto es una vía de inyección real, no teórica:
+               los titulares vienen de terceros.
+
+            5. Compilar el bundle de servidor.
+               package.json: "build:server": "vite build --ssr src/entry-server.jsx
+               --outDir dist-server"
+               y que "build" haga los dos.
+
+            6. Meter dist/ y dist-server/ en la imagen de Docker.
+               ATENCIÓN: .dockerignore hoy EXCLUYE dist, src, public e
+               index.html porque la imagen era solo API. Hay que dejar entrar
+               dist/ y dist-server/ (no src). Sin esto el contenedor arranca sin
+               plantilla y la ruta devolverá 500.
+
+            7. Ruta en server/index.js:
+               app.get('/noticia/:id') → readStory(id) → si no existe, 404 con
+               HTML propio → render() → inyectar en la plantilla dist/index.html
+               → responder con
+                 Cache-Control: public, max-age=0, s-maxage=1800,
+                                stale-while-revalidate=3600
+               Mismo par de directivas que F3-03, por la misma razón.
+
+            8. vercel.json: añadir la redirección ANTES del comodín:
+               { "source": "/noticia/(.*)",
+                 "destination": "https://doblefoco.fly.dev/noticia/$1" }
+               El comodín "/(.*)" → /index.html debe seguir siendo el ÚLTIMO.
+
+            CRITERIO DE VERIFICACIÓN (no marcar [x] sin esto):
+              curl -s https://doblefococo.vercel.app/noticia/<id> | grep -c "<h1"
+                → al menos 1
+              curl -s ... | grep "<title>"  → el titular de la historia, no el
+                genérico de index.html
+              Dos peticiones seguidas: x-vercel-cache MISS y luego HIT.
+              Y la página sigue siendo navegable y interactiva en el navegador.
+
+            COSTE: renderizar consume CPU en la máquina de la API, que hoy tiene
+            256 MB. Es probable que haya que subirla a 512 MB (+~1,25 USD/mes).
+            PREGUNTARLE A JOSE ANTES de cambiar el tamaño: pidió que se le avise
+            de cualquier cosa que cueste.
+
+            RIESGO A VIGILAR: la API pasa a servir HTML además de JSON. Si la
+            máquina se satura, cae también el feed. Si eso ocurre, la salida es
+            separar el renderizador en su propio grupo de proceso en fly.toml,
+            no agrandar la máquina indefinidamente.
 
  [ ] F3-02  Metadatos por ruta, Open Graph por historia y JSON-LD NewsArticle
-            Hoy todas las páginas comparten el título de index.html y no hay
-            og:image ni canonical, así que toda noticia compartida muestra la
-            misma tarjeta genérica.
+            ─────────────────────────────────────────────────────────────────
+            DEPENDE DE F3-01 y se hace inmediatamente después, en la misma
+            plantilla. Hoy todas las páginas comparten el título de index.html
+            y no hay og:image ni canonical, así que toda noticia compartida
+            muestra la misma tarjeta genérica.
+
+            NO se puede resolver desde el cliente. Los rastreadores de WhatsApp,
+            X, Facebook, Telegram y Slack leen el HTML tal cual llega y no
+            ejecutan JavaScript: react-helmet u otra librería de <head> en el
+            navegador NO sirve para esto. Tiene que salir del servidor.
+
+            QUÉ INYECTAR en la plantilla, por historia:
+              <title>            el titular + « · DobleFoco»
+              <meta description> resumen de la cobertura, p.ej. «13 medios
+                                 cubren este hecho: 0 de izquierda, 5 de centro,
+                                 8 de derecha.» Es el producto, no un relleno.
+              <link rel=canonical>  https://doblefococo.vercel.app/noticia/<id>
+                                 (SITE_URL, nunca el dominio de la API)
+              og:title, og:description, og:url, og:type=article,
+              og:site_name=DobleFoco, article:published_time
+              twitter:card=summary_large_image
+              JSON-LD tipo NewsArticle con headline, datePublished, y `citation`
+              apuntando a los medios que lo cubren.
+
+            og:image — DECIDIR, y hay un problema real: NO guardamos imágenes de
+            los artículos, así que no hay foto que poner. Dos salidas:
+              (a) una imagen fija de marca en public/, inmediata y honesta;
+              (b) generar una tarjeta por historia con el reparto de cobertura
+                  (la barra izquierda/centro/derecha), que sería un diferenciador
+                  fuerte al compartir.
+            Empezar por (a). (b) merece tarea propia.
+
+            CUIDADO CON EL PRINCIPIO RECTOR: la descripción debe describir la
+            COBERTURA, no resumir la noticia. Resumirla sería producir texto
+            sobre un hecho que no hemos verificado, que es exactamente lo que
+            este proyecto no hace.
+
+            VERIFICACIÓN:
+              curl -s <url de una noticia> | grep -E 'og:title|canonical|<title>'
+              y pegar la URL en https://cards-dev.twitter.com/validator o
+              compartirla en WhatsApp con uno mismo: debe salir el titular real.
 
  [x] F3-03  sitemap.xml y robots.txt — generados desde la BASE, no en el build
             (2026-07-29)
@@ -1689,9 +1992,14 @@
  RIESGOS ABIERTOS
 ===============================================================================
 
- ALTO   Sin SEO, el producto no tiene canal de adquisición. Es el único ALTO
-        que queda: la volatilidad la cerró F2-01 y la autenticación, F2-04.
-        Mitiga: F3-01.
+ ALTO   Sin renderizado en servidor, el producto no tiene canal de adquisición.
+        Es el único ALTO que queda: la volatilidad la cerró F2-01, la
+        autenticación F2-04 y el alojamiento del motor F2-12.
+        F3-03 puso el sitemap, que es la señal; falta el contenido que esa
+        señal anuncia. Mitigan: F3-01 y F3-02.
+ MEDIO  En producción los errores son invisibles: solo van a `flyctl logs`, que
+        nadie mira y no se conserva. Tres fallos del 2026-07-29 se encontraron
+        sondeando a mano. Mitiga: F2-11.
  MEDIO  Hay historias moderadas que el agrupamiento deja de producir y quedan
         huérfanas: se conservan por la salvaguarda de F2-02, pero nadie ha
         decidido qué hacer con ellas.
@@ -1705,29 +2013,55 @@
         Aceptable mientras se muestre con honestidad.
 
 ===============================================================================
- SIGUIENTE PASO RECOMENDADO
+ PLAN DE TRABAJO — actualizado 2026-07-29
 ===============================================================================
- F1-01 (dejar correr la medición 7 días), que ya no tiene nada que la bloquee.
 
- Razón: las dos restricciones anteriores cayeron. El catálogo dejó de serlo con
- F1-06 y F1-04 —36 feeds verificados y un solo lugar donde vive el sesgo—, y la
- volatilidad dejó de serlo con F2-01: la serie de ingesta ya se acumula en
- `ingest_runs` y sobrevive a los despliegues.
+ ORDEN RECOMENDADO. Las razones están en cada tarea; esto es solo la secuencia.
 
- Falta una decisión operativa que no es de código: DÓNDE corre el motor esos 7
- días. Un portátil que se apaga por la noche produce una serie con agujeros, y
- lo que hay que medir es justamente el solapamiento acumulado en la ventana de
- 72 h. Hace falta un proceso que no se interrumpa. Sin eso, F1-05 y F1-12 se
- seguirían decidiendo a ojo.
+ 1. F3-01  Renderizado en servidor de /noticia/:id.
+           ES LA SIGUIENTE. Único riesgo ALTO abierto, y el camino ya está
+           validado por F3-03. Desglosada en 8 pasos con criterio de
+           verificación en su ficha.
 
- Detrás, y ya sin nada que lo bloquee, F2-02 (moderación en la base).
+ 2. F3-02  Metadatos, Open Graph y JSON-LD. Se hace en la misma plantilla que
+           F3-01, inmediatamente después. No tiene sentido antes: sin servidor
+           que los emita, los rastreadores de WhatsApp y X no los verían.
 
- Hasta hoy hacía falta esperar: mover las aprobaciones a una base compartida
- mientras la puerta tenía una contraseña incrustada en el bundle habría
- convertido un problema de usabilidad en uno de integridad editorial. F2-04 lo
- cerró, así que F2-02 ya se puede hacer. Retirará además la salvaguarda
- provisional que hoy impide borrar una historia moderada cuando el agrupamiento
- deja de producirla.
+ 3. F3-04  Comprobación visual de las columnas paralelas.
+           TAREA DE JOSE, no de código: el diseño está hecho y NADIE lo ha visto
+           todavía en un navegador. Abrir una noticia multifuente en móvil y en
+           escritorio y decir si funciona. Cuesta cinco minutos y desbloquea
+           saber si hay que rehacerlo.
+
+ 4. F1-01  Cerrar la medición de 7 días.
+           YA NO REQUIERE TRABAJO, solo esperar: el motor lleva ingiriendo solo
+           desde el 2026-07-29 y la serie se completa alrededor del 2026-08-02.
+           Entonces: `npm run report:ingest` y decidir F1-05 y F1-12 con datos
+           en vez de a ojo.
+
+ 5. F2-11  Telemetría de errores. Sube de prioridad ahora que hay producción:
+           el 2026-07-29 se encontraron tres fallos y ninguno avisó solo.
+
+ 6. F1-06  Reabierta: quedan 5 medios de izquierda o centro-izquierda con feed,
+           y el criterio pedía 6. Ver también el hallazgo de F1-15, que cambia
+           el planteamiento: el problema no es cuántos hay.
+
+ TAREAS SUELTAS QUE NO BLOQUEAN NADA:
+   · Comprobar si los 7 medios que llegan vía Google News publican RSS propio.
+     Cada uno que se migre reduce una dependencia de un tercero.
+   · Un origen no autorizado recibe 500 en vez de 403 (el middleware de CORS
+     lanza y cae en el manejador genérico). Bloquea bien; es higiene.
+
+ LO QUE NO HAY QUE HACER TODAVÍA, y conviene tenerlo escrito:
+   · NO anunciar ni compartir la página. Jose lo pidió expresamente: producción
+     invisible hasta que él decida.
+   · NO añadir el dominio propio doblefoco.co en Vercel por ahora. Es un paso de
+     cuando publique, y lo haría más fácil de encontrar.
+   · NO rotar la contraseña de Supabase antes de publicar. Decisión suya, con
+     el motivo escrito en OPERACIÓN.
+   · NO poner F3-05 (boletín real) en marcha sin política de privacidad
+     publicada y responsable del tratamiento identificado: en cuanto haya
+     suscriptores hay datos personales y aplica la Ley 1581 de 2012.
 
  F3-01 (SEO / prerender) sigue siendo el ALTO que queda, pero no es lo
  siguiente: indexar un producto cuya función principal todavía no sabemos si

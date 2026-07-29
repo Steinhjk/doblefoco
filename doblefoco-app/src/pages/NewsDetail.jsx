@@ -82,7 +82,14 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
                         <ExternalLink size={11} className="source-external-icon" aria-hidden="true" />
                     </a>
                 ) : (
-                    <span className="card-source-tag">{perspective.outlet}</span>
+                    /* Sin enlace, pero con el MISMO recuadro: que un medio no
+                       publique URL en su canal no debe leerse como que es de
+                       otra categoría. Sin el icono de salida, que sí marcaría
+                       una diferencia real —no hay adónde ir. */
+                    <span className="source-with-logo">
+                        <MediaLogo media={getMediaByName(perspective.outlet)} size={18} />
+                        <span className="card-source-tag">{perspective.outlet}</span>
+                    </span>
                 )}
             </div>
 

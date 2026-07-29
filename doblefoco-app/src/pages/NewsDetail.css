@@ -570,13 +570,34 @@
 }
 
 .perspective-card-header {
+    /*
+     * La caja del medio OCUPA EL ESPACIO SOBRANTE en vez de ajustarse a su
+     * contenido. Antes crecía con el nombre —«Semana» daba una caja estrecha e
+     * «Infobae Colombia» una casi del doble—, y con tres tarjetas en paralelo
+     * esa diferencia se lee como un descuido: el ojo compara los recuadros
+     * antes que los titulares, que es lo contrario de lo que esta pantalla
+     * busca.
+     */
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    /* A 237 px por columna, insignia y caja caben justas. Si un nombre largo
+       no entra, la caja baja de línea en vez de desbordar. */
+    flex-wrap: wrap;
 }
 
-.interactive-source-link {
-    text-decoration: none;
+.card-spectrum-badge {
+    flex: 0 0 auto;
+}
+
+/*
+ * MISMO ASPECTO HAYA ENLACE O NO. Antes, un medio sin URL se pintaba como
+ * texto suelto sin recuadro, así que una columna llevaba caja y la de al lado
+ * no. La diferencia parecía intencionada —como si un medio fuera de otra
+ * categoría— cuando solo significaba que su canal no traía enlace.
+ */
+.source-with-logo {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -584,6 +605,14 @@
     background: var(--bg-subtle);
     border: 1px solid var(--border-color);
     border-radius: 4px;
+    /* Ocupa lo que quede: así las tres cajas miden lo mismo. */
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: flex-end;
+}
+
+.interactive-source-link {
+    text-decoration: none;
     transition: all 0.2s ease;
 }
 
@@ -639,6 +668,11 @@
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);
+    /* Un nombre largo parte de línea en vez de desbordar la caja. La retícula
+       comparte la banda de cabecera, así que las tres crecen a la vez y los
+       titulares siguen alineados. */
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .perspective-headline {

@@ -197,20 +197,83 @@ export async function pruneExpiredArticles(retentionMs) {
  *
  * @returns {Promise<{stories:number, links:number, removed:number}|null>}
  */
-export async function persistStories(stories) {
+export async function persistStories(entrada) {
+    let stories = entrada;
     try {
+        /**
+         * Deduplicar por id ANTES de escribir.
+         *
+         * El id de una historia deriva del titular de su medio representativo
+         * (`storyId(headline)`), así que dos grupos distintos con el mismo
+         * titular producen el mismo id. Ocurre con titulares que no son
+         * titulares: cuatro artículos llamados "EMPLEO" —cabeceras de sección
+         * que los feeds publican como si fueran piezas— forman cuatro grupos de
+         * uno y los cuatro colisionan.
+         *
+         * El bucle anterior lo OCULTABA: cada INSERT iba por separado y el
+         * segundo simplemente pisaba al primero, descartando un grupo entero en
+         * silencio en cada ciclo. Un solo INSERT no lo permite —Postgres
+         * responde "ON CONFLICT DO UPDATE command cannot affect row a second
+         * time"— y por eso el fallo salió a la luz al agrupar la escritura.
+         *
+         * Se conserva el grupo con MÁS medios: entre dos que van a compartir
+         * id, el que más cobertura aporta. Medido hoy: 1 909 grupos, 1 906 ids
+         * distintos, tres descartes y todos de una sola fuente.
+         */
+        const porId = new Map();
+        for (const story of stories) {
+            const previo = porId.get(story.id);
+            if (!previo || (story.sources?.length ?? 0) > (previo.sources?.length ?? 0)) {
+                porId.set(story.id, story);
+            }
+        }
+
+        const colisiones = stories.length - porId.size;
+        if (colisiones) {
+            console.warn(
+                `[db] ${colisiones} grupo(s) comparten id con otro y no se guardan. ` +
+                'Suele indicar titulares que no son titulares (cabeceras de sección).'
+            );
+        }
+
+        stories = [...porId.values()];
+
         return await withTransaction(async (client) => {
             const ids = stories.map((s) => s.id);
 
-            for (const story of stories) {
+            /**
+             * UN SOLO INSERT para todas las historias, con UNNEST.
+             *
+             * Antes era un `await client.query()` por historia dentro de la
+             * misma transacción: con ~1 800 historias, 1 800 idas y vueltas a
+             * São Paulo manteniendo los bloqueos de fila abiertos de principio
+             * a fin. Decenas de segundos en los que NADA más puede tocar
+             * `stories`.
+             *
+             * No es teórico: intentando rellenar una columna nueva mientras
+             * corría el ciclo, el UPDATE se quedó esperando y murió por tiempo
+             * de espera agotado. Dos veces. Y el coste crece linealmente con el
+             * número de historias, así que es exactamente la clase de cosa que
+             * obliga a migrar más adelante.
+             *
+             * Mismo patrón que ya usaba `persistArticles`. Aquí importa más,
+             * porque estas filas se reescriben ENTERAS en cada ciclo.
+             */
+            if (stories.length) {
                 await client.query(
                     `
                     INSERT INTO stories
                         (id, title, title_source_id, title_url, category, published_at,
                          first_seen_at, mean_bias, polarization, coverage_left,
                          coverage_center, coverage_right, dominant_spectrum,
-                         insufficient_coverage, blindspot_spectrum, factuality, computed_at)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, now())
+                         insufficient_coverage, blindspot_spectrum, factuality,
+                         source_count, computed_at)
+                    SELECT * , now() FROM unnest(
+                        $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
+                        $6::timestamptz[], $7::timestamptz[], $8::real[], $9::real[],
+                        $10::smallint[], $11::smallint[], $12::smallint[], $13::text[],
+                        $14::boolean[], $15::text[], $16::real[], $17::int[]
+                    )
                     ON CONFLICT (id) DO UPDATE SET
                         title                 = EXCLUDED.title,
                         title_source_id       = EXCLUDED.title_source_id,
@@ -229,29 +292,32 @@ export async function persistStories(stories) {
                         insufficient_coverage = EXCLUDED.insufficient_coverage,
                         blindspot_spectrum    = EXCLUDED.blindspot_spectrum,
                         factuality            = EXCLUDED.factuality,
+                        source_count          = EXCLUDED.source_count,
                         computed_at           = now()
                     `,
                     [
-                        story.id,
-                        story.title,
-                        story.titleOutletId ?? null,
-                        story.titleUrl ?? null,
-                        story.category ?? null,
-                        story.publishedAt ?? null,
-                        story.firstSeenAt ?? null,
-                        story.meanBias ?? null,
-                        story.polarization ?? null,
-                        story.coverage?.left ?? 0,
-                        story.coverage?.center ?? 0,
-                        story.coverage?.right ?? 0,
-                        story.dominantSpectrum ?? null,
-                        story.insufficientCoverage ?? true,
+                        stories.map((s) => s.id),
+                        stories.map((s) => s.title),
+                        stories.map((s) => s.titleOutletId ?? null),
+                        stories.map((s) => s.titleUrl ?? null),
+                        stories.map((s) => s.category ?? null),
+                        stories.map((s) => s.publishedAt ?? null),
+                        stories.map((s) => s.firstSeenAt ?? null),
+                        stories.map((s) => s.meanBias ?? null),
+                        stories.map((s) => s.polarization ?? null),
+                        stories.map((s) => s.coverage?.left ?? 0),
+                        stories.map((s) => s.coverage?.center ?? 0),
+                        stories.map((s) => s.coverage?.right ?? 0),
+                        stories.map((s) => s.dominantSpectrum ?? null),
+                        stories.map((s) => s.insufficientCoverage ?? true),
                         // `blindspot` es un objeto {spectrum, label, description}
                         // o null. A la base va solo el espectro: la etiqueta y
-                        // la explicación se redactan al mostrarlas, y guardarlas
-                        // sería congelar una redacción que puede cambiar.
-                        story.blindspot?.spectrum ?? null,
-                        story.factuality ?? null,
+                        // la explicación se redactan al mostrarlas.
+                        stories.map((s) => s.blindspot?.spectrum ?? null),
+                        stories.map((s) => s.factuality ?? null),
+                        // Medios DISTINTOS, no artículos: si un medio publicó
+                        // tres notas sobre el mismo hecho, cuenta una vez.
+                        stories.map((s) => s.sources?.length ?? 0),
                     ]
                 );
             }

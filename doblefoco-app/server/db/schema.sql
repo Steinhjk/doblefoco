@@ -120,6 +120,22 @@ CREATE TABLE IF NOT EXISTS stories (
     computed_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Número de MEDIOS DISTINTOS que cubren la historia, guardado en vez de
+-- calculado. El ciclo de ingesta ya lo conoce cuando arma el grupo.
+--
+-- No es optimización prematura: está medido. Calcularlo al leer obligaba a la
+-- consulta del feed a recorrer stories, story_articles y articles enteras y
+-- ordenar dos veces, 115 ms por petición con 1 800 historias. Con diez veces
+-- los datos serían del orden de un segundo, en CADA carga de la portada.
+-- Guardado, el feed es un ORDER BY sobre un índice con LIMIT.
+ALTER TABLE stories ADD COLUMN IF NOT EXISTS source_count INTEGER NOT NULL DEFAULT 0;
+
+-- El orden exacto del feed: primero las historias con más medios distintos,
+-- luego las más recientes. Con este índice la consulta lee solo las filas que
+-- devuelve, no la tabla entera.
+CREATE INDEX IF NOT EXISTS stories_feed_idx
+    ON stories (source_count DESC, published_at DESC NULLS LAST);
+
 CREATE TABLE IF NOT EXISTS story_articles (
     story_id    TEXT NOT NULL REFERENCES stories (id) ON DELETE CASCADE,
     article_id  TEXT NOT NULL REFERENCES articles (id) ON DELETE CASCADE,

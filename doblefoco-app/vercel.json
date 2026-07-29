@@ -22,6 +22,19 @@
     "fallar y saldría en modo demostración con el catálogo local: una página que",
     "parece funcionar y muestra datos que no son los reales."
   ],
+  "$comment_framework": [
+    "El panel del proyecto tenía Framework Preset = Next.js, detectado mal al",
+    "crearlo. Esto es Vite: Vercel buscaba la salida de Next.js, no la",
+    "encontraba y no publicaba nada — de ahí «No Production Deployment» sin un",
+    "error visible en ninguna parte.",
+    "Declararlo aquí y no en el panel es deliberado, por lo mismo que build.env:",
+    "queda en el repositorio, es reproducible y no depende de que nadie recuerde",
+    "un ajuste. buildCommand y outputDirectory van explícitos aunque `vite` los",
+    "implique, para que un cambio del preset en el panel no vuelva a decidirlos."
+  ],
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "build": {
     "env": {
       "VITE_API_URL": "https://doblefoco.fly.dev"

@@ -41,6 +41,21 @@ primary_region = 'gru'
   # y perder artículos sesga la medición de F1-01.
   INGEST_INTERVAL_MS = '1800000'
 
+  # El JSONL de métricas, a un directorio escribible.
+  #
+  # /app lo posee root y el proceso corre como `node`, así que cada ciclo
+  # fallaba con «EACCES: permission denied, mkdir '/app/data'». No se perdía
+  # nada —el registro de ciclos vive en la tabla `ingest_runs` y
+  # /api/metrics/daily responde source:postgres—, pero una línea de error cada
+  # 30 minutos acaba enseñando a ignorar el registro, y ahí es donde se pierden
+  # los errores que sí importan.
+  #
+  # Es EFÍMERO a propósito, y no se le pone volumen. En un contenedor este
+  # archivo no sobrevive a un redespliegue, así que como copia de seguridad no
+  # daría más que una falsa sensación de respaldo: la copia real es la base.
+  # El JSONL existe para poder correr el motor SIN base de datos.
+  DATA_DIR = '/tmp'
+
 [http_service]
   internal_port = 5000
   force_https = true

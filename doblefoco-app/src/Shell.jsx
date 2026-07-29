@@ -33,12 +33,17 @@ export default function Shell() {
                     <Rutas />
                 </main>
 
-                <div className="footer-top-divider" aria-hidden="true">
-                    <div className="divider-line" />
-                    <div className="divider-badge">DobleFoco.co</div>
-                    <div className="divider-line" />
-                </div>
-
+                {/*
+                    Aquí había un divisor decorativo con una pastilla que decía
+                    «DobleFoco.co». Se retira porque hacía dos cosas mal a la vez:
+                      · repetía la marca 65 px por encima del logotipo del pie,
+                        que además es un enlace y sí tiene función;
+                      · dibujaba una línea separadora 24 px por encima de la que
+                        ya pinta el propio <footer> con su border-top, de modo
+                        que se veían dos rayas paralelas muy juntas.
+                    El pie ya se separa solo. Si algún día se quiere recuperar el
+                    adorno, tendrá que sustituir a esa línea, no sumarse a ella.
+                */}
                 <footer>
                     <div className="footer-container">
                         <Link to="/" className="footer-logo">DobleFoco<span>.co</span></Link>

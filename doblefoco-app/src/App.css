@@ -3,43 +3,16 @@
 }
 
 /* Separador Estético Sobrio antes del Footer */
-.footer-top-divider {
-  width: 100%;
-  max-width: 1200px;
-  margin: 60px auto 0;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  box-sizing: border-box;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--border-color) 50%, transparent 100%);
-}
-
-.divider-badge {
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  padding: 4px 14px;
-  border-radius: 20px;
-}
-
 footer {
   background-color: var(--bg-card);
+  /* La ÚNICA línea separadora. Antes había otra 24 px más arriba, del divisor
+     decorativo que se retiró: dos rayas paralelas muy juntas. */
   border-top: 1px solid var(--border-color);
   color: var(--text-muted);
   padding: 40px 20px;
   text-align: center;
-  margin-top: 24px;
+  /* Los 60 px de aire que aportaba el divisor los asume ahora el pie. */
+  margin-top: 60px;
 }
 
 .footer-container {

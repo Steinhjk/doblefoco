@@ -1,5 +1,12 @@
 .news-detail-page {
-    max-width: 900px;
+    /*
+     * 1200 px, el mismo ancho que .footer-container. Estaba en 900, y con la
+     * barra lateral de 340 px la columna principal se quedaba en 492: las tres
+     * perspectivas caían a 137 px cada una. Un titular en 137 px se parte en
+     * seis líneas, que es lo que alargaba la página mientras sobraban 500 px a
+     * cada lado de la pantalla.
+     */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 24px 20px 60px;
 }
@@ -64,6 +71,14 @@
 }
 
 .detail-main-col {
+    /*
+     * Contexto de consulta para las perspectivas (F3-04). La retícula de tres
+     * columnas debe decidirse por el ancho de ESTA columna, no por el de la
+     * ventana: son cosas distintas en cuanto hay una barra lateral al lado.
+     */
+    container-type: inline-size;
+    container-name: columna-principal;
+
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 4px;
@@ -457,7 +472,21 @@
     gap: 20px;
 }
 
-@media (min-width: 900px) {
+/*
+ * SE CONSULTA EL CONTENEDOR, NO LA VENTANA, y esa era la raíz del problema.
+ * La regla anterior era `@media (min-width: 900px)`: se activaba en cuanto la
+ * PANTALLA medía 900 px, aunque la columna donde viven las tarjetas midiera
+ * 444. Resultado, tres columnas de 137 px en un monitor de 1440.
+ *
+ * 620 px es el umbral en que tres columnas dan ~195 px cada una, que es donde
+ * un titular deja de partirse en seis líneas.
+ *
+ * `@container` está disponible desde 2022-2023 en los tres motores, es decir,
+ * ANTES que `subgrid`, del que esta misma retícula ya depende. No excluye a
+ * nadie que no estuviera ya excluido, y para quien no lo tenga la lista se
+ * queda en pila vertical, que es el respaldo correcto.
+ */
+@container columna-principal (min-width: 620px) {
     .stacked-perspectives-list {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -21,6 +21,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /*
+     * HUECO MÍNIMO GARANTIZADO. `space-between` reparte el espacio SOBRANTE, y
+     * cuando el contenido casi llena la fila no sobra nada: los huecos se
+     * reducen a cero y los elementos se tocan. Así acabó el interruptor de tema
+     * pegado a «Tendencias». Con `gap` hay una separación que no depende de que
+     * quede sitio libre.
+     */
+    gap: 24px;
 }
 
 .navbar-brand .brand-link {
@@ -194,6 +202,8 @@
 .navbar-actions {
     display: flex;
     align-items: center;
+    /* Entre el interruptor de tema y la hamburguesa, que también se tocaban. */
+    gap: 8px;
 }
 
 /* Hamburger button */

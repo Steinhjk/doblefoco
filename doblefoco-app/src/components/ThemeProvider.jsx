@@ -15,14 +15,28 @@ function getInitialTheme() {
     if (typeof window === 'undefined') return 'light';
 
     try {
+        // Una elección explícita SÍ se respeta: si alguien pulsó el interruptor,
+        // esa decisión pesa más que cualquier valor por omisión.
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored === 'dark' || stored === 'light') return stored;
     } catch {
-        // Modo incógnito con almacenamiento bloqueado: se cae a la preferencia
-        // del sistema en lugar de reventar en el primer render.
+        // Modo incógnito con almacenamiento bloqueado: se cae al valor por
+        // omisión en lugar de reventar en el primer render.
     }
 
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    /*
+     * CLARO POR OMISIÓN, y ya NO se consulta `prefers-color-scheme`.
+     *
+     * Es decisión de producto —Jose la pidió el 2026-07-29— y tiene además un
+     * efecto técnico a favor: el servidor renderiza siempre en claro (no tiene
+     * forma de conocer la preferencia del sistema), así que mientras el cliente
+     * la consultara, quien tuviera el sistema en oscuro veía la página cargar
+     * en claro y cambiar de golpe al hidratar. Ese destello desaparece.
+     *
+     * Contrapartida asumida: se deja de honrar la preferencia del sistema en la
+     * primera visita. Quien quiera oscuro lo pulsa una vez y se recuerda.
+     */
+    return 'light';
 }
 
 export const ThemeProvider = ({ children }) => {

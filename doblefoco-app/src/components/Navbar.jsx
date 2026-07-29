@@ -43,26 +43,6 @@ const Navbar = () => {
                         <Search size={16} />
                     </button>
                 </form>
-                <div className="navbar-actions">
-                    <button
-                        className="theme-toggle"
-                        onClick={toggleTheme}
-                        aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                        title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-                    >
-                        {theme === 'dark' ? <Sun size={20} className="theme-toggle-icon" /> : <Moon size={20} className="theme-toggle-icon" />}
-                    </button>
-                    <button
-                        className={`navbar-hamburger ${menuOpen ? 'active' : ''}`}
-                        onClick={toggleMenu}
-                        aria-label={menuOpen ? 'Cerrar menu' : 'Abrir menu'}
-                        aria-expanded={menuOpen}
-                    >
-                        <span className="hamburger-line" />
-                        <span className="hamburger-line" />
-                        <span className="hamburger-line" />
-                    </button>
-                </div>
                 <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
                     <form className="navbar-search-mobile" onSubmit={handleSearch} role="search">
                         <input
@@ -103,6 +83,26 @@ const Navbar = () => {
                             </NavLink>
                         </li>
                     </ul>
+                </div>
+                <div className="navbar-actions">
+                    <button
+                        className="theme-toggle"
+                        onClick={toggleTheme}
+                        aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                        title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+                    >
+                        {theme === 'dark' ? <Sun size={20} className="theme-toggle-icon" /> : <Moon size={20} className="theme-toggle-icon" />}
+                    </button>
+                    <button
+                        className={`navbar-hamburger ${menuOpen ? 'active' : ''}`}
+                        onClick={toggleMenu}
+                        aria-label={menuOpen ? 'Cerrar menu' : 'Abrir menu'}
+                        aria-expanded={menuOpen}
+                    >
+                        <span className="hamburger-line" />
+                        <span className="hamburger-line" />
+                        <span className="hamburger-line" />
+                    </button>
                 </div>
             </div>
             {menuOpen && <div className="navbar-overlay" onClick={closeMenu} />}

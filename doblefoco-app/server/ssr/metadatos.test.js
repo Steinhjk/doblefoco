@@ -82,8 +82,14 @@ describe('construirMetadatos', () => {
 
     it('apunta la canónica al sitio público, nunca a la API', () => {
         const etiquetas = construirMetadatos(historia(), SITIO);
-        expect(etiquetas).toContain(`<link rel="canonical" href="${SITIO}/noticia/story_abc123" />`);
+        // La ruta LEGIBLE, que es a la que redirige el servidor con 301. Si la
+        // canónica declarara otra dirección se contradirían entre sí y el
+        // buscador tendría que elegir por su cuenta.
+        expect(etiquetas).toContain(
+            `<link rel="canonical" href="${SITIO}/noticia/camara-aprueba-el-traslado-de-la-sede-abc123" />`
+        );
         expect(etiquetas).not.toContain('fly.dev');
+        expect(etiquetas).not.toContain('story_abc123');
     });
 
     it('emite JSON-LD válido con las citas a los medios', () => {

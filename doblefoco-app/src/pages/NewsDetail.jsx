@@ -9,6 +9,7 @@ import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story
 import { useStories } from '../hooks/useStories';
 import { recordRead } from '../lib/readingHistory';
 import { useHistoriaInicial } from '../hooks/datosInicialesContext';
+import { idDesdeRuta } from '../../shared/storyPath.js';
 import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsCard from '../components/NewsCard';
 import CoverageBar from '../components/CoverageBar';
@@ -125,7 +126,13 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
 };
 
 const NewsDetail = () => {
-    const { id } = useParams();
+    /**
+     * El parámetro de la URL ya NO es el id de la base: es
+     * «titular-legible-abc123» (ver shared/storyPath.js). Se traduce aquí, una
+     * vez, y el resto del componente sigue trabajando con el id de siempre.
+     */
+    const { id: parametro } = useParams();
+    const id = idDesdeRuta(parametro);
     const [isShareOpen, setIsShareOpen] = useState(false);
 
     /**

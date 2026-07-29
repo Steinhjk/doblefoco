@@ -32,6 +32,7 @@ import { recordReport, REPORT_KINDS } from './db/reportStore.js';
 import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
+import { esRutaCanonica, idDesdeRuta, rutaDeHistoria } from '../shared/storyPath.js';
 import { contarSinResolver, erroresRecientes, marcarResuelto, registrarError } from './db/errorStore.js';
 import { instalarCapturaDeErrores, middlewareDeErrores } from './observabilidad.js';
 
@@ -347,8 +348,13 @@ app.get('/sitemap.xml', async (req, res) => {
                     `    <priority>${prioridad}</priority>\n  </url>`
             ),
             ...historias.map(
-                ({ id, lastmod }) =>
-                    `  <url>\n    <loc>${escaparXml(`${SITE_URL}/noticia/${id}`)}</loc>\n` +
+                ({ id, title, lastmod }) =>
+                    // La canónica, no la forma antigua: un sitemap que anuncia
+                    // direcciones que redirigen gasta presupuesto de rastreo en
+                    // balde y da señales contradictorias sobre cuál es la buena.
+                    `  <url>
+    <loc>${escaparXml(SITE_URL + rutaDeHistoria({ id, title }))}</loc>
+` +
                     (lastmod ? `    <lastmod>${escaparXml(lastmod)}</lastmod>\n` : '') +
                     `    <changefreq>daily</changefreq>\n    <priority>0.7</priority>\n  </url>`
             ),
@@ -507,7 +513,12 @@ app.get('/api/feed', async (req, res) => {
 
 app.get('/api/story/:id', async (req, res) => {
     try {
-        const story = await readStory(req.params.id);
+        // Acepta tanto el id de la base como la forma legible de la URL. AQUÍ NO
+        // SE REDIRIGE: esto lo llama `fetch`, y una redirección a /noticia/... le
+        // devolvería HTML donde espera JSON. La canonicalización es asunto de la
+        // ruta de página, que es la que ve un buscador.
+        const story = await readStory(idDesdeRuta(req.params.id));
+
         if (!story) {
             // También 404 si está retirada por moderación: el filtro va en la
             // consulta, así que una historia rechazada simplemente no existe
@@ -667,7 +678,32 @@ async function prepararSsr() {
 
 app.get('/noticia/:id', async (req, res) => {
     try {
-        const story = await readStory(req.params.id);
+        // El parámetro ya no es el id de la base: es «titular-legible-abc123».
+        const story = await readStory(idDesdeRuta(req.params.id));
+
+        /**
+         * UNA SOLA DIRECCIÓN POR NOTICIA, con 301 hacia ella.
+         *
+         * Llegan tres formas: la canónica, el id corto suelto y la antigua
+         * `story_abc123` —la que salió en las 2 636 URLs del sitemap ya
+         * publicado—. Servir la misma página en varias direcciones se penaliza
+         * como contenido duplicado y reparte entre ellas la autoridad que
+         * debería acumular una sola.
+         *
+         * 301 y no 302: le dice al buscador que la mudanza es definitiva y que
+         * traslade a la nueva lo que tenía de la vieja. Con 302 mantendría la
+         * antigua indexada indefinidamente.
+         *
+         * Se redirige ANTES de renderizar: no tiene sentido pagar el renderizado
+         * de una página que no se va a entregar. Se cachea una hora en la CDN
+         * —no dos minutos como el HTML— porque una redirección no referencia
+         * ningún /assets/*.js que un despliegue pueda dejar muerto.
+         */
+        if (story && !esRutaCanonica(req.params.id, story)) {
+            res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=3600');
+            return res.redirect(301, rutaDeHistoria(story));
+        }
+
         const motor = await prepararSsr();
         const plantilla = motor ? await obtenerPlantilla() : null;
 

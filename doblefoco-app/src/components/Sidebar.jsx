@@ -7,6 +7,7 @@ import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsletterWidget from './NewsletterWidget';
 import './Sidebar.css';
+import { rutaDeHistoria } from '../../shared/storyPath.js';
 
 const Sidebar = () => {
     const [history, setHistory] = useState(() => getHistory());
@@ -51,7 +52,7 @@ const Sidebar = () => {
                     )}
                     {trending.map((story, index) => (
                         <li key={story.id}>
-                            <Link to={`/noticia/${story.id}`} className="trend-link">
+                            <Link to={rutaDeHistoria(story)} className="trend-link">
                                 <span className="trend-rank">#{index + 1}</span>
                                 <span className="trend-name">{story.title}</span>
                                 <span className="trend-count" title="medios que lo cubren">
@@ -133,7 +134,7 @@ const Sidebar = () => {
                             Hechos con cobertura amplia en un lado del espectro y casi nula en el otro.
                         </p>
                         {blindspots.map((item) => (
-                            <Link key={item.id} to={`/noticia/${item.id}`} className={`blindspot-item item-${item.spectrum}`}>
+                            <Link key={item.id} to={rutaDeHistoria(item)} className={`blindspot-item item-${item.spectrum}`}>
                                 <span className={`blindspot-label ${item.spectrum}`}>
                                     <EyeOff size={12} aria-hidden="true" /> {item.label}
                                 </span>

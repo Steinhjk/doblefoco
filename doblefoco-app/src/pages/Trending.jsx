@@ -7,6 +7,7 @@ import EmptyState from '../components/EmptyState';
 import NewsCard from '../components/NewsCard';
 import AnimateIn from '../components/AnimateIn';
 import './Trending.css';
+import { rutaDeHistoria } from '../../shared/storyPath.js';
 
 const Trending = () => {
     // Se destacan las historias con más medios cubriéndolas, no las primeras
@@ -34,7 +35,7 @@ const Trending = () => {
             <div className="trending-topics">
                 {topicos.map((story, index) => (
                     <AnimateIn key={story.id} delay={Math.min(index + 1, 3)}>
-                        <Link to={`/noticia/${story.id}`} className="topic-card">
+                        <Link to={rutaDeHistoria(story)} className="topic-card">
                             <span className="topic-rank">#{index + 1}</span>
                             <div className="topic-info">
                                 <h2>{story.title}</h2>

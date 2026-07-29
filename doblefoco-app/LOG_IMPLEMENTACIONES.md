@@ -101,3 +101,47 @@ https://doblefococo.vercel.app/noticia/story_12flvrc
 > **Regla que conviene no saltarse:** una tarea solo se marca `[x]` cuando se
 > puede demostrar, y para una ruta HTTP la demostración es una petición HTTP.
 > Compilar sin errores no es ejecutar.
+
+---
+
+### [2026-07-29] URLs legibles para las noticias, con canonicalización 301
+
+#### Motivo
+`/noticia/story_12flvrc` era la única palabra en inglés que veía un lector, no
+dice nada de su contenido —lo que importa en WhatsApp o Telegram, donde a
+menudo no hay previsualización— y desaprovecha la señal de relevancia que las
+palabras de la URL dan a un buscador. En un agregador cuyo canal de adquisición
+es el SEO, eso no es estética.
+
+- **Archivos creados/modificados:**
+  - `shared/storyPath.js` (nuevo): `slugify`, `rutaDeHistoria`, `idDesdeRuta`,
+    `esRutaCanonica`. El id sigue en la URL —sin él, dos noticias parecidas
+    colisionarían y un cambio de titular representativo rompería lo ya
+    indexado—, pero sin el prefijo `story_`, que se queda en la base.
+  - `shared/storyPath.test.js` (nuevo): 16 pruebas.
+  - `server/index.js`: `/noticia/:id` traduce el parámetro y responde **301** a
+    la canónica cuando llega cualquiera de las otras formas. `/api/story/:id`
+    acepta ambas formas y **no** redirige: lo llama `fetch` y una redirección a
+    HTML rompería al cliente. `/sitemap.xml` emite ya las canónicas.
+  - `server/db/feedStore.js`: `readSitemapEntries` devuelve también el titular.
+  - `server/ssr/metadatos.js`: `<link rel="canonical">` y `og:url` a la ruta
+    legible, que es a la que redirige el servidor.
+  - Enlaces del cliente: `NewsCard`, `CompactHeroGrid`, `Sidebar`,
+    `MobileSidebar`, `Trending`, `AdminDashboard`, `NewsDetail`.
+
+- **Compatibilidad:** las 2 636 URLs del sitemap ya publicado siguen resolviendo
+  (301 → canónica). 301 y no 302, para que el buscador traslade a la nueva lo
+  que tuviera acumulado de la vieja.
+
+- **Evidencias de Verificación** (servidor levantado contra la base real):
+```
+/noticia/story_12flvrc                     301 -> /noticia/natalia-lopez-…-12flvrc
+/noticia/12flvrc                           301 -> misma canónica
+/noticia/titular-viejo-y-distinto-12flvrc  301 -> misma canónica
+/noticia/natalia-lopez-…-12flvrc           200 · titular en el HTML servido
+/noticia/esto-no-existe-zzzzz              404
+/api/story/… (ambas formas)                200 application/json, sin redirigir
+sitemap.xml: 3 413 URLs · 0 con «story_»
+179 pruebas · typecheck y lint limpios · build correcto
+```
+

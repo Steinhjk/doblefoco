@@ -15,6 +15,8 @@
  * No es un riesgo teórico: es la superficie más obvia que tiene este proyecto.
  */
 
+import { rutaDeHistoria } from '../../shared/storyPath.js';
+
 /**
  * Escapa texto para meterlo dentro de un atributo HTML entre comillas dobles.
  *
@@ -102,7 +104,9 @@ export function describirCobertura(story) {
  */
 export function construirMetadatos(story, siteUrl) {
     const base = String(siteUrl).replace(/\/+$/, '');
-    const canonica = `${base}/noticia/${encodeURIComponent(story.id)}`;
+    // La ruta legible, no el id crudo: la canónica tiene que coincidir con la
+    // dirección a la que redirige el servidor, o se contradicen entre sí.
+    const canonica = `${base}${rutaDeHistoria(story)}`;
     const imagen = `${base}/og-image.png`;
     const titulo = `${story.title} · DobleFoco.co`;
     const descripcion = describirCobertura(story);

@@ -5,6 +5,7 @@ import { topCoveredStories } from '../lib/story';
 import { useStories } from '../hooks/useStories';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import './MobileSidebar.css';
+import { rutaDeHistoria } from '../../shared/storyPath.js';
 
 /**
  * Versión móvil del sidebar.
@@ -65,7 +66,7 @@ const MobileSidebar = () => {
                                         {trending.map((story, index) => (
                                             <li key={story.id}>
                                                 <Link
-                                                    to={`/noticia/${story.id}`}
+                                                    to={rutaDeHistoria(story)}
                                                     className="mobile-trend-link"
                                                 >
                                                     <span className="mobile-trend-rank">#{index + 1}</span>
@@ -137,7 +138,7 @@ const MobileSidebar = () => {
                                         blindspots.map((story) => (
                                             <Link
                                                 key={story.id}
-                                                to={`/noticia/${story.id}`}
+                                                to={rutaDeHistoria(story)}
                                                 className="mobile-blindspot-item"
                                             >
                                                 <span className={`mobile-blindspot-label ${story.coverage.blindspot.spectrum}`}>

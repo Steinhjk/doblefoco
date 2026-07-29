@@ -8,6 +8,7 @@ import { recordRead } from '../lib/readingHistory';
 import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './NewsCard.css';
+import { rutaDeHistoria } from '../../shared/storyPath.js';
 
 const NewsCard = ({ story: rawStory }) => {
     // Tolerante a historias sin normalizar para que ninguna pantalla reviente
@@ -39,7 +40,7 @@ const NewsCard = ({ story: rawStory }) => {
 
             <div className="news-card-inner-grid">
                 <Link
-                    to={`/noticia/${story.id}`}
+                    to={rutaDeHistoria(story)}
                     className="news-card-image-wrapper"
                     onClick={() => recordRead(story)}
                     tabIndex={-1}
@@ -79,7 +80,7 @@ const NewsCard = ({ story: rawStory }) => {
                     </div>
 
                     <h3 className="news-card-title">
-                        <Link to={`/noticia/${story.id}`} onClick={() => recordRead(story)}>
+                        <Link to={rutaDeHistoria(story)} onClick={() => recordRead(story)}>
                             {story.title}
                         </Link>
                     </h3>

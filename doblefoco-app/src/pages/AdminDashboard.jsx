@@ -13,6 +13,7 @@ import {
     fetchPending,
     fetchReports,
 } from '../services/moderationClient';
+import { rutaDeHistoria } from '../../shared/storyPath.js';
 import './AdminDashboard.css';
 
 /**
@@ -381,7 +382,7 @@ const AdminDashboard = () => {
                     <ul className="reports-list">
                         {reports.stories.map((r) => (
                             <li key={r.story_id} className="report-row">
-                                <Link to={`/noticia/${r.story_id}`} className="report-title">
+                                <Link to={rutaDeHistoria({ id: r.story_id, title: r.title })} className="report-title">
                                     {r.title}
                                 </Link>
                                 <span className="report-tags">

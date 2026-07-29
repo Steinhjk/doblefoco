@@ -10,6 +10,7 @@ import { recordRead } from '../lib/readingHistory';
 import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './CompactHeroGrid.css';
+import { rutaDeHistoria } from '../../shared/storyPath.js';
 
 /**
  * Portada destacada.
@@ -62,7 +63,7 @@ const CompactHeroGrid = () => {
             <div className="compact-hero-grid">
                 <article className="hero-spotlight-card">
                     <Link
-                        to={`/noticia/${main.id}`}
+                        to={rutaDeHistoria(main)}
                         className="spotlight-image-link"
                         onClick={() => recordRead(main)}
                         tabIndex={-1}
@@ -88,7 +89,7 @@ const CompactHeroGrid = () => {
                         </div>
 
                         <h3 className="spotlight-title">
-                            <Link to={`/noticia/${main.id}`} onClick={() => recordRead(main)}>
+                            <Link to={rutaDeHistoria(main)} onClick={() => recordRead(main)}>
                                 {main.title}
                             </Link>
                         </h3>
@@ -126,7 +127,7 @@ const CompactHeroGrid = () => {
                     {secondary.map((story) => (
                         <article key={story.id} className="secondary-compact-card">
                             <Link
-                                to={`/noticia/${story.id}`}
+                                to={rutaDeHistoria(story)}
                                 className="secondary-image-link"
                                 onClick={() => recordRead(story)}
                                 tabIndex={-1}
@@ -149,7 +150,7 @@ const CompactHeroGrid = () => {
                                 </div>
 
                                 <h4 className="secondary-title">
-                                    <Link to={`/noticia/${story.id}`} onClick={() => recordRead(story)}>
+                                    <Link to={rutaDeHistoria(story)} onClick={() => recordRead(story)}>
                                         {story.title}
                                     </Link>
                                 </h4>

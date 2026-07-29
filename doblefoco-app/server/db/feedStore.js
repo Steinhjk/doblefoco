@@ -286,7 +286,7 @@ export async function readStory(id) {
 export async function readSitemapEntries({ limit = 50_000 } = {}) {
     const resultado = await safeQuery(
         `
-        SELECT s.id,
+        SELECT s.id, s.title,
                GREATEST(
                    COALESCE(s.published_at, s.first_seen_at),
                    COALESCE(s.first_seen_at, s.published_at)
@@ -304,6 +304,8 @@ export async function readSitemapEntries({ limit = 50_000 } = {}) {
 
     return (resultado?.rows ?? []).map((fila) => ({
         id: fila.id,
+        // Necesario para armar el slug de la ruta canónica.
+        title: fila.title,
         lastmod: fila.lastmod instanceof Date ? fila.lastmod.toISOString() : fila.lastmod,
     }));
 }

@@ -13,6 +13,8 @@ import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../share
 import NewsCard from '../components/NewsCard';
 import CoverageBar from '../components/CoverageBar';
 import CoverageTimeline from '../components/CoverageTimeline';
+import ToneNote from '../components/ToneNote';
+import ToneSummary from '../components/ToneSummary';
 import MediaLogo from '../components/MediaLogo';
 import UserFeedbackWidget from '../components/UserFeedbackWidget';
 import ShareModal from '../components/ShareModal';
@@ -98,12 +100,11 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
                     <p className="perspective-snippet">{perspective.snippet}</p>
                 )}
 
-                {perspective.tone && !perspective.tone.isNeutral && (
-                    <p className="perspective-tone-note">
-                        Términos con carga detectados:{' '}
-                        {[...perspective.tone.sensationalTerms, ...perspective.tone.leftTerms, ...perspective.tone.rightTerms].join(', ')}
-                    </p>
-                )}
+                {/* F3-09. Antes esto listaba las palabras a secas, leyendo una
+                    forma del objeto que ya no existe: ahora el tono se calcula
+                    al servir, sobre titular Y entradilla, y dice dónde apareció
+                    cada término. Se pinta solo cuando hay algo que decir. */}
+                <ToneNote tone={perspective.tone} />
 
                 {perspective.otherOutletsInSpectrum > 0 && (
                     <p className="perspective-more-outlets">
@@ -310,6 +311,12 @@ const NewsDetail = () => {
                         entraron. Al revés sería un dato sin contexto.
                         Se pinta sola cuando no hay línea de tiempo utilizable. */}
                     <CoverageTimeline timeline={story.timeline} />
+
+                    {/* F3-09. Va tras la cronología: primero quién cubrió y
+                        cuándo, después cómo lo contaron. Se pinta sola cuando
+                        ningún medio usó lenguaje valorativo, que es el caso
+                        habitual —la carga aparece en el 3,1% de los artículos. */}
+                    <ToneSummary resumen={story.toneSummary} />
 
                     <UserFeedbackWidget storyId={story.id} />
                 </div>

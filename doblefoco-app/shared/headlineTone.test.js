@@ -14,7 +14,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { analyzeHeadlineTone, TONE_LEXICON } from './headlineTone.js';
+import { analyzeHeadlineTone, analyzeArticleTone, TONE_LEXICON } from './headlineTone.js';
 
 const LEXICON_TERMS = new Set([
     ...TONE_LEXICON.left,
@@ -121,5 +121,122 @@ describe('analyzeHeadlineTone', () => {
         // de otra palabra no deben disparar una señal sobre el medio.
         expect(analyzeHeadlineTone('La dictadura del proletariado').rightTerms).toContain('dictadura');
         expect(analyzeHeadlineTone('Un texto sobre lexicografia').isNeutral).toBe(true);
+    });
+});
+
+describe('analyzeArticleTone — titular y entradilla (F3-09)', () => {
+    it('detecta carga en la entradilla aunque el titular esté limpio', () => {
+        // Es la forma de sesgo que justifica la tarea: un medio puede titular
+        // de forma impecable y cargar la valoración en la primera línea, que
+        // también se lee de un vistazo.
+        const r = analyzeArticleTone({
+            headline: 'Congreso aprueba la reforma en segundo debate',
+            snippet: 'La escandalosa votación se dio tras un debate brutal entre bancadas.',
+        });
+
+        expect(r.isNeutral).toBe(false);
+        expect(r.soloEnEntradilla).toBe(true);
+        expect(r.terminos.map((t) => t.termino).sort()).toEqual(['brutal', 'escandaloso']);
+        for (const t of r.terminos) expect(t.donde).toEqual(['entradilla']);
+    });
+
+    it('distingue dónde apareció cada término', () => {
+        const r = analyzeArticleTone({
+            headline: 'Polemico fallo del tribunal',
+            snippet: 'Una decision brutal segun los juristas.',
+        });
+
+        const porTermino = Object.fromEntries(r.terminos.map((t) => [t.termino, t.donde]));
+        expect(porTermino.polemico).toEqual(['titular']);
+        expect(porTermino.brutal).toEqual(['entradilla']);
+        expect(r.soloEnEntradilla).toBe(false);
+    });
+
+    it('un término en ambos sitios se reporta UNA vez, con los dos lugares', () => {
+        const r = analyzeArticleTone({
+            headline: 'Un fallo brutal',
+            snippet: 'El brutal fallo sorprendio a todos.',
+        });
+        expect(r.terminos).toHaveLength(1);
+        expect(r.terminos[0].donde).toEqual(['titular', 'entradilla']);
+    });
+
+    it('declara si NO pudo analizar la entradilla, en vez de fingir que estaba limpia', () => {
+        // 823 de 3 481 artículos no traen entradilla (Semana y El País Cali no
+        // publican ninguna). Decir «no hay carga» sin haber podido mirar sería
+        // afirmar algo que no se comprobó.
+        const sin = analyzeArticleTone({ headline: 'Titular normal' });
+        expect(sin.analizoEntradilla).toBe(false);
+        expect(sin.isNeutral).toBe(true);
+
+        const con = analyzeArticleTone({ headline: 'Titular normal', snippet: 'Texto cualquiera.' });
+        expect(con.analizoEntradilla).toBe(true);
+    });
+
+    it('es neutro cuando no hay nada cargado', () => {
+        const r = analyzeArticleTone({
+            headline: 'Cámara aprueba el traslado de la sede',
+            snippet: 'La votación fue de 98 a favor y 12 en contra.',
+        });
+        expect(r.isNeutral).toBe(true);
+        expect(r.terminos).toEqual([]);
+        expect(r.soloEnEntradilla).toBe(false);
+    });
+
+    it('no revienta sin argumentos', () => {
+        expect(analyzeArticleTone().isNeutral).toBe(true);
+        expect(analyzeArticleTone({ headline: null, snippet: null }).isNeutral).toBe(true);
+    });
+
+    it('clasifica el tipo de cada término', () => {
+        const r = analyzeArticleTone({ headline: 'La dictadura y la represion', snippet: null });
+        const tipos = Object.fromEntries(r.terminos.map((t) => [t.termino, t.tipo]));
+        expect(tipos.dictadura).toBe('derecha');
+        expect(tipos.represion).toBe('izquierda');
+    });
+});
+
+describe('flexión del español en el léxico (F3-09)', () => {
+    // El léxico se escribe en masculino singular, pero el español flexiona.
+    // Sin esto se perdía más de la mitad de las coincidencias en silencio: el
+    // detector no fallaba, simplemente no encontraba.
+    const detecta = (texto) => !analyzeHeadlineTone(texto).isNeutral;
+
+    it('reconoce femenino y plural de los adjetivos en -o', () => {
+        for (const t of ['un hecho escandaloso', 'una votacion escandalosa',
+                         'unos hechos escandalosos', 'unas cifras escandalosas']) {
+            expect(detecta(t), t).toBe(true);
+        }
+    });
+
+    it('reconoce el plural de los adjetivos en -l', () => {
+        expect(detecta('un ataque brutal')).toBe(true);
+        expect(detecta('unos ataques brutales')).toBe(true);
+    });
+
+    it('reconoce el plural de los adjetivos en -z', () => {
+        expect(detecta('un debate feroz')).toBe(true);
+        expect(detecta('unos debates feroces')).toBe(true);
+    });
+
+    it('reconoce el plural de los sustantivos en -a', () => {
+        expect(detecta('la dictadura')).toBe(true);
+        expect(detecta('las dictaduras')).toBe(true);
+    });
+
+    it('flexiona la ÚLTIMA palabra de un término compuesto', () => {
+        expect(detecta('el colapso fiscal')).toBe(true);
+        expect(detecta('los colapso fiscales')).toBe(true);
+    });
+
+    it('NO flexiona los adverbios en -mente', () => {
+        expect(detecta('crecio brutalmente')).toBe(true);
+    });
+
+    it('sigue exigiendo palabra completa: no coincide dentro de otra', () => {
+        // Prefiere no encontrar algo a encontrar lo que no es. Por eso no se
+        // usa stemming: confundiría «represión» con «represivo» y «reprimir».
+        expect(detecta('brutalidad policial')).toBe(false);
+        expect(detecta('polemizar sobre el tema')).toBe(false);
     });
 });

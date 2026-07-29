@@ -31,6 +31,7 @@
 
 import { analyzeCoverage, averageFactuality, classifySpectrum, SPECTRUM } from '../../shared/biasAnalysis.js';
 import { buildCoverageTimeline } from '../../shared/coverageTimeline.js';
+import { analyzeArticleTone } from '../../shared/headlineTone.js';
 import { safeQuery } from './pool.js';
 
 /**
@@ -121,7 +122,20 @@ function elegirPerspectiva(articulos, espectro) {
         snippet: mejor.snippet,     // real o null, nunca redactado
         url: mejor.canonical_url,
         publishedAt: mejor.published_at,
-        tone: mejor.tone,
+
+        /**
+         * El tono se calcula AQUÍ, al leer, y no se usa el que quedó guardado
+         * al ingerir (F3-09). Dos razones:
+         *   · la columna `tone` solo mira el titular; esto mira también la
+         *     entradilla, que es donde un medio puede cargar la valoración
+         *     manteniendo un titular impecable;
+         *   · el léxico cambia. Guardado, un término añadido hoy no se vería
+         *     nunca en los 3 481 artículos ya ingeridos, y habría que
+         *     reprocesarlos a mano cada vez que se ajusta una palabra.
+         * Cuesta una comparación contra ~40 términos sobre 300 caracteres:
+         * irrelevante al lado de la ida y vuelta a la base.
+         */
+        tone: analyzeArticleTone({ headline: mejor.headline, snippet: mejor.snippet }),
         otherOutletsInSpectrum: new Set(candidatos.map((c) => c.source_id)).size - 1,
     };
 }
@@ -180,6 +194,41 @@ function componerHistoria(fila, articulos) {
          */
         timeline: buildCoverageTimeline(articulos),
 
+        /**
+         * Resumen de lenguaje valorativo en TODA la cobertura (F3-09).
+         *
+         * Hace falta porque la anotación por perspectiva casi nunca se ve: solo
+         * se muestran tres artículos de los diez u once que cubren un hecho, y
+         * la carga aparece en el 3,1% de ellos. La probabilidad de que el
+         * cargado sea justo uno de los tres elegidos es baja.
+         *
+         * Y NO se resuelve eligiendo como representante al artículo con más
+         * carga: eso sacaría a propósito el titular más sensacionalista de cada
+         * espectro y distorsionaría la comparación, que es lo único que esta
+         * pantalla existe para hacer bien. Se elige por recencia, como siempre,
+         * y la carga se reporta aparte.
+         */
+        toneSummary: (() => {
+            const conCarga = articulos
+                .map((a) => ({
+                    outlet: a.outlet,
+                    spectrum: classifySpectrum(a.bias),
+                    headline: a.headline,
+                    url: a.canonical_url,
+                    tone: analyzeArticleTone({ headline: a.headline, snippet: a.snippet }),
+                }))
+                .filter((a) => !a.tone.isNeutral);
+
+            return {
+                totalArticulos: articulos.length,
+                // Un medio puede publicar varias notas: lo que se cuenta son
+                // MEDIOS distintos, no artículos, para no inflar la cifra.
+                mediosConCarga: new Set(conCarga.map((a) => a.outlet)).size,
+                totalMedios: new Set(articulos.map((a) => a.outlet)).size,
+                articulos: conCarga,
+            };
+        })(),
+
         perspectives: {
             left: elegirPerspectiva(articulos, SPECTRUM.LEFT),
             center: elegirPerspectiva(articulos, SPECTRUM.CENTER),
@@ -194,7 +243,7 @@ function componerHistoria(fila, articulos) {
             snippet: a.snippet,
             publishedAt: a.published_at,
             bias: a.bias,
-            tone: a.tone,
+            tone: analyzeArticleTone({ headline: a.headline, snippet: a.snippet }),
         })),
     };
 }

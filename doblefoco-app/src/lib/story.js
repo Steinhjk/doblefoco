@@ -170,6 +170,9 @@ export function normalizeStory(raw) {
         // historia no la trae —una respuesta antigua de caché, por ejemplo— y
         // la interfaz simplemente no pinta la sección.
         timeline: raw.timeline ?? null,
+
+        // Resumen de lenguaje valorativo en toda la cobertura (F3-09).
+        toneSummary: raw.toneSummary ?? null,
     };
 }
 

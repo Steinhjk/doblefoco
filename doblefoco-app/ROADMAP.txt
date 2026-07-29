@@ -1303,7 +1303,7 @@
             comprobaciones visuales aplazadas.
 
 ===============================================================================
- FASE 3 — CRECIMIENTO                                          [~] EN CURSO (8/15)
+ FASE 3 — CRECIMIENTO                                          [~] EN CURSO (9/15)
 ===============================================================================
  Objetivo: que el producto se pueda encontrar, usar y entender.
 
@@ -1746,13 +1746,65 @@
             CRITERIO: los 27 medios colombianos con al menos una fuente
             consultable, y `verifiedAt` con fecha.
 
- [ ] F3-09  Mostrar la anotación de tono en la interfaz
-            shared/headlineTone.js ya mide carga emocional e ideológica por
-            titular y el motor la adjunta a cada artículo, pero la UI apenas la
-            usa. Es la forma correcta —anotar, no reescribir— de la función que
-            antes mutilaba titulares.
+ [x] F3-09  Anotación de lenguaje valorativo (2026-07-29)
 
- ── 3C. Accesibilidad y rendimiento ───────────────────────────────────────────
+            LA MEDICIÓN CAMBIÓ LA TAREA, y conviene leerla antes de tocar nada:
+              33 de 3 481 artículos (0,9%)  léxico original, solo titular
+              58 (1,7%)                     tras ampliar el léxico
+              107 (3,1%)                    tras reconocer la flexión
+            El mayor salto NO vino de ampliar el diccionario sino de arreglar un
+            fallo silencioso: el léxico está escrito en masculino singular y el
+            español flexiona, así que «votación escandalosA», «hechos brutalES» y
+            «cifras devastadorAS» no coincidían con nada. El detector no fallaba,
+            simplemente no encontraba — la clase de error más difícil de ver.
+
+            POR ESO LA INTERFAZ ES DISCRETA. Con una señal que aparece en 3 de
+            cada 100 artículos, una sección grande sería una promesa que la
+            pantalla no puede cumplir; y peor, empujaría a ampliar el léxico
+            hasta «llenar» el hueco, que es como un detector se vuelve ruido.
+
+            EL LÉXICO SENSACIONALISTA SE AMPLIÓ; LOS IDEOLÓGICOS NO. Calificar
+            algo de «escalofriante» es una elección de registro que cualquiera
+            reconoce sin compartir una postura. Decidir qué palabra es «de
+            izquierda» es justo el juicio que este proyecto no debe imponer:
+            ampliarlos por nuestra cuenta metería nuestro sesgo en la herramienta
+            que mide el sesgo ajeno. Se quedan cortos hasta que los revise un
+            editor (F1-13).
+
+            SE ANALIZA TAMBIÉN LA ENTRADILLA, no solo el titular, y de ahí salen
+            27 casos de TITULAR LIMPIO CON VALORACIÓN EN LA ENTRADILLA — que es
+            exactamente la forma de sesgo que no se ve mirando solo titulares.
+            Tenemos entradilla del 76% de los artículos; cuando falta se declara
+            en lugar de dar por limpio lo que no se pudo mirar.
+
+            SE CALCULA AL LEER, NO AL INGERIR. La columna `tone` guardada solo
+            mira el titular, y un término añadido al léxico no se vería nunca en
+            los 3 481 artículos ya ingeridos. Cuesta comparar ~40 términos sobre
+            300 caracteres: nada al lado de la ida y vuelta a la base.
+
+            RESUMEN POR HISTORIA, ADEMÁS DE POR PERSPECTIVA. De los diez u once
+            medios que cubren un hecho solo se muestran tres: la probabilidad de
+            que el cargado sea uno de esos tres es baja, así que la anotación no
+            se vería casi nunca. Y NO se resuelve eligiendo como representante al
+            artículo con más carga — eso sacaría a propósito el titular más
+            sensacionalista de cada espectro y distorsionaría la comparación, que
+            es lo único que esa pantalla existe para hacer bien.
+
+            NUNCA SE TOCA EL TITULAR. El antecesor de esto,
+            headlineNeutralizerService, BORRABA los adjetivos del original y
+            presentaba el resultado como la frase del medio. Aquí se muestra la
+            frase literal y, al lado, qué término se detectó y dónde.
+
+            LÍMITE ASUMIDO Y DECLARADO EN PANTALLA: el cotejo es léxico, no
+            semántico. No distingue ironía, cita textual ni un adjetivo que
+            describa con exactitud —«devastadores terremotos» lo es—. La interfaz
+            lo dice: «una señal para mirar el original, no una acusación».
+
+            VERIFICADO: 21 pruebas nuevas (flexión de género, número, -z, -mente,
+            términos compuestos, no coincidir dentro de otra palabra, carga solo
+            en entradilla, entradilla ausente declarada). 159 en total.
+            Comprobado contra la base y contra el HTML del servidor con una
+            historia real: «1 de 7 medios usó términos con carga».
 
  [x] F3-10  Correcciones de accesibilidad de esta tanda
             role="meter" con aria-valuenow/min/max; barra de cobertura con

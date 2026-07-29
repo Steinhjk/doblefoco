@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Check, X, ShieldAlert, RotateCcw, Download,
+    X, ShieldAlert, RotateCcw, Download,
     Loader2, Users, Activity, AlertTriangle,
 } from 'lucide-react';
 import { exportSubscribersForOperator, getWaitlistCount } from '../services/storageService';
@@ -239,24 +239,36 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {/*
+                TRES CIFRAS, NO CUATRO, y las etiquetas dicen lo que miden.
+                · «Aprobadas» desapareció con el estado: en un modelo de
+                  publicar-todo-y-retirar, aprobar no producía ningún efecto.
+                · «Pendientes» era engañoso. Sugería una cola que retiene algo
+                  antes de publicarlo, y no retenía nada: las 3 301 estaban
+                  todas visibles. Ahora dice «Sin revisar», que es la verdad, y
+                  el pie del bloque aclara que están publicadas igual.
+            */}
             <div className="admin-stats-summary">
-                <div className="admin-stat-card">
-                    <span className="stat-num">{counts?.pendientes ?? '—'}</span>
-                    <span className="stat-lbl">Pendientes</span>
-                </div>
-                <div className="admin-stat-card">
-                    <span className="stat-num">{counts?.aprobadas ?? '—'}</span>
-                    <span className="stat-lbl">Aprobadas</span>
-                </div>
-                <div className="admin-stat-card">
+                <div className="admin-stat-card admin-stat-destacada">
                     <span className="stat-num">{counts?.rechazadas ?? '—'}</span>
-                    <span className="stat-lbl">Rechazadas</span>
+                    <span className="stat-lbl">Retiradas del sitio</span>
+                </div>
+                <div className="admin-stat-card">
+                    <span className="stat-num">{counts?.sinRevisar ?? '—'}</span>
+                    <span className="stat-lbl">Sin revisar</span>
                 </div>
                 <div className="admin-stat-card">
                     <span className="stat-num">{health?.database?.stories ?? '—'}</span>
                     <span className="stat-lbl">Historias en el motor</span>
                 </div>
             </div>
+
+            <p className="admin-stats-nota">
+                Se publica todo y la moderación sirve para <strong>retirar</strong>. «Sin
+                revisar» no es una cola de espera: esas historias están visibles en el sitio
+                ahora mismo. Las garantías del producto —titular literal, enlace verificable,
+                ausencia declarada— las da el motor, no una persona pulsando un botón.
+            </p>
 
             <div className="google-scraper-box">
                 <div className="scraper-box-header">
@@ -431,10 +443,11 @@ const AdminDashboard = () => {
                 ) : pending.length === 0 ? (
                     <div className="empty-queue-alert">
                         <ShieldAlert size={48} className="empty-icon" aria-hidden="true" />
-                        <h3>Cola vacía</h3>
+                        <h3>Nada retirado</h3>
                         <p>
-                            No hay historias pendientes de revisión. Las nuevas aparecerán aquí
-                            tras el próximo ciclo de ingesta.
+                            Ninguna historia está oculta del sitio. Esta lista no es una cola de
+                            espera: aquí aparecen las que hay que revisar por algún motivo
+                            —normalmente porque un lector las señaló—, no todas las nuevas.
                         </p>
                     </div>
                 ) : (
@@ -532,6 +545,10 @@ const StoryCard = ({ story, busy, onDecide }) => {
                     )}
                 </div>
 
+                {/* Solo retirar. El botón «Aprobar» se quitó porque no hacía
+                    nada: la historia ya estaba publicada antes de pulsarlo y
+                    seguía igual después. Un botón de efecto nulo es peor que su
+                    ausencia — invita a pulsarlo creyendo que sirve. */}
                 <div className="staging-card-actions">
                     <div className="publish-actions">
                         <button
@@ -539,14 +556,7 @@ const StoryCard = ({ story, busy, onDecide }) => {
                             onClick={() => onDecide(story.id, 'rechazada')}
                             disabled={busy}
                         >
-                            <X size={14} aria-hidden="true" /> Rechazar
-                        </button>
-                        <button
-                            className="admin-btn approve"
-                            onClick={() => onDecide(story.id, 'aprobada')}
-                            disabled={busy}
-                        >
-                            <Check size={14} aria-hidden="true" /> Aprobar
+                            <X size={14} aria-hidden="true" /> Retirar del sitio
                         </button>
                     </div>
                 </div>

@@ -93,7 +93,9 @@ export async function listDecided({ state = null, limit = 50, offset = 0 } = {})
  * @returns {Promise<{state:string, decidedAt:string}|null>} null si la historia no existe
  */
 export async function decide({ storyId, state, reviewerId, reason = null }) {
-    if (!['aprobada', 'rechazada'].includes(state)) {
+    // Solo 'rechazada'. Ver moderationRoutes.js para por qué desapareció
+    // 'aprobada': en un modelo de retirada, aprobar no producía ningún efecto.
+    if (state !== 'rechazada') {
         throw new Error(`Estado no válido: ${state}`);
     }
 
@@ -155,22 +157,37 @@ export async function rejectedStoryIds() {
     return new Set((result?.rows ?? []).map((r) => r.story_id));
 }
 
-/** Cuántas hay en cada estado. Para las cifras de cabecera del panel. */
+/**
+ * Cifras de cabecera del panel.
+ *
+ * DOS NÚMEROS, NO TRES. Antes había «pendientes», «aprobadas» y «rechazadas»:
+ *   · «aprobadas» se retiró con el propio estado (ver moderationRoutes.js);
+ *   · «pendientes» pasa a llamarse `sinRevisar` porque era engañoso. Sugería
+ *     una cola que retiene algo antes de publicarlo, y no retiene nada: en este
+ *     modelo todo se publica y la moderación sirve para RETIRAR. Las 3 301
+ *     «pendientes» estaban todas visibles.
+ *
+ * El alias va en snake_case a propósito: Postgres pasa a minúsculas cualquier
+ * identificador sin comillas, así que `AS sinRevisar` llegaría a JavaScript como
+ * `sinrevisar` y la propiedad quedaría en `undefined` sin que nada avisara.
+ */
 export async function counts() {
     const result = await safeQuery(
         `
         SELECT
             (SELECT count(*)::int FROM stories s
               LEFT JOIN moderation m ON m.story_id = s.id
-             WHERE m.story_id IS NULL)                                  AS pendientes,
-            (SELECT count(*)::int FROM moderation WHERE state='aprobada')  AS aprobadas,
+             WHERE m.story_id IS NULL)                                  AS sin_revisar,
             (SELECT count(*)::int FROM moderation WHERE state='rechazada') AS rechazadas
         `,
         [],
         'conteo de moderación'
     );
 
-    return result?.rows[0] ?? null;
+    const fila = result?.rows[0];
+    if (!fila) return null;
+
+    return { sinRevisar: fila.sin_revisar, rechazadas: fila.rechazadas };
 }
 
 /** Forma común de una historia en el panel. */

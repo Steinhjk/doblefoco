@@ -832,3 +832,18 @@
 
 .error-resolver:hover:not(:disabled) { opacity: 1; }
 .error-resolver:disabled { cursor: progress; opacity: 0.5; }
+
+/* ── Cifras de moderación (revisadas 2026-07-29) ───────────────────────────
+   «Retiradas» va destacada porque es la ÚNICA con consecuencia: oculta la
+   historia del feed y del sitemap. Las otras dos son contexto. */
+
+.admin-stat-destacada {
+    border-color: currentColor;
+}
+
+.admin-stats-nota {
+    margin: -8px 0 24px;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    opacity: 0.8;
+}

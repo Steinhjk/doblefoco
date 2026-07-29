@@ -171,6 +171,16 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS moderation (
     story_id     TEXT PRIMARY KEY REFERENCES stories (id) ON DELETE CASCADE,
+    -- 'aprobada' SIGUE PERMITIDA AQUÍ pero YA NO SE ESCRIBE desde ninguna
+    -- parte: la API la rechaza desde el 2026-07-29 (ver moderationRoutes.js).
+    -- En un modelo de publicar-todo-y-moderar-para-retirar, aprobar no
+    -- producía ningún efecto —la historia ya era visible antes y seguía igual
+    -- después—, así que el botón se retiró.
+    --
+    -- No se estrecha la restricción a propósito: 'aprobada' y «sin fila» son
+    -- funcionalmente idénticas —ambas visibles—, de modo que una fila
+    -- histórica no cambia el comportamiento de nada, y apretar el CHECK
+    -- rompería la migración en cualquier base que ya tuviera alguna.
     state        TEXT NOT NULL CHECK (state IN ('aprobada', 'rechazada')),
     -- Quién decidió. Las cuentas se desactivan pero no se borran (admin_users
     -- .disabled_at), justamente para que esta referencia no se quede huérfana:

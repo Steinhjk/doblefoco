@@ -94,7 +94,18 @@ router.get('/reports', async (req, res) => {
 });
 
 /**
- * Decide sobre una historia.
+ * Decide sobre una historia. Solo dos estados: RETIRARLA o devolverla.
+ *
+ * 'aprobada' SE RETIRÓ el 2026-07-29. En un modelo de publicar-todo-y-moderar-
+ * para-retirar, aprobar no hacía nada: la historia ya era visible antes de
+ * pulsar y seguía igual después. Un botón cuyo efecto es cero es peor que no
+ * tenerlo, porque invita a pulsarlo creyendo que sirve — y con 3 301 historias
+ * habría producido, en el mejor de los casos, una aprobación en bloque sin
+ * mirar: lo mismo que no moderar, más la mentira de que hubo revisión.
+ *
+ * Las filas históricas con 'aprobada' siguen siendo legibles y no hace falta
+ * migrarlas: aprobada y sin-fila son funcionalmente idénticas —ambas visibles—,
+ * así que una fila vieja no cambia el comportamiento de nada.
  *
  * `state: 'pendiente'` retira la decisión y la devuelve a la cola. Se resuelve
  * con el mismo endpoint en vez de con un DELETE porque desde el navegador es
@@ -106,10 +117,10 @@ router.post('/:storyId', async (req, res) => {
     const state = req.body?.state;
     const reason = typeof req.body?.reason === 'string' ? req.body.reason.slice(0, 1000) : null;
 
-    if (!['aprobada', 'rechazada', 'pendiente'].includes(state)) {
+    if (!['rechazada', 'pendiente'].includes(state)) {
         return res.status(400).json({
             success: false,
-            error: "El estado debe ser 'aprobada', 'rechazada' o 'pendiente'",
+            error: "El estado debe ser 'rechazada' o 'pendiente'",
         });
     }
 

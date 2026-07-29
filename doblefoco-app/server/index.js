@@ -594,7 +594,7 @@ const RAIZ_APP = resolve(dirname(fileURLToPath(import.meta.url)), '..');
  * un despliegue nuevo se recoja solo, y si el sitio no responde se cae a la
  * plantilla de la imagen, que al menos permite servir la página.
  */
-const PLANTILLA_TTL_MS = 5 * 60 * 1000;
+const PLANTILLA_TTL_MS = 60 * 1000;
 let plantillaCache = { html: null, cuando: 0 };
 
 async function obtenerPlantilla() {
@@ -698,7 +698,21 @@ app.get('/noticia/:id', async (req, res) => {
         // Mismo par de directivas que el sitemap (F3-03), por la misma razón:
         // el coste de servir a cada rastreador lo absorbe la CDN, no esta
         // máquina. Es el estándar RFC 5861, equivalente al ISR de Next.js.
-        res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=1800, stale-while-revalidate=3600');
+        // DOS MINUTOS, no media hora como el sitemap, y la diferencia tiene
+        // motivo medido: este HTML referencia los /assets/*.js que compila
+        // VERCEL, y un despliegue suyo los sustituye por otros hashes. Vercel
+        // NO purga las respuestas cacheadas de una redirección —comprobado—,
+        // así que todo lo que la CDN tenga guardado apunta a archivos que ya no
+        // existen y la página se queda sin hidratar.
+        //
+        // Con s-maxage corto, esa ventana baja de ~30 min a ~2, y
+        // stale-while-revalidate hace que la primera petición pasada la ventana
+        // ya dispare el refresco sin que nadie espere. Sigue absorbiendo el
+        // tráfico de rastreadores, que es para lo que estaba.
+        //
+        // La solución de fondo —que Fly sirva su propio bundle bajo su propia
+        // base, y no dependa del de Vercel— está descrita en el ROADMAP.
+        res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=120, stale-while-revalidate=600');
         res.type('html');
 
         return res.send(

@@ -599,7 +599,7 @@
             colisiones entre pendingData (101,102,103) y el catálogo.
 
 ===============================================================================
- FASE 2 — CIMIENTOS                                            [~] EN CURSO (8/11)
+ FASE 2 — CIMIENTOS                                            [~] EN CURSO (10/11)
 ===============================================================================
  Objetivo: que el sistema pueda operar con más de una persona y sobrevivir a un
  reinicio. Nada de esto es visible para el usuario y todo es imprescindible.
@@ -856,9 +856,55 @@
             VERIFICACIÓN: sin sesión → 401. Con sesión → 200 y el ciclo corre.
             Tras revocar la sesión en la base → 401.
 
- [ ] F2-06  Límite de peticiones compartido
-            El actual es un Map en memoria: sirve para un proceso único, no
-            para varias instancias. Mover a Redis cuando haya más de una.
+ [x] F2-06  Límite de peticiones compartido
+            DEJÓ DE SER OPCIONAL al hacer la API sin estado: con cada invocación
+            arrancando con su propio Map, el límite de ocho intentos de acceso no
+            limitaba nada. Bastaba con dejar que te tocara otra invocación.
+
+            EN POSTGRES, NO EN REDIS. La tarea decía Redis; sería un servicio
+            más que desplegar, vigilar y pagar para guardar un contador por
+            ventana. La base ya está ahí, ya se conecta y ya es la fuente de
+            verdad de todo lo demás. Redis se justificaría con un volumen que
+            este proyecto no tiene.
+
+            SIN DATOS PERSONALES: se guarda el HASH de la clave, no la clave. Un
+            limitador por IP normalmente almacena la IP, que es dato personal.
+            La fila contiene sha256('login:ip:…') y no hay forma de recuperar la
+            dirección; el conteo funciona igual porque solo hay que distinguir
+            claves, no leerlas. Mismo criterio que en `reader_reports`.
+
+            QUÉ SE MOVIÓ Y QUÉ NO, que es la parte pensada:
+              · acceso al panel (8 por IP y por correo cada 15 min) → a la base
+              · escritura de reportes (10/min) → a la base
+              · lectura general (120/min) → SE QUEDA EN MEMORIA. Compartirlo
+                sería una escritura en la base por cada lectura: el remedio
+                costaría más que la enfermedad y convertiría un pico de tráfico
+                legítimo en un pico de escrituras. Sigue evitando que un cliente
+                sature un proceso concreto, pero la protección real contra un
+                ataque distribuido de lecturas es la capa del hosting, no este
+                contador. Conviene no confundirlas.
+
+            El inicio de ventana lo calcula la BASE, no el proceso: con relojes
+            distintos, dos instancias escribirían en ventanas distintas y cada
+            una llevaría su cuenta — el problema que esto viene a resolver.
+
+            VENTANA FIJA y no deslizante. Una deslizante exigiría guardar cada
+            intento con su instante y barrerlos después. La contrapartida
+            conocida es que a caballo entre dos ventanas caben hasta el doble de
+            intentos —dieciséis en vez de ocho—, irrelevante para frenar fuerza
+            bruta.
+
+            SI LA BASE NO RESPONDE, SE DEJA PASAR. Todos los endpoints limitados
+            necesitan la base para su trabajo: el acceso verifica la contraseña
+            contra admin_users y el reporte inserta una fila. Con la base caída
+            la petición falla igual unos milisegundos después; cerrar aquí no
+            protegería de nada y daría un mensaje engañoso sobre demasiadas
+            peticiones.
+
+            VERIFICADO CRUZANDO UN REINICIO, que es lo que el Map no hacía:
+            seis intentos fallidos, se mata el proceso, se arranca otro, dos
+            intentos más y el noveno responde 429. Comprobado además que la
+            tabla solo contiene hashes.
 
  [x] F2-07  Reportes del lector como instrumentación, no como validación
             LA TAREA CAMBIÓ DE NOMBRE Y DE PROPÓSITO. Estaba escrita como

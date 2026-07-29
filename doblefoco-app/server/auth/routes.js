@@ -12,6 +12,7 @@
 import { Router } from 'express';
 import { isDatabaseEnabled, query } from '../db/pool.js';
 import { verifyPassword } from './passwords.js';
+import { hit, reset } from '../db/rateLimitStore.js';
 import {
     SESSION_COOKIE,
     cookieOptions,
@@ -22,45 +23,20 @@ import {
 } from './sessions.js';
 
 /**
- * Límite de intentos de inicio de sesión.
+ * Límite de intentos de inicio de sesión, EN LA BASE (F2-06).
  *
  * El límite general de la API (120 por minuto) no sirve aquí: 120 contraseñas
  * por minuto es un ataque de diccionario cómodo. Se cuenta por IP Y por correo,
  * porque cada uno frena un ataque distinto —una IP probando muchas cuentas, o
  * muchas IP probando una sola—.
  *
- * En memoria, como el otro. Con varias instancias hará falta un contador
- * compartido: es la misma tarea F2-06 y aquí importa más.
+ * Vivía en un Map del proceso. Con la API sin estado eso deja de limitar: cada
+ * invocación arrancaría con su propio Map, y bastaría con dejar que te tocara
+ * otra para seguir probando. Es el único sitio donde la diferencia entre
+ * memoria y base es la diferencia entre proteger y aparentar que se protege.
  */
 const ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 8;
-const attempts = new Map();
-
-function tooManyAttempts(...keys) {
-    const now = Date.now();
-    return keys.some((key) => {
-        const recent = (attempts.get(key) ?? []).filter((t) => t > now - ATTEMPT_WINDOW_MS);
-        attempts.set(key, recent);
-        return recent.length >= MAX_ATTEMPTS;
-    });
-}
-
-function recordAttempt(...keys) {
-    const now = Date.now();
-    for (const key of keys) {
-        attempts.set(key, [...(attempts.get(key) ?? []), now]);
-    }
-
-    if (attempts.size > 5_000) {
-        for (const [key, stamps] of attempts) {
-            if (!stamps.some((t) => t > now - ATTEMPT_WINDOW_MS)) attempts.delete(key);
-        }
-    }
-}
-
-function clearAttempts(...keys) {
-    for (const key of keys) attempts.delete(key);
-}
 
 /**
  * Hash de descarte, con el formato real, para gastar el mismo tiempo cuando el
@@ -133,16 +109,23 @@ router.post('/login', requireDatabase, async (req, res) => {
     const ipKey = `ip:${req.ip}`;
     const emailKey = `email:${email}`;
 
-    if (tooManyAttempts(ipKey, emailKey)) {
-        res.setHeader('Retry-After', '900');
+    // Se cuenta ANTES de mirar las credenciales. Contar solo los fallos
+    // permitiría sondear a ritmo libre enviando peticiones malformadas.
+    const porIp = await hit(ipKey, MAX_ATTEMPTS, ATTEMPT_WINDOW_MS);
+    const porCorreo = email
+        ? await hit(emailKey, MAX_ATTEMPTS, ATTEMPT_WINDOW_MS)
+        : { allowed: true, retryAfterSeconds: 0 };
+
+    if (!porIp.allowed || !porCorreo.allowed) {
+        const espera = Math.max(porIp.retryAfterSeconds, porCorreo.retryAfterSeconds);
+        res.setHeader('Retry-After', String(espera));
         return res.status(429).json({
             success: false,
-            error: 'Demasiados intentos. Espera quince minutos.',
+            error: 'Demasiados intentos. Espera unos minutos.',
         });
     }
 
     if (!email || !password) {
-        recordAttempt(ipKey);
         return res.status(400).json({ success: false, error: 'Faltan credenciales' });
     }
 
@@ -158,7 +141,6 @@ router.post('/login', requireDatabase, async (req, res) => {
         const ok = await verifyPassword(password, user?.password_hash ?? DUMMY_HASH);
 
         if (!user || !ok) {
-            recordAttempt(ipKey, emailKey);
             // Un solo mensaje para las dos causas. Distinguir "ese correo no
             // existe" de "esa contraseña no es" regala la mitad del trabajo a
             // quien esté probando.
@@ -172,7 +154,9 @@ router.post('/login', requireDatabase, async (req, res) => {
 
         await query('UPDATE admin_users SET last_login_at = now() WHERE id = $1', [user.id]);
 
-        clearAttempts(ipKey, emailKey);
+        // Un acceso correcto limpia el contador: quien acierta no arrastra los
+        // intentos fallidos de antes.
+        await Promise.all([reset(ipKey), reset(emailKey)]);
         res.cookie(SESSION_COOKIE, token, cookieOptions());
 
         return res.json({

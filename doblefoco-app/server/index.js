@@ -26,6 +26,7 @@ import { prepareStorage } from './bootstrap.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
 import { recordReport, REPORT_KINDS } from './db/reportStore.js';
+import { hit, sweep } from './db/rateLimitStore.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -128,11 +129,20 @@ app.use((req, res, next) => {
 });
 
 /**
- * Límite de peticiones por IP, en memoria y con ventana deslizante.
+ * Límite general de peticiones por IP. EN MEMORIA, y a propósito (F2-06).
  *
- * Sin dependencias nuevas a propósito. Cuando haya varias instancias hará
- * falta un contador compartido (Redis); mientras el despliegue sea de un solo
- * proceso, esto cumple. Tarea F2-06 del ROADMAP.
+ * Los límites que protegen algo valioso —intentos de acceso y escritura de
+ * reportes— sí se movieron a la base, porque ahí la diferencia entre memoria y
+ * base es la diferencia entre proteger y aparentar que se protege.
+ *
+ * Este no. Cubre las LECTURAS, y compartirlo significaría una escritura en la
+ * base por cada lectura: el remedio costaría más que la enfermedad, y
+ * convertiría un pico de tráfico legítimo en un pico de escrituras.
+ *
+ * Lo que sí hace, incluso por instancia, es evitar que un solo cliente sature
+ * un proceso concreto. La protección de verdad contra un ataque distribuido de
+ * lecturas no es este contador: es la capa del hosting, delante de la
+ * aplicación. Conviene no confundir una cosa con la otra.
  */
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 120;
@@ -253,29 +263,26 @@ app.get('/api/health', (req, res) => {
  */
 const REPORT_WINDOW_MS = 60_000;
 const REPORT_MAX = 10;
-const reportHits = new Map();
 
-function limitarReportes(req, res, next) {
-    const key = req.ip ?? 'desconocida';
-    const now = Date.now();
-    const recent = (reportHits.get(key) ?? []).filter((t) => t > now - REPORT_WINDOW_MS);
+async function limitarReportes(req, res, next) {
+    const { allowed, retryAfterSeconds } = await hit(
+        `report:ip:${req.ip}`,
+        REPORT_MAX,
+        REPORT_WINDOW_MS
+    );
 
-    if (recent.length >= REPORT_MAX) {
-        res.setHeader('Retry-After', '60');
+    if (!allowed) {
+        res.setHeader('Retry-After', String(retryAfterSeconds));
         return res.status(429).json({
             success: false,
             error: 'Demasiados reportes seguidos. Intenta de nuevo en un minuto.',
         });
     }
 
-    recent.push(now);
-    reportHits.set(key, recent);
-
-    if (reportHits.size > 10_000) {
-        for (const [ip, stamps] of reportHits) {
-            if (!stamps.some((t) => t > now - REPORT_WINDOW_MS)) reportHits.delete(ip);
-        }
-    }
+    // Barrido oportunista de ventanas viejas: una de cada cien escrituras.
+    // Colgarlo del propio camino de escritura evita una tarea programada, y si
+    // nadie usa el sistema tampoco hay basura de la que preocuparse.
+    if (Math.random() < 0.01) sweep();
 
     return next();
 }

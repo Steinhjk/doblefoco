@@ -253,7 +253,35 @@ CREATE TABLE IF NOT EXISTS reader_reports (
 CREATE INDEX IF NOT EXISTS reader_reports_story_idx ON reader_reports (story_id);
 CREATE INDEX IF NOT EXISTS reader_reports_kind_idx  ON reader_reports (kind, created_at DESC);
 
--- ── 8. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
+-- ── 8. Límite de peticiones compartido (F2-06) ───────────────────────────────
+-- El contador vivía en la memoria de cada proceso. Con una sola instancia
+-- funcionaba; con la API sin estado, cada invocación tendría su propio contador
+-- y el límite de ocho intentos de acceso dejaría de limitar nada.
+--
+-- SIN DATOS PERSONALES: se guarda el HASH de la clave, no la clave. Un
+-- limitador por IP normalmente almacena la IP, que es dato personal. Aquí la
+-- columna contiene sha256('login:ip:...') y no hay forma de recuperar la
+-- dirección desde la tabla. Cuenta exactamente igual.
+--
+-- VENTANA FIJA, no deslizante. Una deslizante exigiría guardar cada intento con
+-- su instante y barrerlos después; esto es una fila por ventana y clave, y se
+-- actualiza con un solo UPSERT. La contrapartida conocida es que a caballo
+-- entre dos ventanas se pueden colar hasta el doble de intentos —dieciséis en
+-- lugar de ocho—, que para frenar fuerza bruta sigue siendo irrelevante.
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+    bucket        TEXT NOT NULL,          -- sha256 de la clave, nunca la clave
+    window_start  TIMESTAMPTZ NOT NULL,
+    hits          INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (bucket, window_start)
+);
+
+CREATE INDEX IF NOT EXISTS rate_limits_window_idx ON rate_limits (window_start);
+
+-- Las ventanas viejas se barren al contar, no con una tarea programada:
+--   DELETE FROM rate_limits WHERE window_start < now() - interval '1 day';
+
+-- ── 9. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
 -- Ley 1581 de 2012: dato personal. No sale en ninguna exportación pública de
 -- contenido, y `deleted_at` permite atender una solicitud de supresión sin
 -- perder el registro de que se atendió.

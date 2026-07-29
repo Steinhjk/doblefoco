@@ -1278,7 +1278,8 @@
 
  ── 3A. Visibilidad ───────────────────────────────────────────────────────────
 
- [x] F3-01  Renderizado en servidor de /noticia/:id
+ [x] F3-01  Renderizado en servidor de /noticia/:id — VERIFICADO EN
+            PRODUCCIÓN el 2026-07-29
             ─────────────────────────────────────────────────────────────────
             EL PROBLEMA, literal y comprobable hoy:
               curl -s https://doblefococo.vercel.app | grep -A2 "<body"
@@ -1380,7 +1381,7 @@
             separar el renderizador en su propio grupo de proceso en fly.toml,
             no agrandar la máquina indefinidamente.
 
- [x] F3-02  Metadatos por ruta, Open Graph por historia y JSON-LD NewsArticle
+ [x] F3-02  Metadatos, Open Graph y JSON-LD — VERIFICADO EN PRODUCCIÓN
             ─────────────────────────────────────────────────────────────────
             DEPENDE DE F3-01 y se hace inmediatamente después, en la misma
             plantilla. Hoy todas las páginas comparten el título de index.html
@@ -1456,6 +1457,78 @@
             Fly y cachee el resultado en el borde es exactamente el mecanismo
             que necesita el renderizado en servidor. Ahora está probado con algo
             pequeño, en vez de descubrirlo con algo grande.
+
+
+ ─────────────────────────────────────────────────────────────────────────────
+ F3-01 y F3-02 — CÓMO QUEDARON, Y QUÉ COSTÓ
+ ─────────────────────────────────────────────────────────────────────────────
+ VERIFICADO contra https://doblefococo.vercel.app/noticia/story_12flvrc:
+   HTTP 200 · 53 273 bytes (antes: <div id="root"></div> y nada más)
+   1 <h1> con el titular · 1 <title> · 1 og:title · 1 canonical · 1 description
+   JSON-LD NewsArticle con 10 citas · bloque datos-iniciales legible
+   x-vercel-cache MISS y luego HIT · una noticia inexistente da 404
+   110 pruebas, typecheck y lint limpios
+
+ UN PRIMER INTENTO NO FUNCIONABA Y ESTABA MARCADO COMO HECHO. Devolvía HTTP 500
+ en toda petición: ThemeProvider llamaba a window.matchMedia durante el render,
+ y `import()` de una ruta absoluta falla en Windows sin pathToFileURL. Nunca se
+ había ejecutado la ruta —las evidencias citadas eran typecheck, test y build,
+ ninguna la toca— y vercel.json ya redirigía /noticia/* a Fly, así que
+ desplegarlo habría tumbado todas las páginas de noticia.
+ DE AHÍ LA REGLA 1 DE ESTE DOCUMENTO. No es burocracia: es la diferencia entre
+ creer que algo funciona y saberlo.
+
+ CUATRO COSAS QUE HAY QUE SABER SI SE TOCA ESTO:
+
+ 1. renderToString NO SIRVE AQUÍ. Todas las páginas usan lazy(), es decir
+    suspenden, y renderToString no espera: emite el fallback. Habría servido el
+    spinner «Cargando…» en lugar de la noticia — el rastreador recibiría un
+    indicador de carga, que es justo lo que F3-01 venía a evitar. Se usa
+    renderToPipeableStream con onAllReady.
+
+ 2. UN SOLO ÁRBOL, en src/Shell.jsx. Cliente y servidor deben pintar exactamente
+    lo mismo; lo único que cambia es el enrutador. Duplicar la estructura a mano
+    hizo que al servidor le faltaran Navbar y footer: React lo detecta al
+    hidratar, DESCARTA el HTML servido y vuelve a pintar. Se paga el coste del
+    renderizado y se pierde el beneficio, sin que nada falle visiblemente.
+
+ 3. TODO LO QUE VIENE DE LOS MEDIOS SE ESCAPA. Los titulares acaban dentro de
+    atributos HTML: una comilla doble —corriente en español, que cita mucho—
+    parte el atributo, y `"><script>` inyecta en nuestro dominio. Hay pruebas
+    para ambos casos en server/ssr/metadatos.test.js.
+
+ 4. EL REPARTO POR ESPECTRO SE LEE DE story.coverage. Recalcularlo con umbrales
+    propios crea una segunda definición del sesgo, que es lo que F1-04 existe
+    para impedir: el día que una revisión editorial mueva un medio de banda, la
+    página mostraría una cifra y su etiqueta de Open Graph, otra.
+
+ ─────────────────────────────────────────────────────────────────────────────
+ RIESGO ESTRUCTURAL ABIERTO: EL HTML Y SUS ASSETS VIENEN DE DOS COMPILACIONES
+ ─────────────────────────────────────────────────────────────────────────────
+ El HTML de /noticia lo sirve Fly; los /assets/*.js que ese HTML referencia los
+ compila y sirve VERCEL. Son dos construcciones distintas y —MEDIDO— el mismo
+ commit produce hashes distintos en cada entorno, así que no se pueden hacer
+ coincidir.
+
+ POR QUÉ MUERDE: al desplegar el cliente, Vercel cambia los hashes y NO purga
+ las respuestas que su CDN tenga cacheadas de una redirección externa
+ (comprobado). Todo lo cacheado apunta entonces a archivos que ya no existen.
+
+ MITIGADO, NO RESUELTO:
+   · la plantilla se pide al sitio en cada renderizado (TTL 60 s), no se usa la
+     de la imagen, así que lo que se genera de nuevo siempre es correcto;
+   · s-maxage de las noticias bajó a 120 s: la ventana pasa de ~30 min a ~2;
+   · /assets/ quedó fuera del comodín de vercel.json, de modo que un archivo
+     que falta devuelve 404 y no «200 OK, text/html» —que el navegador
+     intentaba ejecutar como JavaScript, sin error en ninguna parte.
+
+ LA SOLUCIÓN DE FONDO, si algún día el tráfico hace que dos minutos importen:
+ que Fly sirva SU PROPIO bundle bajo su propia base. Es decir, una compilación
+ de cliente con `base: '/ssr-cliente/'`, servida por Fly con express.static y
+ redirigida desde vercel.json. Así el HTML y sus assets salen siempre de la
+ misma construcción y la clase entera de fallo desaparece. No se hizo ahora
+ porque duplica el bundle y la ventana actual es de dos minutos en un sitio sin
+ anunciar.
 
  ── 3B. Experiencia ───────────────────────────────────────────────────────────
 

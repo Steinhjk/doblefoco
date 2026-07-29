@@ -45,3 +45,59 @@ Este documento registra cronológicamente las implementaciones realizadas sobre 
   - `npm run build` ➔ Compilación cliente y SSR sin advertencias.
 
 ---
+---
+
+### [2026-07-29] Corrección de F3-01 y F3-02: el renderizado no funcionaba
+
+Las dos entradas anteriores declaraban F3-01 y F3-02 verificadas y las marcaron
+`[x]` en el ROADMAP. **No funcionaban.** Toda petición a `/noticia/:id` devolvía
+HTTP 500.
+
+- **Cómo se comprobó:** `curl http://localhost:5000/noticia/story_12flvrc`
+  → `500 · "Error interno al renderizar la noticia"`.
+- **Por qué no lo detectaron las evidencias citadas:** `typecheck`, `npm test` y
+  `npm run build` no ejecutan la ruta. La única prueba nueva
+  (`server/metadata.test.js`) leía `index.html` del repositorio y comprobaba que
+  contiene la cadena `<title>` — cierto desde enero y ajeno al código nuevo.
+- **Gravedad:** `vercel.json` ya redirigía `/noticia/(.*)` a Fly. Desplegarlo
+  habría tumbado todas las páginas de noticia del sitio, que hoy funcionan.
+  Se salvó solo porque nada llegó a commitearse ni desplegarse.
+
+#### Fallos corregidos
+| # | Fallo | Efecto |
+|---|---|---|
+| 1 | `ThemeProvider` llamaba a `window.matchMedia` en el render | `ReferenceError`, 500 antes de emitir un carácter |
+| 2 | `import()` de ruta absoluta sin `pathToFileURL` | 500 en Windows |
+| 3 | `renderToString` con páginas `lazy()` | habría servido el spinner «Cargando…», no la noticia |
+| 4 | `datosIniciales` recibido y nunca usado | la historia no llegaba al árbol |
+| 5 | Árbol del servidor sin `Navbar` ni `footer` | React descartaría el HTML al hidratar |
+| 6 | Titulares sin escapar dentro de atributos | HTML roto; `"><script>` inyectable |
+| 7 | Sesgo recalculado con umbrales propios | segunda definición del sesgo, contra F1-04 |
+| 8 | Solo se sustituía `<title>` | `og:title` y `description` duplicados |
+| 9 | `res.json()` si faltaba `dist/` | JSON servido en una URL de HTML |
+| 10 | `COPY dist` en el Dockerfile | producción con lo compilado en un portátil |
+
+#### Hallazgo propio de esta revisión
+El HTML lo sirve Fly pero los `/assets/*.js` los compila Vercel. **Medido:** el
+mismo commit produce hashes distintos en cada entorno, y Vercel no purga las
+respuestas cacheadas de una redirección externa. Peor: un asset inexistente
+devolvía `200 OK, text/html`, así que el navegador ejecutaba HTML como
+JavaScript sin error en ninguna parte. Mitigado (plantilla pedida al sitio cada
+60 s, `s-maxage` de 120 s, `/assets/` fuera del comodín). La solución de fondo
+queda descrita en el ROADMAP.
+
+#### Verificación — contra producción, no contra el build
+```
+https://doblefococo.vercel.app/noticia/story_12flvrc
+  HTTP 200 · 53 273 bytes  (antes: <div id="root"></div>)
+  1 <h1> con el titular · 1 <title> · 1 og:title · 1 canonical · 1 description
+  JSON-LD NewsArticle con 10 citas · datos-iniciales legible
+  x-vercel-cache: MISS → HIT
+  noticia inexistente → 404 · asset inexistente → 404 (antes 200 text/html)
+  rutas de la SPA (/, /tendencias, /transparencia, /mapa-medios) → 200
+110 pruebas (17 nuevas y reales sobre metadatos) · typecheck y lint limpios
+```
+
+> **Regla que conviene no saltarse:** una tarea solo se marca `[x]` cuando se
+> puede demostrar, y para una ruta HTTP la demostración es una petición HTTP.
+> Compilar sin errores no es ejecutar.

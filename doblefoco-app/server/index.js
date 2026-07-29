@@ -72,9 +72,41 @@ app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS) || 1);
 
 app.use(express.json({ limit: '32kb' }));
 
+/**
+ * Cabeceras de seguridad de la API.
+ *
+ * El sitio estático ya las lleva en vercel.json y public/_headers, pero la API
+ * es un origen distinto y sirve las suyas: una cabecera puesta en el frontend
+ * no protege las respuestas del backend.
+ */
 app.use((req, res, next) => {
+    // No adivinar el tipo de contenido: evita que una respuesta JSON acabe
+    // interpretada como HTML o script.
     res.setHeader('X-Content-Type-Options', 'nosniff');
+
+    // Ninguna URL nuestra viaja como referente a terceros. Importa más de lo
+    // que parece: /noticia/:id revela qué está leyendo alguien.
     res.setHeader('Referrer-Policy', 'no-referrer');
+
+    // La API no se pinta en ninguna página: nada debe poder incrustarla.
+    res.setHeader('X-Frame-Options', 'DENY');
+
+    // Sin funciones del navegador. La API no las usa y así una respuesta
+    // manipulada tampoco podría pedirlas.
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
+    /**
+     * HSTS: obliga al navegador a usar HTTPS en las siguientes visitas.
+     *
+     * Solo se envía cuando la petición YA llegó por HTTPS. Mandarlo por HTTP
+     * simple no sirve de nada y, si algún día se sirviera en local por http,
+     * dejaría el navegador del desarrollador con la regla puesta durante un
+     * año para todo localhost.
+     */
+    if (req.secure || req.get('x-forwarded-proto') === 'https') {
+        res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
+
     next();
 });
 
@@ -170,6 +202,49 @@ app.get('/api/health', (req, res) => {
 });
 
 /**
+ * Límite específico del único endpoint público que ESCRIBE en la base.
+ *
+ * El límite general (120/min) sirve para lecturas, pero aplicado a escrituras
+ * permite 172 800 filas diarias desde una sola IP. Con eso se inunda la cola de
+ * revisión del panel y, peor, se vuelve inútil la detección de ráfagas de
+ * F2-07: si todo parece una ráfaga, la señal deja de distinguir nada.
+ *
+ * Diez por minuto es holgado para una persona —un lector reporta una o dos
+ * historias por sesión, no diez— y hace que inundar la tabla deje de ser
+ * gratis. No pretende frenar a una botnet: para eso hace falta un contador
+ * compartido (F2-06), y aquí lo que se protege es una señal editorial, no un
+ * dato crítico.
+ */
+const REPORT_WINDOW_MS = 60_000;
+const REPORT_MAX = 10;
+const reportHits = new Map();
+
+function limitarReportes(req, res, next) {
+    const key = req.ip ?? 'desconocida';
+    const now = Date.now();
+    const recent = (reportHits.get(key) ?? []).filter((t) => t > now - REPORT_WINDOW_MS);
+
+    if (recent.length >= REPORT_MAX) {
+        res.setHeader('Retry-After', '60');
+        return res.status(429).json({
+            success: false,
+            error: 'Demasiados reportes seguidos. Intenta de nuevo en un minuto.',
+        });
+    }
+
+    recent.push(now);
+    reportHits.set(key, recent);
+
+    if (reportHits.size > 10_000) {
+        for (const [ip, stamps] of reportHits) {
+            if (!stamps.some((t) => t > now - REPORT_WINDOW_MS)) reportHits.delete(ip);
+        }
+    }
+
+    return next();
+}
+
+/**
  * Reporte del lector sobre una historia (F2-07).
  *
  * PÚBLICO y sin sesión a propósito: pedir cuenta para señalar un defecto
@@ -186,7 +261,7 @@ app.get('/api/health', (req, res) => {
  * veredicto: el coste de un reporte de más es mirar una historia que estaba
  * bien.
  */
-app.post('/api/report/:storyId', async (req, res) => {
+app.post('/api/report/:storyId', limitarReportes, async (req, res) => {
     const { storyId } = req.params;
     const kind = req.body?.kind;
 

@@ -1305,6 +1305,78 @@
    pública distingue una cosa de la otra.
 
 ===============================================================================
+ AUDITORÍA DE SEGURIDAD — 2026-07-28, antes del primer despliegue
+===============================================================================
+ Hecha a petición de Jose antes de publicar, aunque sea sin anunciar. "No
+ compartir la URL" NO es una protección: un dominio nuevo aparece en los
+ registros públicos de Certificate Transparency a los pocos minutos y los
+ escáneres automáticos lo encuentran solos.
+
+ LO QUE YA ESTABA BIEN, comprobado uno por uno:
+   · Ninguna consulta concatena texto en SQL; todas usan parámetros.
+   · Ningún secreto en el bundle publicado. La única variable VITE_ que queda
+     incrustada es VITE_API_URL, que es pública por diseño.
+   · Ningún archivo de credenciales versionado.
+   · Contraseñas con scrypt; sesiones revocables con el testigo guardado en
+     hash; sin enumeración de cuentas; ocho intentos de acceso por IP y correo.
+   · TLS con fijación al certificado raíz de Supabase.
+   · CORS con lista blanca y cookie SameSite=Lax: una página de terceros no
+     puede lanzar peticiones autenticadas contra la API.
+
+ LO QUE SE CORRIGIÓ:
+
+   1. LA COOKIE DE SESIÓN PODÍA VIAJAR EN CLARO. Era
+      `secure: process.env.NODE_ENV === 'production'`. Si al desplegar no se
+      define NODE_ENV —olvido de lo más común, y ningún hosting avisa— la
+      sesión de moderación viaja sin cifrar y nada lo delata. Ahora es
+      `secure: true` incondicional: los navegadores tratan localhost como
+      contexto seguro, así que el desarrollo local sigue funcionando, y servir
+      por HTTP simple desde una IP de red local falla RUIDOSAMENTE en vez de
+      funcionar mandando la sesión en texto plano.
+      VERIFICADO: la cabecera Set-Cookie llega con `HttpOnly; Secure;
+      SameSite=Lax`.
+
+   2. LA API NO ENVIABA CABECERAS DE SEGURIDAD PROPIAS. Las de vercel.json
+      protegen el sitio estático, pero la API es otro origen y sirve las suyas.
+      Añadidas X-Frame-Options, Permissions-Policy y HSTS.
+      HSTS solo se envía cuando la petición YA llegó por HTTPS: mandarlo por
+      HTTP no sirve de nada y dejaría el navegador de quien desarrolla con la
+      regla puesta un año para todo localhost.
+      VERIFICADO contra el servidor: cuatro cabeceras presentes, HSTS
+      correctamente ausente sobre HTTP.
+
+   3. EL ÚNICO ENDPOINT PÚBLICO QUE ESCRIBE heredaba el límite general de
+      120/min, o sea 172 800 filas diarias desde una IP. Con eso se inunda la
+      cola de revisión y se vuelve inútil la detección de ráfagas de F2-07: si
+      todo parece una ráfaga, la señal deja de distinguir nada. Bajado a 10/min.
+      VERIFICADO: diez pasan, el undécimo devuelve 429.
+
+ LO QUE SE DECIDIÓ NO ARREGLAR, con su razón:
+
+   react-router-dom 7.18.2 arrastra dos avisos altos, y no hay versión que los
+   corrija: el paquete se quedó en la 7.x y la 8 vive solo en `react-router`.
+   Ninguno de los dos nos afecta hoy:
+     · el bypass de CSRF exige modo RSC, que no usamos;
+     · la denegación de servicio por coincidencia de rutas ocurre en el
+       navegador del propio visitante, porque el enrutado es de cliente. No hay
+       servidor nuestro haciendo route matching.
+   Migrar exigiría cambiar las importaciones de siete archivos a una versión
+   MAYOR sin poder verificar el enrutado en un navegador. Ese riesgo hoy supera
+   al del aviso.
+   CADUCA CON F3-01: en cuanto haya renderizado en servidor, la coincidencia de
+   rutas pasa a ejecutarse en nuestra máquina y el aviso deja de ser teórico.
+   Revisar antes de tocar el SEO.
+
+ LO QUE NO SE PUDO VERIFICAR: que el navegador acepte la cookie `Secure` sobre
+ http://localhost. Es comportamiento establecido en Chrome, Firefox y Safari,
+ pero `curl` no aplica esa regla y no hubo navegador en la sesión. Si al entrar
+ al panel en local no se mantiene la sesión, la causa es esa.
+
+ PENDIENTES QUE SIGUEN ABIERTOS: rotar la contraseña de la base (decidido para
+ el momento de publicar) y F2-06, el límite compartido, que solo importa cuando
+ haya más de una instancia.
+
+===============================================================================
  RIESGOS ABIERTOS
 ===============================================================================
 

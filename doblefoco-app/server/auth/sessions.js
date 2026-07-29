@@ -39,12 +39,30 @@ function hashToken(token) {
     return createHash('sha256').update(token).digest('hex');
 }
 
-/** Opciones de la cookie. */
+/**
+ * Opciones de la cookie.
+ *
+ * `secure: true` SIEMPRE, sin condicionarlo al entorno.
+ *
+ * La versión anterior era `secure: process.env.NODE_ENV === 'production'`, y
+ * eso es un pie de banco de despliegue: si en producción no se define
+ * NODE_ENV —olvido de lo más común, y ningún despliegue avisa— la cookie de
+ * sesión viaja en claro y nadie se entera. El fallo es silencioso y del lado
+ * peligroso.
+ *
+ * No hace falta la condición: los navegadores tratan `http://localhost` como
+ * contexto seguro y aceptan cookies `Secure` sobre él, así que el desarrollo
+ * local funciona igual.
+ *
+ * Lo que sí deja de funcionar es servir el sitio por HTTP simple desde una IP
+ * de red local. Es deliberado y falla RUIDOSAMENTE —no se puede iniciar
+ * sesión— en vez de funcionar mandando la sesión en texto plano.
+ */
 export function cookieOptions() {
     return {
         httpOnly: true,          // el JavaScript de la página no puede leerla
-        sameSite: 'lax',         // no se envía en peticiones cruzadas de terceros
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',         // no viaja en peticiones cruzadas de terceros
+        secure: true,            // solo por HTTPS (localhost cuenta como seguro)
         maxAge: SESSION_TTL_MS,
         path: '/',
     };

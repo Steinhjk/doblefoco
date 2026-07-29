@@ -417,6 +417,47 @@ export async function countStored() {
     return { articles, stories, runs };
 }
 
+/**
+ * El último ciclo registrado, leído de la base. `null` si no hay ninguno.
+ *
+ * /api/health dejó de poder usar el estado en memoria cuando el motor pasó a
+ * ser un proceso aparte (F2-12). La API no ingiere nunca, así que su
+ * `lastRunAt` es null para siempre y health respondía 503 de forma PERMANENTE
+ * en producción, con el motor ingiriendo cada 30 minutos sin fallo alguno.
+ *
+ * Una alarma que nunca se apaga es peor que no tener alarma: el panel mostraba
+ * "degradado" de continuo, y a las pocas semanas nadie mira un indicador que
+ * siempre está en rojo. Justo cuando la ingesta se pare de verdad, no lo dirá
+ * nadie.
+ *
+ * `at` tiene índice único —lo impone el ON CONFLICT de recordRun— así que este
+ * ORDER BY ... LIMIT 1 lo resuelve el índice sin recorrer la tabla.
+ */
+export async function lastRunFromDb() {
+    const result = await safeQuery(
+        `
+        SELECT at, duration_ms, feeds_ok, feeds_failed, new_articles, total_stories
+          FROM ingest_runs
+         ORDER BY at DESC
+         LIMIT 1
+        `,
+        [],
+        'último ciclo'
+    );
+
+    if (!result?.rows?.length) return null;
+
+    const fila = result.rows[0];
+    return {
+        at: fila.at instanceof Date ? fila.at.toISOString() : fila.at,
+        durationMs: fila.duration_ms,
+        feedsOk: fila.feeds_ok,
+        feedsFailed: fila.feeds_failed,
+        newArticles: fila.new_articles,
+        totalStories: fila.total_stories,
+    };
+}
+
 /** Registra un ciclo en `ingest_runs`. Espejo de la línea del JSONL. */
 export async function recordRun(row) {
     return safeQuery(

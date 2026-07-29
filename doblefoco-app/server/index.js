@@ -21,7 +21,7 @@ import { getDatabaseStats } from './services/ingestDaemon.js';
 import { countFeed, readFeed, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
-import { dailySummaryFromDb } from './db/contentStore.js';
+import { dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
@@ -218,20 +218,46 @@ app.get('/api/live', (req, res) => {
     res.json({ status: 'vivo', timestamp: new Date().toISOString() });
 });
 
-/** Estado real del servicio: qué se ingirió, cuándo y qué feeds fallaron. */
-app.get('/api/health', (req, res) => {
+/**
+ * Estado real del servicio: qué se ingirió, cuándo y qué feeds fallaron.
+ *
+ * El «cuándo» se lee de la BASE, no de la memoria de este proceso, y esa
+ * distinción es la diferencia entre una alarma útil y una inútil. Desde F2-12
+ * el motor es un proceso aparte: esta API no ingiere jamás, así que su
+ * `lastRunAt` en memoria es null para siempre. Medido en producción — health
+ * respondía 503 con el motor trabajando cada 30 minutos sin un solo fallo.
+ *
+ * Una alarma permanentemente encendida no avisa de nada; solo enseña a
+ * ignorarla, y entonces el día que la ingesta se pare de verdad no lo dirá
+ * nadie. Por eso se pregunta a `ingest_runs`, que es donde el motor deja
+ * constancia, y solo se cae al estado en memoria si no hay base —el caso de
+ * quien arranca en local sin Postgres.
+ */
+app.get('/api/health', async (req, res) => {
     const stats = getDatabaseStats();
+
+    // Nunca lanza: un fallo al leer la base es en sí mismo señal de degradado,
+    // y health tiene que poder responder precisamente cuando algo va mal.
+    const ultimoCiclo = isDatabaseEnabled()
+        ? await lastRunFromDb().catch(() => null)
+        : null;
+
+    const lastRunAt = ultimoCiclo?.at ?? stats.lastRunAt;
     const staleAfterMs = INGEST_INTERVAL_MS * 3;
-    const lastRunMs = stats.lastRunAt ? Date.parse(stats.lastRunAt) : null;
+    const lastRunMs = lastRunAt ? Date.parse(lastRunAt) : null;
     const isStale = !lastRunMs || Date.now() - lastRunMs > staleAfterMs;
 
     res.status(isStale ? 503 : 200).json({
         status: isStale ? 'degradado' : 'ok',
         service: 'DobleFoco API',
         ingestion: {
-            lastRunAt: stats.lastRunAt,
+            lastRunAt,
+            // De dónde sale la fecha. En producción siempre 'base': si aquí
+            // aparece 'memoria' con la base configurada, la consulta falló.
+            lastRunSource: ultimoCiclo ? 'base' : 'memoria',
             inProgress: stats.ingestionInProgress,
             intervalMs: INGEST_INTERVAL_MS,
+            feedsOk: ultimoCiclo?.feedsOk ?? null,
             failedFeeds: stats.lastRunReport?.feedsFailed ?? [],
         },
         database: {

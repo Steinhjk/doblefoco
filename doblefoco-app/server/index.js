@@ -17,13 +17,8 @@
 
 import express from 'express';
 import cors from 'cors';
-import {
-    runIngestionBatch,
-    getLatestFeed,
-    getStoryById,
-    getDatabaseStats,
-    getRejectedCount,
-} from './services/ingestDaemon.js';
+import { runIngestionBatch, getDatabaseStats } from './services/ingestDaemon.js';
+import { countFeed, readFeed, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
 import { dailySummaryFromDb } from './db/contentStore.js';
@@ -234,10 +229,9 @@ app.get('/api/health', (req, res) => {
             // Qué respalda esos números. `false` significa que un reinicio los
             // pone a cero: es información operativa, no un detalle interno.
             persistent: isDatabaseEnabled(),
-            // Historias retiradas por moderación y por tanto ausentes del feed.
-            // Se publica en vez de esconderse: es una intervención editorial y
-            // el sitio promete decir cuándo interviene.
-            withheld: getRejectedCount(),
+            // El feed se sirve desde la base y filtra las retiradas en la
+            // propia consulta, así que ya no hay un contador en memoria que
+            // publicar aquí. La cifra vive en el panel, junto a las decisiones.
         },
         timestamp: new Date().toISOString(),
     });
@@ -328,30 +322,42 @@ app.post('/api/report/:storyId', limitarReportes, async (req, res) => {
     }
 });
 
-/** Feed paginado. */
-app.get('/api/feed', (req, res) => {
+/**
+ * Feed paginado, leído de la base.
+ *
+ * Antes se servía desde un array en memoria que el proceso reconstruía al
+ * arrancar, rehidratando ~1 800 artículos y reagrupándolos. Además de obligar a
+ * un proceso persistente, eso tenía un efecto que nadie había medido: el
+ * agrupamiento es codicioso y depende del orden, así que REAGRUPAR AL ARRANCAR
+ * daba resultados distintos a los que el ciclo de ingesta había calculado y
+ * guardado. El feed cambiaba sin que se hubiera ingerido nada — bastaba con
+ * reiniciar.
+ *
+ * Medido sobre 196 historias comparables: 191 idénticas y 5 con reparto
+ * distinto de medios, en ambas direcciones. Servir desde la base devuelve
+ * exactamente lo que el ciclo calculó, siempre igual.
+ */
+app.get('/api/feed', async (req, res) => {
     try {
-        const all = getLatestFeed();
         const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
         const offset = Math.max(Number(req.query.offset) || 0, 0);
 
-        res.json({
-            success: true,
-            total: all.length,
-            limit,
-            offset,
-            stories: all.slice(offset, offset + limit),
-        });
+        const [stories, total] = await Promise.all([readFeed({ limit, offset }), countFeed()]);
+
+        res.json({ success: true, total, limit, offset, stories });
     } catch (error) {
         console.error('[api] fallo en /api/feed', error);
         res.status(500).json({ success: false, error: 'Error interno' });
     }
 });
 
-app.get('/api/story/:id', (req, res) => {
+app.get('/api/story/:id', async (req, res) => {
     try {
-        const story = getStoryById(req.params.id);
+        const story = await readStory(req.params.id);
         if (!story) {
+            // También 404 si está retirada por moderación: el filtro va en la
+            // consulta, así que una historia rechazada simplemente no existe
+            // para el público.
             return res.status(404).json({ success: false, error: 'Noticia no encontrada' });
         }
         return res.json({ success: true, story });
@@ -441,15 +447,18 @@ app.listen(PORT, async () => {
     console.log(`[servidor] escuchando en http://localhost:${PORT}`);
     console.log(`[servidor] orígenes permitidos: ${ALLOWED_ORIGINS.join(', ')}`);
 
-    const storage = await prepareStorage((message) => console.log(`[servidor] ${message}`));
+    // Solo se rehidrata si este proceso va a ingerir. Para servir el feed no
+    // hace falta nada en memoria.
+    const storage = await prepareStorage(
+        (message) => console.log(`[servidor] ${message}`),
+        { hydrateWorkingSet: INGEST_IN_PROCESS }
+    );
 
     if (!storage.persistent) {
         console.warn(
             `[servidor] sin persistencia (${storage.reason}). Los artículos viven en memoria ` +
             'y un reinicio los borra. Configura DATABASE_URL y corre `npm run db:migrate`.'
         );
-    } else if (storage.recovered) {
-        console.log('[servidor] el feed ya sirve contenido');
     }
 
     if (!INGEST_IN_PROCESS) {

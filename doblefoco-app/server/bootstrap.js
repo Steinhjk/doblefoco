@@ -38,9 +38,14 @@ import { hydrate } from './services/ingestDaemon.js';
  * el servidor sigue adelante en memoria, el cron falla la ejecución.
  *
  * @param {(message: string) => void} log
+ * @param {{hydrateWorkingSet?: boolean}} [options] Rehidratar el conjunto de
+ *   trabajo en memoria. Solo hace falta para AGRUPAR, es decir para ingerir.
+ *   El servidor que únicamente sirve el feed lo lee de la base y no necesita
+ *   nada en memoria: pedirlo le costaría 2-3 segundos de arranque y unos
+ *   cientos de megas para no usarlos.
  * @returns {Promise<{persistent: boolean, reason?: string, recovered: number}>}
  */
-export async function prepareStorage(log = console.log) {
+export async function prepareStorage(log = console.log, { hydrateWorkingSet = true } = {}) {
     const status = await checkConnection();
 
     if (!status.enabled) {
@@ -61,6 +66,11 @@ export async function prepareStorage(log = console.log) {
             reason: `no se pudo proyectar el catálogo: ${error.message}. ¿Corriste \`npm run db:migrate\`?`,
             recovered: 0,
         };
+    }
+
+    if (!hydrateWorkingSet) {
+        log('sin rehidratar: el feed se lee de la base, no de memoria');
+        return { persistent: true, recovered: 0 };
     }
 
     const recovered = await hydrate();

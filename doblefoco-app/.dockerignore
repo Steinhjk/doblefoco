@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.env
+.env.local
+*.local
+data
+src
+public
+index.html
+vite.config.js
+eslint.config.js
+tsconfig.json
+types
+**/*.test.js

@@ -36,6 +36,28 @@ const app = express();
 const PORT = Number(process.env.PORT) || 5000;
 const INGEST_INTERVAL_MS = Number(process.env.INGEST_INTERVAL_MS) || 10 * 60 * 1000;
 
+/**
+ * ¿Debe este proceso ingerir por su cuenta?
+ *
+ * POR DEFECTO NO, y la elección del valor por omisión es lo importante.
+ *
+ * Desde F1-01 la ingesta la ejecuta GitHub Actions cada 30 minutos. Si además
+ * la hiciera el servidor desplegado —al arrancar y cada 10 minutos— estaríamos
+ * pidiendo los feeds de 34 medios desde dos sitios a la vez. No es solo
+ * derroche: este proyecto se presenta ante esos medios con un User-Agent
+ * propio y una URL de transparencia, y duplicarles el tráfico contradice esa
+ * postura. Uno ya nos responde 403.
+ *
+ * Por eso el valor por omisión es `false` en vez de `true`. Olvidarse de
+ * ponerlo produce que NO se ingiera, y eso se ve enseguida: el feed se queda
+ * viejo y /api/health responde "degradado". Al revés, olvidarse de apagarlo
+ * produciría el doble de peticiones a terceros sin que nada avisara.
+ * Entre dos olvidos posibles, se elige el que no daña a nadie más.
+ *
+ * En local se activa con INGEST_IN_PROCESS=true.
+ */
+const INGEST_IN_PROCESS = process.env.INGEST_IN_PROCESS === 'true';
+
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173')
     .split(',')
     .map((o) => o.trim())
@@ -169,6 +191,26 @@ app.use('/api/auth', authRoutes);
  * las tomó.
  */
 app.use('/api/moderation', moderationRoutes);
+
+/**
+ * Señal de vida. Responde 200 mientras el proceso pueda atender peticiones.
+ *
+ * Existe separada de /api/health por un motivo operativo concreto: health
+ * devuelve 503 cuando la ingesta está OBSOLETA, que es información valiosa para
+ * una persona pero venenosa como comprobación de salud del hosting.
+ *
+ * Con la ingesta en proceso desactivada —lo normal en producción, porque la
+ * ejecuta GitHub Actions— `lastRunAt` es null al arrancar y health responde
+ * 503. Un orquestador que use health para decidir si la máquina está viva la
+ * mataría y la reiniciaría, y la nueva volvería a responder 503: bucle de
+ * reinicios permanente con un servicio que en realidad funciona.
+ *
+ * Aquí se responde solo a "¿puedes servir?". Si los datos están frescos o no es
+ * otra pregunta, y la responde /api/health.
+ */
+app.get('/api/live', (req, res) => {
+    res.json({ status: 'vivo', timestamp: new Date().toISOString() });
+});
 
 /** Estado real del servicio: qué se ingirió, cuándo y qué feeds fallaron. */
 app.get('/api/health', (req, res) => {
@@ -408,6 +450,14 @@ app.listen(PORT, async () => {
         );
     } else if (storage.recovered) {
         console.log('[servidor] el feed ya sirve contenido');
+    }
+
+    if (!INGEST_IN_PROCESS) {
+        console.log(
+            '[servidor] ingesta en proceso DESACTIVADA. La ejecuta GitHub Actions cada 30 min. ' +
+            'Para ingerir desde aquí: INGEST_IN_PROCESS=true'
+        );
+        return;
     }
 
     runIngestionBatch().catch((error) =>

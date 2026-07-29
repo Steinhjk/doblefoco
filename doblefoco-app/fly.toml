@@ -1,0 +1,55 @@
+# Despliegue de la API de DobleFoco en Fly.io.
+#
+# POR QUÉ FLY Y POR QUÉ ESTA REGIÓN
+# ---------------------------------
+# La API necesita un PROCESO PERSISTENTE, no funciones serverless: mantiene en
+# memoria las historias ya agrupadas y rehidratarlas cuesta 2-3 segundos.
+# Aceptable una vez al arrancar; inaceptable en cada petición.
+#
+# `gru` es São Paulo, la misma región donde vive la base (Supabase sa-east-1).
+# Cada consulta se ahorra el viaje a Norteamérica y vuelta, y el arranque hace
+# muchas: rehidrata ~1 800 artículos.
+
+app = 'doblefoco-api'
+primary_region = 'gru'
+
+[build]
+
+[env]
+  PORT = '5000'
+  # La ingesta la ejecuta GitHub Actions cada 30 min. Activarla aquí también
+  # duplicaría las peticiones a los 34 medios.
+  INGEST_IN_PROCESS = 'false'
+  TRUST_PROXY_HOPS = '1'
+
+[http_service]
+  internal_port = 5000
+  force_https = true
+
+  # SIEMPRE ENCENDIDA. Con auto_stop, cada visita tras un rato de inactividad
+  # pagaría el arranque completo: conectar, proyectar el catálogo y rehidratar
+  # y reagrupar 1 800 artículos. Son segundos en los que el sitio no responde.
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    # /api/live, NO /api/health.
+    #
+    # health devuelve 503 cuando la ingesta está obsoleta, que es información
+    # útil para una persona y veneno como comprobación de salud: con la ingesta
+    # en proceso desactivada, `lastRunAt` es null al arrancar, health responde
+    # 503, Fly mata la máquina, la nueva vuelve a responder 503. Bucle de
+    # reinicios permanente sobre un servicio que funciona.
+    path = '/api/live'
+    method = 'GET'
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '20s'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  # 512 MB y no 256: el agrupamiento construye un conjunto de tokens por
+  # artículo y el corpus ronda los 1 800. Quedarse corto de memoria mataría el
+  # proceso justo durante el arranque, que es cuando más consume.
+  memory = '512mb'

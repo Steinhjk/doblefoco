@@ -4,8 +4,13 @@
     "distinto según se desplegara en Vercel o en Netlify.",
     "Se eliminó 'unsafe-eval' de script-src: un build de producción de Vite no lo",
     "necesita y su presencia anulaba buena parte del valor de la política.",
-    "connect-src lista los orígenes de API permitidos: ajusta el dominio real",
-    "del backend antes de desplegar."
+    "connect-src lista los DOS orígenes de la API a propósito: doblefoco.fly.dev",
+    "es el que Fly asigna y funciona desde el primer despliegue; api.doblefoco.co",
+    "es el dominio propio, para cuando se apunte el DNS. Teniendo los dos, migrar",
+    "al dominio propio no exige tocar la CSP ni volver a desplegar el sitio.",
+    "Ambos son nuestros: permitirlos no amplía la superficie a terceros.",
+    "Faltaba fly.dev y ese solo error habría bloqueado TODA llamada a la API, sin",
+    "error de red visible: solo un feed vacío y un aviso en la consola."
   ],
   "headers": [
     {
@@ -13,7 +18,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://api.doblefoco.co; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://doblefoco.fly.dev https://api.doblefoco.co; upgrade-insecure-requests"
         },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },

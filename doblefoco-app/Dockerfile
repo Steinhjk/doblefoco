@@ -21,10 +21,6 @@ WORKDIR /app
 # Node emite avisos y elige rutas de código según esto.
 ENV NODE_ENV=production
 
-# La ingesta la ejecuta GitHub Actions cada 30 minutos. Hacerla también aquí
-# duplicaría las peticiones a los 34 medios (ver server/index.js).
-ENV INGEST_IN_PROCESS=false
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY server ./server
@@ -42,6 +38,11 @@ USER node
 
 EXPOSE 5000
 
-# Sin capa de npm por medio: así las señales de parada llegan a Node y el
-# proceso puede cerrar el pool de conexiones antes de morir.
+# Orden por defecto: la API. El motor se lanza con su propia orden desde el
+# grupo de procesos de fly.toml, sobre esta misma imagen.
+#
+# Sin capa de npm por medio: así las señales de parada llegan directas a Node y
+# el proceso puede cerrar el pool de conexiones antes de morir. Con `npm start`,
+# npm se come la señal y Fly acaba matando el proceso a los pocos segundos,
+# dejando transacciones abiertas con bloqueos sobre `stories`.
 CMD ["node", "server/index.js"]

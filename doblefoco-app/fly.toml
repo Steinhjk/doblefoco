@@ -1,34 +1,54 @@
-# Despliegue de la API de DobleFoco en Fly.io.
+# Despliegue de DobleFoco en Fly.io: API y motor de ingesta.
 #
-# POR QUÉ FLY Y POR QUÉ ESTA REGIÓN
-# ---------------------------------
-# La API necesita un PROCESO PERSISTENTE, no funciones serverless: mantiene en
-# memoria las historias ya agrupadas y rehidratarlas cuesta 2-3 segundos.
-# Aceptable una vez al arrancar; inaceptable en cada petición.
+# UNA APLICACIÓN, DOS GRUPOS DE PROCESO
+# -------------------------------------
+# `api` y `worker` corren en máquinas separadas pero bajo la misma aplicación.
+# Así comparten los secretos —DATABASE_URL se configura una vez— y se despliegan
+# juntas, sin dos configuraciones que puedan divergir.
 #
-# `gru` es São Paulo, la misma región donde vive la base (Supabase sa-east-1).
-# Cada consulta se ahorra el viaje a Norteamérica y vuelta, y el arranque hace
-# muchas: rehidrata ~1 800 artículos.
+# Separadas y no en la misma máquina, porque hacen trabajos opuestos:
+#   · el motor carga ~2 400 artículos en memoria para agrupar y trabaja en
+#     tandas de minutos;
+#   · la API no guarda nada y debe responder siempre.
+# Juntarlas haría que un fallo del motor tumbara el sitio, y que reiniciar el
+# motor cortara las visitas.
+#
+# POR QUÉ `gru` (SÃO PAULO)
+# -------------------------
+# Está medido: la latencia de esta API la dominan los viajes a la base, no el
+# cómputo. Una página del feed son 674 ms desde Colombia, de los cuales 280 ms
+# son las dos idas y vueltas a Supabase. Con la API al lado de la base —ambas en
+# sa-east-1— esas consultas bajan a milisegundos.
+# Por eso la API NO va en una función sin servidor de la región por defecto de
+# Vercel (costa este de EE. UU.): pagaría ~240 ms en cada petición, para
+# siempre, a cambio de ahorrarse una configuración de CORS que ya está escrita y
+# probada. Un coste permanente de ejecución no se cambia por comodidad.
 
-app = 'doblefoco-api'
+app = 'doblefoco'
 primary_region = 'gru'
 
 [build]
 
+[processes]
+  api = 'node server/index.js'
+  worker = 'node scripts/ingestWorker.mjs'
+
 [env]
   PORT = '5000'
-  # La ingesta la ejecuta GitHub Actions cada 30 min. Activarla aquí también
-  # duplicaría las peticiones a los 34 medios.
-  INGEST_IN_PROCESS = 'false'
   TRUST_PROXY_HOPS = '1'
+  # Cada 30 min. Cada feed solo expone sus últimos 15 titulares y un medio
+  # activo puede publicar más de 15 en una hora: los que se pierdan no vuelven,
+  # y perder artículos sesga la medición de F1-01.
+  INGEST_INTERVAL_MS = '1800000'
 
 [http_service]
   internal_port = 5000
   force_https = true
+  # Solo la API recibe tráfico. El motor no escucha en ningún puerto: para
+  # pedirle un ciclo, el panel deja una fila en `ingest_requests` y él la mira.
+  # Así no tiene superficie de ataque ninguna.
+  processes = ['api']
 
-  # SIEMPRE ENCENDIDA. Con auto_stop, cada visita tras un rato de inactividad
-  # pagaría el arranque completo: conectar, proyectar el catálogo y rehidratar
-  # y reagrupar 1 800 artículos. Son segundos en los que el sitio no responde.
   auto_stop_machines = false
   auto_start_machines = true
   min_machines_running = 1
@@ -36,20 +56,27 @@ primary_region = 'gru'
   [[http_service.checks]]
     # /api/live, NO /api/health.
     #
-    # health devuelve 503 cuando la ingesta está obsoleta, que es información
-    # útil para una persona y veneno como comprobación de salud: con la ingesta
-    # en proceso desactivada, `lastRunAt` es null al arrancar, health responde
-    # 503, Fly mata la máquina, la nueva vuelve a responder 503. Bucle de
-    # reinicios permanente sobre un servicio que funciona.
+    # health responde 503 cuando la ingesta está obsoleta: información útil para
+    # una persona y veneno como sonda de salud. Al arrancar, `lastRunAt` es null
+    # y health daría 503; Fly mataría la máquina y la nueva volvería a dar 503.
+    # Bucle de reinicios permanente sobre un servicio que funciona.
     path = '/api/live'
     method = 'GET'
     interval = '30s'
     timeout = '5s'
-    grace_period = '20s'
+    grace_period = '15s'
 
+# La API no guarda nada en memoria desde que el feed se lee de la base: arranca
+# en 1,65 s y se queda en 74 MB. 256 MB le sobran.
 [[vm]]
+  processes = ['api']
   size = 'shared-cpu-1x'
-  # 512 MB y no 256: el agrupamiento construye un conjunto de tokens por
-  # artículo y el corpus ronda los 1 800. Quedarse corto de memoria mataría el
-  # proceso justo durante el arranque, que es cuando más consume.
+  memory = '256mb'
+
+# El motor sí carga el corpus completo para agrupar: ~2 400 artículos con su
+# conjunto de tokens cada uno. Quedarse corto lo mataría justo durante el ciclo,
+# que es cuando más consume.
+[[vm]]
+  processes = ['worker']
+  size = 'shared-cpu-1x'
   memory = '512mb'

@@ -1523,8 +1523,71 @@
      documentada.
 
  PILA COMPLETA, sin nada de Google salvo lo anterior:
-   Supabase (Postgres, sa-east-1) · Vercel (sitio + API) · Fly.io (motor de
-   ingesta) · GitHub (código, CI y respaldo de ingesta).
+   Supabase (Postgres, sa-east-1) · Vercel (sitio estático) · Fly.io, región
+   `gru` (API + motor) · GitHub (código, CI y respaldo de ingesta).
+
+===============================================================================
+ DESPLIEGUE — configuración escrita el 2026-07-29, sin ejecutar todavía
+===============================================================================
+
+ CUATRO PIEZAS, y cada una donde está por una razón medida:
+
+   Sitio estático  Vercel        red de distribución, gratis, sin estado
+   API             Fly.io `gru`  1-5 ms hasta la base, frente a 240 ms desde
+                                 la costa este de EE. UU.
+   Motor           Fly.io `gru`  trabajo por lotes de minutos
+   Base            Supabase      sa-east-1, São Paulo
+
+ LA MEDICIÓN QUE DECIDIÓ LA REGIÓN, y que invirtió una decisión anterior:
+     ida y vuelta a la base:  140 ms
+     una página del feed:     674 ms
+       de los cuales red:     280 ms  (dos consultas)
+       de los cuales cómputo: 394 ms
+ Poner la API en las funciones de Vercel —región por defecto, costa este—
+ pagaría esos 240 ms en CADA petición, para siempre, a cambio de ahorrarse una
+ configuración de CORS que ya está escrita y probada. Un coste permanente de
+ ejecución no se cambia por comodidad de configuración.
+
+ UNA APLICACIÓN DE FLY, DOS GRUPOS DE PROCESO (`api` y `worker`). Comparten
+ secretos —DATABASE_URL se configura una vez— y se despliegan juntos, así que no
+ hay dos configuraciones que puedan divergir. Pero corren en máquinas separadas,
+ porque hacen trabajos opuestos: el motor carga ~2 400 artículos para agrupar y
+ trabaja en tandas de minutos; la API no guarda nada y debe responder siempre.
+ Juntarlos haría que un fallo del motor tumbara el sitio.
+   api     shared-cpu-1x, 256 MB   arranca en 1,65 s y se queda en 74 MB
+   worker  shared-cpu-1x, 512 MB   quedarse corto lo mataría durante el ciclo
+
+ SOLO LA API RECIBE TRÁFICO (`processes = ['api']` en http_service). El motor no
+ escucha en ningún puerto: se le pide un ciclo escribiendo una fila en
+ `ingest_requests`. Superficie de ataque: ninguna.
+
+ LA SONDA ES /api/live, NO /api/health. health responde 503 cuando la ingesta
+ está obsoleta: información útil para una persona y veneno como sonda. Al
+ arrancar, `lastRunAt` es null y health daría 503; Fly mataría la máquina y la
+ siguiente volvería a dar 503. Bucle de reinicios permanente sobre un servicio
+ que funciona.
+
+ ERROR CORREGIDO ANTES DE DESPLEGAR, y de los que no avisan: la CSP de
+ vercel.json y de public/_headers permitía en connect-src solo
+ `https://api.doblefoco.co`, un dominio que todavía no apunta a ningún sitio. La
+ API vive en `doblefoco.fly.dev`, así que el navegador habría bloqueado TODAS
+ las peticiones — sin error de red, sin fallo en el despliegue: solo un feed
+ vacío y un aviso en la consola. Ahora se permiten los dos orígenes, los dos
+ nuestros, y pasar al dominio propio no exigirá tocar la CSP.
+ Ambos archivos se comprueban idénticos: ya divergieron una vez.
+
+ QUEDA POR HACER, y es interactivo (autenticación en el navegador):
+   1. instalar flyctl y `flyctl auth login`
+   2. `flyctl launch --no-deploy --copy-config` y `flyctl secrets set
+      DATABASE_URL=... ALLOWED_ORIGINS=https://<dominio-vercel>`
+   3. `flyctl deploy`
+   4. importar el repositorio en Vercel con VITE_API_URL=https://doblefoco.fly.dev
+   5. añadir el dominio real de Vercel a ALLOWED_ORIGINS y volver a desplegar
+ Nada de esto está hecho: la configuración existe, el despliegue no.
+
+ COSTE ESTIMADO: 5-8 USD/mes, íntegramente en las dos máquinas de Fly. Supabase,
+ Vercel y GitHub siguen en plan gratuito. Cifra aproximada y sin verificar contra
+ la tarifa vigente: conviene mirarla al crear la cuenta.
 
 ===============================================================================
  RIESGOS ABIERTOS

@@ -145,3 +145,35 @@ sitemap.xml: 3 413 URLs · 0 con «story_»
 179 pruebas · typecheck y lint limpios · build correcto
 ```
 
+---
+
+### [2026-07-29] Artículos fechados en el futuro encabezaban la portada
+
+#### Hallazgo
+Al medir el volumen por medio para F1-12 apareció un fallo que no estaba en
+ninguna lista: **las dos historias que encabezaban el feed decían estar
+publicadas al día siguiente a las 09:00**. La Opinión entregó dos artículos con
+fecha 9,6 h por delante y, como el orden es `published_at DESC`, quedaban
+clavados arriba hasta que el reloj los alcanzara. Eran además las dos primeras
+URLs del sitemap. Causa habitual: publicación programada del gestor de
+contenidos, o zona horaria mal aplicada.
+
+- **Archivos modificados:**
+  - `server/services/ingestDaemon.js`: `parsePublishedAt` descarta una fecha
+    más de 30 min por delante del reloj —margen para la deriva entre
+    servidores— y devuelve `null`, que es el caso ya contemplado de «el feed no
+    fecha». No se recorta a «ahora»: eso guardaría en la base una fecha que
+    ningún medio ha declarado.
+  - `server/services/ingestDaemon.js`: la fecha de una historia cae en el
+    momento de ingesta cuando ningún artículo trae una usable. Sin esto el
+    arreglo cambiaba un fallo por el contrario: el feed ordena con `NULLS LAST`,
+    así que la noticia habría pasado de encabezar la portada indebidamente a
+    hundirse al fondo.
+  - `server/services/ingestDaemon.test.js` (nuevo): 7 pruebas, con reloj
+    inyectado.
+
+- **Pendiente de operación:** las dos filas ya escritas siguen en la base. Se
+  corrigen desplegando primero y limpiándolas después; el motor las vuelve a
+  ingerir con la fecha ya saneada.
+
+- **Evidencias de Verificación:** 186 pruebas · typecheck y lint limpios.

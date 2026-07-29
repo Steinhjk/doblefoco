@@ -637,6 +637,31 @@
             revisar los 3 medios con feed configurado y CERO artículos
             (Vorágine, RTVC Noticias, W Radio): puede ser un feed roto y no un
             hecho sobre el medio.
+
+            COMPROBADO EL 2026-07-29, y NO hay ningún feed roto. Recuento por
+            medio sobre la base en producción (4 010 artículos, ventana de 72 h
+            ya llena; RTVC y W Radio están retirados desde el 2026-07-28, así
+            que solo quedaba Vorágine por comprobar):
+
+              Colombia Informa (−0,65) .... 1        Infobae (+0,15) ..... 935
+              Vorágine (−0,50) ............ 1        Semana (+0,45) ...... 433
+              Cuestión Pública (−0,45) .... 4        El Heraldo (+0,2) ... 289
+              Razón Pública (−0,40) ...... 14        El Tiempo (+0,05) ... 282
+              Cambio (−0,40) ............. 15        El País Cali (+0,3) . 237
+
+            Los 34 feeds traen artículos; ninguno está mudo. Vorágine publicó
+            el 29 a las 22:00, así que su cero anterior era su ritmo, no una
+            avería. Queda descartada la hipótesis del feed roto: lo que dice
+            F1-12 sobre el volumen de la izquierda es un hecho sobre el
+            ecosistema, no un fallo nuestro.
+
+            Y EMPEORA CON MÁS DATOS. Con la ventana llena, los 5 medios
+            colombianos de izquierda/centro-izquierda suman 35 artículos de
+            4 010: el 0,9 %. Con la medición del 28 de julio era el 2,6 %. El
+            desequilibrio no se diluye al acumular más ciclos; se acentúa,
+            porque quien publica a diario acumula más rápido. La opción (a)
+            —añadir medios del mismo perfil— queda todavía peor parada que
+            cuando se escribió.
             El reparto actual de los 33 medios activos: 1 izquierda, 5
             centro-izquierda, 14 centro, 13 centro-derecha, 0 derecha. Un
             agregador que promete mostrar "todas las perspectivas" con un solo

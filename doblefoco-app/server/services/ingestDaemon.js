@@ -181,12 +181,41 @@ function canonicalizeLink(link) {
     }
 }
 
-/** Fecha de publicación real en ISO-8601, o null si el feed no la trae. */
-function parsePublishedAt(item) {
+/**
+ * Margen que se le concede al reloj de un medio antes de considerar que su
+ * fecha miente. Los relojes de servidores distintos no coinciden al segundo y
+ * media hora absorbe esa deriva sin dejar pasar una publicación programada.
+ */
+const MARGEN_FUTURO_MS = 30 * 60 * 1000;
+
+/**
+ * Fecha de publicación real en ISO-8601, o null si el feed no trae una usable.
+ *
+ * UNA FECHA EN EL FUTURO NO ES UNA FECHA DE PUBLICACIÓN. El 2026-07-29 La
+ * Opinión entregó dos artículos fechados a las 09:00 del día siguiente —casi
+ * diez horas por delante—, y como el feed ordena por `published_at DESC` se
+ * quedaron clavados encabezando la portada hasta que el reloj los alcanzara.
+ * Eran además las dos primeras URLs del sitemap. Suele ser un gestor de
+ * contenidos que publica con fecha programada, o una zona horaria mal aplicada;
+ * en cualquier caso es un dato que el medio afirma y que no se sostiene.
+ *
+ * Se devuelve null, que es el mismo caso que un feed sin fecha: la ausencia ya
+ * está contemplada en todo el recorrido y el artículo se ordena por el momento
+ * en que lo vimos, que sí es verificable. No se recorta la fecha a «ahora»
+ * porque eso guardaría en la base una fecha que nadie ha declarado.
+ *
+ * @param {any} item
+ * @param {number} [ahoraMs] - inyectable para poder probarlo sin depender del reloj
+ */
+export function parsePublishedAt(item, ahoraMs = Date.now()) {
     const raw = item?.isoDate || item?.pubDate;
     if (!raw) return null;
+
     const date = new Date(raw);
-    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+    if (Number.isNaN(date.getTime())) return null;
+    if (date.getTime() > ahoraMs + MARGEN_FUTURO_MS) return null;
+
+    return date.toISOString();
 }
 
 /**
@@ -664,8 +693,19 @@ function buildMultisourceStories() {
         const sources = [...outletsByName.values()];
         const coverage = analyzeCoverage(sources);
 
+        /**
+         * Sin fecha del medio se usa la de ingesta, igual que hace pruneArticles.
+         *
+         * No es un detalle: el feed ordena por `published_at DESC NULLS LAST`, así
+         * que una historia sin fecha no queda «sin ordenar», queda LA ÚLTIMA de su
+         * grupo. Antes solo pasaba con feeds que no fechan; desde que se descartan
+         * las fechas futuras pasaría también con ellas, y arreglar que una noticia
+         * encabezara la portada indebidamente para hundirla al fondo no sería
+         * arreglarla. El momento en que la vimos es peor dato que el del medio,
+         * pero es un dato real y aproxima bien la actualidad.
+         */
         const publishedDates = items
-            .map((a) => (a.publishedAt ? Date.parse(a.publishedAt) : null))
+            .map((a) => (a.publishedAt ? Date.parse(a.publishedAt) : a.ingestedAtMs))
             .filter((d) => Number.isFinite(d));
 
         return {

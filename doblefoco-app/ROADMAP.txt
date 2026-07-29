@@ -1585,9 +1585,48 @@
    5. añadir el dominio real de Vercel a ALLOWED_ORIGINS y volver a desplegar
  Nada de esto está hecho: la configuración existe, el despliegue no.
 
- COSTE ESTIMADO: 5-8 USD/mes, íntegramente en las dos máquinas de Fly. Supabase,
- Vercel y GitHub siguen en plan gratuito. Cifra aproximada y sin verificar contra
- la tarifa vigente: conviene mirarla al crear la cuenta.
+ POR QUÉ vercel.json NO LLEVA COMENTARIOS, aunque el resto del proyecto sí. Su
+ esquema rechaza cualquier propiedad que no reconozca, y el archivo arrastraba
+ bloques `$comment` desde antes: nunca habían molestado porque nunca se había
+ desplegado. Al primer intento real: «Invalid vercel.json - should NOT have
+ additional property $comment». Lo que había que explicar vive aquí.
+
+ QUÉ SE DECLARA EN vercel.json Y POR QUÉ AHÍ, y no en el panel de Vercel:
+
+   framework/buildCommand/outputDirectory — el proyecto estaba creado con
+   Framework Preset = Next.js, mal detectado. Vercel buscaba la salida de
+   Next.js, no la encontraba y no publicaba: «No Production Deployment», sin
+   error visible en ninguna pantalla. Fue el fallo más caro de diagnosticar de
+   todo el despliegue, precisamente porque no se manifestaba como un fallo.
+   Los tres van explícitos aunque `vite` implique los otros dos, para que un
+   cambio de preset en el panel no vuelva a decidirlos por su cuenta.
+
+   build.env.VITE_API_URL — no es un secreto: todo lo que empieza por VITE_ se
+   incrusta en el JavaScript que descarga cualquier visitante, así que
+   esconderlo en un panel no protegería nada. En el repositorio es reproducible.
+   Y el olvido sería silencioso: sin la variable el sitio se construye SIN
+   fallar y sale en modo demostración con el catálogo local — una página que
+   parece funcionar y muestra datos que no son los reales.
+
+ EL ROOT DIRECTORY NO PUEDE VIVIR EN EL REPOSITORIO. Vercel lo lee ANTES de
+ mirar el código, así que es el único ajuste que hay que poner a mano
+ (`doblefoco-app`). Y se aplica SOBRE el directorio desde el que se despliega:
+ con la CLI hay que lanzar desde la raíz del repositorio, no desde
+ doblefoco-app, o busca `doblefoco-app/doblefoco-app` y falla.
+
+ COSTE REAL, consultado en la tarifa de Fly para `gru`, no estimado:
+   api    shared-cpu-1x 256 MB   1,94 USD/mes
+   worker shared-cpu-1x 512 MB   3,19 USD/mes
+                                 5,13 USD/mes
+ Más salida a 0,04 USD/GB, que con el sitio sin publicar es calderilla. Supabase,
+ Vercel y GitHub siguen en plan gratuito. El plan gratuito de tres máquinas de
+ Fly YA NO EXISTE para cuentas nuevas: solo aplica a organizaciones heredadas.
+
+ OJO CON LA ALTA DISPONIBILIDAD AUTOMÁTICA: `fly deploy` creó CUATRO máquinas,
+ duplicando api y worker por su cuenta. Habrían sido ~7 USD/mes en vez de 5,13.
+ Se bajó api a una sola con `fly scale count api=1`; el suplente del worker se
+ queda porque está PARADO y una máquina detenida solo paga almacenamiento.
+ Conviene revisar el recuento después de cada `fly deploy`.
 
 ===============================================================================
  RIESGOS ABIERTOS

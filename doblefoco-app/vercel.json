@@ -1,37 +1,4 @@
 {
-  "$comment": [
-    "CSP alineada con public/_headers: antes divergían y el sitio se comportaba",
-    "distinto según se desplegara en Vercel o en Netlify.",
-    "Se eliminó 'unsafe-eval' de script-src: un build de producción de Vite no lo",
-    "necesita y su presencia anulaba buena parte del valor de la política.",
-    "connect-src lista los DOS orígenes de la API a propósito: doblefoco.fly.dev",
-    "es el que Fly asigna y funciona desde el primer despliegue; api.doblefoco.co",
-    "es el dominio propio, para cuando se apunte el DNS. Teniendo los dos, migrar",
-    "al dominio propio no exige tocar la CSP ni volver a desplegar el sitio.",
-    "Ambos son nuestros: permitirlos no amplía la superficie a terceros.",
-    "Faltaba fly.dev y ese solo error habría bloqueado TODA llamada a la API, sin",
-    "error de red visible: solo un feed vacío y un aviso en la consola."
-  ],
-  "$comment_build": [
-    "VITE_API_URL vive aquí y no en el panel de Vercel a propósito.",
-    "No es un secreto: todo lo que empieza por VITE_ se incrusta en el JavaScript",
-    "que descarga cualquier visitante, así que esconderlo no protegería nada.",
-    "Y en el repositorio es reproducible — quien clone y despliegue obtiene el",
-    "mismo sitio, sin depender de que alguien recuerde rellenar un formulario.",
-    "Si estuviera solo en el panel y se olvidara, el sitio se construiría sin",
-    "fallar y saldría en modo demostración con el catálogo local: una página que",
-    "parece funcionar y muestra datos que no son los reales."
-  ],
-  "$comment_framework": [
-    "El panel del proyecto tenía Framework Preset = Next.js, detectado mal al",
-    "crearlo. Esto es Vite: Vercel buscaba la salida de Next.js, no la",
-    "encontraba y no publicaba nada — de ahí «No Production Deployment» sin un",
-    "error visible en ninguna parte.",
-    "Declararlo aquí y no en el panel es deliberado, por lo mismo que build.env:",
-    "queda en el repositorio, es reproducible y no depende de que nadie recuerde",
-    "un ajuste. buildCommand y outputDirectory van explícitos aunque `vite` los",
-    "implique, para que un cambio del preset en el panel no vuelva a decidirlos."
-  ],
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",

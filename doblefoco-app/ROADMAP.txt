@@ -977,10 +977,23 @@
             salen validación y tipo— es real pero teórica a esta escala:
             reescribiría código que funciona y está probado a cambio de una
             dependencia.
-            CUÁNDO REVISARLO, y es concreto: cuando los cuerpos dejen de ser
-            planos. El día que el panel permita editar fichas de medios —con
-            `sources`, `holdings` y objetos anidados— validar eso a mano sí se
-            vuelve frágil.
+            CUÁNDO REVISARLO. La primera versión de esta nota decía "cuando el
+            panel permita editar fichas de medios". Esa tarea NO EXISTE en este
+            documento —me la inventé— y además no debería existir: el registro
+            es un archivo versionado en git a propósito, y `sourceSync` revierte
+            cualquier UPDATE sobre la proyección. Los valores de sesgo son la
+            afirmación más discutible del producto y tienen que cambiar mediante
+            un commit revisable y reversible, no mediante un formulario. Un
+            panel de edición perdería el historial, la revisión y el guardián de
+            check:registry.
+
+            La condición correcta no depende de ninguna funcionalidad planeada
+            —hoy no hay ninguna que añada cuerpos anidados— sino de algo
+            observable en el propio código:
+              · que un cuerpo de petición deje de ser plano, o
+              · que la superficie pase de unos 10 campos de entrada.
+            Mientras se pueda leer entera de una sentada, la validación a mano
+            es más barata de entender que un esquema.
 
             LO QUE SÍ SALIÓ DE ESA MEDICIÓN, y era un riesgo real: las listas
             blancas están declaradas DOS VECES, en JavaScript y en el CHECK de
@@ -1219,6 +1232,29 @@
  · Las2Orillas — RETIRADO TEMPORALMENTE
    Responde 403 a nuestro User-Agent. Se retira en lugar de dejar un feed que
    falla en cada ciclo. Recuperarlo exige acordar acceso con el medio (F1-06).
+
+ · Editar el catálogo de medios desde el panel — DESCARTADO POR DISEÑO
+   No está pendiente ni es una limitación: es una decisión, y conviene dejarla
+   escrita porque la idea reaparece sola. Un formulario para ajustar el sesgo de
+   un medio suena a comodidad obvia.
+
+   El registro es un archivo versionado en git a propósito. Los valores de sesgo
+   son la afirmación más discutible que hace el producto —juicios sobre
+   organizaciones reales e identificables— y tienen que cambiar mediante un
+   commit: con autor, fecha, motivo en el mensaje, revisión posible y reversión
+   trivial. Un formulario no deja nada de eso.
+
+   Además rompería tres cosas que ya funcionan:
+     · `sourceSync` revierte en el siguiente arranque cualquier UPDATE sobre la
+       tabla `sources`, que es una proyección y no un segundo catálogo (F1-04);
+     · `check:registry` no podría vigilar cambios que no pasan por el
+       repositorio;
+     · la regla "firmar exige citar" (F1-13) se apoya en que el cambio y su
+       fuente entren juntos y queden en el historial.
+
+   Si algún día hace falta bajar la fricción, la forma correcta no es un
+   formulario que escriba en la base sino uno que ABRA UNA PROPUESTA DE CAMBIO
+   —un pull request— con la fuente adjunta. Sigue pasando por revisión.
 
  · Catálogo público escrito a mano — DESCARTADO
    Se generó cuatro veces y divergió cuatro veces. src/docs/catalogo_medios.txt

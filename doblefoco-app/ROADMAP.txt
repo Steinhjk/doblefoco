@@ -1120,7 +1120,39 @@
             og:image ni canonical, así que toda noticia compartida muestra la
             misma tarjeta genérica.
 
- [ ] F3-03  sitemap.xml y robots.txt generados en el build.
+ [x] F3-03  sitemap.xml y robots.txt — generados desde la BASE, no en el build
+            (2026-07-29)
+
+            EL ENUNCIADO DECÍA «en el build» Y ERA EL PLAN EQUIVOCADO. El
+            contenido cambia cada 30 minutos: un sitemap construido al desplegar
+            nace obsoleto, y refrescarlo obligaría a reconstruir el sitio entero
+            cada media hora. Se genera en cada petición, junto a los datos,
+            donde cuesta una consulta de milisegundos.
+
+            EL COSTE LO ABSORBE LA CDN, no la máquina de la API:
+              Cache-Control: public, max-age=0, s-maxage=1800,
+                             stale-while-revalidate=3600
+            Vercel lo cachea media hora y durante la hora siguiente sirve la
+            copia vieja al instante mientras pide una nueva por detrás. Es el
+            estándar RFC 5861 — el mismo mecanismo que Next.js vende como ISR,
+            con la diferencia de que funciona en cualquier CDN.
+            MEDIDO: primera petición x-vercel-cache MISS, segunda HIT.
+
+            MISMO FILTRO QUE EL FEED. Anunciar una historia retirada por
+            moderación no sería un descuido técnico: sería contradecir una
+            decisión editorial desde otro archivo.
+
+            LAS URLs SON LAS DEL SITIO, nunca las de la API. Declarar canónicas
+            en doblefoco.fly.dev le pediría a Google que indexara un servidor de
+            JSON y partiría la autoridad entre dos dominios. Sale de SITE_URL.
+
+            VERIFICADO EN PRODUCCIÓN: 2 636 URLs, XML bien formado, servido
+            tanto directo desde Fly como a través de la redirección de Vercel.
+
+            Y DE PASO VALIDA EL CAMINO DE F3-01: que Vercel redirija una ruta a
+            Fly y cachee el resultado en el borde es exactamente el mecanismo
+            que necesita el renderizado en servidor. Ahora está probado con algo
+            pequeño, en vez de descubrirlo con algo grande.
 
  ── 3B. Experiencia ───────────────────────────────────────────────────────────
 

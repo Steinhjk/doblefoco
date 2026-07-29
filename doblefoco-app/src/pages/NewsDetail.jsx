@@ -12,6 +12,7 @@ import { useHistoriaInicial } from '../hooks/datosInicialesContext';
 import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsCard from '../components/NewsCard';
 import CoverageBar from '../components/CoverageBar';
+import CoverageTimeline from '../components/CoverageTimeline';
 import MediaLogo from '../components/MediaLogo';
 import UserFeedbackWidget from '../components/UserFeedbackWidget';
 import ShareModal from '../components/ShareModal';
@@ -302,6 +303,13 @@ const NewsDetail = () => {
                         solo se rellena con contenido inventado es una invitación
                         a volver a inventarlo.
                     */}
+
+                    {/* Cronología (F3-08). Va DESPUÉS de las perspectivas y antes
+                        del widget de reporte: primero se lee qué dijo cada
+                        espectro, y solo entonces cobra sentido en qué orden
+                        entraron. Al revés sería un dato sin contexto.
+                        Se pinta sola cuando no hay línea de tiempo utilizable. */}
+                    <CoverageTimeline timeline={story.timeline} />
 
                     <UserFeedbackWidget storyId={story.id} />
                 </div>

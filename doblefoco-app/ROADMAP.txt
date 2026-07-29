@@ -1303,7 +1303,7 @@
             comprobaciones visuales aplazadas.
 
 ===============================================================================
- FASE 3 — CRECIMIENTO                                          [~] EN CURSO (7/15)
+ FASE 3 — CRECIMIENTO                                          [~] EN CURSO (8/15)
 ===============================================================================
  Objetivo: que el producto se pueda encontrar, usar y entender.
 
@@ -1660,9 +1660,49 @@
             Es la mejor idea del producto y está enterrada al final del
             sidebar. Merece página con evolución semanal y objetivos.
 
- [ ] F3-08  Línea de tiempo de cobertura de un tema
-            Cómo evolucionó y en qué momento entró cada espectro. Es el
-            diferenciador real frente a Ground News en el mercado local.
+ [x] F3-08  Línea de tiempo de cobertura (2026-07-29)
+
+            Responde a algo que ningún otro agregador del mercado local
+            contesta: en qué ORDEN entró cada espectro. Que trece medios cubran
+            un hecho es un dato; que la derecha lo publicara doce minutos antes
+            que el centro y que la izquierda siga sin entrar es una observación
+            sobre cómo circula la información.
+
+            EJEMPLO REAL, de la base en producción:
+              «Entró primero por derecha y se extendió a centro (+12 min).
+               La cobertura se repartió a lo largo de 1,1 horas.
+               Izquierda no ha publicado nada sobre este hecho entre los medios
+               que rastreamos.»
+
+            UN MEDIO ENTRA CON SU ARTÍCULO MÁS ANTIGUO, no con el último. Es el
+            detalle que hacía falta añadir al modelo: `sources` guarda la fecha
+            del artículo más RECIENTE de cada medio, que sirve para otras cosas
+            pero daría el orden al revés —los medios que más siguen un tema
+            aparecerían como los últimos en llegar—. Por eso la línea se calcula
+            en el servidor, junto a la lista completa de artículos, y no en el
+            navegador, que solo recibe uno por fuente.
+
+            LOS MEDIOS SIN FECHA NO SE COLOCAN, SE CUENTAN APARTE. Ponerlos «al
+            principio» o «al final» inventaría un orden que no conocemos, y el
+            orden es lo único que esta vista afirma. La interfaz dice cuántos son.
+
+            LA ADVERTENCIA ES PARTE DE LA AFIRMACIÓN, no letra pequeña. Las horas
+            las declara cada medio en su propio canal: no las medimos y no
+            podemos contrastarlas. Por eso el texto dice «un orden de publicación
+            declarado, no una primicia verificada». Afirmar una exclusiva con un
+            dato que no podemos verificar sería justo lo que prohíbe el principio
+            rector, y aquí la tentación era fuerte porque «X dio la primicia» es
+            mucho más vendible.
+
+            VERIFICADO: 12 pruebas sobre la lógica pura —orden, artículo más
+            antiguo por medio, espectro ausente en null, medios sin fecha,
+            duración, casos degenerados— y comprobación contra la base real y
+            contra el HTML que renderiza el servidor: la sección aparece con sus
+            11 medios, el resumen del orden, la declaración de ausencia y la
+            advertencia. 145 pruebas en total, typecheck, lint y build limpios.
+
+            SIN COMPROBAR EN PANTALLA: va con el resto de verificaciones
+            visuales aplazadas.
 
  [x] F3-13  Mapa mediático (/mapa-medios)
             Dispersión de los 40 medios: sesgo en el eje horizontal,

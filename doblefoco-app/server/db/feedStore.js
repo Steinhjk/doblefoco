@@ -30,6 +30,7 @@
  */
 
 import { analyzeCoverage, averageFactuality, classifySpectrum, SPECTRUM } from '../../shared/biasAnalysis.js';
+import { buildCoverageTimeline } from '../../shared/coverageTimeline.js';
 import { safeQuery } from './pool.js';
 
 /**
@@ -168,6 +169,16 @@ function componerHistoria(fila, articulos) {
 
         sources,
         articleCount: articulos.length,
+
+        /**
+         * Cronología de quién entró y cuándo (F3-08).
+         *
+         * Se calcula aquí, junto a los artículos, y no en el navegador: el
+         * cliente solo recibe un medio por fuente en `sources`, con la fecha de
+         * su artículo MÁS RECIENTE. Para ordenar entradas hace falta la más
+         * antigua de cada uno, y eso solo está disponible con la lista completa.
+         */
+        timeline: buildCoverageTimeline(articulos),
 
         perspectives: {
             left: elegirPerspectiva(articulos, SPECTRUM.LEFT),

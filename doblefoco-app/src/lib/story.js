@@ -164,6 +164,12 @@ export function normalizeStory(raw) {
         },
 
         articles: Array.isArray(raw.articles) ? raw.articles : [],
+
+        // Cronología de cobertura (F3-08). La calcula el servidor, que es quien
+        // ve todos los artículos; aquí solo se deja pasar. `null` cuando la
+        // historia no la trae —una respuesta antigua de caché, por ejemplo— y
+        // la interfaz simplemente no pinta la sección.
+        timeline: raw.timeline ?? null,
     };
 }
 

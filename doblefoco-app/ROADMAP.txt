@@ -1576,14 +1576,39 @@
  nuestros, y pasar al dominio propio no exigirá tocar la CSP.
  Ambos archivos se comprueban idénticos: ya divergieron una vez.
 
- QUEDA POR HACER, y es interactivo (autenticación en el navegador):
-   1. instalar flyctl y `flyctl auth login`
-   2. `flyctl launch --no-deploy --copy-config` y `flyctl secrets set
-      DATABASE_URL=... ALLOWED_ORIGINS=https://<dominio-vercel>`
-   3. `flyctl deploy`
-   4. importar el repositorio en Vercel con VITE_API_URL=https://doblefoco.fly.dev
-   5. añadir el dominio real de Vercel a ALLOWED_ORIGINS y volver a desplegar
- Nada de esto está hecho: la configuración existe, el despliegue no.
+ HECHO Y VERIFICADO EN PRODUCCIÓN el 2026-07-29:
+   sitio   https://doblefococo.vercel.app     200, CSP permite la API
+   API     https://doblefoco.fly.dev          200, CORS solo al dominio de Vercel
+   motor   ciclo cada 30 min, 34/34 feeds, ~13 s por ciclo
+   base    2 786 artículos · 2 411 historias
+
+ Y con eso F1-01 deja de estar bloqueada: el motor ingiere sin depender de que
+ el portátil de nadie esté encendido, así que la serie de 7 días se completa
+ sola alrededor del 2026-08-02, sin agujeros nocturnos.
+
+ TRES TROPIEZOS DEL DESPLIEGUE, los tres silenciosos, que conviene no repetir:
+
+   1. FRAMEWORK PRESET = Next.js en un proyecto Vite. Vercel buscaba una salida
+      que no existía y no publicaba nada: «No Production Deployment», sin error
+      en ninguna pantalla. Fue lo más caro de diagnosticar precisamente porque
+      no se manifestaba como fallo. Ahora se declara en vercel.json.
+
+   2. EL PROYECTO NO TENÍA REPOSITORIO CONECTADO. Cuatro push seguidos no
+      dispararon nada; el primer despliegue hubo que lanzarlo por CLI. Se
+      arregló con `vercel git connect` y se COMPROBÓ que un push produce un
+      despliegue — una tubería que nunca se ha probado es la que falla luego.
+
+   3. vercel.json NO ADMITE COMENTARIOS. Su esquema rechaza propiedades
+      desconocidas y el archivo arrastraba bloques `$comment` de antes, que
+      nunca habían molestado porque nunca se había desplegado.
+
+ LA CLI DE VERCEL DESPLIEGA DESDE LA RAÍZ DEL REPOSITORIO, no desde
+ doblefoco-app: el Root Directory se aplica SOBRE el directorio de origen, así
+ que desde dentro busca `doblefoco-app/doblefoco-app` y falla.
+
+ ROTAR LA CONTRASEÑA DE SUPABASE YA TOCA TRES SITIOS, no dos: `.env.local`, el
+ secreto de GitHub y ahora `flyctl secrets set --app doblefoco`, que es el que
+ usa el producto real. Olvidar el tercero para la ingesta de verdad.
 
  POR QUÉ vercel.json NO LLEVA COMENTARIOS, aunque el resto del proyecto sí. Su
  esquema rechaza cualquier propiedad que no reconozca, y el archivo arrastraba

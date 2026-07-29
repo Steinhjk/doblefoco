@@ -608,7 +608,18 @@
     /* Ocupa lo que quede: así las tres cajas miden lo mismo. */
     flex: 1 1 auto;
     min-width: 0;
-    justify-content: flex-end;
+    /*
+     * CENTRADO, no pegado a la derecha. Alinear al final tenía sentido cuando
+     * la caja se ajustaba a su contenido; ahora que ocupa todo el ancho
+     * sobrante, dejaba el logotipo despegado del borde izquierdo y el conjunto
+     * parecía descolgado.
+     *
+     * Tampoco al principio: la insignia de espectro que va a su izquierda mide
+     * distinto en cada columna («IZQUIERDA» frente a «CENTRO»), así que
+     * alineando al inicio los logotipos quedarían a tres alturas horizontales
+     * distintas. Centrado, esa diferencia deja de notarse.
+     */
+    justify-content: center;
 }
 
 .interactive-source-link {

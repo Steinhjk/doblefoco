@@ -100,24 +100,30 @@ export async function fetchHealth() {
 }
 
 /**
- * Dispara un ciclo de ingesta en el servidor.
+ * Pide un ciclo de ingesta. NO espera a que termine.
  *
- * Lo autoriza la SESIÓN del panel (tarea F2-05). Antes viajaba un
- * VITE_INGEST_TOKEN que, por empezar por VITE_, estaba incrustado en el bundle
- * y era público por construcción: servía para que el endpoint no quedara
- * abierto de par en par, no para autorizar a nadie. Esa variable ya no existe
- * en el proyecto.
+ * Un ciclo tarda entre uno y tres minutos, así que ya no lo ejecuta la API:
+ * encola una solicitud que recoge el motor, un proceso aparte con su propio
+ * reloj. Por eso la espera bajó de dos minutos a diez segundos — solo se
+ * aguarda el acuse.
  *
- * `credentials: 'include'` es lo que hace que el navegador adjunte la cookie
- * httpOnly de sesión, que este código no puede leer.
+ * Lo autoriza la SESIÓN (F2-05). `credentials: 'include'` adjunta la cookie
+ * httpOnly, que este código no puede leer.
  */
-export async function triggerIngestion() {
+export async function requestIngestion() {
     const result = await request('/api/ingest/run', {
         method: 'POST',
         credentials: 'include',
-        timeoutMs: 120_000, // un ciclo completo recorre 36 feeds
+        timeoutMs: 10_000,
     });
 
     if (!result.ok) return result;
-    return { ok: true, report: result.data?.report };
+    return { ok: true, queued: result.data?.queued, message: result.data?.message };
+}
+
+/** Últimas solicitudes y cómo terminaron. Es la señal de vida del motor. */
+export async function fetchIngestRequests() {
+    const result = await request('/api/ingest/requests', { credentials: 'include' });
+    if (!result.ok) return result;
+    return { ok: true, requests: result.data?.requests ?? [] };
 }

@@ -7,6 +7,19 @@
 #  exactamente el problema: un equipo que se apaga por la noche produce una
 #  serie con agujeros justo en lo que hay que medir.
 #
+#  RELEGADO A RESPALDO (2026-07-29)
+#  --------------------------------
+#  El motor de ingesta vive ahora en su propio proceso (`npm run worker`), con
+#  su propio reloj. La razón está medida: este cron dispara cada ~2,5 horas en
+#  vez de cada 30 minutos —02:01, 04:56, 07:35, 10:25—, se desactiva tras 60
+#  días sin actividad en el repositorio, no tiene SLA y acopla el motor del
+#  producto al alojamiento de su código.
+#
+#  Esto se queda como red de seguridad: si el motor cae, sigue habiendo ingesta.
+#  Y no puede colisionar con él, porque `runIngestionBatch` toma un cerrojo
+#  consultivo de Postgres: el que llegue segundo se salta el ciclo y sale con
+#  código 0, porque saltar no es fallar.
+#
 #  TRES COSAS QUE CONVIENE SABER
 #
 #  1. El cron de GitHub no es puntual. Se retrasa varios minutos cuando la

@@ -1423,6 +1423,63 @@
  haya más de una instancia.
 
 ===============================================================================
+ F2-12 — EL MOTOR SALE DE GITHUB ACTIONS
+===============================================================================
+ Jose planteó la duda de si GitHub Actions era la opción definitiva para
+ impulsar el ciclo, siendo un servicio externo y gratuito. Estaba justificada, y
+ hay medición que la respalda.
+
+ EL DIAGNÓSTICO DE FONDO: la ingesta es un trabajo POR LOTES que tarda entre uno
+ y tres minutos, y las plataformas sin servidor son hostiles a eso por diseño —
+ Vercel corta a 10 s en Hobby y 60 s en Pro, así que ni sus funciones ni su cron
+ podrían ejecutarla. Forzar un trabajo de minutos dentro de funciones de
+ segundos era el origen de toda la fragilidad.
+
+ GITHUB ACTIONS, RELEGADO A RESPALDO:
+   · dispara cada ~2,5 h en vez de cada 30 min (medido: 02:01, 04:56, 07:35,
+     10:25);
+   · se desactiva tras 60 días sin actividad en el repositorio;
+   · no tiene SLA, y usar un sistema de integración continua como
+     infraestructura de producción está en zona gris de sus términos;
+   · acopla el motor del producto al alojamiento de su código.
+ Se conserva como red de seguridad, no como motor.
+
+ EL MOTOR: `npm run worker`, un proceso propio con su reloj en una constante del
+ archivo. Cambiar la cadencia es cambiar un número, no migrar de plataforma —
+ que es la autonomía que se buscaba.
+
+ SIN CONECTIVIDAD ENTRANTE, que es la parte que lo hace elegante. El botón
+ "Solicitar ciclo" del panel no llama al motor: escribe una fila en
+ `ingest_requests` y el motor la mira en cada vuelta. Así el motor no expone
+ puerto, ni autenticación propia, ni superficie de ataque, y el panel no sabe ni
+ le importa dónde está alojado. Cambiar de proveedor no toca una línea del
+ panel.
+ Un índice único parcial garantiza UNA sola solicitud sin atender: pulsar cinco
+ veces no encola cinco ciclos contra los mismos 34 medios.
+ VERIFICADO de punta a punta: el panel solicita (0,66 s de respuesta, antes 1-3
+ minutos), el segundo clic no encola, el motor la recoge en la siguiente vuelta
+ y devuelve el resultado a la fila.
+
+ CERROJO CONSULTIVO EN POSTGRES, y esto resuelve el problema para siempre. El
+ guardia en memoria impedía que un ciclo se solapara consigo mismo dentro de un
+ proceso; no impedía nada entre procesos. Con el cerrojo da igual cuántos
+ planificadores existan ni dónde vivan: solo uno entra, y se libera solo si el
+ proceso muere porque va atado a la conexión.
+ Eso importa por encima de la eficiencia: duplicar el tráfico a 34 medios
+ contradice la postura del proyecto, que se presenta ante ellos con User-Agent
+ propio y URL de transparencia. Uno ya responde 403.
+ VERIFICADO con dos procesos simultáneos: uno ingiere, el otro se salta el ciclo
+ con un mensaje claro.
+ Y saltar SALE CON CÓDIGO 0, no 1. Marcarlo como fallo pintaría de rojo casi
+ todas las ejecuciones de respaldo mientras el motor esté vivo, y una lista que
+ siempre está en rojo enseña a ignorarla justo cuando aparezca un fallo real.
+
+ EL ENDPOINT YA NO INGIERE. `/api/ingest/run` encola y responde. Ejecutar el
+ ciclo allí funcionaba en un servidor propio y es imposible en una función: la
+ petición moriría a mitad dejando una transacción abierta con bloqueos sobre
+ `stories`.
+
+===============================================================================
  RIESGOS ABIERTOS
 ===============================================================================
 

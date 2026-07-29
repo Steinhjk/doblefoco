@@ -5,7 +5,7 @@ import {
     Loader2, Users, Activity, AlertTriangle,
 } from 'lucide-react';
 import { exportSubscribersForOperator, getWaitlistCount } from '../services/storageService';
-import { fetchHealth, triggerIngestion, isApiConfigured } from '../services/apiClient';
+import { fetchHealth, requestIngestion, isApiConfigured } from '../services/apiClient';
 import {
     decideStory,
     fetchCounts,
@@ -149,21 +149,18 @@ const AdminDashboard = () => {
         setIngesting(true);
         setIngestMessage(null);
 
-        const result = await triggerIngestion();
+        const result = await requestIngestion();
 
         setIngesting(false);
         setIngestMessage(
             result.ok
-                ? {
-                    tone: 'ok',
-                    text: `Ciclo completado: ${result.report?.newArticles ?? 0} artículos nuevos, ` +
-                          `${result.report?.totalStories ?? 0} historias. ` +
-                          `${result.report?.feedsFailed?.length ?? 0} feeds fallaron.`,
-                }
+                ? { tone: result.queued ? 'ok' : 'warn', text: result.message }
                 : { tone: 'error', text: result.error }
         );
 
-        if (result.ok) await refresh();
+        // No se recarga: el ciclo aún no ha ocurrido. Tarda entre uno y tres
+        // minutos y lo ejecuta otro proceso; recargar ahora mostraría los
+        // mismos datos y daría la impresión de que no pasó nada.
     };
 
     const handleExportSubscribers = () => {
@@ -260,9 +257,9 @@ const AdminDashboard = () => {
                         <div className="scraper-actions">
                             <button className="run-scrape-btn" onClick={handleRunIngestion} disabled={ingesting}>
                                 {ingesting ? (
-                                    <><Loader2 size={16} className="spin-icon" aria-hidden="true" /> Ejecutando ciclo…</>
+                                    <><Loader2 size={16} className="spin-icon" aria-hidden="true" /> Solicitando…</>
                                 ) : (
-                                    <><Download size={16} aria-hidden="true" /> Forzar ciclo de ingesta</>
+                                    <><Download size={16} aria-hidden="true" /> Solicitar ciclo de ingesta</>
                                 )}
                             </button>
 

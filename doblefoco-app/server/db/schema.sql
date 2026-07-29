@@ -297,7 +297,35 @@ CREATE INDEX IF NOT EXISTS rate_limits_window_idx ON rate_limits (window_start);
 -- Las ventanas viejas se barren al contar, no con una tarea programada:
 --   DELETE FROM rate_limits WHERE window_start < now() - interval '1 day';
 
--- ── 9. Lista de espera (F0-07 / F3-05) ───────────────────────────────────────
+-- ── 9. Solicitudes de ciclo (F2-12) ──────────────────────────────────────────
+-- El panel puede pedir un ciclo de ingesta inmediato sin hablar con el motor.
+--
+-- POR QUÉ ASÍ Y NO CON UNA LLAMADA HTTP. La ingesta tarda minutos, así que vive
+-- en una máquina propia y no en una función. Para que el panel la dispare por
+-- red haría falta exponer esa máquina: un puerto abierto, un mecanismo de
+-- autenticación propio y una superficie de ataque para una función que se usa
+-- tres veces al mes.
+--
+-- Con una fila, el motor NO NECESITA CONECTIVIDAD ENTRANTE. Nadie puede
+-- alcanzarlo; él mira esta tabla en cada vuelta y actúa. Y funciona igual esté
+-- alojado donde esté, que es lo que permite cambiar de proveedor sin tocar el
+-- panel.
+
+CREATE TABLE IF NOT EXISTS ingest_requests (
+    id           BIGSERIAL PRIMARY KEY,
+    requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    requested_by TEXT REFERENCES admin_users (id),
+    claimed_at   TIMESTAMPTZ,      -- cuándo la tomó el motor
+    finished_at  TIMESTAMPTZ,
+    outcome      TEXT              -- resumen legible del ciclo, o el error
+);
+
+-- Solo puede haber UNA solicitud sin atender a la vez. Sin esto, pulsar el
+-- botón cinco veces encolaría cinco ciclos contra los mismos 34 medios.
+CREATE UNIQUE INDEX IF NOT EXISTS ingest_requests_pendiente_idx
+    ON ingest_requests ((claimed_at IS NULL)) WHERE claimed_at IS NULL;
+
+-- ── 10. Lista de espera (F0-07 / F3-05) ──────────────────────────────────────
 -- Ley 1581 de 2012: dato personal. No sale en ninguna exportación pública de
 -- contenido, y `deleted_at` permite atender una solicitud de supresión sin
 -- perder el registro de que se atendió.

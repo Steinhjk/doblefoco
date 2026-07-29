@@ -17,7 +17,7 @@
 
 import express from 'express';
 import cors from 'cors';
-import { runIngestionBatch, getDatabaseStats } from './services/ingestDaemon.js';
+import { getDatabaseStats } from './services/ingestDaemon.js';
 import { countFeed, readFeed, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
@@ -27,6 +27,7 @@ import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
 import { recordReport, REPORT_KINDS } from './db/reportStore.js';
 import { hit, sweep } from './db/rateLimitStore.js';
+import { recentRequests, requestCycle } from './db/requestStore.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -418,24 +419,45 @@ app.get('/api/metrics/daily', async (req, res) => {
 });
 
 /**
- * Dispara un ciclo de ingesta. Requiere sesión (F2-05).
+ * Pide un ciclo de ingesta. Requiere sesión (F2-05).
  *
- * Antes exigía un Bearer token que venía de VITE_INGEST_TOKEN, o sea, del
- * bundle: público por construcción. Servía para que el endpoint no quedara
- * abierto de par en par, no para autorizar a nadie. Ahora lo autoriza la sesión
- * del panel, y esa variable desapareció del proyecto.
+ * NO INGIERE: encola una solicitud y responde de inmediato.
+ *
+ * Antes ejecutaba el ciclo completo aquí. Funcionaba en un servidor propio y es
+ * imposible en una función sin servidor: un ciclo tarda entre uno y tres
+ * minutos y el límite de ejecución son 10 segundos en Vercel Hobby, 60 en Pro.
+ * La petición moriría a mitad, dejando una transacción abierta con bloqueos
+ * sobre `stories` hasta que la base la descartara sola.
+ *
+ * El motor vive en su propia máquina, sin puerto abierto ni conectividad
+ * entrante, y mira esta tabla en cada vuelta. El panel no necesita saber dónde
+ * está alojado —cambiar de proveedor no toca una línea de aquí— y el motor no
+ * expone ninguna superficie de ataque.
  */
 app.post('/api/ingest/run', requireSession, async (req, res) => {
     try {
-        const result = await runIngestionBatch();
+        const { created, pendingSince } = await requestCycle(req.user.id);
 
-        if (result.skipped) {
-            return res.status(409).json({ success: false, error: result.reason });
-        }
-
-        return res.json({ success: true, report: result });
+        return res.json({
+            success: true,
+            queued: created,
+            pendingSince,
+            message: created
+                ? 'Ciclo solicitado. El motor lo tomará en menos de un minuto.'
+                : 'Ya había una solicitud sin atender; no se encola otra.',
+        });
     } catch (error) {
-        console.error('[api] fallo en /api/ingest/run', error);
+        console.error('[api] fallo al solicitar ciclo', error);
+        return res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+/** Últimas solicitudes y cómo terminaron, para que el panel dé señal de vida. */
+app.get('/api/ingest/requests', requireSession, async (req, res) => {
+    try {
+        return res.json({ success: true, requests: await recentRequests(5) });
+    } catch (error) {
+        console.error('[api] fallo al listar solicitudes', error);
         return res.status(500).json({ success: false, error: 'Error interno' });
     }
 });
@@ -468,23 +490,21 @@ app.listen(PORT, async () => {
         );
     }
 
-    if (!INGEST_IN_PROCESS) {
-        console.log(
-            '[servidor] ingesta en proceso DESACTIVADA. La ejecuta GitHub Actions cada 30 min. ' +
-            'Para ingerir desde aquí: INGEST_IN_PROCESS=true'
+    /**
+     * Este servidor YA NO INGIERE, ni siquiera opcionalmente.
+     *
+     * Un ciclo tarda entre uno y tres minutos, y este proceso está pensado para
+     * poder correr como función sin servidor, donde el límite de ejecución son
+     * segundos. Mantener aquí un `setInterval` de ingesta sería dejar una
+     * trampa: funcionaría en local y moriría a mitad en producción.
+     *
+     * La ingesta vive en `npm run worker`, un proceso propio con su propio
+     * reloj y sin conectividad entrante.
+     */
+    if (INGEST_IN_PROCESS) {
+        console.warn(
+            '[servidor] INGEST_IN_PROCESS=true ya no hace nada aquí. La ingesta corre en su ' +
+            'propio proceso: `npm run worker`.'
         );
-        return;
     }
-
-    runIngestionBatch().catch((error) =>
-        console.error('[servidor] fallo en la ingesta inicial', error)
-    );
-
-    // runIngestionBatch() se autoprotege del solapamiento, así que un ciclo
-    // lento ya no puede acumular ejecuciones encima.
-    setInterval(() => {
-        runIngestionBatch().catch((error) =>
-            console.error('[servidor] fallo en la ingesta programada', error)
-        );
-    }, INGEST_INTERVAL_MS);
 });

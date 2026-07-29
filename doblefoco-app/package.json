@@ -18,6 +18,7 @@
     "report:ingest": "node scripts/ingestReport.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "ingest:once": "node scripts/ingestOnce.mjs",
+    "worker": "node scripts/ingestWorker.mjs",
     "admin:create": "node scripts/createAdmin.mjs",
     "clean:filtered": "node scripts/cleanFiltered.mjs",
     "analyze:cocoverage": "node scripts/coCoverage.mjs",

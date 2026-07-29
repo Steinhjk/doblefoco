@@ -34,7 +34,7 @@ import { analyzeHeadlineTone } from '../../shared/headlineTone.js';
 import { assessArticle } from '../../shared/contentQuality.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { recordIngestRun } from './metricsStore.js';
-import { isDatabaseEnabled } from '../db/pool.js';
+import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
     hydrateArticles,
     persistArticles,
@@ -340,6 +340,42 @@ export async function runIngestionBatch() {
         return { skipped: true, reason: 'Ya hay un ciclo de ingesta en curso' };
     }
 
+    /**
+     * Cerrojo a nivel de BASE, no solo de proceso.
+     *
+     * `ingestionInProgress` impide que un ciclo se solape consigo mismo dentro
+     * de este proceso. No impide nada entre procesos: el motor desplegado y una
+     * ejecución de GitHub Actions, o dos motores durante un despliegue, pedirían
+     * los feeds de 34 medios a la vez.
+     *
+     * Eso importa por encima de la eficiencia. El proyecto se presenta ante esos
+     * medios con un User-Agent propio y una URL de transparencia; duplicarles el
+     * tráfico contradice esa postura, y uno ya nos responde 403.
+     *
+     * Un cerrojo consultivo de Postgres lo resuelve para SIEMPRE y sin
+     * coordinación: da igual cuántos planificadores existan ni dónde vivan, solo
+     * uno entra. Se libera solo si el proceso muere, porque va atado a la
+     * conexión — no hay estado que limpiar a mano.
+     *
+     * El número es arbitrario pero fijo: identifica a "el ciclo de ingesta".
+     */
+    const CERROJO = 872_301_455;
+    let conexionCerrojo = null;
+
+    if (isDatabaseEnabled()) {
+        const pool = getPool();
+        conexionCerrojo = await pool.connect();
+        const { rows } = await conexionCerrojo.query('SELECT pg_try_advisory_lock($1) AS tomado', [CERROJO]);
+
+        if (!rows[0].tomado) {
+            conexionCerrojo.release();
+            return {
+                skipped: true,
+                reason: 'Otro proceso está ejecutando un ciclo de ingesta ahora mismo',
+            };
+        }
+    }
+
     ingestionInProgress = true;
     const startedAt = Date.now();
 
@@ -512,6 +548,15 @@ export async function runIngestionBatch() {
         return report;
     } finally {
         ingestionInProgress = false;
+
+        if (conexionCerrojo) {
+            try {
+                await conexionCerrojo.query('SELECT pg_advisory_unlock($1)', [CERROJO]);
+            } catch {
+                // Si la conexión ya murió, el cerrojo se liberó con ella.
+            }
+            conexionCerrojo.release();
+        }
     }
 }
 

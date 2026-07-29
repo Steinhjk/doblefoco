@@ -16,9 +16,25 @@ import {
 } from '../../shared/mediaRegistry.js';
 import { classifySpectrum } from '../../shared/biasAnalysis.js';
 
-/** Logo derivado del dominio real, no del nombre. */
-function logoFor(domain) {
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
+/**
+ * Logo servido desde NUESTRO dominio, no desde Google.
+ *
+ * Antes esto devolvía `google.com/s2/favicons?domain=…`, así que el navegador
+ * de cada lector hacía decenas de peticiones a Google por página. Y cada una
+ * revelaba algo peor que una IP: QUÉ MEDIOS aparecen en la página que esa
+ * persona está leyendo, que en un sitio sobre pluralismo informativo dice
+ * bastante de lo que lee.
+ *
+ * Los archivos se descargan una sola vez con `npm run logos:fetch`. Se indexan
+ * por id del registro y no por dominio: el dominio puede cambiar —un medio
+ * migra, se renombra— y el id no.
+ *
+ * Cuando no hay archivo, MediaLogo pinta el monograma. Es la decisión de F1-07:
+ * un monograma legible comunica más que un icono roto, y nunca se inventa un
+ * logo que no tenemos.
+ */
+function logoFor(id) {
+    return id ? `/logos/${id}.png` : null;
 }
 
 /**
@@ -44,7 +60,7 @@ function toPresentation(media) {
         factuality: media.factuality,
         country: media.country,
         url: `https://${media.domain}`,
-        logo: logoFor(media.domain),
+        logo: logoFor(media.id),
         color: getBiasSpectrumColor(media.bias),
         isKnown: true,
     };

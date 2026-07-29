@@ -13,6 +13,8 @@
     "test:watch": "vitest",
     "preview": "vite preview",
     "docs:catalog": "node scripts/generateCatalogDoc.mjs",
+    "fonts:fetch": "node scripts/fetchFonts.mjs",
+    "logos:fetch": "node scripts/fetchLogos.mjs",
     "check:registry": "node scripts/checkRegistry.mjs",
     "check:feeds": "node scripts/verifyFeeds.mjs",
     "report:ingest": "node scripts/ingestReport.mjs",

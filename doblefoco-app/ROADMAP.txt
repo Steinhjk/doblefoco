@@ -1480,6 +1480,53 @@
  `stories`.
 
 ===============================================================================
+ DEPENDENCIAS DE TERCEROS — auditadas antes de desplegar (2026-07-29)
+===============================================================================
+ Jose preguntó si haría falta algún servicio de Google. Se auditó y había TRES,
+ ninguna elegida a propósito: venían del andamiaje inicial.
+
+ RETIRADAS, porque afectaban a CADA VISITANTE:
+
+   · TIPOGRAFÍAS. Se enlazaban a fonts.googleapis.com, así que el navegador de
+     cada lector pedía los archivos a Google: su IP y el momento exacto de la
+     visita, entregados a un tercero en cada carga. Ahora se sirven desde
+     nuestro dominio (`npm run fonts:fetch`, 24 archivos woff2, solo los
+     subconjuntos latin y latin-ext). De paso es más rápido: dos dominios menos
+     que resolver con su handshake TLS antes de pintar texto.
+
+   · LOGOS DE MEDIOS. Se pedían en caliente a google.com/s2/favicons, un icono
+     por chip, decenas de peticiones por página. Y cada una revelaba algo peor
+     que una IP: QUÉ MEDIOS aparecen en la página que esa persona está leyendo,
+     que en un sitio sobre pluralismo dice bastante de lo que lee.
+     Ahora se descargan una sola vez en la máquina que construye
+     (`npm run logos:fetch`, 39 de 40; BBC Mundo devuelve icono genérico y se
+     pinta con monograma). Google ve nuestro despliegue, no a los lectores.
+     Se indexan por id del registro y no por dominio: el dominio puede cambiar,
+     el id no.
+
+   La CSP ya no permite ninguno de esos orígenes, así que una regresión futura
+   quedaría bloqueada por la política en vez de pasar inadvertida.
+   VERIFICADO sobre el bundle compilado: 0 peticiones a google.com y 0 a
+   fonts.googleapis/gstatic en posición de descarga.
+
+ QUEDA UNA, y es de otra naturaleza:
+
+   · 7 de los 34 feeds pasan por news.google.com (Cambio, El Espectador,
+     Caracol Radio, Noticias Caracol, Blu Radio, Noticias RCN, La FM). Es una
+     dependencia de ABASTECIMIENTO, no de los visitantes: la usa el motor, no
+     el navegador de nadie.
+     Ya ha fallado dos veces —W Radio y RTVC Noticias, retirados por devolver
+     páginas de etiqueta y contenido de hace meses—, así que el riesgo está
+     demostrado, no es teórico.
+     PENDIENTE: comprobar si esos 7 medios publican RSS propio. Cada uno que se
+     pueda migrar reduce la superficie. Los que no, se quedan con la dependencia
+     documentada.
+
+ PILA COMPLETA, sin nada de Google salvo lo anterior:
+   Supabase (Postgres, sa-east-1) · Vercel (sitio + API) · Fly.io (motor de
+   ingesta) · GitHub (código, CI y respaldo de ingesta).
+
+===============================================================================
  RIESGOS ABIERTOS
 ===============================================================================
 

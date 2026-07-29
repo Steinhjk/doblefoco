@@ -127,3 +127,33 @@ export async function fetchIngestRequests() {
     if (!result.ok) return result;
     return { ok: true, requests: result.data?.requests ?? [] };
 }
+
+/**
+ * Errores de producción para el panel (F2-11).
+ *
+ * Antes de esto, los fallos solo iban a los registros de Fly: nadie los mira y
+ * no se conservan. El 2026-07-29 se encontraron tres fallos en producción
+ * sondeando a mano y ninguno había avisado.
+ *
+ * Exige sesión, como todo lo del panel: los mensajes de error describen la
+ * estructura interna del sistema.
+ */
+export async function fetchErrors({ todos = false } = {}) {
+    const result = await request(`/api/errors${todos ? '?todos=1' : ''}`, {
+        credentials: 'include',
+    });
+    if (!result.ok) return result;
+    return {
+        ok: true,
+        errores: result.data?.errores ?? [],
+        resumen: result.data?.resumen ?? { total: 0, ocurrencias: 0 },
+    };
+}
+
+/** Marca un error como atendido. No lo borra: el historial vale más. */
+export async function resolveError(huella) {
+    return request(`/api/errors/${encodeURIComponent(huella)}/resolver`, {
+        method: 'POST',
+        credentials: 'include',
+    });
+}

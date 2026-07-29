@@ -32,6 +32,11 @@ import { recordReport, REPORT_KINDS } from './db/reportStore.js';
 import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
+import { contarSinResolver, erroresRecientes, marcarResuelto, registrarError } from './db/errorStore.js';
+import { instalarCapturaDeErrores, middlewareDeErrores } from './observabilidad.js';
+
+// Lo primero de todo: si algo revienta durante el arranque, que quede escrito.
+instalarCapturaDeErrores('api');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -725,6 +730,16 @@ app.get('/noticia/:id', async (req, res) => {
         );
     } catch (error) {
         console.error('[ssr] fallo al renderizar la noticia', error);
+        // Esta ruta atiende su propio error para poder responder con HTML, así
+        // que nunca llega al middleware: se registra aquí a mano. Es además el
+        // sitio donde más importa, porque un fallo del renderizado no rompe la
+        // página —se sirve igual— y por tanto nadie lo notaría.
+        void registrarError({
+            error,
+            proceso: 'api',
+            origen: 'peticion',
+            ruta: `GET /noticia/:id`,
+        });
         // Que no se cachee un error: sin esto, la CDN guardaría media hora una
         // página rota para todo el mundo.
         res.setHeader('Cache-Control', 'no-store');
@@ -782,10 +797,48 @@ app.get('/api/ingest/requests', requireSession, async (req, res) => {
 });
 
 // Los mensajes de error internos no se filtran al cliente.
-app.use((error, req, res, _next) => {
-    console.error('[api] error no controlado', error);
-    res.status(500).json({ success: false, error: 'Error interno' });
+// ---------------------------------------------------------------------------
+// Errores de producción (F2-11) — solo con sesión
+// ---------------------------------------------------------------------------
+
+/**
+ * Los fallos vivos, para el panel.
+ *
+ * EXIGE SESIÓN, y no por costumbre: los mensajes de error describen la
+ * estructura interna del sistema —nombres de tabla, rutas de archivo, versiones
+ * de biblioteca— y eso es material de reconocimiento para quien quiera atacarlo.
+ * El contenido de esta tabla ya va redactado para no filtrar credenciales, pero
+ * eso es una segunda línea, no la primera.
+ */
+app.get('/api/errors', requireSession, async (req, res, next) => {
+    try {
+        const incluirResueltos = req.query.todos === '1';
+        const [errores, resumen] = await Promise.all([
+            erroresRecientes({ limite: Number(req.query.limit) || 50, incluirResueltos }),
+            contarSinResolver(),
+        ]);
+        res.json({ success: true, errores, resumen });
+    } catch (error) {
+        next(error);
+    }
 });
+
+/** Marca un fallo como atendido. No lo borra: el historial vale más. */
+app.post('/api/errors/:huella/resolver', requireSession, async (req, res, next) => {
+    try {
+        const cambiado = await marcarResuelto(req.params.huella);
+        if (!cambiado) {
+            return res.status(404).json({ success: false, error: 'No existe o ya estaba resuelto' });
+        }
+        res.json({ success: true });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// El manejador de errores va SIEMPRE el último: Express solo le pasa lo que no
+// atendió ninguna ruta anterior.
+app.use(middlewareDeErrores());
 
 // ---------------------------------------------------------------------------
 // Arranque

@@ -34,6 +34,11 @@ dotenv.config({ path: resolve(ROOT, '.env.local'), quiet: true });
 const { prepareStorage } = await import('../server/bootstrap.js');
 const { runIngestionBatch } = await import('../server/services/ingestDaemon.js');
 const { claimCycleRequest, finishCycleRequest } = await import('../server/db/requestStore.js');
+const { instalarCapturaDeErrores } = await import('../server/observabilidad.js');
+
+// El motor corre sin nadie mirando: si muere sin dejar constancia, la serie de
+// F1-01 se queda con un agujero y nadie se entera hasta ir a analizarla.
+instalarCapturaDeErrores('motor');
 const { closePool } = await import('../server/db/pool.js');
 
 /** Cada cuánto se ingiere. Media hora: cada feed solo expone sus últimos 15

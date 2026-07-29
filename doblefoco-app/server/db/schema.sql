@@ -336,3 +336,35 @@ CREATE TABLE IF NOT EXISTS waitlist (
     confirmed_at TIMESTAMPTZ,                  -- doble opt-in; NULL = sin confirmar
     deleted_at   TIMESTAMPTZ
 );
+
+-- ── 11. Errores de producción (F2-11) ────────────────────────────────────────
+-- Hasta aquí los fallos solo iban a console.error, que en Fly acaba en un
+-- registro que nadie mira y que además no se conserva. El 2026-07-29 se
+-- encontraron tres fallos en producción y los tres se descubrieron sondeando a
+-- mano: /api/health respondía 503 permanente, publicaba «0 artículos» sirviendo
+-- 2 400 historias, y una noticia cacheada apuntaba a un asset inexistente.
+-- Ninguno avisó.
+--
+-- SE AGREGA POR HUELLA, UNA FILA POR CLASE DE ERROR, no una por ocurrencia.
+-- La diferencia importa: un fallo dentro del ciclo de ingesta, que recorre
+-- 2 600 artículos, escribiría miles de filas idénticas y convertiría un
+-- incidente en dos —el fallo original y una base llena. Aquí el mismo error
+-- repetido incrementa `veces` y mueve `ultima_vez`.
+
+CREATE TABLE IF NOT EXISTS errores (
+    huella       TEXT PRIMARY KEY,   -- proceso + tipo + mensaje + ruta, hasheado
+    proceso      TEXT NOT NULL,      -- 'api' | 'motor'
+    origen       TEXT NOT NULL,      -- 'peticion' | 'promesa' | 'excepcion' | 'tarea'
+    tipo         TEXT NOT NULL,      -- nombre de la clase de error
+    mensaje      TEXT NOT NULL,
+    ruta         TEXT,               -- ruta HTTP, cuando el error viene de una
+    pila         TEXT,               -- primeras líneas, recortada
+    veces        INTEGER NOT NULL DEFAULT 1,
+    primera_vez  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    ultima_vez   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    resuelto_en  TIMESTAMPTZ         -- se marca desde el panel; no se borra
+);
+
+-- El panel lista lo más reciente primero, y solo lo no resuelto.
+CREATE INDEX IF NOT EXISTS errores_recientes_idx
+    ON errores (ultima_vez DESC) WHERE resuelto_en IS NULL;

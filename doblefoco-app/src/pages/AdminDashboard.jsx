@@ -5,7 +5,7 @@ import {
     Loader2, Users, Activity, AlertTriangle,
 } from 'lucide-react';
 import { exportSubscribersForOperator, getWaitlistCount } from '../services/storageService';
-import { fetchHealth, requestIngestion, isApiConfigured } from '../services/apiClient';
+import { fetchHealth, requestIngestion, isApiConfigured, fetchErrors, resolveError } from '../services/apiClient';
 import {
     decideStory,
     fetchCounts,
@@ -52,6 +52,11 @@ const AdminDashboard = () => {
     const [health, setHealth] = useState(null);
     const [ingesting, setIngesting] = useState(false);
     const [ingestMessage, setIngestMessage] = useState(null);
+
+    // Errores de producción (F2-11). Un panel que solo muestra lo que va bien
+    // no es un panel de operación.
+    const [errores, setErrores] = useState(null);
+    const [resolviendo, setResolviendo] = useState(null);
 
     /**
      * Trae los tres listados. No toca el estado: separar la obtención de su
@@ -118,6 +123,37 @@ const AdminDashboard = () => {
         const timer = setInterval(check, 60_000);
         return () => { cancelled = true; clearInterval(timer); };
     }, []);
+
+    // Fallos de producción, en la misma cadencia que la salud del motor.
+    const cargarErrores = useCallback(async () => {
+        if (!isApiConfigured) return;
+        const resultado = await fetchErrors();
+        if (resultado.ok) setErrores(resultado);
+    }, []);
+
+    // Mismo patrón que la sonda de salud de arriba: la bandera evita escribir
+    // estado sobre un componente ya desmontado si la respuesta llega tarde.
+    useEffect(() => {
+        if (!isApiConfigured) return undefined;
+
+        let cancelado = false;
+        const cargar = () => {
+            fetchErrors().then((resultado) => {
+                if (!cancelado && resultado.ok) setErrores(resultado);
+            });
+        };
+
+        cargar();
+        const timer = setInterval(cargar, 60_000);
+        return () => { cancelado = true; clearInterval(timer); };
+    }, []);
+
+    const handleResolver = async (huella) => {
+        setResolviendo(huella);
+        await resolveError(huella);
+        await cargarErrores();
+        setResolviendo(null);
+    };
 
     const handleDecide = async (storyId, state) => {
         setBusyId(storyId);
@@ -272,6 +308,54 @@ const AdminDashboard = () => {
                     </>
                 )}
             </div>
+
+            {errores?.errores?.length > 0 && (
+                <div className="staging-queue-section errores-section">
+                    <h2>Fallos en producción</h2>
+                    <p className="reports-caption">
+                        {errores.resumen.total} sin atender · {errores.resumen.ocurrencias}{' '}
+                        ocurrencia{errores.resumen.ocurrencias === 1 ? '' : 's'}. Se agrupan por
+                        tipo, no por vez: un fallo repetido suma en el contador en lugar de
+                        llenar la lista. Marcar como atendido no lo borra, y si vuelve a
+                        ocurrir reaparece solo.
+                    </p>
+
+                    <ul className="errores-list">
+                        {errores.errores.map((e) => (
+                            <li key={e.huella} className="error-row">
+                                <div className="error-cabecera">
+                                    <span className={`error-proceso error-proceso-${e.proceso}`}>
+                                        {e.proceso === 'api' ? 'API' : 'motor'}
+                                    </span>
+                                    <span className="error-tipo">{e.tipo}</span>
+                                    {e.veces > 1 && (
+                                        <span className="error-veces" title="Ocurrencias agrupadas">
+                                            ×{e.veces}
+                                        </span>
+                                    )}
+                                    {e.ruta && <code className="error-ruta">{e.ruta}</code>}
+                                </div>
+
+                                <p className="error-mensaje">{e.mensaje}</p>
+
+                                <div className="error-pie">
+                                    <time dateTime={e.ultima_vez}>
+                                        {new Date(e.ultima_vez).toLocaleString('es-CO')}
+                                    </time>
+                                    <button
+                                        type="button"
+                                        className="error-resolver"
+                                        onClick={() => handleResolver(e.huella)}
+                                        disabled={resolviendo === e.huella}
+                                    >
+                                        {resolviendo === e.huella ? 'Marcando…' : 'Marcar atendido'}
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {reports?.stories?.length > 0 && (
                 <div className="staging-queue-section">

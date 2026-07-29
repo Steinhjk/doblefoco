@@ -1303,7 +1303,7 @@
             comprobaciones visuales aplazadas.
 
 ===============================================================================
- FASE 3 — CRECIMIENTO                                          [~] EN CURSO (6/15)
+ FASE 3 — CRECIMIENTO                                          [~] EN CURSO (7/15)
 ===============================================================================
  Objetivo: que el producto se pueda encontrar, usar y entender.
 
@@ -1608,9 +1608,53 @@
             enlace de baja y responsable del tratamiento identificado
             (Ley 1581 de 2012). Hasta entonces sigue siendo lista de espera.
 
- [ ] F3-06  Filtros reflejados en la URL
-            Hoy el estado del feed vive en useState: no se puede compartir un
-            filtro, ni volver atrás, ni recargar sin perderlo.
+ [x] F3-06  Filtros reflejados en la URL (2026-07-29)
+
+            Vivían en `useState` dentro de NewsFeed, y eso rompía tres cosas que
+            cualquiera da por sentadas en una web:
+              · COMPARTIR. «Mira los puntos ciegos de la izquierda» exigía
+                explicar por escrito qué botones pulsar.
+              · VOLVER ATRÁS. El botón del navegador se saltaba el feed entero
+                en vez de deshacer el último filtro.
+              · RECARGAR. Un F5 devolvía a la portada sin filtros.
+
+            DOS COMPORTAMIENTOS DISTINTOS DE HISTORIAL, y la distinción es lo
+            que hace que se sienta bien:
+              · cambiar un FILTRO empuja entrada nueva, así que «atrás» deshace
+                ese filtro;
+              · «ver más» REEMPLAZA. Si empujara, volver desde una noticia
+                obligaría a pasar por cada carga de diez en diez —cinco
+                pulsaciones para salir del feed—, que es exasperante.
+
+            LOS VALORES POR OMISIÓN NO SE ESCRIBEN. La portada es `/`, no
+            `/?ambito=all&espectro=all&ciego=all&polar=all&orden=recent`. Una URL
+            que se comparte se lee.
+
+            LOS VALORES SE VALIDAN CONTRA UNA LISTA. Una URL la escribe
+            cualquiera: `?orden=loquesea` dejaría el feed en un estado que ningún
+            botón representa y del que no se sale sin editar la barra de
+            direcciones, y `?ver=999999999` intentaría pintar un millón de
+            tarjetas. Ambos casos tienen prueba.
+
+            DE PASO: la salida «quitar filtros» existía solo en el estado vacío,
+            o sea cuando ya te habías quedado sin resultados. Ahora aparece en
+            cuanto hay algún filtro puesto.
+
+            Claves en español porque las lee una persona; valores sin traducir,
+            que son los del clasificador de sesgo en shared/ — una capa de
+            traducción sería un sitio más donde equivocarse.
+
+            VERIFICADO: 15 pruebas sobre la lógica pura (lectura, validación,
+            tope de paginación, no escribir valores por omisión, no mutar los
+            parámetros recibidos). Secuencia completa simulada:
+              /  →  /?ciego=only  →  /?ciego=only&espectro=right
+                 →  ...&ver=20  →  ...&ver=30
+                 →  ...&orden=coverage (la paginación se reinicia)
+                 →  /  al quitar filtros
+            133 pruebas en total, typecheck, lint y build limpios.
+
+            SIN COMPROBAR EN PANTALLA todavía: va con el resto de verificaciones
+            visuales aplazadas.
 
  [ ] F3-07  "Dieta informativa" como sección propia
             Es la mejor idea del producto y está enterrada al final del

@@ -1,28 +1,34 @@
 // @ts-check
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown, Info } from 'lucide-react';
 import NewsCard from './NewsCard';
 import AnimateIn from './AnimateIn';
 import { useStories } from '../hooks/useStories';
+import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
 import EmptyState from './EmptyState';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import './NewsFeed.css';
 
-const PAGE_SIZE = 10;
-
 const NewsFeed = () => {
-    const [scopeFilter, setScopeFilter] = useState('all');
-    const [spectrumFilter, setSpectrumFilter] = useState('all');
-    const [blindspotFilter, setBlindspotFilter] = useState('all');
-    const [polarizationFilter, setPolarizationFilter] = useState('all');
-    const [sortBy, setSortBy] = useState('recent');
-    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-
     // Una sola fuente para todo el sitio (F2-03). Ya no hay respaldo al fixture:
     // aquel catálogo de demostración contenía 600 citas inventadas atribuidas a
     // 32 medios reales, y el aviso que lo acompañaba solo existía en esta
     // pantalla. O hay cobertura real, o se dice que no la hay.
     const { stories: allNews, status, reason } = useStories({ limit: 100 });
+
+    /**
+     * Los filtros viven en la URL, no en useState (F3-06). Así se pueden
+     * compartir, el botón «atrás» deshace el último y una recarga no devuelve a
+     * la portada perdiendo el sitio.
+     */
+    const { filtros, visibles, asignar, verMas, hayFiltros, limpiar } = useFiltrosDeFeed(allNews.length);
+    const {
+        ambito: scopeFilter,
+        espectro: spectrumFilter,
+        ciego: blindspotFilter,
+        polar: polarizationFilter,
+        orden: sortBy,
+    } = filtros;
 
     const nationalCount = useMemo(
         () => allNews.filter((s) => s.category !== 'Internacional').length,
@@ -70,7 +76,7 @@ const NewsFeed = () => {
         );
     }, [filteredNews, sortBy]);
 
-    const displayedNews = sortedNews.slice(0, visibleCount);
+    const displayedNews = sortedNews.slice(0, visibles);
     const blindspotCount = useMemo(
         () => allNews.filter((s) => s.coverage.blindspot).length,
         [allNews]
@@ -79,8 +85,6 @@ const NewsFeed = () => {
         () => allNews.filter((s) => !s.coverage.insufficientCoverage).length,
         [allNews]
     );
-
-    const resetPage = () => setVisibleCount(PAGE_SIZE);
 
     const spectrumOptions = [
         ['all', 'Todos'],
@@ -102,21 +106,21 @@ const NewsFeed = () => {
                 <button
                     className={`scope-tab ${scopeFilter === 'all' ? 'active' : ''}`}
                     aria-pressed={scopeFilter === 'all'}
-                    onClick={() => { setScopeFilter('all'); resetPage(); }}
+                    onClick={() => asignar('ambito', 'all')}
                 >
                     <Globe size={15} aria-hidden="true" /> Todas ({allNews.length})
                 </button>
                 <button
                     className={`scope-tab ${scopeFilter === 'nacional' ? 'active' : ''}`}
                     aria-pressed={scopeFilter === 'nacional'}
-                    onClick={() => { setScopeFilter('nacional'); resetPage(); }}
+                    onClick={() => asignar('ambito', 'nacional')}
                 >
                     <Flag size={15} aria-hidden="true" /> Colombia ({nationalCount})
                 </button>
                 <button
                     className={`scope-tab ${scopeFilter === 'internacional' ? 'active' : ''}`}
                     aria-pressed={scopeFilter === 'internacional'}
-                    onClick={() => { setScopeFilter('internacional'); resetPage(); }}
+                    onClick={() => asignar('ambito', 'internacional')}
                 >
                     <Globe size={15} aria-hidden="true" /> Internacional ({internationalCount})
                 </button>
@@ -133,7 +137,7 @@ const NewsFeed = () => {
                                 key={value}
                                 className={`filter-btn ${spectrumFilter === value ? 'active' : ''} filter-btn-${value}`}
                                 aria-pressed={spectrumFilter === value}
-                                onClick={() => { setSpectrumFilter(value); resetPage(); }}
+                                onClick={() => asignar('espectro', value)}
                             >
                                 {label}
                             </button>
@@ -149,7 +153,7 @@ const NewsFeed = () => {
                         <button
                             className={`filter-btn ${blindspotFilter === 'all' ? 'active' : ''}`}
                             aria-pressed={blindspotFilter === 'all'}
-                            onClick={() => { setBlindspotFilter('all'); resetPage(); }}
+                            onClick={() => asignar('ciego', 'all')}
                         >
                             Ver todo
                         </button>
@@ -162,17 +166,14 @@ const NewsFeed = () => {
                                     ? `Ninguna historia tiene aún los ${BLINDSPOT_MIN_SOURCES} medios necesarios para evaluar omisiones`
                                     : undefined
                             }
-                            onClick={() => { setBlindspotFilter('only'); resetPage(); }}
+                            onClick={() => asignar('ciego', 'only')}
                         >
                             Con punto ciego ({blindspotCount})
                         </button>
                         <button
                             className={`filter-btn ${polarizationFilter === 'high' ? 'active' : ''}`}
                             aria-pressed={polarizationFilter === 'high'}
-                            onClick={() => {
-                                setPolarizationFilter((p) => (p === 'high' ? 'all' : 'high'));
-                                resetPage();
-                            }}
+                            onClick={() => asignar('polar', polarizationFilter === 'high' ? 'all' : 'high')}
                         >
                             Cobertura polarizada
                         </button>
@@ -186,7 +187,7 @@ const NewsFeed = () => {
                             id="feed-sort"
                             className="sort-select"
                             value={sortBy}
-                            onChange={(e) => { setSortBy(e.target.value); resetPage(); }}
+                            onChange={(e) => asignar('orden', e.target.value)}
                         >
                             <option value="recent">Más recientes</option>
                             <option value="coverage">Más medios cubriendo</option>
@@ -209,7 +210,18 @@ const NewsFeed = () => {
                 <span>
                     Mostrando <strong>{displayedNews.length}</strong> de{' '}
                     <strong>{sortedNews.length}</strong> historias
+                    {hayFiltros && <> · <strong>{allNews.length}</strong> sin filtrar</>}
                 </span>
+
+                {/* Solo con filtros puestos. Antes esta salida existía únicamente
+                    en el estado vacío, es decir, cuando ya te habías quedado sin
+                    resultados: quitar un filtro exigía acordarse de cuál habías
+                    puesto y deshacerlo a mano. */}
+                {hayFiltros && (
+                    <button type="button" className="clear-filters-inline" onClick={limpiar}>
+                        Quitar filtros
+                    </button>
+                )}
             </div>
 
             <div className="feed-container">
@@ -224,14 +236,7 @@ const NewsFeed = () => {
                         <p>Ninguna historia coincide con estos filtros.</p>
                         <button
                             className="reset-filters-btn"
-                            onClick={() => {
-                                setSpectrumFilter('all');
-                                setBlindspotFilter('all');
-                                setPolarizationFilter('all');
-                                setScopeFilter('all');
-                                setSortBy('recent');
-                                resetPage();
-                            }}
+                            onClick={limpiar}
                         >
                             Restablecer filtros
                         </button>
@@ -239,13 +244,13 @@ const NewsFeed = () => {
                 )}
             </div>
 
-            {visibleCount < sortedNews.length && (
+            {visibles < sortedNews.length && (
                 <div className="load-more-box">
                     <button
                         className="load-more-btn"
-                        onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                        onClick={verMas}
                     >
-                        <span>Cargar más (+{PAGE_SIZE})</span>
+                        <span>Cargar más (+{TAMANO_PAGINA})</span>
                         <ChevronDown size={16} aria-hidden="true" />
                     </button>
                 </div>

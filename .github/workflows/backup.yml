@@ -1,0 +1,80 @@
+# =============================================================================
+#  Copia de seguridad diaria — infraestructura para la publicación
+# =============================================================================
+#  QUÉ PROBLEMA RESUELVE. No había ninguna copia. Y la creencia de que sí la
+#  había venía de un malentendido razonable: `data/ingest_runs.jsonl` está
+#  pensado para «sobrevivir a que Postgres no responda», lo cual es cierto en
+#  una máquina. Pero la ingesta corre en Actions, donde cada ejecución es un
+#  contenedor que se destruye, y `data/` está en .gitignore. En la práctica la
+#  BASE era el único sitio durable de la serie de F1-01 — la que por diseño no
+#  se puede reconstruir hacia atrás, porque los artículos se descartan a las
+#  72 horas y los ciclos ya ocurridos no se pueden volver a observar.
+#
+#  QUÉ SE GUARDA Y QUÉ NO. La decisión está en scripts/backup.mjs, con el
+#  motivo de cada exclusión. En resumen: lo irreemplazable Y sin datos
+#  personales. Los artículos no se respaldan porque se reconstruyen solos; el
+#  usuario del panel tampoco, y esa es la parte importante de aquí abajo.
+#
+#  EL ARTEFACTO ES PÚBLICO. Este repositorio lo es, y en un repositorio público
+#  cualquiera puede descargar los artefactos de Actions. Por eso el respaldo
+#  EXCLUYE `admin_users` (correo y hash de contraseña), `admin_sessions` (IP y
+#  user-agent) y `waitlist` (correos). Un `pg_dump` completo, que es lo que se
+#  haría por defecto, habría publicado las tres a diario y en horario.
+#  Si algún día hay que respaldar alguna de ellas, la conversación es sobre
+#  cifrado, no sobre añadirla a la lista.
+# =============================================================================
+
+name: Copia de seguridad
+
+on:
+  schedule:
+    # 07:20 UTC ≈ 02:20 en Colombia. Después del pico nocturno de ingesta y
+    # antes de que nadie mire el sitio.
+    - cron: '20 7 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: doblefoco-app
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+
+      # El script sale con 1 si la serie viene vacía o si aparece una tabla que
+      # nadie ha decidido si respaldar. Las dos cosas tienen que romper la
+      # ejecución: un respaldo que sale en verde sin contenido es peor que no
+      # tener respaldo, porque crea la confianza sin la copia, y eso solo se
+      # descubre el día que hace falta.
+      - name: Exportar
+        run: npm run backup
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Guardar el artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: doblefoco-backup-${{ github.run_id }}
+          path: doblefoco-app/backup/
+          # Un mes. La ventana útil de este respaldo es corta: el corpus se
+          # reconstruye solo y lo que de verdad se conserva es la serie, que
+          # además se acumula. Guardar un año de copias diarias sería pagar
+          # almacenamiento por copias que nadie va a mirar.
+          retention-days: 30
+          if-no-files-found: error

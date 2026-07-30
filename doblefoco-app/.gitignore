@@ -40,3 +40,4 @@ dist-ssr
 # Producto de la compilacion del bundle de servidor (F3-01). Se genera con
 # `npm run build` y se compila dentro de la imagen: no se versiona.
 dist-server
+/backup/

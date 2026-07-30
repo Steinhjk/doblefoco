@@ -62,18 +62,21 @@
 
 .navbar-search {
     flex: 1;
-    max-width: 420px;
+    max-width: 520px;
     margin: 0 40px;
     position: relative;
 }
 
+/* El padding derecho deja hueco para .search-submit-btn, que va posicionado
+   dentro de este mismo contenedor. Sin él, un texto largo se mete debajo de la
+   lupa. */
 .navbar-search input {
     width: 100%;
-    padding: 10px 16px;
+    padding: 12px 44px 12px 18px;
     border: 1px solid var(--border-color);
     border-radius: 2px;
     font-family: var(--font-main);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     background-color: rgba(0, 0, 0, 0.2);
     color: var(--text-main);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);

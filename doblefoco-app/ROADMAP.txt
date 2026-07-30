@@ -1807,22 +1807,105 @@
             no hay, la página dice que no hay. Cuando entre el primero,
             aparece con nombre, monto y fecha.
 
- [ ] F3-15  Documentar las fichas de propiedad de los medios
-            shared/mediaOwnership.js tiene la estructura y el contrato; el
-            contenido está vacío en los 40 medios. Falta lo que el lector
-            realmente quiere saber: quiénes son las personas dueñas, qué otros
-            negocios tiene el grupo y qué señalamientos registra.
-            NO SE RELLENA SIN FUENTES. Son afirmaciones sobre personas y
-            empresas identificables; publicarlas sin poder enlazar dónde
-            constan es lo mismo que fabricar un titular, con el agravante de
-            que aquí el sujeto puede demandar. `npm run check:registry` falla
-            si alguna ficha afirma algo con `sources` vacío.
-            MÉTODO: registros mercantiles y de la Superintendencia, informes
-            de la FLIP y de Reporteros sin Fronteras, investigaciones ya
-            publicadas (Cuestión Pública, Vorágine, La Silla Vacía) y
-            comunicados del propio medio. Una fuente por afirmación.
-            CRITERIO: los 27 medios colombianos con al menos una fuente
-            consultable, y `verifiedAt` con fecha.
+ [x] F3-15  Documentar las fichas de propiedad de los medios (2026-07-29)
+            Hechas 39 de las 40, cada afirmación con el enlace donde consta. El
+            criterio pedía los 27 colombianos; se hicieron además los 12
+            internacionales, porque el aviso de dueño compartido tenía que poder
+            dispararse en una noticia internacional y sin ficha no podía.
+
+            LO QUE APARECIÓ AL PONERLO JUNTO, y es el motivo de la tarea. No son
+            parejas, son TRES TRÍOS:
+              · Ardila Lülle ... Noticias RCN + La FM + La República
+              · Prisa .......... Caracol Radio + W Radio + El País (España)
+              · Valorem ........ El Espectador + Blu Radio + Noticias Caracol
+              · Sarmiento/Aval . El Tiempo + Portafolio
+              · Gilinski ....... Semana + El País (Cali)
+            Once medios que el lector ve como voces distintas son cinco dueños.
+
+            MEDIDO CONTRA LA BASE: de 298 historias multifuente, las que avisan
+            de dueño compartido pasan de 14 a 21 (4,7 % → 7,0 %), y en OCHO toda
+            la cobertura del hecho es de un solo dueño.
+
+            SEGUNDA COLISIÓN DE NOMBRE del catálogo, después de los dos Caracol:
+            El País de Cali es de Gilinski y El País de España es de Prisa. Sin
+            relación, y se dispararía justo en una noticia internacional. Tiene
+            prueba propia.
+
+            UNA AFIRMACIÓN SE CAYÓ AL COMPROBARLA, otra vez. Una búsqueda daba a
+            Galvis Ramírez como dueña de El Universal de Cartagena. En las
+            fuentes su participación es del 50 %, junto a la familia Araujo:
+            coposesión, no control. Como el aviso afirma «pertenecen a», el dato
+            quedó en la ficha y FUERA del cálculo. El contrato ahora lo exige:
+            `controlGroup` solo cuando el grupo CONTROLA.
+
+            QUEDA UNA VACÍA: colombia-informa. Su razón social está en
+            directorios de registro mercantil, pero no se localizó fuente
+            consultable sobre quién la controla. Hace falta el certificado del
+            RUES o sus estatutos — tarea de Jose, no de código. Al añadirla hay
+            que actualizar el conteo de /transparencia y la prueba que lo guarda.
+
+ [ ] F1-16  Filtrar noticia internacional relevante sin filtrar por tema
+            PEDIDO POR JOSE (2026-07-29). El enfoque del producto es nacional,
+            pero hay noticia internacional que sí vale la pena: Israel-Palestina,
+            Trump-Epstein. Lo que no interesa es la farándula peruana.
+
+            EL CRITERIO NO ES LA CATEGORÍA, ES EL UMBRAL DE COBERTURA, y esto
+            importa porque un filtro por tema es censura editorial por la puerta
+            de atrás —el mismo error que F1-14 tuvo cuidado de no cometer—. Un
+            hecho internacional que cubren muchos medios colombianos es material
+            de primera; un chisme que solo replica Infobae no lo es. La regla es
+            dejar de mostrar lo huérfano, no clasificar por geografía. La señal
+            ya existe: es la misma que decide qué se indexa (F3-03).
+
+            HALLAZGO QUE CONDICIONA LA TAREA (2026-07-29): de los 13 medios
+            internacionales del catálogo solo 6 tienen feed. Los 7 mudos son
+            EFE, Reuters, CNN en Español, NYT, WSJ, Financial Times y La
+            Vanguardia — e incluyen los DOS EXTREMOS del rango internacional
+            (WSJ +0,3 y NYT −0,25). Lo internacional que hoy entra está apiñado
+            entre −0,2 y +0,15: BBC Mundo, DW, France 24, Euronews, El País (ES)
+            e Infobae. Así que hoy no hay encuadres internacionales que
+            contrastar, hay seis medios de centro coincidiendo.
+            CONSECUENCIA: el umbral solo, sin resolver esto, dejaría pasar
+            noticia internacional cubierta por seis medios que piensan casi
+            igual. Antes de afinar el umbral hay que ver si esos 7 publican RSS
+            utilizable, con el criterio de W Radio y RTVC: un feed mudo es mejor
+            que un feed que miente.
+            CRITERIO: una noticia internacional se muestra si la cubren N medios
+            del catálogo con al menos dos bloques distintos del espectro; N
+            decidido con la serie de F1-01, no a ojo. Y ninguna regla que
+            nombre un país, un tema o una persona.
+
+ [ ] F3-16  Una vista del espacio mediático que haga visible la concentración
+            PEDIDO POR JOSE (2026-07-29). El mapa cartesiano actual sitúa cada
+            medio por sesgo y factualidad, y eso responde «dónde está cada uno».
+            No responde la pregunta que el proyecto acaba de poder contestar con
+            datos: QUIÉN MANDA, y cuánto. Falta una vista donde el monopolio se
+            vea de un golpe, «como una bola de cristal» del espacio mediático
+            colombiano.
+
+            POR QUÉ EL CARTESIANO NO PUEDE MOSTRARLO: da un punto por medio y
+            todos los puntos pesan igual. Semana y Colombia Informa ocupan el
+            mismo espacio en pantalla publicando 474 y 1 artículos. La
+            asimetría —que es el hallazgo central de F1-12— queda invisible por
+            construcción.
+
+            LO QUE LA VISTA TIENE QUE CODIFICAR, y ya hay dato para las tres:
+              · agrupación por DUEÑO, no por medio (CONTROL_GROUPS, F3-15);
+              · TAMAÑO proporcional al volumen publicado, no fijo;
+              · el espectro, para que se vea que el volumen y el sesgo están
+                correlacionados.
+            Un treemap o un diagrama de círculos agrupados cumple las tres; el
+            cartesiano no cumple ninguna. Decidir con un boceto antes de
+            escribir código.
+
+            EL RIESGO A EVITAR es una infografía bonita que afirme más de lo que
+            los datos aguantan. El volumen sale del RSS, no de la audiencia: un
+            medio que expone poco en su feed parece pequeño sin serlo — El
+            Espectador aparece con 34 artículos frente a 474 de Semana, y no es
+            su tamaño real. La vista TIENE que decir que mide presencia en
+            nuestro corpus, no cuota de mercado. Sin esa nota, no se publica.
+            CRITERIO: la vista responde «¿cuántos dueños hay detrás de lo que
+            leo?» en menos de cinco segundos, y declara su límite en pantalla.
 
  [x] F3-09  Anotación de lenguaje valorativo (2026-07-29)
 
@@ -2336,31 +2419,47 @@
 
  ORDEN RECOMENDADO. Las razones están en cada tarea; esto es solo la secuencia.
 
- 1. F3-01  Renderizado en servidor de /noticia/:id.
-           ES LA SIGUIENTE. Único riesgo ALTO abierto, y el camino ya está
-           validado por F3-03. Desglosada en 8 pasos con criterio de
-           verificación en su ficha.
+ HECHAS DESDE LA ÚLTIMA ACTUALIZACIÓN DE ESTE PLAN: F3-01 y F3-02 (renderizado
+ en servidor y metadatos, verificados contra producción con peticiones HTTP);
+ F3-15 (39 de las 40 fichas de propiedad) y el aviso de dueño compartido.
 
- 2. F3-02  Metadatos, Open Graph y JSON-LD. Se hace en la misma plantilla que
-           F3-01, inmediatamente después. No tiene sentido antes: sin servidor
-           que los emita, los rastreadores de WhatsApp y X no los verían.
-
- 3. F3-04  Comprobación visual de las columnas paralelas.
+ 1. F3-04  Comprobación visual de las columnas paralelas.
            TAREA DE JOSE, no de código: el diseño está hecho y NADIE lo ha visto
            todavía en un navegador. Abrir una noticia multifuente en móvil y en
            escritorio y decir si funciona. Cuesta cinco minutos y desbloquea
            saber si hay que rehacerlo.
+           Ahora hay más que mirar: en esa misma página va el aviso de dueño
+           compartido. /noticia/17mqcbj lo muestra con dos grupos a la vez.
 
- 4. F1-01  Cerrar la medición de 7 días.
+ 2. F1-01  Cerrar la medición de 7 días.
            YA NO REQUIERE TRABAJO, solo esperar: el motor lleva ingiriendo solo
            desde el 2026-07-29 y la serie se completa alrededor del 2026-08-02.
            Entonces: `npm run report:ingest` y decidir F1-05 y F1-12 con datos
-           en vez de a ojo.
+           en vez de a ojo. Al 2026-07-30 hay 3 días de 7.
 
- 5. F2-11  Telemetría de errores. Sube de prioridad ahora que hay producción:
+ 3. F1-13  Firmar los valores de sesgo, empezando por los que ya chirrían.
+           SUBE DE PRIORIDAD y ahora hay con qué. Jose señaló (2026-07-29) que
+           El Colombiano (+0,35) y Semana (+0,45) deberían salir más a la
+           derecha, y que la banda «Derecha» esté vacía con 0 medios es un
+           defecto del instrumento, no un retrato del país. Los 40 valores
+           siguen sin firmar por un editor.
+           LO NUEVO: F3-15 dejó el dueño como dato estructurado, así que por
+           primera vez se puede revisar el sesgo mirando quién controla el medio
+           y no solo su léxico — que es lo que Jose pidió. Ojo con la
+           circularidad: el dueño INFORMA la revisión editorial, no la
+           sustituye ni entra en ninguna fórmula automática.
+
+ 4. F2-11  Telemetría de errores. Sube de prioridad ahora que hay producción:
            el 2026-07-29 se encontraron tres fallos y ninguno avisó solo.
 
- 6. F1-06  Reabierta: quedan 5 medios de izquierda o centro-izquierda con feed,
+ 5. F1-16  Noticia internacional relevante. Depende de averiguar primero si los
+           7 medios internacionales mudos publican RSS utilizable; hoy lo
+           internacional que entra son seis medios de centro.
+
+ 6. F3-16  La vista del espacio mediático por dueño. Se apoya en F3-15, que ya
+           está, y es la que hace visible el monopolio. Empezar por un boceto.
+
+ 7. F1-06  Reabierta: quedan 5 medios de izquierda o centro-izquierda con feed,
            y el criterio pedía 6. Ver también el hallazgo de F1-15, que cambia
            el planteamiento: el problema no es cuántos hay.
 

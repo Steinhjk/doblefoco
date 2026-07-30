@@ -3,7 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX } from 'lucide-react';
 import { getMediaByName } from '../data/mediaLogos';
-import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
+import StoryImage from '../components/StoryImage';
+import { tieneImagen } from '../services/imageEngineService';
 import { fetchStory, isApiConfigured } from '../services/apiClient';
 import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
 import { useStories } from '../hooks/useStories';
@@ -239,11 +240,6 @@ const NewsDetail = () => {
     const timeLabel = storyTimeLabel(story);
     const spectrums = ['left', 'center', 'right'];
 
-    const handleImageError = (e) => {
-        e.target.onerror = null;
-        e.target.src = FALLBACK_NEUTRAL_IMAGE;
-    };
-
     return (
         <div className="news-detail-page">
             <div className="detail-header">
@@ -337,18 +333,19 @@ const NewsDetail = () => {
                 </div>
 
                 <div className="detail-sidebar-col">
-                    <div className="detail-compact-image-box">
-                        <img
-                            src={getOrRotateNeutralImage(story)}
-                            alt=""
-                            width="600"
-                            height="400"
+                    {/* La etiqueta que había aquí decía «Imagen ilustrativa», y
+                        era un reconocimiento de que la foto no era del hecho: se
+                        elegía de un banco de archivo por hash del titular. Ya no
+                        hace falta advertir nada, porque o la foto es la que
+                        publicó el medio —acreditada— o no hay foto. */}
+                    <div className={`detail-compact-image-box ${tieneImagen(story) ? '' : 'sin-imagen'}`}>
+                        <StoryImage
+                            story={story}
                             className="detail-compact-image"
-                            onError={handleImageError}
+                            width={600}
+                            height={400}
+                            eager
                         />
-                        {/* Etiqueta honesta: es una imagen de banco, no una
-                            fotografía del hecho. */}
-                        <span className="detail-image-disclaimer">Imagen ilustrativa</span>
 
                         {typeof story.factuality === 'number' && (
                             <div

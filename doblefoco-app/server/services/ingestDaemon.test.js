@@ -1,6 +1,6 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
-import { parsePublishedAt } from './ingestDaemon.js';
+import { parsePublishedAt, extractImage, cleanHeadline } from './ingestDaemon.js';
 
 /**
  * La fecha del feed es un dato que declara el medio y que nadie comprueba. Estas
@@ -50,5 +50,170 @@ describe('parsePublishedAt', () => {
         // artículo desaparece. De la ventana de 72 h se encarga pruneArticles.
         expect(parsePublishedAt({ isoDate: '2020-01-01T00:00:00.000Z' }, AHORA))
             .toBe('2020-01-01T00:00:00.000Z');
+    });
+});
+
+/**
+ * LA IMAGEN QUE SE ACEPTA DE UN FEED.
+ *
+ * Estas pruebas existen por lo que había antes: la portada ilustraba cada
+ * noticia con una foto de archivo de Unsplash elegida por `hash(titular) % 21`,
+ * de modo que «Condenan a Carlos Caicedo a cerca de 10 años de cárcel» salía con
+ * la imagen etiquetada «Indicadores Económicos». Ahora la imagen sale del feed
+ * del propio medio o no hay imagen, y lo que se acepta del feed queda fijado
+ * aquí.
+ *
+ * La regla del mismo dominio es la que más importa: sin ella, cualquier feed
+ * podría hacer que el navegador del lector pidiera una URL a un tercero.
+ */
+describe('extractImage', () => {
+    const LINK = 'https://www.semana.com/nacion/articulo/una-noticia/123/';
+    const FOTO = 'https://www.semana.com/resizer/foto.jpg';
+
+    const mediaContent = (attrs) => ({ mediaContent: [{ $: attrs }] });
+
+    it('toma la imagen de media:content', () => {
+        expect(extractImage(mediaContent({ url: FOTO, type: 'image/jpeg' }), LINK)).toBe(FOTO);
+    });
+
+    it('acepta media:content sin tipo si la extensión es de imagen', () => {
+        expect(extractImage(mediaContent({ url: FOTO }), LINK)).toBe(FOTO);
+    });
+
+    it('acepta medium="image" aunque no declare el tipo MIME', () => {
+        const sinExtension = 'https://www.semana.com/resizer/abc123';
+        expect(extractImage(mediaContent({ url: sinExtension, medium: 'image' }), LINK))
+            .toBe(sinExtension);
+    });
+
+    it('toma la imagen de enclosure, donde los atributos vienen planos', () => {
+        const item = { enclosure: { url: FOTO, type: 'image/jpeg' } };
+        expect(extractImage(item, LINK)).toBe(FOTO);
+    });
+
+    it('RECHAZA una imagen de otro dominio', () => {
+        // Es la regla que importa: un feed no puede hacer que el navegador del
+        // lector pida algo a un tercero. Un rastreador disfrazado de imagen
+        // entraría por aquí.
+        const ajena = 'https://rastreador.example.com/pixel.jpg';
+        expect(extractImage(mediaContent({ url: ajena, type: 'image/jpeg' }), LINK)).toBeNull();
+    });
+
+    it('acepta un subdominio del propio medio', () => {
+        const cdn = 'https://cdn.semana.com/foto.jpg';
+        expect(extractImage(mediaContent({ url: cdn, type: 'image/jpeg' }), LINK)).toBe(cdn);
+    });
+
+    it('RECHAZA http: no cargaría en una página https y degrada la conexión', () => {
+        const insegura = 'http://www.semana.com/foto.jpg';
+        expect(extractImage(mediaContent({ url: insegura, type: 'image/jpeg' }), LINK)).toBeNull();
+    });
+
+    it('RECHAZA un enclosure que no es imagen', () => {
+        // Un enclosure puede ser un audio o un PDF.
+        const item = { enclosure: { url: 'https://www.semana.com/pod.mp3', type: 'audio/mpeg' } };
+        expect(extractImage(item, LINK)).toBeNull();
+    });
+
+    it('devuelve null cuando el feed no trae imagen, que es lo más frecuente', () => {
+        expect(extractImage({ title: 'algo' }, LINK)).toBeNull();
+        expect(extractImage(null, LINK)).toBeNull();
+    });
+
+    it('prefiere media:content a media:thumbnail', () => {
+        const item = {
+            mediaContent: [{ $: { url: FOTO, type: 'image/jpeg' } }],
+            mediaThumbnail: [{ $: { url: 'https://www.semana.com/mini.jpg', type: 'image/jpeg' } }],
+        };
+        expect(extractImage(item, LINK)).toBe(FOTO);
+    });
+
+    it('se salta un candidato inválido y sigue con el siguiente', () => {
+        const item = {
+            mediaContent: [
+                { $: { url: 'no-es-una-url', type: 'image/jpeg' } },
+                { $: { url: FOTO, type: 'image/jpeg' } },
+            ],
+        };
+        expect(extractImage(item, LINK)).toBe(FOTO);
+    });
+
+    it('no revienta con un enlace de artículo inválido', () => {
+        expect(extractImage(mediaContent({ url: FOTO, type: 'image/jpeg' }), 'no-es-url')).toBeNull();
+    });
+});
+
+describe('extractImage con hosts declarados en el registro', () => {
+    const LINK_SEMANA = 'https://www.semana.com/nacion/articulo/algo/123/';
+    const ARC = 'https://semana-semana-prod.web.arc-cdn.net/resizer/v2/ABC.jpg?auth=x';
+
+    it('acepta la CDN del gestor de contenidos cuando el medio la declara', () => {
+        // Medido el 2026-07-30: sin esto se perdían TODAS las fotos de Semana,
+        // El País de Cali y BBC Mundo, que son 3 de los 12 feeds con imagen.
+        const item = { mediaContent: [{ $: { url: ARC, type: 'image/jpeg' } }] };
+        expect(extractImage(item, LINK_SEMANA, ['semana-semana-prod.web.arc-cdn.net'])).toBe(ARC);
+    });
+
+    it('la rechaza si el medio NO la declara', () => {
+        const item = { mediaContent: [{ $: { url: ARC, type: 'image/jpeg' } }] };
+        expect(extractImage(item, LINK_SEMANA)).toBeNull();
+        expect(extractImage(item, LINK_SEMANA, [])).toBeNull();
+    });
+
+    it('NO acepta otro cliente de la misma CDN: la coincidencia es exacta', () => {
+        // Arc Publishing sirve a cientos de medios ajenos a este catálogo. Un
+        // comodín *.arc-cdn.net los dejaría entrar todos.
+        const ajeno = 'https://otro-medio-prod.web.arc-cdn.net/resizer/v2/XYZ.jpg';
+        const item = { mediaContent: [{ $: { url: ajeno, type: 'image/jpeg' } }] };
+        expect(extractImage(item, LINK_SEMANA, ['semana-semana-prod.web.arc-cdn.net'])).toBeNull();
+    });
+
+    it('un host declarado sigue teniendo que ser https', () => {
+        const insegura = 'http://semana-semana-prod.web.arc-cdn.net/resizer/v2/ABC.jpg';
+        const item = { mediaContent: [{ $: { url: insegura, type: 'image/jpeg' } }] };
+        expect(extractImage(item, LINK_SEMANA, ['semana-semana-prod.web.arc-cdn.net'])).toBeNull();
+    });
+});
+
+/**
+ * El sufijo que añade Google News no es del medio, así que quitarlo devuelve el
+ * titular a lo que era. Todo lo demás se deja intacto: la regla del archivo es
+ * que el titular es literal.
+ */
+describe('cleanHeadline', () => {
+    it('quita el sufijo con el nombre del medio', () => {
+        expect(cleanHeadline('Petro anuncia reforma - Caracol Radio', 'Caracol Radio', 'caracol.com.co'))
+            .toBe('Petro anuncia reforma');
+    });
+
+    it('quita el sufijo con el DOMINIO, que es como rotula una búsqueda site:', () => {
+        // El caso que dejó «Noticias y Radio Online - wradio.com.co» en la base.
+        expect(cleanHeadline('Noticias y Radio Online - wradio.com.co', 'W Radio', 'wradio.com.co'))
+            .toBe('Noticias y Radio Online');
+    });
+
+    it('quita el sufijo aunque el dominio venga con www.', () => {
+        expect(cleanHeadline('Algo pasó - www.eltiempo.com', 'El Tiempo', 'eltiempo.com'))
+            .toBe('Algo pasó');
+    });
+
+    it('NO toca un guion que forma parte del titular', () => {
+        // El sufijo se reconoce por coincidir con el medio, no por haber un guion.
+        const t = 'Petro - Trump: la reunión que no fue';
+        expect(cleanHeadline(t, 'Semana', 'semana.com')).toBe(t);
+    });
+
+    it('NO recorta adjetivos ni prefijos: el titular es literal', () => {
+        const t = 'URGENTE: escandaloso fallo del tribunal';
+        expect(cleanHeadline(t, 'Semana', 'semana.com')).toBe(t);
+    });
+
+    it('normaliza los espacios y nada más', () => {
+        expect(cleanHeadline('  Dos   espacios  ', 'Semana', 'semana.com')).toBe('Dos espacios');
+    });
+
+    it('aguanta entradas vacías', () => {
+        expect(cleanHeadline(null, 'Semana', 'semana.com')).toBe('');
+        expect(cleanHeadline('Titular', undefined, undefined)).toBe('Titular');
     });
 });

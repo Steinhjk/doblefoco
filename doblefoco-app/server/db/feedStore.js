@@ -75,7 +75,7 @@ async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }
     const articulos = await safeQuery(
         `
         SELECT sa.story_id, a.id, a.headline, a.canonical_url, a.snippet,
-               a.tone, a.published_at,
+               a.tone, a.published_at, a.image_url,
                s.id AS source_id, s.name AS outlet, s.domain, s.bias, s.factuality
           FROM story_articles sa
           JOIN articles a ON a.id = sa.article_id
@@ -160,6 +160,27 @@ function componerHistoria(fila, articulos) {
     const sources = [...porMedio.values()];
     const coverage = analyzeCoverage(sources);
 
+    /**
+     * LA IMAGEN ES DEL MEDIO QUE PONE EL TITULAR, o de ninguno.
+     *
+     * Se prefiere el artículo cuyo titular representa la historia: es el que el
+     * lector ve arriba, así que su foto es la que le corresponde. Si ese no trae
+     * imagen se cae al primer artículo que sí la tenga, y con él viaja el nombre
+     * del medio — sin eso, la foto de El Tiempo aparecería bajo el titular de
+     * Semana sin decirlo, que es atribuir material ajeno.
+     *
+     * `null` cuando ningún medio publicó imagen. No se sustituye por nada:
+     * antes se rellenaba con una foto de archivo de Unsplash elegida por hash
+     * del titular, y una condena por corrupción salía ilustrada con
+     * «Indicadores Económicos».
+     */
+    const conImagen = articulos.find((a) => a.image_url && a.source_id === fila.title_source_id)
+        ?? articulos.find((a) => a.image_url);
+
+    const image = conImagen
+        ? { url: conImagen.image_url, outlet: conImagen.outlet, outletId: conImagen.source_id }
+        : null;
+
     return {
         id: fila.id,
         title: fila.title,
@@ -167,6 +188,7 @@ function componerHistoria(fila, articulos) {
         titleOutletId: fila.title_source_id,
         titleUrl: fila.title_url,
         category: fila.category,
+        image,
 
         publishedAt: fila.published_at,
         firstSeenAt: fila.first_seen_at,

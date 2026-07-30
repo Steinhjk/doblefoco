@@ -153,6 +153,18 @@ export function normalizeStory(raw) {
 
         publishedAt: raw.publishedAt ?? null,
 
+        /**
+         * Imagen que publicó el medio, con el medio al lado para acreditarla.
+         * `null` cuando ninguno de los que cubren el hecho trae foto, que es lo
+         * más frecuente: de los 31 feeds del catálogo solo 12 la incluyen.
+         *
+         * Este normalizador construye un objeto NUEVO, así que un campo que no
+         * se copie aquí desaparece sin error. Es lo que pasó al añadir la
+         * imagen: llegaba en la respuesta, se perdía en esta función y la
+         * pantalla no pintaba nada — un fallo silencioso, sin traza.
+         */
+        image: raw.image ?? null,
+
         sources,
         coverage,
 
@@ -195,6 +207,7 @@ export function normalizeStory(raw) {
  * @property {string} category
  * @property {string|null} summary
  * @property {string|null} publishedAt
+ * @property {{url: string, outlet: string|null, outletId: string|null}|null} image
  * @property {Array<{name: string, bias: number, url?: string, factuality?: number}>} sources
  * @property {ReturnType<typeof import('../../shared/biasAnalysis.js').analyzeCoverage>} coverage
  * @property {number|null} factuality

@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { ExternalLink, Layers, Sparkles } from 'lucide-react';
 import { useStories } from '../hooks/useStories';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
-import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
+import StoryImage from './StoryImage';
+import { tieneImagen } from '../services/imageEngineService';
 import { storyTimeLabel } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
 import CoverageBar from './CoverageBar';
@@ -36,11 +37,6 @@ const CompactHeroGrid = () => {
         return { main: ranked[0] ?? null, secondary: ranked.slice(1, 4) };
     }, [stories]);
 
-    const handleImageError = (e) => {
-        e.target.onerror = null;
-        e.target.src = FALLBACK_NEUTRAL_IMAGE;
-    };
-
     if (!featured.main) return null;
 
     const { main, secondary } = featured;
@@ -62,26 +58,32 @@ const CompactHeroGrid = () => {
 
             <div className="compact-hero-grid">
                 <article className="hero-spotlight-card">
-                    <Link
-                        to={rutaDeHistoria(main)}
-                        className="spotlight-image-link"
-                        onClick={() => recordRead(main)}
-                        tabIndex={-1}
-                        aria-hidden="true"
-                    >
-                        <img
-                            src={getOrRotateNeutralImage(main)}
-                            alt=""
-                            width="800"
-                            height="450"
-                            className="spotlight-image"
-                            onError={handleImageError}
-                        />
-                        <span className="spotlight-category-tag">{main.category}</span>
-                    </Link>
+                    {/* Sin imagen no se deja el hueco: el titular sube arriba. */}
+                    {tieneImagen(main) && (
+                        <Link
+                            to={rutaDeHistoria(main)}
+                            className="spotlight-image-link"
+                            onClick={() => recordRead(main)}
+                            tabIndex={-1}
+                            aria-hidden="true"
+                        >
+                            <StoryImage
+                                story={main}
+                                className="spotlight-image"
+                                width={800}
+                                height={450}
+                                eager
+                            >
+                                <span className="spotlight-category-tag">{main.category}</span>
+                            </StoryImage>
+                        </Link>
+                    )}
 
                     <div className="spotlight-body">
                         <div className="spotlight-meta">
+                            {!tieneImagen(main) && main.category && (
+                                <span className="spotlight-category-inline">{main.category}</span>
+                            )}
                             <span className="meta-time">{storyTimeLabel(main)}</span>
                             <span className="meta-sources-count">
                                 <Layers size={12} aria-hidden="true" /> {main.coverage.total} medios
@@ -126,22 +128,23 @@ const CompactHeroGrid = () => {
                 <div className="hero-secondary-stack">
                     {secondary.map((story) => (
                         <article key={story.id} className="secondary-compact-card">
-                            <Link
-                                to={rutaDeHistoria(story)}
-                                className="secondary-image-link"
-                                onClick={() => recordRead(story)}
-                                tabIndex={-1}
-                                aria-hidden="true"
-                            >
-                                <img
-                                    src={getOrRotateNeutralImage(story)}
-                                    alt=""
-                                    width="240"
-                                    height="160"
-                                    className="secondary-image"
-                                    onError={handleImageError}
-                                />
-                            </Link>
+                            {tieneImagen(story) && (
+                                <Link
+                                    to={rutaDeHistoria(story)}
+                                    className="secondary-image-link"
+                                    onClick={() => recordRead(story)}
+                                    tabIndex={-1}
+                                    aria-hidden="true"
+                                >
+                                    <StoryImage
+                                        story={story}
+                                        className="secondary-image"
+                                        width={240}
+                                        height={160}
+                                        showCredit={false}
+                                    />
+                                </Link>
+                            )}
 
                             <div className="secondary-content">
                                 <div className="secondary-meta">

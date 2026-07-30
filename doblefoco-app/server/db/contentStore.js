@@ -130,10 +130,11 @@ export async function persistArticles(articles) {
         `
         INSERT INTO articles
             (id, canonical_url, source_id, headline, raw_title, snippet,
-             category, tone, published_at, ingested_at)
+             category, tone, published_at, ingested_at, image_url)
         SELECT * FROM unnest(
             $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
-            $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[]
+            $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[],
+            $11::text[]
         )
         ON CONFLICT DO NOTHING
         `,
@@ -148,6 +149,9 @@ export async function persistArticles(articles) {
             usable.map((a) => (a.tone ? JSON.stringify(a.tone) : null)),
             usable.map((a) => a.publishedAt ?? null),
             usable.map((a) => new Date(a.ingestedAtMs ?? Date.now()).toISOString()),
+            // null cuando el feed no trae imagen, que es lo más frecuente. No se
+            // sustituye por nada: o es la del medio, o no hay.
+            usable.map((a) => a.imageUrl ?? null),
         ],
         'guardado de artículos'
     );

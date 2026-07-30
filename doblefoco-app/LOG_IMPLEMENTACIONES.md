@@ -288,3 +288,128 @@ Historias donde TODA la cobertura es de un solo dueño: 8
                   dos grupos en una sola noticia, renderizados en servidor
 204 pruebas · typecheck, lint y build limpios · check:registry sin errores
 ```
+
+---
+
+### [2026-07-30] Las imágenes de las noticias no eran de las noticias
+
+#### Hallazgo
+Jose pidió revisar las imágenes. Ninguna era real, y el código decía lo
+contrario.
+
+`imageEngineService.js` tenía un banco de 21 fotos de archivo de Unsplash y
+elegía una con `hash(id + titular) % 21`. Su comentario afirmaba «genera una URL
+de búsqueda contextual basada en las palabras clave del titular»: **no analizaba
+ninguna palabra**. El ejemplo sacado de la propia base: «Condenan a Carlos
+Caicedo a cerca de 10 años de cárcel por escándalo de corrupción» se ilustraba
+con la foto que el archivo etiquetaba «Indicadores Económicos».
+
+Tres agravantes:
+1. La rama que «prioriza la imagen real del artículo» **nunca se ejecutaba**: no
+   había columna de imagen en la base ni extracción en el motor, así que
+   `article.image` no existía en ningún caso. Código muerto que hacía parecer que
+   el sistema usaba fotos reales.
+2. Estaba también en la página de detalle a tamaño grande, que es la que se
+   renderiza en servidor y se indexa.
+3. Cada tarjeta cargaba desde `images.unsplash.com`, más un `preconnect` en
+   `index.html`. Es el mismo problema de privacidad que ya se había arreglado con
+   los logos: cada petición a un tercero revela qué está leyendo esa persona.
+
+Una imagen junto a un titular se lee como documental. Era la fabricación que la
+Fase 0 eliminó del texto, sobreviviendo en el apartado visual.
+
+#### Lo que se hizo
+- `schema.sql`: `articles.image_url`, NULL cuando el feed no trae ninguna.
+- `ingestDaemon.js`: `extractImage()` lee `media:content`, `media:thumbnail` y
+  `enclosure`. Exige **https** y que el host sea del medio.
+- `mediaRegistry.js`: campo `imageHosts` por medio. Hizo falta al medirlo — de
+  los 12 feeds con imagen, 9 la sirven desde su dominio y 3 desde la
+  infraestructura de su gestor de contenidos (Semana y El País de Cali desde la
+  CDN de Arc Publishing, BBC Mundo desde ichef.bbci.co.uk). Se declaran **uno a
+  uno, sin comodines**: `*.arc-cdn.net` admitiría cientos de medios ajenos al
+  catálogo, y si un medio cambia de CDN sus fotos dejan de salir en vez de
+  abrirse un agujero.
+- `feedStore.js`: la imagen es la del medio que pone el titular, o del primero
+  que la tenga, y viaja con el nombre del medio para acreditarla.
+- `StoryImage.jsx` (nuevo): la imagen o nada. Si falla al cargar, tampoco se
+  sustituye. `referrerPolicy="no-referrer"`.
+- `story.js`: `image` en el normalizador. **Fallo silencioso encontrado al
+  verificar:** el normalizador construye un objeto nuevo, así que el campo
+  llegaba en la respuesta y se perdía ahí sin ningún error.
+- Retirados el banco de fotos, el `preconnect` y la etiqueta «Imagen
+  ilustrativa» de la página de detalle, que era el reconocimiento de que la foto
+  no era del hecho.
+
+#### El fallo que `curl` no podía detectar
+El `img-src` de **vercel.json** permitía `https://images.unsplash.com` y nada
+más. Es decir: el motor guardaba la foto de El Tiempo, el servidor la servía en
+el HTML y **el navegador del lector la bloqueaba**. Nada fallaba en el servidor,
+nada aparecía en los registros y una petición con `curl` —que no aplica CSP—
+pasaba la verificación sin enterarse.
+
+`img-src` se regeneró desde el registro y `src/services/csp.test.js` (nuevo)
+falla si un medio con feed no está cubierto. La prueba **ya sirvió**: al
+reactivar W Radio y RTVC saltó sola porque sus dominios no estaban.
+
+También se marcó `securityService.js` como NO APLICADO. No se importa desde
+ningún sitio: un archivo llamado «security» que no protege nada hace pensar que
+el asunto está resuelto, y estuve a punto de editar su CSP creyendo que regía.
+
+- **Evidencias de Verificación** (contra la base y los feeds reales):
+```
+extractImage sobre feeds en vivo: el-heraldo 20/20 · semana 20/20
+                                 el-pais-cali 20/20 · bbc-mundo 20/20
+/noticia/1wsy1te → imagen real de imagenes2.eltiempo.com
+                   crédito «Foto: El Tiempo» · no-referrer · 0 unsplash
+237 pruebas · typecheck, lint y build limpios · check:registry sin errores
+```
+
+---
+
+### [2026-07-30] W Radio y RTVC Noticias vuelven al catálogo
+
+#### Motivo
+Decisión de Jose: **no se silencia a ningún medio.** Los dos llevaban dos días
+retirados por una decisión tomada en otra sesión que quedó escrita como si fuera
+criterio del proyecto, y él no la había pedido.
+
+#### Cómo, sin volver a meter la basura que motivó el retiro
+- Los dos entran por Google News con búsqueda `site:`, la misma vía que Caracol
+  Radio. RTVC ya devuelve titulares reales por ahí y no las páginas de etiqueta
+  («Gustavo Petro», «principal») que motivaron el retiro. Su `rss.xml` propio
+  sigue inservible: lo más reciente es del 30 de mayo y de ahí salta a junio de
+  **2024**, con una entrada titulada «sitio en mantenimiento».
+- W Radio sigue sin RSS propio: se reprobaron `/feed/`, `/rss/`, `/rss.xml`,
+  `/feeds/rss/` y `/feed/rss/` y los cinco dan 404. Se busca por `site:` y NO por
+  nombre: buscar «W Radio» trae piezas de otros medios que la mencionan, que es
+  la misatribución que costó F1-07.
+- **Regla `no-es-articulo`** en `contentQuality.js`. Su feed entregó «Noticias y
+  Radio Online» fechada el día anterior, que sobrevivía a la ventana de 72 h y
+  llegó a la base como noticia de W Radio. Los patrones están anclados al titular
+  COMPLETO (`^...$`) para no repetir el error de F1-14, donde un patrón de
+  lotería descartó «obras de rehabilitación del CDI El Dorado».
+- `cleanHeadline` aprendió a quitar el sufijo « - dominio» que Google añade en
+  las búsquedas `site:`. No era solo de W Radio: afectaba a 6 artículos de 4
+  medios, y cada uno era un titular que no era literal.
+
+#### Qué aportan, dicho sin adornos
+**Cero artículos visibles.** Los dos responden y sus feeds se leen; lo que traen
+queda fuera de la ventana de 72 h. Es un hecho sobre su ritmo de publicación, no
+una avería nuestra, y es lo que F1-12 describe. Importa que estén: RTVC es el
+único medio público del catálogo.
+
+El reparto pasa a 1 izquierda · 5 centro-izq. · 14 centro · 13 centro-der. · 0
+derecha. Con eso F1-06 se cumple **en el recuento**, que es justo lo que F1-12
+advierte que no significa nada: esos 6 medios suman el 0,9 % de los artículos.
+
+- **Evidencias de Verificación:**
+```
+36 feeds responden (antes 34) · w-radio 0 art. · rtvc 0 art.
+«Noticias y Radio Online» descartada por la regla nueva (filtrados 21 → 24)
+0 titulares con sufijo de dominio entre los ingeridos tras el cambio
+237 pruebas · check:registry sin errores de integridad
+```
+
+> **Queda uno silenciado:** Las2Orillas, que responde 403 a nuestro User-Agent.
+> Por la misma decisión, habría que reactivarlo — pero ahí el 403 es del servidor
+> del medio, así que hay que probar la vía de Google News o acordar acceso.

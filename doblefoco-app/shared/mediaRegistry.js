@@ -121,15 +121,29 @@ export const MEDIA_REGISTRY = [
         domain: 'rtvcnoticias.com', country: 'CO', group: 'Medio público nacional',
         bias: -0.35, factuality: 0.82, reviewedAt: null,
         biasRationale: 'Sistema de medios públicos; su línea editorial sigue al gobierno de turno, lo que hace este valor especialmente volátil.',
-        // FEED RETIRADO 2026-07-28. La búsqueda site: en Google News no
-        // devuelve artículos de RTVC sino sus PÁGINAS DE ETIQUETA: los
-        // titulares eran "Gustavo Petro", "reforma pensional", "irán",
-        // "principal". Ingerirlos habría metido decenas de falsos artículos
-        // cuyo título es solo un tema, y al ser tan cortos el agrupamiento los
-        // habría fusionado entre sí.
-        // El rss.xml propio del sitio existe pero lleva 59 días sin actualizar.
-        // Se conserva la ficha del medio —es un canal público relevante— y se
-        // recupera en cuanto haya un feed utilizable. Ver F1-12.
+        /**
+         * REACTIVADO 2026-07-30, por decisión de Jose: no se silencia a ningún
+         * medio del catálogo. Estuvo retirado desde el 2026-07-28.
+         *
+         * QUÉ HABÍA CAMBIADO Y QUÉ NO, medido de nuevo antes de reactivarlo:
+         *   · Su rss.xml propio SIGUE inservible. La entrada más reciente es del
+         *     30 de mayo y de ahí salta a junio de 2024; una de ellas se titula
+         *     «sitio en mantenimiento». Por eso NO se usa.
+         *   · Google News, en cambio, ya devuelve titulares reales —«Pacto
+         *     Histórico respalda desobediencia civil…», «Presidente Petro anuncia
+         *     acciones judiciales…»— y no las páginas de etiqueta («Gustavo
+         *     Petro», «principal») que motivaron el retiro. Esa vía sirve.
+         *
+         * QUÉ VA A APORTAR, dicho sin adornos: poco. Lo indexado más reciente
+         * era del 9 de julio, o sea fuera de la ventana de 72 h, así que hoy
+         * suma cero artículos visibles. Eso es un hecho sobre su ritmo de
+         * publicación, no una avería nuestra, y es justo lo que el producto
+         * existe para hacer visible. Cuando publique, entra.
+         *
+         * Importa que esté: es el único medio público del catálogo y uno de los
+         * pocos de centro-izquierda (F1-06 pide 6 y hay 5).
+         */
+        feed: { url: gnews('rtvcnoticias.com'), via: 'gnews', category: 'Política' },
     },
     {
         id: 'el-espectador', name: 'El Espectador', shortName: 'El Espectador',
@@ -164,15 +178,28 @@ export const MEDIA_REGISTRY = [
         domain: 'wradio.com.co', country: 'CO', group: 'Grupo PRISA',
         bias: 0.0, factuality: 0.87, reviewedAt: null,
         biasRationale: 'Radio informativa con entrevistas a todo el arco político; encuadre variable según franja.',
-        // FEED RETIRADO 2026-07-28. Google News apenas indexa este dominio:
-        // la búsqueda site: devolvía artículos de hace 197 días, y acotándola
-        // con when:7d bajaba a 4 resultados, dos de ellos con el TÍTULO VACÍO.
-        // Buscar por nombre ("W Radio") sí trae contenido fresco, pero de
-        // OTROS medios que la mencionan —"Claro Sports por W Radio"—, que es
-        // la misma misatribución que costó F1-07.
-        // No se encontró RSS directo: /feed/, /rss/, /rss.xml y
-        // /arc/outboundfeeds/ devuelven 404 y la portada no declara ninguno.
-        // Se conserva la ficha y se recupera si aparece un feed. Ver F1-12.
+        /**
+         * REACTIVADO 2026-07-30, por decisión de Jose: no se silencia a ningún
+         * medio del catálogo. Estuvo retirado desde el 2026-07-28.
+         *
+         * SIGUE SIN PUBLICAR RSS PROPIO: se volvieron a probar /feed/, /rss/,
+         * /rss.xml, /feeds/rss/ y /feed/rss/ y los cinco dan 404. Así que entra
+         * por Google News, la misma vía que Caracol Radio, que además es del
+         * mismo dueño (Grupo Prisa).
+         *
+         * QUÉ VA A APORTAR, dicho sin adornos: casi nada. Google apenas indexa
+         * este dominio — lo más reciente con contenido real es de enero de 2026,
+         * fuera de la ventana de 72 h. Se busca por `site:` y NO por nombre, que
+         * es la parte importante: buscar «W Radio» trae piezas de OTROS medios
+         * que la mencionan («Claro Sports por W Radio»), y atribuirlas a ella
+         * sería la misatribución que costó F1-07.
+         *
+         * Su feed entrega además entradas que no son piezas —«Noticias y Radio
+         * Online», fechada ayer, que habría salido en portada como noticia—. De
+         * eso se encarga la regla `no-es-articulo` de contentQuality, añadida
+         * junto a esta reactivación.
+         */
+        feed: { url: gnews('wradio.com.co'), via: 'gnews', category: 'Política' },
     },
     {
         id: 'caracol-radio', name: 'Caracol Radio', shortName: 'Caracol',
@@ -270,6 +297,8 @@ export const MEDIA_REGISTRY = [
         bias: 0.30, factuality: 0.85, reviewedAt: null,
         biasRationale: 'Diario del Valle del Cauca; línea editorial conservadora con agenda empresarial regional.',
         feed: { url: 'https://www.elpais.com.co/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
+        // Sirve sus fotos desde la CDN de Arc Publishing, su gestor de contenidos.
+        imageHosts: ['semana-el-pais-prod.web.arc-cdn.net'],
     },
     {
         id: 'kienyke', name: 'KienyKe', shortName: 'KienyKe',
@@ -298,6 +327,9 @@ export const MEDIA_REGISTRY = [
         bias: 0.45, factuality: 0.78, reviewedAt: null,
         biasRationale: 'Revista de actualidad; tras el cambio de propiedad en 2020 adoptó una línea de oposición marcada al gobierno progresista.',
         feed: { url: 'https://www.semana.com/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
+        // Misma CDN de Arc Publishing que El País (Cali): los dos son del Grupo
+        // Gilinski y comparten gestor de contenidos.
+        imageHosts: ['semana-semana-prod.web.arc-cdn.net'],
     },
     {
         id: 'el-nuevo-siglo', name: 'El Nuevo Siglo', shortName: 'N. Siglo',
@@ -314,6 +346,8 @@ export const MEDIA_REGISTRY = [
         bias: -0.05, factuality: 0.92, reviewedAt: null,
         biasRationale: 'Servicio público con obligación estatutaria de imparcialidad y estándares de verificación altos.',
         feed: { url: 'https://feeds.bbci.co.uk/mundo/rss.xml', via: 'direct', category: 'Internacional' },
+        // CDN de imágenes de la propia BBC.
+        imageHosts: ['ichef.bbci.co.uk'],
     },
     {
         id: 'dw-es', name: 'DW Español', shortName: 'DW',
@@ -499,6 +533,7 @@ export function getIngestFeeds() {
             url: media.feed.url,
             via: media.feed.via,
             category: media.feed.category ?? 'Política',
+            imageHosts: media.imageHosts ?? [],
         });
 
         for (const extra of media.extraFeeds ?? []) {
@@ -511,6 +546,7 @@ export function getIngestFeeds() {
                 url: extra.url,
                 via: media.feed.via,
                 category: extra.category ?? 'Política',
+                imageHosts: media.imageHosts ?? [],
             });
         }
     }

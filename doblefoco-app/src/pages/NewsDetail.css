@@ -107,6 +107,18 @@
     box-shadow: var(--shadow-sm);
 }
 
+/**
+ * Sin foto del medio, este recuadro ya no es un marco de imagen: queda solo el
+ * dato de factualidad. Se quita el borde para que no parezca una imagen que no
+ * cargó, que es justo la lectura que la versión anterior provocaba al rellenar
+ * el hueco con una foto de archivo.
+ */
+.detail-compact-image-box.sin-imagen {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
 .detail-compact-image {
     width: 100%;
     height: 220px;

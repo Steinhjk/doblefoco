@@ -1,0 +1,16 @@
+/* Crédito de la foto, sobre la esquina inferior de la imagen.
+   La imagen es del medio y se dice: mostrarla sin atribuir es usar material
+   ajeno como si fuera nuestro. */
+.story-image-credit {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 14px 8px 4px;
+    line-height: 1.2;
+    pointer-events: none;
+}

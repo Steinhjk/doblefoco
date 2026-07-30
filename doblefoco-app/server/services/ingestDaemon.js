@@ -73,6 +73,15 @@ const USER_AGENT =
 const parser = new Parser({
     headers: { 'User-Agent': USER_AGENT },
     timeout: FEED_TIMEOUT_MS,
+    // `media:*` no son campos estándar de RSS, así que rss-parser los ignora
+    // salvo que se pidan. `keepArray` porque un item suele traer varias
+    // resoluciones de la misma foto y hay que poder elegir.
+    customFields: {
+        item: [
+            ['media:content', 'mediaContent', { keepArray: true }],
+            ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
+        ],
+    },
 });
 
 /**
@@ -151,15 +160,31 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * convertía la cita en una edición silenciosa de contenido ajeno. La carga
  * emocional se MIDE y se anota aparte; no se corrige el titular.
  */
-function cleanHeadline(rawTitle, outletName) {
+export function cleanHeadline(rawTitle, outletName, outletDomain) {
     if (!rawTitle || typeof rawTitle !== 'string') return '';
 
     let clean = rawTitle.replace(/\s+/g, ' ').trim();
 
-    if (outletName) {
-        const suffix = ` - ${outletName}`;
+    /**
+     * Google News añade « - <medio>» al final de cada titular. Quitarlo no
+     * modifica el titular del medio: lo DEVUELVE a lo que era, porque el sufijo
+     * lo puso Google.
+     *
+     * Se prueban el nombre y el DOMINIO. El dominio hizo falta al reactivar
+     * W Radio (2026-07-30): en las búsquedas `site:` Google rotula la fuente con
+     * el dominio y no con el nombre, así que quedaban titulares como «Noticias y
+     * Radio Online - wradio.com.co». Medido sobre la base, afectaba a 6
+     * artículos de cuatro medios —poco, pero cada uno es un titular que no es
+     * literal—. Y sin quitar el sufijo, la regla `no-es-articulo` de
+     * contentQuality no puede anclar al titular completo, que es lo que la
+     * mantiene estrecha.
+     */
+    for (const candidato of [outletName, outletDomain, `www.${outletDomain}`]) {
+        if (!candidato) continue;
+        const suffix = ` - ${candidato}`;
         if (clean.toLowerCase().endsWith(suffix.toLowerCase())) {
             clean = clean.slice(0, -suffix.length).trim();
+            break;
         }
     }
 
@@ -233,6 +258,94 @@ function extractSnippet(item) {
 
     if (text.length < 30) return null;
     return text.length > 400 ? `${text.slice(0, 397)}…` : text;
+}
+
+/** Extensiones que aceptamos cuando el feed no declara un tipo MIME. */
+const EXTENSIONES_DE_IMAGEN = /\.(jpe?g|png|webp|avif|gif)(?:$|\?)/i;
+
+/**
+ * La imagen que el medio publicó con la pieza. `null` si no trae ninguna.
+ *
+ * REGLA: la imagen tiene que venir del MEDIO. No se busca una alternativa, no se
+ * deriva del titular y no se sustituye por una foto de archivo. Antes sí se
+ * hacía: la portada elegía una foto de Unsplash con `hash(titular) % 21`, de modo
+ * que una condena por corrupción se ilustraba con «Indicadores Económicos». Una
+ * imagen junto a un titular se lee como documental; poner ahí una que no lo es es
+ * la misma fabricación que la Fase 0 quitó del texto.
+ *
+ * SE EXIGE HTTPS Y QUE EL HOST SEA DEL MEDIO. Lo primero porque una imagen por
+ * http en una página https no se carga y además degrada la conexión. Lo segundo
+ * es la parte que importa: sin comprobarlo, cualquier feed podría hacer que el
+ * sitio incruste una URL de un tercero —un rastreador, un contador de visitas
+ * disfrazado de imagen— y quien la pediría sería el navegador del lector. El
+ * medio ya sabe que publicó la pieza; un tercero no tiene por qué.
+ *
+ * «Del medio» es su dominio O un host declarado en `imageHosts` del registro.
+ * Hizo falta al medirlo: de los 12 feeds que traen imagen, 9 la sirven desde su
+ * propio dominio y 3 desde la infraestructura de su gestor de contenidos
+ * —Semana y El País de Cali desde la CDN de Arc Publishing, BBC Mundo desde
+ * ichef.bbci.co.uk—. Sin declararlos se perdían las fotos de esos tres.
+ *
+ * SE DECLARAN UNO A UNO Y NO POR PATRÓN a propósito. Un comodín tipo
+ * `*.arc-cdn.net` aceptaría cualquier cliente de Arc, que son cientos de medios
+ * ajenos a este catálogo. Y si un medio cambia de CDN, sus imágenes DEJAN de
+ * aparecer en vez de abrirse un agujero: falla cerrado.
+ *
+ * @param {any} item  item del RSS
+ * @param {string} link  enlace canónico del artículo, ya normalizado
+ * @param {string[]} [imageHosts]  hosts extra declarados por el medio
+ * @returns {string|null}
+ */
+export function extractImage(item, link, imageHosts = []) {
+    const candidatos = [
+        ...(Array.isArray(item?.mediaContent) ? item.mediaContent : []),
+        ...(Array.isArray(item?.mediaThumbnail) ? item.mediaThumbnail : []),
+        item?.enclosure,
+    ];
+
+    let dominioDelArticulo;
+    try {
+        dominioDelArticulo = new URL(link).hostname.replace(/^www\./, '');
+    } catch {
+        return null;
+    }
+
+    for (const candidato of candidatos) {
+        // rss-parser deja los atributos en `$` y el enclosure los trae planos.
+        const url = candidato?.$?.url ?? candidato?.url;
+        const tipo = candidato?.$?.type ?? candidato?.type ?? '';
+        const medium = candidato?.$?.medium ?? '';
+
+        if (typeof url !== 'string' || !url) continue;
+
+        // Un enclosure puede ser un audio o un PDF. Si el feed declara tipo, se
+        // respeta; si no lo declara, se cae en la extensión.
+        const declaraImagen = tipo.startsWith('image/') || medium === 'image';
+        const pareceImagen = declaraImagen || (!tipo && EXTENSIONES_DE_IMAGEN.test(url));
+        if (!pareceImagen) continue;
+
+        let parsed;
+        try {
+            parsed = new URL(url);
+        } catch {
+            continue;
+        }
+
+        if (parsed.protocol !== 'https:') continue;
+
+        const host = parsed.hostname.replace(/^www\./, '');
+        const delMedio =
+            host === dominioDelArticulo ||
+            host.endsWith(`.${dominioDelArticulo}`) ||
+            dominioDelArticulo.endsWith(`.${host}`) ||
+            // Coincidencia EXACTA con lo declarado, sin comodines.
+            imageHosts.some((permitido) => host === String(permitido).replace(/^www\./, ''));
+        if (!delMedio) continue;
+
+        return parsed.toString();
+    }
+
+    return null;
 }
 
 /** Ejecuta tareas con concurrencia limitada. */
@@ -429,7 +542,7 @@ export async function runIngestionBatch() {
                     const link = canonicalizeLink(item?.link);
                     if (!link) continue;
 
-                    const headline = cleanHeadline(item?.title, feedConfig.name);
+                    const headline = cleanHeadline(item?.title, feedConfig.name, feedConfig.domain);
                     if (!headline) continue;
 
                     // La clave es el enlace: deduplicación O(1) e idempotente
@@ -455,6 +568,8 @@ export async function runIngestionBatch() {
                         rawTitle: item?.title ?? headline,
                         link,                           // enlace verificable
                         snippet: extractSnippet(item),  // real o null
+                        // Del medio o null. Nunca una foto de archivo.
+                        imageUrl: extractImage(item, link, feedConfig.imageHosts),
                         // El tono se ANOTA sobre el titular literal; el
                         // titular no se modifica en ningún momento.
                         tone: analyzeHeadlineTone(headline),

@@ -76,10 +76,22 @@ export const checkRateLimit = () => {
 };
 
 /**
- * Cabeceras recomendadas de seguridad para producción
+ * ⚠️ ESTO NO SE APLICA EN NINGÚN SITIO. `SECURITY_HEADERS` no se importa desde
+ * ningún archivo del proyecto: es una lista de deseos con aspecto de
+ * configuración, y ese aspecto es el problema. Al añadir las imágenes reales de
+ * los medios estuve a punto de editar este `img-src` creyendo que era el que
+ * regía; la CSP de verdad está en **vercel.json**, y la comprueba
+ * src/services/csp.test.js.
+ *
+ * Se deja aquí y no se borra porque decidirlo es de Jose, pero mientras exista
+ * conviene que diga lo que es. Un archivo llamado «security» que no protege nada
+ * es peor que no tenerlo: hace pensar que el asunto está resuelto.
+ *
+ * Se le quitó images.unsplash.com para que no quede ni una referencia al banco
+ * de fotos de archivo que se retiró.
  */
-export const SECURITY_HEADERS = {
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' https://images.unsplash.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;",
+export const SECURITY_HEADERS_NO_APLICADAS = {
+    "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;",
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",

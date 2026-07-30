@@ -88,6 +88,18 @@ CREATE TABLE IF NOT EXISTS articles (
     ingested_at     TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- La imagen que el propio medio publicó con la pieza, tal cual viene en su RSS
+-- (media:content, media:thumbnail o enclosure). NULL cuando el feed no trae
+-- ninguna, que es el caso más frecuente y NO se rellena con nada.
+--
+-- POR QUÉ ESTA COLUMNA EXISTE. La portada ilustraba cada noticia con una foto de
+-- archivo de Unsplash elegida por hash del titular: «Condenan a Carlos Caicedo a
+-- cerca de 10 años de cárcel» salía con la foto etiquetada «Indicadores
+-- Económicos». Una imagen junto a un titular se lee como documental, así que era
+-- la misma fabricación que la Fase 0 eliminó del texto, sobreviviendo en el
+-- apartado visual. O es la imagen del medio, o no hay imagen.
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS image_url TEXT;
+
 CREATE INDEX IF NOT EXISTS articles_published_idx ON articles (published_at DESC NULLS LAST);
 CREATE INDEX IF NOT EXISTS articles_source_idx    ON articles (source_id);
 

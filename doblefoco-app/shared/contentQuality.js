@@ -173,6 +173,34 @@ export const QUALITY_RULES = [
             /\bhorarios?\s+y\s+donde\s+ver\b/,
         ],
     },
+    {
+        id: 'no-es-articulo',
+        reason: 'página de sección, portada o aviso del sitio, no una pieza',
+        /**
+         * NO ES UNA NOTICIA MAL ESCRITA: NO ES UNA NOTICIA.
+         *
+         * Apareció al reactivar W Radio y RTVC Noticias (2026-07-30). Sus feeds
+         * entregan, junto a piezas reales, entradas cuyo titular es el nombre de
+         * una sección o un aviso del propio sitio: «Noticias y Radio Online»,
+         * «sitio en mantenimiento». La primera venía fechada el día anterior, así
+         * que habría sobrevivido a la ventana de 72 h y habría aparecido en la
+         * portada como una noticia de W Radio con cero contenido.
+         *
+         * ANCLADAS AL TITULAR COMPLETO (^...$) a propósito, y esto es lo que
+         * impide que la regla se vuelva golosa. El precedente está escrito en
+         * F1-14: un patrón de lotería descartó «obras de rehabilitación del CDI
+         * El Dorado» porque buscaba la subcadena. Aquí «Portada» descarta un
+         * titular que ES exactamente «Portada», y no toca «Portada de la revista
+         * Semana genera polémica».
+         */
+        patterns: [
+            /^(inicio|portada|home|noticias|ultimas?\s+noticias|actualidad)$/,
+            /^noticias\s+y\s+radio\s+online$/,
+            /^sitio\s+en\s+mantenimiento$/,
+            /^(pagina\s+)?(no\s+encontrada|not\s+found)$/,
+            /^(rss|feed|sin\s+titulo|untitled)$/,
+        ],
+    },
 ];
 
 /** Quita tildes y baja a minúsculas, para que las reglas no dependan de ellas. */

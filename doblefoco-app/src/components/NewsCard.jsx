@@ -2,7 +2,8 @@
 import { Link } from 'react-router-dom';
 import { EyeOff, ExternalLink, HelpCircle } from 'lucide-react';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
-import { getOrRotateNeutralImage, FALLBACK_NEUTRAL_IMAGE } from '../services/imageEngineService';
+import StoryImage from './StoryImage';
+import { tieneImagen } from '../services/imageEngineService';
 import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
 import CoverageBar from './CoverageBar';
@@ -17,14 +18,12 @@ const NewsCard = ({ story: rawStory }) => {
     if (!story) return null;
 
     const { coverage } = story;
-    const imageUrl = getOrRotateNeutralImage(story);
     const timeLabel = storyTimeLabel(story);
     const absoluteTime = formatAbsoluteTime(story.publishedAt);
 
-    const handleImageError = (e) => {
-        e.target.onerror = null;
-        e.target.src = FALLBACK_NEUTRAL_IMAGE;
-    };
+    // La mayoría de los feeds no traen imagen, así que la tarjeta sin foto es el
+    // caso normal y el layout se adapta en vez de dejar la columna vacía.
+    const muestraImagen = tieneImagen(story);
 
     return (
         <article className="news-card">
@@ -38,28 +37,28 @@ const NewsCard = ({ story: rawStory }) => {
                 </div>
             )}
 
-            <div className="news-card-inner-grid">
-                <Link
-                    to={rutaDeHistoria(story)}
-                    className="news-card-image-wrapper"
-                    onClick={() => recordRead(story)}
-                    tabIndex={-1}
-                    aria-hidden="true"
-                >
-                    <img
-                        src={imageUrl}
-                        alt=""
-                        loading="lazy"
-                        width="400"
-                        height="300"
-                        className="news-card-img"
-                        onError={handleImageError}
-                    />
-                    <span className="news-card-category-badge">{story.category}</span>
-                </Link>
+            <div className={`news-card-inner-grid ${muestraImagen ? '' : 'sin-imagen'}`}>
+                {muestraImagen && (
+                    <Link
+                        to={rutaDeHistoria(story)}
+                        className="news-card-image-wrapper"
+                        onClick={() => recordRead(story)}
+                        tabIndex={-1}
+                        aria-hidden="true"
+                    >
+                        <StoryImage story={story} className="news-card-img">
+                            <span className="news-card-category-badge">{story.category}</span>
+                        </StoryImage>
+                    </Link>
+                )}
 
                 <div className="news-card-info">
                     <div className="news-card-top-meta">
+                        {/* El distintivo de categoría vivía sobre la imagen. Sin
+                            imagen desaparecía, así que aquí va cuando hace falta. */}
+                        {!muestraImagen && story.category && (
+                            <span className="news-card-category-inline">{story.category}</span>
+                        )}
                         {timeLabel && (
                             <time
                                 className="news-card-time"

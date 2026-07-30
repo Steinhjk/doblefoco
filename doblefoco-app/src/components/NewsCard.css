@@ -43,6 +43,44 @@
     min-height: 160px;
 }
 
+/**
+ * La mayoría de los medios no publican imagen en su RSS, así que esta es la
+ * tarjeta NORMAL, no un caso borde. Sin imagen no se deja la columna vacía: el
+ * texto ocupa el ancho entero y la altura mínima cae, porque 160 px reservados
+ * para una foto que no existe son un hueco que parece una carga fallida.
+ */
+.news-card-inner-grid.sin-imagen {
+    grid-template-columns: 1fr;
+    min-height: 0;
+}
+
+/* Misma categoría, en la fila de metadatos, para las tarjetas sin imagen. */
+.news-card-category-inline {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+}
+
+/* Crédito de la foto. La imagen es del medio y se dice, porque mostrarla sin
+   atribuir es usar material ajeno como si fuera nuestro. */
+.news-card-image-credit {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 12px 8px 4px;
+    line-height: 1.2;
+}
+
 .news-card-image-wrapper {
     position: relative;
     width: 100%;

@@ -85,6 +85,19 @@
     transform: scale(1.02);
 }
 
+/* La misma categoría, en la fila de metadatos, cuando el medio no publicó foto
+   y por tanto no hay imagen sobre la que superponerla. */
+.spotlight-category-inline {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+}
+
 .spotlight-category-tag {
     position: absolute;
     top: 8px;

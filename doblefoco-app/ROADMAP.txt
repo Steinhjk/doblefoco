@@ -93,12 +93,18 @@
                                           Fly, que nadie mira. F2-11.
   Revisión editorial del sesgo ....... ❌ 40 valores, ninguno firmado
 
-  Última verificación de feeds (2026-07-28):
-    34 feeds activos · 31 medios. Se retiraron W Radio y RTVC Noticias por
-    traer páginas de etiqueta y contenido de hace meses (ver DESCARTES).
-    reparto: 1 izquierda · 4 centro-izq. · 13 centro · 13 centro-der. · 0 derecha
-    ATENCIÓN: con 4 en centro-izquierda, el criterio de F1-06 (6 medios de
-    izquierda o centro-izquierda) dejó de cumplirse. F1-06 vuelve a estar abierta.
+  Última verificación de feeds (2026-07-30):
+    36 feeds activos · 33 medios. W Radio y RTVC Noticias volvieron el 2026-07-30
+    por decisión de Jose —no se silencia a ningún medio— tras dos días retirados.
+    Los dos responden y hoy aportan CERO artículos visibles: lo que traen queda
+    fuera de la ventana de 72 h. Ver DESCARTES.
+    reparto: 1 izquierda · 5 centro-izq. · 14 centro · 13 centro-der. · 0 derecha
+    ATENCIÓN: con 6 en izquierda + centro-izquierda el criterio de F1-06 se
+    cumple EN EL RECUENTO, y eso es justo lo que F1-12 advierte que no significa
+    nada: esos 6 medios suman el 0,9 % de los artículos. Contar medios no mide
+    presencia. F1-06 sigue abierta por el motivo de fondo, no por la cifra.
+    Y sigue habiendo CERO medios en la banda «Derecha», que Jose señala como
+    defecto del instrumento y no retrato del país (F1-13).
 
   Última verificación de ingesta real (2026-07-28, ingesta acumulada en la base
   desde el día anterior):
@@ -2023,7 +2029,37 @@
    queda como dato de desarrollo y desaparece con F2-03. El aviso de la interfaz
    (F0-11) cubre el interín.
 
- · W Radio y RTVC Noticias — FEEDS RETIRADOS 2026-07-28
+ · W Radio y RTVC Noticias — REACTIVADOS 2026-07-30
+   DECISIÓN DE JOSE, y conviene dejarla escrita porque contradice lo que había
+   aquí: no se silencia a ningún medio del catálogo. «No muteemos a nadie.»
+   Estuvieron retirados dos días. Lo que sigue abajo es el diagnóstico que
+   justificó el retiro y sigue siendo válido como descripción de sus feeds; lo
+   que cambia es la conclusión.
+
+   CÓMO SE REACTIVARON, sin volver a meter la basura que motivó el retiro:
+     · Los dos entran por Google News con búsqueda `site:`, la misma vía que
+       Caracol Radio. RTVC ya devuelve titulares reales por ahí —«Pacto
+       Histórico respalda desobediencia civil…»— y no las páginas de etiqueta
+       que se describen abajo. Su rss.xml propio SIGUE inservible: lo más
+       reciente es del 30 de mayo y de ahí salta a junio de 2024, con una
+       entrada titulada «sitio en mantenimiento». No se usa.
+     · W Radio sigue sin RSS propio: se reprobaron /feed/, /rss/, /rss.xml,
+       /feeds/rss/ y /feed/rss/ y los cinco dan 404.
+     · Su feed entrega entradas que NO son piezas. «Noticias y Radio Online»
+       venía fechada el día anterior, así que sobrevivía a la ventana de 72 h y
+       llegó a aparecer en la base como noticia de W Radio. Se añadió la regla
+       `no-es-articulo` a contentQuality, anclada al titular COMPLETO (^...$)
+       para no repetir el error de F1-14, y `cleanHeadline` aprendió a quitar el
+       sufijo « - dominio» que Google añade en las búsquedas `site:` (afectaba a
+       6 artículos de 4 medios, no solo a este).
+
+   QUÉ APORTAN, medido tras reactivarlos: CERO artículos visibles. Los dos
+   responden, sus feeds se leen, y lo que traen queda fuera de la ventana de
+   72 h. Eso es un hecho sobre su ritmo de publicación y no una avería nuestra
+   —es exactamente lo que F1-12 describe—. Importa que estén: RTVC es el único
+   medio público del catálogo y uno de los pocos de centro-izquierda.
+
+ · Diagnóstico del retiro (2026-07-28), que sigue describiendo bien sus feeds
    Los dos aparecían con CERO artículos y se revisaron a fondo antes de
    concluir nada sobre ellos. Ninguno es un problema del medio:
 
@@ -2041,14 +2077,18 @@
    directo: /feed/, /rss/, /rss.xml y /arc/outboundfeeds/ dan 404 y la portada
    no declara ninguno.
 
-   LECCIÓN: el arreglo aparente (añadir when:) habría metido basura. Un feed
+   LECCIÓN, que sigue en pie: el arreglo aparente (añadir when:) habría metido basura. Un feed
    mudo es mejor que un feed que miente.
-   Se conservan las dos fichas en el catálogo y se recuperan si aparece un feed
-   utilizable. Quedan 34 feeds y 31 medios activos.
+   (Hasta aquí el diagnóstico del 28. Con la reactivación del 30 son 36 feeds y
+   33 medios activos.)
 
- · Las2Orillas — RETIRADO TEMPORALMENTE
-   Responde 403 a nuestro User-Agent. Se retira en lugar de dejar un feed que
-   falla en cada ciclo. Recuperarlo exige acordar acceso con el medio (F1-06).
+ · Las2Orillas — RETIRADO, PENDIENTE DE REACTIVAR
+   Responde 403 a nuestro User-Agent, así que su feed falla en cada ciclo.
+   ES EL QUE QUEDA SILENCIADO, y por la decisión del 2026-07-30 no debería
+   estarlo: hay que reactivarlo. A diferencia de W Radio y RTVC, aquí no basta
+   con cambiar de vía —el 403 es del servidor del medio— así que las opciones
+   son entrar por Google News, como Caracol Radio, o acordar acceso con el medio.
+   Probar primero lo primero. Ver F1-06.
 
  · Editar el catálogo de medios desde el panel — DESCARTADO POR DISEÑO
    No está pendiente ni es una limitación: es una decisión, y conviene dejarla

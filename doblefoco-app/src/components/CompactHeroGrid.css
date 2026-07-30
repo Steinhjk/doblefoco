@@ -66,10 +66,22 @@
     border-color: var(--text-muted);
 }
 
+/**
+ * ALTURA Y ENCUADRE DE LA FOTO DESTACADA.
+ *
+ * Estaba en 145 px a todo el ancho, o sea una franja de casi 5:1 sobre fotos de
+ * prensa que vienen en 16:9. El recorte de «object-fit: cover» se comía tanto
+ * por arriba y por abajo que las caras salían partidas por la mitad.
+ *
+ * Dos arreglos, y hacen falta los dos: subir la altura para que la proporción
+ * deje de ser extrema, y bajar el punto de recorte al 30 % en vez del centro.
+ * Lo segundo es lo que de verdad salva los rostros: en una foto de prensa la
+ * cabeza casi nunca está en el centro geométrico, está en el tercio superior.
+ */
 .spotlight-image-link {
     position: relative;
     width: 100%;
-    height: 145px;
+    height: 190px;
     overflow: hidden;
     display: block;
 }
@@ -78,6 +90,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 30%;
     transition: transform 0.4s ease;
 }
 
@@ -275,6 +288,9 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Mismo criterio que la destacada: el recorte al tercio superior salva las
+       caras, y en una miniatura de 85×75 el margen de error es todavía menor. */
+    object-position: center 30%;
 }
 
 .secondary-content {

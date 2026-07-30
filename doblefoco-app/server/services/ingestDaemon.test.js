@@ -217,3 +217,50 @@ describe('cleanHeadline', () => {
         expect(cleanHeadline('Titular', undefined, undefined)).toBe('Titular');
     });
 });
+
+describe('extractImage desde el HTML del contenido', () => {
+    const LINK = 'https://www.elnuevosiglo.com.co/articulo/algo';
+    const FOTO = 'https://www.elnuevosiglo.com.co/sites/default/files/2026-07/foto.jpg';
+
+    it('usa la primera <img> del contenido cuando no hay media:content', () => {
+        // Medido el 2026-07-30: de los 21 feeds sin media:content, tres llevan
+        // la foto aquí dentro. Leerla no cuesta ninguna petición extra.
+        const item = { content: `<p>Texto</p><img src="${FOTO}" alt="">` };
+        expect(extractImage(item, LINK)).toBe(FOTO);
+    });
+
+    it('prefiere media:content a la <img> del cuerpo', () => {
+        // La primera <img> del cuerpo puede ser un logo o un banner;
+        // media:content es la foto que el medio designó para la pieza.
+        const designada = 'https://www.elnuevosiglo.com.co/designada.jpg';
+        const item = {
+            mediaContent: [{ $: { url: designada, type: 'image/jpeg' } }],
+            content: `<img src="${FOTO}">`,
+        };
+        expect(extractImage(item, LINK)).toBe(designada);
+    });
+
+    it('la <img> del cuerpo pasa por las MISMAS comprobaciones de host', () => {
+        const ajena = 'https://rastreador.example.com/pixel.jpg';
+        expect(extractImage({ content: `<img src="${ajena}">` }, LINK)).toBeNull();
+    });
+
+    it('acepta el CDN del gestor de contenidos si el medio lo declara', () => {
+        // La Silla Vacía sirve por Jetpack/WordPress.
+        const wp = 'https://i0.wp.com/www.lasillavacia.com/wp-content/uploads/foto.jpg';
+        const link = 'https://www.lasillavacia.com/historias/algo/';
+        expect(extractImage({ content: `<img src="${wp}">` }, link, ['i0.wp.com'])).toBe(wp);
+        expect(extractImage({ content: `<img src="${wp}">` }, link)).toBeNull();
+    });
+
+    it('busca en content:encoded, content, summary y description', () => {
+        for (const campo of ['contentEncoded', 'content', 'summary', 'description']) {
+            expect(extractImage({ [campo]: `<img src="${FOTO}">` }, LINK), campo).toBe(FOTO);
+        }
+    });
+
+    it('no confunde otra etiqueta con una imagen', () => {
+        const item = { content: '<a href="https://www.elnuevosiglo.com.co/x.jpg">enlace</a>' };
+        expect(extractImage(item, LINK)).toBeNull();
+    });
+});

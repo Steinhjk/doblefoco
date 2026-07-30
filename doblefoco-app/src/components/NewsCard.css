@@ -94,6 +94,9 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* El tercio superior, no el centro: es donde está la cara en una foto de
+       prensa, y con recorte al centro salía partida. */
+    object-position: center 30%;
     display: block;
     transition: transform 0.4s ease;
 }

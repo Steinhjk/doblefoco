@@ -152,6 +152,8 @@
     line-height: 1.65;
 }
 
-.tr-spectrum-left { border-left-color: var(--spectrum-left, #4b7bec); }
-.tr-spectrum-right { border-left-color: var(--spectrum-right, #eb3b5a); }
-.tr-spectrum-center { border-left-color: var(--spectrum-center, #a5b1c2); }
+/* Variables globales del sitio, no hex propios: rojo izquierda, azul derecha,
+   igual que el mapa mediático. */
+.tr-spectrum-left { border-left-color: var(--bias-left); }
+.tr-spectrum-right { border-left-color: var(--bias-right); }
+.tr-spectrum-center { border-left-color: var(--bias-objective); }

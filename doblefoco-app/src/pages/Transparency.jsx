@@ -129,9 +129,10 @@ const Transparency = () => (
 
             <h3>Si algún día lo tiene</h3>
             <p>
-                Buscamos patrocinio institucional de $2.000.000 COP anuales, destinado a
-                infraestructura, captura de feeds y mantenimiento. Las condiciones son
-                públicas de antemano, y son estas:
+                Está abierta la posibilidad de recibir patrocinio institucional destinado a
+                infraestructura, captura de feeds y mantenimiento. No hay una cifra fijada de
+                antemano; lo que sí está fijado, y es lo que importa, son las condiciones bajo
+                las que se aceptaría. Son públicas antes de que exista el primero:
             </p>
             <ul className="tr-conditions">
                 <li>
@@ -246,10 +247,13 @@ const Transparency = () => (
                     revisión editorial formal. Se publican marcadas como provisionales.
                 </li>
                 <li>
-                    <strong>El catálogo está desequilibrado.</strong> Tenemos muchos más
-                    medios de centro y centro-derecha que de izquierda. Eso hace que los
-                    puntos ciegos hacia la izquierda sean más difíciles de detectar que los
-                    del otro lado. Es una limitación real y afecta a lo que usted ve.
+                    <strong>El catálogo está desequilibrado, y más de lo que parece.</strong>{' '}
+                    Contando medios, los de izquierda son cerca de un cuarto del catálogo.
+                    Pesando lo que cada uno publica, son el 3 % de los artículos: siete veces
+                    menos. Eso hace que los puntos ciegos hacia la izquierda sean mucho más
+                    difíciles de detectar que los del otro lado, y afecta directamente a lo
+                    que usted ve. Las dos cifras, una al lado de la otra, están en el{' '}
+                    <Link to="/mapa-medios">mapa mediático</Link>.
                 </li>
                 <li>
                     <strong>No verificamos si una noticia es cierta.</strong> No somos un

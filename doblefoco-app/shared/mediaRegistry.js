@@ -161,6 +161,9 @@ export const MEDIA_REGISTRY = [
         bias: -0.10, factuality: 0.92, reviewedAt: null,
         biasRationale: 'Análisis de poder político con verificación factual sistemática; encuadre analítico más que militante.',
         feed: { url: 'https://www.lasillavacia.com/feed/', via: 'direct', category: 'Política' },
+        // Sirve sus imágenes por el CDN de Jetpack/WordPress, que es la
+        // infraestructura de su propio gestor de contenidos.
+        imageHosts: ['i0.wp.com'],
     },
 
     // ─────────── Centro ───────────

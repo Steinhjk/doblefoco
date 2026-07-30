@@ -60,11 +60,25 @@
     }
 }
 
+/**
+ * LARGA Y DELGADA, no alta y corta.
+ *
+ * El intento anterior subió el padding vertical de 10 a 12 px «para agrandarla»
+ * y consiguió lo contrario de lo pedido: engordó sin alargarse. La caja de
+ * búsqueda de una cabecera se lee mejor cuanto más se acerca a una línea; la
+ * altura solo le quita aire a una barra de 80 px.
+ *
+ * El margen baja de 40 a 24 px porque era lo que de verdad la acortaba: con
+ * `flex: 1` los 80 px de margen se restaban del ancho disponible antes de que el
+ * máximo llegara siquiera a aplicarse.
+ */
 .navbar-search {
     flex: 1;
-    max-width: 520px;
-    margin: 0 40px;
+    max-width: 620px;
+    margin: 0 24px;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 /* El padding derecho deja hueco para .search-submit-btn, que va posicionado
@@ -72,14 +86,16 @@
    lupa. */
 .navbar-search input {
     width: 100%;
-    padding: 12px 44px 12px 18px;
+    height: 38px;
+    padding: 0 42px 0 14px;
     border: 1px solid var(--border-color);
-    border-radius: 2px;
+    border-radius: 3px;
     font-family: var(--font-main);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1;
     background-color: rgba(0, 0, 0, 0.2);
     color: var(--text-main);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .navbar-search input:focus {

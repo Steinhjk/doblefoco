@@ -81,6 +81,9 @@ const parser = new Parser({
         item: [
             ['media:content', 'mediaContent', { keepArray: true }],
             ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
+            // Varios medios no declaran media:content pero sí incrustan la foto
+            // en el HTML del contenido. Pedirlo no cuesta ninguna petición extra.
+            ['content:encoded', 'contentEncoded'],
         ],
     },
 });
@@ -265,6 +268,29 @@ function extractSnippet(item) {
 const EXTENSIONES_DE_IMAGEN = /\.(jpe?g|png|webp|avif|gif)(?:$|\?)/i;
 
 /**
+ * La primera `<img>` del HTML del item, si la hay.
+ *
+ * Se devuelve como lista con la misma forma que un enclosure —`{url}`— para que
+ * el bucle de `extractImage` la trate igual que a los demás candidatos y no haya
+ * dos caminos distintos de validación. Lista vacía si no hay ninguna.
+ *
+ * Sin `type`, así que dependerá de la extensión del archivo para ser aceptada.
+ * Es deliberado: una <img> del cuerpo tiene menos respaldo que una foto
+ * declarada por el medio, y conviene que pase el listón más alto.
+ */
+function primeraImagenDelContenido(item) {
+    for (const campo of ['contentEncoded', 'content', 'summary', 'description']) {
+        const html = item?.[campo];
+        if (typeof html !== 'string') continue;
+
+        const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (match?.[1]) return [{ url: match[1] }];
+    }
+
+    return [];
+}
+
+/**
  * La imagen que el medio publicó con la pieza. `null` si no trae ninguna.
  *
  * REGLA: la imagen tiene que venir del MEDIO. No se busca una alternativa, no se
@@ -302,6 +328,20 @@ export function extractImage(item, link, imageHosts = []) {
         ...(Array.isArray(item?.mediaContent) ? item.mediaContent : []),
         ...(Array.isArray(item?.mediaThumbnail) ? item.mediaThumbnail : []),
         item?.enclosure,
+        /**
+         * Último recurso: la primera <img> incrustada en el HTML del contenido.
+         *
+         * MEDIDO EL 2026-07-30: de los 21 feeds que no declaran `media:content`,
+         * tres sí llevan la foto ahí dentro —La Silla Vacía, La Opinión y El
+         * Nuevo Siglo, unos 333 artículos—. Leerla no cuesta ninguna petición
+         * extra porque el contenido ya viene descargado.
+         *
+         * Va la ÚLTIMA de la lista a propósito: `media:content` es la foto que
+         * el medio designó para la pieza, mientras que la primera <img> del
+         * cuerpo puede ser un logo o un banner. Solo se usa si no hay nada mejor,
+         * y sigue pasando por las mismas comprobaciones de host y protocolo.
+         */
+        ...primeraImagenDelContenido(item),
     ];
 
     let dominioDelArticulo;

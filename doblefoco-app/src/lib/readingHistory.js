@@ -114,15 +114,15 @@ export function summarizeDiet(history) {
     } else if (avgBias < -0.1) {
         label = 'Izquierda moderada';
         recommendation =
-            'Tu lectura se inclina levemente a la izquierda. Revisa algunos hechos desde medios de centro o centro-derecha.';
+            'Tu lectura se inclina levemente a la izquierda. Revisa algunos hechos desde medios sin línea marcada o de derecha moderada.';
     } else if (avgBias <= 0.1) {
-        label = 'Centro / equilibrada';
+        label = 'Lectura repartida';
         recommendation =
             'Tu dieta está equilibrada entre espectros. Mantén el hábito de contrastar cada hecho en al menos dos medios.';
     } else if (avgBias < 0.3) {
         label = 'Derecha moderada';
         recommendation =
-            'Tu lectura se inclina levemente a la derecha. Revisa algunos hechos desde medios de centro o centro-izquierda.';
+            'Tu lectura se inclina levemente a la derecha. Revisa algunos hechos desde medios sin línea marcada o de izquierda moderada.';
     } else {
         label = 'Sesgo de derecha';
         recommendation =

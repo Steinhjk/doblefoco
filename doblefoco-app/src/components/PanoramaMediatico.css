@@ -106,21 +106,41 @@
     filter: brightness(1.15);
 }
 
-/* Colores del espectro, los mismos que usa el resto del sitio. */
-.espectro-left { background: var(--spectrum-left, #4b7bec); }
-.espectro-center { background: var(--spectrum-center, #8395a7); }
-.espectro-right { background: var(--spectrum-right, #eb3b5a); }
+/**
+ * Colores del espectro. Se toman de las variables GLOBALES del sitio
+ * (--bias-*, en index.css) y no de valores propios.
+ *
+ * La primera versión los declaró aquí con sus propios hex y quedaron
+ * INVERTIDOS respecto al resto del sitio: azul a la izquierda y rojo a la
+ * derecha, cuando el mapa mediático usa rojo para izquierda y azul para
+ * derecha. Dos gráficos de la misma página diciendo lo contrario con el color
+ * es peor que no tener color, porque el lector lee la posición antes que la
+ * etiqueta. De ahí que aquí no haya ningún hex: si algún día cambia la paleta,
+ * cambia en un sitio.
+ */
+.espectro-left { background: var(--bias-left); }
+.espectro-center { background: var(--bias-objective); }
+.espectro-right { background: var(--bias-right); }
 
-/* Paleta de dueños. No codifica ideología: distingue propietarios, y por eso
-   son tonos neutros y no el rojo/azul del espectro. */
-.dueno-0 { background: #1e3799; }
-.dueno-1 { background: #0a3d62; }
-.dueno-2 { background: #3c6382; }
-.dueno-3 { background: #60a3bc; }
-.dueno-4 { background: #82ccdd; }
-.dueno-5 { background: #6a89cc; }
-.dueno-6 { background: #4a69bd; }
-.dueno-7 { background: #778beb; }
+/**
+ * Paleta de dueños.
+ *
+ * NO CODIFICA IDEOLOGÍA: distingue propietarios. Por eso evita el rojo y el
+ * azul del espectro —usarlos aquí insinuaría una posición política que este
+ * gráfico no está midiendo— y por eso son ocho tonos de familias distintas.
+ *
+ * La primera versión eran ocho azules y no se distinguían entre sí: con veinte
+ * grupos en la barra, media docena de franjas contiguas parecían la misma. Un
+ * gráfico de concentración donde no se ven los bloques no muestra nada.
+ */
+.dueno-0 { background: #0e7c86; }  /* teal */
+.dueno-1 { background: #d97706; }  /* ámbar */
+.dueno-2 { background: #7c3aed; }  /* violeta */
+.dueno-3 { background: #15803d; }  /* verde */
+.dueno-4 { background: #be185d; }  /* magenta */
+.dueno-5 { background: #a16207; }  /* ocre */
+.dueno-6 { background: #0369a1; }  /* cian oscuro */
+.dueno-7 { background: #57534e; }  /* piedra */
 
 /* Los medios sin propiedad documentada van rayados: se ven, ocupan su sitio y
    no se confunden con un dueño conocido. */

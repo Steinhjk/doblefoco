@@ -18,16 +18,19 @@ const CoverageBar = ({ coverage, compact = false, showLabels = true }) => {
 
     const { percentages, counts, total } = coverage;
 
+    // «Sin línea» y no «Centro»: esta barra sale en CADA tarjeta, así que era el
+    // sitio donde más se notaba que el renombrado se había quedado a medias.
     const summary =
         `Cobertura de ${total} ${total === 1 ? 'medio' : 'medios'}: ` +
-        `${counts.left} de izquierda, ${counts.center} de centro, ${counts.right} de derecha.`;
+        `${counts.left} de izquierda, ${counts.center} sin línea marcada, ` +
+        `${counts.right} de derecha.`;
 
     return (
         <div className={`coverage-bar-box ${compact ? 'is-compact' : ''}`}>
             {showLabels && (
                 <div className="coverage-bar-labels" aria-hidden="true">
                     <span className="coverage-label left">{percentages.left}% Izq</span>
-                    <span className="coverage-label center">{percentages.center}% Centro</span>
+                    <span className="coverage-label center">{percentages.center}% Sin línea</span>
                     <span className="coverage-label right">{percentages.right}% Der</span>
                 </div>
             )}

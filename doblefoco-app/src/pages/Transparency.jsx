@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShieldCheck, HandCoins, Eye, AlertTriangle, Mail, Scale } from 'lucide-react';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
 import './Transparency.css';
 
 /**
@@ -223,7 +224,8 @@ const Transparency = () => (
                 existe el boletín. Es una lista de espera y así se llama.
             </p>
             <p>
-                Puede pedir que borremos su dato escribiendo a contacto@doblefoco.co, según
+                Puede pedir que borremos su dato escribiendo a{' '}
+                <a href={CONTACT_MAILTO}>{CONTACT_EMAIL}</a>, según
                 la Ley 1581 de 2012 de protección de datos personales. No compartimos ni
                 vendemos correos a terceros, y no aparecen en ninguna exportación pública
                 del contenido del sitio.
@@ -287,7 +289,8 @@ const Transparency = () => (
             <h2><Mail size={18} aria-hidden="true" /> Corregirnos</h2>
             <p>
                 Si cree que una clasificación está mal, escríbanos con ejemplos concretos de
-                cobertura a <strong>contacto@doblefoco.co</strong>. Los valores están hechos
+                cobertura a <a href={CONTACT_MAILTO}><strong>{CONTACT_EMAIL}</strong></a>. Los
+                valores están hechos
                 para ser discutidos; por eso cada uno se publica con su argumento al lado.
             </p>
         </section>

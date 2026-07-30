@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AnimateIn from '../components/AnimateIn';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
 import { BookOpen, FileText, ListTree } from 'lucide-react';
 import metodologiaText from '../docs/metodologia.txt?raw';
 import catalogoText from '../docs/catalogo_medios.txt?raw';
@@ -142,7 +143,8 @@ const About = () => {
                         <h2>Contáctanos</h2>
                         <p>
                             ¿Tienes preguntas, sugerencias o quieres colaborar?
-                            Escríbenos a <strong>contacto@doblefoco.co</strong>
+                            Escríbenos a{' '}
+                            <a href={CONTACT_MAILTO}><strong>{CONTACT_EMAIL}</strong></a>
                         </p>
                     </section>
                 </AnimateIn>

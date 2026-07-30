@@ -14,7 +14,9 @@
 
 const WAITLIST_KEY = 'doblefoco-newsletter-waitlist';
 
-export const CONTACT_EMAIL = 'doblefococo@gmail.com';
+// La dirección vive en src/lib/contacto.js. Aquí solo se reexporta para no
+// romper a quien ya la importaba desde este servicio.
+export { CONTACT_EMAIL } from '../lib/contacto';
 
 /** Validación razonable sin pretender cubrir todo el RFC 5322. */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

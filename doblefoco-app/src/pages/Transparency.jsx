@@ -200,10 +200,12 @@ const Transparency = () => (
                     pieza es otro oficio.
                 </li>
                 <li>
-                    <strong>Las fichas de propiedad de los medios están vacías.</strong>{' '}
-                    Sabemos que saber quién es dueño de un medio importa tanto como su línea
-                    editorial. No las publicamos hasta poder citar dónde consta cada
-                    afirmación.
+                    <strong>Las fichas de propiedad están a medias.</strong> Once medios —los
+                    de más peso en lo que se publica— ya tienen documentado quién los
+                    controla, con la fuente al lado. Los demás siguen vacíos, y seguirán así
+                    hasta poder citar dónde consta cada afirmación: saber quién es dueño de un
+                    medio importa tanto como su línea editorial, y por eso mismo no se afirma
+                    de oídas.
                 </li>
             </ul>
             <p>

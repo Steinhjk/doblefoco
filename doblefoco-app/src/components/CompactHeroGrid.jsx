@@ -5,6 +5,7 @@ import { ExternalLink, Layers, Sparkles } from 'lucide-react';
 import { useStories } from '../hooks/useStories';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
 import StoryImage from './StoryImage';
+import { EsqueletoHero } from './Esqueleto';
 import { tieneImagen } from '../services/imageEngineService';
 import { storyTimeLabel } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
@@ -24,7 +25,7 @@ import { rutaDeHistoria } from '../../shared/storyPath.js';
 const CompactHeroGrid = () => {
     // La portada es un destacado: si no hay cobertura real no se pinta nada, y
     // el aviso de ausencia lo da el feed de debajo una sola vez.
-    const { stories } = useStories({ limit: 40 });
+    const { stories, status } = useStories({ limit: 40 });
 
     const featured = useMemo(() => {
         const ranked = [...stories].sort((a, b) => {
@@ -36,6 +37,10 @@ const CompactHeroGrid = () => {
 
         return { main: ranked[0] ?? null, secondary: ranked.slice(1, 4) };
     }, [stories]);
+
+    // Mientras llega la respuesta se reserva el sitio con la forma del destacado.
+    // Devolver null aquí era la mitad de la pantalla en blanco al recargar.
+    if (status === 'cargando' && !stories.length) return <EsqueletoHero />;
 
     if (!featured.main) return null;
 

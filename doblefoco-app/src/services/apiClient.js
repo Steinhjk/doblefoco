@@ -182,3 +182,24 @@ export async function fetchPanorama() {
         retentionHours: result.data?.retentionHours ?? 72,
     };
 }
+
+/**
+ * Reporta si la ficha de propiedad de un medio está bien o mal.
+ *
+ * NO cambia la ficha: es una pista para saber dónde mirar. Corregirla exige
+ * producir la fuente donde consta lo contrario.
+ */
+export async function reportarPropiedad(mediaId, veredicto) {
+    return request(`/api/propiedad/${encodeURIComponent(mediaId)}/reporte`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ veredicto }),
+    });
+}
+
+/** Resumen de reportes de propiedad, para el panel. Exige sesión. */
+export async function fetchReportesPropiedad() {
+    const result = await request('/api/propiedad/reportes', { credentials: 'include' });
+    if (!result.ok) return result;
+    return { ok: true, medios: result.data?.medios ?? [] };
+}

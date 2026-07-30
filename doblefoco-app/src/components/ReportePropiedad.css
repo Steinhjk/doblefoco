@@ -1,0 +1,64 @@
+/**
+ * Señalar que una ficha de propiedad está mal.
+ *
+ * Deliberadamente discreto: es una utilidad, no una llamada a la acción. Si
+ * compitiera visualmente con el contenido de la ficha invitaría a pulsarlo sin
+ * leerla, y lo que se recogería sería ruido en vez de una pista.
+ */
+.reporte-propiedad {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.reporte-propiedad-pregunta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.reporte-propiedad-botones {
+    display: flex;
+    gap: 6px;
+}
+
+.reporte-propiedad-botones button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.reporte-propiedad-botones button:hover {
+    border-color: var(--text-muted);
+}
+
+.reporte-propiedad-gracias {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.reporte-propiedad-gracias svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}

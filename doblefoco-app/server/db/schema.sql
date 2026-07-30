@@ -308,6 +308,31 @@ CREATE TABLE IF NOT EXISTS reader_reports (
 CREATE INDEX IF NOT EXISTS reader_reports_story_idx ON reader_reports (story_id);
 CREATE INDEX IF NOT EXISTS reader_reports_kind_idx  ON reader_reports (kind, created_at DESC);
 
+-- ── 7 bis. Reportes sobre las FICHAS DE PROPIEDAD ────────────────────────────
+-- Tabla aparte y no una columna más en reader_reports: aquello cuelga de una
+-- historia con clave foránea, y esto habla de un MEDIO. Meterlos juntos
+-- obligaría a hacer `story_id` anulable, es decir, a debilitar la restricción
+-- que hace que aquella tabla no pueda tener filas huérfanas.
+--
+-- QUÉ SE HACE CON ESTO, Y QUÉ NO. No cambia ninguna ficha ni dispara nada
+-- automático. Es una PISTA sobre dónde mirar. La regla del proyecto es que
+-- corregir una ficha de propiedad exige producir la fuente donde consta, y un
+-- recuento de reportes no es una fuente: si bastara, cualquiera con tiempo
+-- podría reescribir quién es dueño de un medio pulsando un botón.
+--
+-- SIN DATOS PERSONALES, igual que la de arriba: qué medio, qué veredicto y
+-- cuándo. Ni IP ni identificador de sesión. Queda fuera del alcance de la Ley
+-- 1581 por construcción y no por política.
+CREATE TABLE IF NOT EXISTS reportes_propiedad (
+    id          BIGSERIAL PRIMARY KEY,
+    media_id    TEXT NOT NULL REFERENCES sources (id) ON DELETE CASCADE,
+    veredicto   TEXT NOT NULL CHECK (veredicto IN ('correcta', 'incorrecta')),
+    creado_en   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS reportes_propiedad_medio_idx
+    ON reportes_propiedad (media_id, creado_en DESC);
+
 -- ── 8. Límite de peticiones compartido (F2-06) ───────────────────────────────
 -- El contador vivía en la memoria de cada proceso. Con una sola instancia
 -- funcionaba; con la API sin estado, cada invocación tendría su propio contador

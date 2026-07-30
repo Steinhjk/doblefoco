@@ -28,7 +28,13 @@ import { countStored, dailySummaryFromDb, lastRunFromDb } from './db/contentStor
 import { prepareStorage } from './bootstrap.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
-import { recordReport, REPORT_KINDS } from './db/reportStore.js';
+import {
+    recordReport,
+    REPORT_KINDS,
+    registrarReportePropiedad,
+    resumenReportesPropiedad,
+    VEREDICTOS_PROPIEDAD,
+} from './db/reportStore.js';
 import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
@@ -457,6 +463,50 @@ async function limitarReportes(req, res, next) {
  * veredicto: el coste de un reporte de más es mirar una historia que estaba
  * bien.
  */
+/**
+ * Reporte del lector sobre una FICHA DE PROPIEDAD.
+ *
+ * Lo pidió Jose (2026-07-30) con el encargo explícito de que «no nos haga
+ * cambiar nada pero se guarde y genere un registro en el panel para saber dónde
+ * mirar». Eso es exactamente lo correcto aquí y coincide con la regla que ya
+ * gobierna el registro de medios: corregir una ficha exige producir la fuente
+ * donde consta lo contrario, y un recuento de reportes no es una fuente.
+ *
+ * Público y sin sesión, con el mismo límite que los reportes de historia. No se
+ * guarda nada que identifique a quien reporta.
+ */
+app.post('/api/propiedad/:mediaId/reporte', limitarReportes, async (req, res) => {
+    const { mediaId } = req.params;
+    const veredicto = req.body?.veredicto;
+
+    if (!VEREDICTOS_PROPIEDAD.includes(veredicto)) {
+        return res.status(400).json({
+            success: false,
+            error: `Veredicto no válido. Debe ser uno de: ${VEREDICTOS_PROPIEDAD.join(', ')}`,
+        });
+    }
+
+    try {
+        const registrado = await registrarReportePropiedad(mediaId, veredicto);
+        if (!registrado) {
+            return res.status(404).json({ success: false, error: 'Medio no encontrado' });
+        }
+        return res.json({ success: true });
+    } catch (error) {
+        console.error('[api] fallo en /api/propiedad/:mediaId/reporte', error);
+        return res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+/** Resumen para el panel: qué fichas de propiedad conviene revisar. */
+app.get('/api/propiedad/reportes', requireSession, async (req, res, next) => {
+    try {
+        res.json({ success: true, medios: await resumenReportesPropiedad() });
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.post('/api/report/:storyId', limitarReportes, async (req, res) => {
     const { storyId } = req.params;
     const kind = req.body?.kind;

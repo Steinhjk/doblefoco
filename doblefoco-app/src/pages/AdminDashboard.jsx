@@ -5,7 +5,15 @@ import {
     Loader2, Users, Activity, AlertTriangle,
 } from 'lucide-react';
 import { exportSubscribersForOperator, getWaitlistCount } from '../services/storageService';
-import { fetchHealth, requestIngestion, isApiConfigured, fetchErrors, resolveError } from '../services/apiClient';
+import {
+    fetchHealth,
+    requestIngestion,
+    isApiConfigured,
+    fetchErrors,
+    resolveError,
+    fetchReportesPropiedad,
+} from '../services/apiClient';
+import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import {
     decideStory,
     fetchCounts,
@@ -57,6 +65,7 @@ const AdminDashboard = () => {
     // Errores de producción (F2-11). Un panel que solo muestra lo que va bien
     // no es un panel de operación.
     const [errores, setErrores] = useState(null);
+    const [propiedad, setPropiedad] = useState([]);
     const [resolviendo, setResolviendo] = useState(null);
 
     /**
@@ -147,6 +156,22 @@ const AdminDashboard = () => {
         cargar();
         const timer = setInterval(cargar, 60_000);
         return () => { cancelado = true; clearInterval(timer); };
+    }, []);
+
+    /**
+     * Reportes sobre las fichas de propiedad. No cambian nada por sí solos: son
+     * la lista de dónde mirar. Se cargan una vez, no en bucle — nadie necesita
+     * ver llegar un reporte al segundo.
+     */
+    useEffect(() => {
+        if (!isApiConfigured) return undefined;
+
+        let cancelado = false;
+        fetchReportesPropiedad().then((r) => {
+            if (!cancelado && r.ok) setPropiedad(r.medios);
+        });
+
+        return () => { cancelado = true; };
     }, []);
 
     const handleResolver = async (huella) => {
@@ -321,6 +346,33 @@ const AdminDashboard = () => {
                     </>
                 )}
             </div>
+
+            {propiedad.some((m) => m.incorrectas > 0) && (
+                <div className="staging-queue-section">
+                    <h2>Fichas de propiedad señaladas</h2>
+                    <p className="reports-caption">
+                        Lectores que dijeron que la información de propiedad de un medio está
+                        mal. <strong>Esto no ha cambiado ninguna ficha</strong> y no debe
+                        hacerlo: corregir quién es dueño de un medio exige producir la fuente
+                        donde consta lo contrario, y un recuento de reportes no es una fuente.
+                        Es una lista de dónde mirar, ordenada por objeciones.
+                    </p>
+                    <ul className="errores-list">
+                        {propiedad
+                            .filter((m) => m.incorrectas > 0)
+                            .map((m) => (
+                                <li key={m.mediaId}>
+                                    <strong>
+                                        {MEDIA_REGISTRY.find((x) => x.id === m.mediaId)?.name ?? m.mediaId}
+                                    </strong>
+                                    {' — '}
+                                    {m.incorrectas} objeci{m.incorrectas === 1 ? 'ón' : 'ones'}
+                                    {m.correctas > 0 && <> · {m.correctas} confirmaci{m.correctas === 1 ? 'ón' : 'ones'}</>}
+                                </li>
+                            ))}
+                    </ul>
+                </div>
+            )}
 
             {errores?.errores?.length > 0 && (
                 <div className="staging-queue-section errores-section">

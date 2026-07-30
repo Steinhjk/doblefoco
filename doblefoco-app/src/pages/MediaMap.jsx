@@ -2,6 +2,7 @@ import { useMemo, useState, useId } from 'react';
 import { ExternalLink, Table2, ScatterChart, Info } from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
+import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum } from '../../shared/biasAnalysis';
 import { OWNER_TYPES, getOwnership, hasDocumentedOwnership } from '../../shared/mediaOwnership';
 import MediaLogo from '../components/MediaLogo';
@@ -415,6 +416,10 @@ const MediaProfile = ({ media, onClose }) => {
                         la vista antes que llenarlo con algo verosímil.
                     </p>
                 )}
+
+                {/* Solo cuando hay algo que juzgar: preguntar «¿es correcta?»
+                    sobre una ficha vacía no tiene respuesta posible. */}
+                {documented && <ReportePropiedad mediaId={media.id} />}
             </section>
 
             <a

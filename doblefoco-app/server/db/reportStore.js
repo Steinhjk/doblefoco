@@ -124,3 +124,62 @@ export async function reportTotals({ days = 14 } = {}) {
 
     return totals;
 }
+
+// ---------------------------------------------------------------------------
+// Reportes sobre las fichas de propiedad
+// ---------------------------------------------------------------------------
+
+/** Los dos veredictos posibles. «correcta» es conformidad, no señal de defecto. */
+export const VEREDICTOS_PROPIEDAD = ['correcta', 'incorrecta'];
+
+/**
+ * Registra que alguien dice que la ficha de propiedad de un medio está bien o
+ * mal.
+ *
+ * NO CAMBIA NADA, y esa es la propiedad importante. Corregir una ficha exige
+ * producir la fuente donde consta lo contrario; un recuento de reportes no es
+ * una fuente. Si bastara, cualquiera con tiempo podría reescribir quién es
+ * dueño de un medio pulsando un botón, que es exactamente el camino indirecto
+ * que la regla del registro cierra.
+ *
+ * @returns {Promise<boolean>} false si el medio no existe, para poder responder
+ *   404 en vez de dejar saltar la clave foránea con un 500 que no explica nada.
+ */
+export async function registrarReportePropiedad(mediaId, veredicto) {
+    if (!VEREDICTOS_PROPIEDAD.includes(veredicto)) {
+        throw new Error(`Veredicto no válido: ${veredicto}`);
+    }
+
+    const existe = await query('SELECT 1 FROM sources WHERE id = $1', [mediaId]);
+    if (!existe.rowCount) return false;
+
+    await query(
+        'INSERT INTO reportes_propiedad (media_id, veredicto) VALUES ($1, $2)',
+        [mediaId, veredicto]
+    );
+
+    return true;
+}
+
+/**
+ * Resumen por medio, para el panel: dónde mirar.
+ *
+ * Se ordena por reportes de «incorrecta» y no por el total: un medio con veinte
+ * confirmaciones y ninguna objeción no necesita que nadie lo revise, y ponerlo
+ * arriba enterraría al que sí.
+ *
+ * @returns {Promise<Array<{mediaId: string, incorrectas: number, correctas: number, ultimo: string}>>}
+ */
+export async function resumenReportesPropiedad() {
+    const resultado = await query(`
+        SELECT media_id                                              AS "mediaId",
+               count(*) FILTER (WHERE veredicto = 'incorrecta')::int  AS incorrectas,
+               count(*) FILTER (WHERE veredicto = 'correcta')::int    AS correctas,
+               max(creado_en)                                         AS ultimo
+          FROM reportes_propiedad
+         GROUP BY media_id
+         ORDER BY incorrectas DESC, ultimo DESC
+    `);
+
+    return resultado.rows;
+}

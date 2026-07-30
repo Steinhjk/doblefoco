@@ -38,18 +38,33 @@
     margin-bottom: 12px;
 }
 
+/**
+ * CAMPO Y BOTÓN EN UNA SOLA LÍNEA, y delgados.
+ *
+ * Antes el campo pedía 140 px de base y podía envolver, así que en la columna
+ * lateral —que es estrecha— el botón caía a una segunda línea y el recuadro
+ * crecía a lo alto. De ahí que se viera «grande y gordito»: no era el tamaño de
+ * la letra, era una envoltura.
+ *
+ * `nowrap` con el campo encogible (`flex: 1 1 0`) y el botón fijo: la línea
+ * cabe siempre porque el que cede es el campo, que puede estrecharse sin
+ * romperse.
+ */
 .newsletter-input-group {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 6px;
+    flex-wrap: nowrap;
+    align-items: stretch;
 }
 
 .newsletter-input {
-    flex: 1 1 140px;
+    flex: 1 1 0;
     min-width: 0;
-    padding: 9px 12px;
+    height: 34px;
+    padding: 0 10px;
     font-family: inherit;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    line-height: 1;
     color: var(--text-main);
     background: var(--bg-main);
     border: 1px solid var(--border-color);
@@ -62,7 +77,9 @@
 
 .newsletter-submit-btn,
 .newsletter-reset-btn {
-    padding: 9px 14px;
+    flex-shrink: 0;
+    height: 34px;
+    padding: 0 12px;
     font-family: inherit;
     font-size: 0.82rem;
     font-weight: 700;

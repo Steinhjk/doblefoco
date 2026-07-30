@@ -7,6 +7,7 @@ import { useStories } from '../hooks/useStories';
 import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
 import { resumenDelFeed } from '../lib/resumenDelFeed.js';
 import EmptyState from './EmptyState';
+import { EsqueletoTarjetas } from './Esqueleto';
 import { BLINDSPOT_MIN_SOURCES, SPECTRUM_LABEL_SHORT } from '../../shared/biasAnalysis.js';
 import './NewsFeed.css';
 
@@ -257,7 +258,12 @@ const NewsFeed = () => {
             </div>
 
             <div className="feed-container">
-                {displayedNews.length > 0 ? (
+                {/* Mientras llega la primera respuesta se dibuja la FORMA de las
+                    tarjetas. Antes aquí no había nada y la página parecía rota
+                    durante uno o dos segundos. */}
+                {status === 'cargando' && allNews.length === 0 ? (
+                    <EsqueletoTarjetas cuantas={5} />
+                ) : displayedNews.length > 0 ? (
                     displayedNews.map((story) => (
                         <AnimateIn key={story.id}>
                             <NewsCard story={story} />

@@ -2043,11 +2043,60 @@
             verificado en ambos temas, recorrido completo con lector de
             pantalla. Objetivo: WCAG 2.1 AA.
 
- [ ] F3-12  Optimización de recursos
-            Logos servidos desde google.com/s2/favicons uno por chip (decenas
-            de peticiones por pantalla): descargarlos en el build. Imágenes con
-            srcset. Auditar los ~12 pesos tipográficos que se cargan y
-            autoalojar los que se usen.
+ [x] F3-12  Optimización de recursos (2026-07-30) — en su mayor parte ya estaba
+            hecha, y lo que quedaba se midió y no había nada que recortar.
+
+            LOGOS: ya no salen de google.com/s2/favicons. Se descargan con
+            `npm run logos:fetch` y se sirven desde /logos/. Se hizo al arreglar
+            un problema de privacidad, no de rendimiento: cada petición a Google
+            revelaba QUÉ MEDIOS aparecen en la página que alguien está leyendo.
+
+            TIPOGRAFÍAS: ya autoalojadas en /fonts (652 kB, 24 woff2), no desde
+            fonts.googleapis.com. MEDIDO el 2026-07-30: los pesos declarados
+            —400 a 900— coinciden con los que usa el CSS de la aplicación. No
+            hay peso muerto que quitar. Y el navegador solo descarga las caras
+            que llega a pintar, así que declarar 24 no cuesta 24 descargas.
+
+            SRCSET: pierde sentido con las imágenes actuales. Ya no las servimos
+            nosotros: son las que publica cada medio, desde su propio CDN, y no
+            controlamos qué tamaños ofrece. Se retira como tarea.
+
+ [x] F2-13  Copia de seguridad de la base (2026-07-30)
+            NO HABÍA NINGUNA, y la creencia de que sí venía de un malentendido
+            razonable: `data/ingest_runs.jsonl` está pensado para sobrevivir a
+            que Postgres no responda, y eso es cierto EN UNA MÁQUINA. Pero la
+            ingesta corre en Actions —contenedores que se destruyen— y `data/`
+            está en .gitignore. La base era el único sitio durable de la serie
+            de F1-01, la que no se puede reconstruir hacia atrás. Había 150
+            ciclos ahí sin copia.
+
+            NO ES UN pg_dump, y la razón principal es de seguridad: ESTE
+            REPOSITORIO ES PÚBLICO, y en un repositorio público cualquiera puede
+            descargar los artefactos de Actions. Un volcado completo habría
+            publicado `admin_users` (correo y hash) y `admin_sessions` (IP y
+            user-agent) a diario y en horario. Se excluyen, junto con
+            `waitlist`. Si alguna vez hay que respaldarlas, la conversación es
+            sobre cifrado, no sobre añadirlas a la lista.
+
+            Se respalda lo irreemplazable Y sin datos personales: la serie, las
+            decisiones de moderación y los dos tipos de reporte de lector. Once
+            exclusiones, cada una con su motivo escrito en scripts/backup.mjs.
+
+            DOS COMPROBACIONES QUE ROMPEN LA EJECUCIÓN, y son lo que separa un
+            respaldo de la sensación de tener uno: falla si aparece una tabla
+            que nadie ha decidido si respaldar —una tabla nueva queda fuera por
+            omisión, que es lo seguro, pero en silencio— y falla si la serie
+            viene vacía, porque un respaldo en verde y sin contenido es peor que
+            no tenerlo.
+
+            El restaurador se escribió el mismo día, a propósito: es la mitad
+            que se olvida. Idempotente, no sobrescribe, y una fila que apunte a
+            una historia que ya no existe se salta en vez de abortar.
+
+            VERIFICADO EJECUTÁNDOLO: el flujo corrió en Actions y salió en verde;
+            el artefacto son 6,3 kB con las cuatro tablas y CERO rastro de
+            contraseñas, tokens, correos o IPs; y la restauración sobre la base
+            viva insertó 0 y saltó las 151 que ya estaban.
 
 ===============================================================================
  DECISIONES Y DESCARTES

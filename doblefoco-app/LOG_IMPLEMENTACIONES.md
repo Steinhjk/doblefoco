@@ -661,3 +661,57 @@ la fabricación que se retiró el 2026-07-30 y el motivo de todo este trabajo.
 Si aun así se quiere llenar el hueco, la salida honesta NO es una foto: es un
 marcador claramente no fotográfico —el logo del medio sobre un fondo— que se lea
 como «no hay imagen» y no como «esta es la imagen». Queda pendiente de decisión.
+
+---
+
+### [2026-07-30] Copia de seguridad diaria (F2-13) y cierre de F3-12
+
+Jose pidió seguir con la infraestructura de backend necesaria para publicar.
+Revisado el ROADMAP, el hueco serio era uno: **no había ninguna copia de
+seguridad**.
+
+#### Por qué nadie lo había notado
+`data/ingest_runs.jsonl` está pensado para «sobrevivir a que Postgres no
+responda», y eso es cierto en una máquina. Pero la ingesta corre en GitHub
+Actions —cada ejecución es un contenedor que se destruye— y `data/` está en
+`.gitignore`. En la práctica **la base era el único sitio durable de la serie de
+F1-01**, la que por diseño no se puede reconstruir hacia atrás. Había 150 ciclos
+ahí y ninguna copia.
+
+#### Por qué no es un `pg_dump`
+**El repositorio es público**, y en un repositorio público cualquiera puede
+descargar los artefactos de Actions. Un volcado completo habría publicado
+`admin_users` (correo y hash de contraseña) y `admin_sessions` (IP y user-agent)
+a diario y en horario. Se excluyen, junto con `waitlist`.
+
+Y dos razones menores: la mitad del tamaño de la base son artículos que se
+reconstruyen solos en 72 h, y `pg_dump` exige que el cliente coincida con la
+versión del servidor (17.6), un acoplamiento que se rompe el día que alguien
+actualice el runner.
+
+#### Lo que hace que esto sea un respaldo y no la sensación de tenerlo
+- Falla si aparece **una tabla que nadie ha decidido** si respaldar. Una tabla
+  nueva queda fuera por omisión —la dirección segura— pero en silencio, y ese
+  silencio es el que hace que un día falte algo.
+- Falla si **la serie viene vacía**. Un respaldo en verde y sin contenido crea
+  la confianza sin la copia.
+- **El restaurador se escribió el mismo día.** Es la mitad que se olvida.
+  Idempotente, no sobrescribe, y una fila que apunte a una historia inexistente
+  se salta en vez de abortar.
+
+#### Verificado ejecutándolo, no solo escribiéndolo
+```
+Flujo en Actions .............. success
+Artefacto ..................... 6 308 bytes, 4 tablas, caduca en 30 días
+Auditoría del artefacto ....... 0 coincidencias de password_hash, token_hash,
+                                correos o user_agent
+Restauración sobre base viva .. 0 insertadas, 151 saltadas (ya estaban)
+Ensayo en seco ................ 150 + 1 filas detectadas correctamente
+```
+
+#### F3-12 se cierra: casi todo ya estaba
+Los logos se sirven en local desde que se arregló la fuga de privacidad hacia
+Google. Las tipografías están autoalojadas. **Medido:** los pesos declarados
+(400–900) coinciden con los que usa el CSS — no hay peso muerto. Y `srcset`
+pierde sentido: las imágenes ya no las servimos nosotros, son las del medio
+desde su propio CDN.

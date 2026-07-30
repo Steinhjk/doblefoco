@@ -2658,13 +2658,37 @@
    · Un origen no autorizado recibe 500 en vez de 403 (el middleware de CORS
      lanza y cae en el manejador genérico). Bloquea bien; es higiene.
 
- LO QUE NO HAY QUE HACER TODAVÍA, y conviene tenerlo escrito:
-   · NO anunciar ni compartir la página. Jose lo pidió expresamente: producción
-     invisible hasta que él decida.
-   · NO añadir el dominio propio doblefoco.co en Vercel por ahora. Es un paso de
-     cuando publique, y lo haría más fácil de encontrar.
-   · NO rotar la contraseña de Supabase antes de publicar. Decisión suya, con
-     el motivo escrito en OPERACIÓN.
+ EL SITIO YA ESTÁ PUBLICADO (2026-07-30)
+   Las tres primeras entradas de esta lista decían «todavía no» y dejaron de ser
+   ciertas el mismo día. Se dejan escritas con lo que pasó, porque la secuencia
+   importa más que el estado final:
+
+   · doblefoco.co EN EL AIRE. DNS en Porkbun con dos registros A a 76.76.21.21
+     —se conserva el DNS en Porkbun en vez de ceder los servidores de nombres a
+     Vercel—, certificado emitido para el dominio y para www, y SITE_URL y
+     ALLOWED_ORIGINS ya apuntando allí. El sitemap emite 348 URLs, todas con el
+     dominio nuevo.
+     DOS COSAS QUE COSTARON UN RATO Y CONVIENE RECORDAR: el certificado NO se
+     emitió solo pese a que Vercel daba el dominio por configurado —hubo que
+     forzarlo con `vercel certs issue`—, y el robots.txt se sirvió desfasado un
+     rato porque Vercel lo cachea con s-maxage de 24 h. Tras un cambio de
+     dominio, esa caché puede servir lo antiguo un día entero.
+
+   · INDEXADO ACTIVO, por decisión de Jose. Su razonamiento, que conviene
+     conservar: la página está en construcción y cualquier cosa se corrige o se
+     revierte en el plazo de una semana; no hay afán de dejarlo perfecto al
+     instante. Verificado en Search Console con archivo HTML en public/ —NO
+     BORRARLO, Google lo revisa periódicamente y sin él se pierde la
+     verificación—.
+
+   · ⚠️ ROTAR LA CONTRASEÑA DE SUPABASE. Esta es la única de las tres que sigue
+     PENDIENTE, y su disparador ya se cumplió: la condición era «al publicar», y
+     el sitio está publicado. Toca tres sitios — .env.local, el secreto
+     DATABASE_URL del repositorio en GitHub y `flyctl secrets set` en Fly. El
+     orden importa: si se rota en Supabase sin actualizar Fly, el motor deja de
+     ingerir y la serie de F1-01 se queda con un agujero irreconstruible.
+
+ LO QUE SIGUE SIN HACERSE TODAVÍA:
    · NO poner F3-05 (boletín real) en marcha sin política de privacidad
      publicada y responsable del tratamiento identificado: en cuanto haya
      suscriptores hay datos personales y aplica la Ley 1581 de 2012.

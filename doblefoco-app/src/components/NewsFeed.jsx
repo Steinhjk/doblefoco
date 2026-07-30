@@ -15,14 +15,16 @@ const NewsFeed = () => {
     // aquel catálogo de demostración contenía 600 citas inventadas atribuidas a
     // 32 medios reales, y el aviso que lo acompañaba solo existía en esta
     // pantalla. O hay cobertura real, o se dice que no la hay.
-    const { stories: allNews, counts, status, reason } = useStories({ limit: 100 });
-
     /**
      * Los filtros viven en la URL, no en useState (F3-06). Así se pueden
      * compartir, el botón «atrás» deshace el último y una recarga no devuelve a
      * la portada perdiendo el sitio.
+     *
+     * Se leen ANTES de pedir las historias porque el ámbito ya no se filtra
+     * aquí: viaja al servidor, de modo que cada pestaña es su propia consulta
+     * paginada y su cifra puede ser la del catálogo entero.
      */
-    const { filtros, visibles, asignar, verMas, hayFiltros, limpiar } = useFiltrosDeFeed(allNews.length);
+    const { filtros, visibles, asignar, verMas, hayFiltros, limpiar } = useFiltrosDeFeed(Infinity);
     const {
         ambito: scopeFilter,
         espectro: spectrumFilter,
@@ -31,23 +33,28 @@ const NewsFeed = () => {
         orden: sortBy,
     } = filtros;
 
-    /**
-     * DOS ÁMBITOS QUE NO HAY QUE MEZCLAR, y mezclarlos fue el fallo original.
-     *
-     * `counts` describe el catálogo entero. `allNews` son las 100 que se pidieron.
-     * Las pestañas FILTRAN sobre `allNews`, así que sus cifras tienen que salir de
-     * `allNews`: poner ahí el total del catálogo haría que «Internacional (20)»
-     * devolviera seis resultados, que es cambiar una cifra engañosa por otra.
-     *
-     * El universo se declara UNA vez, en la cabecera, con las cifras de `counts`.
-     * Ahí es donde el lector se enteraba mal de cuántas historias sigue el sitio.
-     */
-    const nationalCount = useMemo(
-        () => allNews.filter((s) => s.category !== 'Internacional').length,
-        [allNews]
-    );
-    const internationalCount = allNews.length - nationalCount;
+    const {
+        stories: allNews,
+        counts,
+        status,
+        reason,
+        cargarMas,
+        hayMas,
+        cargandoMas,
+    } = useStories({ limit: 100, ambito: scopeFilter });
 
+    /**
+     * LAS CIFRAS DE LAS PESTAÑAS SON DEL CATÁLOGO, y ahora pueden serlo.
+     *
+     * Antes se contaban sobre lo descargado, así que «Todas (100)» presentaba el
+     * techo de la petición como el tamaño del sitio. Poner el total del catálogo
+     * habría sido peor mientras el ámbito se filtrara aquí: «Internacional (102)»
+     * habría devuelto 34 resultados.
+     *
+     * Lo que lo desbloquea es que el ámbito viaje al SERVIDOR. Cada pestaña es su
+     * propia consulta paginada, así que su número es alcanzable cargando más y
+     * deja de ser una promesa que la lista no cumple.
+     */
     const resumen = resumenDelFeed(counts, allNews.length);
 
     const filteredNews = useMemo(
@@ -55,8 +62,7 @@ const NewsFeed = () => {
             allNews.filter((story) => {
                 const { coverage } = story;
 
-                if (scopeFilter === 'nacional' && story.category === 'Internacional') return false;
-                if (scopeFilter === 'internacional' && story.category !== 'Internacional') return false;
+                // El ámbito ya no se filtra aquí: lo aplicó la consulta.
 
                 // Filtro por espectro DOMINANTE en la cobertura, no por la
                 // media de sesgos. Promediar fuentes opuestas las cancela: con
@@ -70,7 +76,7 @@ const NewsFeed = () => {
 
                 return true;
             }),
-        [allNews, scopeFilter, spectrumFilter, polarizationFilter, blindspotFilter]
+        [allNews, spectrumFilter, polarizationFilter, blindspotFilter]
     );
 
     const sortedNews = useMemo(() => {
@@ -119,9 +125,7 @@ const NewsFeed = () => {
                 <p>
                     {resumen.multifuente} historias con cobertura multifuente
                     {resumen.seguidas !== null && <> de {resumen.seguidas} seguidas en total</>}
-                    {resumen.mostradas !== null && (
-                        <> · se muestran las {resumen.mostradas} con más medios cubriendo</>
-                    )}
+                    , ordenadas por número de medios cubriendo
                 </p>
             </div>
 
@@ -133,21 +137,21 @@ const NewsFeed = () => {
                     aria-pressed={scopeFilter === 'all'}
                     onClick={() => asignar('ambito', 'all')}
                 >
-                    <Globe size={15} aria-hidden="true" /> Todas ({allNews.length})
+                    <Globe size={15} aria-hidden="true" /> Todas ({counts.multifuente || allNews.length})
                 </button>
                 <button
                     className={`scope-tab ${scopeFilter === 'nacional' ? 'active' : ''}`}
                     aria-pressed={scopeFilter === 'nacional'}
                     onClick={() => asignar('ambito', 'nacional')}
                 >
-                    <Flag size={15} aria-hidden="true" /> Colombia ({nationalCount})
+                    <Flag size={15} aria-hidden="true" /> Colombia ({counts.nacional || 0})
                 </button>
                 <button
                     className={`scope-tab ${scopeFilter === 'internacional' ? 'active' : ''}`}
                     aria-pressed={scopeFilter === 'internacional'}
                     onClick={() => asignar('ambito', 'internacional')}
                 >
-                    <Globe size={15} aria-hidden="true" /> Internacional ({internationalCount})
+                    <Globe size={15} aria-hidden="true" /> Internacional ({counts.internacional || 0})
                 </button>
             </div>
 
@@ -232,10 +236,13 @@ const NewsFeed = () => {
             )}
 
             <div className="feed-results-summary">
+                {/* «de N cargadas» y no «de N historias»: con paginación real,
+                    sortedNews es lo que se ha traído hasta ahora, no el total.
+                    Decir «de 100 historias» era justo el número que sobraba. */}
                 <span>
                     Mostrando <strong>{displayedNews.length}</strong> de{' '}
-                    <strong>{sortedNews.length}</strong> historias
-                    {hayFiltros && <> · <strong>{allNews.length}</strong> sin filtrar</>}
+                    <strong>{sortedNews.length}</strong> cargadas
+                    {hayMas && <> · hay más</>}
                 </span>
 
                 {/* Solo con filtros puestos. Antes esta salida existía únicamente
@@ -269,13 +276,30 @@ const NewsFeed = () => {
                 )}
             </div>
 
-            {visibles < sortedNews.length && (
+            {/**
+              * «Cargar más» hace DOS cosas, y antes solo hacía la primera:
+              * mostrar diez más de lo descargado y, cuando se agota, pedirle al
+              * servidor la página siguiente. Sin lo segundo la historia 101 era
+              * inalcanzable y el sitio se comportaba como si tuviera 100.
+              */}
+            {(visibles < sortedNews.length || hayMas) && (
                 <div className="load-more-box">
                     <button
                         className="load-more-btn"
-                        onClick={verMas}
+                        disabled={cargandoMas}
+                        onClick={() => {
+                            verMas();
+                            // Se pide la siguiente página con margen, antes de
+                            // llegar al final: así el botón nunca se queda sin
+                            // nada que revelar mientras la respuesta viaja.
+                            if (hayMas && visibles + TAMANO_PAGINA * 2 >= allNews.length) {
+                                cargarMas();
+                            }
+                        }}
                     >
-                        <span>Cargar más (+{TAMANO_PAGINA})</span>
+                        <span>
+                            {cargandoMas ? 'Cargando…' : `Cargar más (+${TAMANO_PAGINA})`}
+                        </span>
                         <ChevronDown size={16} aria-hidden="true" />
                     </button>
                 </div>

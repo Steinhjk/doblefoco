@@ -270,8 +270,33 @@ function componerHistoria(fila, articulos) {
     };
 }
 
-/** Página del feed público. */
-export async function readFeed({ limit = 20, offset = 0 } = {}) {
+/**
+ * Feed paginado, opcionalmente acotado al ámbito.
+ *
+ * EL ÁMBITO SE FILTRA EN SQL Y NO EN EL CLIENTE, y ese cambio es lo que quita
+ * de la portada el «Todas (100)». Antes el cliente pedía 100 historias y
+ * repartía ESAS entre Colombia e Internacional, así que las pestañas contaban
+ * un trozo arbitrario y el 100 se leía como el tamaño del sitio. Con el filtro
+ * aquí, cada pestaña tiene su propia paginación completa y sus cifras pueden ser
+ * las del catálogo entero, porque cargando más se alcanzan todas.
+ *
+ * El COALESCE sobre la categoría hace que una historia sin categorizar cuente
+ * como nacional, igual que en `countFeed`. Los dos sitios tienen que decir lo
+ * mismo o la pestaña promete un número que su propia lista no da.
+ */
+export async function readFeed({ limit = 20, offset = 0, ambito = 'all' } = {}) {
+    if (ambito === 'nacional') {
+        return leerHistorias({
+            where: "AND COALESCE(s.category, '') <> 'Internacional'",
+            limit,
+            offset,
+        });
+    }
+
+    if (ambito === 'internacional') {
+        return leerHistorias({ where: "AND s.category = 'Internacional'", limit, offset });
+    }
+
     return leerHistorias({ limit, offset });
 }
 

@@ -69,8 +69,9 @@ async function request(path, { timeoutMs = DEFAULT_TIMEOUT_MS, ...options } = {}
 }
 
 /** Feed paginado de historias multifuente. */
-export async function fetchFeed({ limit = 20, offset = 0 } = {}) {
-    const result = await request(`/api/feed?limit=${limit}&offset=${offset}`);
+export async function fetchFeed({ limit = 20, offset = 0, ambito = 'all' } = {}) {
+    const alcance = ambito && ambito !== 'all' ? `&ambito=${encodeURIComponent(ambito)}` : '';
+    const result = await request(`/api/feed?limit=${limit}&offset=${offset}${alcance}`);
     if (!result.ok) return result;
 
     return {

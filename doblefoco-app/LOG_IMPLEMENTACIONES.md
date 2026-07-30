@@ -595,3 +595,69 @@ existente: nunca se sustituye por una foto que no sea de esa noticia.
 - **Evidencias:** 261 pruebas —7 nuevas sobre `leerOgImage`, con `fetch`
   inyectado, incluida la que comprueba que NO se sigue leyendo después de
   `</head>`— · typecheck, lint y build limpios.
+
+---
+
+### [2026-07-30] Paginación de verdad: se acabó el «100» de la portada
+
+Jose volvió a señalar que el conteo de 100 en la portada no le gustaba. Tenía
+razón y el arreglo anterior se había quedado corto: se corrigió el TEXTO de la
+cabecera, pero el 100 seguía siendo un techo real. «Cargar más» solo revelaba
+parte de lo ya descargado, así que **la historia 101 era inalcanzable** y el
+sitio se comportaba como si tuviera cien.
+
+#### Lo que lo desbloquea: el ámbito viaja al servidor
+Mientras el filtro Colombia/Internacional se aplicara en el cliente, las
+pestañas no podían mostrar las cifras del catálogo sin mentir —«Internacional
+(107)» habría devuelto 36 resultados—. Con el filtro en SQL, cada pestaña es su
+propia consulta paginada y su número es **alcanzable cargando más**.
+
+- `readFeed({limit, offset, ambito})` filtra por categoría en SQL, con el mismo
+  `COALESCE` que usa el conteo: los dos sitios tienen que decir lo mismo o la
+  pestaña promete un número que su lista no da.
+- `/api/feed` valida el ámbito contra lista blanca: acaba en una cláusula SQL.
+- `useStories` mantiene el desplazamiento en una `ref` y expone `cargarMas()`,
+  `hayMas` y `cargandoMas`; cambiar de pestaña reinicia la lista.
+- «Cargar más» revela diez más y, con margen, pide la página siguiente.
+- El resumen dice «de N cargadas», no «de N historias».
+
+#### Verificado contra la base
+```
+offset 0 / 100 / 200 .......... 100 cada una, sin repetir
+ambito=internacional .......... 100 de 100 internacionales
+ambito=nacional ............... 0 internacionales
+counts: 204 nacional + 107 internacional = 311 multifuente
+```
+Las pestañas ahora dicen Todas (311) · Colombia (204) · Internacional (107).
+
+261 pruebas · typecheck, lint y build limpios.
+
+---
+
+### [2026-07-30] Qué hace Ground News con las imágenes que faltan
+
+Jose preguntó, y la respuesta cambia la conclusión sobre el 10 % sin foto.
+
+**Ground News no busca imágenes relacionadas.** Cada historia lleva la imagen que
+publicó uno de los medios que la cubren, servida a través de su propio dominio
+—se ve en las URLs, que pasan por su optimizador de imágenes—. No hay banco de
+fotos ni ilustración temática. Con más de 50 000 fuentes, casi siempre alguno de
+los medios de una historia trae foto, y esa es la que muestran.
+
+**Es exactamente lo que hace ya DobleFoco**, y por la misma razón estructural:
+una historia es un GRUPO de artículos de varios medios, así que basta con que uno
+de ellos publique imagen. Medido tras el enriquecimiento con og:image:
+
+```
+Historias multifuente (lo que muestra la portada) ... 306 de 311 con imagen (98 %)
+Todas las historias visibles ....................... 3 756 de 4 070 (92 %)
+```
+
+Las 5 historias multifuente sin imagen son aquellas en las que NINGUNO de los
+medios que las cubren publicó foto. Buscar una «relacionada» para ese 2 %
+significaría poner junto a un titular una imagen que no es de ese hecho, que es
+la fabricación que se retiró el 2026-07-30 y el motivo de todo este trabajo.
+
+Si aun así se quiere llenar el hueco, la salida honesta NO es una foto: es un
+marcador claramente no fotográfico —el logo del medio sobre un fondo— que se lea
+como «no hay imagen» y no como «esta es la imagen». Queda pendiente de decisión.

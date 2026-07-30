@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchFeed, isApiConfigured } from '../services/apiClient';
 import { normalizeStories } from '../lib/story';
 
@@ -18,29 +18,32 @@ import { normalizeStories } from '../lib/story';
  * fabricación que la Fase 0 eliminó del motor (F0-01, F0-03), sobreviviendo en
  * el bundle que se descargaba el visitante.
  *
- * Y el aviso de "datos de demostración" solo existía en el feed principal. La
- * página de detalle —donde la cita fabricada se muestra a pantalla completa con
- * el nombre del medio al lado— no advertía nada. Tampoco el buscador, ni
- * categorías, ni tendencias, ni el sidebar.
- *
  * QUÉ HACE AHORA
  * --------------
  * O hay datos reales de la API, o no hay nada y se dice. No existe tercer
- * estado. Es más pobre de ver y es lo único honesto: un sitio cuyo principio es
- * "nunca se publica lo que no se puede verificar contra su fuente" no puede
- * rellenar su propio escaparate con citas que nadie escribió.
+ * estado. Es más pobre de ver y es lo único honesto.
  *
- * `counts` SON DEL CATÁLOGO, `stories` ES UNA PÁGINA. La distinción importa
- * porque confundirlas ya produjo un error en la portada: contaba `stories.length`
- * y escribía el resultado como si fuera el total, de modo que el techo de la
- * petición se leía como el tamaño del catálogo. Quien pinte una cifra tiene que
- * tomarla de `counts`; `stories.length` solo dice cuántas se descargaron.
+ * PAGINACIÓN DE VERDAD (2026-07-30)
+ * ---------------------------------
+ * Antes pedía 100 historias y ahí se acababa el sitio: «cargar más» solo
+ * revelaba parte de lo ya descargado, así que la historia 101 era inalcanzable y
+ * el 100 aparecía en la portada como si fuera el tamaño del catálogo. Sigue 311
+ * multifuente de más de 4 000.
  *
- * @returns {{stories: Array, counts: {total: number, multifuente: number, nacional: number, internacional: number}, status: 'cargando'|'listo'|'sin-datos', reason: string|null}}
+ * Ahora `cargarMas()` pide la página siguiente al servidor y la añade. El
+ * ÁMBITO viaja al servidor en vez de filtrarse aquí, y por eso cambiarlo
+ * reinicia la lista: cada pestaña es su propia consulta paginada, con lo cual
+ * sus cifras pueden ser las del catálogo entero sin mentir, porque cargando más
+ * se llega a todas.
+ *
+ * `counts` SON DEL CATÁLOGO, `stories` ES LO DESCARGADO. Confundirlos ya produjo
+ * un error en la portada: contaba `stories.length` y lo presentaba como total.
+ *
+ * @returns {{stories: Array, counts: {total: number, multifuente: number, nacional: number, internacional: number}, status: 'cargando'|'listo'|'sin-datos', reason: string|null, cargarMas: () => void, hayMas: boolean, cargandoMas: boolean}}
  */
 const SIN_CONTEO = { total: 0, multifuente: 0, nacional: 0, internacional: 0 };
 
-export function useStories({ limit = 100 } = {}) {
+export function useStories({ limit = 100, ambito = 'all' } = {}) {
     const [state, setState] = useState(() => ({
         stories: [],
         counts: SIN_CONTEO,
@@ -48,15 +51,33 @@ export function useStories({ limit = 100 } = {}) {
         reason: isApiConfigured ? null : 'Este despliegue no tiene la API configurada.',
     }));
 
+    const [cargandoMas, setCargandoMas] = useState(false);
+    const [hayMas, setHayMas] = useState(false);
+
+    /**
+     * Cuántas historias se han pedido ya. En una ref y no en estado: cambiarla
+     * no tiene que repintar, y si lo hiciera provocaría otra petición.
+     */
+    const offset = useRef(0);
+
     useEffect(() => {
         if (!isApiConfigured) return undefined;
 
-        let active = true;
+        let activo = true;
+        offset.current = 0;
 
-        fetchFeed({ limit }).then((result) => {
-            if (!active) return;
+        /**
+         * NO se marca «cargando» al cambiar de pestaña, a propósito. La lista
+         * anterior se queda visible hasta que llega la nueva, que es mejor que
+         * un parpadeo en blanco entre dos listas. En la primera carga el estado
+         * ya arranca en «cargando» desde el inicializador.
+         */
+        fetchFeed({ limit, offset: 0, ambito }).then((result) => {
+            if (!activo) return;
 
             if (result.ok && result.stories.length) {
+                offset.current = result.stories.length;
+                setHayMas(result.stories.length >= limit);
                 setState({
                     stories: normalizeStories(result.stories),
                     counts: result.counts ?? SIN_CONTEO,
@@ -66,9 +87,10 @@ export function useStories({ limit = 100 } = {}) {
                 return;
             }
 
+            setHayMas(false);
             setState({
                 stories: [],
-                counts: SIN_CONTEO,
+                counts: result.counts ?? SIN_CONTEO,
                 status: 'sin-datos',
                 // Se distingue "la API no respondió" de "respondió y no hay
                 // nada": la primera es una avería y la segunda es un hecho
@@ -80,9 +102,38 @@ export function useStories({ limit = 100 } = {}) {
         });
 
         return () => {
-            active = false;
+            activo = false;
         };
-    }, [limit]);
+    }, [limit, ambito]);
 
-    return state;
+    /**
+     * Siguiente página, añadida a lo que ya hay.
+     *
+     * Se protege con `cargandoMas` porque el botón puede pulsarse dos veces
+     * antes de que llegue la respuesta, y eso pediría el mismo tramo dos veces y
+     * lo pintaría duplicado.
+     */
+    const cargarMas = useCallback(() => {
+        if (cargandoMas || !hayMas || !isApiConfigured) return;
+
+        setCargandoMas(true);
+
+        fetchFeed({ limit, offset: offset.current, ambito })
+            .then((result) => {
+                if (!result.ok || !result.stories.length) {
+                    setHayMas(false);
+                    return;
+                }
+
+                offset.current += result.stories.length;
+                setHayMas(result.stories.length >= limit);
+                setState((previo) => ({
+                    ...previo,
+                    stories: [...previo.stories, ...normalizeStories(result.stories)],
+                }));
+            })
+            .finally(() => setCargandoMas(false));
+    }, [ambito, cargandoMas, hayMas, limit]);
+
+    return { ...state, cargarMas, hayMas, cargandoMas };
 }

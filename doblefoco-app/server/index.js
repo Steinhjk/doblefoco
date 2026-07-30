@@ -502,7 +502,16 @@ app.get('/api/feed', async (req, res) => {
         const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
         const offset = Math.max(Number(req.query.offset) || 0, 0);
 
-        const [stories, counts] = await Promise.all([readFeed({ limit, offset }), countFeed()]);
+        // Lista blanca: el ámbito acaba en una cláusula SQL, así que no puede
+        // salir de lo que llegue por la URL sin comprobarlo.
+        const ambito = ['nacional', 'internacional'].includes(String(req.query.ambito))
+            ? String(req.query.ambito)
+            : 'all';
+
+        const [stories, counts] = await Promise.all([
+            readFeed({ limit, offset, ambito }),
+            countFeed(),
+        ]);
 
         // `total` se conserva como campo suelto por compatibilidad con lo ya
         // desplegado; `counts` es lo que necesita la portada para no confundir

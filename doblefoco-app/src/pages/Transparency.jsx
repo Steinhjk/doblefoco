@@ -129,7 +129,7 @@ const Transparency = () => (
 
             <h3>Si algún día lo tiene</h3>
             <p>
-                Buscamos patrocinio institucional de $2.000.000 COP anuales, destinado a
+                Buscamos patrocinio (no necesariamente institucional), destinado a
                 infraestructura, captura de feeds y mantenimiento. Las condiciones son
                 públicas de antemano, y son estas:
             </p>

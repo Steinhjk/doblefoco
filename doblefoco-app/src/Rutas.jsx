@@ -8,6 +8,7 @@ const Categories = lazy(() => import('./pages/Categories'));
 const About = lazy(() => import('./pages/About'));
 const Transparency = lazy(() => import('./pages/Transparency'));
 const MediaMap = lazy(() => import('./pages/MediaMap'));
+const Conclusions = lazy(() => import('./pages/Conclusions'));
 const NewsDetail = lazy(() => import('./pages/NewsDetail'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -31,6 +32,7 @@ export default function Rutas() {
                 <Route path="/categorias" element={<Categories />} />
                 <Route path="/sobre-nosotros" element={<About />} />
                 <Route path="/transparencia" element={<Transparency />} />
+                <Route path="/conclusiones" element={<Conclusions />} />
                 <Route path="/mapa-medios" element={<MediaMap />} />
                 <Route path="/noticia/:id" element={<NewsDetail />} />
                 <Route path="/buscar" element={<SearchResults />} />

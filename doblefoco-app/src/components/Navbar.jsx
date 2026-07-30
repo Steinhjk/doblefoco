@@ -78,6 +78,11 @@ const Navbar = () => {
                             </NavLink>
                         </li>
                         <li>
+                            <NavLink to="/conclusiones" onClick={closeMenu}>
+                                Conclusiones
+                            </NavLink>
+                        </li>
+                        <li>
                             <NavLink to="/sobre-nosotros" onClick={closeMenu}>
                                 Sobre nosotros
                             </NavLink>

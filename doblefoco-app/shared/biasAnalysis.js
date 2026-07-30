@@ -172,7 +172,7 @@ export function analyzeCoverage(sources) {
         if (rightRatio <= BLINDSPOT_MAX_RATIO && leftRatio > BLINDSPOT_MAX_RATIO) {
             blindspot = {
                 spectrum: SPECTRUM.RIGHT,
-                label: 'Punto ciego de la derecha',
+                label: 'Punto ciego en la derecha',
                 description:
                     `${counts.left + counts.center} de ${total} medios que cubren el hecho ` +
                     `son de izquierda o centro. Solo ${counts.right} de derecha lo reportan.`,
@@ -180,7 +180,7 @@ export function analyzeCoverage(sources) {
         } else if (leftRatio <= BLINDSPOT_MAX_RATIO && rightRatio > BLINDSPOT_MAX_RATIO) {
             blindspot = {
                 spectrum: SPECTRUM.LEFT,
-                label: 'Punto ciego de la izquierda',
+                label: 'Punto ciego en la izquierda',
                 description:
                     `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
                     `son de derecha o centro. Solo ${counts.left} de izquierda lo reportan.`,

@@ -103,34 +103,37 @@ footer {
 
 /* Aviso de datos de demostración: debe ser imposible confundirlo con
    cobertura periodística real. */
-.feed-fixture-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px 14px;
-    margin-bottom: 18px;
-    font-size: 0.82rem;
-    line-height: 1.5;
-    color: var(--text-muted);
-    background: var(--bg-subtle);
-    border: 1px dashed var(--border-color);
-    border-radius: var(--radius-sm);
-}
-
-.feed-fixture-notice svg,
+/**
+ * AVISOS CON ICONO — y por qué NO son contenedores flex.
+ *
+ * Lo eran, y producía un fallo que Jose vio en el recuadro del boletín: en un
+ * contenedor flex, CADA nodo de texto y cada <strong> se convierte en un
+ * elemento propio. Un párrafo con una interpolación —«los {6} medios
+ * necesarios»— se parte en tres o cuatro columnas separadas, y la frase deja de
+ * leerse como una frase.
+ *
+ * La trampa es que no se ve venir: el JSX parece un párrafo normal y el CSS
+ * parece una alineación normal. Y reaparece cada vez que alguien añada texto
+ * con una variable dentro.
+ *
+ * Por eso el icono va posicionado y el párrafo sigue siendo un párrafo: el
+ * texto fluye, admite cualquier número de nodos, y la clase de fallo desaparece
+ * en vez de quedar a la espera del siguiente que lo pise.
+ */
 .feed-coverage-caveat svg,
 .coverage-caveat svg,
 .news-card-coverage-note svg {
+    position: absolute;
+    left: 0;
+    top: 3px;
     flex-shrink: 0;
-    margin-top: 2px;
 }
 
 .feed-coverage-caveat,
 .coverage-caveat,
 .news-card-coverage-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
+    position: relative;
+    padding-left: 20px;
     margin: 8px 0;
     font-size: 0.74rem;
     line-height: 1.5;

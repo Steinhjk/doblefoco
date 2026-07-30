@@ -286,3 +286,30 @@
         min-height: auto;
     }
 }
+/**
+ * Aviso de ÉNFASIS: la cobertura se concentra en un lado.
+ *
+ * Deliberadamente más discreto que el de punto ciego —sin fondo de color, solo
+ * un filo—. Las dos señales no pesan lo mismo: que un lado calle es más difícil
+ * de notar por uno mismo que ver que muchos medios parecidos publican lo mismo,
+ * y la jerarquía visual debería decirlo.
+ */
+.card-enfasis-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-enfasis-alert svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.card-enfasis-alert.left strong { color: var(--bias-left); }
+.card-enfasis-alert.right strong { color: var(--bias-right); }

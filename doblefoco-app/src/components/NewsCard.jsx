@@ -1,6 +1,6 @@
 // @ts-check
 import { Link } from 'react-router-dom';
-import { EyeOff, ExternalLink, HelpCircle } from 'lucide-react';
+import { EyeOff, ExternalLink, HelpCircle, TrendingUp } from 'lucide-react';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
 import StoryImage from './StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
@@ -33,7 +33,23 @@ const NewsCard = ({ story: rawStory }) => {
             {coverage.blindspot && (
                 <div className={`card-blindspot-alert ${coverage.blindspot.spectrum}`}>
                     <EyeOff size={13} />
-                    <strong>{coverage.blindspot.label}</strong>: {coverage.blindspot.description}
+                    <span>
+                        <strong>{coverage.blindspot.label}</strong>: {coverage.blindspot.description}
+                    </span>
+                </div>
+            )}
+
+            {/* El énfasis se muestra SOLO cuando no hay punto ciego. Cuando los
+                dos se disparan describen el mismo hecho desde dos ángulos, y
+                apilar dos franjas encima de un titular convierte la señal en
+                decorado. La ausencia manda: es la más difícil de ver por uno
+                mismo. */}
+            {!coverage.blindspot && coverage.enfasis && (
+                <div className={`card-enfasis-alert ${coverage.enfasis.spectrum}`}>
+                    <TrendingUp size={13} />
+                    <span>
+                        <strong>{coverage.enfasis.label}</strong>: {coverage.enfasis.description}
+                    </span>
                 </div>
             )}
 

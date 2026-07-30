@@ -60,7 +60,7 @@ const NewsletterWidget = () => {
                             aria-describedby={error ? 'newsletter-error' : 'newsletter-privacy'}
                         />
                         <button type="submit" className="newsletter-submit-btn">
-                            Avísenme
+                            Suscribirse
                         </button>
                     </div>
 
@@ -70,11 +70,19 @@ const NewsletterWidget = () => {
                         </span>
                     )}
 
+                    {/* El texto va DENTRO de un <span>, y no suelto.
+                        `.newsletter-privacy` es un contenedor flex para alinear
+                        el icono, y en flex cada nodo de texto y cada <strong>
+                        se convierte en un elemento propio: el párrafo se partía
+                        en tres columnas. Con un solo hijo de texto, vuelve a ser
+                        un párrafo. */}
                     <p className="newsletter-privacy" id="newsletter-privacy">
                         <ShieldQuestion size={12} aria-hidden="true" />
-                        Tu correo se guarda <strong>solo en este navegador</strong> hasta que el
-                        boletín exista. No se comparte con terceros. Puedes borrarlo limpiando los
-                        datos del sitio o escribiendo a {CONTACT_EMAIL}.
+                        <span>
+                            Tu correo se guarda <strong>solo en este navegador</strong> hasta que
+                            el boletín exista. No se comparte con terceros. Puedes borrarlo
+                            limpiando los datos del sitio o escribiendo a {CONTACT_EMAIL}.
+                        </span>
                     </p>
                 </form>
             ) : (

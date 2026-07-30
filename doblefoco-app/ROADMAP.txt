@@ -1850,6 +1850,51 @@
             RUES o sus estatutos — tarea de Jose, no de código. Al añadirla hay
             que actualizar el conteo de /transparencia y la prueba que lo guarda.
 
+ [ ] F1-17  Insistencia: quién vuelve una y otra vez sobre un tema
+            PEDIDO POR JOSE (2026-07-30): «no solo mostrar ausencia sino exceso
+            o insistencia en divulgación». El punto ciego dice quién NO cuenta
+            algo; esto diría quién lo cuenta sin parar.
+
+            LA MITAD FÁCIL YA ESTÁ, y aporta poco. `analyzeCoverage` devuelve
+            `enfasis` cuando un lado concentra >= 60 % de la cobertura de un
+            hecho. Medido sobre las 39 historias evaluables:
+
+                umbral   con énfasis   de esos SIN punto ciego
+                 0,40         37                 5
+                 0,60         25                 1
+                 0,70         19                 0
+
+            Con 4 a 6 medios por historia, «un lado concentra» y «el otro falta»
+            son casi la misma frase. La señal por historia NO es independiente
+            del punto ciego y no hay que venderla como si lo fuera.
+
+            LA MITAD QUE IMPORTA ES TEMPORAL, y no se puede construir todavía.
+            Sería: un bloque dedica a un tema una proporción de su producción
+            muy superior a la del resto del ecosistema, sostenida en el tiempo.
+
+            POR QUÉ NO SE PUEDE CON LO QUE HAY. La tentación es usar
+            `articles.category`, y daría un resultado con buena pinta —«la
+            derecha sobre-representa Política ×2,0»—. Sería FALSO: esa columna
+            no la deduce nadie del artículo, se copia de `feed.category` del
+            registro, que es como configuramos NOSOTROS cada feed. Mediría
+            nuestra propia configuración y la presentaría como un hallazgo sobre
+            el medio. Es exactamente la clase de circularidad que F1-15 evita al
+            no deducir el sesgo del léxico que escribimos nosotros.
+
+            LO QUE HARÍA FALTA: detección de tema a partir del TITULAR, sobre la
+            ventana de retención, y comparar la cuota de cada bloque con la del
+            corpus. El agrupamiento de shared/clustering.js ya sabe decir que dos
+            artículos hablan del mismo hecho; extenderlo a «mismo tema a lo largo
+            de días» es el trabajo real de esta tarea.
+
+            CUIDADO CON EL SESGO DE MEDICIÓN: los medios de izquierda del
+            catálogo publican el 3,3 % del volumen (F3-16). Sobre bases tan
+            pequeñas, un índice de sobre-representación se dispara con muy pocos
+            artículos. Habrá que exigir un mínimo absoluto además del índice, o
+            la señal dirá más sobre el tamaño de la muestra que sobre la agenda.
+            CRITERIO: una insistencia solo se publica si el bloque aporta al
+            menos N artículos del tema y el índice se sostiene en varios días.
+
  [ ] F1-16  Filtrar noticia internacional relevante sin filtrar por tema
             PEDIDO POR JOSE (2026-07-29). El enfoque del producto es nacional,
             pero hay noticia internacional que sí vale la pena: Israel-Palestina,

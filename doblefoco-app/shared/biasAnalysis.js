@@ -29,16 +29,63 @@ export const SPECTRUM_THRESHOLD = 0.2;
 /**
  * Mínimo de fuentes para poder afirmar que existe un punto ciego.
  *
- * Con 3 o 4 fuentes cualquier proporción es ruido: una sola fuente mueve la
- * cobertura de un espectro del 0% al 33%. Afirmar "la derecha está omitiendo
- * esta noticia" con esa muestra es inventar una conclusión. Por debajo de
- * este umbral la respuesta honesta es `insufficientCoverage: true`, y la UI
- * debe decir que no hay datos suficientes en lugar de mostrar una lista vacía.
+ * BAJADO DE 6 A 4 el 2026-07-30 por decisión de Jose, con una condición que
+ * compensa la rebaja y que él mismo formuló: «2 de izquierda y 2 de derecha».
+ *
+ * La rebaja sola habría sido peor método. Con 4 fuentes, una sola mueve la
+ * proporción 25 puntos, así que «0 de derecha entre 4» podría ser la decisión de
+ * un único jefe de redacción y no un patrón. Lo que lo sostiene es la
+ * composición: para decir que un lado calla hace falta que el OTRO lado hable
+ * con más de una voz — ver BLINDSPOT_MIN_COBERTURA_LADO.
+ *
+ * El efecto buscado es que la señal deje de ser tan rara que no sirva: con el
+ * umbral en 6 solo 16 historias de 4 000 alcanzaban a evaluarse.
  */
-export const BLINDSPOT_MIN_SOURCES = 6;
+export const BLINDSPOT_MIN_SOURCES = 4;
+
+/**
+ * Cuántos medios tiene que aportar el lado que SÍ cubre.
+ *
+ * Es la mitad de «2 de izquierda y 2 de derecha» que se puede exigir: un punto
+ * ciego significa por definición que un lado está en cero, así que lo único
+ * comprobable es que el otro no sea uno solo. Con un único medio cubriendo, lo
+ * que se estaría publicando no es «un lado omite esto» sino «un periódico
+ * decidió cubrirlo», que es otra afirmación y mucho más débil.
+ */
+export const BLINDSPOT_MIN_COBERTURA_LADO = 2;
 
 /** Un espectro se considera omitido si tiene esta cobertura o menos. */
 export const BLINDSPOT_MAX_RATIO = 0.15;
+
+/**
+ * Desde qué proporción un espectro concentra tanto la cobertura que deja de ser
+ * cobertura y pasa a ser énfasis.
+ *
+ * PEDIDO POR JOSE (2026-07-30): «no solo mostrar ausencia sino exceso o
+ * insistencia en divulgación». El punto ciego dice quién NO está contando algo;
+ * esto dice quién lo está contando con una intensidad que no comparte nadie más.
+ *
+ * MEDIDO SOBRE EL CORPUS REAL, y el resultado obliga a ser honesto sobre lo que
+ * esta señal aporta. Sobre las 39 historias con 4 medios o más:
+ *
+ *     umbral   con énfasis   de esos SIN punto ciego
+ *      0,40         37                 5
+ *      0,50         35                 3
+ *      0,60         25                 1
+ *      0,70         19                 0
+ *
+ * Es decir: con 4 a 6 medios por historia, «un lado concentra la cobertura» y
+ * «el otro lado está ausente» son casi la misma frase. El énfasis por historia
+ * NO es una señal muy independiente del punto ciego, y conviene no venderla como
+ * si lo fuera.
+ *
+ * Se deja en 0,60 porque el caso existe, es correcto y crecerá cuando las
+ * historias reúnan más medios. Pero la versión de la idea de Jose que de verdad
+ * aporta —«insistencia en divulgación»— no es por historia sino a lo largo del
+ * tiempo: un bloque que vuelve una y otra vez sobre el mismo tema. Eso es F1-17
+ * y necesita otra medición, no un umbral distinto aquí.
+ */
+export const ENFASIS_MIN_RATIO = 0.6;
 
 /** Desviación estándar a partir de la cual una historia se marca polarizada. */
 export const HIGH_POLARIZATION_STDDEV = 0.25;
@@ -169,7 +216,8 @@ function distributePercentages(counts, total) {
  *   isHighlyPolarized: boolean,
  *   dominantSpectrum: 'left'|'center'|'right'|null,
  *   insufficientCoverage: boolean,
- *   blindspot: null | {spectrum: 'left'|'right', label: string, description: string}
+ *   blindspot: null | {spectrum: 'left'|'right', label: string, description: string},
+ *   enfasis: null | {spectrum: 'left'|'right', label: string, description: string}
  * }}
  */
 export function analyzeCoverage(sources) {
@@ -200,27 +248,77 @@ export function analyzeCoverage(sources) {
 
     const insufficientCoverage = total < BLINDSPOT_MIN_SOURCES;
 
+    const leftRatio = total ? counts.left / total : 0;
+    const rightRatio = total ? counts.right / total : 0;
+
     let blindspot = null;
     if (!insufficientCoverage) {
-        const leftRatio = counts.left / total;
-        const rightRatio = counts.right / total;
-
-        if (rightRatio <= BLINDSPOT_MAX_RATIO && leftRatio > BLINDSPOT_MAX_RATIO) {
+        /**
+         * La condición que sostiene el umbral de 4: el lado que SÍ cubre tiene
+         * que aportar al menos dos medios. Con uno solo, lo que hay no es «un
+         * lado omite esto» sino «un periódico decidió cubrirlo».
+         */
+        if (
+            rightRatio <= BLINDSPOT_MAX_RATIO &&
+            leftRatio > BLINDSPOT_MAX_RATIO &&
+            counts.left >= BLINDSPOT_MIN_COBERTURA_LADO
+        ) {
             blindspot = {
                 spectrum: SPECTRUM.RIGHT,
                 label: 'Punto ciego de la derecha',
                 description:
                     `${counts.left + counts.center} de ${total} medios que cubren el hecho ` +
-                    `son de izquierda o centro. Solo ${counts.right} de derecha lo reportan.`,
+                    `son de izquierda o sin línea marcada. Solo ${counts.right} de derecha lo reportan.`,
             };
-        } else if (leftRatio <= BLINDSPOT_MAX_RATIO && rightRatio > BLINDSPOT_MAX_RATIO) {
+        } else if (
+            leftRatio <= BLINDSPOT_MAX_RATIO &&
+            rightRatio > BLINDSPOT_MAX_RATIO &&
+            counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
+        ) {
             blindspot = {
                 spectrum: SPECTRUM.LEFT,
                 label: 'Punto ciego de la izquierda',
                 description:
                     `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
-                    `son de derecha o centro. Solo ${counts.left} de izquierda lo reportan.`,
+                    `son de derecha o sin línea marcada. Solo ${counts.left} de izquierda lo reportan.`,
             };
+        }
+    }
+
+    /**
+     * PUNTO DE ÉNFASIS: quién cuenta esto con una intensidad que no comparte
+     * nadie más.
+     *
+     * Es el reverso del punto ciego y NO su sinónimo. El punto ciego mira la
+     * ausencia; esto mira la concentración. Un hecho cubierto por cuatro medios
+     * de derecha y dos de centro tiene énfasis marcado sin que la izquierda esté
+     * técnicamente ausente — y ese caso, que es frecuente, no lo veía nadie.
+     *
+     * Solo se calcula sobre los extremos. Que la mayoría de medios que cubren un
+     * hecho no tengan línea marcada es lo normal en este catálogo y no dice nada
+     * sobre el hecho; anunciarlo como «énfasis» sería ruido con formato de
+     * hallazgo.
+     */
+    let enfasis = null;
+    if (!insufficientCoverage) {
+        for (const { espectro, ratio, n } of [
+            { espectro: SPECTRUM.LEFT, ratio: leftRatio, n: counts.left },
+            { espectro: SPECTRUM.RIGHT, ratio: rightRatio, n: counts.right },
+        ]) {
+            if (ratio >= ENFASIS_MIN_RATIO && n >= BLINDSPOT_MIN_COBERTURA_LADO) {
+                enfasis = {
+                    spectrum: espectro,
+                    label:
+                        espectro === SPECTRUM.LEFT
+                            ? 'Énfasis de la izquierda'
+                            : 'Énfasis de la derecha',
+                    description:
+                        `${n} de ${total} medios que cubren el hecho son de ` +
+                        `${espectro === SPECTRUM.LEFT ? 'izquierda' : 'derecha'} ` +
+                        `(${Math.round(ratio * 100)} %). La cobertura se concentra en un solo lado.`,
+                };
+                break;
+            }
         }
     }
 
@@ -234,6 +332,7 @@ export function analyzeCoverage(sources) {
         dominantSpectrum,
         insufficientCoverage,
         blindspot,
+        enfasis,
     };
 }
 

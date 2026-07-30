@@ -1,7 +1,7 @@
 // @ts-check
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX } from 'lucide-react';
+import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX, TrendingUp } from 'lucide-react';
 import { getMediaByName } from '../data/mediaLogos';
 import StoryImage from '../components/StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
@@ -365,6 +365,16 @@ const NewsDetail = () => {
                                 <strong>{coverage.blindspot.label}</strong>
                             </div>
                             <p>{coverage.blindspot.description}</p>
+                        </div>
+                    )}
+
+                    {!coverage.blindspot && coverage.enfasis && (
+                        <div className={`detail-blindspot-alert ${coverage.enfasis.spectrum}`}>
+                            <div className="blindspot-alert-header">
+                                <TrendingUp size={16} aria-hidden="true" />
+                                <strong>{coverage.enfasis.label}</strong>
+                            </div>
+                            <p>{coverage.enfasis.description}</p>
                         </div>
                     )}
 

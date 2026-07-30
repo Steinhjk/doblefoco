@@ -53,23 +53,37 @@ describe('classifySpectrum', () => {
 
 describe('analyzeCoverage — el umbral de F1-03', () => {
     it(`no afirma un punto ciego por debajo de ${BLINDSPOT_MIN_SOURCES} fuentes`, () => {
-        // Con 5 fuentes, cuatro de izquierda y una de centro, la tentación de
-        // gritar "punto ciego de la derecha" es máxima. Y sería ruido: una sola
-        // fuente más movería la proporción 20 puntos.
-        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, -0.3, 0));
+        // Con 3 fuentes cualquier proporción es ruido: una sola mueve la
+        // cobertura de un espectro 33 puntos.
+        const result = analyzeCoverage(sources(-0.6, -0.5, 0));
 
-        expect(result.total).toBe(5);
+        expect(result.total).toBe(3);
         expect(result.insufficientCoverage).toBe(true);
         expect(result.blindspot).toBeNull();
     });
 
     it(`afirma el punto ciego a partir de ${BLINDSPOT_MIN_SOURCES} fuentes`, () => {
-        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, -0.3, 0, 0));
+        // Cuatro medios: tres de izquierda y uno sin línea marcada. La derecha
+        // está en cero y el lado que cubre aporta más de una voz.
+        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, 0));
 
-        expect(result.total).toBe(6);
+        expect(result.total).toBe(4);
         expect(result.insufficientCoverage).toBe(false);
         expect(result.blindspot).not.toBeNull();
         expect(result.blindspot.spectrum).toBe('right');
+    });
+
+    it('NO lo afirma si el lado que cubre es UN SOLO medio', () => {
+        // Es la condición que sostiene el umbral de 4, y la que Jose formuló
+        // como «2 de izquierda y 2 de derecha». Un medio de izquierda y tres
+        // sin línea marcada: la derecha está en cero, pero lo que hay no es
+        // «la derecha omite esto», es «un periódico decidió cubrirlo».
+        const result = analyzeCoverage(sources(-0.6, 0, 0.1, -0.05));
+
+        expect(result.total).toBe(4);
+        expect(result.insufficientCoverage).toBe(false);
+        expect(result.counts.left).toBe(1);
+        expect(result.blindspot).toBeNull();
     });
 
     it('no inventa un punto ciego cuando faltan LOS DOS extremos', () => {
@@ -182,5 +196,62 @@ describe('describeBias', () => {
         expect(describeBias(0)).toBe('Sin línea marcada');
         expect(describeBias(0.2)).toBe('Derecha moderada');
         expect(describeBias(0.8)).toBe('Inclinación derecha');
+    });
+});
+
+/**
+ * PUNTOS DE ÉNFASIS — pedidos por Jose el 2026-07-30: «no solo mostrar ausencia
+ * sino exceso o insistencia en divulgación».
+ *
+ * Lo que estas pruebas fijan es que énfasis y punto ciego son señales DISTINTAS
+ * y no dos nombres de lo mismo. Si acabaran coincidiendo siempre, la señal nueva
+ * no aportaría nada y valdría más retirarla que mantenerla.
+ */
+describe('analyzeCoverage — puntos de énfasis', () => {
+    it('marca énfasis cuando un lado concentra la cobertura', () => {
+        // Cuatro de derecha y uno sin línea: el 80 % en un solo lado.
+        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3, 0));
+
+        expect(result.enfasis).not.toBeNull();
+        expect(result.enfasis.spectrum).toBe('right');
+        expect(result.enfasis.description).toContain('80 %');
+    });
+
+    it('HAY énfasis sin que haya punto ciego, y ese es el caso que faltaba', () => {
+        // Siete medios: cinco de derecha, uno de izquierda, uno sin línea. La
+        // izquierda NO está ausente —cubre el 14 %—, así que no hay punto ciego
+        // por poco; pero la cobertura está claramente concentrada.
+        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3, 0.7, -0.5, 0));
+
+        expect(result.counts).toEqual({ left: 1, center: 1, right: 5 });
+        expect(result.enfasis?.spectrum).toBe('right');
+    });
+
+    it('no marca énfasis cuando la cobertura está repartida', () => {
+        const result = analyzeCoverage(sources(-0.5, -0.4, 0, 0.4, 0.5, 0.1));
+        expect(result.enfasis).toBeNull();
+    });
+
+    it('no marca énfasis del lado «sin línea marcada»', () => {
+        // Que la mayoría de medios que cubren un hecho no tengan línea marcada
+        // es lo normal en este catálogo y no dice nada sobre el hecho.
+        // Anunciarlo sería ruido con formato de hallazgo.
+        const result = analyzeCoverage(sources(0, 0.1, -0.1, 0.05, -0.05, 0));
+        expect(result.enfasis).toBeNull();
+    });
+
+    it('no marca énfasis por debajo del umbral de fuentes', () => {
+        const result = analyzeCoverage(sources(0.5, 0.4, 0.6));
+        expect(result.insufficientCoverage).toBe(true);
+        expect(result.enfasis).toBeNull();
+    });
+
+    it('un lado que copa TODO es a la vez énfasis y punto ciego', () => {
+        // Las dos señales pueden coincidir, y cuando lo hacen es correcto que
+        // las dos se disparen: son afirmaciones distintas sobre el mismo hecho.
+        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3));
+
+        expect(result.enfasis?.spectrum).toBe('right');
+        expect(result.blindspot?.spectrum).toBe('left');
     });
 });

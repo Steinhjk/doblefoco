@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RotateCcw, Award, EyeOff, Info } from 'lucide-react';
-import { topCoveredStories, selectDiverseBlindspots } from '../lib/story';
+import { topCoveredStories } from '../lib/story';
 import { useStories } from '../hooks/useStories';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import './MobileSidebar.css';
@@ -26,7 +26,7 @@ const MobileSidebar = () => {
     const trending = useMemo(() => topCoveredStories(stories, 8), [stories]);
 
     const blindspots = useMemo(
-        () => selectDiverseBlindspots(stories, 3),
+        () => stories.filter((s) => s.coverage.blindspot).slice(0, 3),
         [stories]
     );
 

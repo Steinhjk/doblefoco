@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PieChart, EyeOff, RotateCcw, Award, Flame, Mail, Info } from 'lucide-react';
-import { topCoveredStories, selectDiverseBlindspots } from '../lib/story';
+import { topCoveredStories } from '../lib/story';
 import { useStories } from '../hooks/useStories';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
@@ -21,12 +21,15 @@ const Sidebar = () => {
 
     const blindspots = useMemo(
         () =>
-            selectDiverseBlindspots(stories, 3).map((s) => ({
-                id: s.id,
-                title: s.title,
-                spectrum: s.coverage.blindspot.spectrum,
-                label: s.coverage.blindspot.label,
-            })),
+            stories
+                .filter((s) => s.coverage.blindspot)
+                .slice(0, 3)
+                .map((s) => ({
+                    id: s.id,
+                    title: s.title,
+                    spectrum: s.coverage.blindspot.spectrum,
+                    label: s.coverage.blindspot.label,
+                })),
         [stories]
     );
 

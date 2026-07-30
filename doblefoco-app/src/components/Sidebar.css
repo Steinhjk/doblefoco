@@ -429,27 +429,26 @@
 .newsletter-description {
     font-size: 0.8rem;
     color: var(--text-muted);
-    line-height: 1.45;
-    margin-bottom: 8px;
+    line-height: 1.5;
+    margin-bottom: 12px;
     text-align: left;
 }
 
 .newsletter-input-group {
     display: flex;
-    gap: 8px;
-    align-items: center;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .newsletter-input {
-    flex: 1;
-    min-width: 0;
-    padding: 8px 11px;
+    width: 100%;
+    padding: 10px 14px;
     border-radius: 2px;
     background: var(--bg-main);
     border: 1px solid var(--border-color);
     color: var(--text-main);
     font-family: inherit;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     transition: all 0.3s ease;
 }
 
@@ -457,7 +456,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0px;
-    padding: 14px 16px;
+    padding: 20px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -466,8 +465,8 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .newsletter-header-row h3 {

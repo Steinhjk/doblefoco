@@ -2456,11 +2456,19 @@
  RIESGOS ABIERTOS
 ===============================================================================
 
- ALTO   Sin renderizado en servidor, el producto no tiene canal de adquisición.
-        Es el único ALTO que queda: la volatilidad la cerró F2-01, la
-        autenticación F2-04 y el alojamiento del motor F2-12.
-        F3-03 puso el sitemap, que es la señal; falta el contenido que esa
-        señal anuncia. Mitigan: F3-01 y F3-02.
+ (CERRADO 2026-07-30) El riesgo ALTO era «sin renderizado en servidor el
+        producto no tiene canal de adquisición». Ya no aplica: F3-01 y F3-02
+        están hechos y la cadena completa se verificó de punta a punta CON EL
+        AGENTE DE GOOGLEBOT — sitemap 200 con 332 URLs de noticia, y una de
+        ellas devuelve 200 con <h1> real, og:title, canónica y JSON-LD
+        NewsArticle. Ya no queda ningún riesgo ALTO abierto.
+
+        SUSTO DEL 2026-07-29, resuelto solo: durante unas horas Vercel devolvió
+        403 a todo —incluidos robots.txt y sitemap.xml— con una página de
+        «Vercel Security Checkpoint». Si hubiera seguido, habría anulado F3-01,
+        F3-02 y F3-03 enteros sin dejar rastro en ningún registro nuestro.
+        Comprobado el 2026-07-30: todo responde 200. Conviene saber que ese modo
+        existe y que es invisible desde dentro.
  MEDIO  En producción los errores son invisibles: solo van a `flyctl logs`, que
         nadie mira y no se conserva. Tres fallos del 2026-07-29 se encontraron
         sondeando a mano. Mitiga: F2-11.
@@ -2473,55 +2481,82 @@
  MEDIO  El catálogo tiene 1 medio en la banda "Izquierda" y 0 en "Derecha": los
         puntos ciegos hacia la izquierda son estructuralmente más difíciles de
         detectar. Mitiga: F1-12.
+        CUANTIFICADO el 2026-07-30 por F3-16, y es peor de lo que sugería el
+        recuento: la izquierda es el 22,6 % de los MEDIOS y el 3,3 % del
+        VOLUMEN publicado. Siete veces de diferencia. Contar medios esconde la
+        asimetría; la vista del espacio mediático ya la muestra.
  BAJO   Los enlaces vía Google News son redirecciones, no URLs canónicas.
         Aceptable mientras se muestre con honestidad.
 
 ===============================================================================
- PLAN DE TRABAJO — actualizado 2026-07-29
+ PLAN DE TRABAJO — actualizado 2026-07-30
 ===============================================================================
 
  ORDEN RECOMENDADO. Las razones están en cada tarea; esto es solo la secuencia.
 
- HECHAS DESDE LA ÚLTIMA ACTUALIZACIÓN DE ESTE PLAN: F3-01 y F3-02 (renderizado
- en servidor y metadatos, verificados contra producción con peticiones HTTP);
- F3-15 (39 de las 40 fichas de propiedad) y el aviso de dueño compartido.
+ HECHAS DESDE LA ÚLTIMA ACTUALIZACIÓN DE ESTE PLAN (todo el 2026-07-29 y 30):
+   · F3-01 y F3-02 — renderizado en servidor y metadatos. VERIFICADOS CON EL
+     AGENTE DE GOOGLEBOT el 30: cierran el único riesgo ALTO que quedaba.
+   · F3-15 — 39 de las 40 fichas de propiedad, y el aviso de dueño compartido.
+   · F3-16 — la vista del espacio mediático por dueño y por volumen.
+   · Imágenes reales: se retiró el banco de fotos de archivo y se extrae la del
+     medio (RSS + og:image). De 27 a 100 historias con imagen en la portada;
+     98 % de las multifuente.
+   · El espectro: la banda del medio pasa a «Sin línea marcada», con las
+     definiciones de izquierda y derecha publicadas en /transparencia.
+   · Paginación real en la portada: se acabó el techo de 100.
+   · W Radio y RTVC reactivados; Las2Orillas fuera por criterio editorial.
 
  1. F3-04  Comprobación visual de las columnas paralelas.
-           TAREA DE JOSE, no de código: el diseño está hecho y NADIE lo ha visto
-           todavía en un navegador. Abrir una noticia multifuente en móvil y en
-           escritorio y decir si funciona. Cuesta cinco minutos y desbloquea
-           saber si hay que rehacerlo.
-           Ahora hay más que mirar: en esa misma página va el aviso de dueño
-           compartido. /noticia/17mqcbj lo muestra con dos grupos a la vez.
+           TAREA DE JOSE, no de código, y lleva días esperando. El diseño está
+           hecho y NADIE lo ha visto en un navegador. Abrir una noticia
+           multifuente en móvil y en escritorio y decir si funciona.
+           Ahora hay bastante más que mirar en esa misma página: el aviso de
+           dueño compartido, la imagen real con su crédito y el espectro
+           renombrado. /noticia/17mqcbj muestra dos grupos de propiedad a la vez.
 
  2. F1-01  Cerrar la medición de 7 días.
-           YA NO REQUIERE TRABAJO, solo esperar: el motor lleva ingiriendo solo
-           desde el 2026-07-29 y la serie se completa alrededor del 2026-08-02.
-           Entonces: `npm run report:ingest` y decidir F1-05 y F1-12 con datos
-           en vez de a ojo. Al 2026-07-30 hay 3 días de 7.
+           NO REQUIERE TRABAJO, solo esperar. Al 2026-07-30 hay 4 días de 7 y la
+           serie va en la dirección correcta:
+                        multifuente   cruzan espectros   con punto ciego
+             27-jul          21              11                 0
+             28-jul          57              35                 2
+             29-jul         213             124                11
+             30-jul         307             172                16
+           «Cruzan» es la cifra que decide si el producto funciona. Se completa
+           alrededor del 2026-08-02; entonces se deciden F1-05 y F1-12 con datos.
 
  3. F1-13  Firmar los valores de sesgo, empezando por los que ya chirrían.
-           SUBE DE PRIORIDAD y ahora hay con qué. Jose señaló (2026-07-29) que
-           El Colombiano (+0,35) y Semana (+0,45) deberían salir más a la
-           derecha, y que la banda «Derecha» esté vacía con 0 medios es un
-           defecto del instrumento, no un retrato del país. Los 40 valores
-           siguen sin firmar por un editor.
-           LO NUEVO: F3-15 dejó el dueño como dato estructurado, así que por
-           primera vez se puede revisar el sesgo mirando quién controla el medio
-           y no solo su léxico — que es lo que Jose pidió. Ojo con la
-           circularidad: el dueño INFORMA la revisión editorial, no la
-           sustituye ni entra en ninguna fórmula automática.
+           ES LA SIGUIENTE DE CÓDIGO, y la que más pesa: los 40 valores siguen
+           sin firmar por un editor y son la afirmación más discutible del
+           producto. Jose señaló que El Colombiano (+0,35) y Semana (+0,45)
+           deberían salir más a la derecha, y que la banda «Derecha» esté vacía
+           es un defecto del instrumento, no un retrato del país.
+           HAY DOS COSAS NUEVAS CON LAS QUE TRABAJAR: las fichas de propiedad
+           (F3-15) permiten revisar el sesgo mirando quién controla el medio, y
+           F3-16 da el peso real de cada uno. Ojo con la circularidad: el dueño
+           INFORMA la revisión editorial, no la sustituye ni entra en ninguna
+           fórmula automática.
 
- 4. F2-11  Telemetría de errores. Sube de prioridad ahora que hay producción:
-           el 2026-07-29 se encontraron tres fallos y ninguno avisó solo.
+ 4. F2-11  Telemetría de errores. En producción los fallos siguen siendo
+           invisibles: el 2026-07-29 se encontraron tres sondeando a mano.
+           El susto de Vercel del 29 lo confirma — un 403 sobre todo el sitio no
+           habría aparecido en ningún registro nuestro.
 
  5. F1-16  Noticia internacional relevante. Depende de averiguar primero si los
            7 medios internacionales mudos publican RSS utilizable; hoy lo
            internacional que entra son seis medios de centro.
 
  6. F1-06  Reabierta: quedan 5 medios de izquierda o centro-izquierda con feed,
-           y el criterio pedía 6. Ver también el hallazgo de F1-15, que cambia
-           el planteamiento: el problema no es cuántos hay.
+           y el criterio pedía 6. Ver el hallazgo de F1-15 y la cifra de F3-16:
+           el problema no es cuántos hay, es cuánto publican.
+
+ DECISIONES PENDIENTES DE JOSE, que no son de código:
+   · Las 5 historias multifuente sin imagen: dejarlas sin foto (hoy) o poner un
+     marcador claramente no fotográfico con el logo del medio.
+   · Subir ITEMS_PER_FEED de 15: más cobertura a cambio de más volumen.
+   · La cifra de patrocinio sigue en la plantilla de solicitud; se quitó solo de
+     /transparencia.
 
  TAREAS SUELTAS QUE NO BLOQUEAN NADA:
    · Comprobar si los 7 medios que llegan vía Google News publican RSS propio.
@@ -2540,10 +2575,16 @@
      publicada y responsable del tratamiento identificado: en cuanto haya
      suscriptores hay datos personales y aplica la Ley 1581 de 2012.
 
- F3-01 (SEO / prerender) sigue siendo el ALTO que queda, pero no es lo
- siguiente: indexar un producto cuya función principal todavía no sabemos si
- funciona —2 de 776 historias alcanzan cobertura para afirmar un punto ciego—
- es construir el escaparate antes que el producto. Primero, la respuesta de
- F1-01.
+ DÓNDE ESTAMOS, en una frase: el escaparate ya está construido y verificado
+ —renderizado en servidor, metadatos y sitemap, accesibles a Googlebot—, y lo
+ que falta por saber es si el producto que anuncia funciona.
+
+ Esa pregunta la contesta F1-01, y va por buen camino: las historias con
+ cobertura suficiente para afirmar un punto ciego pasaron de 2 a 16 en tres
+ días, y las que cruzan espectros de 11 a 172. Faltan 3 días de serie.
+
+ Mientras tanto, lo que más pesa NO es técnico: los 40 valores de sesgo siguen
+ sin firmar (F1-13) y son la afirmación más discutible que hace el sitio. Y
+ F3-04 lleva días esperando cinco minutos de Jose delante de un navegador.
 
 ===============================================================================

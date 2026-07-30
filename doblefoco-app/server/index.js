@@ -21,7 +21,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import { getDatabaseStats } from './services/ingestDaemon.js';
-import { countFeed, readFeed, readSitemapEntries, readStory } from './db/feedStore.js';
+import { countArticlesBySource, countFeed, readFeed, readSitemapEntries, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
 import { countStored, dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
@@ -532,6 +532,24 @@ app.get('/api/story/:id', async (req, res) => {
     } catch (error) {
         console.error('[api] fallo en /api/story', error);
         return res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+/**
+ * Volumen publicado por medio, para la vista del espacio mediático (F3-16).
+ *
+ * Devuelve conteos en bruto y NADA agregado: la agrupación por dueño y el
+ * reparto por espectro se calculan en shared/panorama.js, que es código
+ * compartido y probado. Si esta ruta devolviera ya agrupado habría dos sitios
+ * donde vive la misma lógica.
+ */
+app.get('/api/panorama', async (req, res) => {
+    try {
+        const medios = await countArticlesBySource();
+        res.json({ success: true, medios, retentionHours: 72 });
+    } catch (error) {
+        console.error('[api] fallo en /api/panorama', error);
+        res.status(500).json({ success: false, error: 'Error interno' });
     }
 });
 

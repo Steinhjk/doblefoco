@@ -1,6 +1,7 @@
 import { useMemo, useState, useId } from 'react';
 import { ExternalLink, Table2, ScatterChart, Info } from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
+import PanoramaMediatico from '../components/PanoramaMediatico';
 import { classifySpectrum } from '../../shared/biasAnalysis';
 import { OWNER_TYPES, getOwnership, hasDocumentedOwnership } from '../../shared/mediaOwnership';
 import MediaLogo from '../components/MediaLogo';
@@ -314,6 +315,11 @@ const MediaMap = () => {
                     </table>
                 </div>
             )}
+
+            {/* Va DESPUÉS del mapa, no antes: el mapa responde «dónde está cada
+                medio» y esto responde «cuánto pesa cada dueño». Lo segundo solo
+                se entiende habiendo visto lo primero. */}
+            <PanoramaMediatico />
 
             {selected && <MediaProfile media={selected} onClose={() => setSelectedId(null)} />}
         </div>

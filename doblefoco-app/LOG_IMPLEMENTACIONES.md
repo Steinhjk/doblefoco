@@ -413,3 +413,128 @@ advierte que no significa nada: esos 6 medios suman el 0,9 % de los artículos.
 > **Queda uno silenciado:** Las2Orillas, que responde 403 a nuestro User-Agent.
 > Por la misma decisión, habría que reactivarlo — pero ahí el 403 es del servidor
 > del medio, así que hay que probar la vía de Google News o acordar acceso.
+
+---
+
+### [2026-07-30] Las imágenes no llegaban a la portada, y el relleno que faltaba
+
+Jose reportó que solo veía una imagen en todo el sitio. Medido: **1 de las 100
+historias de portada** tenía foto. Cierto.
+
+La extracción funcionaba. Lo que fallaba era el guardado: había 4 313 artículos
+anteriores a la columna `image_url`, y el motor descarta un artículo ya conocido
+**antes** de llegar al INSERT —`if (articlesByLink.has(link)) continue` es lo que
+hace la ingesta idempotente—. Así que cada vez que un artículo reaparecía en el
+feed con su foto, la descartaba para siempre.
+
+- `backfillImages()` en contentStore: rellena la imagen de artículos ya
+  guardados. `WHERE image_url IS NULL` en la sentencia, no solo en la
+  comprobación previa: lo guardado gana, esto rellena huecos y nunca sobrescribe.
+- El bucle de ingesta recoge la imagen antes de descartar el item repetido.
+- `hydrateArticles` trae `image_url` a memoria; sin eso el relleno intentaría
+  rellenar los 4 000 en cada ciclo.
+- El ciclo informa cuántas rellenó: un relleno que deja de subir es un feed que
+  dejó de traer imágenes, y no habría otra forma de notarlo.
+
+**Medido tras un ciclo:** 154 imágenes rellenadas · portada de 1 a 21 de 100.
+Sigue subiendo con la rotación de 72 h. **Techo conocido:** `ITEMS_PER_FEED = 15`
+—el RSS de Semana expone 100 items y solo se miran 15—. Subirlo daría más
+cobertura y más volumen de ingesta; queda como decisión de Jose.
+
+---
+
+### [2026-07-30] La banda del medio deja de llamarse «Centro»
+
+Decisión editorial de Jose: no da por sentado que exista un centro político.
+
+Propuso «Objetivo», «Factible» o «Sin sesgo», y se descartaron por el motivo
+**contrario** al de «Centro». «Centro» atribuye una posición que nadie ha
+demostrado que exista; las otras tres afirman una cualidad que la medición no
+puede sostener. Un valor cerca de cero significa solo que no se detectó una
+inclinación consistente, y eso admite lecturas muy distintas: cobertura
+equilibrada, señal insuficiente, sesgos que se cancelan entre temas, o
+alineamiento con el poder institucional que no cabe en el eje izquierda-derecha.
+Certificar a El Tiempo como «sin sesgo» sería la afirmación más fuerte del sitio
+y la menos defendible.
+
+Queda **«Sin línea marcada»**. Y las bandas contiguas pasan a «Izquierda
+moderada» y «Derecha moderada»: si se retira el centro como posición, nombrar
+otras dos EN RELACIÓN a él lo reintroduce por la puerta de atrás.
+
+Se añadieron además a /transparencia las **definiciones en prosa de izquierda y
+derecha**, que no estaban en ninguna página —la metodología solo tenía los
+umbrales numéricos, que no dicen qué significan— con la advertencia explícita de
+que «sin línea marcada» no es neutral.
+
+- **Evidencias:** 0 apariciones de «Centro» y 6 de «Sin línea marcada» en el HTML
+  servido · 237 pruebas · check:registry sin errores.
+
+---
+
+### [2026-07-30] Las2Orillas queda fuera del catálogo, por criterio editorial
+
+Estaba anotado como «pendiente de reactivar» porque responde 403 a nuestro
+User-Agent, es decir, como si fuera un problema técnico. No lo es.
+
+Motivo de Jose: es un **recolector de columnas de opinión**, publica mucho y de
+todo tipo, y por eso no tiene una línea editorial propia que clasificar.
+Asignarle un valor de sesgo describiría a quien más publicó esa semana, no al
+medio.
+
+Es un **criterio de inclusión**, no un fallo de ingesta, así que no le aplica la
+regla de no silenciar a nadie: esa regla dice que no se retira un medio por tener
+un feed pobre. Este no entra porque la unidad que el producto clasifica —una sala
+de redacción con línea propia— no existe en su caso. **Sigue siendo fuente válida
+para las fichas de propiedad**, donde se cita en nueve de ellas.
+
+---
+
+### [2026-07-30] Vista del espacio mediático por dueño y por volumen (F3-16)
+
+Lo que Jose llamó «la bola de cristal»: una vista donde el monopolio se vea de un
+golpe. Va en /mapa-medios, debajo del cartesiano.
+
+#### Por qué el cartesiano no podía mostrarlo
+Da un punto por medio y todos pesan igual. Semana y Colombia Informa ocupan el
+mismo espacio en pantalla publicando 474 y 1 artículos. La asimetría de volumen
+—el hallazgo central de F1-12— quedaba invisible por construcción, no por
+descuido.
+
+#### Lo que mide, sobre 4 634 artículos de la ventana de 72 h
+```
+3 dueños concentran la MITAD de todo lo publicado
+  27,0 %  Daniel Hadad — Infobae            Infobae
+  16,1 %  Grupo Gilinski                    Semana, El País Cali
+   8,8 %  Sarmiento Angulo — Grupo Aval     El Tiempo, Portafolio
+   6,9 %  Familias Manotas/Pumarejo/Fdez.   El Heraldo
+   5,6 %  Organización Ardila Lülle         La República, RCN, La FM
+23 dueños para 33 medios activos
+```
+
+#### El argumento central: el espectro contado de dos formas
+```
+                    por medios   por volumen
+  Izquierda             22,6 %        3,3 %
+  Sin línea marcada     35,5 %       53,3 %
+  Derecha               41,9 %       43,4 %
+```
+Contar cabezas dice que la izquierda es casi un cuarto del catálogo. Pesar por
+volumen dice que es el 3,3 % de lo que se publica. **Siete veces de diferencia**,
+y la primera lectura la esconde.
+
+#### Lo que la vista NO afirma, escrito en la propia pantalla
+Mide **presencia en nuestro corpus**, no cuota de mercado ni audiencia. El
+volumen sale del RSS, así que un medio que expone poco ahí aparece pequeño sin
+serlo —El Espectador, 34 frente a 474 de Semana—. Sin esa nota no se publicaba.
+
+Los medios sin propiedad documentada no se reparten ni se ocultan: van a un
+bloque propio y rayado. Repartirlos inflaría la concentración; ocultarlos
+descuadraría los porcentajes sin decir por qué.
+
+- **Archivos:** `shared/panorama.js` (+11 pruebas), `/api/panorama`,
+  `PanoramaMediatico.jsx` y `.css`. El cálculo NO vive en el componente. Sin
+  biblioteca de gráficos: barras proporcionales en CSS, porque meter un tercero
+  en la página cuyo argumento es la independencia lo contradice —y la CSP no lo
+  permitiría desde una CDN.
+- **Evidencias:** 248 pruebas · typecheck, lint y build limpios · cifras
+  calculadas contra la base real a través del endpoint.

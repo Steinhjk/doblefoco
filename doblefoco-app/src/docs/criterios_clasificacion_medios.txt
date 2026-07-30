@@ -64,8 +64,12 @@ MEDIOS QUE SALIERON DEL CATÃLOGO
 La tabla anterior incluÃ­a medios que hoy no se ingieren. Se deja constancia
 para que la ausencia no parezca un descuido:
 
-  Â· Las2Orillas â€” responde 403 a nuestro User-Agent. Recuperarlo exige acordar
-    el acceso con el medio.
+  Â· Las2Orillas — FUERA POR DECISIÓN EDITORIAL, no por un fallo técnico.
+    Responde 403 a nuestro User-Agent, pero ese no es el motivo: es un
+    recolector de columnas de opinión y no tiene una línea editorial propia
+    que clasificar. Asignarle un valor de sesgo describiría a quien más
+    publicó esa semana, no al medio. Sigue siendo fuente válida para las
+    fichas de propiedad, donde se cita en nueve de ellas.
   Â· Canal Capital, PanamPost, Diario del Huila â€” sin feed verificado contra la
     red. Entran al catÃ¡logo cuando lo tengan.
 

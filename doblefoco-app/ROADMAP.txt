@@ -1881,37 +1881,47 @@
             decidido con la serie de F1-01, no a ojo. Y ninguna regla que
             nombre un país, un tema o una persona.
 
- [ ] F3-16  Una vista del espacio mediático que haga visible la concentración
-            PEDIDO POR JOSE (2026-07-29). El mapa cartesiano actual sitúa cada
-            medio por sesgo y factualidad, y eso responde «dónde está cada uno».
-            No responde la pregunta que el proyecto acaba de poder contestar con
-            datos: QUIÉN MANDA, y cuánto. Falta una vista donde el monopolio se
-            vea de un golpe, «como una bola de cristal» del espacio mediático
-            colombiano.
+  [x] F3-16  Una vista del espacio mediático que haga visible la concentración
+            (2026-07-30)
+            /mapa-medios, debajo del cartesiano. Responde en cinco segundos la
+            pregunta que el mapa no puede responder: ¿cuántos dueños hay detrás
+            de lo que leo?
 
-            POR QUÉ EL CARTESIANO NO PUEDE MOSTRARLO: da un punto por medio y
-            todos los puntos pesan igual. Semana y Colombia Informa ocupan el
-            mismo espacio en pantalla publicando 474 y 1 artículos. La
-            asimetría —que es el hallazgo central de F1-12— queda invisible por
-            construcción.
+            POR QUÉ EL CARTESIANO NO PODÍA: da un punto por medio y todos pesan
+            igual. Semana y Colombia Informa ocupan el mismo espacio publicando
+            474 y 1 artículos. La asimetría quedaba invisible por construcción.
 
-            LO QUE LA VISTA TIENE QUE CODIFICAR, y ya hay dato para las tres:
-              · agrupación por DUEÑO, no por medio (CONTROL_GROUPS, F3-15);
-              · TAMAÑO proporcional al volumen publicado, no fijo;
-              · el espectro, para que se vea que el volumen y el sesgo están
-                correlacionados.
-            Un treemap o un diagrama de círculos agrupados cumple las tres; el
-            cartesiano no cumple ninguna. Decidir con un boceto antes de
-            escribir código.
+            LO QUE MIDE, sobre 4 634 artículos de la ventana de 72 h:
+              · 3 dueños concentran la MITAD de todo lo publicado.
+              · Infobae solo es el 27,0 %. Gilinski (Semana + El País Cali) el
+                16,1 %. Sarmiento (El Tiempo + Portafolio) el 8,8 %.
+              · 23 dueños en total para 33 medios activos.
 
-            EL RIESGO A EVITAR es una infografía bonita que afirme más de lo que
-            los datos aguantan. El volumen sale del RSS, no de la audiencia: un
-            medio que expone poco en su feed parece pequeño sin serlo — El
-            Espectador aparece con 34 artículos frente a 474 de Semana, y no es
-            su tamaño real. La vista TIENE que decir que mide presencia en
-            nuestro corpus, no cuota de mercado. Sin esa nota, no se publica.
-            CRITERIO: la vista responde «¿cuántos dueños hay detrás de lo que
-            leo?» en menos de cinco segundos, y declara su límite en pantalla.
+            Y EL ARGUMENTO CENTRAL, el espectro contado de dos formas:
+                                    por medios   por volumen
+              Izquierda                 22,6 %        3,3 %
+              Sin línea marcada         35,5 %       53,3 %
+              Derecha                   41,9 %       43,4 %
+            Contar cabezas dice que la izquierda es casi un cuarto del catálogo.
+            Pesar por volumen dice que es el 3,3 % de lo que se publica. Siete
+            veces de diferencia, y la primera lectura la esconde. Es F1-12 hecho
+            visible en una pantalla.
+
+            LO QUE NO AFIRMA, y va escrito en la propia vista: mide PRESENCIA EN
+            NUESTRO CORPUS, no cuota de mercado ni audiencia. El volumen sale del
+            RSS, así que un medio que expone poco ahí parece pequeño sin serlo
+            —El Espectador, 34 frente a 474 de Semana—. Sin esa nota no se
+            publicaba.
+
+            Los medios sin propiedad documentada NO se reparten ni se ocultan:
+            van a un bloque propio y rayado. Repartirlos inflaría la
+            concentración; ocultarlos descuadraría los porcentajes sin decir por
+            qué.
+
+            shared/panorama.js con 11 pruebas; el cálculo no vive en el
+            componente. Sin biblioteca de gráficos: son barras proporcionales en
+            CSS, y meter un tercero en la página cuyo argumento es la
+            independencia lo contradice.
 
  [x] F3-09  Anotación de lenguaje valorativo (2026-07-29)
 
@@ -2082,13 +2092,26 @@
    (Hasta aquí el diagnóstico del 28. Con la reactivación del 30 son 36 feeds y
    33 medios activos.)
 
- · Las2Orillas — RETIRADO, PENDIENTE DE REACTIVAR
-   Responde 403 a nuestro User-Agent, así que su feed falla en cada ciclo.
-   ES EL QUE QUEDA SILENCIADO, y por la decisión del 2026-07-30 no debería
-   estarlo: hay que reactivarlo. A diferencia de W Radio y RTVC, aquí no basta
-   con cambiar de vía —el 403 es del servidor del medio— así que las opciones
-   son entrar por Google News, como Caracol Radio, o acordar acceso con el medio.
-   Probar primero lo primero. Ver F1-06.
+ · Las2Orillas — FUERA DEL CATÁLOGO POR DECISIÓN EDITORIAL (2026-07-30)
+   Estaba anotado como «pendiente de reactivar» porque respondía 403 a nuestro
+   User-Agent, es decir, como si fuera un problema técnico. NO LO ES, y esto
+   conviene no confundirlo con el caso de W Radio y RTVC.
+
+   MOTIVO DE JOSE: Las2Orillas es un recolector de columnas de opinión. Publica
+   mucho y de todo tipo, y por eso NO TIENE UNA LÍNEA EDITORIAL propia que
+   clasificar. Un catálogo que asigna un valor de sesgo a una ORGANIZACIÓN no
+   puede asignárselo a un contenedor de firmas heterogéneas: el número no
+   describiría al medio, describiría a quién publicó más esa semana.
+
+   ES UN CRITERIO DE INCLUSIÓN, NO UN FALLO DE INGESTA, y por tanto no aplica
+   aquí la regla de [no silenciar a nadie]: esa regla dice que no se retira un
+   medio del catálogo por tener un feed pobre. Este no entra al catálogo porque
+   la unidad que el producto clasifica —una sala de redacción con línea propia—
+   no existe en su caso.
+
+   SIGUE SIENDO FUENTE VÁLIDA para las fichas de propiedad, y de hecho se cita
+   en nueve de ellas. Que no se clasifique como medio no lo invalida como
+   periodismo: son dos cosas distintas y conviene que quede escrito.
 
  · Editar el catálogo de medios desde el panel — DESCARTADO POR DISEÑO
    No está pendiente ni es una limitación: es una decisión, y conviene dejarla
@@ -2496,10 +2519,7 @@
            7 medios internacionales mudos publican RSS utilizable; hoy lo
            internacional que entra son seis medios de centro.
 
- 6. F3-16  La vista del espacio mediático por dueño. Se apoya en F3-15, que ya
-           está, y es la que hace visible el monopolio. Empezar por un boceto.
-
- 7. F1-06  Reabierta: quedan 5 medios de izquierda o centro-izquierda con feed,
+ 6. F1-06  Reabierta: quedan 5 medios de izquierda o centro-izquierda con feed,
            y el criterio pedía 6. Ver también el hallazgo de F1-15, que cambia
            el planteamiento: el problema no es cuántos hay.
 

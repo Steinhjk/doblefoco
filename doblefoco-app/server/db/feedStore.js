@@ -341,6 +341,37 @@ export async function readSitemapEntries({ limit = 50_000 } = {}) {
 }
 
 /**
+ * Cuántos artículos ha publicado cada medio en la ventana vigente.
+ *
+ * ES LA CIFRA QUE EL MAPA CARTESIANO NO PUEDE MOSTRAR. Ese mapa da un punto por
+ * medio y todos los puntos pesan igual, así que Semana y Colombia Informa ocupan
+ * el mismo espacio publicando 474 y 1 artículos. La asimetría —que es el
+ * hallazgo central del producto— queda invisible por construcción.
+ *
+ * MIDE PRESENCIA EN NUESTRO CORPUS, NO CUOTA DE MERCADO, y quien lo pinte está
+ * obligado a decirlo. El volumen sale de lo que cada medio expone en su RSS: El
+ * Espectador aparece con 34 artículos frente a los 474 de Semana y ese no es su
+ * tamaño real, es lo que su feed publica.
+ *
+ * @returns {Promise<Array<{sourceId: string, articulos: number}>>}
+ */
+export async function countArticlesBySource() {
+    const resultado = await safeQuery(
+        `
+        SELECT a.source_id                AS "sourceId",
+               count(*)::int              AS articulos
+          FROM articles a
+         GROUP BY a.source_id
+         ORDER BY articulos DESC
+        `,
+        [],
+        'conteo de artículos por medio'
+    );
+
+    return resultado?.rows ?? [];
+}
+
+/**
  * Cuántas historias hay, de verdad.
  *
  * POR QUÉ DEVUELVE CUATRO CIFRAS Y NO UNA. La portada pedía 100 historias y

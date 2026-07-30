@@ -166,3 +166,18 @@ export async function resolveError(huella) {
         credentials: 'include',
     });
 }
+
+/**
+ * Volumen publicado por medio, para la vista del espacio mediático (F3-16).
+ * Devuelve conteos en bruto; la agregación vive en shared/panorama.js.
+ */
+export async function fetchPanorama() {
+    const result = await request('/api/panorama');
+    if (!result.ok) return result;
+
+    return {
+        ok: true,
+        medios: Array.isArray(result.data?.medios) ? result.data.medios : [],
+        retentionHours: result.data?.retentionHours ?? 72,
+    };
+}

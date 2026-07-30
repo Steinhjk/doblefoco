@@ -1,0 +1,231 @@
+/**
+ * Vista del espacio mediático por dueño y por volumen (F3-16).
+ *
+ * Barras proporcionales en CSS, sin biblioteca de gráficos: el argumento de la
+ * página es la independencia, y meter un tercero para dibujar tres rectángulos
+ * lo contradice. La CSP del sitio tampoco lo permitiría desde una CDN.
+ */
+
+.panorama {
+    margin: 40px 0 8px;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.panorama-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    margin: 0 0 6px;
+}
+
+.panorama-lede {
+    color: var(--text-muted);
+    margin: 0 0 18px;
+    line-height: 1.6;
+}
+
+/* La cifra de cinco segundos. Es lo único que alguien con prisa va a leer. */
+.panorama-titular {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    line-height: 1.5;
+    margin: 0 0 24px;
+    padding: 14px 16px;
+    background: var(--bg-subtle);
+    border-left: 4px solid var(--accent);
+    border-radius: 2px;
+}
+
+.panorama-titular strong {
+    font-size: 1.6rem;
+    color: var(--accent);
+}
+
+.panorama-bloque {
+    margin-bottom: 28px;
+}
+
+.panorama-bloque h3 {
+    font-size: 0.95rem;
+    margin: 0 0 4px;
+}
+
+.panorama-nota {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0 0 14px;
+    line-height: 1.5;
+}
+
+.panorama-fila {
+    margin-bottom: 12px;
+}
+
+.panorama-fila-titulo {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.panorama-barra {
+    display: flex;
+    width: 100%;
+    height: 30px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--bg-subtle);
+}
+
+.panorama-barra-duenos {
+    height: 22px;
+    margin-bottom: 14px;
+}
+
+.panorama-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #fff;
+    /* Una franja de menos de un punto porcentual sigue teniendo que verse: es
+       justamente el caso que la vista existe para mostrar. */
+    min-width: 2px;
+    transition: filter 0.15s ease;
+}
+
+.panorama-seg:hover {
+    filter: brightness(1.15);
+}
+
+/* Colores del espectro, los mismos que usa el resto del sitio. */
+.espectro-left { background: var(--spectrum-left, #4b7bec); }
+.espectro-center { background: var(--spectrum-center, #8395a7); }
+.espectro-right { background: var(--spectrum-right, #eb3b5a); }
+
+/* Paleta de dueños. No codifica ideología: distingue propietarios, y por eso
+   son tonos neutros y no el rojo/azul del espectro. */
+.dueno-0 { background: #1e3799; }
+.dueno-1 { background: #0a3d62; }
+.dueno-2 { background: #3c6382; }
+.dueno-3 { background: #60a3bc; }
+.dueno-4 { background: #82ccdd; }
+.dueno-5 { background: #6a89cc; }
+.dueno-6 { background: #4a69bd; }
+.dueno-7 { background: #778beb; }
+
+/* Los medios sin propiedad documentada van rayados: se ven, ocupan su sitio y
+   no se confunden con un dueño conocido. */
+.panorama-seg.sin-documentar {
+    background: repeating-linear-gradient(
+        45deg,
+        var(--text-muted) 0 4px,
+        transparent 4px 8px
+    );
+    opacity: 0.55;
+}
+
+.panorama-leyenda {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.panorama-leyenda li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.panorama-punto {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.panorama-duenos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: dueno;
+}
+
+.panorama-duenos li {
+    display: grid;
+    grid-template-columns: 11px minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 4px 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.88rem;
+}
+
+.panorama-duenos li:last-child {
+    border-bottom: none;
+}
+
+.dueno-label {
+    font-weight: 700;
+}
+
+.dueno-pct {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    text-align: right;
+}
+
+/* Los medios del grupo, en la segunda línea y a todo el ancho útil. Es el dato
+   que convierte una etiqueta abstracta en algo reconocible. */
+.dueno-medios {
+    grid-column: 2 / -1;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+.panorama-limite {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    margin: 4px 0 0;
+    padding: 12px 14px;
+    background: var(--bg-subtle);
+    border-radius: 3px;
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    line-height: 1.6;
+}
+
+.panorama-limite svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+@media (max-width: 720px) {
+    .panorama {
+        padding: 18px 14px;
+    }
+
+    .panorama-titular {
+        font-size: 1rem;
+    }
+
+    .panorama-titular strong {
+        font-size: 1.35rem;
+    }
+}

@@ -123,3 +123,35 @@
 @media (max-width: 640px) {
     .transparency-page { padding: 1.25rem 0.9rem 3rem; }
 }
+
+/**
+ * Definiciones del espectro.
+ *
+ * Es la sección que más se va a citar y a discutir, así que se lee como una
+ * definición y no como una lista de opciones: término destacado, texto corrido
+ * debajo, y una barra de color que ancla cada bloque al mismo código de color
+ * que usa el resto del sitio.
+ */
+.tr-spectrum {
+    margin: 20px 0 24px;
+}
+
+.tr-spectrum dt {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.02rem;
+    margin-top: 20px;
+    padding-left: 12px;
+    border-left: 4px solid var(--border-color);
+}
+
+.tr-spectrum dd {
+    margin: 8px 0 0;
+    padding-left: 16px;
+    color: var(--text-muted);
+    line-height: 1.65;
+}
+
+.tr-spectrum-left { border-left-color: var(--spectrum-left, #4b7bec); }
+.tr-spectrum-right { border-left-color: var(--spectrum-right, #eb3b5a); }
+.tr-spectrum-center { border-left-color: var(--spectrum-center, #a5b1c2); }

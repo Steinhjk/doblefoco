@@ -7,7 +7,7 @@ import { useStories } from '../hooks/useStories';
 import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
 import { resumenDelFeed } from '../lib/resumenDelFeed.js';
 import EmptyState from './EmptyState';
-import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
+import { BLINDSPOT_MIN_SOURCES, SPECTRUM_LABEL_SHORT } from '../../shared/biasAnalysis.js';
 import './NewsFeed.css';
 
 const NewsFeed = () => {
@@ -100,11 +100,13 @@ const NewsFeed = () => {
         [allNews]
     );
 
+    // La forma corta, que es la que cabe en una fila de botones. La larga —«Sin
+    // línea marcada»— y su porqué están en la página de transparencia.
     const spectrumOptions = [
         ['all', 'Todos'],
-        ['left', 'Izquierda'],
-        ['center', 'Centro'],
-        ['right', 'Derecha'],
+        ['left', SPECTRUM_LABEL_SHORT.left],
+        ['center', SPECTRUM_LABEL_SHORT.center],
+        ['right', SPECTRUM_LABEL_SHORT.right],
     ];
 
     return (

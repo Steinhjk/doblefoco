@@ -54,7 +54,10 @@
  * agencias internacionales para los medios que cubran. Donde no haya ancla
  * externa, se declara como criterio propio en vez de disimularlo.
  *
- * Escala: -1.0 (izquierda marcada) … 0.0 (centro) … +1.0 (derecha marcada)
+ * Escala: -1.0 (izquierda marcada) … 0.0 (sin línea marcada) … +1.0 (derecha
+ * marcada). El 0.0 NO significa «neutral»: significa que no se detectó una
+ * inclinación consistente. Ver el comentario de SPECTRUM_LABEL en
+ * shared/biasAnalysis.js.
  * `factuality` es el historial de rigor factual del medio, NO una evaluación
  * de una noticia concreta.
  */
@@ -62,9 +65,9 @@
 /** Bandas del espectro. metodologia.txt debe describir exactamente estas. */
 export const SPECTRUM_BANDS = [
     { id: 'left', min: -1.0, max: -0.6, label: 'Izquierda' },
-    { id: 'center-left', min: -0.6, max: -0.2, label: 'Centro-izquierda' },
-    { id: 'center', min: -0.2, max: 0.2, label: 'Centro' },
-    { id: 'center-right', min: 0.2, max: 0.6, label: 'Centro-derecha' },
+    { id: 'center-left', min: -0.6, max: -0.2, label: 'Izquierda moderada' },
+    { id: 'center', min: -0.2, max: 0.2, label: 'Sin línea marcada' },
+    { id: 'center-right', min: 0.2, max: 0.6, label: 'Derecha moderada' },
     { id: 'right', min: 0.6, max: 1.0, label: 'Derecha' },
 ];
 

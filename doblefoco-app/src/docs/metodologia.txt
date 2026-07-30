@@ -33,13 +33,24 @@ Clasifica organizaciones, no piezas.
 Cada medio recibe un valor entre -1.0 y +1.0. Las bandas son:
 
   [-1.0 a -0.6)  Izquierda
-  [-0.6 a -0.2)  Centro-izquierda
-  [-0.2 a +0.2)  Centro
-  [+0.2 a +0.6)  Centro-derecha
+  [-0.6 a -0.2)  Izquierda moderada
+  [-0.2 a +0.2)  Sin línea marcada
+  [+0.2 a +0.6)  Derecha moderada
   [+0.6 a +1.0]  Derecha
 
 Para agrupar cobertura, el sistema colapsa esas cinco bandas en tres bloques,
-con frontera en Â±0.2: izquierda (â‰¤ -0.2), centro y derecha (â‰¥ +0.2).
+con frontera en Â±0.2: izquierda (â‰¤ -0.2), sin línea marcada y derecha (â‰¥ +0.2).
+
+La banda del medio NO se llama «centro», y es una decisión editorial: dar por
+sentado que existe un centro político equivale a conceder que hay un punto
+neutral desde el cual se mira todo lo demás. «Sin línea marcada» dice lo que de
+verdad se midió —no se detectó una inclinación consistente— y NO afirma
+neutralidad, imparcialidad ni objetividad: serían afirmaciones que esta medición
+no puede sostener. Por el mismo motivo las bandas contiguas pasaron a llamarse
+«moderada»; nombrarlas EN RELACIÓN a un centro lo reintroduciría por la puerta
+de atrás.
+
+La definición en prosa de cada bloque está en la página de transparencia.
 
 La lista completa de medios con su valor, su justificaciÃ³n escrita y su estado
 de revisiÃ³n estÃ¡ en el catÃ¡logo de medios, que se genera automÃ¡ticamente desde

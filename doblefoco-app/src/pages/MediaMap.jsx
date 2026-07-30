@@ -56,7 +56,7 @@ const SPECTRUM_FILL = {
 
 const SPECTRUM_LABEL = {
     left: 'Izquierda',
-    center: 'Centro',
+    center: 'Sin línea marcada',
     right: 'Derecha',
 };
 

@@ -178,9 +178,9 @@ describe('averageFactuality — la constante 0.88 no vuelve (F0-09)', () => {
 describe('describeBias', () => {
     it('cubre la escala sin dejar huecos', () => {
         expect(describeBias(-0.8)).toBe('Inclinación izquierda');
-        expect(describeBias(-0.2)).toBe('Centro-izquierda');
-        expect(describeBias(0)).toBe('Centro');
-        expect(describeBias(0.2)).toBe('Centro-derecha');
+        expect(describeBias(-0.2)).toBe('Izquierda moderada');
+        expect(describeBias(0)).toBe('Sin línea marcada');
+        expect(describeBias(0.2)).toBe('Derecha moderada');
         expect(describeBias(0.8)).toBe('Inclinación derecha');
     });
 });

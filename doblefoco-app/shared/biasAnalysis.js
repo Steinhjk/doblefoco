@@ -49,9 +49,38 @@ export const SPECTRUM = {
     RIGHT: 'right',
 };
 
+/**
+ * LA BANDA DEL MEDIO NO SE LLAMA «CENTRO», Y ES UNA DECISIÓN EDITORIAL.
+ *
+ * Decisión de Jose (2026-07-30): no da por sentado que exista un centro
+ * político, y llamar «Centro» a esa banda le atribuye una posición que nadie ha
+ * demostrado que exista.
+ *
+ * También descarta «Objetivo» o «Sin sesgo», que fueron las primeras candidatas,
+ * por el motivo contrario: afirman una cualidad que esta medición NO puede
+ * sostener. Un valor cerca de cero significa que no detectamos una inclinación
+ * consistente, y eso admite lecturas muy distintas —cobertura equilibrada, señal
+ * insuficiente, sesgos que se cancelan entre temas, o alineamiento con el poder
+ * institucional que no cabe en el eje izquierda-derecha—. Certificar a un medio
+ * como «sin sesgo» sería la afirmación más fuerte del sitio y la menos
+ * defendible.
+ *
+ * «Sin línea marcada» dice exactamente lo medido y nada más.
+ */
 export const SPECTRUM_LABEL = {
     left: 'Izquierda',
-    center: 'Centro',
+    center: 'Sin línea marcada',
+    right: 'Derecha',
+};
+
+/**
+ * Versión corta para donde no cabe la larga: botones de filtro, el eje del
+ * panel lateral, leyendas de gráficos. Se declara aquí y no en cada pantalla
+ * para que no acabe habiendo cuatro abreviaturas distintas.
+ */
+export const SPECTRUM_LABEL_SHORT = {
+    left: 'Izquierda',
+    center: 'Sin línea',
     right: 'Derecha',
 };
 
@@ -63,13 +92,20 @@ export function classifySpectrum(bias) {
     return SPECTRUM.CENTER;
 }
 
-/** Etiqueta legible para el sesgo agregado de una historia. */
+/**
+ * Etiqueta legible para el sesgo agregado de una historia.
+ *
+ * «Centro-izquierda» y «Centro-derecha» pasan a «Izquierda moderada» y «Derecha
+ * moderada». No es cosmética: si se retira «Centro» como posición, nombrar otras
+ * dos bandas EN RELACIÓN a ella la reintroduce por la puerta de atrás. Lo que
+ * esas bandas miden es intensidad —una inclinación leve—, y así se dicen.
+ */
 export function describeBias(bias) {
     const value = typeof bias === 'number' && Number.isFinite(bias) ? bias : 0;
     if (value <= -0.3) return 'Inclinación izquierda';
-    if (value < -0.1) return 'Centro-izquierda';
-    if (value <= 0.1) return 'Centro';
-    if (value < 0.3) return 'Centro-derecha';
+    if (value < -0.1) return 'Izquierda moderada';
+    if (value <= 0.1) return 'Sin línea marcada';
+    if (value < 0.3) return 'Derecha moderada';
     return 'Inclinación derecha';
 }
 

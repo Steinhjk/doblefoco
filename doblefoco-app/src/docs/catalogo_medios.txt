@@ -27,7 +27,7 @@ IZQUIERDA  [−1.00 a −0.60)  —  1 medio
     campesinos; encuadre explícito desde movimientos de base.
 
 ----------------------------------------------------------------------
-CENTRO-IZQUIERDA  [−0.60 a −0.20)  —  6 medios
+IZQUIERDA MODERADA  [−0.60 a −0.20)  —  6 medios
 ----------------------------------------------------------------------
 
   Vorágine  ·  sesgo −0.50  ·  factualidad 90%
@@ -60,7 +60,7 @@ CENTRO-IZQUIERDA  [−0.60 a −0.20)  —  6 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-CENTRO  [−0.20 a +0.20)  —  19 medios
+SIN LÍNEA MARCADA  [−0.20 a +0.20)  —  19 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -157,7 +157,7 @@ CENTRO  [−0.20 a +0.20)  —  19 medios
     económico.
 
 ----------------------------------------------------------------------
-CENTRO-DERECHA  [+0.20 a +0.60)  —  14 medios
+DERECHA MODERADA  [+0.20 a +0.60)  —  14 medios
 ----------------------------------------------------------------------
 
   El Heraldo  ·  sesgo +0.20  ·  factualidad 84%

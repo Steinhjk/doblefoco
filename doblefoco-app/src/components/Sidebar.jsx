@@ -108,7 +108,9 @@ const Sidebar = () => {
                                 <div className="diet-bias-indicator" style={{ left: `${diet.biasPosition}%` }} />
                             </div>
                             <div className="diet-bias-track-bounds">
-                                <span>Izq</span><span>Centro</span><span>Der</span>
+                                {/* Eje de tres marcas. «Sin línea» y no
+                                    «Centro»: ver SPECTRUM_LABEL. */}
+                                <span>Izq</span><span>Sin línea</span><span>Der</span>
                             </div>
                             <span className="diet-bias-verdict">{diet.label}</span>
                         </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ShieldCheck, HandCoins, Eye, AlertTriangle, Mail } from 'lucide-react';
+import { ShieldCheck, HandCoins, Eye, AlertTriangle, Mail, Scale } from 'lucide-react';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import './Transparency.css';
 
@@ -155,6 +155,63 @@ const Transparency = () => (
                     primera en no poder sostenerse.
                 </li>
             </ul>
+        </section>
+
+        <section className="tr-section">
+            <h2><Scale size={18} aria-hidden="true" /> Qué queremos decir con izquierda y derecha</h2>
+            <p>
+                Clasificamos <strong>organizaciones, no noticias</strong>. Cuando decimos que
+                un medio se inclina hacia un lado no estamos calificando el artículo que usted
+                acaba de leer: estamos describiendo un patrón sostenido en su cobertura. Estas
+                son las definiciones con las que trabajamos, y publicarlas es la única forma
+                de que usted pueda decir que están mal.
+            </p>
+
+            <dl className="tr-spectrum">
+                <dt className="tr-spectrum-left">Izquierda</dt>
+                <dd>
+                    Cobertura que tiende a situar la causa de los problemas públicos en
+                    estructuras —desigualdad, concentración de la propiedad, abandono
+                    estatal—, que da relevancia sostenida a derechos laborales, protesta
+                    social, medio ambiente y víctimas del conflicto, y que cita con más
+                    frecuencia a organizaciones sociales, sindicatos y academia crítica.
+                </dd>
+
+                <dt className="tr-spectrum-right">Derecha</dt>
+                <dd>
+                    Cobertura que tiende a situar la causa de los problemas públicos en
+                    decisiones individuales, en la acción del gobierno de turno o en la
+                    inseguridad, que da relevancia sostenida a orden público, crecimiento
+                    económico, empresa privada y gasto estatal, y que cita con más frecuencia
+                    a fuentes oficiales de seguridad, gremios empresariales y centros de
+                    pensamiento afines.
+                </dd>
+
+                <dt className="tr-spectrum-center">Sin línea marcada</dt>
+                <dd>
+                    <strong>No significa neutral, imparcial ni objetivo.</strong> Significa
+                    únicamente que no encontramos una inclinación consistente hacia ninguno de
+                    los dos lados. Eso admite lecturas muy distintas: cobertura efectivamente
+                    equilibrada, señal insuficiente para afirmar nada, inclinaciones que se
+                    cancelan entre temas, o un alineamiento con el poder institucional y
+                    económico que sencillamente no cabe en el eje izquierda-derecha.
+                    <br />
+                    Por eso esta banda no se llama «Centro». Dar por sentado que existe un
+                    centro político equivale a conceder que hay un punto neutral desde el cual
+                    se mira todo lo demás, y eso es precisamente lo que este sitio no da por
+                    sentado. Conviene además mirar quién es el dueño: varios de los medios que
+                    caen aquí pertenecen a los mayores grupos económicos del país, y eso está
+                    documentado, medio por medio, en el{' '}
+                    <Link to="/mapa-medios">mapa mediático</Link>.
+                </dd>
+            </dl>
+
+            <p>
+                Los valores numéricos, las bandas y los cuatro criterios con que se asigna cada
+                uno —propiedad y estructura económica, selección de agenda, encuadre y balance
+                de fuentes citadas— están en la{' '}
+                <Link to="/sobre-nosotros">metodología</Link>.
+            </p>
         </section>
 
         <section className="tr-section">

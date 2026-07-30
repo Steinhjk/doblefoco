@@ -112,7 +112,7 @@ export function summarizeDiet(history) {
         recommendation =
             'Tu lectura se concentra en medios de izquierda. Para contrastar, busca la cobertura del mismo hecho en El Colombiano o Semana.';
     } else if (avgBias < -0.1) {
-        label = 'Centro-izquierda';
+        label = 'Izquierda moderada';
         recommendation =
             'Tu lectura se inclina levemente a la izquierda. Revisa algunos hechos desde medios de centro o centro-derecha.';
     } else if (avgBias <= 0.1) {
@@ -120,7 +120,7 @@ export function summarizeDiet(history) {
         recommendation =
             'Tu dieta está equilibrada entre espectros. Mantén el hábito de contrastar cada hecho en al menos dos medios.';
     } else if (avgBias < 0.3) {
-        label = 'Centro-derecha';
+        label = 'Derecha moderada';
         recommendation =
             'Tu lectura se inclina levemente a la derecha. Revisa algunos hechos desde medios de centro o centro-izquierda.';
     } else {

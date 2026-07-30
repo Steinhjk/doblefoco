@@ -52,7 +52,7 @@ export async function hydrateArticles({ retentionMs, max }) {
     const result = await safeQuery(
         `
         SELECT a.id, a.canonical_url, a.headline, a.raw_title, a.snippet,
-               a.category, a.tone, a.published_at, a.ingested_at,
+               a.category, a.tone, a.published_at, a.ingested_at, a.image_url,
                s.id AS source_id, s.name AS source_name, s.domain AS source_domain,
                s.bias, s.factuality
           FROM articles a
@@ -76,6 +76,9 @@ export async function hydrateArticles({ retentionMs, max }) {
         tone: row.tone,
         publishedAt: row.published_at,
         ingestedAtMs: Date.parse(row.ingested_at),
+        // Sin esto la memoria no sabría qué artículos ya tienen foto y el relleno
+        // de imágenes intentaría rellenar los 4 000 en cada ciclo.
+        imageUrl: row.image_url,
         outlet: {
             id: row.source_id,
             name: row.source_name,
@@ -91,6 +94,41 @@ export async function hydrateArticles({ retentionMs, max }) {
 // ---------------------------------------------------------------------------
 // Escritura: artículos
 // ---------------------------------------------------------------------------
+
+/**
+ * Rellena la imagen de artículos YA guardados que no tenían ninguna.
+ *
+ * POR QUÉ ES UNA FUNCIÓN APARTE y no basta el ON CONFLICT del INSERT: el motor
+ * descarta el item ANTES de llegar a guardar. `if (articlesByLink.has(link))
+ * continue` es lo que hace la ingesta idempotente, y con ello un artículo que
+ * reaparece en el feed no vuelve a pasar por el INSERT nunca. Así que la foto de
+ * los 4 313 artículos guardados antes de que existiera la columna era
+ * irrecuperable por esa vía: 1 de las 100 historias de la portada tenía imagen.
+ *
+ * `WHERE image_url IS NULL` en la sentencia, no solo en la comprobación previa:
+ * lo ya guardado gana siempre, así que esto rellena huecos y no sobrescribe. Que
+ * la foto que un lector vio no cambie por un ciclo posterior es parte del trato.
+ *
+ * @param {Array<{link: string, imageUrl: string}>} imagenes
+ * @returns {Promise<number>} cuántas filas se rellenaron
+ */
+export async function backfillImages(imagenes) {
+    if (!imagenes.length) return 0;
+
+    const result = await safeQuery(
+        `
+        UPDATE articles a
+           SET image_url = v.image_url
+          FROM unnest($1::text[], $2::text[]) AS v(canonical_url, image_url)
+         WHERE a.canonical_url = v.canonical_url
+           AND a.image_url IS NULL
+        `,
+        [imagenes.map((i) => i.link), imagenes.map((i) => i.imageUrl)],
+        'relleno de imágenes'
+    );
+
+    return result?.rowCount ?? 0;
+}
 
 /**
  * Guarda un lote de artículos.
@@ -126,6 +164,28 @@ export async function persistArticles(articles) {
 
     if (!usable.length) return 0;
 
+    /**
+     * SIGUE SIENDO «NO TOQUES NADA», CON UNA EXCEPCIÓN: la imagen, y solo cuando
+     * todavía no hay ninguna.
+     *
+     * POR QUÉ HIZO FALTA. Al añadir la columna de imagen había 4 313 artículos ya
+     * guardados sin ella. Con ON CONFLICT DO NOTHING, un artículo que vuelve a
+     * aparecer en el feed —y los feeds reexponen sus últimas piezas en cada
+     * ciclo— descartaba su foto para siempre.
+     *
+     * COALESCE(articles.image_url, EXCLUDED.image_url) tiene ese orden a
+     * propósito: lo ya guardado gana. Así esto RELLENA huecos y nunca
+     * sobrescribe, de modo que un feed que empiece a devolver una imagen
+     * distinta no cambia la que el lector ya vio.
+     *
+     * El titular, el extracto y el tono NO se actualizan. Reescribir un titular
+     * ya publicado es justamente lo que este proyecto no hace, y la fecha
+     * tampoco se toca porque el orden de la portada depende de ella.
+     *
+     * OJO: esto NO cubre a los artículos que el motor descarta antes de llegar
+     * aquí por estar ya en memoria, que son la mayoría. De esos se encarga
+     * backfillImages().
+     */
     const result = await safeQuery(
         `
         INSERT INTO articles
@@ -136,7 +196,11 @@ export async function persistArticles(articles) {
             $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[],
             $11::text[]
         )
-        ON CONFLICT DO NOTHING
+        -- Ver el comentario de arriba: se rellena la imagen y nada más.
+        ON CONFLICT (canonical_url) DO UPDATE
+            SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url)
+          WHERE articles.image_url IS NULL
+            AND EXCLUDED.image_url IS NOT NULL
         `,
         [
             usable.map((a) => a.id),

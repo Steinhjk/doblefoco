@@ -37,6 +37,7 @@ import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
     hydrateArticles,
+    backfillImages,
     persistArticles,
     persistStories,
     pruneExpiredArticles,
@@ -537,6 +538,8 @@ export async function runIngestionBatch() {
 
                 const fresh = [];
                 const discarded = {};
+                /** Artículos ya guardados a los que el feed acaba de dar imagen. */
+                const imagenesRecuperadas = [];
 
                 for (const item of result.items.slice(0, ITEMS_PER_FEED)) {
                     const link = canonicalizeLink(item?.link);
@@ -548,7 +551,25 @@ export async function runIngestionBatch() {
                     // La clave es el enlace: deduplicación O(1) e idempotente
                     // entre ejecuciones. Antes era un .some() sobre todo el
                     // array, con coste cuadrático.
-                    if (articlesByLink.has(link)) continue;
+                    if (articlesByLink.has(link)) {
+                        /**
+                         * Antes de descartarlo: si el artículo ya está guardado
+                         * SIN imagen y el feed ahora trae una, se recoge. Es la
+                         * única vía para los artículos anteriores a que existiera
+                         * la columna, porque este `continue` los deja fuera del
+                         * INSERT para siempre. Sin esto, 1 de las 100 historias
+                         * de la portada tenía foto.
+                         */
+                        const conocido = articlesByLink.get(link);
+                        if (conocido && !conocido.imageUrl) {
+                            const img = extractImage(item, link, feedConfig.imageHosts);
+                            if (img) {
+                                conocido.imageUrl = img;
+                                imagenesRecuperadas.push({ link, imageUrl: img });
+                            }
+                        }
+                        continue;
+                    }
 
                     // Formatos sin encuadre que comparar: sorteos, horóscopos,
                     // la TRM del día. Cuatro medios publicando el mismo número
@@ -599,6 +620,7 @@ export async function runIngestionBatch() {
                     added: fresh.length,
                     fresh,
                     discarded,
+                    imagenesRecuperadas,
                 };
             }
         );
@@ -624,6 +646,16 @@ export async function runIngestionBatch() {
             .filter((article) => articlesByLink.has(article.link));
 
         const persisted = await persistToDatabase(fresh);
+
+        /**
+         * Relleno de imágenes de artículos ya guardados. Va aquí, junto a la
+         * persistencia, y no dentro del bucle de feeds: una sola sentencia para
+         * todo el ciclo en vez de una por feed.
+         */
+        const imagenesRecuperadas = perFeed.flatMap((f) => f.imagenesRecuperadas ?? []);
+        const imagenesRellenadas = imagenesRecuperadas.length
+            ? await backfillImages(imagenesRecuperadas)
+            : 0;
 
         const shape = measureStoryShape();
 
@@ -686,6 +718,10 @@ export async function runIngestionBatch() {
                     .map(([rule, n]) => `${rule}:${n}`)
                     .join(', ')})`
                 : '') +
+            // Se registra para poder ver si el relleno avanza o se ha quedado
+            // atascado: un relleno que nunca sube es un feed que dejó de traer
+            // imágenes y no habría otra forma de notarlo.
+            (imagenesRellenadas ? ` · ${imagenesRellenadas} imágenes rellenadas` : '') +
             (persisted ? ` · ${persisted}` : '')
         );
 

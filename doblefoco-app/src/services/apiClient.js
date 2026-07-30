@@ -77,6 +77,15 @@ export async function fetchFeed({ limit = 20, offset = 0 } = {}) {
         ok: true,
         stories: Array.isArray(result.data?.stories) ? result.data.stories : [],
         total: result.data?.total ?? 0,
+        // Cifras del catálogo entero, no de esta página. Un despliegue anterior
+        // de la API no las manda: se degrada a ceros y la portada se calla en vez
+        // de inventarse un total.
+        counts: {
+            total: result.data?.counts?.total ?? 0,
+            multifuente: result.data?.counts?.multifuente ?? 0,
+            nacional: result.data?.counts?.nacional ?? 0,
+            internacional: result.data?.counts?.internacional ?? 0,
+        },
     };
 }
 

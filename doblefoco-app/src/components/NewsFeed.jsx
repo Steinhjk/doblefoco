@@ -5,6 +5,7 @@ import NewsCard from './NewsCard';
 import AnimateIn from './AnimateIn';
 import { useStories } from '../hooks/useStories';
 import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
+import { resumenDelFeed } from '../lib/resumenDelFeed.js';
 import EmptyState from './EmptyState';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import './NewsFeed.css';
@@ -14,7 +15,7 @@ const NewsFeed = () => {
     // aquel catálogo de demostración contenía 600 citas inventadas atribuidas a
     // 32 medios reales, y el aviso que lo acompañaba solo existía en esta
     // pantalla. O hay cobertura real, o se dice que no la hay.
-    const { stories: allNews, status, reason } = useStories({ limit: 100 });
+    const { stories: allNews, counts, status, reason } = useStories({ limit: 100 });
 
     /**
      * Los filtros viven en la URL, no en useState (F3-06). Así se pueden
@@ -30,11 +31,24 @@ const NewsFeed = () => {
         orden: sortBy,
     } = filtros;
 
+    /**
+     * DOS ÁMBITOS QUE NO HAY QUE MEZCLAR, y mezclarlos fue el fallo original.
+     *
+     * `counts` describe el catálogo entero. `allNews` son las 100 que se pidieron.
+     * Las pestañas FILTRAN sobre `allNews`, así que sus cifras tienen que salir de
+     * `allNews`: poner ahí el total del catálogo haría que «Internacional (20)»
+     * devolviera seis resultados, que es cambiar una cifra engañosa por otra.
+     *
+     * El universo se declara UNA vez, en la cabecera, con las cifras de `counts`.
+     * Ahí es donde el lector se enteraba mal de cuántas historias sigue el sitio.
+     */
     const nationalCount = useMemo(
         () => allNews.filter((s) => s.category !== 'Internacional').length,
         [allNews]
     );
     const internationalCount = allNews.length - nationalCount;
+
+    const resumen = resumenDelFeed(counts, allNews.length);
 
     const filteredNews = useMemo(
         () =>
@@ -97,7 +111,16 @@ const NewsFeed = () => {
         <div className="news-feed">
             <div className="section-header">
                 <h2>Análisis de Perspectivas</h2>
-                <p>{allNews.length} historias con cobertura multifuente</p>
+                {/* Dos cifras distintas y dichas como tales: cuántas hay y
+                    cuántas se están mostrando. Antes había una sola, la segunda
+                    presentada como la primera. */}
+                <p>
+                    {resumen.multifuente} historias con cobertura multifuente
+                    {resumen.seguidas !== null && <> de {resumen.seguidas} seguidas en total</>}
+                    {resumen.mostradas !== null && (
+                        <> · se muestran las {resumen.mostradas} con más medios cubriendo</>
+                    )}
+                </p>
             </div>
 
             {status === 'sin-datos' && <EmptyState reason={reason} />}

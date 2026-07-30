@@ -30,11 +30,20 @@ import { normalizeStories } from '../lib/story';
  * "nunca se publica lo que no se puede verificar contra su fuente" no puede
  * rellenar su propio escaparate con citas que nadie escribió.
  *
- * @returns {{stories: Array, status: 'cargando'|'listo'|'sin-datos', reason: string|null}}
+ * `counts` SON DEL CATÁLOGO, `stories` ES UNA PÁGINA. La distinción importa
+ * porque confundirlas ya produjo un error en la portada: contaba `stories.length`
+ * y escribía el resultado como si fuera el total, de modo que el techo de la
+ * petición se leía como el tamaño del catálogo. Quien pinte una cifra tiene que
+ * tomarla de `counts`; `stories.length` solo dice cuántas se descargaron.
+ *
+ * @returns {{stories: Array, counts: {total: number, multifuente: number, nacional: number, internacional: number}, status: 'cargando'|'listo'|'sin-datos', reason: string|null}}
  */
+const SIN_CONTEO = { total: 0, multifuente: 0, nacional: 0, internacional: 0 };
+
 export function useStories({ limit = 100 } = {}) {
     const [state, setState] = useState(() => ({
         stories: [],
+        counts: SIN_CONTEO,
         status: isApiConfigured ? 'cargando' : 'sin-datos',
         reason: isApiConfigured ? null : 'Este despliegue no tiene la API configurada.',
     }));
@@ -50,6 +59,7 @@ export function useStories({ limit = 100 } = {}) {
             if (result.ok && result.stories.length) {
                 setState({
                     stories: normalizeStories(result.stories),
+                    counts: result.counts ?? SIN_CONTEO,
                     status: 'listo',
                     reason: null,
                 });
@@ -58,6 +68,7 @@ export function useStories({ limit = 100 } = {}) {
 
             setState({
                 stories: [],
+                counts: SIN_CONTEO,
                 status: 'sin-datos',
                 // Se distingue "la API no respondió" de "respondió y no hay
                 // nada": la primera es una avería y la segunda es un hecho

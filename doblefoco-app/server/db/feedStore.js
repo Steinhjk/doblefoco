@@ -318,18 +318,67 @@ export async function readSitemapEntries({ limit = 50_000 } = {}) {
     }));
 }
 
+/**
+ * Cuántas historias hay, de verdad.
+ *
+ * POR QUÉ DEVUELVE CUATRO CIFRAS Y NO UNA. La portada pedía 100 historias y
+ * escribía «100 historias con cobertura multifuente», repartidas entre Colombia
+ * e Internacional. Las tres cifras salían de `length` sobre lo que se había
+ * descargado, así que la pantalla presentaba el TECHO DE LA PETICIÓN como si
+ * fuera el universo: con 298 historias multifuente y 3 644 en total, un lector
+ * concluía que el sitio sigue trescientas menos de las que sigue.
+ *
+ * No era una cifra falsa —el feed ordena por número de medios, así que esas 100
+ * sí eran multifuente— y por eso es peor: una ventana presentada como si fuera
+ * el total no se delata nunca. La cifra tiene que venir de un `count`, que es lo
+ * único que sabe cuántas hay, y no de la longitud de una página.
+ *
+ * El desglose se calcula aquí y no en el cliente por el mismo motivo: el cliente
+ * solo puede contar lo que le llegó.
+ *
+ * `COALESCE(category, '')` para que una historia sin categoría cuente como
+ * nacional, igual que hace el filtro del feed (`category !== 'Internacional'`).
+ * Sin el COALESCE la comparación da NULL y la historia no entra en ninguno de
+ * los dos lados: los sumandos no cuadrarían con el total.
+ *
+ * @returns {Promise<{total: number, multifuente: number, nacional: number, internacional: number}>}
+ */
 export async function countFeed() {
     const resultado = await safeQuery(
         `
-        SELECT count(*)::int AS total
-          FROM stories s
-          LEFT JOIN moderation m ON m.story_id = s.id
-         WHERE (m.state IS NULL OR m.state <> 'rechazada')
-           AND EXISTS (SELECT 1 FROM story_articles sa WHERE sa.story_id = s.id)
+        SELECT count(*)::int                                       AS total,
+               count(*) FILTER (WHERE medios > 1)::int             AS multifuente,
+               count(*) FILTER (
+                   WHERE medios > 1 AND COALESCE(categoria, '') <> 'Internacional'
+               )::int                                              AS nacional,
+               count(*) FILTER (
+                   WHERE medios > 1 AND categoria = 'Internacional'
+               )::int                                              AS internacional
+          FROM (
+            SELECT s.id,
+                   s.category                        AS categoria,
+                   count(DISTINCT a.source_id)::int  AS medios
+              FROM stories s
+              JOIN story_articles sa ON sa.story_id = s.id
+              JOIN articles a        ON a.id = sa.article_id
+              LEFT JOIN moderation m ON m.story_id = s.id
+             WHERE (m.state IS NULL OR m.state <> 'rechazada')
+             GROUP BY s.id, s.category
+          ) AS historias
         `,
         [],
         'conteo del feed'
     );
 
-    return resultado?.rows[0]?.total ?? 0;
+    const fila = resultado?.rows[0];
+
+    // Sin base de datos se devuelven ceros y no `null`: quien lo consume pinta
+    // cifras, y un cero se lee como «no hay» mientras que un null se colaría en
+    // la pantalla como «NaN historias».
+    return {
+        total: fila?.total ?? 0,
+        multifuente: fila?.multifuente ?? 0,
+        nacional: fila?.nacional ?? 0,
+        internacional: fila?.internacional ?? 0,
+    };
 }

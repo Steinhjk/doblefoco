@@ -502,9 +502,12 @@ app.get('/api/feed', async (req, res) => {
         const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
         const offset = Math.max(Number(req.query.offset) || 0, 0);
 
-        const [stories, total] = await Promise.all([readFeed({ limit, offset }), countFeed()]);
+        const [stories, counts] = await Promise.all([readFeed({ limit, offset }), countFeed()]);
 
-        res.json({ success: true, total, limit, offset, stories });
+        // `total` se conserva como campo suelto por compatibilidad con lo ya
+        // desplegado; `counts` es lo que necesita la portada para no confundir
+        // el tamaño de la página con el del catálogo.
+        res.json({ success: true, total: counts.total, counts, limit, offset, stories });
     } catch (error) {
         console.error('[api] fallo en /api/feed', error);
         res.status(500).json({ success: false, error: 'Error interno' });

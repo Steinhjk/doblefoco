@@ -538,3 +538,60 @@ descuadraría los porcentajes sin decir por qué.
   permitiría desde una CDN.
 - **Evidencias:** 248 pruebas · typecheck, lint y build limpios · cifras
   calculadas contra la base real a través del endpoint.
+
+---
+
+### [2026-07-30] Que no queden noticias sin imagen: og:image de la página
+
+Jose pidió la solución óptima estructural para que no quedaran noticias sin
+imagen. Con solo el RSS era imposible: **18 de los 33 feeds no publican imagen de
+ninguna forma** —ni `media:content`, ni `enclosure`, ni una `<img>` en el cuerpo—
+y ahí entran La República (235 artículos), Euronews (181), Caracol Radio (86),
+DW (71) y KienyKe (65). El techo estaba en 27 historias con imagen de cada 100.
+
+#### Medido ANTES de construirlo
+Sonda sobre 30 artículos reales de esos medios: **27 tenían og:image (90 %)**,
+con una mediana de **47 kB** leídos por página porque la lectura se corta en
+`</head>`. Un host nuevo que declarar (`img.lalr.co`, de La República).
+
+#### Por qué esto no es raspado
+Se lee **únicamente la etiqueta `og:image` del `<head>`**. Esa etiqueta existe
+precisamente para que un tercero muestre una previsualización de la pieza: es lo
+que usan WhatsApp, X y Telegram al pegar el enlace. Usarla para exactamente eso
+es su función declarada. No se lee el cuerpo, no se guarda texto, no se toca
+nada más.
+
+#### La pieza que hace que esto escale
+`articles.image_checked_at`. Sin ella no habría forma de distinguir «no se ha
+mirado» de «se miró y no tiene», y **cada ciclo repetiría las mismas miles de
+peticiones a medios ajenos para siempre**. Con la marca, cada artículo se
+consulta UNA vez en su vida. Es la diferencia entre un enriquecedor y un
+generador de tráfico.
+
+#### Límites, que son parte del diseño y no una precaución añadida
+Tope de 150 por ciclo · concurrencia 4 · 400 ms mínimo entre peticiones al mismo
+dominio · lectura abortada en `</head>` o a los 150 kB · timeout de 10 s · nunca
+lanza, para que un fallo no tumbe un ciclo que ya cumplió su función.
+
+La validación de host es **la misma función** que usa la extracción desde el RSS
+(`urlDeImagenValida`, extraída para eso). Si cada camino validara por su cuenta
+acabarían divergiendo, y nadie se enteraría hasta ver una petición a un tercero
+en la pestaña de red de un lector.
+
+#### Resultado, medido
+```
+og:image en el primer ciclo real ......... 146/150  (97 %)
+tandas de vaciado, acierto medio ......... ~92 %
+artículos con imagen ..................... 410 → 4 258 de 4 727  (9 % → 90 %)
+PORTADA (100 historias) con imagen ....... 27 → 100
+27 hosts distintos, todos cubiertos por la CSP (verificado)
+Coste por ciclo: +18 s (24 → 42 s)
+```
+
+El 10 % restante son artículos cuya página no declara og:image o no respondió.
+Quedan sin imagen y la tarjeta se adapta, que es el comportamiento honesto ya
+existente: nunca se sustituye por una foto que no sea de esa noticia.
+
+- **Evidencias:** 261 pruebas —7 nuevas sobre `leerOgImage`, con `fetch`
+  inyectado, incluida la que comprueba que NO se sigue leyendo después de
+  `</head>`— · typecheck, lint y build limpios.

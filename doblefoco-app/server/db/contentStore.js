@@ -131,6 +131,67 @@ export async function backfillImages(imagenes) {
 }
 
 /**
+ * Artículos a los que todavía no se les ha buscado imagen en su página.
+ *
+ * LOS MÁS RECIENTES PRIMERO, y no es un detalle de eficiencia: son los que están
+ * arriba en la portada, así que resolverlos primero es lo que el lector nota. El
+ * resto se alcanza ciclo a ciclo.
+ *
+ * `image_checked_at IS NULL` es lo que impide volver a pedir una página que ya
+ * se miró y no tenía nada. Sin esa condición, cada ciclo repetiría miles de
+ * peticiones a medios ajenos para siempre.
+ *
+ * @param {{limit: number}} opciones
+ * @returns {Promise<Array<{id: string, url: string, sourceId: string}>>}
+ */
+export async function articulosSinImagen({ limit }) {
+    const result = await safeQuery(
+        `
+        SELECT a.id, a.canonical_url AS url, a.source_id AS "sourceId"
+          FROM articles a
+         WHERE a.image_url IS NULL
+           AND a.image_checked_at IS NULL
+         ORDER BY a.published_at DESC NULLS LAST
+         LIMIT $1
+        `,
+        [limit],
+        'artículos sin imagen'
+    );
+
+    return result?.rows ?? [];
+}
+
+/**
+ * Guarda el resultado de haber mirado la página: la imagen si la había, y en
+ * todo caso la marca de que ya se miró.
+ *
+ * SE MARCAN TAMBIÉN LOS QUE NO TENÍAN, que es justamente el punto. Un artículo
+ * sin og:image al que no se le pusiera la marca volvería a la cola en el ciclo
+ * siguiente, y el trabajo no terminaría nunca.
+ *
+ * @param {Array<{id: string, imageUrl: string|null}>} resultados
+ * @returns {Promise<number>} cuántos quedaron CON imagen
+ */
+export async function guardarImagenesEnriquecidas(resultados) {
+    if (!resultados.length) return 0;
+
+    const result = await safeQuery(
+        `
+        UPDATE articles a
+           SET image_url = COALESCE(a.image_url, v.image_url),
+               image_checked_at = now()
+          FROM unnest($1::text[], $2::text[]) AS v(id, image_url)
+         WHERE a.id = v.id
+        `,
+        [resultados.map((r) => r.id), resultados.map((r) => r.imageUrl ?? null)],
+        'guardado de imágenes enriquecidas'
+    );
+
+    if (!result) return 0;
+    return resultados.filter((r) => r.imageUrl).length;
+}
+
+/**
  * Guarda un lote de artículos.
  *
  * Un solo INSERT con UNNEST en vez de N sentencias: 500 artículos por ciclo

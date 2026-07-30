@@ -100,6 +100,23 @@ CREATE TABLE IF NOT EXISTS articles (
 -- apartado visual. O es la imagen del medio, o no hay imagen.
 ALTER TABLE articles ADD COLUMN IF NOT EXISTS image_url TEXT;
 
+-- Cuándo se miró la PÁGINA del artículo buscando su og:image. NULL = nunca.
+--
+-- ES LA COLUMNA QUE HACE QUE ESTO ESCALE, y sin ella el diseño entero no se
+-- sostiene: 18 de los 33 feeds no publican imagen en su RSS, así que la única
+-- vía para ellos es leer la etiqueta og:image de la página. Sin marcar el
+-- intento no habría forma de distinguir «no se ha mirado» de «se miró y no
+-- tiene», y cada ciclo volvería a pedir las mismas miles de páginas para
+-- siempre. Con la marca, cada artículo se consulta UNA vez en su vida.
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS image_checked_at TIMESTAMPTZ;
+
+-- Los candidatos a enriquecer: sin imagen y sin mirar. Parcial porque la
+-- consulta solo pregunta por esas filas y el índice encoge a medida que se
+-- resuelven.
+CREATE INDEX IF NOT EXISTS articles_sin_imagen_idx
+    ON articles (published_at DESC NULLS LAST)
+ WHERE image_url IS NULL AND image_checked_at IS NULL;
+
 CREATE INDEX IF NOT EXISTS articles_published_idx ON articles (published_at DESC NULLS LAST);
 CREATE INDEX IF NOT EXISTS articles_source_idx    ON articles (source_id);
 

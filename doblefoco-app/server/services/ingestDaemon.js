@@ -44,6 +44,7 @@ import {
     recordRun,
 } from '../db/contentStore.js';
 import { rejectedStoryIds } from '../db/moderationStore.js';
+import { enriquecerImagenes } from './imageEnricher.js';
 
 // ---------------------------------------------------------------------------
 // Configuración
@@ -323,6 +324,44 @@ function primeraImagenDelContenido(item) {
  * @param {string[]} [imageHosts]  hosts extra declarados por el medio
  * @returns {string|null}
  */
+/**
+ * ¿Esta URL de imagen es del medio, y se puede servir?
+ *
+ * UNA SOLA REGLA PARA LOS DOS CAMINOS. La imagen puede llegar del RSS
+ * (`extractImage`) o de la etiqueta og:image de la página (`imageEnricher`), y
+ * si cada camino validara por su cuenta acabarían divergiendo: uno aceptaría lo
+ * que el otro rechaza y nadie se enteraría hasta ver una petición a un tercero
+ * en la pestaña de red de un lector.
+ *
+ * @param {string} url
+ * @param {string} dominioDelArticulo  ya sin `www.`
+ * @param {string[]} imageHosts  hosts extra declarados por el medio
+ * @returns {string|null} la URL normalizada, o null si no pasa
+ */
+export function urlDeImagenValida(url, dominioDelArticulo, imageHosts = []) {
+    if (typeof url !== 'string' || !url) return null;
+
+    let parsed;
+    try {
+        parsed = new URL(url);
+    } catch {
+        return null;
+    }
+
+    // http en una página https no carga y además degrada la conexión.
+    if (parsed.protocol !== 'https:') return null;
+
+    const host = parsed.hostname.replace(/^www\./, '');
+    const delMedio =
+        host === dominioDelArticulo ||
+        host.endsWith(`.${dominioDelArticulo}`) ||
+        dominioDelArticulo.endsWith(`.${host}`) ||
+        // Coincidencia EXACTA con lo declarado, sin comodines.
+        imageHosts.some((permitido) => host === String(permitido).replace(/^www\./, ''));
+
+    return delMedio ? parsed.toString() : null;
+}
+
 export function extractImage(item, link, imageHosts = []) {
     const candidatos = [
         ...(Array.isArray(item?.mediaContent) ? item.mediaContent : []),
@@ -365,25 +404,8 @@ export function extractImage(item, link, imageHosts = []) {
         const pareceImagen = declaraImagen || (!tipo && EXTENSIONES_DE_IMAGEN.test(url));
         if (!pareceImagen) continue;
 
-        let parsed;
-        try {
-            parsed = new URL(url);
-        } catch {
-            continue;
-        }
-
-        if (parsed.protocol !== 'https:') continue;
-
-        const host = parsed.hostname.replace(/^www\./, '');
-        const delMedio =
-            host === dominioDelArticulo ||
-            host.endsWith(`.${dominioDelArticulo}`) ||
-            dominioDelArticulo.endsWith(`.${host}`) ||
-            // Coincidencia EXACTA con lo declarado, sin comodines.
-            imageHosts.some((permitido) => host === String(permitido).replace(/^www\./, ''));
-        if (!delMedio) continue;
-
-        return parsed.toString();
+        const valida = urlDeImagenValida(url, dominioDelArticulo, imageHosts);
+        if (valida) return valida;
     }
 
     return null;
@@ -697,6 +719,13 @@ export async function runIngestionBatch() {
             ? await backfillImages(imagenesRecuperadas)
             : 0;
 
+        /**
+         * Y para los 18 feeds que no publican imagen en su RSS de ninguna forma,
+         * la etiqueta og:image de la página. Va al final del ciclo a propósito:
+         * si tarda o falla, el ciclo ya hizo su trabajo. Nunca lanza.
+         */
+        const enriquecidas = await enriquecerImagenes();
+
         const shape = measureStoryShape();
 
         // Descartes agregados por motivo. Se publican en el informe del ciclo y
@@ -762,6 +791,9 @@ export async function runIngestionBatch() {
             // atascado: un relleno que nunca sube es un feed que dejó de traer
             // imágenes y no habría otra forma de notarlo.
             (imagenesRellenadas ? ` · ${imagenesRellenadas} imágenes rellenadas` : '') +
+            (enriquecidas.mirados
+                ? ` · og:image ${enriquecidas.conImagen}/${enriquecidas.mirados}`
+                : '') +
             (persisted ? ` · ${persisted}` : '')
         );
 

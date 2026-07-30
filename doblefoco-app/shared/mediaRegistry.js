@@ -245,6 +245,9 @@ export const MEDIA_REGISTRY = [
         bias: 0.15, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Diario económico orientado al sector financiero y empresarial.',
         feed: { url: 'https://www.larepublica.co/rss', via: 'direct', category: 'Economía' },
+        // Sirve sus fotos desde img.lalr.co (LR = La República). Apareció al
+        // medir og:image: su RSS no trae imagen, su página sí.
+        imageHosts: ['img.lalr.co'],
     },
 
     // ─────────── Centro-derecha / derecha ───────────

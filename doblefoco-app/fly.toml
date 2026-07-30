@@ -47,7 +47,10 @@ primary_region = 'gru'
   # canónicas son las que ve el lector. Si aquí se colara doblefoco.fly.dev,
   # le estaríamos pidiendo a Google que indexe un servidor que devuelve JSON y
   # que lo trate como el sitio real, partiendo la autoridad entre dos dominios.
-  SITE_URL = 'https://doblefococo.vercel.app'
+  # El dominio propio desde el 2026-07-30. De aquí salen el sitemap, las URLs
+  # canónicas y el robots.txt, así que si esto se queda con el dominio viejo el
+  # sitio nuevo anuncia el anterior y el buscador indexa el que no toca.
+  SITE_URL = 'https://doblefoco.co'
 
   # El JSONL de métricas, a un directorio escribible.
   #

@@ -200,12 +200,19 @@ const Transparency = () => (
                     pieza es otro oficio.
                 </li>
                 <li>
-                    <strong>Las fichas de propiedad están a medias.</strong> Once medios —los
-                    de más peso en lo que se publica— ya tienen documentado quién los
-                    controla, con la fuente al lado. Los demás siguen vacíos, y seguirán así
-                    hasta poder citar dónde consta cada afirmación: saber quién es dueño de un
-                    medio importa tanto como su línea editorial, y por eso mismo no se afirma
-                    de oídas.
+                    <strong>Falta una ficha de propiedad.</strong> Treinta y nueve de los
+                    cuarenta medios del catálogo tienen documentado quién los controla, con la
+                    fuente al lado. Falta Colombia Informa: su razón social aparece en
+                    directorios de registro mercantil, pero no hemos podido citar una fuente
+                    consultable sobre quién la controla, así que la ficha se queda vacía en vez
+                    de verosímil. Saber quién es dueño de un medio importa tanto como su línea
+                    editorial, y por eso mismo no se afirma de oídas.
+                </li>
+                <li>
+                    <strong>La propiedad documentada no es la propiedad real.</strong> Lo que
+                    publicamos es lo que consta en fuentes consultables: quién figura como
+                    accionista. Un testaferro, un acuerdo privado entre socios o una sociedad
+                    en el exterior no aparecerían ahí, y no tenemos forma de verlos.
                 </li>
             </ul>
             <p>

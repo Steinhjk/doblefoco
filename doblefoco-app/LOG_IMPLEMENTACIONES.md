@@ -177,3 +177,114 @@ contenidos, o zona horaria mal aplicada.
   ingerir con la fecha ya saneada.
 
 - **Evidencias de Verificación:** 186 pruebas · typecheck y lint limpios.
+
+---
+
+### [2026-07-29] Fichas de propiedad y aviso de dueño compartido
+
+> Entrada escrita con retraso: los commits `faf8b0e`, `5790295` y `9e222ac` ya
+> estaban en `main` cuando se registró aquí. El LOG estuvo dos entradas por
+> detrás del repositorio, que es justo lo que no debe pasar.
+
+#### Motivo
+Quién controla el medio que uno está leyendo es lo único de todo el análisis que
+es un hecho verificable en vez de un juicio nuestro. Y sirve para algo que no se
+podía hacer antes: cuando la portada dice «5 medios cubren este hecho», el lector
+lo lee como cinco voces. Si dos responden ante el mismo dueño, la pluralidad real
+es cuatro y no había forma de saberlo.
+
+- **Archivos creados/modificados:**
+  - `shared/mediaOwnership.js`: fichas de los once medios de más peso, cada
+    afirmación con su enlace; `CONTROL_GROUPS`, que convierte al dueño en un
+    identificador comparable en vez de prosa; y `gruposCompartidos()`, que dado
+    el conjunto de medios que cubre un hecho devuelve los grupos que aportan más
+    de uno.
+  - `src/components/DuenoCompartido.jsx` y `.css` (nuevos): el aviso. Recuadro
+    neutro, nunca rojo, y dice de forma explícita que no afirmamos coordinación.
+  - `src/pages/NewsDetail.jsx`: el aviso en la página de la noticia.
+  - `src/pages/Transparency.jsx`: deja de decir que las fichas están vacías.
+
+- **Lo que apareció al ponerlo junto:** Semana y El País (Cali) son de Gilinski;
+  El Espectador y Blu Radio, de Valorem; Noticias RCN y La FM, de Ardila Lülle.
+  Y Caracol Radio (Prisa) y Noticias Caracol (Santo Domingo) **no** tienen
+  ninguna relación de propiedad, pese al nombre.
+
+- **Una afirmación se cayó al comprobarla:** la compra de El Heraldo por el Grupo
+  Gilinski se anunció con memorando en junio de 2023 y se deshizo en agosto.
+  Estaba a punto de escribirse como concentración consumada. La regla de citar
+  evitó exactamente el fallo para el que se escribió.
+
+- **Evidencias de Verificación:** 190 pruebas · `check:registry` sin errores de
+  integridad · desplegado y comprobado en producción: el aviso sale en
+  `doblefoco.fly.dev/noticia/19gtktu`, donde «2 medios cubren este hecho» y los
+  dos son de Gilinski.
+
+---
+
+### [2026-07-29] Las 29 fichas de propiedad que faltaban
+
+#### Motivo
+Con once fichas, toda cifra de concentración era un piso y no una medida: el
+aviso solo podía dispararse entre los once medios documentados. Los otros
+veintinueve eran invisibles para el cálculo, así que la ausencia de aviso no
+significaba nada.
+
+- **Archivos modificados:**
+  - `shared/mediaOwnership.js`: 28 fichas nuevas —39 de los 40 medios del
+    catálogo— y 23 grupos de control nuevos. `sectores` poblado donde consta en
+    las fuentes: Gilinski (banca, alimentos), Valorem (retail, logística,
+    transporte, entretenimiento, industria, inmobiliario, turismo), Prisa
+    (educación editorial).
+  - `shared/mediaOwnership.test.js`: 6 pruebas nuevas. Una de las viejas se
+    apoyaba en que Vanguardia, La Patria y La Opinión NO estuvieran
+    documentadas; ahora lo están y el aserto se había vuelto vacío, así que se
+    reescribió con lo que de verdad comprueba.
+  - `src/pages/Transparency.jsx`: el conteo, y un límite nuevo declarado —lo que
+    publicamos es quién *figura* como accionista; un testaferro o una sociedad en
+    el exterior no aparecerían ahí—.
+
+- **Lo que apareció al completarlo. Tres tríos, no tres parejas:**
+  · Ardila Lülle controla **tres**: Noticias RCN, La FM y **La República**.
+  · Prisa controla **tres**: Caracol Radio, W Radio y **El País (España)**.
+  · Valorem controla **tres**: El Espectador, Blu Radio y **Noticias Caracol**.
+  · Sarmiento Angulo controla **dos**: El Tiempo y **Portafolio** —un diario
+    económico cuyo dueño es el mayor banquero del país—.
+  Once medios que el lector ve como voces distintas son cinco dueños.
+
+- **Segunda colisión de nombre del catálogo:** El País de Cali es de Gilinski y
+  El País de España es de Prisa. Sin relación entre sí, y se dispararía justo en
+  una noticia internacional. Tiene su propia prueba, como los dos Caracol.
+
+- **Una afirmación se cayó al comprobarla, otra vez.** Una búsqueda devolvía que
+  Galvis Ramírez era dueña de El Universal de Cartagena, lo que habría añadido
+  una pareja. Al ir a las fuentes su participación es del **50 %**, junto a la
+  familia Araujo: coposesión, no control. Como el aviso afirma «pertenecen a»,
+  el dato quedó en la ficha —donde el lector lo ve con su matiz— y **fuera** del
+  cálculo automático. Documentado en el archivo y con prueba propia.
+
+- **Lo que sigue vacío:** `colombia-informa`, el único. Su razón social aparece
+  en directorios de registro mercantil, pero no se localizó fuente consultable
+  sobre quién la controla. Vacío y visible antes que verosímil. Lo que hace falta
+  es el certificado del RUES o sus estatutos.
+
+- **Medición contra la base real** (no contra el build):
+```
+Historias totales 3 644 · multifuente 298 · fichas documentadas 39 de 40
+Con dueño compartido ANTES (11 fichas) ...... 14  (4,7 %)
+Con dueño compartido AHORA (39 fichas) ...... 21  (7,0 %)   x1,5
+Aportan aviso: Gilinski 13 · Sarmiento/Aval 6 · Valorem 3
+Historias donde TODA la cobertura es de un solo dueño: 8
+```
+  Ardila Lülle y Prisa aportan 0 en esta ventana: los tríos existen en la
+  propiedad, pero esos medios no coincidieron en un mismo hecho en las 72 h
+  medidas. El aviso está listo para cuando ocurra.
+
+- **Evidencias de Verificación** (servidor levantado contra la base real):
+```
+/noticia/1o92g6h  301 -> canónica · 200 · «2 medios, un solo dueño»
+                  Portafolio y El Tiempo pertenecen a Sarmiento Angulo — Aval
+/noticia/qkxl88   301 -> canónica · 200 · «2 medios, un solo dueño» (Valorem)
+/noticia/17mqcbj  301 -> canónica · 200 · «9 medios, 7 dueños distintos»
+                  dos grupos en una sola noticia, renderizados en servidor
+204 pruebas · typecheck, lint y build limpios · check:registry sin errores
+```

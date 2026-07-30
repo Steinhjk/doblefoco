@@ -35,16 +35,54 @@ describe('gruposCompartidos', () => {
     });
 
     it('ignora los medios sin propiedad documentada', () => {
+        // `colombia-informa` es el único que sigue con la ficha vacía. Sin dueño
+        // documentado no puede entrar en el cálculo, ni para bien ni para mal.
+        expect(gruposCompartidos(['colombia-informa', 'semana'])).toEqual([]);
+    });
+
+    it('los tres diarios regionales tienen cada uno su dueño y no se agrupan', () => {
+        // Documentados los tres, y de tres dueños distintos: Galvis, Restrepo y
+        // Catalítico. Documentar no es concentrar.
         expect(gruposCompartidos(['la-patria', 'vanguardia', 'la-opinion'])).toEqual([]);
+    });
+
+    it('NO agrupa El País de Cali con El País de España', () => {
+        // Mismo nombre, dueños sin relación: Gilinski uno, Prisa el otro. Es la
+        // segunda trampa de nombre del catálogo, después de los dos Caracol, y
+        // se dispararía justo en una noticia internacional.
+        expect(gruposCompartidos(['el-pais-cali', 'el-pais-es'])).toEqual([]);
+    });
+
+    it('NO cuenta El Universal con Vanguardia: Galvis tiene el 50 %, no el control', () => {
+        // Coposesión al 50 % con la familia Araujo. El aviso afirma «pertenecen
+        // a», así que este caso se queda en la ficha y fuera del cálculo.
+        expect(gruposCompartidos(['vanguardia', 'el-universal'])).toEqual([]);
     });
 
     it('devuelve varios grupos, del más concentrado al menos', () => {
         const grupos = gruposCompartidos([
-            'el-espectador', 'blu-radio',      // Valorem
-            'noticias-rcn', 'la-fm',           // Ardila Lülle
+            'el-espectador', 'blu-radio', 'noticias-caracol',  // Valorem: tres
+            'noticias-rcn', 'la-fm',                           // Ardila Lülle: dos
             'el-tiempo',
         ]);
-        expect(grupos.map((g) => g.groupId).sort()).toEqual(['ardila-lulle', 'valorem']);
+        expect(grupos.map((g) => g.groupId)).toEqual(['valorem', 'ardila-lulle']);
+        expect(grupos[0].medios).toHaveLength(3);
+    });
+
+    it('detecta los tres tríos que aparecieron al completar las fichas', () => {
+        // Son la razón de existir del archivo: once medios que el lector ve como
+        // voces distintas responden ante cinco dueños.
+        const trios = [
+            { groupId: 'ardila-lulle', medios: ['noticias-rcn', 'la-fm', 'la-republica'] },
+            { groupId: 'prisa', medios: ['caracol-radio', 'w-radio', 'el-pais-es'] },
+            { groupId: 'valorem', medios: ['el-espectador', 'blu-radio', 'noticias-caracol'] },
+        ];
+        for (const { groupId, medios } of trios) {
+            const grupos = gruposCompartidos(medios);
+            expect(grupos, `${groupId}`).toHaveLength(1);
+            expect(grupos[0].groupId).toBe(groupId);
+            expect(grupos[0].medios).toHaveLength(3);
+        }
     });
 
     it('aguanta entradas vacías o inválidas', () => {
@@ -71,5 +109,15 @@ describe('contrato de las fichas', () => {
                 expect(hasDocumentedOwnership(id), `${id}`).toBe(true);
             }
         }
+    });
+
+    it('el único medio sin documentar es colombia-informa', () => {
+        // La cabecera del archivo y la página de transparencia le dicen al lector
+        // cuántas fichas faltan. Si alguien añade un medio al catálogo sin ficha,
+        // esas dos afirmaciones pasan a ser falsas y nadie se enteraría: esta
+        // prueba es la que se entera.
+        const sinDocumentar = Object.keys(OWNERSHIP_PROFILES)
+            .filter((id) => !hasDocumentedOwnership(id));
+        expect(sinDocumentar).toEqual(['colombia-informa']);
     });
 });

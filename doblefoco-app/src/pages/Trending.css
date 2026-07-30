@@ -111,7 +111,11 @@
 .leaderboard-card:hover {
     transform: translateY(-2px) translateX(3px);
     border-color: var(--accent);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.leaderboard-card.top-tier {
+    border-left: 4px solid var(--accent);
 }
 
 .rank-badge-col {
@@ -120,17 +124,35 @@
 
 .rank-number {
     font-family: var(--font-heading);
-    font-size: 1.1rem;
-    font-weight: 800;
+    font-size: 1.4rem;
+    font-weight: 900;
     color: var(--text-muted);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     background: var(--bg-subtle);
     border: 1px solid var(--border-color);
+}
+
+.rank-number.rank-1 {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.rank-number.rank-2 {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.15);
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.rank-number.rank-3 {
+    color: #d97706;
+    background: rgba(217, 119, 6, 0.15);
+    border-color: rgba(217, 119, 6, 0.4);
 }
 
 .leaderboard-main {

@@ -45,13 +45,14 @@ const Trending = () => {
 
                     <div className="trending-leaderboard">
                         {topicos.map((story, index) => {
+                            const isTop3 = index < 3;
                             const blindspotLabel = story.coverage?.blindspot?.label;
 
                             return (
                                 <AnimateIn key={story.id} delay={Math.min(index + 1, 4)}>
-                                    <Link to={rutaDeHistoria(story)} className="leaderboard-card">
+                                    <Link to={rutaDeHistoria(story)} className={`leaderboard-card ${isTop3 ? 'top-tier' : ''}`}>
                                         <div className="rank-badge-col">
-                                            <span className="rank-number">
+                                            <span className={`rank-number rank-${index + 1}`}>
                                                 #{index + 1}
                                             </span>
                                         </div>

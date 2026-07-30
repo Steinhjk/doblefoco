@@ -61,19 +61,20 @@
 }
 
 .navbar-search {
-    flex: 1;
-    max-width: 440px;
-    margin: 0 32px;
+    flex: 1 1 360px;
+    max-width: 460px;
+    margin: 0 16px 0 28px;
     position: relative;
 }
 
 .navbar-search input {
     width: 100%;
-    padding: 10px 18px;
+    height: 40px;
+    padding: 8px 40px 8px 16px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 20px;
     font-family: var(--font-main);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     background-color: var(--bg-subtle);
     color: var(--text-main);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -83,6 +84,7 @@
     outline: none;
     border-color: var(--accent);
     background-color: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
 }
 
 .search-submit-btn {

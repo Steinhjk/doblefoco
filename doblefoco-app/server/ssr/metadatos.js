@@ -96,6 +96,30 @@ export function describirCobertura(story) {
 }
 
 /**
+ * SOLO SE PIDE INDEXAR LO QUE COMPARA. Medido el 2026-07-29 sobre las 3 463
+ * historias de la ventana: 3 178 —el 91,8 %— las cubre un solo medio, y su
+ * página es un titular más un enlace. Eso es exactamente lo que las directrices
+ * de los buscadores llaman contenido agregado sin valor añadido, y no se
+ * penaliza página a página sino de sitio entero: 3 178 páginas escasas
+ * arrastrarían a las 285 que sí aportan algo que no existe en ningún otro sitio.
+ *
+ * `follow`, no `none`: los enlaces de la página se siguen recorriendo, así que
+ * una historia que empieza con un solo medio no queda aislada del rastreo. Y la
+ * condición se reevalúa en cada renderizado, de modo que en cuanto un segundo
+ * medio cubre el hecho la página pasa a ser indexable sola.
+ *
+ * NO se oculta nada a quien visita: la página se sirve igual, con su contenido
+ * y sus enlaces. Lo único que cambia es que dejamos de pedirle a un buscador que
+ * la valore como obra propia.
+ */
+export function esIndexable(story) {
+    // Se cuenta con el mismo reparto que describe la página, no con sources.length:
+    // la cobertura es la única definición del recuento (F1-04) y contar por otro
+    // lado abriría una segunda, que es como empiezan las cifras que se contradicen.
+    return repartoDeCobertura(story).total >= 2;
+}
+
+/**
  * Etiquetas de <head> para una historia.
  *
  * @param {any} story
@@ -145,6 +169,7 @@ export function construirMetadatos(story, siteUrl) {
     return [
         `<title>${t}</title>`,
         `<meta name="description" content="${d}" />`,
+        ...(esIndexable(story) ? [] : ['<meta name="robots" content="noindex, follow" />']),
         `<link rel="canonical" href="${c}" />`,
         `<meta property="og:type" content="article" />`,
         `<meta property="og:title" content="${t}" />`,

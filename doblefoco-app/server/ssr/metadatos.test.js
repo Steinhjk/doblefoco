@@ -4,6 +4,7 @@ import {
     construirMetadatos,
     describirCobertura,
     escaparHtml,
+    esIndexable,
     limpiarMetadatosGenericos,
     montarPagina,
     serializarParaScript,
@@ -42,7 +43,39 @@ describe('escaparHtml', () => {
     });
 });
 
+describe('esIndexable', () => {
+    it('una historia de un solo medio NO se pide indexar', () => {
+        // Su página es un titular y un enlace: contenido agregado sin valor
+        // añadido. Eran 3 178 de 3 463 el 2026-07-29.
+        expect(esIndexable(historia({ coverage: { left: 0, center: 1, right: 0 } }))).toBe(false);
+    });
+
+    it('con dos medios ya hay comparación, y sí se indexa', () => {
+        expect(esIndexable(historia({ coverage: { left: 1, center: 1, right: 0 } }))).toBe(true);
+    });
+
+    it('sin cobertura conocida, tampoco', () => {
+        expect(esIndexable(historia({ coverage: undefined }))).toBe(false);
+        expect(esIndexable(/** @type {any} */ (null))).toBe(false);
+    });
+});
+
 describe('construirMetadatos', () => {
+    it('marca noindex la historia de un solo medio, y solo esa', () => {
+        const sola = construirMetadatos(
+            historia({ coverage: { left: 0, center: 1, right: 0 } }),
+            SITIO
+        );
+        expect(sola).toContain('<meta name="robots" content="noindex, follow" />');
+        // «follow» importa: los enlaces se siguen recorriendo, así que la
+        // historia no queda aislada del rastreo si mañana la cubre otro medio.
+        expect(sola).not.toContain('content="noindex, nofollow"');
+
+        // La normal no lleva la etiqueta: sin esto, un fallo del umbral dejaría
+        // el sitio entero fuera del índice sin que nada avisara.
+        expect(construirMetadatos(historia(), SITIO)).not.toContain('noindex');
+    });
+
     it('NO deja escapar un titular con comillas fuera de su atributo', () => {
         // Los titulares vienen de 34 medios ajenos. Una comilla doble es
         // corriente en español; sin escapar, parte el atributo.

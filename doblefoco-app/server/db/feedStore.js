@@ -294,7 +294,15 @@ export async function readSitemapEntries({ limit = 50_000 } = {}) {
           FROM stories s
           LEFT JOIN moderation m ON m.story_id = s.id
          WHERE (m.state IS NULL OR m.state <> 'rechazada')
-           AND s.source_count > 0
+           -- DOS MEDIOS COMO MÍNIMO, el mismo umbral que decide el noindex de
+           -- la página (ver esIndexable en server/ssr/metadatos.js). Un sitemap
+           -- que anuncia lo que la propia página pide no indexar se contradice,
+           -- y el buscador resuelve la contradicción a su manera.
+           --
+           -- Medido el 2026-07-29: reduce el sitemap de 3 413 URLs a ~285. No es
+           -- una pérdida; es dejar de reclamar como obra propia 3 178 páginas que
+           -- son un titular y un enlace al medio que sí lo escribió.
+           AND s.source_count >= 2
          ORDER BY lastmod DESC NULLS LAST
          LIMIT $1
         `,

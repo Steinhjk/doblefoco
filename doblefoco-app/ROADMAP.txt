@@ -276,6 +276,59 @@
   el número de puntos ciegos está subestimado y la respuesta de F1-01 no será
   "más ventana" sino F1-05. Hay que medirlo, no suponerlo.
 
+-------------------------------------------------------------------------------
+ MEDIDO EL 2026-07-29 — EL EMBUDO DEL PRODUCTO, Y NO ERA EL AGRUPAMIENTO
+-------------------------------------------------------------------------------
+ Primera medición con la ventana de 72 h llena: 4 046 artículos, 3 463 historias.
+
+     con 1 solo medio ......... 3 178   91,8 %   no comparan nada
+     con 2 o más .................285    8,2 %   hay algo que comparar
+     con 3 o más ..................87    2,5 %
+     cruzan izquierda y derecha ...15    0,4 %   LA PROMESA DEL PRODUCTO
+     con 6+ medios (umbral) .......13    0,4 %
+     punto ciego declarado ........12    0,3 %
+     máximo de medios en una historia: 11
+
+ SE MIDIÓ EL SOSPECHOSO Y NO ERA ÉL. `npm run eval:clustering` sobre los 72
+ pares etiquetados, con el IDF calculado sobre los 4 046 titulares reales:
+ Jaccard a 0,34 —lo que corre hoy— comete 2 fusiones incorrectas y 19
+ separaciones incorrectas de 53 pares del mismo hecho. Exhaustividad 64,2 %.
+ Es decir: SÍ parte hechos, uno de cada tres. Pero bajar el umbral a 0,25
+ recuperaría hasta el 86,8 % a cambio de pasar de 2 a 10 fusiones incorrectas,
+ y una fusión incorrecta INVENTA cobertura, que es lo que el principio rector
+ prohíbe. Ningún umbral de Jaccard ni de TF-IDF mejora sin empeorar eso, así que
+ el criterio de F1-05 («no aumentar las fusiones») se mantiene y no se cambia
+ nada. Y aunque se recuperara toda la exhaustividad perdida, el 8,2 % subiría a
+ ~13 %: el agrupamiento explica una parte del agujero, no el agujero.
+
+ LO QUE SÍ LO EXPLICA, y son dos cosas distintas:
+
+ 1. DILUCIÓN POR VOLUMEN. Infobae Colombia es el 23,5 % del corpus entero (955
+    de 4 046 artículos) y produce 854 historias de un solo medio. Muestra al
+    azar de lo que publica bajo bandera colombiana: farándula peruana sobre
+    Keiko Fujimori, migrantes en Ceuta, un túnel de Hezbolá. Ningún medio
+    colombiano va a cubrir eso jamás, así que cada pieza suya es una historia
+    huérfana garantizada. No es un fallo del motor: es un agregador dentro de
+    nuestro agregador. Semana añade otro 10,7 %.
+
+ 2. EL TECHO REAL DEL ECOSISTEMA. Incluso en Política pura el multifuente es del
+    8,4 %, y de los 31 medios buena parte son regionales (Vanguardia, El
+    Heraldo, La Opinión, El País Cali) o cable internacional. Los que compiten
+    de verdad por el hecho nacional del día son una decena. 13 historias con 6+
+    medios en 72 h son ~4 al día, y es posible que ~4 SEA el número honesto de
+    hechos verdaderamente nacionales en un día. Eso no es un fallo que arreglar;
+    es una magnitud que el producto tiene que reflejar sin fingir otra cosa.
+
+ CONSECUENCIA INMEDIATA, YA APLICADA: solo se pide indexar lo que compara. El
+ sitemap exige source_count >= 2 y la página de un solo medio emite
+ `noindex, follow`. Pasa de 3 413 URLs anunciadas a 286. El motivo está en
+ server/ssr/metadatos.js (esIndexable): 3 178 páginas que son un titular y un
+ enlace son contenido agregado sin valor añadido, y eso no se penaliza página a
+ página sino de sitio entero — habrían arrastrado a las 285 que sí aportan algo
+ que no existe en ningún otro sitio. El día anterior se les había dado
+ renderizado en servidor, URL canónica y sitio en el sitemap: se construyó el
+ escaparate para el inventario que no había que exhibir.
+
 ===============================================================================
  FASE 0 — DETENER LO PELIGROSO                                    [x] COMPLETADA
 ===============================================================================

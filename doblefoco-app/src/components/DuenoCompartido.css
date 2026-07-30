@@ -1,0 +1,42 @@
+/* ── Dueño compartido entre los medios que cubren el hecho ──────────────────
+   Deliberadamente NEUTRO en color: no es una alerta de sesgo ni una acusación,
+   es una aclaración sobre quién manda en cada marca. Pintarlo de rojo lo leería
+   como denuncia, que es justo lo que el texto se cuida de no afirmar.        */
+.detail-owner-alert {
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--text-muted);
+    background: var(--bg-subtle);
+}
+
+.owner-alert-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+}
+
+.owner-alert-line {
+    margin: 0 0 4px;
+    color: var(--text-main);
+}
+
+.owner-alert-note {
+    margin: 8px 0 0;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.owner-alert-note a {
+    color: inherit;
+    text-decoration: underline;
+}

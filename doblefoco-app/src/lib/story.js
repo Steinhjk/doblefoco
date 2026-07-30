@@ -43,6 +43,10 @@ function resolveSources(rawSources) {
         }
 
         return {
+            // El id del catálogo, además del nombre: es lo que permite mirar la
+            // ficha de propiedad. Sin él, saber quién es el dueño exigiría
+            // resolver otra vez por nombre en cada sitio que lo necesite.
+            id: media.id,
             name: media.name,
             bias: media.bias,
             factuality: media.factuality,

@@ -102,6 +102,54 @@ const pending = (ownerType) => ({
 /** Fecha de la primera tanda documentada. */
 const VERIFICADO = '2026-07-29';
 
+/**
+ * GRUPOS DE CONTROL — el dueño como dato, no como prosa.
+ *
+ * Las fichas describen en texto quién controla cada medio, y eso sirve para
+ * leerlo pero no para calcularlo. Para poder avisar «dos de los medios que
+ * cubren esto responden ante el mismo dueño» hace falta que el dueño sea un
+ * identificador comparable. Esto es ese identificador.
+ *
+ * `sectores` son los otros negocios del grupo, y están AQUÍ y no en el texto
+ * porque son la base de lo siguiente: señalar cuándo un medio informa sobre el
+ * sector del que vive su dueño. Solo se listan los que constan en las fuentes
+ * de la ficha; los que no se han documentado quedan vacíos en vez de supuestos.
+ */
+export const CONTROL_GROUPS = {
+    gilinski: {
+        label: 'Grupo Gilinski',
+        sectores: [],
+    },
+    valorem: {
+        label: 'Valorem — familia Santo Domingo',
+        sectores: [],
+    },
+    'ardila-lulle': {
+        label: 'Organización Ardila Lülle',
+        sectores: ['bebidas', 'azúcar', 'textiles', 'deporte'],
+    },
+    prisa: {
+        label: 'Grupo Prisa',
+        sectores: [],
+    },
+    'sarmiento-aval': {
+        label: 'Luis Carlos Sarmiento Angulo — Grupo Aval',
+        sectores: ['banca', 'construcción', 'infraestructura'],
+    },
+    'infobae-hadad': {
+        label: 'Daniel Hadad — Grupo Infobae',
+        sectores: ['radio', 'televisión'],
+    },
+    'el-colombiano-accionistas': {
+        label: 'Familia Gómez Martínez y empresarios antioqueños',
+        sectores: [],
+    },
+    'el-heraldo-familias': {
+        label: 'Familias Manotas, Pumarejo y Fernández',
+        sectores: [],
+    },
+};
+
 export const OWNERSHIP_PROFILES = {
     // ── Colombia ────────────────────────────────────────────────────────────
     'colombia-informa': pending('independiente'),
@@ -113,6 +161,7 @@ export const OWNERSHIP_PROFILES = {
 
     'el-espectador': {
         ownerType: 'conglomerado',
+        controlGroup: 'valorem',
         holdings: [
             'Lo publica Comunican S.A., del holding Valorem, controlado por la familia Santo Domingo.',
             'Valorem está también detrás de Blu Radio, que aparece igualmente en este catálogo.',
@@ -129,6 +178,7 @@ export const OWNERSHIP_PROFILES = {
 
     'el-tiempo': {
         ownerType: 'conglomerado',
+        controlGroup: 'sarmiento-aval',
         holdings: [
             'Luis Carlos Sarmiento Angulo compró Casa Editorial El Tiempo en 2012.',
             'Es el mayor accionista y presidente del Grupo Aval, el mayor conglomerado financiero de Colombia, con intereses en banca, construcción e infraestructura.',
@@ -145,6 +195,7 @@ export const OWNERSHIP_PROFILES = {
 
     'caracol-radio': {
         ownerType: 'internacional',
+        controlGroup: 'prisa',
         holdings: [
             'Pertenece al Grupo Prisa, de España, controlado desde 2003 por el banquero de inversión Joseph Oughourlian. El mismo grupo es dueño de W Radio.',
             'NO tiene relación de propiedad con Noticias Caracol, que es del grupo Santo Domingo. Comparten nombre y no dueño.',
@@ -161,6 +212,7 @@ export const OWNERSHIP_PROFILES = {
 
     'infobae-co': {
         ownerType: 'internacional',
+        controlGroup: 'infobae-hadad',
         holdings: [
             'Medio argentino fundado en 2002 por Daniel Hadad, que sigue siendo su dueño.',
             'Hadad fundó Radio 10 en Buenos Aires y adquirió Canal 9 en 2002.',
@@ -179,6 +231,7 @@ export const OWNERSHIP_PROFILES = {
 
     'el-heraldo': {
         ownerType: 'familiar',
+        controlGroup: 'el-heraldo-familias',
         holdings: [
             'Controlado por las familias Manotas, Pumarejo y Fernández, con un tercio de las acciones cada una.',
             'En junio de 2023 el Grupo Semana, de la familia Gilinski, firmó un memorando para comprar el 100 %. La operación se cayó en agosto de ese año y el diario siguió con sus dueños.',
@@ -195,6 +248,7 @@ export const OWNERSHIP_PROFILES = {
 
     'blu-radio': {
         ownerType: 'conglomerado',
+        controlGroup: 'valorem',
         holdings: [
             'Pertenece a Valorem, el holding de la familia Santo Domingo.',
             'El mismo holding está detrás de El Espectador, que aparece igualmente en este catálogo.',
@@ -209,6 +263,7 @@ export const OWNERSHIP_PROFILES = {
 
     'noticias-rcn': {
         ownerType: 'conglomerado',
+        controlGroup: 'ardila-lulle',
         holdings: [
             'Pertenece a la Organización Ardila Lülle, con intereses en bebidas (Postobón), azúcar, textiles y deporte.',
             'La misma organización controla RCN Radio y La FM, que aparece igualmente en este catálogo.',
@@ -227,6 +282,7 @@ export const OWNERSHIP_PROFILES = {
 
     'el-pais-cali': {
         ownerType: 'conglomerado',
+        controlGroup: 'gilinski',
         holdings: [
             'Lo controla el Grupo Semana, de Gabriel Gilinski, desde enero de 2023. La familia Lloreda salió tras más de ochenta años al frente del diario.',
             'Comparte propietario con Semana: dos medios de este catálogo responden ante el mismo dueño.',
@@ -243,6 +299,7 @@ export const OWNERSHIP_PROFILES = {
 
     'la-fm': {
         ownerType: 'conglomerado',
+        controlGroup: 'ardila-lulle',
         holdings: [
             'Forma parte de RCN Radio, de la Organización Ardila Lülle, que cubre más del 80 % del territorio nacional con más de 160 emisoras.',
             'La misma organización controla Noticias RCN, que aparece igualmente en este catálogo.',
@@ -257,6 +314,7 @@ export const OWNERSHIP_PROFILES = {
 
     'el-colombiano': {
         ownerType: 'familiar',
+        controlGroup: 'el-colombiano-accionistas',
         holdings: [
             'La familia Gómez Martínez quedó como única dueña en 2019, al comprar a la familia Hernández la mitad que tenía desde 1930.',
             'En febrero de 2022 un grupo de empresarios antioqueños adquirió el 51 % de las acciones. Sus protagonistas describieron la operación como una respuesta al interés del Grupo Gilinski por el diario.',
@@ -271,6 +329,7 @@ export const OWNERSHIP_PROFILES = {
 
     'semana': {
         ownerType: 'conglomerado',
+        controlGroup: 'gilinski',
         holdings: [
             'El Grupo Gilinski compró el 50 % en 2019 y ejerció la opción sobre el resto en noviembre de 2020: desde entonces controla el 100 %.',
             'El mismo grupo controla El País (Cali) desde enero de 2023, así que dos medios de este catálogo responden ante el mismo dueño.',
@@ -316,4 +375,46 @@ export function hasDocumentedOwnership(mediaId) {
     const profile = getOwnership(mediaId);
     if (!profile) return false;
     return profile.sources.length > 0 && (profile.holdings.length > 0 || profile.notes.length > 0);
+}
+
+/**
+ * ¿Cuántas de estas voces son en realidad la misma?
+ *
+ * Dado el conjunto de medios que cubre un hecho, devuelve los grupos de control
+ * que aportan MÁS DE UNO. Solo esos: un grupo con un único medio en la lista no
+ * es un dato sobre la cobertura, es una ficha de propiedad, y ya está en el mapa
+ * de medios.
+ *
+ * POR QUÉ IMPORTA, y es el motivo de que esto exista: la cifra que el producto
+ * pone delante es «5 medios cubren este hecho», y el lector la lee como cinco
+ * voces. Si dos responden ante el mismo dueño, la pluralidad real es de cuatro.
+ * No se afirma que se hayan coordinado —eso no consta y no se publica—; se
+ * expone quién manda en cada una, que es un hecho registral, y el lector saca
+ * su conclusión con el dato delante en vez de sin él.
+ *
+ * @param {string[]} mediaIds
+ * @returns {Array<{groupId: string, label: string, sectores: string[], medios: string[]}>}
+ */
+export function gruposCompartidos(mediaIds) {
+    const porGrupo = new Map();
+
+    for (const id of Array.isArray(mediaIds) ? mediaIds : []) {
+        const grupo = getOwnership(id)?.controlGroup;
+        if (!grupo || !CONTROL_GROUPS[grupo]) continue;
+
+        // Un mismo medio repetido en la lista no cuenta dos veces: haría
+        // aparecer una concentración inventada a partir de un duplicado.
+        const yaVistos = porGrupo.get(grupo) ?? [];
+        if (!yaVistos.includes(id)) porGrupo.set(grupo, [...yaVistos, id]);
+    }
+
+    return [...porGrupo.entries()]
+        .filter(([, medios]) => medios.length > 1)
+        .map(([groupId, medios]) => ({
+            groupId,
+            label: CONTROL_GROUPS[groupId].label,
+            sectores: CONTROL_GROUPS[groupId].sectores,
+            medios,
+        }))
+        .sort((a, b) => b.medios.length - a.medios.length);
 }

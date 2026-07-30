@@ -2681,12 +2681,15 @@
      BORRARLO, Google lo revisa periódicamente y sin él se pierde la
      verificación—.
 
-   · ⚠️ ROTAR LA CONTRASEÑA DE SUPABASE. Esta es la única de las tres que sigue
-     PENDIENTE, y su disparador ya se cumplió: la condición era «al publicar», y
-     el sitio está publicado. Toca tres sitios — .env.local, el secreto
-     DATABASE_URL del repositorio en GitHub y `flyctl secrets set` en Fly. El
-     orden importa: si se rota en Supabase sin actualizar Fly, el motor deja de
-     ingerir y la serie de F1-01 se queda con un agujero irreconstruible.
+   · CONTRASEÑA DE SUPABASE ROTADA el mismo 2026-07-30, en cuanto se cumplió su
+     condición. Actualizada en los tres sitios —.env.local, el secreto de Fly y
+     el del repositorio en GitHub— y verificada en los cuatro: conexión local,
+     /api/feed en Fly, y los dos flujos de Actions lanzados a mano, porque son
+     los únicos que usan el secreto del repositorio y un fallo ahí no se vería
+     hasta el siguiente cron.
+     LA CREDENCIAL NO PASÓ POR EL CHAT: Jose la puso en .env.local y desde ahí se
+     leyó a una variable de shell para propagarla. Se filtró la primera vez
+     justamente por quedar escrita en el registro de una sesión.
 
  LO QUE SIGUE SIN HACERSE TODAVÍA:
    · NO poner F3-05 (boletín real) en marcha sin política de privacidad

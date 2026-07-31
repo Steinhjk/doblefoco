@@ -1,0 +1,60 @@
+/**
+ * Aviso sobre el desequilibrio del espectro.
+ *
+ * Va a todo el ancho y antes del feed porque explica cómo hay que leer TODO lo
+ * que viene debajo, no una noticia concreta. Si compartiera columna con las
+ * tarjetas se leería como una más.
+ *
+ * Deliberadamente NO usa colores de alarma. No es un error ni una advertencia
+ * de peligro: es contexto editorial, y pintarlo de rojo lo convertiría en algo
+ * que se aprende a ignorar.
+ */
+.aviso-desequilibrio {
+    max-width: 1240px;
+    margin: 0 auto 28px;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    /* El único acento: un filo lateral. Suficiente para que no se lea como una
+       tarjeta de noticia, sin gritar. */
+    border-left: 4px solid var(--text-main);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.aviso-desequilibrio h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin: 0 0 10px;
+    color: var(--text-main);
+}
+
+.aviso-desequilibrio p {
+    margin: 0 0 10px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.aviso-desequilibrio strong {
+    color: var(--text-main);
+}
+
+.aviso-desequilibrio-cierre {
+    margin-bottom: 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    font-style: italic;
+}
+
+@media (max-width: 900px) {
+    .aviso-desequilibrio {
+        margin-left: 24px;
+        margin-right: 24px;
+        padding: 16px 18px;
+    }
+}

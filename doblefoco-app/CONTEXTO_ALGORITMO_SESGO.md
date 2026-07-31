@@ -190,3 +190,112 @@ es justo el juicio que este proyecto no debe imponer.**
 
 Mediciones repetibles: `npm run analyze:cocoverage`, `npm run report:ingest`,
 `npm run check:registry`, `npm run check:feeds`.
+
+---
+
+## 9. Decisiones editoriales de Jose que condicionan el diseño
+
+No son preferencias sueltas: son restricciones. Un método que las contradiga se
+va a rechazar aunque funcione bien, así que conviene conocerlas antes de diseñar.
+
+**La clasificación NO puede ser movible.** Dicho por él el 2026-07-31, con dos
+argumentos propios: *«un medio abiertamente por su posesión de derecha podría
+parecer de izquierda»* en una ventana corta, y *«existen noticias sin carga de
+sesgo ideológica»*. Un valor que se mueve solo confunde el ruido de una semana
+con un cambio de línea.
+
+**El propósito NO es el falso balance.** En Colombia el ecosistema no está
+repartido, y el producto no debe fingir simetría donde no la hay. Su valor está
+en lo contrario: que el desequilibrio se vea, y que el lector entienda el grado
+de manipulación al que está sometido. Un clasificador que «equilibre» los bloques
+para que queden bonitos estaría trabajando contra el objetivo.
+
+**No se silencia a ningún medio.** Ante un feed pobre se busca otra vía, no se
+retira el medio del catálogo. Se aplicó reactivando W Radio y RTVC aunque aporten
+cero artículos.
+
+**Pero sí hay un criterio de INCLUSIÓN, y es relevante aquí.** Las2Orillas quedó
+fuera porque es un recolector de columnas de opinión: no tiene una línea
+editorial propia que clasificar, y asignarle un valor describiría a quien más
+publicó esa semana, no al medio. **La unidad que el producto clasifica es una
+sala de redacción con línea propia.** Cualquier método debería preguntarse si esa
+unidad existe en cada caso.
+
+**«Centro» se retiró como categoría.** La banda media se llama **«Sin línea
+marcada»**. Jose no da por sentado que exista un centro político, y llamarlo así
+le atribuye una posición que nadie ha demostrado.
+
+Y lo que más importa para un clasificador: **también se descartaron «Objetivo»,
+«Factible» y «Sin sesgo»**, por el motivo CONTRARIO. Afirman una cualidad que la
+medición no puede sostener. Un valor cerca de cero significa solo que no se
+detectó inclinación consistente, y eso admite lecturas muy distintas —cobertura
+equilibrada, señal insuficiente, sesgos que se cancelan entre temas, o
+alineamiento con el poder institucional que no cabe en el eje izquierda-derecha—.
+**Si el algoritmo produce una salida cerca de cero, no puede llamarla neutral.**
+
+**Jose sostiene que la clasificación actual se queda corta en la derecha.**
+El Colombiano (+0,35) y Semana (+0,45) deberían salir más a la derecha, y que la
+banda «Derecha» (≥ +0,6) esté vacía con cero medios lo considera un defecto del
+instrumento, no un retrato del país. Es una hipótesis que un método nuevo debería
+poder confirmar o refutar.
+
+**Umbral de punto ciego bajado de 6 a 4 medios** (2026-07-31), con una condición
+que él mismo formuló como «2 de izquierda y 2 de derecha»: el lado que SÍ cubre
+debe aportar al menos dos medios. Con uno solo, lo que hay no es «un lado omite
+esto» sino «un periódico decidió cubrirlo».
+
+**Puntos de énfasis: pedidos, implementados y medidos como casi redundantes.**
+La idea era mostrar «no solo ausencia sino exceso o insistencia». La mitad por
+historia está hecha, y la medición dice que con 4 a 6 medios «un lado concentra»
+y «el otro falta» son casi la misma frase (con umbral 0,60: 25 historias con
+énfasis, **1 sin punto ciego**). **La mitad que importa es temporal** —un bloque
+que vuelve una y otra vez sobre un tema— y no se puede construir con
+`articles.category` por la trampa nº 1 de la sección 6.
+
+---
+
+## 10. Leer el artículo completo: lo técnico, lo legal y el muro de pago
+
+Preguntado por Jose el 2026-07-31. Respuesta corta: **lo técnico es lo fácil, lo
+legal se resuelve con una decisión de diseño, y el muro de pago es lo que
+realmente decide.**
+
+**Técnico — la parte menor.** Ya se pide la cabecera de cada artículo para el
+`og:image`: se leen ~47 kB y se corta en `</head>` (ver
+`server/services/imageEnricher.js`, que ya trae los límites de concurrencia,
+pausa por dominio y tope por ciclo). Leer el cuerpo añade peso y el problema
+conocido de extraer el artículo de entre menús y publicidad. Hay algoritmos
+estándar.
+
+**Derechos de autor — la distinción que importa.** Guardar el texto completo es
+reproducción; analizarlo y descartarlo, no. Hoy se guardan titular, entradilla y
+enlace, que es la postura estándar de un agregador con atribución. **La
+recomendación es no almacenar NUNCA el cuerpo**: descargar, extraer rasgos,
+descartar. Lo que queda en la base son números, no obra ajena. Esto necesita
+confirmación de alguien con criterio jurídico; aquí solo se deja planteada la
+distinción.
+
+**El muro de pago — y esto es lo que decide.** No es un problema legal sino de
+medición: **corrompería la comparación que el producto existe para hacer.**
+
+Semana, El Tiempo y El Espectador tienen muro; los medios pequeños e
+independientes, no. Un análisis de texto tendría material completo de unos y
+truncado de otros. **Y ya está pasando con la entradilla**, medido el
+2026-07-31:
+
+| Medio | Artículos | Con entradilla |
+|---|---|---|
+| Semana | 642 | **0 %** |
+| El País (Cali) | 329 | **0 %** |
+| Infobae Colombia | 1 776 | 66 % |
+| El Colombiano | 326 | 99 % |
+
+Los dos que dan cero son del Grupo Gilinski y están entre los que más publican.
+Con artículos completos la brecha se ensancharía, y la medición del sesgo pasaría
+a depender de **quién tiene muro de pago**. Es la misma clase de artefacto que la
+sección 6 recoge tres veces. Saltarse un muro no es opción.
+
+**La alternativa que ya existe.** `analyzeArticleTone` analiza titular Y
+entradilla, no solo el titular. Es un material más pobre pero **disponible en
+condiciones más parecidas para todos** — con la salvedad de los dos ceros de
+arriba, que hay que tener presente igual.

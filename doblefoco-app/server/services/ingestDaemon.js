@@ -186,9 +186,24 @@ export function cleanHeadline(rawTitle, outletName, outletDomain) {
      */
     for (const candidato of [outletName, outletDomain, `www.${outletDomain}`]) {
         if (!candidato) continue;
-        const suffix = ` - ${candidato}`;
-        if (clean.toLowerCase().endsWith(suffix.toLowerCase())) {
-            clean = clean.slice(0, -suffix.length).trim();
+
+        /**
+         * Varios separadores, no solo el guion. Noticias Uno cierra sus
+         * titulares con « | Noticias UNO» y El Tiempo con « - El Tiempo»: es el
+         * mismo sufijo de marca con distinto signo, y ninguno lo escribió la
+         * redacción como parte de la frase.
+         *
+         * La comparación sigue siendo por el NOMBRE del medio y anclada al
+         * final. Quitar todo lo que venga tras una barra recortaría titulares
+         * legítimos —«Petro | La entrevista completa» perdería la mitad—, que es
+         * el error que este bucle existe para no cometer.
+         */
+        const cortado = [' - ', ' | ', ' — ', ' – ']
+            .map((sep) => `${sep}${candidato}`)
+            .find((suffix) => clean.toLowerCase().endsWith(suffix.toLowerCase()));
+
+        if (cortado) {
+            clean = clean.slice(0, -cortado.length).trim();
             break;
         }
     }

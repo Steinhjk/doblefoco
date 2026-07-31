@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-07-30
-Medios en el catálogo: 40
+Generado: 2026-07-31
+Medios en el catálogo: 41
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -27,7 +27,7 @@ IZQUIERDA  [−1.00 a −0.60)  —  1 medio
     campesinos; encuadre explícito desde movimientos de base.
 
 ----------------------------------------------------------------------
-IZQUIERDA MODERADA  [−0.60 a −0.20)  —  6 medios
+IZQUIERDA MODERADA  [−0.60 a −0.20)  —  7 medios
 ----------------------------------------------------------------------
 
   Vorágine  ·  sesgo −0.50  ·  factualidad 90%
@@ -49,6 +49,13 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  6 medios
     cambiocolombia.com · Independiente · CO · vía Google News · PROVISIONAL
     Revista de investigación; agenda centrada en fiscalización del
     poder político y económico.
+
+  Noticias Uno  ·  sesgo −0.40  ·  factualidad 89%
+    noticiasuno.com · NTC Televisión · CO · RSS propio · PROVISIONAL
+    Noticiero de investigación con treinta años de fiscalización a
+    gobiernos sucesivos —Uribe, Santos, Duque—; su agenda es la
+    corrupción y el abuso de poder, y esa vigilancia al
+    establecimiento lo sitúa a la izquierda del eje colombiano.
 
   RTVC Noticias  ·  sesgo −0.35  ·  factualidad 82%
     rtvcnoticias.com · Medio público nacional · CO · vía Google News · PROVISIONAL

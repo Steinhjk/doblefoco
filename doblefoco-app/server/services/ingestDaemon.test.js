@@ -264,3 +264,26 @@ describe('extractImage desde el HTML del contenido', () => {
         expect(extractImage(item, LINK)).toBeNull();
     });
 });
+
+describe('cleanHeadline con otros separadores de marca', () => {
+    it('quita el sufijo con barra vertical', () => {
+        // Noticias Uno cierra así sus titulares. Es el mismo sufijo de marca que
+        // el guion de El Tiempo, y tampoco lo escribió la redacción.
+        expect(cleanHeadline(
+            'Presupuesto de la salud creció 60% entre 2022 y 2026 | Noticias UNO',
+            'Noticias Uno', 'noticiasuno.com'
+        )).toBe('Presupuesto de la salud creció 60% entre 2022 y 2026');
+    });
+
+    it('quita el sufijo con raya larga', () => {
+        expect(cleanHeadline('Algo ocurrió — Semana', 'Semana', 'semana.com'))
+            .toBe('Algo ocurrió');
+    });
+
+    it('NO recorta por una barra que forma parte del titular', () => {
+        // Es el error que la comparación por nombre existe para no cometer:
+        // cortar por el separador y no por el medio partiría este titular.
+        const t = 'Petro | La entrevista completa';
+        expect(cleanHeadline(t, 'Noticias Uno', 'noticiasuno.com')).toBe(t);
+    });
+});

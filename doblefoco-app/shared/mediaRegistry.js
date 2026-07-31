@@ -120,6 +120,26 @@ export const MEDIA_REGISTRY = [
         feed: { url: gnews('cambiocolombia.com'), via: 'gnews', category: 'Política' },
     },
     {
+        id: 'noticias-uno', name: 'Noticias Uno', shortName: 'Noticias Uno',
+        domain: 'noticiasuno.com', country: 'CO', group: 'NTC Televisión',
+        bias: -0.40, factuality: 0.89, reviewedAt: null,
+        biasRationale: 'Noticiero de investigación con treinta años de fiscalización a gobiernos sucesivos —Uribe, Santos, Duque—; su agenda es la corrupción y el abuso de poder, y esa vigilancia al establecimiento lo sitúa a la izquierda del eje colombiano.',
+        feed: { url: 'https://www.noticiasuno.com/feed/', via: 'direct', category: 'Política' },
+        /**
+         * NO TE ALARMES SI APARECE CON CERO ARTÍCULOS. Es un noticiero de FIN DE
+         * SEMANA —emite sábados, domingos y festivos— así que publica en
+         * ráfagas, no a diario. Con la ventana de retención de 72 h, sus piezas
+         * se ven de domingo a miércoles y desaparecen el resto de la semana.
+         * Comprobado el 2026-07-31: el feed responde y trae 10 piezas, todas de
+         * hace 82 h o más, o sea justo fuera de la ventana.
+         *
+         * Es el mismo patrón que F1-12 describe para los medios de izquierda del
+         * catálogo: no son medios de noticia diaria, y el producto está
+         * construido sobre la noticia diaria. Aquí se ve con nitidez porque el
+         * ritmo es semanal y no irregular.
+         */
+    },
+    {
         id: 'rtvc', name: 'RTVC Noticias', shortName: 'RTVC',
         domain: 'rtvcnoticias.com', country: 'CO', group: 'Medio público nacional',
         bias: -0.35, factuality: 0.82, reviewedAt: null,

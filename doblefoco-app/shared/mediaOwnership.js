@@ -201,6 +201,10 @@ export const CONTROL_GROUPS = {
         label: 'Diana Salinas y Claudia Báez — El Escarbabajo SAS',
         sectores: [],
     },
+    'ntc-television': {
+        label: 'NTC Televisión — Noticias Uno',
+        sectores: [],
+    },
     'voragine-fundacion': {
         label: 'Fundación Vorágine Periodismo Contracorriente',
         sectores: [],
@@ -276,6 +280,26 @@ export const OWNERSHIP_PROFILES = {
      * el certificado de existencia del RUES o sus estatutos.
      */
     'colombia-informa': pending('independiente'),
+
+    'noticias-uno': {
+        ownerType: 'independiente',
+        controlGroup: 'ntc-television',
+        holdings: [
+            'Lo produce NTC Televisión. Emite desde 1992 y estuvo en Canal 1 —televisión abierta— hasta el 30 de noviembre de 2019.',
+            'NTC formó parte de Plural Comunicaciones, la sociedad que operaba Canal 1 junto a RTI (Patricio Wills), CM& (Yamid Amat) y el grupo estadounidense Hemisphere Media Group.',
+            'En septiembre de 2019 Hemisphere Media Group anunció que dejaba de financiar el noticiero. El 1 de diciembre pasó a Cablenoticias, televisión por suscripción, y recurrió a financiación colectiva para sostenerse.',
+            'Daniel Coronell lo dirigió entre 2002 y 2011; hoy es presidente de la revista Cambio, que aparece igualmente en este catálogo. Lo dirige Ignacio Gómez desde 2024.',
+        ],
+        notes: [
+            'LO QUE NO SE PUDO DOCUMENTAR: cómo quedó repartida la propiedad tras la salida de Hemisphere Media Group en 2019. Las fuentes consultables describen la etapa de Plural Comunicaciones y el paso a financiación colectiva, pero no la composición accionaria actual. Se deja el hueco a la vista en vez de deducirlo.',
+        ],
+        sources: [
+            'https://es.wikipedia.org/wiki/Noticias_Uno',
+            'https://es.wikipedia.org/wiki/Canal_1_(Colombia)',
+            'https://www.las2orillas.co/el-gringo-dueno-de-canal-1-que-le-dio-la-espalda-a-noticias-uno-de-daniel-coronell/',
+        ],
+        verifiedAt: VERIFICADO,
+    },
 
     'voragine': {
         ownerType: 'independiente',

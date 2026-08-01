@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-07-31
-Medios en el catálogo: 41
+Generado: 2026-08-01
+Medios en el catálogo: 42
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -18,8 +18,14 @@ PROVISIONALES hasta que ocurra. Lo decimos aquí porque clasificar a un
 medio real es la afirmación más discutible que hace este sitio.
 
 ----------------------------------------------------------------------
-IZQUIERDA  [−1.00 a −0.60)  —  1 medio
+IZQUIERDA  [−1.00 a −0.60)  —  2 medios
 ----------------------------------------------------------------------
+
+  Semanario VOZ  ·  sesgo −0.80  ·  factualidad 85%
+    semanariovoz.com · Partido Comunista Colombiano · CO · RSS propio · PROVISIONAL
+    Periódico semanal fundado en 1957; órgano de difusión política del
+    Partido Comunista Colombiano (PCC) con línea editorial marxista y
+    de izquierda popular.
 
   Colombia Informa  ·  sesgo −0.65  ·  factualidad 78%
     colombiainforma.info · Comunicación popular · CO · RSS propio · PROVISIONAL

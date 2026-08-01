@@ -221,6 +221,10 @@ export const CONTROL_GROUPS = {
         label: 'Adriana Bernal Salgado — Kieneskien Editorial',
         sectores: ['seguros'],
     },
+    'pcc-partido': {
+        label: 'Partido Comunista Colombiano (PCC)',
+        sectores: [],
+    },
 
     // ── Internacionales ─────────────────────────────────────────────────────
     bbc: {
@@ -271,6 +275,23 @@ export const CONTROL_GROUPS = {
 
 export const OWNERSHIP_PROFILES = {
     // ── Colombia ────────────────────────────────────────────────────────────
+
+    'semanario-voz': {
+        ownerType: 'independiente',
+        controlGroup: 'pcc-partido',
+        holdings: [
+            'Fundado el 20 de julio de 1957 como medio de comunicación de tiraje nacional. Órgano de prensa oficial del Partido Comunista Colombiano (PCC).',
+            'Su dirección editorial la ejerce la Fundación de Estudios Políticos e Históricos VOZ y el Comité Ejecutivo Central del PCC.',
+        ],
+        notes: [
+            'Financiado mediante la venta del impreso, suscripciones digitales y aportes de su militancia. Históricamente ha documentado luchas populares, sindicales y agrarias.',
+        ],
+        sources: [
+            'https://semanariovoz.com/quienes-somos/',
+            'https://colombia.mom-gmr.org/es/medios/detalle/outlet/semanario-voz/',
+        ],
+        verifiedAt: VERIFICADO,
+    },
 
     /**
      * El único que sigue vacío. Su razón social —Corporación Red de Medios

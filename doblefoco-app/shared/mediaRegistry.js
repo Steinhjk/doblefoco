@@ -85,6 +85,13 @@ const gnews = (domain) =>
 export const MEDIA_REGISTRY = [
     // ─────────── Izquierda / centro-izquierda ───────────
     {
+        id: 'semanario-voz', name: 'Semanario VOZ', shortName: 'Semanario VOZ',
+        domain: 'semanariovoz.com', country: 'CO', group: 'Partido Comunista Colombiano',
+        bias: -0.80, factuality: 0.85, reviewedAt: null,
+        biasRationale: 'Periódico semanal fundado en 1957; órgano de difusión política del Partido Comunista Colombiano (PCC) con línea editorial marxista y de izquierda popular.',
+        feed: { url: 'https://semanariovoz.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
         id: 'colombia-informa', name: 'Colombia Informa', shortName: 'Col. Informa',
         domain: 'colombiainforma.info', country: 'CO', group: 'Comunicación popular',
         bias: -0.65, factuality: 0.78, reviewedAt: null,

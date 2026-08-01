@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-01
-Medios en el catálogo: 42
+Medios en el catálogo: 43
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -33,8 +33,14 @@ IZQUIERDA  [−1.00 a −0.60)  —  2 medios
     campesinos; encuadre explícito desde movimientos de base.
 
 ----------------------------------------------------------------------
-IZQUIERDA MODERADA  [−0.60 a −0.20)  —  7 medios
+IZQUIERDA MODERADA  [−0.60 a −0.20)  —  8 medios
 ----------------------------------------------------------------------
+
+  Revista RAYA  ·  sesgo −0.55  ·  factualidad 89%
+    revistaraya.com · Investigación independiente · CO · vía Google News · PROVISIONAL
+    Medio de investigación periodística independiente enfocado en
+    derechos humanos, fiscalización del poder político y conflicto
+    armado.
 
   Vorágine  ·  sesgo −0.50  ·  factualidad 90%
     voragine.co · Investigación independiente · CO · RSS propio · PROVISIONAL

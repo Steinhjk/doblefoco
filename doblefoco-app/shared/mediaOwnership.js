@@ -225,6 +225,10 @@ export const CONTROL_GROUPS = {
         label: 'Partido Comunista Colombiano (PCC)',
         sectores: [],
     },
+    'raya-fundacion': {
+        label: 'Fundación Periodística RAYA — Edinson Bolaños y equipo de investigación',
+        sectores: [],
+    },
 
     // ── Internacionales ─────────────────────────────────────────────────────
     bbc: {
@@ -289,6 +293,23 @@ export const OWNERSHIP_PROFILES = {
         sources: [
             'https://semanariovoz.com/quienes-somos/',
             'https://colombia.mom-gmr.org/es/medios/detalle/outlet/semanario-voz/',
+        ],
+        verifiedAt: VERIFICADO,
+    },
+
+    'revista-raya': {
+        ownerType: 'independiente',
+        controlGroup: 'raya-fundacion',
+        holdings: [
+            'Medio de investigación periodística independiente fundado por el periodista Edinson Bolaños y un equipo de investigadores.',
+            'Financiado a través de proyectos de cooperación internacional en periodismo de investigación, becas de derechos humanos y aportes de lectores.',
+        ],
+        notes: [
+            'Reconocido por investigaciones sobre espionaje informático, manipulación institucional, derechos humanos y conflicto armado en Colombia.',
+        ],
+        sources: [
+            'https://revistaraya.com/nosotros.html',
+            'https://colombia.mom-gmr.org/es/medios/detalle/outlet/revista-raya/',
         ],
         verifiedAt: VERIFICADO,
     },

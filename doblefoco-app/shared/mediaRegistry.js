@@ -99,6 +99,13 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://www.colombiainforma.info/feed/', via: 'direct', category: 'Política' },
     },
     {
+        id: 'revista-raya', name: 'Revista RAYA', shortName: 'Revista RAYA',
+        domain: 'revistaraya.com', country: 'CO', group: 'Investigación independiente',
+        bias: -0.55, factuality: 0.89, reviewedAt: null,
+        biasRationale: 'Medio de investigación periodística independiente enfocado en derechos humanos, fiscalización del poder político y conflicto armado.',
+        feed: { url: gnews('revistaraya.com'), via: 'gnews', category: 'Judicial' },
+    },
+    {
         id: 'voragine', name: 'Vorágine', shortName: 'Vorágine',
         domain: 'voragine.co', country: 'CO', group: 'Investigación independiente',
         bias: -0.50, factuality: 0.90, reviewedAt: null,

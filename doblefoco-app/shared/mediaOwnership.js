@@ -120,6 +120,18 @@ const pending = (ownerType) => ({
 const VERIFICADO = '2026-07-29';
 
 /**
+ * Segunda tanda: VOZ y RAYA, documentadas el 2026-08-02.
+ *
+ * Llevan fecha propia porque sus fichas se rehicieron enteras. Las que traían
+ * citaban cuatro URL que no existen —dos páginas «quiénes somos» inventadas y
+ * dos fichas de un Media Ownership Monitor cuyo estudio es de 2017, anterior a
+ * la fundación de RAYA—, y aun así estaban marcadas como verificadas. Firmar
+ * una comprobación que no se hizo es peor que no firmarla: el lector que pulsa
+ * y encuentra un 404 ya no tiene motivo para creerse las otras cuarenta.
+ */
+const VERIFICADO_AGO = '2026-08-02';
+
+/**
  * GRUPOS DE CONTROL — el dueño como dato, no como prosa.
  *
  * Las fichas describen en texto quién controla cada medio, y eso sirve para
@@ -226,7 +238,7 @@ export const CONTROL_GROUPS = {
         sectores: [],
     },
     'raya-fundacion': {
-        label: 'Fundación Periodística RAYA — Edinson Bolaños y equipo de investigación',
+        label: 'Fundación RAYA — sus nueve periodistas fundadores',
         sectores: [],
     },
 
@@ -284,34 +296,38 @@ export const OWNERSHIP_PROFILES = {
         ownerType: 'independiente',
         controlGroup: 'pcc-partido',
         holdings: [
-            'Fundado el 20 de julio de 1957 como medio de comunicación de tiraje nacional. Órgano de prensa oficial del Partido Comunista Colombiano (PCC).',
-            'Su dirección editorial la ejerce la Fundación de Estudios Políticos e Históricos VOZ y el Comité Ejecutivo Central del PCC.',
+            'Órgano de prensa del Partido Comunista Colombiano. Salió por primera vez el 20 de julio de 1957 como «Voz de la Democracia», semanas después de la caída de la dictadura de Rojas Pinilla y de la derogación del decreto que ilegalizaba al partido.',
+            'Clausurado en 1964 por orden del presidente Guillermo León Valencia, reapareció como «Voz Proletaria» y adoptó su nombre actual en 1983. Su archivo reúne más de 2.700 ediciones.',
         ],
         notes: [
-            'Financiado mediante la venta del impreso, suscripciones digitales y aportes de su militancia. Históricamente ha documentado luchas populares, sindicales y agrarias.',
+            'Manuel Cepeda Vargas, senador del PCC y miembro del comité de redacción del semanario, fue asesinado el 9 de agosto de 1994. La Corte Interamericana de Derechos Humanos declaró en 2010 la responsabilidad del Estado colombiano: concluyó que la ejecución fue obra de agentes estatales y grupos paramilitares dentro de un patrón sistemático de violencia contra la Unión Patriótica.',
         ],
         sources: [
-            'https://semanariovoz.com/quienes-somos/',
-            'https://colombia.mom-gmr.org/es/medios/detalle/outlet/semanario-voz/',
+            'https://es.wikipedia.org/wiki/Semanario_Voz',
+            'https://centrodememoriahistorica.gov.co/las-tres-estaciones-del-semanario-voz/',
+            'https://semanariovoz.com/66-anos-del-semanario-voz/',
+            'https://cejil.org/comunicado-de-prensa/corte-interamericana-condena-a-colombia-por-la-ejecucion-del-senador-manuel-cepeda/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_AGO,
     },
 
     'revista-raya': {
         ownerType: 'independiente',
         controlGroup: 'raya-fundacion',
         holdings: [
-            'Medio de investigación periodística independiente fundado por el periodista Edinson Bolaños y un equipo de investigadores.',
-            'Financiado a través de proyectos de cooperación internacional en periodismo de investigación, becas de derechos humanos y aportes de lectores.',
+            'Fundación sin ánimo de lucro creada en 2022 por nueve periodistas, entre ellos Edinson Bolaños —su director— e Isabel Caballero, ambos procedentes de la revista Cambio.',
+            'Su ingreso principal son servicios prestados a organizaciones sin ánimo de lucro, seguidos de consultoría; completan la financiación campañas de micromecenazgo, donaciones individuales, producción de contenidos para otros medios y formación. No cobra por leer ni admite publicidad dentro del contenido editorial.',
         ],
         notes: [
-            'Reconocido por investigaciones sobre espionaje informático, manipulación institucional, derechos humanos y conflicto armado en Colombia.',
+            'En octubre de 2023 el CTI de la Fiscalía ordenó una inspección judicial de sus archivos y fuentes. La Fundación para la Libertad de Prensa (FLIP) rechazó la orden por constreñir el ejercicio periodístico y poner en riesgo la reserva de fuente.',
         ],
         sources: [
-            'https://revistaraya.com/nosotros.html',
-            'https://colombia.mom-gmr.org/es/medios/detalle/outlet/revista-raya/',
+            'https://revistaraya.com/staff.html',
+            'https://directorio.sembramedia.org/revista-raya/',
+            'https://www.lasillavacia.com/en-vivo/presentan-la-revista-raya-nuevo-medio-de-investigacion-periodistica/',
+            'https://flip.org.co/pronunciamientos/orden-emitida-por-la-fiscalia-constrine-el-ejercicio-periodistico-de-la-revista-raya',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_AGO,
     },
 
     /**

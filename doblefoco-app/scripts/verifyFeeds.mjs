@@ -27,9 +27,15 @@ const STRICT = process.argv.includes('--strict');
 const TIMEOUT_MS = 12_000;
 const CONCURRENCY = 6;
 
-/** El mismo User-Agent identificable que usa el motor de ingesta. */
+/**
+ * El mismo User-Agent identificable que usa el motor de ingesta.
+ *
+ * Se quedó anunciando «SincuentoBot/2.0 (+https://sincuento.co/…)» tras el
+ * cambio de nombre: un dominio que ya no es nuestro y una página de contacto
+ * que no existe. Justo lo contrario de para qué sirve identificarse.
+ */
 const USER_AGENT =
-    'SincuentoBot/2.0 (+https://sincuento.co/sobre-nosotros; agregador de cobertura periodística)';
+    'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
 
 const parser = new Parser({ headers: { 'User-Agent': USER_AGENT }, timeout: TIMEOUT_MS });
 

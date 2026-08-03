@@ -117,8 +117,38 @@ CREATE INDEX IF NOT EXISTS articles_sin_imagen_idx
     ON articles (published_at DESC NULLS LAST)
  WHERE image_url IS NULL AND image_checked_at IS NULL;
 
+-- TEMA Y ÁMBITO — dos ejes que estaban colapsados en `category`.
+--
+-- POR QUÉ HAY DOS COLUMNAS NUEVAS Y NO UNA. `category` guardaba la categoría
+-- del FEED por el que entró el artículo, no el tema de la noticia: con 24 de
+-- los 39 feeds declarados como «Política», casi todo era política por
+-- definición. Y metía «Internacional» en la misma columna que «Economía»,
+-- aunque no es un tema sino un ámbito, de modo que una noticia tenía que
+-- elegir entre ser internacional o ser deportiva. El caso que lo rompió es
+-- real: la geopolítica de qué países compiten en un mundial es las dos cosas.
+--
+-- `topics` es un array porque la clasificación es MULTIETIQUETA. Una reforma a
+-- las EPS es Salud y es Política, y obligar a elegir pierde exactamente las
+-- historias que más se cubren. Los valores son los `id` de shared/
+-- topicClassifier.js, no sus nombres visibles: el desajuste entre el `Judicial`
+-- de los feeds y el `Justicia` de la interfaz dejaba esa baldosa en cero con
+-- cinco historias dentro, y con ids eso no puede repetirse.
+--
+-- `category` SE CONSERVA, sin uso nuevo. Guarda lo que se le mostró al lector
+-- antes de esta migración, igual que las métricas de cobertura se guardan
+-- calculadas para poder auditar qué decía el sitio y cuándo.
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS topics TEXT[];
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS ambito TEXT
+    CHECK (ambito IS NULL OR ambito IN ('nacional', 'internacional'));
+
 CREATE INDEX IF NOT EXISTS articles_published_idx ON articles (published_at DESC NULLS LAST);
 CREATE INDEX IF NOT EXISTS articles_source_idx    ON articles (source_id);
+
+-- Los candidatos a recategorizar: lo ingerido antes de que existiera el
+-- clasificador. Parcial, así que encoge conforme se resuelven y desaparece
+-- cuando no quede ninguno.
+CREATE INDEX IF NOT EXISTS articles_sin_tema_idx
+    ON articles (published_at DESC NULLS LAST) WHERE topics IS NULL;
 
 -- La ventana de retención pasa a ser una consulta, no un barrido en memoria:
 --   DELETE FROM articles WHERE COALESCE(published_at, ingested_at) < now() - interval '72 hours';
@@ -159,11 +189,32 @@ CREATE TABLE IF NOT EXISTS stories (
 -- Guardado, el feed es un ORDER BY sobre un índice con LIMIT.
 ALTER TABLE stories ADD COLUMN IF NOT EXISTS source_count INTEGER NOT NULL DEFAULT 0;
 
+-- Tema y ámbito de la historia, agregados desde sus artículos. Ver el comentario
+-- de `articles.topics`: mismos ids, misma razón para que sean dos columnas.
+--
+-- Una historia hereda la UNIÓN de los temas de sus artículos, no la
+-- intersección. Si El Tiempo titula por el lado sanitario y Semana por el
+-- político, la historia es las dos cosas: quedarse con lo que ambos comparten
+-- borraría justo la diferencia de encuadre que este sitio existe para enseñar.
+ALTER TABLE stories ADD COLUMN IF NOT EXISTS topics TEXT[];
+ALTER TABLE stories ADD COLUMN IF NOT EXISTS ambito TEXT
+    CHECK (ambito IS NULL OR ambito IN ('nacional', 'internacional'));
+
 -- El orden exacto del feed: primero las historias con más medios distintos,
 -- luego las más recientes. Con este índice la consulta lee solo las filas que
 -- devuelve, no la tabla entera.
 CREATE INDEX IF NOT EXISTS stories_feed_idx
     ON stories (source_count DESC, published_at DESC NULLS LAST);
+
+-- GIN porque la consulta del feed pregunta por PERTENENCIA a un array
+-- (`topics && ARRAY['deportes']`), y un B-tree no puede responder eso: tendría
+-- que recorrer la tabla entera en cada filtro de categoría.
+CREATE INDEX IF NOT EXISTS stories_topics_idx ON stories USING GIN (topics);
+
+-- El ámbito separa la portada en dos pestañas con paginación propia, así que se
+-- filtra en cada carga.
+CREATE INDEX IF NOT EXISTS stories_ambito_idx
+    ON stories (ambito, source_count DESC, published_at DESC NULLS LAST);
 
 CREATE TABLE IF NOT EXISTS story_articles (
     story_id    TEXT NOT NULL REFERENCES stories (id) ON DELETE CASCADE,

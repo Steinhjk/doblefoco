@@ -45,7 +45,8 @@ import { safeQuery } from './pool.js';
 async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }) {
     const historias = await safeQuery(
         `
-        SELECT s.id, s.title, s.category, s.published_at, s.first_seen_at,
+        SELECT s.id, s.title, s.category, s.topics, s.ambito,
+               s.published_at, s.first_seen_at,
                s.title_source_id, s.title_url,
                src.name AS title_outlet,
                count(DISTINCT a.source_id)::int AS medios,
@@ -187,7 +188,11 @@ function componerHistoria(fila, articulos) {
         titleOutlet: fila.title_outlet,
         titleOutletId: fila.title_source_id,
         titleUrl: fila.title_url,
+        // `category` es lo heredado del feed y se conserva por trazabilidad;
+        // `topics` y `ambito` son lo que la interfaz debe leer.
         category: fila.category,
+        topics: fila.topics ?? [],
+        ambito: fila.ambito ?? 'nacional',
         image,
 
         publishedAt: fila.published_at,
@@ -280,24 +285,42 @@ function componerHistoria(fila, articulos) {
  * aquí, cada pestaña tiene su propia paginación completa y sus cifras pueden ser
  * las del catálogo entero, porque cargando más se alcanzan todas.
  *
- * El COALESCE sobre la categoría hace que una historia sin categorizar cuente
- * como nacional, igual que en `countFeed`. Los dos sitios tienen que decir lo
- * mismo o la pestaña promete un número que su propia lista no da.
+ * EL ÁMBITO YA NO SALE DE `category`. Antes se comparaba contra el literal
+ * 'Internacional' de la categoría heredada del feed, lo que significaba que una
+ * historia no podía ser internacional Y deportiva: las dos cosas competían por
+ * la misma columna. Ahora `stories.ambito` es un eje propio y la categoría dejó
+ * de decidirlo.
+ *
+ * El COALESCE hace que una historia sin ámbito cuente como nacional, igual que
+ * en `countFeed`. Los dos sitios tienen que decir lo mismo o la pestaña promete
+ * un número que su propia lista no da. Importa mientras queden historias
+ * anteriores a la recategorización.
+ *
+ * `temas` filtra por PERTENENCIA al array, no por igualdad: una historia con
+ * `{salud, politica}` sale tanto en Salud como en Política, que es el sentido de
+ * haberla etiquetado dos veces.
  */
-export async function readFeed({ limit = 20, offset = 0, ambito = 'all' } = {}) {
+export async function readFeed({ limit = 20, offset = 0, ambito = 'all', temas = [] } = {}) {
+    const condiciones = [];
+    const params = [];
+
     if (ambito === 'nacional') {
-        return leerHistorias({
-            where: "AND COALESCE(s.category, '') <> 'Internacional'",
-            limit,
-            offset,
-        });
+        condiciones.push("COALESCE(s.ambito, 'nacional') = 'nacional'");
+    } else if (ambito === 'internacional') {
+        condiciones.push("s.ambito = 'internacional'");
     }
 
-    if (ambito === 'internacional') {
-        return leerHistorias({ where: "AND s.category = 'Internacional'", limit, offset });
+    if (temas.length) {
+        params.push(temas);
+        condiciones.push(`s.topics && $${params.length}::text[]`);
     }
 
-    return leerHistorias({ limit, offset });
+    return leerHistorias({
+        where: condiciones.length ? `AND ${condiciones.join(' AND ')}` : undefined,
+        params,
+        limit,
+        offset,
+    });
 }
 
 /** Una historia por su id. `null` si no existe o si está retirada. */
@@ -414,10 +437,11 @@ export async function countArticlesBySource() {
  * El desglose se calcula aquí y no en el cliente por el mismo motivo: el cliente
  * solo puede contar lo que le llegó.
  *
- * `COALESCE(category, '')` para que una historia sin categoría cuente como
- * nacional, igual que hace el filtro del feed (`category !== 'Internacional'`).
- * Sin el COALESCE la comparación da NULL y la historia no entra en ninguno de
- * los dos lados: los sumandos no cuadrarían con el total.
+ * `COALESCE(ambito, 'nacional')` para que una historia sin ámbito cuente como
+ * nacional, igual que hace el filtro del feed. Sin el COALESCE la comparación
+ * da NULL y la historia no entra en ninguno de los dos lados: los sumandos no
+ * cuadrarían con el total. Importa mientras queden historias anteriores a la
+ * recategorización.
  *
  * @returns {Promise<{total: number, multifuente: number, nacional: number, internacional: number}>}
  */
@@ -427,21 +451,21 @@ export async function countFeed() {
         SELECT count(*)::int                                       AS total,
                count(*) FILTER (WHERE medios > 1)::int             AS multifuente,
                count(*) FILTER (
-                   WHERE medios > 1 AND COALESCE(categoria, '') <> 'Internacional'
+                   WHERE medios > 1 AND COALESCE(ambito, 'nacional') = 'nacional'
                )::int                                              AS nacional,
                count(*) FILTER (
-                   WHERE medios > 1 AND categoria = 'Internacional'
+                   WHERE medios > 1 AND ambito = 'internacional'
                )::int                                              AS internacional
           FROM (
             SELECT s.id,
-                   s.category                        AS categoria,
+                   s.ambito                          AS ambito,
                    count(DISTINCT a.source_id)::int  AS medios
               FROM stories s
               JOIN story_articles sa ON sa.story_id = s.id
               JOIN articles a        ON a.id = sa.article_id
               LEFT JOIN moderation m ON m.story_id = s.id
              WHERE (m.state IS NULL OR m.state <> 'rechazada')
-             GROUP BY s.id, s.category
+             GROUP BY s.id, s.ambito
           ) AS historias
         `,
         [],

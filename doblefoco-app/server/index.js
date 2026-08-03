@@ -39,6 +39,7 @@ import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
 import { esRutaCanonica, idDesdeRuta, rutaDeHistoria } from '../shared/storyPath.js';
+import { TEMAS } from '../shared/topicClassifier.js';
 import { contarSinResolver, erroresRecientes, marcarResuelto, registrarError } from './db/errorStore.js';
 import { instalarCapturaDeErrores, middlewareDeErrores } from './observabilidad.js';
 
@@ -558,8 +559,17 @@ app.get('/api/feed', async (req, res) => {
             ? String(req.query.ambito)
             : 'all';
 
+        // Los temas también acaban en SQL. La lista blanca es el catálogo de
+        // TEMAS, así que un id inventado no llega a la consulta: se cae aquí y
+        // el filtro simplemente no lo incluye.
+        const idsValidos = new Set(TEMAS.map((t) => t.id));
+        const temas = String(req.query.temas ?? '')
+            .split(',')
+            .map((t) => t.trim())
+            .filter((t) => idsValidos.has(t));
+
         const [stories, counts] = await Promise.all([
-            readFeed({ limit, offset, ambito }),
+            readFeed({ limit, offset, ambito, temas }),
             countFeed(),
         ]);
 

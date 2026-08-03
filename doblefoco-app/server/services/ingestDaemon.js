@@ -32,6 +32,7 @@ import {
 } from '../../shared/clustering.js';
 import { analyzeHeadlineTone } from '../../shared/headlineTone.js';
 import { assessArticle } from '../../shared/contentQuality.js';
+import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
@@ -660,12 +661,41 @@ export async function runIngestionBatch() {
                         continue;
                     }
 
+                    const snippet = extractSnippet(item);
+
+                    /**
+                     * El tema sale del CONTENIDO, no del feed.
+                     *
+                     * Antes esta línea era `category: feedConfig.category`, que
+                     * describía nuestra configuración de ingesta y no la
+                     * noticia: 24 de los 39 feeds están declarados como
+                     * «Política», así que casi todo era política por
+                     * definición y seis de las once categorías de la interfaz
+                     * no podían llenarse nunca.
+                     *
+                     * Las etiquetas del propio ítem RSS y la sección de su URL
+                     * entran como refuerzo. Solo el 32 % de los artículos trae
+                     * `<category>` y un 37 % llega por Google News sin sección
+                     * utilizable, así que ninguna de las dos puede ser la
+                     * fuente: lo son el titular y la entradilla, que existen
+                     * siempre.
+                     */
+                    const clasificacion = classifyTopics({
+                        headline,
+                        snippet,
+                        link,
+                        feedCategories: (item?.categories ?? []).map((c) =>
+                            typeof c === 'string' ? c : c?._ ?? ''
+                        ),
+                        paisDelMedio: feedConfig.country,
+                    });
+
                     const article = {
                         id: articleId(link, headline),
                         headline,                       // literal del medio
                         rawTitle: item?.title ?? headline,
                         link,                           // enlace verificable
-                        snippet: extractSnippet(item),  // real o null
+                        snippet,                        // real o null
                         // Del medio o null. Nunca una foto de archivo.
                         imageUrl: extractImage(item, link, feedConfig.imageHosts),
                         // El tono se ANOTA sobre el titular literal; el
@@ -683,7 +713,12 @@ export async function runIngestionBatch() {
                             factuality: feedConfig.factuality,
                             spectrum: classifySpectrum(feedConfig.bias),
                         },
+                        // Se conserva para no perder lo que se le mostró al
+                        // lector antes de que existiera el clasificador. No lo
+                        // lee nada nuevo.
                         category: feedConfig.category,
+                        topics: clasificacion.temas,
+                        ambito: clasificacion.ambito,
                     };
 
                     articlesByLink.set(link, article);
@@ -954,6 +989,32 @@ function buildMultisourceStories() {
             titleOutletId: representative.outlet.id ?? null,
             titleUrl: representative.link,
             category: representative.category,
+
+            /**
+             * UNIÓN de los temas de los artículos, no intersección.
+             *
+             * Si El Tiempo titula por el lado sanitario y Semana por el
+             * político, la historia es las dos cosas. Quedarse con lo que
+             * ambos comparten borraría justo la diferencia de encuadre que
+             * este sitio existe para enseñar, y además dejaría sin tema a casi
+             * cualquier historia multifuente: basta un medio que no clasifique
+             * para vaciar la intersección.
+             */
+            topics: [...new Set(items.flatMap((a) => a.topics ?? []))],
+
+            /**
+             * El ámbito por MAYORÍA, no por el representante.
+             *
+             * El artículo representativo es el del medio de mayor factualidad,
+             * y esa elección no tiene nada que ver con si el hecho es
+             * colombiano. Con el empate a favor de lo nacional, por lo mismo
+             * que dentro del clasificador: «Petro se reunió con Lula» es una
+             * noticia colombiana con contexto exterior.
+             */
+            ambito:
+                items.filter((a) => a.ambito === 'internacional').length > items.length / 2
+                    ? 'internacional'
+                    : 'nacional',
 
             // Fechas reales, no cadenas fijas. El texto relativo ("hace 2
             // horas") lo calcula el frontend en cada render.

@@ -22,6 +22,7 @@
     "check:registry": "node scripts/checkRegistry.mjs",
     "check:feeds": "node scripts/verifyFeeds.mjs",
     "check:sources": "node scripts/verifySources.mjs",
+    "recategorizar": "node scripts/recategorizar.mjs",
     "report:ingest": "node scripts/ingestReport.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "ingest:once": "node scripts/ingestOnce.mjs",

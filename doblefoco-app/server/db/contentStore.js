@@ -251,12 +251,21 @@ export async function persistArticles(articles) {
         `
         INSERT INTO articles
             (id, canonical_url, source_id, headline, raw_title, snippet,
-             category, tone, published_at, ingested_at, image_url)
-        SELECT * FROM unnest(
+             category, tone, published_at, ingested_at, image_url, topics, ambito)
+        -- Los temas llegan como cadena separada por comas y se parten aquí.
+        -- unnest no admite un array de arrays irregulares: aplana los
+        -- multidimensionales y exigiría el mismo número de temas en cada fila,
+        -- que es justo lo que la clasificación multietiqueta no garantiza.
+        SELECT id, url, src, titular, crudo, extracto, categoria, tono, publicado,
+               ingerido, imagen,
+               CASE WHEN temas = '' THEN '{}'::text[] ELSE string_to_array(temas, ',') END,
+               ambito
+          FROM unnest(
             $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
             $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[],
-            $11::text[]
-        )
+            $11::text[], $12::text[], $13::text[]
+        ) AS t(id, url, src, titular, crudo, extracto, categoria, tono, publicado,
+               ingerido, imagen, temas, ambito)
         -- Ver el comentario de arriba: se rellena la imagen y nada más.
         ON CONFLICT (canonical_url) DO UPDATE
             SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url)
@@ -277,6 +286,12 @@ export async function persistArticles(articles) {
             // null cuando el feed no trae imagen, que es lo más frecuente. No se
             // sustituye por nada: o es la del medio, o no hay.
             usable.map((a) => a.imageUrl ?? null),
+            // Array vacío y NULL no son lo mismo aquí, y la diferencia la usa
+            // el recategorizador: NULL es «nunca se clasificó» y `{}` es «se
+            // clasificó y no dio tema». Sin distinguirlas, cada pasada volvería
+            // a intentar los mismos artículos inclasificables para siempre.
+            usable.map((a) => (a.topics ?? []).join(',')),
+            usable.map((a) => a.ambito ?? null),
         ],
         'guardado de artículos'
     );
@@ -396,13 +411,25 @@ export async function persistStories(entrada) {
                          first_seen_at, mean_bias, polarization, coverage_left,
                          coverage_center, coverage_right, dominant_spectrum,
                          insufficient_coverage, blindspot_spectrum, factuality,
-                         source_count, computed_at)
-                    SELECT * , now() FROM unnest(
+                         source_count, topics, ambito, computed_at)
+                    -- Mismo motivo que en el guardado de artículos: los temas
+                    -- viajan como cadena porque unnest no admite arrays de
+                    -- longitud desigual.
+                    SELECT id, titulo, src, url, categoria, publicado, visto,
+                           sesgo, polar, izq, centro, der, dominante,
+                           insuficiente, punto_ciego, factual, medios,
+                           CASE WHEN temas = '' THEN '{}'::text[]
+                                ELSE string_to_array(temas, ',') END,
+                           ambito, now()
+                      FROM unnest(
                         $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
                         $6::timestamptz[], $7::timestamptz[], $8::real[], $9::real[],
                         $10::smallint[], $11::smallint[], $12::smallint[], $13::text[],
-                        $14::boolean[], $15::text[], $16::real[], $17::int[]
-                    )
+                        $14::boolean[], $15::text[], $16::real[], $17::int[],
+                        $18::text[], $19::text[]
+                    ) AS t(id, titulo, src, url, categoria, publicado, visto,
+                           sesgo, polar, izq, centro, der, dominante,
+                           insuficiente, punto_ciego, factual, medios, temas, ambito)
                     ON CONFLICT (id) DO UPDATE SET
                         title                 = EXCLUDED.title,
                         title_source_id       = EXCLUDED.title_source_id,
@@ -422,6 +449,11 @@ export async function persistStories(entrada) {
                         blindspot_spectrum    = EXCLUDED.blindspot_spectrum,
                         factuality            = EXCLUDED.factuality,
                         source_count          = EXCLUDED.source_count,
+                        -- Se recalculan en cada ciclo, como el resto de
+                        -- métricas: la historia puede haber ganado artículos
+                        -- de otro medio y con ellos un tema que antes no tenía.
+                        topics                = EXCLUDED.topics,
+                        ambito                = EXCLUDED.ambito,
                         computed_at           = now()
                     `,
                     [
@@ -447,6 +479,8 @@ export async function persistStories(entrada) {
                         // Medios DISTINTOS, no artículos: si un medio publicó
                         // tres notas sobre el mismo hecho, cuenta una vez.
                         stories.map((s) => s.sources?.length ?? 0),
+                        stories.map((s) => (s.topics ?? []).join(',')),
+                        stories.map((s) => s.ambito ?? null),
                     ]
                 );
             }

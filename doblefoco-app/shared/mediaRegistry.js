@@ -571,6 +571,10 @@ export function getIngestFeeds() {
             mediaId: media.id,
             name: media.name,
             domain: media.domain,
+            // El país lo necesita el clasificador de ámbito para desempatar:
+            // una pieza sin marca geográfica de un medio extranjero es
+            // internacional, y de uno colombiano es nacional.
+            country: media.country,
             bias: media.bias,
             factuality: media.factuality,
             url: media.feed.url,
@@ -584,6 +588,7 @@ export function getIngestFeeds() {
                 mediaId: media.id,
                 name: media.name,
                 domain: media.domain,
+                country: media.country,
                 bias: media.bias,
                 factuality: media.factuality,
                 url: extra.url,

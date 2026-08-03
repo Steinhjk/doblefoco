@@ -1,0 +1,742 @@
+// @ts-check
+/**
+ * Clasificación de artículos POR CONTENIDO.
+ *
+ * POR QUÉ EXISTE
+ * --------------
+ * Hasta ahora la categoría de un artículo se heredaba del feed por el que
+ * entró: `category: feedConfig.category` en ingestDaemon. Eso no describía de
+ * qué trata la noticia, describía CÓMO CONFIGURAMOS LA INGESTA. Con 24 de los
+ * 39 feeds declarados como «Política», casi todo era Política por definición, y
+ * un partido de fútbol publicado en el feed político de un medio entraba como
+ * política.
+ *
+ * La consecuencia visible: la interfaz ofrecía once categorías y los feeds solo
+ * declaraban cuatro (Política, Internacional, Judicial, Economía), así que seis
+ * baldosas —Salud, Medio Ambiente, Tecnología, Infraestructura, Educación y
+ * Deportes— no podían llenarse nunca. No estaban vacías: no tenían cañería.
+ * Es además el mismo campo que ya había bloqueado los puntos de énfasis
+ * recurrente, que necesitaban saber de qué habla un medio y solo podían leer de
+ * qué feed lo sacamos nosotros.
+ *
+ * QUÉ SE MIDIÓ ANTES DE ELEGIR CÓMO
+ * ---------------------------------
+ * Sondeo del 2026-08-03 sobre los 39 feeds vivos, 816 artículos:
+ *
+ *   · `<category>` publicado por el propio medio ... 32 %
+ *   · sección en la ruta de la URL ................. 96 % (engañoso, ver abajo)
+ *   · titular y entradilla ......................... 100 %
+ *
+ * El 96 % de la URL es falso. El segmento más frecuente del corpus era
+ * `articles`, con 300 apariciones: son exactamente los diez feeds que pasan por
+ * Google News, cuyos enlaces son redirecciones de news.google.com. Un 37 % del
+ * catálogo llega sin sección utilizable. Y del resto, el vocabulario mezcla
+ * tema con geografía (`bucaramanga`, `cartagena`) y con formato (`video`,
+ * `galerias`, `en-vivo`).
+ *
+ * El `<category>` del medio está peor: entre las etiquetas más frecuentes
+ * aparecen `destacadas`, `portada`, `emisión 02 de agosto 2026`, `el colombiano`
+ * y `abelardo de la espriella`. Son secciones de portada y nombres propios, no
+ * temas.
+ *
+ * De ahí el diseño: lo único disponible para el 100 % de los artículos es el
+ * texto que ya guardamos —titular y entradilla—, así que ahí vive la
+ * clasificación. La URL y el `<category>` entran como REFUERZO cuando existen,
+ * nunca como fuente única.
+ *
+ * POR QUÉ LÉXICO Y NO UN MODELO
+ * -----------------------------
+ * Es determinista, no cuesta nada por artículo, no depende de la red en el
+ * ciclo de ingesta, y —lo que importa aquí— es AUDITABLE: se puede decir por
+ * qué una noticia cayó en Deportes. En una página cuyo argumento entero es que
+ * el lector pueda comprobar lo que afirmamos, una caja negra clasificando el
+ * catálogo sería incoherente. Encaja además con `assessArticle` y
+ * `analyzeHeadlineTone`, que ya son analizadores deterministas sobre el titular.
+ *
+ * DOS EJES, NO UNO
+ * ----------------
+ * `Internacional` NO es un tema, es un ÁMBITO, y estaba en la misma columna que
+ * Política y Economía. Eso obligaba a elegir: un mundial de fútbol era
+ * internacional o era deportivo, no las dos cosas. Aquí se separan, porque el
+ * caso que lo motivó —la geopolítica de qué países participan en una
+ * competición— es justo el que necesita ser deportivo E internacional a la vez.
+ *
+ * MULTIETIQUETA Y CON EL PULGAR EN LA BALANZA
+ * -------------------------------------------
+ * Una reforma a las EPS es Salud y es Política. Obligar a elegir pierde
+ * exactamente las historias que más se cubren. Y por decisión de producto
+ * (2026-08-03) el umbral se inclina a ASIGNAR antes que a dejar vacío: una
+ * noticia sin tema no aparece en ningún filtro, así que el coste de no
+ * clasificar lo paga el lector que busca, mientras que el coste de clasificar
+ * de más es una noticia algo fuera de sitio, que se ve y se corrige.
+ *
+ * «Un poco» tiene un límite, y por eso existe `resumirClasificacion()`: mide
+ * qué proporción se está asignando por señal débil. Sin esa cifra, «forzar un
+ * poco» se convierte en forzar mucho sin que nadie se entere.
+ *
+ * LO QUE ESTO NO HACE
+ * -------------------
+ * No toca el sesgo. El espectro de una historia sale del valor del medio en el
+ * registro y de ningún otro sitio; el tema es un eje independiente y no
+ * alimenta la clasificación ideológica ni al revés. Tampoco reescribe titulares:
+ * lee el literal del medio, como todo lo demás aquí.
+ */
+
+/** Quita tildes y baja a minúsculas, igual que hace contentQuality. */
+function normalizar(texto) {
+    return String(texto ?? '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase();
+}
+
+/**
+ * PESOS.
+ *
+ * Un término fuerte en el titular basta por sí solo para asignar el tema: el
+ * titular es lo que el medio eligió poner delante. En la entradilla vale menos
+ * porque ahí aparecen menciones de pasada («…dijo el ministro de Salud») que no
+ * son de lo que trata la pieza.
+ *
+ * La sección de la URL pesa casi como un término fuerte porque la puso el
+ * propio medio al archivar la pieza, pero no llega a bastar sola: hay secciones
+ * cajón de sastre («actualidad», «colombia») que ya se filtran en el mapa, y
+ * otras que archivan por autor o por región.
+ */
+const PESO = {
+    fuerteTitular: 3,
+    fuerteEntradilla: 1.8,
+    debilTitular: 1.5,
+    debilEntradilla: 0.8,
+    seccionUrl: 2.5,
+    categoriaMedio: 2,
+};
+
+/** A partir de aquí el tema se asigna sin discusión. */
+export const UMBRAL_ASIGNA = 3;
+
+/**
+ * Suelo del rescate. Por debajo de esto no se asigna nada.
+ *
+ * Este es el número que materializa el «forzarlo un poco»: si ningún tema llega
+ * a `UMBRAL_ASIGNA`, se rescata el mejor siempre que tenga al menos una señal
+ * real (un término débil en el titular, o la sección de la URL). Lo que NO se
+ * rescata es una única mención de pasada en la entradilla, que es ruido.
+ */
+export const UMBRAL_RESCATE = 1.5;
+
+/**
+ * TEMAS.
+ *
+ * `fuertes`: si aparecen, la pieza trata de esto. Se eligen términos que en
+ * español colombiano no significan otra cosa.
+ *
+ * `debiles`: apuntan al tema pero son ambiguos o genéricos. Suman, no deciden.
+ *
+ * SOBRE LA AMBIGÜEDAD, que es donde estos ficheros se rompen. El precedente
+ * está escrito en contentQuality: un patrón de lotería descartó «obras de
+ * rehabilitación del CDI El Dorado» porque buscaba la subcadena. Aquí el riesgo
+ * equivalente es «partido» (político o de fútbol), «nacional» (el club o el
+ * ámbito), «corte» (el tribunal o el recorte) y «reforma» (la ley o la obra).
+ * Todos ellos van como débiles o exigen contexto en el mismo patrón.
+ */
+export const TEMAS = [
+    {
+        id: 'politica',
+        nombre: 'Política',
+        fuertes: [
+            /\b(congreso|senado|camara de representantes|plenaria)\b/,
+            /\b(petro|casa de narino|presidencia de la republica)\b/,
+            /\b(presidente|presidenta|expresidente|mandatario|gabinete|posesion presidencial)\b/,
+            /\b(ministr[oa]s?|minhacienda|mininterior|cancilleria|canciller)\b/,
+            /\b(elecciones|electoral|(pre)?candidat[oa]s?|campana electoral|registraduria)\b/,
+            /\bpolitica (exterior|interna|nacional)\b/,
+            /\b(gobernador|alcalde|alcaldesa|concejo de|asamblea departamental)\b/,
+            /\b(consulta popular|referendo|constituyente|plebiscito)\b/,
+            /\b(oposicion|coalicion|bancada|uribismo|petrismo)\b/,
+        ],
+        debiles: [
+            /\breforma\b/,
+            /\bgobierno\b/,
+            /\bpartido (politico|liberal|conservador|verde|de la u)\b/,
+            /\b(decreto|proyecto de ley|ponencia)\b/,
+            /\bpoliticas? publicas?\b/,
+        ],
+    },
+    {
+        id: 'economia',
+        nombre: 'Economía',
+        fuertes: [
+            /\b(inflacion|ipc|dane)\b/,
+            /\b(banco de la republica|tasa de interes|tasas de interes)\b/,
+            /\b(reforma tributaria|dian|impuestos?)\b/,
+            /\b(pib|producto interno bruto|desempleo|salario minimo)\b/,
+            /\b(ecopetrol|bolsa de valores|bvc|deuda publica|deficit fiscal)\b/,
+            /\b(exportaciones|importaciones|balanza comercial)\b/,
+            /\b(presupuesto (general|nacional)|marco fiscal)\b/,
+        ],
+        debiles: [
+            /\b(dolar|euro|divisa|trm)\b/,
+            /\b(empresa|empresas|empresarial|inversion|inversionistas?)\b/,
+            /\b(mercado|mercados|economia|economico)\b/,
+            /\b(precio|precios|costo de vida)\b/,
+            /\b(banco|bancos|credito|creditos)\b/,
+        ],
+    },
+    {
+        id: 'salud',
+        nombre: 'Salud',
+        fuertes: [
+            /\b(eps|adres|minsalud|invima|supersalud)\b/,
+            /\b(hospital|hospitales|clinica|clinicas|urgencias)\b/,
+            /\b(pacientes?|medic[oa]s?|enfermer[oa]s?|cirugia)\b/,
+            /\b(vacuna|vacunacion|epidemia|pandemia|brote|contagios?)\b/,
+            /\b(dengue|malaria|fiebre amarilla|covid|viruela|sarampion)\b/,
+            /\b(sistema de salud|reforma a la salud|reforma de la salud)\b/,
+            /\b(medicamentos?|farmaceutic[oa]s?)\b/,
+        ],
+        debiles: [
+            /\b(salud mental|salud publica)\b/,
+            /\b(enfermedad|enfermedades|sintomas?|diagnostico)\b/,
+            /\b(cancer|diabetes|obesidad|vih)\b/,
+        ],
+    },
+    {
+        id: 'ambiente',
+        nombre: 'Medio Ambiente',
+        fuertes: [
+            /\b(deforestacion|reforestacion|amazonia|amazonas)\b/,
+            /\b(cambio climatico|crisis climatica|emisiones de carbono|cop\d{2})\b/,
+            /\b(biodiversidad|especies? (en peligro|amenazada)|fauna silvestre)\b/,
+            /\b(paramo|paramos|humedal|manglar|arrecife)\b/,
+            /\b(transicion energetica|energias? renovables?|parque eolico|solar fotovoltaic)\b/,
+            /\b(contaminacion|vertimiento|derrame de (crudo|petroleo))\b/,
+            /\b(minambiente|corpo(guajira|amazonia|boyaca)|anla)\b/,
+        ],
+        debiles: [
+            /\b(ambiental|ecosistema|sostenibilidad)\b/,
+            /\b(sequia|inundacion|incendio forestal|deslizamiento)\b/,
+            /\b(mineria|minera|glifosato)\b/,
+            /\b(rio|rios|cuenca|acuifero)\b/,
+        ],
+    },
+    {
+        id: 'tecnologia',
+        nombre: 'Tecnología',
+        fuertes: [
+            // `ia` como palabra suelta: en español no es una palabra, así que
+            // la frontera de palabra la deja segura y recupera los titulares
+            // que usan la sigla («IA generará fuerte impacto en el empleo»).
+            /\b(inteligencia artificial|ia|chatgpt|algoritmos?)\b/,
+            /\b(ciberseguridad|ciberataque|hacker|ransomware|filtracion de datos)\b/,
+            /\b(software|hardware|aplicacion movil|app movil)\b/,
+            /\b(criptomoneda|bitcoin|blockchain)\b/,
+            /\b(redes? sociales?|tiktok|instagram|whatsapp|facebook|youtube)\b/,
+            /\b(datos personales|habeas data|proteccion de datos)\b/,
+            /\bred(es)? 5g\b/,
+        ],
+        debiles: [
+            /\b(tecnologia|tecnologic[oa]s?|digitalizacion)\b/,
+            /\b(internet|conectividad|banda ancha|fibra optica)\b/,
+            /\b(celular|celulares|smartphone|dispositivo)\b/,
+            /\b(startup|plataforma digital|comercio electronico)\b/,
+            /\b(transformacion|brecha|economia) digital\b/,
+        ],
+    },
+    {
+        id: 'infraestructura',
+        nombre: 'Infraestructura',
+        fuertes: [
+            /\b(metro de bogota|transmilenio|transmilenio|regiotram)\b/,
+            /\b(aeropuerto|aeropuertos|puerto de (buenaventura|cartagena|santa marta))\b/,
+            /\b(peaje|peajes|concesion vial|invias|ani)\b/,
+            /\b(tunel|tuneles|viaducto|puente vehicular)\b/,
+            /\bvias? (4g|5g|terciarias?|nacionales?)\b/,
+            /\b(acueducto|alcantarillado|planta de tratamiento)\b/,
+            /\b(ferrocarril|tren de cercanias|navegabilidad del (rio )?magdalena)\b/,
+        ],
+        debiles: [
+            /\b(carretera|carreteras|autopista|via nacional)\b/,
+            /\b(obra|obras|megaobra|construccion de)\b/,
+            /\b(transporte|movilidad|infraestructura)\b/,
+        ],
+    },
+    {
+        id: 'justicia',
+        nombre: 'Justicia',
+        /**
+         * Los feeds dicen `Judicial` y la interfaz decía `Justicia`, y como el
+         * filtro comparaba por nombre exacto la baldosa mostraba 0 con cinco
+         * historias dentro. Aquí el id manda y el nombre es solo etiqueta, así
+         * que ese desajuste no puede repetirse.
+         */
+        fuertes: [
+            /\b(fiscalia|fiscal general|procuraduria|contraloria|defensoria del pueblo)\b/,
+            /\b(corte (suprema|constitucional)|consejo de estado|consejo superior de la judicatura)\b/,
+            /\b(jep|tribunal|juzgado|juez|jueza|magistrad[oa]s?)\b/,
+            // «Condenan al narcofiscal…» no lo cazaba la forma sustantiva sola:
+            // el titular de una condena casi siempre va en verbo conjugado.
+            /\bcondena(n|r|do|da|ron)?\b/,
+            /\b(sentencia|fallo judicial|absuelt[oa]|prescribio el caso)\b/,
+            /\b(captur[aoó]|detenid[oa]s?|imputacion|imputad[oa]|medida de aseguramiento)\b/,
+            /\b(extradicion|extraditad[oa]|carcel|penitenciaria|inpec)\b/,
+            /\b(investigacion penal|proceso judicial|demanda judicial|tutela)\b/,
+        ],
+        debiles: [
+            /\b(delito|delitos|crimen|crimenes|corrupcion|soborno|peculado)\b/,
+            /\b(abogad[oa]s?|defensa juridica|acusacion)\b/,
+            /\b(homicidio|asesinato|secuestro|masacre)\b/,
+        ],
+    },
+    {
+        id: 'educacion',
+        nombre: 'Educación',
+        fuertes: [
+            /\b(icetex|mineducacion|sena|icfes)\b/,
+            /\b(universidad|universidades|rector|rectora)\b/,
+            /\b(colegio|colegios|estudiantes?|docentes?|profesor[ae]s?)\b/,
+            /\b(pruebas saber|matricula cero|educacion superior)\b/,
+            /\b(fecode|calendario escolar|jornada unica)\b/,
+        ],
+        debiles: [
+            /\b(educacion|educativ[oa]s?|academic[oa]s?)\b/,
+            /\b(beca|becas|posgrado|maestria|doctorado)\b/,
+            /\b(alfabetizacion|desercion escolar)\b/,
+        ],
+    },
+    {
+        id: 'deportes',
+        nombre: 'Deportes',
+        /**
+         * `partido` y `nacional` NO están aquí sueltos a propósito: son «partido
+         * político» y «gobierno nacional» con la misma frecuencia que el
+         * encuentro y el club. Van exigiendo contexto o no van.
+         *
+         * Esta categoría existe porque se decidió abarcar de más: se objetó que
+         * el deporte casi nunca trae carga izquierda/derecha, y la respuesta fue
+         * que los casos donde sí la trae —deportistas trans, la geopolítica de
+         * qué países compiten— son justo los que se perderían al excluirla.
+         */
+        fuertes: [
+            /\b(futbol|futbolista|balompie)\b/,
+            /\bseleccion colombia\b/,
+            /\b(liga betplay|dimayor|copa libertadores|copa sudamericana|champions league)\b/,
+            /\b(mundial de (futbol|clubes)|eliminatorias|copa america)\b/,
+            /\b(ciclismo|ciclista|tour de francia|giro de italia|vuelta a espana)\b/,
+            /\b(olimpic[oa]s?|juegos olimpicos|panamericanos)\b/,
+            /\b(atletas?|deportistas?|deportiv[oa]s?|deporte)\b/,
+            /\b(tenis|baloncesto|nba|beisbol|voleibol|patinaje|natacion|boxeo)\b/,
+            /\b(formula 1|motogp|automovilismo)\b/,
+            /\b(gol|goles|golead[oa]r|arquero|delantero|mediocampista)\b/,
+            /\b(atletico nacional|america de cali|junior de barranquilla|deportivo cali|independiente santa fe)\b/,
+
+            /**
+             * `millonarios` EXIGE CONTEXTO, y esta es la lección de este
+             * archivo. Suelto clasificó como deportiva «Puerta giratoria:
+             * periodistas con historial de millonarios contratos con el
+             * Estado», que es una investigación sobre contratación pública.
+             * Es el mismo error que «El Dorado» en contentQuality: la
+             * subcadena existe, el sentido no.
+             */
+            /\bmillonarios (fc|de bogota)\b/,
+            /\b(contra|ante|vs\.?) millonarios\b/,
+            /\bmillonarios (gano|perdio|empato|vencio|goleo|enfrenta|derroto|jugara|ficho)\b/,
+        ],
+        debiles: [
+            /\b(fichaje|fichajes|traspaso|refuerzo)\b/,
+            /\b(entrenador|tecnico del|director tecnico|dt del)\b/,
+            /\b(torneo|campeonato|clasificacion|final del)\b/,
+            /\b(medalla|podio|record|campeon|campeona)\b/,
+            /\b(estadio|hincha|hinchada|barra brava)\b/,
+        ],
+    },
+
+    /**
+     * LOS TRES QUE FALTABAN.
+     *
+     * La primera medición dejó 47 % de los artículos sin tema, y al leer esa
+     * lista el patrón era evidente: no eran piezas inclasificables, eran tres
+     * temas que el catálogo heredado no contemplaba. Paramilitares, disidencias
+     * y líderes sociales amenazados; feminicidios, aborto y migración; y
+     * libertad de prensa y cultura. En un agregador colombiano dejar fuera el
+     * conflicto armado no es una omisión menor: es el asunto del país.
+     */
+    {
+        id: 'conflicto',
+        nombre: 'Conflicto y paz',
+        fuertes: [
+            /\b(paramilitar|paramilitares|autodefensas|clan del golfo|agc)\b/,
+            /\b(guerrilla|eln|farc|disidencias?|segunda marquetalia|estado mayor central)\b/,
+            /\b(acuerdo de paz|paz total|proceso de paz|desmovilizacion|reincorporacion)\b/,
+            // El prefijo «narco-» es productivo en el español periodístico
+            // colombiano y aparece pegado a cualquier sustantivo: narcofiscal,
+            // narcopolítica, narcoparamilitar. Se caza el prefijo, no la lista.
+            /\bnarco\w*\b/,
+            /\b(cartel de|cocaina|erradicacion|cultivos? ilicitos?)\b/,
+            /\b(lider(es)? social(es)?|defensor(es)? de derechos humanos)\b/,
+            /\b(masacres?|desplazamiento forzado|desaparicion forzada|falsos positivos)\b/,
+            /\b(minas? antipersonal|artefactos? explosivos?|hostigamientos?|atentados?)\b/,
+            /\b(victimas del conflicto|restitucion de tierras|unidad de victimas)\b/,
+        ],
+        debiles: [
+            /\b(secuestros?|extorsion(es)?|vacuna extorsiva)\b/,
+            /\b(orden publico|fuerza publica|militares|ejercito|policia)\b/,
+            /\b(campesin[oa]s?|zona de reserva campesina|tecam)\b/,
+            /\b(amenazad[oa]s?|amenazas)\b/,
+        ],
+    },
+    {
+        id: 'derechos',
+        nombre: 'Derechos y sociedad',
+        fuertes: [
+            // El plural importa y casi se escapa: `\bfeminicidio\b` NO caza
+            // «Aumentan los feminicidios», que es como se titula la noticia.
+            // El mismo cuidado hace falta en el resto de sustantivos de aquí.
+            /\b(feminicidios?|violencia de genero|violencia intrafamiliar)\b/,
+            /\b(aborto|interrupcion voluntaria del embarazo|derechos reproductivos)\b/,
+            /\b(lgbti?q?\+?|diversidad sexual)\b/,
+            // `trans` suelta: en español no aparece como palabra independiente
+            // salvo referida a personas trans —«transporte», «transición» y
+            // «TransMilenio» son palabras distintas y la frontera las excluye—.
+            // Es además el caso que motivó incluir Deportes: «atletas trans».
+            /\btrans\b/,
+            /\b(migrantes?|migracion|refugiad[oa]s?|deportaciones?|deportad[oa]s?)\b/,
+            /\b(pueblos? indigenas?|comunidades? (indigenas?|afro|negras)|consulta previa)\b/,
+            /\b(derechos humanos|discriminacion|racismo|xenofobia)\b/,
+            /\b(acoso sexual|abuso sexual|violencia sexual)\b/,
+            /\b(trabajo infantil|reforma laboral|sindicat[oa]s?)\b/,
+        ],
+        debiles: [
+            /\b(protesta|manifestacion|marcha|paro nacional|movilizacion)\b/,
+            /\b(pobreza|desigualdad|hambre|inseguridad alimentaria)\b/,
+            /\b(vivienda|subsidio|programa social)\b/,
+            /\b(mujeres|genero|feminista)\b/,
+        ],
+    },
+    {
+        id: 'cultura',
+        nombre: 'Cultura y medios',
+        fuertes: [
+            /\b(cine|pelicula|documental|festival de cine)\b/,
+            /\b(musica|musical|album|concierto|cantante|vallenato|reggaeton)\b/,
+            /\b(literatura|novela|escritor[ae]?s?|editorial literaria|feria del libro)\b/,
+            /\b(museo|exposicion artistica|galeria de arte|patrimonio cultural)\b/,
+            /\b(carnaval|festival de|feria de (cali|manizales))\b/,
+            /\b(libertad de prensa|flip|periodistas? amenazad[oa]s?|censura)\b/,
+            /\b(teatro|danza|artista plastic[oa])\b/,
+        ],
+        debiles: [
+            /\b(cultura|cultural|artistas?)\b/,
+            /\b(television|telenovela|serie|streaming|netflix)\b/,
+            /\b(periodismo|periodista|medios de comunicacion)\b/,
+            /\b(farandula|celebridad|influencer)\b/,
+        ],
+    },
+];
+
+/**
+ * SECCIONES DE URL → tema.
+ *
+ * Solo entran las inequívocas. Quedan fuera a propósito los cajones de sastre
+ * (`actualidad`, `colombia`, `nacion`, `inicio`), la geografía (`bucaramanga`,
+ * `cartagena`, `area-metropolitana`) y el formato (`video`, `galerias`,
+ * `en-vivo`, `clasificados`), que en el sondeo eran una parte enorme de los
+ * segmentos y no dicen nada del tema.
+ */
+export const SECCION_URL_A_TEMA = {
+    politica: 'politica',
+    'politica-y-gobierno': 'politica',
+    gobierno: 'politica',
+    congreso: 'politica',
+    elecciones: 'politica',
+    economia: 'economia',
+    globoeconomia: 'economia',
+    economica: 'economia',
+    negocios: 'economia',
+    empresas: 'economia',
+    finanzas: 'economia',
+    business: 'economia',
+    salud: 'salud',
+    ambiente: 'ambiente',
+    'medio-ambiente': 'ambiente',
+    medioambiente: 'ambiente',
+    sostenibilidad: 'ambiente',
+    tecnologia: 'tecnologia',
+    tecnosfera: 'tecnologia',
+    tech: 'tecnologia',
+    ciencia: 'tecnologia',
+    infraestructura: 'infraestructura',
+    movilidad: 'infraestructura',
+    transporte: 'infraestructura',
+    justicia: 'justicia',
+    judicial: 'justicia',
+    judiciales: 'justicia',
+    tribunales: 'justicia',
+    educacion: 'educacion',
+    deportes: 'deportes',
+    deporte: 'deportes',
+    futbol: 'deportes',
+    sports: 'deportes',
+    conflicto: 'conflicto',
+    'conflicto-armado': 'conflicto',
+    paz: 'conflicto',
+    'proceso-de-paz': 'conflicto',
+    migracion: 'derechos',
+    'derechos-humanos': 'derechos',
+    genero: 'derechos',
+    cultura: 'cultura',
+    entretenimiento: 'cultura',
+    espectaculos: 'cultura',
+    gente: 'cultura',
+    ocio: 'cultura',
+};
+
+/**
+ * ETIQUETAS `<category>` del medio → tema.
+ *
+ * Mismo criterio, sobre el vocabulario real medido. Quedan fuera `destacadas`,
+ * `portada`, `en vivo`, `columna`, `galería`, los nombres propios y las
+ * emisiones fechadas, que fue lo que apareció al medir.
+ */
+export const CATEGORIA_MEDIO_A_TEMA = {
+    politica: 'politica',
+    'politica y gobierno': 'politica',
+    gobierno: 'politica',
+    congreso: 'politica',
+    economia: 'economia',
+    globoeconomia: 'economia',
+    'economia y sociedad': 'economia',
+    empresas: 'economia',
+    sectores: 'economia',
+    finanzas: 'economia',
+    salud: 'salud',
+    'medio ambiente': 'ambiente',
+    ambiente: 'ambiente',
+    sostenibilidad: 'ambiente',
+    tecnologia: 'tecnologia',
+    ciencia: 'tecnologia',
+    justicia: 'justicia',
+    judicial: 'justicia',
+    educacion: 'educacion',
+    deportes: 'deportes',
+    futbol: 'deportes',
+    paz: 'conflicto',
+    conflicto: 'conflicto',
+    campesinado: 'conflicto',
+    'derechos humanos': 'derechos',
+    'movimientos sociales': 'derechos',
+    genero: 'derechos',
+    cultura: 'cultura',
+    entretenimiento: 'cultura',
+};
+
+// ── Ámbito ───────────────────────────────────────────────────────────────────
+
+/**
+ * Marcas de que la pieza habla de Colombia aunque la publique un medio de
+ * fuera, y al revés. El ámbito ya no se deduce de la categoría del feed.
+ */
+const MARCA_COLOMBIA = [
+    /\bcolombia|colombian[oa]s?\b/,
+    /\b(bogota|medellin|cali|barranquilla|cartagena|bucaramanga|cucuta|pereira|manizales|ibague|villavicencio|santa marta|monteria|neiva|popayan|pasto|armenia|sincelejo|valledupar|riohacha|quibdo|florencia|yopal|arauca|mocoa|leticia)\b/,
+    /\b(petro|casa de narino|congreso de la republica|corte constitucional|fiscalia general)\b/,
+    /\b(antioquia|cundinamarca|valle del cauca|santander|atlantico|bolivar|narino|cauca|magdalena|cesar|huila|tolima|meta|caqueta|choco|guajira|casanare|putumayo|arauca|boyaca|caldas|risaralda|quindio|sucre|cordoba|vichada|guainia|vaupes|amazonas|guaviare|san andres)\b/,
+];
+
+const MARCA_EXTERIOR = [
+    /\b(estados unidos|eeuu|ee\.? ?uu|washington|trump|casa blanca|pentagono)\b/,
+    /\b(venezuela|maduro|caracas|ecuador|peru|chile|argentina|brasil|mexico|bolivia|uruguay|paraguay|panama|cuba|nicaragua|haiti|honduras)\b/,
+    /\b(union europea|bruselas|espana|madrid|francia|paris|alemania|berlin|reino unido|londres|italia|roma|portugal)\b/,
+    /\b(china|pekin|beijing|japon|tokio|india|corea del (norte|sur)|taiwan|filipinas|indonesia)\b/,
+    /\b(rusia|putin|moscu|ucrania|kiev|zelenski)\b/,
+    /\b(israel|palestina|gaza|hamas|cisjordania|iran|teheran|siria|libano|irak|arabia saudi|turquia|egipto)\b/,
+    /\b(otan|onu|naciones unidas|fmi|banco mundial|oms|oea)\b/,
+    /\b(africa|nigeria|sudafrica|etiopia|marruecos|argelia|sudan|congo|kenia)\b/,
+];
+
+const cuenta = (patrones, texto) => patrones.reduce((n, p) => n + (p.test(texto) ? 1 : 0), 0);
+
+/**
+ * ¿Colombia o el mundo?
+ *
+ * El país del medio es el punto de partida, no la respuesta: El País de España
+ * publica sobre Colombia y El Tiempo publica sobre Gaza. Manda el contenido, y
+ * el medio solo desempata.
+ *
+ * Cuando hay marcas de los dos lados gana Colombia, y es deliberado: «Petro se
+ * reunió con Lula» es una noticia colombiana con contexto exterior, no una
+ * noticia internacional. Al revés se llenaría la pestaña internacional de
+ * política nacional.
+ *
+ * @param {{texto: string, paisDelMedio?: string}} entrada
+ * @returns {'nacional'|'internacional'}
+ */
+export function clasificarAmbito({ texto, paisDelMedio }) {
+    const t = normalizar(texto);
+    const colombia = cuenta(MARCA_COLOMBIA, t);
+    const exterior = cuenta(MARCA_EXTERIOR, t);
+
+    if (colombia > 0) return 'nacional';
+    if (exterior > 0) return 'internacional';
+    return paisDelMedio && paisDelMedio !== 'CO' ? 'internacional' : 'nacional';
+}
+
+// ── Clasificación de tema ────────────────────────────────────────────────────
+
+/** Segmentos de ruta que nunca son una sección temática. */
+const RUIDO_URL = /^(\d+|www|noticias|news|articulos?|article|nota|amp|rss|feed|index|home|co|es|en)$/;
+
+/** ¿Este segmento es el slug del titular y no una sección? */
+const esSlug = (s) => s.length > 28 || s.split('-').length > 4 || /\.html?$/.test(s);
+
+/**
+ * La sección temática de una URL, si es que la hay.
+ *
+ * Devuelve null para los enlaces de Google News, que son redirecciones
+ * (`news.google.com/rss/articles/CBM…`) y no llevan sección: son el 37 % del
+ * catálogo y fingir que sí la tienen sería peor que no mirarla.
+ *
+ * @param {string} link
+ * @returns {string|null}
+ */
+export function seccionDeLaUrl(link) {
+    try {
+        const url = new URL(link);
+        if (/(^|\.)news\.google\.com$/.test(url.hostname)) return null;
+
+        for (const parte of url.pathname.split('/').filter(Boolean)) {
+            const limpio = normalizar(decodeURIComponent(parte));
+            if (RUIDO_URL.test(limpio)) continue;
+            if (esSlug(limpio)) continue;
+            return limpio;
+        }
+    } catch {
+        /* enlace ilegible: no es motivo para descartar el artículo */
+    }
+    return null;
+}
+
+/**
+ * Clasifica un artículo.
+ *
+ * @param {object} entrada
+ * @param {string}   entrada.headline        titular literal del medio
+ * @param {string}  [entrada.snippet]        entradilla real, o vacío
+ * @param {string}  [entrada.link]           enlace canónico
+ * @param {string[]}[entrada.feedCategories] etiquetas `<category>` del ítem RSS
+ * @param {string}  [entrada.paisDelMedio]   código de país del medio (registro)
+ * @returns {{
+ *   temas: string[],
+ *   principal: string|null,
+ *   ambito: 'nacional'|'internacional',
+ *   rescatado: boolean,
+ *   puntajes: Record<string, number>
+ * }}
+ */
+export function classifyTopics({
+    headline,
+    snippet = '',
+    link = '',
+    feedCategories = [],
+    paisDelMedio = 'CO',
+} = {}) {
+    const titular = normalizar(headline);
+    const entradilla = normalizar(snippet);
+
+    /** @type {Record<string, number>} */
+    const puntajes = {};
+
+    /**
+     * Temas que tienen alguna señal FUERA de la entradilla.
+     *
+     * Existe por lo que se vio al medir. La entradilla es texto largo y lleno de
+     * menciones de pasada, así que dos términos débiles incidentales sumaban
+     * 1,6 y disparaban el rescate: «Jay Clayton asume como director de
+     * Inteligencia Nacional» acabó en Economía por palabras que estaban en el
+     * cuerpo y no en lo que la pieza trata.
+     *
+     * Forzar la clasificación un poco no puede significar aceptar como única
+     * prueba lo que aparece de refilón. El rescate exige que el titular, la
+     * sección de la URL o la etiqueta del medio digan algo; la entradilla suma,
+     * pero no decide sola.
+     */
+    const conSenalDeContexto = new Set();
+
+    const sumar = (id, peso, esContexto) => {
+        puntajes[id] = (puntajes[id] ?? 0) + peso;
+        if (esContexto) conSenalDeContexto.add(id);
+    };
+
+    for (const tema of TEMAS) {
+        for (const patron of tema.fuertes) {
+            if (patron.test(titular)) sumar(tema.id, PESO.fuerteTitular, true);
+            else if (entradilla && patron.test(entradilla)) sumar(tema.id, PESO.fuerteEntradilla, false);
+        }
+        for (const patron of tema.debiles) {
+            if (patron.test(titular)) sumar(tema.id, PESO.debilTitular, true);
+            else if (entradilla && patron.test(entradilla)) sumar(tema.id, PESO.debilEntradilla, false);
+        }
+    }
+
+    const seccion = seccionDeLaUrl(link);
+    if (seccion && SECCION_URL_A_TEMA[seccion]) {
+        sumar(SECCION_URL_A_TEMA[seccion], PESO.seccionUrl, true);
+    }
+
+    for (const cruda of feedCategories) {
+        const etiqueta = normalizar(cruda).trim();
+        if (CATEGORIA_MEDIO_A_TEMA[etiqueta]) {
+            sumar(CATEGORIA_MEDIO_A_TEMA[etiqueta], PESO.categoriaMedio, true);
+        }
+    }
+
+    const ordenados = Object.entries(puntajes).sort((a, b) => b[1] - a[1]);
+    let temas = ordenados.filter(([, p]) => p >= UMBRAL_ASIGNA).map(([id]) => id);
+    let rescatado = false;
+
+    // El pulgar en la balanza: si nada llegó al umbral pero hay una señal real,
+    // se asigna igualmente. Se marca como rescatado para poder medir cuánto del
+    // catálogo se está clasificando así.
+    if (temas.length === 0) {
+        const candidato = ordenados.find(
+            ([id, p]) => p >= UMBRAL_RESCATE && conSenalDeContexto.has(id)
+        );
+        if (candidato) {
+            temas = [candidato[0]];
+            rescatado = true;
+        }
+    }
+
+    return {
+        temas,
+        principal: temas[0] ?? null,
+        ambito: clasificarAmbito({ texto: `${headline ?? ''} ${snippet ?? ''}`, paisDelMedio }),
+        rescatado,
+        puntajes,
+    };
+}
+
+/**
+ * Reparto sobre un lote, para vigilar el clasificador.
+ *
+ * `rescatados` es la cifra que importa: es la proporción del catálogo asignada
+ * por señal débil. Si crece, «forzar un poco» dejó de ser un poco.
+ */
+export function resumirClasificacion(articulos) {
+    const porTema = {};
+    let sinTema = 0;
+    let rescatados = 0;
+    let multiples = 0;
+    const porAmbito = { nacional: 0, internacional: 0 };
+
+    for (const articulo of articulos) {
+        const r = classifyTopics(articulo);
+        porAmbito[r.ambito] += 1;
+        if (r.rescatado) rescatados += 1;
+        if (r.temas.length === 0) sinTema += 1;
+        if (r.temas.length > 1) multiples += 1;
+        for (const t of r.temas) porTema[t] = (porTema[t] ?? 0) + 1;
+    }
+
+    return { total: articulos.length, porTema, porAmbito, sinTema, rescatados, multiples };
+}

@@ -218,8 +218,35 @@ const LAMINAS = {
         </>
     ),
 
-    /* Planos superpuestos: lo que se emite, se reencuadra y se vuelve a emitir. */
+    /* Frontón y columnas: la obra y la institución que la sostiene —el museo, el
+       teatro, la biblioteca—. Es un templo laico y no se confunde con el
+       hemiciclo de Política, que es curvo y se apoya en un solo punto. */
     cultura: (
+        <>
+            <path className="mark-field" fill="currentColor" stroke="none" d="M6 26L32 12 58 26z" />
+            <path d="M6 26L32 12 58 26z" />
+            <path d="M8 30h48" />
+            <path d="M14 30v20M24 30v20M40 30v20M50 30v20" />
+            <path d="M6 54h52" strokeWidth="2.5" />
+        </>
+    ),
+
+    /* Torre emisora. La señal sale y se propaga: es el oficio de informar, y su
+       contrario —el silencio— se ve como ausencia de esas ondas. */
+    medios: (
+        <>
+            <path d="M24 54L32 16 40 54" />
+            <path d="M26 44h12M28 34h8" />
+            <circle cx="32" cy="14" r="2.5" fill="currentColor" stroke="none" />
+            <path className="mark-field" d="M24 20a11 11 0 0 1 16 0" />
+            <path className="mark-field" d="M18 24a19 19 0 0 1 28 0" />
+        </>
+    ),
+
+    /* Planos superpuestos: lo que se emite, se reencuadra y se vuelve a emitir.
+       Era la lámina de «Cultura y medios» y se queda con Entretenimiento, que
+       es a lo que de verdad se parecía: pantallas. */
+    entretenimiento: (
         <>
             <rect className="mark-field" x="9" y="14" width="30" height="22" rx="2" />
             <rect className="mark-field" x="16" y="21" width="30" height="22" rx="2" />

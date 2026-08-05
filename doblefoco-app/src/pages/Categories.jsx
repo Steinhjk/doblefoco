@@ -60,7 +60,14 @@ const Categories = () => {
                   */}
                 {status === 'listo' && (
                     <p className="categories-alcance">
-                        Reparto sobre las <strong>{stories.length}</strong> historias más recientes
+                        {/*
+                          * «CON MÁS COBERTURA», no «más recientes». El feed
+                          * ordena por número de medios que cubren el hecho y
+                          * solo desempata por fecha, así que estas cien son las
+                          * más cubiertas del catálogo. Decir «recientes» sería
+                          * describir mal de dónde sale el reparto.
+                          */}
+                        Reparto sobre las <strong>{stories.length}</strong> historias con más cobertura
                         {counts.total > stories.length && <> de {counts.total.toLocaleString('es-CO')} en el catálogo</>}.
                     </p>
                 )}
@@ -70,7 +77,24 @@ const Categories = () => {
 
             <div className="categories-grid">
                 {categories.map((category) => {
-                    const count = porSeccion[category.id];
+                    /**
+                     * «Últimas» cuenta EL CATÁLOGO, no la página descargada.
+                     *
+                     * Contando lo descargado decía «100 historias» y habría
+                     * dicho 100 para siempre, porque 100 es el tamaño de la
+                     * petición: una cifra que no informa de nada y que además
+                     * se contradecía con el «de 4.252 en el catálogo» escrito
+                     * tres líneas más arriba. El total sí lo manda la API y sí
+                     * crece con cada ingesta.
+                     *
+                     * El `||` cubre a una API antigua que no mande `counts`:
+                     * antes que un cero donde hay cien historias cargadas,
+                     * vuelve a lo descargado.
+                     */
+                    const count =
+                        category.tipo === 'todo'
+                            ? counts.total || porSeccion[category.id]
+                            : porSeccion[category.id];
                     const isActive = active?.id === category.id;
 
                     return (
@@ -115,7 +139,8 @@ const Categories = () => {
                                     )}
                                 </span>
                                 <span className="category-count">
-                                    {count} {count === 1 ? 'historia' : 'historias'}
+                                    {count.toLocaleString('es-CO')}{' '}
+                                    {count === 1 ? 'historia' : 'historias'}
                                 </span>
                             </span>
                         </button>

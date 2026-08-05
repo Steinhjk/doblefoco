@@ -413,23 +413,116 @@ export const TEMAS = [
             /\b(mujeres|genero|feminista)\b/,
         ],
     },
+    /**
+     * «CULTURA Y MEDIOS» ERA TRES COSAS EN UNA CAJA.
+     *
+     * Nació como el cajón de lo que sobraba y se notaba: metía en el mismo tema
+     * el cine y los museos, la libertad de prensa, y la telenovela con el
+     * influencer. Se partió el 2026-08-04, a petición de Jose, que la señaló
+     * como difusa antes de que nadie mirara el léxico.
+     *
+     * Lo que la lista de patrones dejaba ver, y la baldosa no: la libertad de
+     * prensa —el asunto más propio de este sitio— estaba clasificada junto a
+     * «reggaetón» y «farándula». No era un desorden estético; era el tema
+     * central del producto sin sección donde aparecer.
+     *
+     * LA FRONTERA ENTRE LAS TRES, que es lo que habrá que releer cuando alguien
+     * dude dónde poner un patrón nuevo:
+     *
+     *   - `cultura`         — la obra y la institución: cine, música,
+     *                         literatura, museos, teatro, patrimonio, fiestas.
+     *   - `medios`          — el oficio y sus condiciones: quién informa, quién
+     *                         lo impide y quién lo financia.
+     *   - `entretenimiento` — el consumo: televisión, streaming, famosos.
+     *
+     * Un concierto es cultura y un reality es entretenimiento, y sí, la línea
+     * entre los dos es discutible en los bordes. Se elige que la música y el
+     * cine se queden en cultura porque son industria cultural con crítica,
+     * festivales e instituciones detrás; la pantalla de consumo masivo no.
+     */
     {
         id: 'cultura',
-        nombre: 'Cultura y medios',
+        nombre: 'Cultura',
+        /**
+         * LOS PLURALES, OTRA VEZ. Este bloque venía escrito en singular estricto
+         * y por tanto no cazaba «estrenó su temporada de conciertos», ni
+         * «museos», ni «películas», ni «documentales»: `\bconcierto\b` exige
+         * frontera después de la `o` y la `s` no lo es. Es literalmente el mismo
+         * fallo que ya está anotado en `derechos` sobre `feminicidio`, y aquí
+         * afectaba a casi todos los sustantivos del tema. Lo destapó una prueba
+         * al partir la sección; llevaba vivo desde que se escribió.
+         */
         fuertes: [
-            /\b(cine|pelicula|documental|festival de cine)\b/,
-            /\b(musica|musical|album|concierto|cantante|vallenato|reggaeton)\b/,
-            /\b(literatura|novela|escritor[ae]?s?|editorial literaria|feria del libro)\b/,
-            /\b(museo|exposicion artistica|galeria de arte|patrimonio cultural)\b/,
-            /\b(carnaval|festival de|feria de (cali|manizales))\b/,
-            /\b(libertad de prensa|flip|periodistas? amenazad[oa]s?|censura)\b/,
-            /\b(teatro|danza|artista plastic[oa])\b/,
+            /\b(cine|peliculas?|documentales?|festivales? de cine)\b/,
+            /\b(musica|musicales?|albumes?|album|conciertos?|cantantes?|vallenato|reggaeton)\b/,
+            /\b(literatura|novelas?|escritor[ae]?s?|editorial literaria|feria del libro)\b/,
+            /\b(museos?|exposiciones? artisticas?|exposicion artistica|galerias? de arte|patrimonio cultural)\b/,
+            /\b(carnavales?|festivales? de|ferias? de (cali|manizales))\b/,
+            /\b(teatros?|danza|artistas? plastic[oa]s?)\b/,
         ],
         debiles: [
             /\b(cultura|cultural|artistas?)\b/,
-            /\b(television|telenovela|serie|streaming|netflix)\b/,
-            /\b(periodismo|periodista|medios de comunicacion)\b/,
-            /\b(farandula|celebridad|influencer)\b/,
+            /\b(mincultura|biblioteca publica|casa de la cultura)\b/,
+        ],
+    },
+    {
+        id: 'medios',
+        nombre: 'Medios y libertad de prensa',
+        /**
+         * EL TEMA MÁS FÁCIL DE ENVENENAR DE TODO EL ARCHIVO, porque su
+         * vocabulario es el de la propia redacción. Dos trampas concretas:
+         *
+         * `rueda de prensa` NO ENTRA, ni siquiera como débil. Es la forma en
+         * que se convoca a los periodistas, no una noticia sobre la prensa: la
+         * escribe cualquier nota de política, de deportes o de sucesos. Con ese
+         * patrón dentro, esta sección se habría llenado de gobierno.
+         *
+         * `prensa` suelta tampoco. Aparece en «prensa internacional dice…», que
+         * es una cita de fuente, no un asunto. Va exigiendo adjetivo.
+         *
+         * `editorial` tampoco: choca de frente con la «editorial literaria» de
+         * Cultura y con «casa editorial» como nombre de empresa.
+         */
+        fuertes: [
+            /\b(libertad de (prensa|expresion)|fundacion para la libertad de prensa|flip)\b/,
+            /\b(censura|censurad[oa]s?|mordaza|autocensura)\b/,
+            /\bperiodistas? (amenazad[oa]s?|asesinad[oa]s?|agredid[oa]s?|exiliad[oa]s?)\b/,
+            /\b(agresiones? (a|contra) la prensa|estigmatizacion (a|de) la prensa)\b/,
+            /\b(medios de comunicacion|concentracion de medios|propiedad de los medios)\b/,
+            /\b(desinformacion|noticias falsas|fake news|verificacion de hechos)\b/,
+            /\b(pauta oficial|publicidad oficial)\b/,
+            /\b(rtvc|sistema de medios publicos)\b/,
+        ],
+        debiles: [
+            /\b(periodismo|periodistas?|reporter[oa]s?)\b/,
+            /\bprensa (nacional|colombiana|independiente|regional)\b/,
+            /\b(columnistas?|caricaturistas?)\b/,
+            /\b(noticier[oa]s?|emisoras?)\b/,
+        ],
+    },
+    {
+        id: 'entretenimiento',
+        nombre: 'Entretenimiento',
+        /**
+         * `serie` y `temporada` SE QUEDAN FUERA aunque sean el vocabulario
+         * obvio. «Una serie de ataques» y «la temporada de lluvias» son español
+         * corriente en titular de sucesos y de clima; es la misma trampa de
+         * «partido» en Deportes y de «El Dorado» en contentQuality. Se cazan
+         * las formas que no significan otra cosa.
+         */
+        fuertes: [
+            // `realities` es como lo escribe la prensa colombiana, más que
+            // `realitys`; las dos formas entran, y el singular con ellas.
+            /\b(telenovelas?|realit(y|ys|ies)|reality show)\b/,
+            /\b(netflix|hbo|disney\+?|prime video|streaming)\b/,
+            /\b(farandula|celebridades?|influencers?)\b/,
+            /\b(la casa de los famosos|masterchef|desafio the box)\b/,
+            /\b(series? de television|programas? de television)\b/,
+        ],
+        debiles: [
+            /\b(television|tv abierta)\b/,
+            /\b(youtubers?|tiktokers?|podcasts?)\b/,
+            /\b(episodios?|estreno de la (serie|temporada))\b/,
         ],
     },
 ];
@@ -485,10 +578,13 @@ export const SECCION_URL_A_TEMA = {
     'derechos-humanos': 'derechos',
     genero: 'derechos',
     cultura: 'cultura',
-    entretenimiento: 'cultura',
-    espectaculos: 'cultura',
-    gente: 'cultura',
-    ocio: 'cultura',
+    // Las secciones de ocio de los medios son entretenimiento, no cultura. Las
+    // cuatro apuntaban a `cultura` cuando eran el mismo tema; ahora que están
+    // separados, `gente` y `ocio` describen exactamente la sección de famosos.
+    entretenimiento: 'entretenimiento',
+    espectaculos: 'entretenimiento',
+    gente: 'entretenimiento',
+    ocio: 'entretenimiento',
 };
 
 /**
@@ -527,7 +623,7 @@ export const CATEGORIA_MEDIO_A_TEMA = {
     'movimientos sociales': 'derechos',
     genero: 'derechos',
     cultura: 'cultura',
-    entretenimiento: 'cultura',
+    entretenimiento: 'entretenimiento',
 };
 
 // ── Ámbito ───────────────────────────────────────────────────────────────────

@@ -33,6 +33,13 @@
  * FALTABAN TRES. `conflicto`, `derechos` y `cultura` llevaban clasificándose en
  * el motor sin baldosa donde aparecer, así que su cobertura era invisible en
  * esta pantalla.
+ *
+ * Y SOBRABA UNA MAL HECHA. «Cultura y medios» era el cajón de lo que no cabía
+ * en ninguna otra: el cine y los museos, la libertad de prensa, y la telenovela
+ * con el influencer. Jose la señaló como difusa y al abrir el léxico se vio por
+ * qué —el asunto central de este sitio, quién puede informar y quién lo
+ * impide, estaba archivado junto a «reggaetón»—. Se partió en `cultura`,
+ * `medios` y `entretenimiento` el 2026-08-04.
  */
 
 /**
@@ -82,6 +89,14 @@ export const categories = [
         description: 'Derechos humanos, migración, género y protesta social.',
     },
     {
+        id: 'medios',
+        name: 'Medios y libertad de prensa',
+        tipo: 'tema',
+        // Cabe en las dos líneas de la baldosa. La primera redacción añadía «y
+        // quién financia la prensa» y se cortaba a media frase.
+        description: 'Censura, agresiones a periodistas y desinformación.',
+    },
+    {
         id: 'salud',
         name: 'Salud',
         tipo: 'tema',
@@ -113,9 +128,15 @@ export const categories = [
     },
     {
         id: 'cultura',
-        name: 'Cultura y medios',
+        name: 'Cultura',
         tipo: 'tema',
-        description: 'Industria cultural, patrimonio y el propio ecosistema de medios.',
+        description: 'Cine, música, literatura, museos, teatro y patrimonio.',
+    },
+    {
+        id: 'entretenimiento',
+        name: 'Entretenimiento',
+        tipo: 'tema',
+        description: 'Televisión, streaming, realities y famosos.',
     },
     {
         id: 'deportes',

@@ -272,3 +272,60 @@ describe('resumen para vigilancia', () => {
         expect(r.porAmbito.nacional + r.porAmbito.internacional).toBe(3);
     });
 });
+
+/**
+ * LA FRONTERA DE LAS TRES SECCIONES QUE SALIERON DE «CULTURA Y MEDIOS».
+ *
+ * Se partió el 2026-08-04 porque el tema mezclaba la obra, el oficio y el
+ * consumo. Lo que hay que proteger no es la división —esa se ve leyendo el
+ * catálogo— sino las TRAMPAS DE VOCABULARIO que hacen que un tema construido
+ * con el idioma de la propia redacción se lo trague todo.
+ */
+describe('cultura, medios y entretenimiento', () => {
+    /**
+     * El primer caso de esta prueba es el que destapó que casi todo el léxico
+     * de Cultura estaba en singular estricto: «conciertos» no lo cazaba nadie.
+     */
+    it('cada uno cae donde le toca', () => {
+        expect(temas('La Filarmónica de Bogotá estrenó su temporada de conciertos')).toContain('cultura');
+        expect(temas('Los museos de Bogotá abren gratis el domingo')).toContain('cultura');
+        expect(temas('Tres películas colombianas compiten en el festival')).toContain('cultura');
+        expect(temas('La FLIP documentó 40 agresiones contra la prensa en el semestre')).toContain('medios');
+        expect(temas('La casa de los famosos define su eliminación de esta semana')).toContain('entretenimiento');
+    });
+
+    /**
+     * `rueda de prensa` es la trampa central de `medios`: la convocan el
+     * gobierno, los clubes y la Fiscalía, así que como patrón habría convertido
+     * la sección de libertad de prensa en un segundo canal de política.
+     */
+    it('una rueda de prensa no es una noticia sobre la prensa', () => {
+        const r = temas('El ministro de Hacienda anunció en rueda de prensa el recorte del presupuesto');
+        expect(r).not.toContain('medios');
+        expect(r).toContain('politica');
+    });
+
+    it('citar a la prensa internacional tampoco es hablar de medios', () => {
+        expect(temas('La prensa internacional reaccionó al discurso del presidente')).not.toContain('medios');
+    });
+
+    /**
+     * Misma lección que «partido» en Deportes y «El Dorado» en contentQuality:
+     * la subcadena existe, el sentido no.
+     */
+    it('«una serie de» y «la temporada de» no son televisión', () => {
+        expect(temas('Una serie de ataques dejó tres heridos en el Catatumbo')).not.toContain('entretenimiento');
+        expect(temas('La temporada de lluvias deja 12 municipios incomunicados')).not.toContain('entretenimiento');
+    });
+
+    it('la editorial literaria no arrastra a medios', () => {
+        expect(temas('La editorial literaria publicó la novela póstuma del escritor')).not.toContain('medios');
+    });
+
+    /** El motivo de la división, comprobado: ya no comparten casilla. */
+    it('la libertad de prensa dejó de archivarse junto a la farándula', () => {
+        expect(temas('Periodistas amenazados en Arauca denuncian censura')).toContain('medios');
+        expect(temas('Periodistas amenazados en Arauca denuncian censura')).not.toContain('entretenimiento');
+        expect(temas('El reality de cocina estrena temporada en televisión')).not.toContain('medios');
+    });
+});

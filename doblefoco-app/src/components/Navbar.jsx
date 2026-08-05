@@ -64,7 +64,7 @@ const Navbar = () => {
                         </li>
                         <li>
                             <NavLink to="/categorias" onClick={closeMenu}>
-                                Categorias
+                                Categorías
                             </NavLink>
                         </li>
                         <li>

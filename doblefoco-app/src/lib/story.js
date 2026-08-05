@@ -148,7 +148,35 @@ export function normalizeStory(raw) {
     return {
         id: String(raw.id),
         title: raw.title,
+
+        /**
+         * Categoría HEREDADA DEL FEED por el que entró el artículo. Se conserva
+         * por trazabilidad —qué se le mostró al lector y cuándo— y porque
+         * mientras la API desplegada no mande `topics` es el único asidero que
+         * tiene la pantalla de secciones. No es el tema de la pieza.
+         */
         category: raw.category ?? 'Sin categoría',
+
+        /**
+         * Los dos ejes que `category` tenía colapsados, ya separados en la base.
+         *
+         * `null` NO ES LO MISMO QUE VACÍO, y la diferencia es la que permite
+         * desplegar el cliente antes que la API. `null` significa «este
+         * despliegue de la API todavía no clasifica», y quien lo lea debe
+         * recurrir al campo heredado; `[]` significa «clasificó y no encontró
+         * tema», que es un hecho sobre la pieza. Si se colapsaran en `[]` la
+         * pantalla de secciones mostraría catorce ceros y parecería una avería.
+         *
+         * Este normalizador construye un objeto NUEVO: un campo que no se copie
+         * aquí desaparece sin error, que es exactamente cómo se perdió la imagen
+         * en su día. Por eso están escritos.
+         *
+         * @see server/db/feedStore.js — «`topics` y `ambito` son lo que la
+         *      interfaz debe leer».
+         */
+        topics: Array.isArray(raw.topics) ? raw.topics : null,
+        ambito: raw.ambito === 'internacional' || raw.ambito === 'nacional' ? raw.ambito : null,
+
         summary: raw.summary ?? null,
 
         publishedAt: raw.publishedAt ?? null,
@@ -205,6 +233,8 @@ export function normalizeStory(raw) {
  * @property {string} id
  * @property {string} title
  * @property {string} category
+ * @property {string[]|null} topics
+ * @property {'nacional'|'internacional'|null} ambito
  * @property {string|null} summary
  * @property {string|null} publishedAt
  * @property {{url: string, outlet: string|null, outletId: string|null}|null} image

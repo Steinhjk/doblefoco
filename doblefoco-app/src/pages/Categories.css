@@ -1,40 +1,181 @@
 .categories-page {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 40px 20px;
 }
 
+.categories-alcance {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
     margin-bottom: 50px;
 }
 
+/**
+ * La baldosa es una FICHA, no un botón con un adorno.
+ *
+ * Antes era un cuadrado centrado con un emoji de 2,5 rem encima del nombre. Se
+ * reordena en tres franjas —lámina, texto, cifra— porque es lo que permite que
+ * la lámina ocupe el ancho completo y funcione como una portada de sección en
+ * lugar de como una pegatina.
+ *
+ * El radio baja de 16 px a `--radius-lg` (6). Los 16 no salían de ningún token:
+ * esta pantalla tenía las esquinas más redondas del sitio entero.
+ */
 .category-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
     background: var(--bg-card);
-    border: 2px solid transparent;
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-    cursor: pointer;
+    text-align: left;
     font-family: inherit;
     color: inherit;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s,
+        border-color 0.25s;
 }
 
 .category-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
+    border-color: var(--text-muted);
     box-shadow: var(--shadow-md);
 }
 
+/**
+ * Mismo criterio que los filtros del feed: el segundo píxel del borde va por
+ * sombra y no por borde. Subir el borde a 2 px con `box-sizing: border-box`
+ * encoge el contenido y descuadra la baldosa respecto de sus vecinas.
+ */
 .category-card.active {
     border-color: var(--text-main);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 0 0 1px var(--text-main), var(--shadow-md);
 }
 
-/* Filtered results */
+.category-card:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring), var(--shadow-md);
+}
+
+/* ---------------------------------------------------------------- lámina -- */
+
+.category-plate {
+    display: grid;
+    place-items: center;
+    /* Franja apaisada y no cuadrada: la lámina es un encabezado de sección, y
+       un cuadrado la devolvería al tamaño de icono del que viene. */
+    aspect-ratio: 16 / 6;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.category-mark {
+    width: 56px;
+    height: 56px;
+    /* Reposo en el gris secundario para que la cuadrícula lea como un conjunto
+       y no como catorce cosas gritando a la vez; al pasar por encima o al
+       activarla sube a tinta plena. */
+    color: var(--text-muted);
+    transition: color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.category-card:hover .category-mark {
+    color: var(--text-main);
+    transform: scale(1.04);
+}
+
+.category-card.active .category-mark {
+    color: var(--text-main);
+}
+
+/**
+ * El plano de fondo de cada lámina: barras, terreno, la multitud.
+ *
+ * Va por opacidad y NO por un color más claro. Un gris fijo se rompe en uno de
+ * los dos temas —el que aclara sobre fondo claro desaparece—, mientras que la
+ * opacidad se calcula contra lo que haya detrás y funciona en los dos sin una
+ * segunda regla.
+ */
+.category-mark .mark-field {
+    opacity: 0.3;
+}
+
+/* ------------------------------------------------------------- contenido -- */
+
+.category-body {
+    display: block;
+    padding: 14px 16px 10px;
+    flex: 1;
+}
+
+.category-name {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-main);
+}
+
+.category-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 5px;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------------ pie -- */
+
+.category-foot {
+    display: block;
+    padding: 0 16px 14px;
+}
+
+.category-meter {
+    display: block;
+    height: 3px;
+    background: var(--border-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.category-meter-fill {
+    display: block;
+    height: 100%;
+    background: var(--text-muted);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s;
+}
+
+.category-card:hover .category-meter-fill,
+.category-card.active .category-meter-fill {
+    background: var(--text-main);
+}
+
+.category-count {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* -------------------------------------------------------------- listado -- */
+
 .category-results {
     margin-top: 40px;
 }
@@ -44,6 +185,8 @@
     align-items: baseline;
     gap: 12px;
     margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .category-results-header h2 {
@@ -63,80 +206,23 @@
     gap: 20px;
 }
 
-.category-icon {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: 12px;
-}
-
-.category-card h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 4px;
-}
-
-.category-count {
-    font-size: 0.8rem;
+.category-empty {
+    padding: 32px 0;
     color: var(--text-muted);
 }
 
-.category-preview {
-    margin-top: 40px;
-}
+@media (prefers-reduced-motion: reduce) {
+    .category-card,
+    .category-mark,
+    .category-meter-fill {
+        transition: none;
+    }
 
-.category-preview h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    color: var(--primary);
-}
+    .category-card:hover {
+        transform: none;
+    }
 
-.preview-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.preview-item {
-    display: flex;
-    gap: 16px;
-    background: var(--bg-card);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.3s;
-}
-
-.preview-item:hover {
-    transform: translateX(4px);
-}
-
-.preview-item img {
-    width: 120px;
-    height: 80px;
-    object-fit: cover;
-}
-
-.preview-content {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.preview-content h4 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 4px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.preview-content span {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    .category-card:hover .category-mark {
+        transform: none;
+    }
 }

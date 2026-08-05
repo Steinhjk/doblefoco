@@ -31,9 +31,22 @@
     border-radius: 3px;
 }
 
-.tone-term-sensacional { background: rgba(245, 158, 11, 0.18); }
-.tone-term-izquierda   { background: rgba(139, 92, 246, 0.18); }
-.tone-term-derecha     { background: rgba(245, 158, 11, 0.18); }
+/**
+ * Tres categorías, tres realces DISTINTOS.
+ *
+ * «Sensacional» y «derecha» llevaban el mismo ámbar exacto, así que un término
+ * cargado y un término de derecha se veían idénticos: el realce no distinguía
+ * nada. Y los del espectro no coincidían con los de la tarjeta —violeta y
+ * ámbar frente a rojo y azul—, de modo que el mismo lado cambiaba de color
+ * según en qué parte de la página estuviera.
+ *
+ * Ahora izquierda y derecha son los tokens del espectro, y el sensacionalismo
+ * tiene su propio color de aviso, que es lo que es: no es un lado, es lenguaje
+ * cargado, y puede venir de cualquiera de los dos.
+ */
+.tone-term-sensacional { background: var(--warn-soft); }
+.tone-term-izquierda   { background: var(--bias-left-soft); }
+.tone-term-derecha     { background: var(--bias-right-soft); }
 
 .tone-where { opacity: 0.65; }
 

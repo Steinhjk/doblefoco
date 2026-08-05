@@ -115,17 +115,26 @@
     border-color: var(--text-muted);
 }
 
+/**
+ * EL SEGUNDO PÍXEL DEL BORDE NO PUEDE SER BORDE.
+ *
+ * El estado activo subía el borde de 1 a 2 px. Con `box-sizing: border-box` el
+ * ancho no se recalcula solo, así que la pastilla crecía 2 px al pulsarla y
+ * empujaba a todas las de su derecha: filtrar movía la fila entera.
+ *
+ * El grosor extra va ahora por `box-shadow`, que se pinta fuera del flujo y no
+ * ocupa espacio. Mismo aspecto, sin desplazamiento.
+ *
+ * De paso desaparece el par de reglas [data-theme]: el borde era #000 con un
+ * override a #fff para oscuro, que es exactamente lo que ya vale --text-main
+ * en cada tema.
+ */
 .filter-btn.active {
     background: var(--bg-card);
     color: var(--text-main);
     font-weight: 700;
-    border: 2px solid #000000;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="dark"] .filter-btn.active,
-:root:not([data-theme="light"]) .filter-btn.active {
-    border: 2px solid #ffffff;
+    border-color: var(--text-main);
+    box-shadow: 0 0 0 1px var(--text-main), var(--shadow-sm);
 }
 
 .controls-row-2 {
@@ -175,16 +184,13 @@
     border-color: var(--text-muted);
 }
 
+/* Mismo criterio que .filter-btn.active: el grosor por sombra, no por borde. */
 .toggle-filter-btn.active {
     background: var(--bg-card);
-    border: 2px solid #000000;
+    border-color: var(--text-main);
+    box-shadow: 0 0 0 1px var(--text-main);
     color: var(--text-main);
     font-weight: 700;
-}
-
-[data-theme="dark"] .toggle-filter-btn.active,
-:root:not([data-theme="light"]) .toggle-filter-btn.active {
-    border: 2px solid #ffffff;
 }
 
 .feed-empty {
@@ -237,7 +243,7 @@
     gap: 8px;
     background: var(--bg-card);
     color: var(--text-main);
-    border: 2px solid #000000;
+    border: 2px solid var(--text-main);
     padding: 12px 28px;
     border-radius: 4px;
     font-family: var(--font-heading);
@@ -246,11 +252,6 @@
     cursor: pointer;
     transition: all 0.25s ease;
     box-shadow: var(--shadow-sm);
-}
-
-[data-theme="dark"] .load-more-btn,
-:root:not([data-theme="light"]) .load-more-btn {
-    border: 2px solid #ffffff;
 }
 
 .load-more-btn:hover {

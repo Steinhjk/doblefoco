@@ -166,7 +166,7 @@
 
 .run-scrape-btn {
     background: var(--accent);
-    color: #000;
+    color: var(--on-accent);
     border: none;
     padding: 11px 20px;
     font-family: var(--font-main);
@@ -182,7 +182,7 @@
 
 .run-scrape-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    box-shadow: var(--shadow-sm);
 }
 
 .run-scrape-btn:disabled {
@@ -290,7 +290,7 @@
 
 .secondary-restore-btn {
     background: var(--accent);
-    color: #000;
+    color: var(--on-accent);
     border: none;
     padding: 10px 24px;
     border-radius: 2px;
@@ -461,11 +461,11 @@
 
 .admin-btn.approve {
     background: var(--accent);
-    color: #000;
+    color: var(--on-accent);
 }
 
 .admin-btn.approve:hover {
-    background: #fbbf24;
+    background: var(--accent-hover);
 }
 
 /* Editing Mode Form CSS */
@@ -597,7 +597,7 @@
 
 .save-approve-btn {
     background: var(--accent);
-    color: #000;
+    color: var(--on-accent);
     border: none;
     padding: 10px 20px;
     border-radius: 2px;
@@ -610,7 +610,7 @@
 }
 
 .save-approve-btn:hover {
-    background: #fbbf24;
+    background: var(--accent-hover);
 }
 
 @media (max-width: 768px) {

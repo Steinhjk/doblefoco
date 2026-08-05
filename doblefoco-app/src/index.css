@@ -29,6 +29,37 @@
   --bias-objective: #cbd5e1;
   --bias-right: #3b82f6;
 
+  /* Fondos tenues del espectro, para pastillas y realces de texto.
+     Existen como token porque estaban escritos a mano en cada sitio, y así fue
+     como la cronología acabó pintando la derecha de ámbar mientras la tarjeta
+     de al lado la pintaba de azul. */
+  --bias-left-soft: rgba(239, 68, 68, 0.15);
+  --bias-objective-soft: rgba(203, 213, 225, 0.15);
+  --bias-right-soft: rgba(59, 130, 246, 0.15);
+
+  /* Aviso / énfasis. NO es un color del espectro: marca lenguaje
+     sensacionalista, que puede venir de cualquier lado. */
+  --warn: #f59e0b;
+  --warn-soft: rgba(245, 158, 11, 0.18);
+
+  /* Texto que va ENCIMA de --accent. Estaba escrito como `#000` en seis sitios,
+     y en tema claro --accent es casi negro: negro sobre negro. */
+  --on-accent: #18191c;
+
+  /* Campos de formulario. El fondo estaba fijo en rgba(0,0,0,.2), que en tema
+     claro deja una caja gris sucia dentro de una barra clara. */
+  --input-bg: rgba(0, 0, 0, 0.2);
+  --input-bg-focus: rgba(0, 0, 0, 0.4);
+
+  /* Degradado del sufijo «.co» de la marca. Tres paradas explícitas y no un
+     color-mix() a mitad de camino: el texto va con background-clip y color
+     transparente, así que si el navegador no entiende la función descarta el
+     degradado entero y el «.co» se vuelve invisible. Un token de más sale más
+     barato que esa forma de fallar. */
+  --brand-suffix-from: #ffffff;
+  --brand-suffix-mid: #cbd5e1;
+  --brand-suffix-to: #94a3b8;
+
   /* Fuentes - Periodismo Moderno de Alta Personalidad */
   --font-main: 'Outfit', 'Inter', -apple-system, sans-serif;
   --font-heading: 'Plus Jakarta Sans', 'Playfair Display', Georgia, serif;
@@ -72,6 +103,20 @@
   --bias-left: #dc2626;
   --bias-objective: #0f172a;
   --bias-right: #2563eb;
+  --bias-left-soft: rgba(220, 38, 38, 0.12);
+  --bias-objective-soft: rgba(15, 23, 42, 0.1);
+  --bias-right-soft: rgba(37, 99, 235, 0.12);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.15);
+  --on-accent: #f8fafc;
+  --input-bg: rgba(15, 23, 42, 0.04);
+  --input-bg-focus: #ffffff;
+  /* En claro el degradado va de tinta a slate: el mismo gesto, pero visible.
+     Iba de #ffffff a #94a3b8 sin variante clara, así que el «.co» quedaba
+     blanco sobre una barra blanca — es decir, invisible. */
+  --brand-suffix-from: #334155;
+  --brand-suffix-mid: #64748b;
+  --brand-suffix-to: #94a3b8;
   --shadow-sm: 0 4px 14px -2px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 10px 28px -4px rgba(15, 23, 42, 0.1);
   --shadow-lg: 0 20px 50px -8px rgba(15, 23, 42, 0.15);
@@ -151,7 +196,7 @@ button:focus-visible {
   left: 20px;
   z-index: 9999;
   background: var(--accent);
-  color: #000;
+  color: var(--on-accent);
   padding: 12px 24px;
   border-radius: 0 0 12px 12px;
   font-family: var(--font-heading);

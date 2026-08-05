@@ -42,7 +42,10 @@
 }
 
 .navbar-brand .brand-suffix {
-    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+    background: linear-gradient(135deg,
+        var(--brand-suffix-from) 0%,
+        var(--brand-suffix-mid) 50%,
+        var(--brand-suffix-to) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -93,7 +96,7 @@
     font-family: var(--font-main);
     font-size: 0.9rem;
     line-height: 1;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--input-bg);
     color: var(--text-main);
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
@@ -101,7 +104,7 @@
 .navbar-search input:focus {
     outline: none;
     border-color: var(--accent);
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: var(--input-bg-focus);
 }
 
 .search-submit-btn {
@@ -316,7 +319,7 @@
         border-radius: 25px;
         font-family: inherit;
         font-size: 1rem;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: var(--input-bg);
         color: var(--text-main);
     }
 
@@ -339,16 +342,19 @@
     }
 
     .navbar-links a:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--bg-subtle);
     }
 
     .navbar-links a.active::after {
         display: none;
     }
 
+    /* El degradado era de rgba(253, 224, 71, .1) — un amarillo de una paleta
+       anterior que ya no aparece en ningún otro sitio. Y el :hover de arriba
+       era blanco al 5 %, invisible sobre el menú claro. */
     .navbar-links a.active {
         color: var(--primary);
-        background: linear-gradient(90deg, rgba(253, 224, 71, 0.1), transparent);
+        background: var(--bg-subtle);
         border-left: 3px solid var(--accent);
     }
 }

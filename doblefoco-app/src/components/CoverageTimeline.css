@@ -71,9 +71,12 @@
     box-shadow: 0 0 0 3px var(--bg-color, #fff);
 }
 
-.timeline-left   { color: #8b5cf6; }
-.timeline-center { color: #64748b; }
-.timeline-right  { color: #f59e0b; }
+/* Los del espectro son los MISMOS colores de la tarjeta y de las barras. Aquí
+   estaban en violeta y ámbar, así que la cronología pintaba la derecha de un
+   color y la tarjeta de arriba la pintaba de otro, en la misma pantalla. */
+.timeline-left   { color: var(--bias-left); }
+.timeline-center { color: var(--text-muted); }
+.timeline-right  { color: var(--bias-right); }
 
 .timeline-entry-body { color: var(--text-color, inherit); }
 
@@ -96,9 +99,9 @@
     border-radius: 3px;
 }
 
-.timeline-spectrum-left   { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
-.timeline-spectrum-center { background: rgba(100, 116, 139, 0.15); color: #64748b; }
-.timeline-spectrum-right  { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.timeline-spectrum-left   { background: var(--bias-left-soft); color: var(--bias-left); }
+.timeline-spectrum-center { background: var(--bias-objective-soft); color: var(--text-muted); }
+.timeline-spectrum-right  { background: var(--bias-right-soft); color: var(--bias-right); }
 
 .timeline-offset {
     font-size: 0.74rem;

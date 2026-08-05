@@ -619,8 +619,11 @@ export function seccionDeLaUrl(link) {
 /**
  * Clasifica un artículo.
  *
- * @param {object} entrada
- * @param {string}   entrada.headline        titular literal del medio
+ * @param {object} [entrada]
+ * @param {string}  [entrada.headline]       titular literal del medio; sin él
+ *                                           la clasificación sale vacía, que es
+ *                                           el caso que cubre la prueba de
+ *                                           entrada vacía
  * @param {string}  [entrada.snippet]        entradilla real, o vacío
  * @param {string}  [entrada.link]           enlace canónico
  * @param {string[]}[entrada.feedCategories] etiquetas `<category>` del ítem RSS

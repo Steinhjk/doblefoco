@@ -20,6 +20,22 @@
 #  consultivo de Postgres: el que llegue segundo se salta el ciclo y sale con
 #  código 0, porque saltar no es fallar.
 #
+#  CADENCIA DE RESPALDO, NO DE MOTOR (2026-08-06)
+#  ----------------------------------------------
+#  Corría cada 30 minutos, la misma cadencia que el motor, y eso no era ser un
+#  respaldo: era hacer el trabajo dos veces. El cerrojo evita que los dos
+#  escriban a la vez, pero no evita lo que de verdad importa aquí — cuando los
+#  disparos NO se solapan, los 37 medios reciben nuestras peticiones dos veces
+#  por media hora. Este proyecto se presenta ante ellos con un User-Agent propio
+#  y una URL para pedirnos que paremos; duplicarles el tráfico sin necesidad
+#  contradice esa postura, y es el mismo argumento por el que existe el cerrojo.
+#
+#  Cada 2 horas es lo que hace falta para lo que esto es: si el motor cae, la
+#  serie pierde como mucho un par de horas en vez de quedarse muerta hasta que
+#  alguien lo note. Si algún día el motor se retira y esto vuelve a ser el
+#  planificador principal, hay que devolverlo a */30 — el porqué está en el
+#  punto 3 de aquí abajo.
+#
 #  TRES COSAS QUE CONVIENE SABER
 #
 #  1. El cron de GitHub no es puntual. Se retrasa varios minutos cuando la
@@ -31,16 +47,20 @@
 #     el repositorio. Si la serie se corta sola sin error, mira esto primero.
 #
 #  3. Cada feed solo expone sus últimos 15 titulares. Media hora es la cadencia
-#     elegida porque un medio activo puede publicar más de 15 en una hora, y
-#     esos artículos se perderían para siempre: perder artículos es justo lo que
-#     sesgaría la medición.
+#     que necesita QUIEN INGIERE DE VERDAD —hoy el motor—, porque un medio
+#     activo puede publicar más de 15 en una hora y esos artículos se perderían
+#     para siempre: perder artículos es justo lo que sesgaría la medición. Aquí
+#     ya no aplica: mientras el motor esté vivo, este cron no aporta ningún
+#     artículo que aquel no haya recogido antes.
 # =============================================================================
 
 name: Ingesta
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    # Cada 2 horas: es un respaldo del motor, no un segundo motor. El porqué,
+    # arriba en «CADENCIA DE RESPALDO, NO DE MOTOR».
+    - cron: '0 */2 * * *'
   # Para poder dispararlo a mano desde la pestaña Actions sin esperar al cron.
   workflow_dispatch:
 

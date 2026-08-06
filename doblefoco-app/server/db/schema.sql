@@ -483,3 +483,83 @@ CREATE TABLE IF NOT EXISTS errores (
 -- El panel lista lo más reciente primero, y solo lo no resuelto.
 CREATE INDEX IF NOT EXISTS errores_recientes_idx
     ON errores (ultima_vez DESC) WHERE resuelto_en IS NULL;
+
+
+-- ── 12. Cerrar la API pública de Supabase ────────────────────────────────────
+--
+-- QUÉ PASABA. Supabase publica una API REST sobre el esquema `public` y le da
+-- permisos al rol `anon`, que es el que corresponde a su clave pública — la que
+-- está diseñada para ir incrustada en un navegador. Sus valores por omisión
+-- suponen que quien use la base la usará A TRAVÉS de esa API y protegerá cada
+-- tabla con RLS. Nosotros no la usamos: la aplicación habla con Postgres por
+-- `pg` con la cadena de conexión, y no hay ni un cliente de Supabase en el
+-- repositorio. Así que nadie activó RLS, y los permisos por omisión se quedaron
+-- puestos. Medido el 2026-08-06, antes de esto:
+--
+--   14 tablas · RLS desactivada · 0 políticas
+--   anon → SELECT, INSERT, UPDATE, DELETE, TRUNCATE en todas
+--
+-- No era solo lectura, que es lo que avisaba el correo de Supabase. `anon`
+-- podía LEER `admin_users` (correo y hash de la contraseña) y `admin_sessions`,
+-- y podía BORRAR `ingest_runs`: la serie de F1-01, la única cosa aquí que no se
+-- puede reconstruir hacia atrás, porque los artículos se descartan a las 72
+-- horas y un ciclo ya ocurrido no se vuelve a observar. Es exactamente lo que
+-- el respaldo diario existe para proteger.
+--
+-- POR QUÉ LAS TRES CAPAS Y NO SOLO RLS. Activar RLS es lo que pedía el aviso y
+-- basta para cerrarlo: una tabla con RLS y sin políticas no deja pasar a nadie.
+-- Pero se abre otra vez sola el día que alguien cree una política permisiva sin
+-- pensarlo, o desactive RLS para depurar algo y no lo vuelva a activar. Quitar
+-- los permisos deja la puerta cerrada aunque se caiga RLS, y quitarlos también
+-- del esquema deja fuera a las tablas que aún no existen. Las tres son baratas.
+--
+-- POR QUÉ NO NOS AFECTA. Nos conectamos como `postgres`, que es el dueño de las
+-- 14 tablas y además tiene `rolbypassrls`. RLS no se aplica ni por una vía ni
+-- por la otra; se comprobó antes de escribir esto, porque la suposición
+-- contraria habría tumbado la aplicación entera al migrar.
+--
+-- `service_role` se queda como está, a propósito: su clave sí es un secreto de
+-- servidor, nunca viaja a un navegador, y es la que usa el propio panel de
+-- Supabase.
+--
+-- SI ALGÚN DÍA SE ADOPTA supabase-js —el encabezado de este archivo lo apunta
+-- para F2-04—, esto hay que abrirlo A MANO y tabla por tabla, con su política.
+-- Ese es el orden correcto: se concede lo que se necesita, no se hereda todo.
+
+DO $$
+DECLARE
+    tabla TEXT;
+BEGIN
+    -- Estos roles solo existen en Supabase. Contra un Postgres local —que es
+    -- como se levanta el proyecto sin credenciales— no hay nada que cerrar, y
+    -- fallar aquí rompería la migración de quien clone el repositorio.
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon')
+        OR NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated')
+    THEN
+        RETURN;
+    END IF;
+
+    -- Se recorre el catálogo en vez de listar las 14 tablas a mano: una tabla
+    -- nueva queda protegida el mismo día que se crea, sin que nadie se acuerde
+    -- de añadirla aquí. Ese olvido es justo el fallo que se está corrigiendo.
+    FOR tabla IN
+        SELECT c.relname
+          FROM pg_class c
+          JOIN pg_namespace n ON n.oid = c.relnamespace
+         WHERE n.nspname = 'public' AND c.relkind = 'r'
+    LOOP
+        EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', tabla);
+        EXECUTE format('REVOKE ALL ON public.%I FROM anon, authenticated', tabla);
+    END LOOP;
+
+    REVOKE ALL ON SCHEMA public FROM anon, authenticated;
+
+    -- Sin esto, los permisos vuelven solos: Supabase deja puesto un ALTER
+    -- DEFAULT PRIVILEGES que concede todo sobre cada tabla que cree este rol.
+    EXECUTE format(
+        'ALTER DEFAULT PRIVILEGES FOR ROLE %I IN SCHEMA public '
+        'REVOKE ALL ON TABLES FROM anon, authenticated',
+        current_user
+    );
+END
+$$;

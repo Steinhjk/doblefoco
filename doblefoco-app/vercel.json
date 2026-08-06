@@ -61,6 +61,18 @@
       "destination": "https://doblefoco.fly.dev/noticia/$1"
     },
     {
+      "source": "/mapa-medios",
+      "destination": "https://doblefoco.fly.dev/mapa-medios"
+    },
+    {
+      "source": "/transparencia",
+      "destination": "https://doblefoco.fly.dev/transparencia"
+    },
+    {
+      "source": "/sobre-nosotros",
+      "destination": "https://doblefoco.fly.dev/sobre-nosotros"
+    },
+    {
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }

@@ -38,6 +38,7 @@ import {
 import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
+import { RUTAS_RENDERIZADAS, metadatosDePagina } from './ssr/paginasEstaticas.js';
 import { esRutaCanonica, idDesdeRuta, rutaDeHistoria } from '../shared/storyPath.js';
 import { TEMAS } from '../shared/topicClassifier.js';
 import { contarSinResolver, erroresRecientes, marcarResuelto, registrarError } from './db/errorStore.js';
@@ -710,8 +711,12 @@ async function obtenerPlantilla() {
     }
 
     try {
-        // Se pide la RAÍZ, nunca una ruta /noticia/*: esas las redirige Vercel
-        // de vuelta aquí y el servidor se llamaría a sí mismo en bucle.
+        // Se pide la RAÍZ, y tiene que seguir siendo una ruta que Vercel sirva
+        // ÉL: las que reenvía aquí —/noticia/*, /mapa-medios, /transparencia,
+        // /sobre-nosotros— harían que el servidor se llamara a sí mismo en
+        // bucle. El día que se renderice también la portada, esto deja de
+        // valer y hay que leer la plantilla de dist/ o de otra ruta estática.
+        // Es la primera cosa que hay que mirar si /  se añade a los rewrites.
         const respuesta = await fetch(`${SITE_URL}/`, {
             signal: AbortSignal.timeout(5_000),
             headers: { Accept: 'text/html' },
@@ -875,6 +880,68 @@ app.get('/noticia/:id', async (req, res) => {
             '</head><body><h1>No se pudo mostrar la noticia</h1>' +
             '<p><a href="/">Volver al inicio</a></p></body></html>'
         );
+    }
+});
+
+/**
+ * LAS PÁGINAS QUE NO DEPENDEN DE LA BASE, TAMBIÉN RENDERIZADAS.
+ *
+ * El motivo y por qué solo estas tres está en server/ssr/paginasEstaticas.js.
+ * Aquí solo importa una diferencia con la ruta de noticia, y es deliberada:
+ *
+ * ANTE UN FALLO, ESTA RUTA SIRVE LA SPA; LA DE NOTICIA DEVUELVE 500. No es
+ * incoherencia. Una noticia que no se puede renderizar puede ser una historia
+ * retirada o un id inventado, y ahí el código de estado es información: decirle
+ * al buscador «esto existe» cuando no existe deja indexada una página vacía.
+ * Estas tres siempre existen y no dependen de ningún dato externo, así que si
+ * el renderizado falla la plantilla de la SPA las muestra perfectamente en el
+ * navegador. Devolver 500 rompería para una persona una página que funciona,
+ * solo porque el buscador iba a verla peor.
+ *
+ * `datos: null` porque no hay nada que precargar: el navegador hidrata con lo
+ * mismo que el servidor ya usó, que viaja en el bundle.
+ */
+app.get(RUTAS_RENDERIZADAS, async (req, res) => {
+    // `req.path` y no `req.originalUrl`: la cadena de consulta no cambia lo que
+    // se renderiza, y usarla en la canónica crearía una dirección distinta por
+    // cada parámetro de campaña que alguien pegue en un enlace.
+    const ruta = req.path;
+
+    try {
+        const motor = await prepararSsr();
+        if (!motor) return res.type('html').send(await obtenerPlantilla());
+
+        const plantilla = await obtenerPlantilla();
+        const { html } = await motor.render(ruta, null);
+
+        // Mismo par de directivas que la ruta de noticia, y por el mismo motivo
+        // exacto: este HTML referencia los /assets/*.js que compila Vercel, y un
+        // despliegue suyo los sustituye por otros hashes. La ventana corta evita
+        // que la CDN sirva durante media hora una página que no puede hidratar.
+        res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=120, stale-while-revalidate=600');
+        res.type('html');
+
+        return res.send(
+            montarPagina({
+                plantilla,
+                html,
+                metadatos: metadatosDePagina(ruta, SITE_URL),
+                datos: null,
+            })
+        );
+    } catch (error) {
+        console.error(`[ssr] fallo al renderizar ${ruta}`, error);
+        void registrarError({ error, proceso: 'api', origen: 'peticion', ruta: `GET ${ruta}` });
+
+        // No se cachea: si se sirvió sin renderizar, que la siguiente petición
+        // lo vuelva a intentar en vez de heredar el fallo durante minutos.
+        res.setHeader('Cache-Control', 'no-store');
+
+        try {
+            return res.type('html').send(await obtenerPlantilla());
+        } catch {
+            return res.type('html').send(await readFile(resolve(RAIZ_APP, 'dist/index.html'), 'utf8'));
+        }
     }
 });
 

@@ -611,7 +611,96 @@ a la vista, porque es la decisión más discutible de todo el cálculo.
 
 ---
 
-## 14. El paso siguiente, y por qué es ese
+## 14. FASE 2, MEDIDA — el puente de partido a persona
+
+**Ejecutado el 2026-08-07.** La fuente de militancia es **Wikidata** (SPARQL
+público, sin credenciales, auditable por cualquiera): personas con nacionalidad
+colombiana y partido declarado.
+
+```
+Actores en Wikidata ....................... 1 002
+  con partido de posición conocida ........... 735
+Titulares analizados (72 h) ............... 5 737
+Actores detectados en titulares ............... 38
+  de ellos con posición conocida .............. 27
+Menciones totales ............................ 479
+Menciones con posición ....................... 132   ← 2,3 % de los titulares
+```
+
+**Es viable, y hoy es débil.** Cuatro obstáculos concretos, todos medidos.
+
+### 14.1 La detección por nombre completo pierde la mayoría
+
+| Actor | nombre completo / apellido | recall |
+|---|---|---|
+| Gustavo Petro | 55 / 264 | **21 %** |
+| María Fernanda Cabal | 7 / 12 | 58 % |
+| Iván Cepeda | 13 / 20 | 65 % |
+| Abelardo de la Espriella | 299 / 447 | 67 % |
+
+Los titulares dicen «Petro», no «Gustavo Petro». Buscar el nombre completo
+descarta **cuatro de cada cinco** menciones del actor más citado del país.
+
+Y el apellido suelto no es la solución sin más: «Santos», «Duque», «Barreras» y
+«Cabal» son palabras comunes del español. Hace falta desambiguación, no un
+`includes()` más corto.
+
+### 14.2 La militancia histórica asigna posiciones falsas
+
+Petro figura en Wikidata con **cinco partidos** —Polo, Vía Alterna, MIR, Colombia
+Humana, Alianza Democrática—. El script se quedó con el primero que tenía
+posición conocida y le asignó **2,4: el valor del Polo Democrático**, un partido
+que dejó hace más de una década. Lo mismo con Iván Cepeda.
+
+Tiene arreglo —las declaraciones P102 de Wikidata llevan calificadores de fecha
+de inicio y fin— pero **hay que usarlos**. Sin eso, el método sitúa a la gente
+donde estaba, no donde está.
+
+### 14.3 El actor más mencionado no tiene ancla
+
+**Abelardo de la Espriella: 447 menciones en 19 medios, el más citado del corpus
+por amplio margen, y Wikidata lo registra como «político independiente».** No
+está en CHES 2020 ni en V-Party 2018 porque en esas fechas no era un actor
+nacional.
+
+Lo mismo con **Pacto Histórico, Colombia Humana y Lista de la Decencia**, y con
+Francia Márquez y Gustavo Bolívar: sin ancla.
+
+Esto es la limitación 11.4.1 apareciendo con toda su fuerza: **los anclajes
+llegan a 2018-2020 y el ciclo político colombiano cambió por completo desde
+entonces.** Y no es un hueco aleatorio: falta sistemáticamente lo NUEVO, así que
+una medición construida así describiría el país de 2018 y lo presentaría como el
+de hoy.
+
+### 14.4 Un aviso sobre los falsos positivos
+
+Aparece **Álvaro Gómez Hurtado**, asesinado en 1995, con 6 menciones. Puede ser
+referencia histórica legítima o coincidencia de nombre. Cualquier detección
+necesita una revisión manual de precisión antes de usarse — es la Fase 2 tal como
+estaba planteada, y esta prueba confirma que ese paso no es opcional.
+
+### 14.5 Qué queda en pie
+
+La arquitectura sigue siendo correcta y la fuente de militancia existe y es
+gratuita. Lo que esta medición cambia es el **orden de trabajo**: antes de
+modelar nada hay que resolver detección con desambiguación, fechas de militancia,
+y sobre todo **qué hacer con los actores sin ancla**.
+
+Tres salidas posibles para eso último, en orden de coste:
+
+1. **Declararlos «sin ancla»** y excluirlos del cálculo. Honesto, pero hoy
+   dejaría fuera al actor más mencionado del país: la medición hablaría de todo
+   menos de lo que se está publicando.
+2. **Derivar su posición de con quién aparecen**: si un actor nuevo se menciona
+   sistemáticamente junto a actores anclados, hereda posición con incertidumbre.
+   Es barato y usa datos que ya tenemos, pero es inferencia sobre inferencia.
+3. **Encuesta propia a especialistas** sobre los actores nuevos, con el mismo
+   cuestionario de CHES para que sea comparable. Es lo más caro y lo más sólido,
+   y convertiría a DobleFoco en productor de datos, no solo en consumidor.
+
+---
+
+## 15. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

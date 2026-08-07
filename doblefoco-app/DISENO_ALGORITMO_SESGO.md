@@ -700,7 +700,116 @@ Tres salidas posibles para eso último, en orden de coste:
 
 ---
 
-## 15. El paso siguiente, y por qué es ese
+## 15. DESCARTADO CON DATOS — heredar posición por co-mención
+
+**Medido el 2026-08-07**, sobre los mismos 5 737 titulares:
+
+```
+Titulares con al menos un actor detectado ....... 448
+  con DOS o más actores .......................... 28
+  con uno anclado y uno sin ancla ................ 16
+Actores sin ancla que podrían heredar ............. 3
+```
+
+Y el resultado de heredar:
+
+| Actor | co-menciones | heredaría | rango de los anclados |
+|---|---|---|---|
+| Abelardo de la Espriella | 11 | 5,4 | 2,4 – 9,2 |
+| **Francia Márquez** | 3 | **6,9** | 2,4 – 9,2 |
+| Aída Quilcué | 2 | 2,4 | — |
+
+**Francia Márquez heredaría 6,9: derecha moderada.** Es una figura de la
+izquierda colombiana y el método la coloca al otro lado. No hace falta discutir
+el umbral: el caso más claro sale invertido.
+
+**Por qué falla, y por qué era previsible.** Las noticias co-mencionan
+ADVERSARIOS, no aliados: un titular sobre un debate nombra a los dos lados. La
+co-mención mide conflicto, no alineación. Es la misma objeción de la sección
+2.2 —nombrar no es respaldar— aplicada a los actores en vez de a los medios.
+
+De la Espriella lo enseña con claridad: aparece junto a actores que van de 2,4 a
+9,2, y el promedio da 5,4, un centro que no describe nada. **Promediar el
+espectro entero produce el punto medio del espectro, no la posición de nadie.**
+
+Se une a la lista de caminos descartados con medición. No volver a proponerlo sin
+datos nuevos que expliquen por qué ahora sí.
+
+---
+
+## 16. La IA como extractor, nunca como fuente
+
+Propuesta de Jose (2026-08-07): usar modelos de lenguaje —y ciclos de consulta
+entre varios— para determinar la militancia de los actores sin ancla.
+
+**Hay una versión que rompe el diseño y otra que lo sirve, y la diferencia es
+exactamente dónde se pone el modelo.**
+
+### 16.1 Lo que NO se puede hacer
+
+**Preguntarle a un modelo si un actor es de izquierda o de derecha, y usar la
+respuesta.** Rompe tres criterios de la sección 0 a la vez:
+
+- **Procedencia.** Toda la arquitectura existe para tener una etiqueta que no
+  hayamos escrito nosotros. El juicio de un modelo no es un registro externo: es
+  una compresión de texto de internet, que probablemente incluye especulación
+  sobre esta misma pregunta. Es el camino 4.1 —deducir el sesgo de un léxico que
+  escribimos nosotros— con otra ropa.
+- **Reproducibilidad.** Un auditor no puede repetir «qué pensaba el modelo»: la
+  respuesta cambia con la versión.
+- **Cobertura donde importa.** Los modelos son más débiles con los actores
+  recientes, que son justamente los que no tienen ancla. La herramienta falla
+  precisamente donde se la necesita.
+
+**Y cruzar dos modelos no lo arregla.** Coincidir mide FIABILIDAD, no validez:
+comparten datos de entrenamiento y se equivocan de forma correlacionada. Que
+Gemini y este modelo coincidan no es evidencia de que acierten.
+
+### 16.2 Lo que SÍ se puede hacer
+
+**Extracción con cita.** El modelo busca en fuentes públicas —Registraduría, CNE,
+web del partido, prensa, Wikidata— y devuelve:
+
+```
+actor · partido declarado · fecha de inicio · fecha de fin · URL de la fuente
+```
+
+**Lo que se guarda en la ficha es la fuente, no la respuesta del modelo.** El
+modelo hace recuperación y extracción, no juicio, y la cadena de auditoría queda
+intacta: cualquiera abre el enlace y comprueba. Si no hay documento, no hay dato;
+no se rellena con lo que el modelo «cree recordar».
+
+Esto ataca directamente 14.2 (fechas de militancia) y 14.3 (actores nuevos), que
+son problemas de **búsqueda documental**, no de juicio político. Es trabajo que
+una persona haría igual, más rápido.
+
+### 16.3 Dónde sí sirve consultar a varios modelos
+
+Como **triaje**, no como fuente: los casos donde dos modelos extraen documentos
+distintos, o uno no encuentra nada, son los que van primero a revisión humana.
+Convierte una lista de cientos de actores en una cola priorizada.
+
+### 16.4 Protocolo propuesto
+
+1. Lista de actores sin ancla, ordenada por menciones en el corpus. Hoy la
+   encabeza De la Espriella con 447.
+2. Extracción con cita obligatoria; sin documento, el actor queda «sin ancla».
+3. Segunda pasada con otro modelo **solo para detectar discrepancias**.
+4. Revisión humana de las discrepancias y de una muestra aleatoria del resto —la
+   muestra no es opcional: sin ella no se conoce la tasa de error de lo que
+   nadie revisó.
+5. La militancia verificada entra en el registro **con su fuente y sus fechas**.
+   La posición sigue viniendo de CHES y V-Party, nunca del modelo.
+
+**Lo que este protocolo NO resuelve:** para un partido que no existe en CHES 2020
+ni en V-Party 2018 —Pacto Histórico, y el vehículo con el que De la Espriella
+llegó a la presidencia— saber la militancia no da posición. Ahí solo quedan la
+encuesta propia a especialistas (11.4 / 14.5, opción 3) o esperar a una ola nueva
+de los registros externos.
+
+---
+
+## 17. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

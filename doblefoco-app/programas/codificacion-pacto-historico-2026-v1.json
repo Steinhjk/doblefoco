@@ -1,0 +1,73 @@
+{
+  "documento": "pacto-historico-2026-v1",
+  "partido": "Pacto Histórico",
+  "candidato": "Iván Cepeda",
+  "eleccion": "Presidencial Colombia 2026, primera vuelta",
+  "instrumento": "Manifesto Project (MARPOR), esquema de 56 categorías, codebook MPDS2024a",
+  "codificador": "Claude (Opus 5) — PRIMERA PASADA, UN SOLO CODIFICADOR",
+  "fecha": "2026-08-07",
+
+  "muestreo": {
+    "porQue": "El documento tiene 433 páginas y 117 742 palabras. Codificarlo entero daría del orden de 8 000 cuasi-frases, unas 60 veces el trabajo del documento corto.",
+    "metodo": "Sistemático, no aleatorio simple: recorre el documento de principio a fin, así que ninguna sección queda fuera por azar.",
+    "arranque": 3,
+    "paso": "1 de cada 14 páginas con prosa codificable",
+    "paginasCodificadas": [26, 44, 60, 76, 92, 108, 124, 142, 161, 177, 194, 210, 227, 244, 261, 278, 296, 313, 330],
+    "excluida": "La página 9 salió en la muestra pero es índice, no prosa. Se excluye y se declara.",
+    "reproducible": "scripts del muestreo con arranque y paso fijos; cualquiera obtiene la misma muestra."
+  },
+
+  "conteos": {
+    "per703_agriculture_farmers": 22,
+    "per503_equality": 18,
+    "per201_freedom_human_rights": 16,
+    "per304_political_corruption": 16,
+    "per504_welfare_expansion": 16,
+    "per501_environmental_protection": 14,
+    "per202_democracy": 14,
+    "per106_peace": 10,
+    "per103_anti_imperialism": 8,
+    "per705_underprivileged_minorities": 8,
+    "per411_technology_infrastructure": 5,
+    "per606_civic_mindedness": 5,
+    "per301_decentralization": 4,
+    "per406_protectionism_positive": 3,
+    "per506_education_expansion": 3,
+    "per701_labour_groups": 3,
+    "per105_military_negative": 2,
+    "per107_internationalism_positive": 2,
+    "per403_market_regulation": 2,
+    "per405_corporatism": 2,
+    "per303_govt_efficiency": 1,
+    "per412_controlled_economy": 1
+  },
+
+  "totalCuasiFrases": 175,
+
+  "rile": {
+    "derecha": { "conteo": 21, "porcentaje": 12.0 },
+    "izquierda": { "conteo": 64, "porcentaje": 36.6 },
+    "valor": -24.6
+  },
+
+  "pruebaDeDiscriminacion": {
+    "proposito": "Verificar que el instrumento aguanta ANTES de invertir en codificar más documentos.",
+    "resultado": "De la Espriella +33,4 · Cepeda −24,6 · separación de 58 puntos.",
+    "conclusion": "El instrumento discrimina. Aplicado a dos documentos de polos opuestos produce valores de signo contrario y muy separados. Si estuviera roto, habrían salido parecidos.",
+    "loQueNOprueba": "Que los valores absolutos sean correctos, ni que otro codificador obtenga lo mismo. Eso sigue exigiendo una segunda codificación humana con alfa de Krippendorff."
+  },
+
+  "hallazgoMetodologico": {
+    "titulo": "per201 (libertad y derechos humanos) cuenta como DERECHA en el RILE, y en Colombia eso distorsiona",
+    "queSeObservo": "per201 es la tercera categoría más frecuente en Cepeda: 16 de 175 cuasi-frases. Casi todas vienen de su relato de persecución —exilio, allanamientos, el asesinato de su padre en la Unión Patriótica, un familiar en un falso positivo— y de la exigencia de verdad y reparación para víctimas.",
+    "porQueImporta": "El RILE clasifica per201 como categoría de DERECHA. El esquema se diseñó en la Europa de la Guerra Fría, donde 'libertad y derechos humanos' era lenguaje de la derecha liberal frente al bloque del Este. En Colombia el discurso de derechos humanos es característico de la IZQUIERDA, por razones históricas concretas y documentadas.",
+    "efecto": "Sin per201, el RILE de Cepeda sería −33,7 en vez de −24,6: la categoría le suma casi 9 puntos hacia la derecha por hablar de las víctimas de la violencia.",
+    "queHacer": "NO se corrige a mano el resultado —eso sería ajustar el instrumento hasta que dé lo esperado—. Se declara la limitación, se publican los dos valores (con y sin per201) y se documenta que el RILE es un índice diseñado para otro contexto. Es exactamente el tipo de decisión que debe estar en la metodología pública y no en una hoja de cálculo privada."
+  },
+
+  "observaciones": [
+    "La categoría dominante es per703 (agricultura y campesinado): 22 de 175. La reforma agraria atraviesa el documento entero.",
+    "per501 (medio ambiente) suma 14 y per503 (igualdad) 18; juntas con per703 son el 31 % del texto.",
+    "per304 (corrupción) suma 16 — casi lo mismo que en De la Espriella (9 sobre un documento cuatro veces más corto, proporcionalmente similar). Los dos candidatos hablan de corrupción con intensidad parecida, y el RILE no lo registra porque es categoría neutra. Es un ejemplo de coincidencia real que ninguna etiqueta de izquierda-derecha muestra."
+  ]
+}

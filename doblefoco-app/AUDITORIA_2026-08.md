@@ -193,6 +193,37 @@ dónde probar un cambio destructivo antes de aplicarlo.
 Ordenado por **relación entre lo que aporta y lo que cuesta**, no por severidad.
 Cada fase deja el sistema en un estado coherente; se puede parar entre fases.
 
+> **FASE A CERRADA — 2026-08-07.** Los tres puntos medidos. Resultados en las
+> notas de cada uno más abajo.
+>
+> **A.2, el agrupamiento:** medido contra los 72 pares etiquetados. En el punto
+> de operación (Jaccard 0,34): precisión 94,4 %, **exhaustividad 64,2 %**. Es
+> decir, **19 de 53 pares del mismo hecho se separan mal**. El 8 % multifuente NO
+> es el techo del corpus: es el suelo que produce un umbral conservador. Bajar a
+> 0,25 subiría la exhaustividad a 86,8 % y multiplicaría por cinco las fusiones
+> incorrectas (2 → 10). Es un intercambio deliberado y coherente con el criterio
+> escrito —fusionar inventa cobertura que no existe—, ahora cuantificado.
+>
+> **Efecto real de la Fase B, con 54 ciclos asentados** (corrige la cifra de 5
+> ciclos que se reportó primero):
+>
+> | etapa | multifuente |
+> |---|---|
+> | techo 5 000 | 323 |
+> | techo 8 000 | 357 (+10,5 %) |
+> | + expulsión por comparabilidad | 362 (+12,1 %) |
+>
+> La mejora es del **12 %**, no del 23 % que se anunció con los primeros ciclos.
+>
+> **La expulsión por comparabilidad todavía no actúa, y es correcto.** Con el
+> techo en 8 000 y el corpus en ~5 150 —gobernado por la ventana de 72 h, como se
+> quería— la regla no llega a dispararse. Queda como salvaguarda para cuando el
+> volumen crezca.
+>
+> **La izquierda sigue en 0,5 % del volumen.** Ni el techo ni la expulsión la
+> movieron, porque el desequilibrio nunca fue del techo. Confirma H1 y deja la
+> Fase D como el único camino que puede corregirlo.
+
 ### Fase A · Ver lo que ya tenemos (1–2 sesiones)
 Nada de código nuevo de producto. Solo mirar datos que ya existen.
 

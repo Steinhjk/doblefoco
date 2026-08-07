@@ -1,0 +1,54 @@
+{
+  "documento": "centro-democratico-2026-v1",
+  "partido": "Centro Democrático",
+  "candidato": "Paloma Valencia",
+  "eleccion": "Presidencial Colombia 2026, primera vuelta (3.ª, 6,92 %)",
+  "instrumento": "Manifesto Project (MARPOR), codebook MPDS2024a",
+  "codificador": "Claude (Opus 5) — PRIMERA PASADA, UN SOLO CODIFICADOR",
+  "fecha": "2026-08-07",
+  "sha256Pdf": "0a52fd2c761bdb8645b8cd72f5b7d8cfc02373148e510a07a26a93aa77d3ae9e",
+
+  "porQueEsteDocumento": "Es el ÚNICO de 2026 cuyo partido tiene posición externa en CHES-LA y V-Party. Sirve para lo que ninguno de los otros dos puede: contrastar la codificación contra un ancla independiente.",
+
+  "advertencia": "680 palabras, 2 páginas: es un documento de campaña resumido, no un programa extenso. 54 cuasi-frases dan un error de muestreo alto. Se codifica igual porque es el material programático que la candidatura registró, pero la cifra es frágil y así hay que publicarla.",
+
+  "conteos": {
+    "per605_law_and_order": 10,
+    "per401_free_market": 5,
+    "per410_economic_growth": 5,
+    "per411_technology_infrastructure": 5,
+    "per104_military_positive": 4,
+    "per504_welfare_expansion": 4,
+    "per703_agriculture_farmers": 3,
+    "per706_non_economic_groups": 3,
+    "per405_corporatism": 2,
+    "per414_economic_orthodoxy": 2,
+    "per502_culture": 2,
+    "per506_education_expansion": 2,
+    "per704_middle_class": 2,
+    "per101_foreign_special_relations": 1,
+    "per402_incentives": 1,
+    "per501_environmental_protection": 1,
+    "per601_national_way_of_life": 1,
+    "per603_traditional_morality": 1
+  },
+
+  "totalCuasiFrases": 54,
+  "rile": { "derecha": { "conteo": 24, "porcentaje": 44.4 }, "izquierda": { "conteo": 6, "porcentaje": 11.1 }, "valor": 33.3 },
+
+  "pruebaDeValidez": {
+    "anclaExterna": { "ches_lrgen": 9.21, "ches_lrecon": 9.07, "ches_galtan": 9.43, "vparty_izqder": 2.68 },
+    "contexto": "Centro Democrático es el partido situado MÁS a la derecha de los once colombianos de CHES-LA, y también el más alto de los seis de V-Party. La predicción falsable era: si el método vale, su RILE debe salir claramente positivo y en el extremo alto.",
+    "resultado": "RILE +33,3. La predicción se cumple.",
+    "loQueEstoEsYnoEs": "Es validez PREDICTIVA sobre un caso, no una correlación: con un solo punto anclado no se puede ajustar una recta entre la escala RILE y la de CHES. Para calibrar hacen falta al menos dos partidos anclados, y en 2026 no existen: los partidos tradicionales no llevaron candidato propio."
+  },
+
+  "hallazgo": {
+    "titulo": "Defensores de la Patria queda donde el Centro Democrático, y eso no estaba puesto a mano",
+    "cifras": { "centro_democratico": 33.3, "defensores_de_la_patria": 33.4, "pacto_historico": -24.6 },
+    "porQueImporta": "El método sitúa a un partido SIN ancla externa (Defensores, +33,4) en la misma posición que el partido más a la derecha CON ancla (Centro Democrático, +33,3), con una diferencia de una décima. No es una coincidencia buscada: las dos codificaciones se hicieron por separado y con el mismo esquema. Es la primera evidencia de que el procedimiento puede situar a los partidos nuevos —que era justamente el muro donde el diseño se había quedado atascado.",
+    "prudencia": "Una décima de diferencia sobre 54 y 138 cuasi-frases es ruido; lo que se sostiene es que ambos caen en la misma zona, no que sean idénticos."
+  },
+
+  "observacion": "El perfil interno de los dos documentos de derecha NO es igual, y ahí el RILE oculta más de lo que muestra. En Valencia domina per605 (10 de 54) pero seguido de per401, per410 y per411 —mercado, crecimiento e infraestructura—. En De la Espriella, tras per605 (22 de 138) vienen per603 (moral tradicional) y per414 (ortodoxia fiscal). Mismo punto en la recta, composición distinta: uno es más tecnocrático-liberal y el otro más moral-tradicional. Es exactamente el argumento a favor de publicar ejes con nombre en vez de una sola etiqueta."
+}

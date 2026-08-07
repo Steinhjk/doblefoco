@@ -963,7 +963,67 @@ mientras las otras se construyen.
 
 ---
 
-## 19. El paso siguiente, y por qué es ese
+## 19. DOCUMENTOS CONSEGUIDOS — 2026-08-07
+
+En `doblefoco-app/programas/`: el texto extraído, más `manifiesto.json` con la
+URL de origen, el **SHA-256 del PDF** y la fecha de descarga. Cualquiera puede
+volver a bajar el PDF, comprobar el hash y repetir la extracción.
+
+| Partido | Documento | Páginas | Palabras |
+|---|---|---|---|
+| Defensores de la Patria | *Colombia, Patria Milagro* | 21 | **1 895** |
+| Pacto Histórico | *Tres revoluciones…* (bases programáticas) | 118 | **53 535** |
+
+También descargado el **libro de códigos de MARPOR** (32 págs), que es el
+instrumento de codificación.
+
+### 19.1 Calidad de la extracción, comprobada
+
+97 % del documento de Cepeda y 90 % del de De la Espriella son texto utilizable.
+Lo ilegible son páginas de índice con fuente decorativa, irrelevantes para
+codificar. Se midió antes de dar los textos por buenos, contando presencia de
+palabras funcionales del español por página.
+
+### 19.2 El problema que hay que resolver antes de codificar
+
+**Un programa tiene 28 veces más palabras que el otro.**
+
+MARPOR codifica proporciones de cuasi-frases por categoría, así que la diferencia
+de longitud no invalida la comparación por sí sola. Pero 1 895 palabras dan muy
+pocas cuasi-frases, y **con pocas unidades el error de muestreo de cada
+proporción se dispara**: una categoría con tres menciones sobre cien pasa a 3 %
+con un intervalo enorme, y compararla con un 3 % calculado sobre miles de
+unidades es comparar cosas de precisión muy distinta.
+
+Tres formas de tratarlo, y hay que elegir antes de codificar, no después:
+
+1. **Publicar la proporción con su intervalo** y dejar que se vea que uno es
+   mucho más ancho. Es lo más honesto y lo más feo.
+2. **Ampliar el documento corto** con otros materiales programáticos radicados
+   —planes regionales, estatutos ante el CNE— hasta un volumen comparable.
+   Riesgo: mezclar documentos de distinta naturaleza.
+3. **No comparar proporciones sino presencia/ausencia** de las categorías
+   principales. Pierde resolución y gana robustez.
+
+**Y no es un detalle técnico neutral**: la longitud del programa es en sí misma
+un dato sobre cómo se presenta cada candidatura, y quien lea la comparación va a
+interpretarla. Conviene decirlo en el texto, no esconderlo en una nota.
+
+### 19.3 Procedencia: dos avisos
+
+- El programa de Defensores de la Patria se obtuvo de **Candidateados (Fundación
+  Colombia 2050)**, no del sitio del movimiento ni de la Registraduría.
+- El del Pacto Histórico está alojado por **La Silla Vacía, que es un medio del
+  propio catálogo**. El documento es de la campaña, pero para un método que mide
+  medios conviene no depender de un medio para obtener el insumo.
+
+Los dos deberían sustituirse por la copia radicada ante la Registraduría cuando
+se consiga. El hash guardado permite comprobar si la copia oficial coincide con
+la que se usó.
+
+---
+
+## 20. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

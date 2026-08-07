@@ -1,0 +1,30 @@
+[
+  {
+    "id": "defensores-de-la-patria-2026",
+    "partido": "Defensores de la Patria",
+    "titulo": "Colombia, Patria Milagro — Propuestas y Programas de Gobierno",
+    "eleccion": "Presidencial 2026",
+    "url": "https://www.candidateados.com/programas/programa_de_gobierno_Abelardo_de_la_Espriella.pdf",
+    "alojadoPor": "Candidateados (Fundación Colombia 2050)",
+    "nota": "No se obtuvo desde el sitio oficial del movimiento ni desde la Registraduría; queda pendiente confirmar contra la copia radicada.",
+    "textoExtraido": "defensores-de-la-patria-2026.txt",
+    "sha256Pdf": "d6092d1a631e463d7f28c13cc2b2db3f44ffe6ff9a17930af0553e44a29a6233",
+    "bytesPdf": 2885602,
+    "palabras": 1895,
+    "descargadoEl": "2026-08-07"
+  },
+  {
+    "id": "pacto-historico-2026",
+    "partido": "Pacto Histórico",
+    "titulo": "Tres revoluciones para hacer de Colombia una potencia mundial de la vida — Bases programáticas de gobierno",
+    "eleccion": "Presidencial 2026",
+    "url": "https://www.lasillavacia.com/wp-content/uploads/2026/06/plan-de-gobierno-2026-2030.pdf",
+    "alojadoPor": "La Silla Vacía",
+    "nota": "ATENCIÓN: alojado por un medio del propio catálogo. El documento es de la campaña, pero para la auditoría conviene sustituirlo por la copia del sitio oficial o de la Registraduría.",
+    "textoExtraido": "pacto-historico-2026.txt",
+    "sha256Pdf": "4c1a5f58fb43196df77b72e06e655be7e95df995c120934db8de981450e955ba",
+    "bytesPdf": 11770787,
+    "palabras": 53535,
+    "descargadoEl": "2026-08-07"
+  }
+]

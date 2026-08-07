@@ -17,6 +17,37 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-07 · El algoritmo de sesgo se diseña desde cero y por fases
+
+**Decisión.** Antes de tocar un solo valor de `bias`, se escribe el método. Está
+en `DISENO_ALGORITMO_SESGO.md`: ocho fases, cada una con entregable propio y con
+permiso explícito para terminar en «no se puede».
+
+**Por qué.** Los tres medios que motivaron la conversación —Semana, Blu Radio, El
+Colombiano— ya están clasificados como derecha (+0,45, +0,25, +0,35, con
+`SPECTRUM_THRESHOLD` en 0,2). Lo que da impresión de centro es que la banda «Sin
+línea marcada» ocupa de −0,2 a +0,2, la más ancha del mapa. Subir sus valores a
+mano para que «se vean» más a la derecha habría sido mover la afirmación más
+fuerte del sitio sin evidencia, que es justo lo que F1-13 existe para impedir.
+
+**Lo que aporta el diseño nuevo.** Responde la pregunta 7a de
+`CONTEXTO_ALGORITMO_SESGO.md` —de dónde sale una etiqueta que no hayamos escrito
+nosotros— con la arquitectura que usan los tres trabajos de referencia del campo:
+**escala externa e independiente + conducta observable que anclas y medios
+comparten**. Nunca pedirle al corpus de medios que produzca la escala solo, que
+es lo que se intentó con la co-cobertura y por eso dio un bloque y cinco medios
+sueltos.
+
+**Se descartó**: subir los valores ahora; y también dar por sentado que el eje es
+izquierda-derecha. El número de dimensiones se decide mirando los valores
+propios, no antes.
+
+**Riesgo asumido y declarado**: la Fase 1 puede concluir que no existe el anclaje
+externo. Sería un resultado legítimo, y dejaría como respuesta honesta el juicio
+editorial declarado y sujeto a réplica.
+
+---
+
 ## 2026-08-07 · El mapa mediático es solo colombiano
 
 **Decisión.** `MediaMap` y `PanoramaMediatico` muestran únicamente medios con

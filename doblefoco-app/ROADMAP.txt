@@ -432,7 +432,78 @@
             debajo la UI explica por qué no puede evaluar en lugar de mostrar
             una lista vacía.
 
- [~] F1-01  Medir la tasa real de historias multifuente durante 7 días
+ [x] F1-01  Medir la tasa real de historias multifuente durante 7 días
+            ───────────────────────────────────────────────────────────────
+            DECIDIDO EL 2026-08-07, con 595 ciclos y 12 días de serie.
+
+            LA TABLA (máximo del día; `npm run report:ingest --days 14`):
+
+              día        artículos  histor.  multif.  cruzan  p.ciegos
+              07-27           725      444       21      11       0
+              07-28          2209     1790      139      75       9
+              07-29          4394     3486      286     160      13
+              07-30          5000     4267      346     192      40   ← techo
+              07-31          5000     4261      338     204      47
+              08-01          5000     4248      343     206      45
+              08-02          5000     4240      342     199      39
+              08-03          4843     4141      331     178      25
+              08-04          5000     4265      331     177      29
+              08-05          5000     4317      330     185      38
+              08-06          5000     4350      351     193      30
+              08-07          5000     4334      350     195      27
+
+            LA RESPUESTA NO ES LA QUE LA TAREA ESPERABA. La pregunta era «¿a
+            qué ritmo crece y dónde se estabiliza?». Crece rápido tres días y
+            se aplana el 30 de julio. Pero NO se estabilizó: TOPÓ.
+
+            El corpus llegó a 5 000 el 2026-07-30 a las 14:25 y se quedó ahí
+            348 ciclos seguidos. La tasa multifuente dejó de crecer el mismo
+            día. No es una coincidencia ni una interpretación: `MAX_ARTICLES`
+            valía 5 000 y la ventana de 72 h necesitaba 5 786. El techo mordía
+            antes que la retención, y 790 artículos dentro de la política de
+            retención (13,6 %) nunca entraban al agrupamiento. La ventana
+            efectiva era de ~62 h.
+
+            SEGUNDO SÍNTOMA, que estaba a la vista en cada ciclo y nadie leyó
+            así: «152 artículos nuevos» contra «db: +16 art.». Esos ~136 ya
+            estaban en la base; volvían a contarse como nuevos porque el techo
+            los había expulsado del conjunto de trabajo.
+
+            QUIÉN FIJABA EL CORTE: no una decisión, sino el volumen de un solo
+            medio. Infobae publica 1 889 artículos en 72 h — el 32,5 % del
+            corpus, 72 veces el espectro de izquierda entero. Cuanto más
+            publica él, más corta es la ventana para todos, y los que caen
+            fuera son los medios pequeños: justo los que hacen falta para que
+            una historia cruce espectros.
+
+            DECISIÓN: subir MAX_ARTICLES de 5 000 a 8 000 (cubre las 72 h
+            reales con 38 % de margen) y volver a leer la serie en una semana.
+            NO se toca ITEMS_PER_FEED ni la retención ni el agrupamiento —las
+            tres alternativas que esta tarea dejó planteadas—: ninguna es el
+            cuello mientras el techo esté por debajo de la ventana.
+
+            Coste medido antes de decidirlo: 19,3 s de ciclo con 5 000
+            artículos, contra cadencia de 30 min y timeout de 10. Memoria del
+            worker 512 MB para un conjunto de ~10 MB. A vigilar `duration_ms`:
+            si el ciclo se fuera a minutos, el cuello pasaría a ser el
+            agrupamiento y la respuesta ya no sería subir el techo.
+
+            LA CIFRA REAL, PARA NO ENGAÑARSE: aun con la serie completa, 350
+            historias multifuente sobre 4 334 es el 8 %, y solo 9 llegan a los
+            6 medios que F1-03 exige para afirmar un punto ciego. La medición
+            de F1-01 queda hecha; el número que arroja es modesto y hay que
+            volver a mirarlo sin el techo antes de sacar conclusiones sobre el
+            catálogo (F1-12).
+
+            ADEMÁS: `npm run report:ingest` leía SOLO data/ingest_runs.jsonl,
+            que es local a cada máquina. Imprimía «2 ciclos registrados» y
+            «AVISO: hay 2 día(s) de datos» cuando en la base había 595 ciclos
+            y 12 días. El entregable de F1-01 no veía los datos de F1-01, y su
+            aviso decía que no se podía decidir cuando sí se podía. Corregido:
+            ahora usa la misma precedencia que /api/metrics/daily —base
+            primero, JSONL de respaldo—.
+            ───────────────────────────────────────────────────────────────
+            HISTÓRICO DE LA TAREA, tal como se escribió mientras se medía:
             INSTRUMENTACIÓN HECHA: cada ciclo registra una línea en
             data/ingest_runs.jsonl (server/services/metricsStore.js) con
             artículos, historias, multifuente, cuántas cruzan espectros y
@@ -455,7 +526,8 @@
             propios 15 titulares por feed y el solapamiento acumulado de las 72
             horas —lo que hay que medir— no aparecería nunca: la serie saldría
             plana y la conclusión sería falsa.
-            FALTA: dejar correr 7 días y escribir la decisión.
+            (FALTA: dejar correr 7 días y escribir la decisión. — HECHO, ver
+            arriba. Corrieron 12 días.)
 
             SEÑAL TEMPRANA (2026-07-27, cuatro ciclos consecutivos):
 

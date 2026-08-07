@@ -59,8 +59,46 @@ const ITEMS_PER_FEED = 15;
 /** Ventana de retención. Más allá de esto los artículos se descartan. */
 const RETENTION_MS = 72 * 60 * 60 * 1000; // 72 horas
 
-/** Techo duro de artículos en memoria, para que el proceso no crezca sin fin. */
-const MAX_ARTICLES = 5_000;
+/**
+ * Techo duro de artículos en memoria, para que el proceso no crezca sin fin.
+ *
+ * SUBIDO DE 5 000 A 8 000 EL 2026-08-07, y el motivo es el hallazgo de F1-01.
+ *
+ * A 5 000 el techo mordía antes que la ventana de retención, y eso convertía una
+ * constante de protección en el límite real del producto sin que nadie lo
+ * decidiera. Medido sobre los 595 ciclos de la serie:
+ *
+ *   · El corpus tocó 5 000 el 2026-07-30 a las 14:25 y se quedó clavado ahí
+ *     348 ciclos seguidos.
+ *   · La tasa multifuente se aplanó EL MISMO DÍA: 34 → 150 → 302 → 346, y a
+ *     partir de ahí once días oscilando entre 330 y 351 sin subir.
+ *   · Con el techo puesto, 790 artículos (13,6 %) estaban dentro de las 72 h de
+ *     retención y NO participaban en el agrupamiento. La ventana efectiva era
+ *     de ~62 h, no de 72.
+ *   · Segundo síntoma, visible en cada ciclo: «152 artículos nuevos» contra
+ *     «db: +16 art.». Los ~136 de diferencia ya estaban en la base y volvían a
+ *     entrar porque el techo los había expulsado del conjunto de trabajo.
+ *
+ * El corte no lo fijaba una decisión editorial sino el volumen de un solo medio:
+ * Infobae publica 1 889 artículos en 72 h, el 32,5 % del corpus. A más publique
+ * él, más corta se vuelve la ventana para todos los demás — y los que se quedan
+ * fuera son siempre los medios pequeños, que son los que hacen falta para que
+ * una historia cruce espectros.
+ *
+ * POR QUÉ 8 000 Y NO 6 000. Cubrir las 72 h reales pide 5 786 hoy. 8 000 deja
+ * un 38 % de margen para que el techo no vuelva a morder solo porque un medio
+ * suba su cadencia; volver a topar sin enterarse es exactamente lo que se está
+ * corrigiendo.
+ *
+ * LO QUE CUESTA, medido antes de subirlo: el ciclo tarda 19,3 s de media con
+ * 5 000 artículos, contra una cadencia de 30 minutos y un `timeout-minutes: 10`
+ * en el workflow. La memoria del worker es de 512 MB para un conjunto que ocupa
+ * del orden de 10 MB. Hay margen de sobra por los dos lados.
+ *
+ * QUÉ VIGILAR: `duration_ms` en la serie. Si el ciclo se acercara a los minutos,
+ * el cuello sería el agrupamiento y la respuesta ya no es subir el techo.
+ */
+const MAX_ARTICLES = 8_000;
 
 /**
  * User-Agent identificable con URL de contacto.

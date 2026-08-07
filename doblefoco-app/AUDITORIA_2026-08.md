@@ -1,5 +1,12 @@
 # Auditoría de DobleFoco — agosto de 2026
 
+> **Estado al 2026-08-07.** La Fase A.1 está hecha y cambió el diagnóstico de
+> H2: la serie de F1-01 demostró que el techo de 5 000 no solo recortaba la
+> ventana, sino que **era el que fijaba la tasa multifuente del producto**. La
+> decisión está escrita en el ROADMAP (F1-01, ahora cerrada) y el techo subió a
+> 8 000. H2 pasa de «pérdida silenciosa» a «corregido, pendiente de volver a
+> medir en una semana».
+
 Alcance: funcionalidades, algoritmos y flujo de trabajo. Todo lo que se afirma
 aquí está medido contra la base de producción o contra los registros de
 ejecución, con la consulta al lado para que se pueda repetir. Donde no pude

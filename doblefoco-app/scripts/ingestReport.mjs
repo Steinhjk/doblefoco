@@ -9,16 +9,51 @@
  * deba salir automatizado de un script.
  */
 
-import { dailySummary } from '../server/services/metricsStore.js';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+
+// Antes de importar nada que lea process.env al evaluarse (pool.js lo hace).
+dotenv.config({
+    path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env.local'),
+    quiet: true,
+});
+
+const { dailySummary } = await import('../server/services/metricsStore.js');
+const { dailySummaryFromDb } = await import('../server/db/contentStore.js');
+const { isDatabaseEnabled } = await import('../server/db/pool.js');
+const { closePool } = await import('../server/db/pool.js');
 
 const daysArg = process.argv.indexOf('--days');
 const days = daysArg !== -1 ? Number(process.argv[daysArg + 1]) || 7 : 7;
 
-const { days: rows, totalCycles, corrupt, file } = await dailySummary({ days });
+/**
+ * LA BASE PRIMERO, EL JSONL DESPUÉS — misma precedencia que /api/metrics/daily.
+ *
+ * Este script leía SOLO el JSONL, y eso lo dejaba ciego justo para lo que
+ * existe. El JSONL es local a cada máquina: en el portátil tiene los ciclos que
+ * alguien corrió a mano, y la serie de verdad —la que acumulan el motor de Fly
+ * y GitHub Actions— vive en `ingest_runs`. Comprobado el 2026-08-07: la
+ * herramienta imprimía «2 ciclos registrados · AVISO: hay 2 día(s) de datos»
+ * cuando en la base había 595 ciclos y 11 días. Es decir, el entregable de
+ * F1-01 no veía los datos de F1-01, y el aviso decía que no se podía decidir
+ * cuando sí se podía.
+ *
+ * El JSONL se conserva como respaldo y no como fuente principal, que es
+ * exactamente el papel que le da el ROADMAP: sobrevive a que la base no
+ * responda.
+ */
+const deLaBase = isDatabaseEnabled() ? await dailySummaryFromDb({ days }) : null;
+const delArchivo = deLaBase ? null : await dailySummary({ days });
+
+const rows = deLaBase?.days ?? delArchivo?.days ?? [];
+const totalCycles = deLaBase?.totalCycles ?? delArchivo?.totalCycles ?? 0;
+const corrupt = delArchivo?.corrupt ?? 0;
+const origen = deLaBase ? 'base de datos (ingest_runs)' : `archivo: ${delArchivo?.file}`;
 
 console.log(`SERIE DE INGESTA — últimos ${days} días`);
 console.log('─'.repeat(78));
-console.log(`archivo: ${file}`);
+console.log(`origen: ${origen}`);
 console.log();
 
 if (!rows.length) {
@@ -76,3 +111,6 @@ if (rows.length < 7) {
     console.log();
     console.log(`AVISO: hay ${rows.length} día(s) de datos. F1-01 pide 7 antes de decidir nada.`);
 }
+
+// Sin esto el proceso se queda vivo con la conexión abierta.
+await closePool();

@@ -984,6 +984,34 @@ Lo ilegible son páginas de índice con fuente decorativa, irrelevantes para
 codificar. Se midió antes de dar los textos por buenos, contando presencia de
 palabras funcionales del español por página.
 
+### 19.0 ACTUALIZADO — corpus simétrico completo
+
+Decisión de Jose: ampliar el documento corto con más material (opción 2). Se
+recogieron **los mismos géneros para ambos candidatos**, que es la condición que
+lo hace válido: incluir un tipo de documento para uno y no para el otro haría que
+las proporciones midieran nuestra selección y no la posición.
+
+| Vuelta | De la Espriella | Cepeda | razón |
+|---|---|---|---|
+| 1.ª | 21 págs · **1 895** palabras | 433 págs · **117 742** | **62 : 1** |
+| 2.ª | 3 págs · **3 573** palabras | 118 págs · **53 618** | **15 : 1** |
+| total | 5 468 | 171 360 | 31 : 1 |
+
+**La ampliación NO resuelve la asimetría, y eso es en sí mismo el hallazgo.** No
+es un defecto de nuestra recolección: una campaña publicó 433 páginas y la otra
+21. Con los cuatro documentos sobre la mesa la brecha sigue siendo de 15:1 en el
+mejor caso.
+
+**Consecuencia práctica, que rebaja el problema:** 5 468 palabras dan del orden
+de 300-400 cuasi-frases, y eso **sí es codificable** con el método de MARPOR, que
+rutinariamente trabaja con manifiestos cortos. La comparación es legítima; lo que
+cambia es la precisión. Así que las opciones 1 y 2 no eran alternativas sino
+complementos: **se amplía el corpus (hecho) y además se publican los intervalos**,
+que serán visiblemente más anchos en un lado.
+
+**Y la asimetría se reporta como dato**, no como nota al pie: cuánto texto
+programático publica una candidatura es información sobre cómo se presenta.
+
 ### 19.2 El problema que hay que resolver antes de codificar
 
 **Un programa tiene 28 veces más palabras que el otro.**

@@ -1,30 +1,56 @@
-[
-  {
-    "id": "defensores-de-la-patria-2026",
-    "partido": "Defensores de la Patria",
-    "titulo": "Colombia, Patria Milagro — Propuestas y Programas de Gobierno",
-    "eleccion": "Presidencial 2026",
-    "url": "https://www.candidateados.com/programas/programa_de_gobierno_Abelardo_de_la_Espriella.pdf",
-    "alojadoPor": "Candidateados (Fundación Colombia 2050)",
-    "nota": "No se obtuvo desde el sitio oficial del movimiento ni desde la Registraduría; queda pendiente confirmar contra la copia radicada.",
-    "textoExtraido": "defensores-de-la-patria-2026.txt",
-    "sha256Pdf": "d6092d1a631e463d7f28c13cc2b2db3f44ffe6ff9a17930af0553e44a29a6233",
-    "bytesPdf": 2885602,
-    "palabras": 1895,
-    "descargadoEl": "2026-08-07"
-  },
-  {
-    "id": "pacto-historico-2026",
-    "partido": "Pacto Histórico",
-    "titulo": "Tres revoluciones para hacer de Colombia una potencia mundial de la vida — Bases programáticas de gobierno",
-    "eleccion": "Presidencial 2026",
-    "url": "https://www.lasillavacia.com/wp-content/uploads/2026/06/plan-de-gobierno-2026-2030.pdf",
-    "alojadoPor": "La Silla Vacía",
-    "nota": "ATENCIÓN: alojado por un medio del propio catálogo. El documento es de la campaña, pero para la auditoría conviene sustituirlo por la copia del sitio oficial o de la Registraduría.",
-    "textoExtraido": "pacto-historico-2026.txt",
-    "sha256Pdf": "4c1a5f58fb43196df77b72e06e655be7e95df995c120934db8de981450e955ba",
-    "bytesPdf": 11770787,
-    "palabras": 53535,
-    "descargadoEl": "2026-08-07"
-  }
-]
+{
+  "descripcion": "Documentos programáticos de la presidencial colombiana de 2026, para codificación con el libro de códigos de MARPOR. El SHA-256 es del PDF original: permite comprobar que la copia que alguien descargue hoy es la misma que se codificó.",
+  "fuente": "Candidateados (Fundación Colombia 2050). PENDIENTE: sustituir por la copia radicada ante la Registraduría.",
+  "simetria": "Se recogen los MISMOS géneros para ambos candidatos —programa de primera vuelta y plan de segunda— porque incluir un tipo de documento para uno y no para el otro haría que las proporciones midieran nuestra selección y no la posición.",
+  "descargadoEl": "2026-08-07",
+  "documentos": [
+    {
+      "id": "defensores-patria-2026-v1",
+      "partido": "Defensores de la Patria",
+      "candidato": "Abelardo de la Espriella",
+      "genero": "programa de gobierno · primera vuelta",
+      "titulo": "Colombia, Patria Milagro — Propuestas y Programas de Gobierno",
+      "url": "https://www.candidateados.com/programas/programa_de_gobierno_Abelardo_de_la_Espriella.pdf",
+      "textoExtraido": "defensores-patria-2026-v1.txt",
+      "palabras": 1895,
+      "bytesPdf": 2885602,
+      "sha256Pdf": "d6092d1a631e463d7f28c13cc2b2db3f44ffe6ff9a17930af0553e44a29a6233"
+    },
+    {
+      "id": "defensores-patria-2026-v2",
+      "partido": "Defensores de la Patria",
+      "candidato": "Abelardo de la Espriella",
+      "genero": "plan de gobierno · segunda vuelta",
+      "titulo": "Plan de gobierno — segunda vuelta",
+      "url": "https://www.candidateados.com/programas/segunda-vuelta/Plan%20de%20gobierno_Abelardo%20de%20la%20Espriella_%20segunda%20vuelta.pdf",
+      "textoExtraido": "defensores-patria-2026-v2.txt",
+      "palabras": 3573,
+      "bytesPdf": 1851004,
+      "sha256Pdf": "41e472e934af7247933c17a094196fcb5481060097bf0d2bff8d3c6ba2ee8422"
+    },
+    {
+      "id": "pacto-historico-2026-v1",
+      "partido": "Pacto Histórico",
+      "candidato": "Iván Cepeda",
+      "genero": "programa de gobierno · primera vuelta",
+      "titulo": "El Poder de la Verdad — Programa de gobierno",
+      "url": "https://www.candidateados.com/programas/programa_de_gobierno_Ivan_Cepeda.pdf",
+      "textoExtraido": "pacto-historico-2026-v1.txt",
+      "palabras": 117742,
+      "bytesPdf": 21322950,
+      "sha256Pdf": "e735220f07c556f891ed777451f1439fe085765f6e086e82faa1bd4d8e692827"
+    },
+    {
+      "id": "pacto-historico-2026-v2",
+      "partido": "Pacto Histórico",
+      "candidato": "Iván Cepeda",
+      "genero": "plan de gobierno · segunda vuelta",
+      "titulo": "Tres revoluciones para hacer de Colombia una potencia mundial de la vida",
+      "url": "https://assets.candidateados.com/plan%20de%20gobierno%2010%20JUNIO%20Iva%CC%81n%20y%20Aida%20segunda%20vuelta.pdf",
+      "textoExtraido": "pacto-historico-2026-v2.txt",
+      "palabras": 53618,
+      "bytesPdf": 151404955,
+      "sha256Pdf": "a6fc2d4d8764c4ad849e01e22741cf8a1be8d57eff8f24845a14c24b0799f6fa"
+    }
+  ]
+}

@@ -881,7 +881,89 @@ la que haría posible todo lo demás.
 
 ---
 
-## 18. El paso siguiente, y por qué es ese
+## 18. LA SALIDA — codificar documentos, no encuestar expertos
+
+**Decisión de Jose (2026-08-07): no se contratan especialistas. Hay que llegar a
+un producto objetivo con lo que hay.** Y se puede. Lo que faltaba no era gente:
+era un libro de códigos público.
+
+### 18.1 Qué significa «objetivo» aquí
+
+Objetivo **no** quiere decir que no haya juicio humano. Quiere decir que el
+juicio sea **reglado, explícito y comprobable**: mismo documento más mismo libro
+de códigos igual a mismo resultado, lo aplique quien lo aplique. Es el estándar
+del análisis de contenido, no una versión rebajada de nada.
+
+La estimación de variable latente (secciones 4 y 5) es solo **una** de las cuatro
+familias del campo. La otra que aplica aquí —y que se descartó demasiado
+rápido— es **codificar los documentos que los propios partidos publican**.
+
+### 18.2 El Manifesto Project, y por qué lo cambia todo
+
+MARPOR (WZB Berlín) lleva desde 1979 codificando programas electorales con
+análisis de contenido cuantitativo, en más de 50 países y todas las elecciones
+libres desde 1945. **Incluye Colombia**, y existe una colección específica de
+Sudamérica.
+
+Pero lo decisivo no es su dataset: **su libro de códigos es público**. Está
+publicado precisamente para que otros lo apliquen. Es decir:
+
+> Para los partidos que MARPOR ya codificó, se usa su dato.
+> Para los que no —Defensores de la Patria, Pacto Histórico—, **aplicamos su
+> mismo libro de códigos a los documentos de esos partidos**.
+
+El resultado es comparable con el de MARPOR por construcción, y cualquiera puede
+repetir la codificación. Eso es exactamente la procedencia externa que pedía la
+sección 2, obtenida sin encuestar a nadie.
+
+### 18.3 Los documentos existen y son obligatorios
+
+En Colombia no hay que buscarlos ni pedirlos por favor:
+
+- **Programa de gobierno**: los candidatos deben inscribirlo ante la
+  Registraduría. Es la posición en palabras del propio candidato.
+- **Estatutos y plataforma ideológica**: los partidos los radican ante el CNE
+  para obtener y conservar la personería jurídica.
+
+Son públicos, están fechados y no los escribimos nosotros. **La posición sale de
+lo que el partido dijo que quería hacer, citando la frase.**
+
+### 18.4 El producto objetivo, en cuatro capas
+
+1. **Atención** — a quién da espacio cada medio. Totalmente objetiva: contar
+   menciones no exige ningún juicio. Se puede publicar ya.
+2. **Posición anclada** — para los partidos en CHES, V-Party o MARPOR, la
+   posición externa que ya existe.
+3. **Posición codificada** — para los partidos nuevos, codificación de sus
+   documentos con el libro de códigos de MARPOR, publicando el documento, la
+   versión del libro y las frases que sostienen cada categoría.
+4. **Fiabilidad** — dos codificaciones independientes de una muestra y **alfa de
+   Krippendorff** publicado. Sin esa cifra, la capa 3 es una opinión con formato;
+   con ella, es una medición con error conocido.
+
+Un modelo de lenguaje puede ser **uno** de los dos codificadores, nunca los dos:
+lo que valida la codificación es el acuerdo entre codificadores independientes, y
+dos modelos no son independientes (sección 16.1).
+
+### 18.5 Qué se gana y qué se pierde
+
+**Se gana** un método reproducible, con procedencia externa, aplicable a los
+actores de hoy y no solo a los de 2018, y **contestable en el detalle**: un medio
+que discrepe puede señalar la frase concreta y el código concreto, no una nube.
+
+**Se pierde** la elegancia estadística de los puntos ideales con intervalo. La
+codificación da una posición argumentada, no una distribución posterior. Es un
+intercambio consciente y hay que decirlo en la metodología pública, no
+disimularlo.
+
+**Y sigue en pie el límite honesto**: codificar programas es trabajo manual. Para
+seis u ocho partidos nuevos es acotado; no lo es para cientos de actores. Por eso
+la capa 1 —atención— es la que se publica primero y la que sostiene el producto
+mientras las otras se construyen.
+
+---
+
+## 19. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

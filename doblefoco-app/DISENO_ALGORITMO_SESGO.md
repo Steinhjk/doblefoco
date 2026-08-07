@@ -1051,7 +1051,107 @@ la que se usó.
 
 ---
 
-## 20. El paso siguiente, y por qué es ese
+## 20. CODIFICACIONES HECHAS Y LA VÍA DE CALIBRACIÓN
+
+### 20.1 Tres documentos codificados
+
+| Partido | RILE | Ancla externa |
+|---|---|---|
+| Centro Democrático (Valencia) | **+33,3** | CHES 9,21 · V-Party 2,68 |
+| Defensores de la Patria (De la Espriella) | **+33,4** | ninguna |
+| Pacto Histórico (Cepeda) | **−24,6** | ninguna |
+
+**El instrumento discrimina**: 58 puntos entre los extremos, signos opuestos.
+
+**Y la predicción se cumplió**: Centro Democrático es el partido situado más a la
+derecha de los once colombianos de CHES-LA y el más alto de los seis de V-Party.
+La predicción falsable era que su RILE saliera claramente positivo y en el
+extremo alto. Salió +33,3.
+
+**Lo que más aporta al diseño**: el método sitúa a Defensores de la Patria —sin
+ancla— en la misma zona que el Centro Democrático —con ancla—, y las dos
+codificaciones se hicieron por separado. Es la primera evidencia de que el
+procedimiento puede situar a los partidos nuevos, que era el muro donde el
+diseño llevaba atascado desde la sección 14.
+
+**Pero el RILE oculta que no son iguales.** En Valencia, tras `per605` vienen
+mercado, crecimiento e infraestructura: perfil tecnocrático-liberal. En De la
+Espriella, tras `per605` vienen moral tradicional y ortodoxia fiscal. Mismo punto
+en la recta, composición distinta — el argumento de la sección 12 con datos
+propios.
+
+### 20.2 Dos limitaciones declaradas
+
+1. **`per201` (libertad y derechos humanos) cuenta como DERECHA en el RILE.** Es
+   la tercera categoría más frecuente en Cepeda (16 de 175), casi toda de su
+   relato de persecución y de la exigencia de verdad para las víctimas. El
+   esquema se diseñó en la Europa de la Guerra Fría; en Colombia ese discurso es
+   de izquierda. Sin `per201`, Cepeda daría −33,7 en vez de −24,6. **No se
+   corrige a mano**: se declara y se publican los dos valores.
+2. **Un solo codificador.** Falta la segunda codificación humana y el alfa de
+   Krippendorff. Hasta entonces son estimaciones de trabajo, no mediciones.
+
+### 20.3 EL HALLAZGO QUE HABILITA LA CALIBRACIÓN
+
+Con un solo partido anclado no se puede ajustar una recta entre RILE y la escala
+de CHES, y en 2026 no hay más: los partidos tradicionales no llevaron candidato
+propio, se sumaron a Valencia o a Cepeda.
+
+**La salida apareció en los datos abiertos del Estado colombiano.** El conjunto
+`h236-q58p` de datos.gov.co contiene **1 132 programas de gobierno de
+gobernadores electos en 2019**, cada uno con su partido y **con el PDF alojado en
+`wapp.registraduria.gov.co`** — la copia radicada, no la reproducción de un
+tercero. De paso resuelve el aviso de procedencia que quedaba abierto.
+
+Cobertura de los partidos anclados (índice guardado en
+`programas/indice-programas-anclados.json`):
+
+| Partido | Documentos | CHES lrgen | V-Party |
+|---|---|---|---|
+| Conservador | 117 | 8,43 | 2,36 |
+| Liberal | 103 | 5,93 | −0,28 |
+| Partido de la U | 91 | 6,50 | 0,58 |
+| Centro Democrático | 75 | 9,21 | 2,68 |
+| Cambio Radical | 62 | 7,64 | 1,57 |
+| Alianza Verde | 42 | 3,86 | −0,64 |
+| Colombia Justa Libres | 4 | 9,20 | — |
+
+**Seis partidos anclados, con documentos de sobra para medir además la variación
+DENTRO de cada partido** —que es lo que da el error de la calibración, no solo su
+pendiente—.
+
+### 20.4 La objeción que hay que resolver antes de usarlos
+
+**Son programas DEPARTAMENTALES, no manifiestos nacionales.** Un programa de
+gobernación habla de vías terciarias, acueductos y salud local; sus proporciones
+por categoría no son directamente comparables con las de un programa
+presidencial.
+
+Para calibrar puede bastar —lo que hace falta es que se conserve el ORDEN de los
+partidos, no el valor absoluto— pero **eso hay que comprobarlo, no suponerlo**.
+La comprobación es concreta: si el RILE medio por partido reproduce el orden de
+CHES, el género no destruyó la señal. Si los aplasta a todos hacia el centro,
+estos documentos sirven para otra cosa pero no para esto.
+
+### 20.5 Protocolo para la calibración
+
+1. Muestrear al azar 3 programas por partido de los seis anclados: **18
+   documentos**, con semilla declarada.
+2. Codificarlos con el mismo esquema, ciego al partido en la medida de lo posible.
+3. RILE medio y desviación por partido.
+4. Regresión de RILE medio contra CHES `lrgen` y contra V-Party. **La pendiente y
+   el R² son la calibración**; la dispersión dentro de cada partido es su error.
+5. Con la recta ajustada, los partidos nuevos —Defensores, Pacto— pasan de tener
+   un RILE en escala propia a tener una posición **comparable con los registros
+   internacionales**, con intervalo.
+
+**Esto es trabajo de codificación humana**, unas 2-3 horas por documento. 18
+documentos son entre 36 y 54 horas. Es el coste real de tener un algoritmo
+auditable, y conviene saberlo antes de empezar y no a mitad.
+
+---
+
+## 21. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

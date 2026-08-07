@@ -1,0 +1,286 @@
+{
+  "descripcion": "Programas de gobierno de gobernadores electos en 2019, radicados ante la Registraduría Nacional. Se filtran los de partidos CON posición externa documentada en CHES-LA 2020 y V-Party 2018, que son los que permiten calibrar la escala RILE contra un ancla.",
+  "fuente": "https://www.datos.gov.co/resource/h236-q58p.json (datos abiertos del Estado colombiano)",
+  "procedencia": "Los PDF están alojados en wapp.registraduria.gov.co: es la copia RADICADA, no una reproducción de un tercero. Resuelve el aviso de procedencia que quedaba abierto con los programas presidenciales de 2026.",
+  "advertenciaDeGenero": "IMPORTANTE: son programas DEPARTAMENTALES, no manifiestos nacionales. Un programa de gobernación habla de vías terciarias, acueductos y salud local, así que sus proporciones por categoría NO son directamente comparables con las de un programa presidencial. Para la calibración esto puede bastar —lo que se necesita es que el ORDEN de los partidos se conserve— pero hay que comprobarlo, no suponerlo, y declararlo en la metodología.",
+  "consultadoEl": "2026-08-07",
+  "partidos": {
+    "PARTIDO LIBERAL COLOMBIANO": {
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "documentos": 103,
+      "ejemplos": [
+        {
+          "departamento": "CORDOBA",
+          "elegido": "BENITEZ MORA ORLANDO DAVID",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/13/PLAN_GO13000000001_E6.pdf"
+        },
+        {
+          "departamento": "SUCRE",
+          "elegido": "ESPINOSA OLIVER HECTOR OLIMPO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/28/PLAN_GO28000000001_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "ELEJALDE LOPEZ JORGE HUGO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01127000001_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "MOLINA RODAS LEONARDO DE JESUS",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01013000001_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "AGUDELO METRIO CESAR AUGUSTO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01140000001_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "ORTIZ TABARES JOHN FREDY",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01148000001_E6.pdf"
+        }
+      ]
+    },
+    "PARTIDO CONSERVADOR COLOMBIANO": {
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "documentos": 117,
+      "ejemplos": [
+        {
+          "departamento": "CAQUETA",
+          "elegido": "GASCA TRUJILLO ARNULFO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/44/PLAN_GO44000000002_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "USUGA CARMONA JORGE ALCONIDES",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01130000002_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "ESCOBAR ESTRADA JOSE FERNANDO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01151000002_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "CORRALES CHALARCA MARY LUZ",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01170000002_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "RESTREPO GONZALEZ CARLOS ALBERTO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01175000002_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "SUAREZ JIMENEZ HENRY EDILSON",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01232000002_E6.pdf"
+        }
+      ]
+    },
+    "PARTIDO CENTRO DEMOCRATICO": {
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "documentos": 75,
+      "ejemplos": [
+        {
+          "departamento": "CASANARE",
+          "elegido": "SANABRIA CHACON SALOMON ANDRES",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/46/PLAN_GO46000000011_E6.pdf"
+        },
+        {
+          "departamento": "VAUPES",
+          "elegido": "PEREZ GALVIS ELIECER",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/68/PLAN_GO68000000011_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "QUIJANO RESTREPO CARLOS GUSTAVO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01100000011_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "TAMAYO MAYA EDISSON ARIEL",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01115000011_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "TRESPALACIO FABER ENRIQUE",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01117000011_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "RENDON OSORIO HECTOR JAIME",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01157000011_E6.pdf"
+        }
+      ]
+    },
+    "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U": {
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "documentos": 91,
+      "ejemplos": [
+        {
+          "departamento": "GUAINIA",
+          "elegido": "IRAL GOMEZ JUAN CARLOS",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/50/PLAN_GO50000000008_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "MIRA SEPULVEDA EDWIN MAURICIO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01154000008_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "HURTADO ALZATE JOSE GILDARDO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01178000008_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "MADERA CAMERO MARCOS JAVIER",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01191000008_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "TOBON CASTRO JORGE AUGUSTO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01192000008_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "MARIN MARIN SORANY ANDREA",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01196000008_E6.pdf"
+        }
+      ]
+    },
+    "PARTIDO CAMBIO RADICAL": {
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "documentos": 62,
+      "ejemplos": [
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "CASTAÑO ARISTIZABAL FREDDY",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01139000003_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "URIBE CASTRILLON JOHN JAIRO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01208000003_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "PIEDRAHITA CEBALLOS JUAN CAMILO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01028000003_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "GIRALDO GOMEZ SAUL ALBERTO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01094000003_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "LOPEZ ORREGO GUSTAVO ALONSO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01097000003_E6.pdf"
+        },
+        {
+          "departamento": "CAUCA",
+          "elegido": "FUENTES ORTEGA ORBEY",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11027000003_E6.pdf"
+        }
+      ]
+    },
+    "PARTIDO ALIANZA VERDE": {
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "documentos": 42,
+      "ejemplos": [
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "HIGUITA RUEDA JHON JAIRO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01283000004_E6.pdf"
+        },
+        {
+          "departamento": "ANTIOQUIA",
+          "elegido": "VILLADA URIBE CARLOS MARIO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01052000004_E6.pdf"
+        },
+        {
+          "departamento": "CAUCA",
+          "elegido": "PATIÑO CERON JHONNATAN",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11005000004_E6.pdf"
+        },
+        {
+          "departamento": "CAUCA",
+          "elegido": "DOMINGUEZ CAICEDO DAGOBERTO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11064000004_E6.pdf"
+        },
+        {
+          "departamento": "CUNDINAMARCA",
+          "elegido": "PRIETO PRIETO RUBY JIMENA",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/15/PLAN_AL15124000004_E6.pdf"
+        },
+        {
+          "departamento": "CUNDINAMARCA",
+          "elegido": "MARTINEZ ZABALETA LUIS HERNANDO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/15/PLAN_AL15013000004_E6.pdf"
+        }
+      ]
+    },
+    "PARTIDO COLOMBIA JUSTA LIBRES": {
+      "ancla": {
+        "ches_lrgen": 9.2,
+        "ches_lrecon": 7.78,
+        "ches_galtan": 9.18,
+        "vparty": null
+      },
+      "documentos": 4,
+      "ejemplos": [
+        {
+          "departamento": "CAUCA",
+          "elegido": "MORALES MAZO CRISTOBAL",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11053000014_E6.pdf"
+        },
+        {
+          "departamento": "SUCRE",
+          "elegido": "PEREZ MARQUEZ DIANA JUDITH",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/28/PLAN_AL28055000014_E6.pdf"
+        },
+        {
+          "departamento": "CASANARE",
+          "elegido": "AMAYA ZORRO TELE WOSBON",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46850000014_E6.pdf"
+        },
+        {
+          "departamento": "CALDAS",
+          "elegido": "LONDOÑO MEDINA JOHN ALEJANDRO",
+          "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/09/PLAN_AL09007000014_E6.pdf"
+        }
+      ]
+    }
+  }
+}

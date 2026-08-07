@@ -501,7 +501,68 @@ async function fetchFeed(feedConfig) {
     return { ok: false, error: lastError?.message ?? 'error desconocido', items: [] };
 }
 
-/** Descarta artículos viejos y aplica el techo de tamaño. */
+/**
+ * Enlaces que el ÚLTIMO agrupamiento colocó en una historia de dos o más medios.
+ *
+ * Lo rellena `buildMultisourceStories`, y lo lee `pruneArticles` en el ciclo
+ * siguiente. Es información del ciclo anterior a propósito: la poda corre ANTES
+ * de agrupar, así que en ese momento el agrupamiento de este ciclo no existe
+ * todavía. Usar el del anterior es una aproximación buena —un artículo que ya
+ * encontró pareja rara vez la pierde— y es la única disponible sin agrupar dos
+ * veces por ciclo.
+ *
+ * @type {Set<string>}
+ */
+let enlacesComparables = new Set();
+
+/**
+ * Margen antes de que un artículo pueda considerarse «no comparable».
+ *
+ * Sin esto la regla se muerde la cola: un artículo recién ingerido todavía no ha
+ * tenido ocasión de encontrar a nadie que cubra lo mismo, así que parecería
+ * prescindible justo cuando más falta hace conservarlo. Doce horas es holgado
+ * frente a los 30 minutos de cadencia.
+ */
+const GRACIA_MS = 12 * 60 * 60 * 1000;
+
+/**
+ * Descarta artículos viejos y aplica el techo de tamaño.
+ *
+ * EL TECHO YA NO EXPULSA A CIEGAS POR EDAD (2026-08-07, decisión de Jose).
+ *
+ * Antes se quedaba con los MAX_ARTICLES más recientes y punto. Medido sobre el
+ * corpus real, eso repartía el castigo al revés de lo que interesa:
+ *
+ *   · 42,8 % del corpus era noticia INTERNACIONAL, y 39,8 % era internacional
+ *     que ningún otro medio del catálogo cubrió: 2 305 artículos que no pueden
+ *     compararse jamás, no por malos sino porque no hay con qué contrastarlos.
+ *   · Infobae Colombia publica 1 897 piezas en 72 h y el 89,2 % son
+ *     internacionales —España, Argentina, México, Perú, Brasil—. Su feed sirve
+ *     el cable panhispánico, no noticia colombiana. Solo el 5 % de lo suyo llega
+ *     a compararse, frente al 25 % de El Tiempo o El Colombiano.
+ *   · Y los que caían fuera por edad eran los medios lentos: Vorágine publica
+ *     una pieza cada 74,7 h, más despacio que la propia ventana, así que quedaba
+ *     excluido de forma sistemática.
+ *
+ * O sea: el cable extranjero de un solo medio estaba desalojando al periodismo
+ * de investigación colombiano. Ahora el orden de expulsión es explícito —primero
+ * lo internacional sin cobertura, después por edad— y con eso el corpus
+ * comparable baja a ~3 489 artículos, muy por debajo del techo: deja de morder
+ * y la ventana se alarga sola para todo lo que sí se compara. No hace falta
+ * ninguna regla especial para los medios lentos; se arregla como efecto.
+ *
+ * SE APLICA A TODOS POR IGUAL, incluidos Euronews, DW, France 24 y El País de
+ * España, que son internacionales por definición. Decidido así a propósito: lo
+ * que sobrevive de ellos es exactamente lo internacional RELEVANTE —lo que un
+ * medio colombiano también cubrió—, que es lo que pide F1-16. Una excepción por
+ * medio habría sido una regla sobre quién publica y no sobre qué se puede
+ * comparar.
+ *
+ * NO ES UN FILTRO DE CALIDAD ni de tema, y por eso vive aquí y no en
+ * contentQuality.js: no dice que estas piezas sean peores, dice que cuando no
+ * cabe todo hay que elegir, y se elige por comparabilidad. Mientras el corpus
+ * quepa bajo el techo, no se expulsa nada.
+ */
 function pruneArticles() {
     const cutoff = Date.now() - RETENTION_MS;
 
@@ -512,14 +573,32 @@ function pruneArticles() {
         }
     }
 
-    if (articlesByLink.size > MAX_ARTICLES) {
-        const sorted = [...articlesByLink.entries()].sort(
-            (a, b) => (b[1].ingestedAtMs ?? 0) - (a[1].ingestedAtMs ?? 0)
-        );
-        articlesByLink.clear();
-        for (const [link, article] of sorted.slice(0, MAX_ARTICLES)) {
-            articlesByLink.set(link, article);
-        }
+    if (articlesByLink.size <= MAX_ARTICLES) return;
+
+    const ahora = Date.now();
+
+    /**
+     * `true` = se conserva con prioridad. La duda SIEMPRE protege: un artículo
+     * sin `ambito` —los rehidratados de antes de que existiera la columna— no se
+     * considera prescindible. Equivocarse hacia conservar cuesta un hueco;
+     * equivocarse hacia expulsar borra una noticia sin dejar rastro.
+     */
+    const prioritario = (link, article) => {
+        if (article.ambito !== 'internacional') return true;
+        if (enlacesComparables.has(link)) return true;
+        return ahora - (article.ingestedAtMs ?? 0) < GRACIA_MS;
+    };
+
+    const sorted = [...articlesByLink.entries()].sort((a, b) => {
+        const pa = prioritario(a[0], a[1]) ? 1 : 0;
+        const pb = prioritario(b[0], b[1]) ? 1 : 0;
+        if (pa !== pb) return pb - pa;
+        return (b[1].ingestedAtMs ?? 0) - (a[1].ingestedAtMs ?? 0);
+    });
+
+    articlesByLink.clear();
+    for (const [link, article] of sorted.slice(0, MAX_ARTICLES)) {
+        articlesByLink.set(link, article);
     }
 }
 
@@ -977,6 +1056,11 @@ function buildMultisourceStories() {
         articles.map((a) => ({ ...a, cleanTitle: a.headline }))
     );
 
+    // Se acumula aparte y se publica al final: si el agrupamiento fallara a
+    // medias, `enlacesComparables` conservaría el del ciclo anterior entero en
+    // vez de quedarse con la mitad y hacer que la poda expulse lo que no debe.
+    const comparablesDeEsteCiclo = new Set();
+
     storiesFeed = clusters.map((cluster) => {
         const items = cluster.articles;
 
@@ -1003,6 +1087,17 @@ function buildMultisourceStories() {
 
         const sources = [...outletsByName.values()];
         const coverage = analyzeCoverage(sources);
+
+        /**
+         * Se anota qué artículos encontraron pareja, para que la poda del ciclo
+         * siguiente sepa a quién NO expulsar. Se anotan todos los del grupo, no
+         * solo el representativo de cada medio: el artículo que no se eligió
+         * como representativo sigue siendo parte de la comparación y expulsarlo
+         * rompería la historia desde abajo.
+         */
+        if (outletsByName.size >= 2) {
+            for (const item of items) comparablesDeEsteCiclo.add(item.link);
+        }
 
         /**
          * Sin fecha del medio se usa la de ingesta, igual que hace pruneArticles.
@@ -1106,6 +1201,9 @@ function buildMultisourceStories() {
     });
 
     storiesById = new Map(storiesFeed.map((s) => [s.id, s]));
+
+    // Ya está completo: se publica de una vez para la poda del ciclo siguiente.
+    enlacesComparables = comparablesDeEsteCiclo;
 }
 
 // ---------------------------------------------------------------------------

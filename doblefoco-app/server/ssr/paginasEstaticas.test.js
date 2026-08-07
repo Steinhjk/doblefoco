@@ -4,6 +4,7 @@ import { MEDIA_REGISTRY } from '../../shared/mediaRegistry.js';
 import { PAGINAS_ESTATICAS, RUTAS_RENDERIZADAS, metadatosDePagina } from './paginasEstaticas.js';
 
 const SITIO = 'https://doblefoco.co';
+const COLOMBIANOS = MEDIA_REGISTRY.filter((m) => m.country === 'CO');
 
 describe('RUTAS_RENDERIZADAS', () => {
     it('son las tres que no dependen de la base', () => {
@@ -43,14 +44,23 @@ describe('metadatosDePagina', () => {
     it('el recuento de medios sale del registro y no está escrito a mano', () => {
         // Si alguien añade un medio, la descripción tiene que moverse sola.
         const html = metadatosDePagina('/mapa-medios', SITIO);
-        expect(html).toContain(`${MEDIA_REGISTRY.length} medios colombianos`);
+        expect(html).toContain(`${COLOMBIANOS.length} medios colombianos`);
+    });
+
+    it('cuenta SOLO los colombianos, que es lo que la página enseña', () => {
+        // Desde el 2026-08-07 MediaMap pinta únicamente medios de Colombia. Si
+        // la descripción contara los 43 del registro, prometería en el buscador
+        // un mapa más grande que el que se ve al entrar.
+        expect(COLOMBIANOS.length).toBeLessThan(MEDIA_REGISTRY.length);
+        expect(metadatosDePagina('/mapa-medios', SITIO))
+            .not.toContain(`${MEDIA_REGISTRY.length} medios colombianos`);
     });
 
     it('los documentados nunca superan al total', () => {
         const html = metadatosDePagina('/mapa-medios', SITIO);
         const documentados = Number(html.match(/fuentes en (\d+) de ellos/)?.[1]);
         expect(documentados).toBeGreaterThan(0);
-        expect(documentados).toBeLessThanOrEqual(MEDIA_REGISTRY.length);
+        expect(documentados).toBeLessThanOrEqual(COLOMBIANOS.length);
     });
 
     it('lleva JSON-LD válido y con el tipo de cada página', () => {

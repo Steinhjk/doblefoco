@@ -47,12 +47,28 @@ const PanoramaMediatico = () => {
         return () => { vivo = false; };
     }, []);
 
+    /**
+     * SOLO MEDIOS COLOMBIANOS (2026-08-07, misma decisión que en MediaMap).
+     *
+     * Esta cifra responde «cuántos dueños concentran lo que se publica en
+     * Colombia». Con los internacionales dentro respondía otra pregunta sin
+     * decirlo: el volumen de Euronews o de El País de España entraba en el
+     * denominador y diluía la concentración real —cuantos más medios ajenos se
+     * sumen, menos concentrado PARECE el mercado colombiano, que es justo lo
+     * contrario de lo que el dato debe mostrar—.
+     */
     const datos = useMemo(() => {
         if (!conteos) return null;
-        const dueños = repartoPorDueno(conteos, MEDIA_REGISTRY);
+
+        // Basta con recortar el REGISTRO: las dos funciones lo recorren a él y
+        // buscan los conteos por `sourceId`. Filtrar además `conteos` sería
+        // redundante, y hacerlo por la clave equivocada los dejaría en cero.
+        const colombianos = MEDIA_REGISTRY.filter((m) => m.country === 'CO');
+
+        const dueños = repartoPorDueno(conteos, colombianos);
         return {
             dueños,
-            espectro: repartoPorEspectro(conteos, MEDIA_REGISTRY),
+            espectro: repartoPorEspectro(conteos, colombianos),
             mitad: duenosParaLaMitad(dueños),
         };
     }, [conteos]);

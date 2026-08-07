@@ -131,8 +131,23 @@ plan de Supabase y porque hoy no hay margen medido antes de que empiece a doler.
   Times, The Wall Street Journal, Financial Times, La Vanguardia. Es lo que
   bloquea F1-16 y está documentado.
 - **3 con feed pero sin aportar nada en 72 h**: Vorágine, Noticias Uno, W Radio.
-  Los dos últimos son colombianos y prolíficos en la realidad; cero artículos es
-  sospechoso y hay que mirarlo uno por uno.
+
+  > **Corregido el 2026-08-07.** Escribí que era «sospechoso». No lo era, y dos
+  > de los tres ya estaban diagnosticados en `mediaRegistry.js`: Noticias Uno es
+  > un noticiero de FIN DE SEMANA y W Radio no publica RSS propio (cinco rutas
+  > probadas, las cinco 404). Medido hoy contra los feeds reales, los tres
+  > responden y parsean sin un solo error. **Ninguno está desconectado.** Lo que
+  > los deja fuera es la ventana de 72 h contra su cadencia:
+  >
+  > | medio | pieza más reciente | cadencia |
+  > |---|---|---|
+  > | Vorágine | 110 h | una cada 74,7 h — más lenta que la ventana |
+  > | Noticias Uno | 92 h | ráfaga semanal, visible domingo→miércoles |
+  > | W Radio | 5 201 h (7 meses) | Google News no indexa el dominio |
+  >
+  > Esto convierte H5 en una variante de H1: **la ventana de 72 h no es neutral.**
+  > Selecciona medios de noticia diaria y excluye a los de investigación, que en
+  > este catálogo son casi todos los pequeños y casi todos los de izquierda.
 
 El mapa de medios y el panorama presentan 43 medios sin distinguir cuáles
 aportan cobertura. No es engaño —la ficha de propiedad de los 43 es real y es

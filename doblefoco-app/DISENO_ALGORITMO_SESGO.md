@@ -474,7 +474,77 @@ dimensiones aplastadas en una.
 
 ---
 
-## 13. El paso siguiente, y por qué es ese
+## 13. MEDIDO — concordancia entre los registros de expertos
+
+**Ejecutado el 2026-08-07.** Descargados CHES-LA 2020 (agregado, 125 partidos en
+12 países) y Global Party Survey 2019 (1 043 partidos en 163 países). Colombia:
+11 partidos en CHES y 10 en GPS; **10 emparejados a mano**, y el emparejamiento
+va escrito en el script para que se pueda revisar.
+
+### 13.1 El resultado
+
+| Eje | Pearson *r* | Spearman *ρ* | Desv. media | IC 95 % de *r* |
+|---|---|---|---|---|
+| **Sociocultural** (CHES `galtan` vs GPS V6) | **0,943** | 0,921 | 1,04 pts | 0,75 – 0,99 |
+| **Económico** (CHES `lrecon` vs GPS V4) | **0,706** | 0,766 | 1,94 pts | 0,14 – 0,92 |
+
+Escalas 0-10. Intervalos por transformación z de Fisher; *n* es 9 y 10, así que
+son anchos y hay que leerlos como tales.
+
+**Los dos registros concuerdan fuerte en lo sociocultural y solo moderadamente en
+lo económico.** Y con *n* = 10, el intervalo del eje económico llega a bajar
+hasta 0,14: no se puede descartar que la concordancia real sea débil.
+
+### 13.2 Dónde discrepan, que es lo que importa
+
+Eje económico, diferencias mayores (CHES − GPS):
+
+```
+Centro Democrático     9,1  vs  5,8   →  +3,3
+Alianza Verde          5,1  vs  2,0   →  +3,1
+Lista de la Decencia   3,1  vs  5,5   →  −2,4
+Liberal                6,3  vs  4,0   →  +2,3
+```
+
+**El desacuerdo se concentra en el partido más consecuente del espectro.** CHES
+sitúa al Centro Democrático como el MÁS pro-mercado de los diez; GPS lo pone en
+el sexto puesto, en mitad de la tabla. No es un matiz: es el partido cuya
+posición más pesa en cualquier clasificación de medios colombianos.
+
+En el eje sociocultural, en cambio, la mayor diferencia real es de 2,3 puntos y
+siete de nueve partidos quedan dentro de 1,7.
+
+### 13.3 Qué implica para el diseño
+
+1. **El anclaje sociocultural es sólido; el económico es contestado.** Si hay que
+   empezar por un eje, es el de orden y derechos: es donde los especialistas
+   convergen. El económico entra con incertidumbre mucho mayor, y esa
+   incertidumbre debe propagarse hasta el número que vea el lector.
+2. **Es un argumento empírico a favor de la sección 12.** Si dos encuestas
+   independientes de expertos discrepan 3,3 puntos sobre dónde está el Centro
+   Democrático en economía, resumir eso —y el eje sociocultural, donde sí
+   coinciden— en la palabra «derecha» destruye la única parte que es firme.
+3. **Un tercer registro sigue pendiente.** V-Party (V-Dem) no tiene URL de
+   descarga directa localizable; su página exige pasar por un formulario. Con
+   dos fuentes se mide concordancia, con tres se puede arbitrar cuando dos
+   discrepan. Vale la pena conseguirlo antes de la Fase 5.
+
+### 13.4 Una trampa de medición, para el registro
+
+La primera pasada dio 0,655 en el eje sociocultural y una diferencia de **9,0
+puntos** en Opción Ciudadana. Era un fallo mío: `Number('')` en JavaScript
+devuelve `0`, no `NaN`, así que las casillas VACÍAS del GPS entraron como ceros y
+fabricaron un desacuerdo máximo donde solo había un dato ausente. Corregido, el
+mismo eje sube a **0,943**.
+
+Se anota junto a las otras trampas del `CONTEXTO_ALGORITMO_SESGO.md` porque tiene
+la misma forma: parecía un hallazgo y era un artefacto nuestro. Y porque en un
+método que va a ser auditado, un valor ausente tratado como cero es
+suficiente para invertir una conclusión.
+
+---
+
+## 14. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

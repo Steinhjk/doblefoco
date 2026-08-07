@@ -336,16 +336,162 @@ para que un medio discuta su clasificación con derecho a réplica visible.
 
 ---
 
-## 11. El paso siguiente, y por qué es ese
+## 11. FASE 1, EJECUTADA — el anclaje externo existe
 
-**Fase 1: averiguar si existe el anclaje externo.**
+**Buscado el 2026-08-07. Resultado: no hay uno, hay cinco, y son independientes
+entre sí.** La arquitectura de la sección 2 se sostiene.
 
-Es barato, no necesita código y es el único punto donde el proyecto entero puede
-morir: si no hay un registro público, independiente y suficientemente completo de
-posiciones de actores políticos colombianos, la arquitectura de la sección 2 no
-se sostiene y hay que buscar otra —o aceptar que el juicio editorial declarado y
-bien argumentado es lo máximo que se puede hacer con honestidad.
+### 11.1 Registros de posición de partidos (el anclaje primario)
 
-Y esa última posibilidad hay que decirla en voz alta desde el principio: **es un
-resultado aceptable.** Un juicio editorial declarado, argumentado y sujeto a
-réplica es más honesto que un número inventado con aparato estadístico alrededor.
+| Registro | Qué es | Cobertura | Acceso |
+|---|---|---|---|
+| **CHES-LA 2020** (Chapel Hill) | Encuesta a 160 expertos | 112 partidos y presidentes en 12 países, **Colombia incluida** | CSV, Stata, R + codebook |
+| **Global Party Survey** (Norris, Harvard) | 1 861 expertos | 1 043 partidos en 163 países, Colombia incluida; 2.ª ola 2023 con ítems de democracia y autoritarismo | Harvard Dataverse |
+| **V-Party** (V-Dem) | 665 expertos de país | 1 955 partidos, 169 países, 1970-2019 | ZIP con datos, codebook y unidades |
+
+Los tres son académicos, revisados, descargables y **ninguno lo escribimos
+nosotros**. Es exactamente lo que pedía la pregunta 7a.
+
+**Y hay un beneficio que no esperaba: se pueden cruzar entre sí.** Tres encuestas
+independientes sobre los mismos partidos colombianos permiten medir el acuerdo
+del propio anclaje. Donde coinciden, el ancla es firme; donde discrepan, sabemos
+que ese partido es discutible **antes** de construir nada encima. Un auditor
+puede repetir esa comprobación sin pedirnos nada.
+
+### 11.2 El eslabón intermedio: de partido a persona
+
+Los tres registros puntúan **partidos**, y nuestros datos contienen **personas**.
+El puente:
+
+- **Congreso Visible** (Universidad de los Andes, desde 1998): perfiles de
+  congresistas y ex congresistas, proyectos de ley y **votaciones nominales** de
+  senadores y representantes, con filtros por congresista y por partido.
+- Registros del CNE y gacetas del Congreso para la militancia formal.
+
+Congreso Visible además permite algo mejor que heredar la posición del partido:
+**derivar la posición del legislador de sus propias votaciones**, que es el dato
+con el que trabajan NOMINATE y los modelos de puntos ideales. Un congresista que
+vota contra su bancada deja de heredar una etiqueta que no le corresponde.
+
+### 11.3 Validación externa específica de medios
+
+- **MOE — Observatorio de Medios y Democracia**: analiza discursos mediáticos,
+  pluralidad informativa, visibilidad de candidaturas y **desequilibrios de
+  cobertura**, con informes por ciclo electoral. Con las presidenciales de 2026
+  (primera vuelta el 31 de mayo, segunda el 21 de junio) hay material reciente.
+- **FLIP** y el **Media Ownership Monitor de RSF** para propiedad y libertad de
+  prensa; **ColombiaCheck** para la capa de factualidad de la sección 6.
+
+MOE **no se usa como insumo del modelo**: se usa para contrastar el resultado. Si
+nuestra medición y la suya discrepan, hay que explicar por qué, y esa explicación
+es parte del informe.
+
+### 11.4 Las tres limitaciones que hay que declarar ya
+
+1. **Los anclajes están fechados.** CHES-LA es de 2020, GPS de 2019 con ola de
+   2023, V-Party llega a 2019. El sistema de partidos colombiano ha cambiado
+   mucho desde entonces —el gobierno de 2022 y el ciclo de 2026—. Para actores
+   nuevos no hay ancla, y eso hay que decirlo, no interpolarlo.
+2. **Partido ≠ persona.** Mitigado con las votaciones de Congreso Visible, no
+   resuelto: fuera del Congreso —ministros, empresarios, militares— no hay
+   registro de votaciones del que derivar posición.
+3. **Nombrar sigue sin ser respaldar.** La sección 2.2 no se resuelve porque
+   exista el anclaje. Es el motivo de que la primera entrega se llame
+   **atención** y no ideología.
+
+**Conclusión de la Fase 1: se puede continuar.** El punto donde el proyecto podía
+morir está superado.
+
+---
+
+## 12. Cómo dejar de decir «izquierda» y «derecha»
+
+Es una objeción con fundamento y no de vocabulario. «Derecha» mete en la misma
+caja a un libertario y a un ultranacionalista, que discrepan en casi todo;
+«izquierda», a un anarquista y a un socialdemócrata. Un eje único obliga a
+proyectar cosas distintas sobre una recta, y eso **fabrica** los centros que no
+existen: dos posiciones opuestas en dimensiones distintas se promedian a cero.
+
+**La salida no es ser más vago, es ser más específico.** Y encaja con lo que
+pides: menos ambigüedad, no más.
+
+### 12.1 Ejes con nombre, en vez de una etiqueta
+
+Los tres registros de 11.1 ya vienen separados en dimensiones. Se adoptan las que
+ellos miden, en vez de inventar una escala propia:
+
+| Eje | Polos | De dónde sale |
+|---|---|---|
+| **Economía** | más Estado ↔ más mercado | `lrecon` (CHES), GPS |
+| **Orden y derechos** | tradición y autoridad ↔ apertura y derechos | `galtan` (CHES) |
+| **Conflicto armado** | salida negociada ↔ salida militar | específico de Colombia |
+| **Relación con el poder** | oficialismo ↔ oposición | fechado, cambia con el gobierno |
+
+Un medio deja de «ser de derecha» y pasa a tener **una coordenada por eje, con su
+intervalo**. Blu Radio puede quedar pro-mercado y a la vez favorable a garantías;
+eso hoy es indecible y es información real.
+
+### 12.2 El eje que no es una posición: pluralismo
+
+La distinción que de verdad separa a un fascista de un neoliberal **no es dónde
+está en el eje económico**, y por eso el eje no puede capturarla. V-Party lo mide
+aparte, con el índice de iliberalismo: compromiso con el pluralismo político,
+demonización del adversario, respeto a derechos de minorías, tolerancia con la
+violencia política.
+
+**Eso no es una posición, es una conducta**, y se puede observar en un medio:
+¿describe al adversario como enemigo? ¿trata a un grupo como amenaza? ¿normaliza
+la violencia? Es medible con el detector de carga que ya existe, y es
+probablemente **más informativo para un lector que cualquier etiqueta
+izquierda-derecha**.
+
+### 12.3 Cómo se dice sin ambigüedad
+
+En vez de «Semana es de derecha»:
+
+> **Semana** — Economía: pro-mercado (0,6 ± 0,1) · Orden: tradición (0,4 ± 0,2) ·
+> Conflicto: salida militar (0,5 ± 0,3) · Pluralismo: sin señal de demonización.
+> *Basado en 340 piezas de los últimos 90 días.*
+
+Es más largo y más directo. Cada afirmación se puede discutir por separado, y una
+puede ser falsa sin arrastrar a las demás. Con «es de derecha» no se puede
+discutir nada: o se acepta o se rechaza en bloque.
+
+### 12.4 Y esto resuelve lo del centro
+
+Con ejes con nombre, la banda del medio se vuelve innecesaria: nadie está «en el
+centro», cada medio está **en un punto de cada eje**. Y la acumulación cerca de
+cero se puede separar en tres cosas que hoy son indistinguibles:
+
+- posición intermedia real, con intervalo estrecho;
+- **falta de datos**, con intervalo ancho → «no evaluable»;
+- **posiciones opuestas en ejes distintos**, que la recta única promediaba a cero
+  y que ahora se ven separadas.
+
+Esa tercera es la que da la razón empírica a «no existe el centro»: buena parte
+de lo que hoy aparece en la banda media probablemente no sea moderación, sino dos
+dimensiones aplastadas en una.
+
+---
+
+## 13. El paso siguiente, y por qué es ese
+
+La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
+sigue es **la Fase 2, y conviene empezarla por su parte más barata y más
+reveladora: la concordancia entre los tres registros de expertos.**
+
+Descargar CHES-LA, GPS y V-Party, quedarse con los partidos colombianos y
+calcular cuánto coinciden entre sí en cada eje. Es una tarde de trabajo, no
+necesita nada de nuestro corpus, y responde antes de invertir en detección de
+menciones:
+
+- **Si los tres coinciden**, el anclaje es firme y se puede construir encima.
+- **Si discrepan mucho**, el problema no es nuestro método: es que la posición de
+  los partidos colombianos no tiene consenso ni entre especialistas, y entonces
+  cualquier medición nuestra heredará esa incertidumbre. Saberlo antes cambia
+  todo lo demás, y de hecho **sería un hallazgo publicable por sí solo**.
+
+Y sigue en pie lo que ya estaba escrito: si en algún punto el método no se
+sostiene, **el juicio editorial declarado, argumentado y sujeto a réplica es un
+resultado aceptable** — más honesto que un número inventado con aparato
+estadístico alrededor.

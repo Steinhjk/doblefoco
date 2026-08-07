@@ -1,0 +1,72 @@
+{
+  "documento": "defensores-patria-2026-v1",
+  "partido": "Defensores de la Patria",
+  "candidato": "Abelardo de la Espriella",
+  "eleccion": "Presidencial Colombia 2026, primera vuelta",
+  "instrumento": "Manifesto Project (MARPOR), esquema de 56 categorías, codebook MPDS2024a",
+  "codificador": "Claude (Opus 5) — PRIMERA PASADA, UN SOLO CODIFICADOR",
+  "fecha": "2026-08-07",
+
+  "estadoDeValidez": {
+    "advertencia": "ESTO NO ES UN RESULTADO PUBLICABLE TODAVÍA.",
+    "porQue": "Una codificación de un solo codificador no tiene medida de fiabilidad. El método exige una segunda codificación independiente y un alfa de Krippendorff publicado. Hasta entonces esta cifra es una estimación de trabajo, no una medición.",
+    "quienDebeSerElSegundo": "Una persona, no otro modelo: dos modelos no son codificadores independientes."
+  },
+
+  "conteos": {
+    "per605_law_and_order": 22,
+    "per504_welfare_expansion": 10,
+    "per304_political_corruption": 9,
+    "per303_govt_efficiency": 9,
+    "per414_economic_orthodoxy": 9,
+    "per603_traditional_morality": 9,
+    "per401_free_market": 7,
+    "per410_economic_growth": 7,
+    "per402_incentives": 6,
+    "per411_technology_infrastructure": 6,
+    "per502_culture": 6,
+    "per601_national_way_of_life": 6,
+    "per506_education_expansion": 5,
+    "per701_labour_groups": 5,
+    "per101_foreign_special_relations": 4,
+    "per104_military_positive": 4,
+    "per703_agriculture": 3,
+    "per109_internationalism_negative": 2,
+    "per203_constitutionalism": 2,
+    "per501_environmental_protection": 2,
+    "per505_welfare_limitation": 2,
+    "per704_middle_class": 2,
+    "per406_protectionism_positive": 1
+  },
+
+  "totalCuasiFrases": 138,
+
+  "rile": {
+    "formula": "RILE = (% de cuasi-frases en categorías de derecha) − (% en categorías de izquierda)",
+    "derecha": {
+      "categorias": ["per104", "per201", "per203", "per305", "per401", "per402", "per407", "per414", "per505", "per601", "per603", "per605", "per606"],
+      "conteo": 67,
+      "porcentaje": 48.6
+    },
+    "izquierda": {
+      "categorias": ["per103", "per105", "per106", "per107", "per202", "per403", "per404", "per406", "per412", "per413", "per504", "per506", "per701"],
+      "conteo": 21,
+      "porcentaje": 15.2
+    },
+    "valor": 33.4,
+    "interpretacion": "Positivo = derecha. En la escala de MARPOR, valores por encima de +30 corresponden a manifiestos claramente de derecha."
+  },
+
+  "observaciones": [
+    "La categoría dominante con diferencia es per605 (ley y orden): 22 de 138 cuasi-frases, el 16 % del documento. Ninguna otra pasa de 10.",
+    "La suma de per603 (moral tradicional, 9) y per605 (ley y orden, 22) es 31 — el 22 % del documento. Es exactamente el perfil que el eje GAL-TAN de Chapel Hill mide como polo TAN, y recuerda que ese eje fue el que MÁS concordancia mostró entre registros de expertos (r = 0,943).",
+    "Hay un componente de bienestar nada trivial: per504 (expansión del bienestar) suma 10 —transferencias, subsidio de vivienda, canastas nutricionales, crédito al 2 %—. Es lo que impide que el RILE se vaya más arriba, y es un dato que la etiqueta «derecha» a secas borraría por completo.",
+    "per304 (corrupción) y per303 (eficiencia estatal) suman 18 y NO entran en el RILE: son categorías neutras en la fórmula. Un 13 % del documento no aporta nada al eje, lo que ilustra por qué el RILE no resume un programa, solo lo proyecta sobre una recta."
+  ],
+
+  "decisionesDiscutibles": [
+    "«Subsidios focalizados» y «Eficiencia y Justicia sobre el Populismo» se codificaron como per505 (limitación del bienestar) por su marco de restricción, aunque las cifras concretas que acompañan son expansivas. Un segundo codificador podría llevarlas a per504 y bajar el RILE.",
+    "Las menciones a fumigación y a la Fuerza Pública se repartieron entre per605 y per104; la frontera entre ambas es porosa en un documento sobre narcotráfico.",
+    "«Fracking con responsabilidad ambiental» se contó en per501 (protección ambiental) pese a que el contexto es de fomento extractivo. Es la decisión más forzada de toda la codificación."
+  ]
+}

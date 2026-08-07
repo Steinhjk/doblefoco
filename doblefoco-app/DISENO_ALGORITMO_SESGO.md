@@ -809,7 +809,79 @@ de los registros externos.
 
 ---
 
-## 17. El paso siguiente, y por qué es ese
+## 17. PRIMERA TANDA DE EXTRACCIÓN — ejecutada
+
+**2026-08-07.** Protocolo de 16.4 aplicado a los actores más mencionados sin
+ancla. Resultado en `shared/actoresPoliticos.js`, con fuentes comprobables.
+
+### 17.1 El protocolo detectó una contradicción, que era su trabajo
+
+Dos fuentes daban militancias distintas para De la Espriella —«Defensores de la
+Patria» y «candidato de Salvación Nacional»—. Ir al documento lo resolvió:
+
+- Se inscribió el **2026-03-12 como Grupo Significativo de Ciudadanos**
+  «Defensores de la Patria», **no con aval de partido**.
+- **Salvación Nacional lo respaldó** el 2025-08-27, pero **no fue su aval de
+  inscripción**.
+- Defensores de la Patria obtuvo **personería jurídica como partido el
+  2026-08-03**, después de la elección.
+
+**El resumen del buscador estaba equivocado y el documento lo desmintió.** Es la
+demostración de por qué la regla es «se guarda la fuente, no la respuesta».
+
+### 17.2 Correcciones a Wikidata
+
+- **Iván Cepeda** figura solo como Polo Democrático; se inscribió por el **Pacto
+  Histórico** el 2026-03-11.
+- **Aída Quilcué** aparece en MAIS; fue **fórmula vicepresidencial de Cepeda**.
+- **«Partido de la Unión por la Gente» es el Partido de la U**, que CHES sí
+  puntúa. Hernán Penagos y Dilian Francisca Toro estaban «sin ancla» por un
+  nombre, no por falta de dato. Corregido en `ALIAS_PARTIDOS`.
+
+### 17.3 Un falso positivo confirmado
+
+**Teófilo Forero** fue un dirigente comunista asesinado en 1989, pero en los
+titulares de hoy el nombre designa casi siempre a la columna móvil de las FARC
+bautizada en su honor. Atribuirle esas menciones —y con ellas una posición—
+habría sido la misatribución que ya costó F1-07. Excluido explícitamente.
+
+### 17.4 El muro, ahora con nombre y cifra
+
+La militancia se puede verificar. **La posición no**, porque los partidos son
+nuevos:
+
+| Partido | ¿En CHES-LA 2020? | ¿En V-Party 2018? |
+|---|---|---|
+| Defensores de la Patria | no (creado en 2025-26) | no |
+| Pacto Histórico | no | no |
+| Colombia Humana | no | no |
+
+**Los dos candidatos de la segunda vuelta de 2026 y el partido de gobierno
+entrante no tienen posición externa que heredar**, y entre ellos concentran la
+mayoría de las menciones del corpus. Verificar la militancia no lo arregla:
+mueve el problema del actor al partido.
+
+Queda una tentación que conviene descartar por escrito: Wikipedia describe a
+Defensores de la Patria como «extrema derecha, antisistema y populista», citando
+BBC, El País y el Wall Street Journal. **Eso es caracterización periodística, no
+encuesta de expertos.** Usarla como ancla en un producto que mide el sesgo de la
+prensa sería tomar como vara de medir aquello que se quiere medir. No se usa.
+
+### 17.5 Entonces las opciones se reducen a dos
+
+1. **Encuesta propia a especialistas** con el cuestionario de CHES, para los
+   partidos posteriores a 2020. Es la única salida que produce una posición con
+   la misma procedencia que el resto del anclaje.
+2. **Publicar solo la capa de atención** —a quién da espacio cada medio—, sin
+   traducirla a posición, hasta que exista esa encuesta o una ola nueva de los
+   registros externos.
+
+La opción 2 se puede hacer ya y no afirma nada que no se pueda sostener. La 1 es
+la que haría posible todo lo demás.
+
+---
+
+## 18. El paso siguiente, y por qué es ese
 
 La Fase 1 ya está hecha (sección 11) y salió bien: el anclaje existe. Lo que
 sigue es **la Fase 2, y conviene empezarla por su parte más barata y más

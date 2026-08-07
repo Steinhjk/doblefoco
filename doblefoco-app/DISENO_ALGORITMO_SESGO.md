@@ -524,10 +524,7 @@ siete de nueve partidos quedan dentro de 1,7.
    independientes de expertos discrepan 3,3 puntos sobre dónde está el Centro
    Democrático en economía, resumir eso —y el eje sociocultural, donde sí
    coinciden— en la palabra «derecha» destruye la única parte que es firme.
-3. **Un tercer registro sigue pendiente.** V-Party (V-Dem) no tiene URL de
-   descarga directa localizable; su página exige pasar por un formulario. Con
-   dos fuentes se mide concordancia, con tres se puede arbitrar cuando dos
-   discrepan. Vale la pena conseguirlo antes de la Fase 5.
+3. **El tercer registro llegó, y arbitra.** Ver 13.5.
 
 ### 13.4 Una trampa de medición, para el registro
 
@@ -541,6 +538,76 @@ Se anota junto a las otras trampas del `CONTEXTO_ALGORITMO_SESGO.md` porque tien
 la misma forma: parecía un hallazgo y era un artefacto nuestro. Y porque en un
 método que va a ser auditado, un valor ausente tratado como cero es
 suficiente para invertir una conclusión.
+
+### 13.5 V-Party entra y resuelve el desacuerdo
+
+Descargado el CPD (*Country-Party-Date*) de V-Party v2. Colombia: 81 filas desde
+1931; la elección más reciente codificada es **2018, con 6 partidos y 7
+codificadores cada uno**. Trae `codelow`, `codehigh`, desviación típica y número
+de codificadores por variable — es decir, **la incertidumbre viene de fábrica**,
+que es justo lo que la sección 4.3 exige y que los otros dos no dan.
+
+Sobre los 6 partidos presentes en los tres registros:
+
+| Partido | CHES (gen) | GPS (econ) | V-Party | antipluralismo | populismo |
+|---|---|---|---|---|---|
+| Alianza Verde | 3,9 | 2,0 | −0,64 | 0,14 | **0,67** |
+| Liberal | 5,9 | 4,0 | −0,28 | 0,42 | 0,48 |
+| Partido de la U | 6,5 | 5,0 | 0,58 | 0,37 | 0,47 |
+| Cambio Radical | 7,6 | 7,0 | 1,57 | 0,74 | 0,33 |
+| Conservador | 8,4 | 7,5 | 2,36 | 0,71 | 0,34 |
+| Centro Democrático | 9,2 | **5,8** | **2,68** | **0,80** | 0,36 |
+
+Concordancia entre pares (*n* = 6):
+
+```
+CHES general   vs  V-Party     r = 0,962    ρ = 1,000   ← orden idéntico
+CHES económico vs  V-Party     r = 0,980    ρ = 1,000
+GPS económico  vs  V-Party     r = 0,855    ρ = 0,829
+CHES general   vs  GPS         r = 0,875    ρ = 0,829
+```
+
+**CHES y V-Party ordenan los seis partidos exactamente igual.** El que se
+descuelga es el GPS — y encaja con que tenga **4 expertos por partido colombiano**
+frente a los 7 de V-Party y los 7-14 de CHES.
+
+**Veredicto sobre el Centro Democrático:** dos de tres registros lo sitúan en el
+extremo derecho, y son los dos con más codificadores. El GPS es el atípico. **El
+anclaje se sostiene**, y la regla operativa queda: CHES y V-Party como base, GPS
+como tercera opinión con menos peso para Colombia.
+
+### 13.6 El hallazgo que no buscábamos
+
+En los mismos 6 partidos:
+
+```
+V-Party izquierda-derecha  vs  populismo        r = −0,879
+V-Party izquierda-derecha  vs  antipluralismo   r = +0,929
+```
+
+**El populismo corre en dirección CONTRARIA al eje izquierda-derecha en
+Colombia**: el partido más populista de los seis es Alianza Verde (0,67) y los
+tres menos populistas son los tres de derecha. El antipluralismo va al revés,
+creciendo hacia la derecha (Centro Democrático, 0,80).
+
+Es decir: dos rasgos que el habla corriente mete en el mismo saco —«populista»,
+«extremista»— apuntan a lados **opuestos** del eje. La etiqueta «derecha» no
+transporta ninguno de los dos, y son probablemente lo que más le importa saber a
+un lector.
+
+Es el argumento empírico más fuerte que hemos encontrado a favor de la sección
+12: **no es que «izquierda» y «derecha» sean imprecisas; es que borran
+información que los propios registros ya traen separada.**
+
+**Con n = 6 hay que ser prudente con la magnitud**: el intervalo de la
+correlación con el antipluralismo va de 0,48 a 0,99, y el del populismo de −0,99
+a −0,24. La dirección es fiable; el tamaño, no.
+
+### 13.7 Reproducirlo
+
+`node scripts/concordanciaAnclajes.mjs`, con los tres archivos descargados. El
+emparejamiento de partidos entre registros va escrito a mano dentro del script,
+a la vista, porque es la decisión más discutible de todo el cálculo.
 
 ---
 

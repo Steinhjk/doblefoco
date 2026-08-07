@@ -105,6 +105,51 @@ console.log(`\nCHES-LA: ${ches.length} partidos colombianos · GPS: ${gps.length
 comparar('EJE ECONÓMICO — CHES lrecon vs GPS V4', 'ches_econ', 'gps_econ');
 comparar('EJE SOCIOCULTURAL — CHES galtan vs GPS V6', 'ches_soc', 'gps_soc');
 
+// ── V-Party (V-Dem), elección de 2018 ────────────────────────────────────────
+const vp = parseDelimited(readFileSync(`${DIR}/vparty/CPD_V-Party_CSV_v2/V-Dem-CPD-Party-V2.csv`, 'utf8'), ',')
+    .filter((r) => r.country_name === 'Colombia' && r.year === '2018');
+
+// v2pariglef: negativo = izquierda, positivo = derecha (comprobado con los
+// valores: Alianza Verde −0,64, Centro Democrático +2,68).
+const PARES_VP = [
+    ['AV', 'AV'], ['PLC', 'PLC'], ['U', 'Partido-U'],
+    ['RCP', 'CR'], ['PCC', 'PCC'], ['CD', 'CD'],
+];
+
+const tres = [];
+for (const [abbC, abbV] of PARES_VP) {
+    const f = filas.find((x) => x.partido === {
+        AV: 'Alianza Verde', PLC: 'Liberal', U: 'Partido de la U',
+        RCP: 'Cambio Radical', PCC: 'Conservador', CD: 'Centro Democrático',
+    }[abbC]);
+    const v = vp.find((r) => r.v2pashname === abbV);
+    if (!f || !v) continue;
+    tres.push({ ...f, vparty: num(v.v2pariglef), antiplural: num(v.v2xpa_antiplural), popul: num(v.v2xpa_popul) });
+}
+
+function corr(etiqueta, a, b, campoA, campoB) {
+    const v = tres.filter((f) => f[campoA] !== null && f[campoB] !== null);
+    const xs = v.map((f) => f[campoA]), ys = v.map((f) => f[campoB]);
+    console.log(`   ${etiqueta.padEnd(46)} r = ${pearson(xs, ys).toFixed(3)}   ρ = ${spearman(xs, ys).toFixed(3)}   n = ${v.length}`);
+}
+
+console.log(`\n\n── TRES REGISTROS, LOS 6 PARTIDOS PRESENTES EN LOS TRES\n`);
+console.log('   partido                CHES(gen)  GPS(econ)  V-Party  antiplural  populismo');
+for (const t of [...tres].sort((a, b) => a.ches_gen - b.ches_gen)) {
+    console.log(
+        `   ${t.partido.padEnd(22)}${t.ches_gen.toFixed(1).padStart(7)}${(t.gps_econ ?? NaN).toFixed(1).padStart(11)}` +
+        `${t.vparty.toFixed(2).padStart(9)}${t.antiplural.toFixed(2).padStart(12)}${t.popul.toFixed(2).padStart(11)}`
+    );
+}
+console.log('\n   CONCORDANCIA ENTRE PARES:');
+corr('CHES general  vs  V-Party izq-der', 0, 0, 'ches_gen', 'vparty');
+corr('CHES económico vs  V-Party izq-der', 0, 0, 'ches_econ', 'vparty');
+corr('GPS económico vs  V-Party izq-der', 0, 0, 'gps_econ', 'vparty');
+corr('CHES general  vs  GPS económico', 0, 0, 'ches_gen', 'gps_econ');
+console.log('\n   ¿EL POPULISMO SIGUE AL EJE IZQUIERDA-DERECHA?');
+corr('V-Party izq-der  vs  populismo', 0, 0, 'vparty', 'popul');
+corr('V-Party izq-der  vs  antipluralismo', 0, 0, 'vparty', 'antiplural');
+
 console.log('\n── ¿COINCIDEN EN EL ORDEN DE IZQUIERDA A DERECHA? (eje económico)\n');
 const porChes = [...filas].filter((f) => f.gps_econ !== null).sort((a, b) => a.ches_econ - b.ches_econ);
 const porGps = [...porChes].sort((a, b) => a.gps_econ - b.gps_econ);

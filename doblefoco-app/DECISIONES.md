@@ -17,6 +17,36 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-07 · El despliegue de Fly se comprueba solo
+
+**Decisión.** `/api/health` publica el commit y el número de feeds del código que
+corre; un workflow diario los compara con `main` y falla si hay desfase.
+
+**Por qué.** Empujar a `main` publica el cliente pero NO la API ni el motor: eso
+sale a mano. Olvidarlo no produce ningún error. Ya mordió dos veces, la peor con
+**seis días leyendo 37 feeds cuando el registro tenía 39** y tres secciones
+contando en cero.
+
+**Dos comprobaciones, no una.** El commit es más preciso pero exige que la imagen
+esté marcada; **el número de feeds funciona igual**, y fue así como se detectó el
+desfase la primera vez.
+
+**Si no se puede comprobar, se dice.** Un `fly deploy` a secas deja la imagen sin
+marcar y la comprobación responde «no verificable» en vez de dar el despliegue
+por bueno. Callar ahí daría confianza sin respaldo, que es justo el patrón que
+esto viene a romper.
+
+**Cambia la costumbre**: se despliega con `npm run deploy`, que pasa el commit y
+además **se niega a desplegar con cambios sin confirmar** —marcar la imagen con
+un commit cuyo contenido no es el desplegado convertiría la comprobación en una
+mentira—.
+
+**Nota de portabilidad**: va en un script y no en una línea de `package.json`
+porque `$(git rev-parse HEAD)` no se expande en Windows. Habría funcionado en un
+portátil y fallado en silencio en otro.
+
+---
+
 ## 2026-08-07 · El algoritmo de sesgo se diseña desde cero y por fases
 
 **Decisión.** Antes de tocar un solo valor de `bias`, se escribe el método. Está

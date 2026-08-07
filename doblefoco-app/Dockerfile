@@ -40,6 +40,19 @@ WORKDIR /app
 # Node emite avisos y elige rutas de código según esto.
 ENV NODE_ENV=production
 
+# De qué commit salió esta imagen. Lo publica /api/health y lo compara el
+# workflow `desfase.yml` contra main.
+#
+# EL VALOR POR OMISIÓN ES «desconocido» A PROPÓSITO. Un `fly deploy` a secas no
+# pasa el argumento, así que la imagen queda sin marcar y la comprobación dirá
+# «no verificable» en vez de dar por bueno un despliegue que no puede comprobar.
+# Callar ahí sería peor que no tener la comprobación: daría confianza sin
+# respaldo, que es el patrón que este aviso existe para romper.
+#
+# Para marcarlo: `npm run deploy` (ver scripts/desplegar.mjs).
+ARG GIT_SHA=desconocido
+ENV GIT_SHA=$GIT_SHA
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY server ./server

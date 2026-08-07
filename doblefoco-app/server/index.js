@@ -20,7 +20,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import express from 'express';
 import cors from 'cors';
-import { getDatabaseStats } from './services/ingestDaemon.js';
+import { getDatabaseStats, RSS_FEEDS_CONFIG } from './services/ingestDaemon.js';
 import { countArticlesBySource, countFeed, readFeed, readSitemapEntries, readStory } from './db/feedStore.js';
 import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
@@ -271,6 +271,24 @@ app.get('/api/health', async (req, res) => {
     res.status(isStale ? 503 : 200).json({
         status: isStale ? 'degradado' : 'ok',
         service: 'DobleFoco API',
+        /**
+         * QUÉ CÓDIGO ESTÁ CORRIENDO AQUÍ.
+         *
+         * Existe porque el desfase entre Fly y `main` ya mordió dos veces y en
+         * ninguna avisó nada: el síntoma no era un error sino números peores
+         * —seis días con 37 feeds cuando el registro tenía 39, y tres secciones
+         * contando en cero—. Un despliegue a mano que se olvida no produce
+         * ningún fallo, así que hace falta preguntar explícitamente.
+         *
+         * `feeds` se publica junto al commit porque es la comprobación que
+         * funciona AUNQUE nadie haya marcado la imagen: si este número no
+         * coincide con el del registro en `main`, el motor está atrasado. Fue
+         * así como se detectó el desfase la primera vez.
+         */
+        version: {
+            commit: process.env.GIT_SHA?.trim() || 'desconocido',
+            feeds: RSS_FEEDS_CONFIG.length,
+        },
         ingestion: {
             lastRunAt,
             // De dónde sale la fecha. En producción siempre 'base': si aquí

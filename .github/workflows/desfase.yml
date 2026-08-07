@@ -1,0 +1,57 @@
+# =============================================================================
+#  ¿Está Fly corriendo lo que hay en main?
+# =============================================================================
+#  QUÉ PROBLEMA RESUELVE. Empujar a `main` publica el cliente en Vercel pero NO
+#  la API ni el motor: eso sale a mano con `npm run deploy`. Olvidarlo no
+#  produce ningún error, así que nadie se entera.
+#
+#  Ya mordió dos veces. La peor: seis días con el motor leyendo 37 feeds cuando
+#  el registro de `main` tenía 39, y tres secciones de la portada contando en
+#  cero. El síntoma no era un fallo, eran números peores — la clase de avería
+#  que solo aparece si alguien va a buscarla.
+#
+#  DOS COMPROBACIONES, Y LA SEGUNDA ES LA QUE SIEMPRE FUNCIONA
+#
+#  1. El commit. `/api/health` publica el `GIT_SHA` con el que se construyó la
+#     imagen. Si no coincide con el de `main`, hay desfase y se dice cuántos
+#     commits.
+#
+#  2. El número de feeds. Se compara el que reporta la API con el que sale del
+#     registro en `main`. Funciona AUNQUE la imagen no esté marcada, y fue así
+#     como se detectó el desfase la primera vez.
+#
+#  Si la imagen se desplegó con `fly deploy` a secas, el commit viene como
+#  «desconocido» y esto lo dice en voz alta en vez de dar el despliegue por
+#  bueno. Una comprobación que calla cuando no puede comprobar es peor que no
+#  tenerla: da confianza sin respaldo.
+# =============================================================================
+
+name: Desfase de despliegue
+
+on:
+  schedule:
+    # 13:00 UTC ≈ 08:00 en Colombia: el aviso llega al empezar el día, no de
+    # madrugada, porque exige una acción manual de una persona.
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Hace falta el historial para poder contar cuántos commits de
+          # distancia hay; con el clon superficial solo se sabría que difieren.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Comparar lo desplegado con main
+        run: node .github/scripts/comprobarDesfase.mjs
+        env:
+          SALUD_URL: https://doblefoco.fly.dev/api/health

@@ -38,9 +38,18 @@ import { MEDIA_REGISTRY } from '../../shared/mediaRegistry.js';
 import { hasDocumentedOwnership } from '../../shared/mediaOwnership.js';
 import { escaparHtml } from './metadatos.js';
 
+/**
+ * Los medios que la página describe: solo los colombianos.
+ *
+ * Tiene que coincidir con lo que MediaMap.jsx pinta desde el 2026-08-07, o la
+ * descripción del buscador prometería un número de medios que la página no
+ * enseña. Ese desajuste es de los que nadie nota hasta que alguien cuenta.
+ */
+const COLOMBIANOS = MEDIA_REGISTRY.filter((medio) => medio.country === 'CO');
+
 /** Medios con propiedad documentada, contados del registro y no a mano. */
 function contarDocumentados() {
-    return MEDIA_REGISTRY.filter((medio) => hasDocumentedOwnership(medio.id)).length;
+    return COLOMBIANOS.filter((medio) => hasDocumentedOwnership(medio.id)).length;
 }
 
 /**
@@ -54,7 +63,7 @@ export const PAGINAS_ESTATICAS = {
     '/mapa-medios': {
         titulo: () => 'Mapa mediático de Colombia: quién es dueño de cada medio',
         descripcion: () =>
-            `Quién controla los ${MEDIA_REGISTRY.length} medios colombianos que seguimos: ` +
+            `Quién controla los ${COLOMBIANOS.length} medios colombianos que seguimos: ` +
             `propiedad documentada con fuentes en ${contarDocumentados()} de ellos, ` +
             'grupos económicos y posición en el espectro político.',
         tipoSchema: 'CollectionPage',

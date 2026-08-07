@@ -88,16 +88,34 @@ function spread(media) {
     });
 }
 
+/**
+ * ESTA PÁGINA ES SOLO COLOMBIANA, Y YA NO ES UN INTERRUPTOR (2026-08-07).
+ *
+ * Había una casilla «Solo medios colombianos», activada por omisión, que podía
+ * apagarse para añadir Euronews, DW, France 24, El País de España, Reuters, la
+ * NYT y el resto. Se retira por decisión de Jose: lo que este mapa describe es
+ * la concentración de la propiedad EN COLOMBIA, y mezclar en el mismo gráfico a
+ * la BBC con El Tiempo no hace más completo el retrato, lo desdibuja —los
+ * dueños de un medio francés no compiten por el espacio mediático colombiano ni
+ * pesan en lo que un lector de Bogotá tiene a mano—.
+ *
+ * Los medios internacionales SIGUEN en el catálogo y siguen aportando cobertura;
+ * lo que dejan de hacer es contar como parte del mapa de propiedad. No es
+ * retirar a nadie (ver el criterio de no silenciar medios): es que la pregunta
+ * de esta página tiene un sujeto, y el sujeto es Colombia.
+ */
+const ES_COLOMBIANO = (medio) => medio.country === 'CO';
+const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY.filter(ES_COLOMBIANO);
+
 const MediaMap = () => {
     const [view, setView] = useState('mapa');
     const [selectedId, setSelectedId] = useState(null);
-    const [onlyColombian, setOnlyColombian] = useState(true);
     const titleId = useId();
 
-    const media = useMemo(() => {
-        const list = MEDIA_REGISTRY.filter((m) => (onlyColombian ? m.country === 'CO' : true));
-        return spread([...list].sort((a, b) => a.bias - b.bias));
-    }, [onlyColombian]);
+    const media = useMemo(
+        () => spread([...MEDIOS_COLOMBIANOS].sort((a, b) => a.bias - b.bias)),
+        []
+    );
 
     const selected = media.find((m) => m.id === selectedId) ?? null;
 
@@ -114,7 +132,7 @@ const MediaMap = () => {
                 <p className="map-warning">
                     <Info size={15} aria-hidden="true" />
                     <span>
-                        Las {MEDIA_REGISTRY.length} clasificaciones son juicios editoriales
+                        Las {MEDIOS_COLOMBIANOS.length} clasificaciones son juicios editoriales
                         argumentados y <strong>ninguna ha pasado por revisión formal todavía</strong>.
                         Cada una lleva su justificación al lado, para que se pueda discutir.
                     </span>
@@ -138,15 +156,6 @@ const MediaMap = () => {
                         <Table2 size={15} aria-hidden="true" /> Tabla
                     </button>
                 </div>
-
-                <label className="map-filter">
-                    <input
-                        type="checkbox"
-                        checked={onlyColombian}
-                        onChange={(e) => { setOnlyColombian(e.target.checked); setSelectedId(null); }}
-                    />
-                    Solo medios colombianos
-                </label>
             </div>
 
             <div className="map-legend" aria-hidden="true">

@@ -1,0 +1,100 @@
+{
+  "prueba": "Descarte de género: ¿separan los programas MUNICIPALES a los dos extremos anclados?",
+  "fecha": "2026-08-08",
+  "codificador": "Claude (Opus 5) — PRIMERA PASADA, UN SOLO CODIFICADOR, sin segunda vuelta ciega",
+  "instrumento": "Manifesto Project (MARPOR), esquema de 56 categorías, codebook MPDS2024a. RILE = (Σ derecha − Σ izquierda) / N",
+  "muestreoDeDocumentos": {
+    "script": "npm run muestra:programas -- 3",
+    "semilla": 20260808,
+    "poblacion": "494 programas de partidos anclados, sorteados sobre las 1132 filas de datos.gov.co h236-q58p",
+    "sustitucion": "PLAN_AL46880000011_E6 (Centro Democrático, Casanare) es un escaneo sin capa de texto —2 palabras en 12 páginas—. Se tomó el siguiente del orden barajado, según la regla del script."
+  },
+  "muestreoDentroDelDocumento": {
+    "script": "node scripts/prepararCuasiFrases.mjs <fichero> 60",
+    "metodo": "Sistemático 1 de cada k sobre el documento entero, arranque fijo en 2. 60 cuasi-frases por documento.",
+    "porQue": "Elegir los pasajes a ojo es el mismo sesgo de selección que elegir los documentos a mano, un nivel más abajo."
+  },
+  "documentos": [
+    {
+      "id": "verde-tolima",
+      "partido": "Alianza Verde",
+      "ancla": { "ches_lrgen": 3.86, "vparty": -0.64 },
+      "municipio": "Cajamarca (Tolima)",
+      "elegido": "VARGAS MALAGON JULIO ROBERTO",
+      "palabras": 2117,
+      "cuasiFrasesCandidatas": 78,
+      "codificadas": 60,
+      "izquierda": { "per106": 5, "per202": 5, "per404": 2, "per412": 3, "per406": 1, "per504": 4, "per506": 2, "total": 22 },
+      "derecha": { "per402": 2, "per606": 1, "total": 3 },
+      "rile": -0.317,
+      "observacion": "El más ideológico de los cuatro. Apoyo al proceso de paz con las FARC (5 cuasi-frases), Asamblea Nacional Constituyente, presupuesto participativo, consulta popular contra la megaminería."
+    },
+    {
+      "id": "verde-casanare",
+      "partido": "Alianza Verde",
+      "ancla": { "ches_lrgen": 3.86, "vparty": -0.64 },
+      "municipio": "San Luis de Palenque (Casanare)",
+      "elegido": "PLATA PLATA JOVANI ALBERTO",
+      "palabras": 6339,
+      "cuasiFrasesCandidatas": 227,
+      "codificadas": 60,
+      "izquierda": { "per202": 1, "per504": 11, "per506": 4, "total": 16 },
+      "derecha": { "per402": 2, "total": 2 },
+      "rile": -0.233,
+      "observacion": "Casi todo su valor de izquierda viene de 504 y 506 —salud y educación—, que es lo que hace cualquier alcaldía. Aquí el género manda."
+    },
+    {
+      "id": "cd-bolivar",
+      "partido": "Centro Democrático",
+      "ancla": { "ches_lrgen": 9.21, "vparty": 2.68 },
+      "municipio": "Barranco de Loba (Bolívar)",
+      "elegido": "RAMOS BAYTER MANUEL ESTEBAN",
+      "palabras": 8278,
+      "cuasiFrasesCandidatas": 249,
+      "codificadas": 60,
+      "izquierda": { "per202": 2, "per504": 9, "per506": 4, "total": 15 },
+      "derecha": { "per203": 1, "per402": 1, "per603": 3, "per605": 3, "per606": 1, "total": 9 },
+      "rile": -0.100,
+      "observacion": "Aparecen las categorías que NO están en los de Alianza Verde: orden público y policía (605, tres veces), moral tradicional y familia (603, tres veces), constitucionalismo (203)."
+    },
+    {
+      "id": "cd-casanare2",
+      "partido": "Centro Democrático",
+      "ancla": { "ches_lrgen": 9.21, "vparty": 2.68 },
+      "municipio": "Paz de Ariporo (Casanare)",
+      "elegido": "ESCOBAR BERNAL EUNICE",
+      "palabras": 15268,
+      "cuasiFrasesCandidatas": 317,
+      "codificadas": 60,
+      "izquierda": { "per202": 1, "per403": 1, "per504": 12, "per506": 5, "total": 19 },
+      "derecha": { "per201": 1, "per203": 1, "per402": 2, "per603": 2, "total": 6 },
+      "rile": -0.217,
+      "observacion": "El más burocrático: mucha cita de política pública nacional. Aun así trae libertad de cultos (603) y constitucionalismo (203), ausentes en los de Alianza Verde."
+    }
+  ],
+  "resultado": {
+    "rilePorPartido": {
+      "Alianza Verde": { "media": -0.275, "documentos": [-0.317, -0.233], "recorrido": 0.084 },
+      "Centro Democrático": { "media": -0.158, "documentos": [-0.100, -0.217], "recorrido": 0.117 }
+    },
+    "ordenConservado": true,
+    "separacionEntreMedias": 0.117,
+    "solapamiento": "SÍ. cd-casanare2 (−0,217) queda a la izquierda de verde-casanare (−0,233) por 0,016: prácticamente encima.",
+    "conteoDeCategoriasDeDERECHA": {
+      "Alianza Verde": [3, 2],
+      "Centro Democrático": [9, 6],
+      "separaSinSolapar": true
+    },
+    "conteoDeCategoriasDeIZQUIERDA": {
+      "Alianza Verde": [22, 16],
+      "Centro Democrático": [15, 19],
+      "separaSinSolapar": false
+    }
+  },
+  "limitaciones": [
+    "n = 2 documentos por partido. Esto es un piloto de descarte, NO una calibración: con dos puntos por grupo no hay contraste estadístico posible y las medias no tienen intervalo.",
+    "Un solo codificador y una sola pasada. Sin segunda codificación ciega no hay alfa de Krippendorff, así que no se conoce la fiabilidad de estos códigos.",
+    "El codificador conocía el partido de cada documento al codificarlo. Es la fuente de sesgo más seria de esta tanda y se declara: la codificación a ciegas exige separar los ficheros de su procedencia antes de leerlos.",
+    "Los cuatro documentos dan RILE NEGATIVO. Ninguno sale a la derecha, ni siquiera los del partido anclado en 9,21 sobre 10. El valor absoluto de RILE en este género no es interpretable como posición."
+  ]
+}

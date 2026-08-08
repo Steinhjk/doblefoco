@@ -1245,3 +1245,91 @@ separan. Si el género municipal aplastó la señal, ahí se ve, y se ahorra el 
 del trabajo. Si se separan, se codifican los 21 y se ajusta la recta.
 
 Es deliberado gastar el esfuerzo en el orden que puede hacer que sobre.
+
+---
+
+## 23. PILOTO DE DESCARTE — resultado ambiguo, y qué se aprende de él
+
+Cuatro documentos codificados el 2026-08-08: los dos extremos anclados, dos
+programas cada uno. Datos completos en `programas/piloto-extremos.json`.
+
+### 23.1 El resultado, sin adornarlo
+
+```
+                          RILE     izq  der
+Alianza Verde  Cajamarca  −0,317    22    3
+Alianza Verde  S. Luis    −0,233    16    2
+Centro Dem.    B. de Loba −0,100    15    9
+Centro Dem.    P. Ariporo −0,217    19    6
+
+media Alianza Verde  −0,275   (CHES 3,86)
+media Centro Dem.    −0,158   (CHES 9,21)
+```
+
+**El orden se conserva y la separación es de 0,117.** Pero los documentos se
+solapan: el programa del Centro Democrático de Paz de Ariporo (−0,217) queda
+prácticamente encima del de Alianza Verde de San Luis (−0,233). La variación
+DENTRO de cada partido (0,084 y 0,117) es del mismo tamaño que la distancia
+ENTRE partidos.
+
+Con n=2 por grupo esto no admite contraste estadístico. **Es un piloto de
+descarte, y lo que descarta es la lectura ingenua del RILE, no el método.**
+
+### 23.2 Los cuatro salen a la izquierda, y eso es el género
+
+Ningún documento da RILE positivo. Ni siquiera los del partido anclado en **9,21
+sobre 10**, el más a la derecha del catálogo colombiano.
+
+La razón está en la composición: el lado izquierdo del RILE incluye **504
+(expansión del estado de bienestar)** y **506 (expansión educativa)**, que es
+literalmente en lo que consiste gobernar un municipio. Un alcalde que promete
+puestos de salud y cobertura escolar suma izquierda por hacer su trabajo.
+
+**Conclusión operativa: el valor absoluto del RILE en este género no es
+interpretable como posición.** Solo puede usarse relativamente, y aun así con
+cuidado.
+
+### 23.3 El hallazgo útil: la derecha discrimina y la izquierda no
+
+Separando los dos lados del índice:
+
+```
+                 categorías de DERECHA   categorías de IZQUIERDA
+Alianza Verde           3 y 2                   22 y 16
+Centro Democrático      9 y 6                   15 y 19
+```
+
+**El conteo de categorías de derecha separa a los dos partidos sin solaparse; el
+de izquierda no separa nada.** Y es interpretable: lo que aparece en los
+programas del Centro Democrático y en ninguno de Alianza Verde son **orden
+público y policía (605), moral tradicional y familia (603), constitucionalismo
+(203)**. Lo que aparece solo en Alianza Verde es **paz (106), democracia
+participativa (202) y economía controlada (412)**.
+
+O sea: la señal existe y es reconocible, pero **el RILE la diluye al restarle un
+denominador dominado por el género**. Un índice construido sobre las categorías
+que sí discriminan tendría más potencia con menos documentos.
+
+### 23.4 Lo que este piloto NO autoriza a concluir
+
+- **No hay calibración.** Dos puntos por partido no ajustan una recta.
+- **No se conoce la fiabilidad.** Un solo codificador, una sola pasada, sin
+  segunda vuelta ciega: no hay alfa de Krippendorff.
+- **El codificador sabía de qué partido era cada documento.** Es el sesgo más
+  serio de esta tanda. La codificación a ciegas exige separar los ficheros de su
+  procedencia ANTES de leerlos, y eso hay que montarlo.
+
+### 23.5 Qué hacer con esto
+
+La decisión honesta **no es «seguir» ni «abandonar»**, sino cambiar dos cosas
+antes de gastar las 36-54 horas:
+
+1. **Codificación ciega de verdad.** Renombrar los ficheros a un identificador
+   opaco y codificar sin saber el partido. Sin esto, cualquier resultado de los
+   21 documentos hereda la objeción de 23.4 y no lo salva el tamaño de la muestra.
+2. **Medir también un índice restringido a las categorías discriminantes**, junto
+   al RILE clásico. Si con 21 documentos el RILE sigue solapando y el restringido
+   no, eso es un resultado sobre el instrumento, y publicable.
+
+Y sigue en pie lo de la sección 0: si al final ninguno de los dos separa, el
+resultado legítimo es **decirlo** y quedarse con el juicio editorial declarado.

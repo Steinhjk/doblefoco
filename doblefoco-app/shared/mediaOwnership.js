@@ -416,23 +416,96 @@ export const CONTROL_GROUPS = {
             },
         ],
     },
+    /**
+     * DIRIGIR NO ES POSEER, y en los diarios regionales confundirlo es fácil.
+     *
+     * Al buscar quién encabeza hoy Vanguardia aparecen los nombres de sus
+     * directores de 2025. No entran aquí: la dirección de un periódico es un
+     * cargo editorial y esta lista responde a quién lo POSEE. Meter a un
+     * director en la cadena de propiedad sería atribuirle un control que no
+     * tiene, y a la vez tapar al dueño real.
+     */
     'el-heraldo-familias': {
         label: 'Familias Manotas, Pumarejo y Fernández',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Familias Manotas, Pumarejo y Fernández',
+                papel:
+                    'Un tercio de las acciones cada una. Descienden de los fundadores de 1933: ' +
+                    'Alberto Pumarejo, Luis Eduardo Manotas y Juan B. Fernández Ortega.',
+                desde: '1933',
+                fuentes: ['https://www.pulzo.com/economia/duenos-heraldo-cuales-tres-familias-que-mandan-ese-periodico-PP2729022'],
+            },
+            {
+                // El reparto en tercios es justo lo que impide señalar a una
+                // cabeza: ninguna familia tiene mayoría por sí sola.
+                nombre: 'Cabeza única: no la hay',
+                papel:
+                    'Con las acciones repartidas en tres tercios iguales, ninguna familia controla ' +
+                    'sola. Nombrar a una persona sería inventarle una mayoría que no tiene.',
+                desde: null,
+                fuentes: [],
+            },
+        ],
     },
 
     // ── Familias regionales ─────────────────────────────────────────────────
     galvis: {
         label: 'Familia Galvis — Galvis Ramírez y Cía',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Descendientes de Alejandro Galvis Galvis',
+                papel:
+                    'Fundó el diario en Bucaramanga en 1919 y sigue en manos de su familia, a través ' +
+                    'de Galvis Ramírez y Cía S.A. La misma familia entró en 1980 con el 50 % de ' +
+                    'Editora del Mar (El Universal) y adquirió El Nuevo Día de Ibagué.',
+                desde: '1919',
+                fuentes: ['https://en.wikipedia.org/wiki/Vanguardia_(Colombian_newspaper)'],
+            },
+            {
+                nombre: 'Alejandro Galvis Ramírez',
+                papel:
+                    'Principal impulsor del diario hasta su muerte. Quién encabeza la sociedad ' +
+                    'después NO está documentado: los nombres que circulan son de la dirección ' +
+                    'editorial, que es otro cargo.',
+                desde: null,
+                fuentes: ['https://www.vanguardia.com/area-metropolitana/bucaramanga/fallecio-alejandro-galvis-ramirez-presidente-corporativo-de-vanguardia-BN3294298'],
+            },
+        ],
     },
     'restrepo-la-patria': {
         label: 'Familia Restrepo',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Nicolás Restrepo Escobar',
+                papel:
+                    'Encabeza el diario, tercera generación de la familia. José Restrepo Restrepo lo ' +
+                    'adquirió en 1940 y Luis José Restrepo lo dirigió desde 1973.',
+                desde: '1940',
+                fuentes: ['https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/'],
+            },
+        ],
     },
     'uribe-vegalara': {
         label: 'Familia Uribe Vegalara',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Juan Pablo Uribe y Elvira Vegalara',
+                papel: 'Sostienen económicamente el diario desde 1990.',
+                desde: '1990',
+                fuentes: ['https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/'],
+            },
+            {
+                nombre: 'Juan Gabriel Uribe Vegalara',
+                papel: 'Hijo de los anteriores; dirige el diario.',
+                desde: null,
+                fuentes: ['https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/'],
+            },
+        ],
     },
     catalitico: {
         label: 'Grupo Empresarial Catalítico',

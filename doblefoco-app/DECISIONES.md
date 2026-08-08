@@ -65,19 +65,23 @@ Es el peor tipo de fallo del catálogo: **invisible desde el servidor y total pa
 el lector**. Ni un registro, ni un aviso, ni una prueba en rojo. Solo un hueco
 gris donde iba la foto.
 
-**Y se cierra la clase entera, no el caso.** La CSP enumera dominios A MANO y no
-tenía ninguna relación con el registro, así que no había forma de que se enterara
-de una migración. Se añade **`npm run check:csp`**, que compara las dos listas, y
-va en el CI.
+**POR QUÉ NO LO VIO LA PRUEBA QUE EXISTE PARA ESTO, que es la parte instructiva.**
+`src/services/csp.test.js` ya comprueba que la CSP cubre el dominio de todo medio
+con feed, y había saltado tres veces antes. Estaba en verde porque el registro
+decía `laopinion.com.co` y la CSP decía `laopinion.com.co`: **las dos listas
+coincidían y las dos estaban equivocadas.** Comparar dos copias del mismo dato no
+detecta que el dato haya dejado de ser cierto.
 
-**Distingue por si el medio ingiere o no**, que es lo que evita que se vuelva
-ruido: siete medios están como referencia y sin feed —EFE, Reuters, CNN, NYT,
-WSJ, FT y La Vanguardia—. Sin feed no hay imágenes, así que no hacen fallar la
-comprobación; se listan como recordatorio para el día que alguien les ponga feed.
+Se llegó a escribir un `check:csp` que hacía justamente esa comparación otra vez.
+**Se retiró al descubrir que duplicaba la prueba existente** y que, por tanto,
+tampoco habría encontrado nada.
 
-**Lo que la comprobación NO puede ver**, y queda dicho en su cabecera: que un
-medio sirva fotos desde un host que no esté declarado en el registro. Eso solo se
-descubre mirando los `image_url` reales en la base.
+**Lo que sí lo encuentra es contrastar el registro contra la REALIDAD**, no
+contra otra copia de sí mismo: la comprobación de dominio del enlace añadida a
+`check:feeds`, que mira a dónde apuntan de verdad los enlaces del feed y avisa
+cuando no coinciden con el `domain` declarado. Fue la que dio el aviso. Regla
+general que queda: una comprobación entre dos artefactos nuestros solo detecta
+desincronización; para detectar un dato caduco hay que ir a la fuente externa.
 
 **Constantes compartidas.** `ITEMS_PER_FEED` y `RETENTION_MS` se exportan desde
 `ingestDaemon.js` en vez de copiarse al script: una copia se habría

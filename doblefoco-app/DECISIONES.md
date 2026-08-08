@@ -17,6 +17,53 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Un punto ciego solo se afirma si la ausencia sorprende
+
+**Decisión de Jose.** Un espectro ausente solo se señala cuando esa ausencia es
+improbable dada la frecuencia con la que ese espectro aparece en el corpus:
+P(ausencia) ≈ (1 − q)^n < 0,05.
+
+**Por qué.** Medido sobre 4 807 historias, la función insignia del producto solo
+sabía decir una cosa:
+
+```
+puntos ciegos declarados ... 30 de izquierda, 0 de derecha
+tasa base de aparición ..... centro 54,0 % · derecha 43,2 % · izquierda 2,8 %
+de 35 historias con 4+ medios: 33 sin izquierda, 1 sin derecha
+```
+
+La izquierda faltaba en el 94 % de las historias evaluables **porque publica el
+3 % del volumen, no porque decidiera callar**. El aviso medía cadencia de
+publicación y lo presentaba como comportamiento editorial. Un lector que ve
+treinta «punto ciego de la izquierda» y ninguno de la derecha concluye algo que
+los datos no sostienen.
+
+**Efecto, dicho sin suavizar: la función queda en cero.**
+
+```
+                 antes   ahora        medios necesarios
+izquierda ....... 30       0          105 → imposible
+derecha .......... 0       0            6 → posible (máximo hoy: 7)
+```
+
+Los treinta avisos falsos desaparecen y no los sustituye ninguno verdadero. Se
+acepta a sabiendas: **un punto ciego que se afirma siempre no es un hallazgo, es
+una constante**, y publicar cero es más honesto que publicar treinta acusaciones
+que solo reflejan quién publica más.
+
+**Falla cerrado.** Sin tasas base, `analyzeCoverage` no afirma nada. Quien llame
+sin decir cada cuánto aparece cada espectro no obtiene una acusación por omisión.
+Eso obligó a pasarlas también en `feedStore`: sin ese cambio la función habría
+desaparecido del sitio en silencio, que es un modo de fallo peor que el que se
+estaba corrigiendo.
+
+**Lo que esto deja a la vista.** El espectro cuya ausencia sí sería significativa
+con 4 medios es el **centro** —hay 6 historias que lo cumplen— pero el esquema
+solo admite `left` y `right`. Es decir: el único punto ciego afirmable hoy es el
+que el producto no puede expresar. Merece decisión editorial aparte.
+
+---
+
 ## 2026-08-07 · Vigilancia del sitio y de los medios mudos
 
 **Decisión.** Un workflow cada 6 horas comprueba que `doblefoco.co` y la API

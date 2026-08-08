@@ -21,6 +21,7 @@
 import Parser from 'rss-parser';
 import {
     analyzeCoverage,
+    calcularTasasBase,
     averageFactuality,
     classifySpectrum,
     SPECTRUM,
@@ -1061,6 +1062,29 @@ function buildMultisourceStories() {
     // vez de quedarse con la mitad y hacer que la poda expulse lo que no debe.
     const comparablesDeEsteCiclo = new Set();
 
+    /**
+     * Cada cuánto aparece cada espectro EN ESTE CORPUS. Hace falta antes de
+     * analizar ninguna historia, porque un punto ciego solo se afirma cuando la
+     * ausencia es improbable dada esa frecuencia (ver UMBRAL_SORPRESA).
+     *
+     * Se recalcula en cada ciclo y no se guarda: describe el corpus vivo, y un
+     * valor fijo envejecería en silencio hasta afirmar puntos ciegos con la
+     * frecuencia de hace meses.
+     *
+     * Se construye desde los grupos ya formados —una entrada por medio y grupo—
+     * y no desde `articlesByLink`, para que un medio que publica cinco notas
+     * sobre el mismo hecho cuente una vez. Contarlas cinco daría a los medios de
+     * mucho volumen una frecuencia inflada y haría su ausencia artificialmente
+     * más sorprendente.
+     */
+    const tasasBase = calcularTasasBase(
+        clusters.map((c) => ({
+            sources: [...new Map(
+                c.articles.map((a) => [a.outlet.name, { bias: a.outlet.bias }])
+            ).values()],
+        }))
+    );
+
     storiesFeed = clusters.map((cluster) => {
         const items = cluster.articles;
 
@@ -1086,7 +1110,7 @@ function buildMultisourceStories() {
         }
 
         const sources = [...outletsByName.values()];
-        const coverage = analyzeCoverage(sources);
+        const coverage = analyzeCoverage(sources, tasasBase);
 
         /**
          * Se anota qué artículos encontraron pareja, para que la poda del ciclo

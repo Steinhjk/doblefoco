@@ -93,7 +93,10 @@ async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }
     const porHistoria = new Map(ids.map((id) => [id, []]));
     for (const fila of articulos.rows) porHistoria.get(fila.story_id)?.push(fila);
 
-    return historias.rows.map((h) => componerHistoria(h, porHistoria.get(h.id) ?? []));
+    // Una sola vez para todo el lote, no una por historia.
+    const tasasBase = await tasasBaseDelCorpus();
+
+    return historias.rows.map((h) => componerHistoria(h, porHistoria.get(h.id) ?? [], tasasBase));
 }
 
 /**
@@ -141,8 +144,58 @@ function elegirPerspectiva(articulos, espectro) {
     };
 }
 
+/**
+ * Cada cuánto aparece cada espectro, leído de la base.
+ *
+ * HACE FALTA AQUÍ, y omitirlo tenía consecuencia visible. Desde el 2026-08-08 un
+ * punto ciego solo se afirma cuando la ausencia del espectro es improbable dada
+ * su frecuencia; sin pasarle esa frecuencia, `analyzeCoverage` falla cerrado y
+ * NINGUNA historia leída de la base mostraría punto ciego. La función habría
+ * desaparecido del sitio en silencio.
+ *
+ * Se cuenta sobre `coverage_*`, que ya son medios distintos por historia: es la
+ * misma unidad que usa `calcularTasasBase` en el motor, así que las dos vías
+ * producen el mismo número.
+ *
+ * Se cachea cinco minutos. La cifra se mueve despacio —es un agregado sobre
+ * miles de historias— y sin caché sería una consulta extra en cada lectura del
+ * feed, que es la ruta más caliente del sitio.
+ */
+const TASAS_TTL_MS = 5 * 60 * 1000;
+let tasasCache = { valor: null, cuando: 0 };
+
+async function tasasBaseDelCorpus() {
+    const ahora = Date.now();
+    if (tasasCache.valor && ahora - tasasCache.cuando < TASAS_TTL_MS) return tasasCache.valor;
+
+    const resultado = await safeQuery(
+        `SELECT coalesce(sum(coverage_left), 0)   AS izq,
+                coalesce(sum(coverage_center), 0) AS cen,
+                coalesce(sum(coverage_right), 0)  AS der
+           FROM stories`,
+        [],
+        'tasas base del espectro'
+    );
+
+    // Sin base, `null`: analyzeCoverage no afirmará puntos ciegos, que es la
+    // degradación correcta —callar— y no la contraria.
+    if (!resultado?.rows?.length) return null;
+
+    const { izq, cen, der } = resultado.rows[0];
+    const total = Number(izq) + Number(cen) + Number(der);
+    if (!total) return null;
+
+    const valor = {
+        left: Number(izq) / total,
+        center: Number(cen) / total,
+        right: Number(der) / total,
+    };
+    tasasCache = { valor, cuando: ahora };
+    return valor;
+}
+
 /** Arma la historia con la misma forma que producía el motor en memoria. */
-function componerHistoria(fila, articulos) {
+function componerHistoria(fila, articulos, tasasBase = null) {
     // Un medio, una entrada: si publicó tres notas, no cuenta triple.
     const porMedio = new Map();
     for (const a of articulos) {
@@ -159,7 +212,7 @@ function componerHistoria(fila, articulos) {
     }
 
     const sources = [...porMedio.values()];
-    const coverage = analyzeCoverage(sources);
+    const coverage = analyzeCoverage(sources, tasasBase);
 
     /**
      * LA IMAGEN ES DEL MEDIO QUE PONE EL TITULAR, o de ninguno.

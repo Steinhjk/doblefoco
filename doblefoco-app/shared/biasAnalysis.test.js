@@ -51,6 +51,18 @@ describe('classifySpectrum', () => {
     });
 });
 
+/**
+ * Tasas base de referencia para las pruebas del punto ciego.
+ *
+ * Desde 2026-08-08 un punto ciego solo se afirma cuando la ausencia es
+ * improbable DADA la frecuencia con la que ese espectro aparece en el corpus.
+ * Estas pruebas usan un corpus imaginario equilibrado —un tercio cada
+ * espectro— para comprobar la lógica del umbral sin que la mida el
+ * desequilibrio real. El comportamiento con el corpus REAL se prueba aparte,
+ * más abajo, y es el que importa para el producto.
+ */
+const EQUILIBRADO = { left: 1 / 3, center: 1 / 3, right: 1 / 3 };
+
 describe('analyzeCoverage — el umbral de F1-03', () => {
     it(`no afirma un punto ciego por debajo de ${BLINDSPOT_MIN_SOURCES} fuentes`, () => {
         // Con 3 fuentes cualquier proporción es ruido: una sola mueve la
@@ -62,13 +74,31 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
         expect(result.blindspot).toBeNull();
     });
 
-    it(`afirma el punto ciego a partir de ${BLINDSPOT_MIN_SOURCES} fuentes`, () => {
-        // Cuatro medios: tres de izquierda y uno sin línea marcada. La derecha
-        // está en cero y el lado que cubre aporta más de una voz.
-        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, 0));
+    it(`${BLINDSPOT_MIN_SOURCES} fuentes ya no bastan: la ausencia tiene que sorprender`, () => {
+        // Cuatro medios: tres de izquierda y uno sin línea marcada. Cumple todas
+        // las condiciones ANTERIORES —cuatro fuentes, la derecha en cero, el
+        // lado que cubre con más de una voz— y aun así NO se afirma nada.
+        //
+        // Con los tres espectros a un tercio cada uno, que falte uno entre
+        // cuatro medios ocurre por azar el 20 % de las veces: (2/3)⁴ = 0,198.
+        // Llamar «punto ciego» a algo que pasa una de cada cinco veces es acusar
+        // a alguien de omitir cuando lo que hubo fue una moneda.
+        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, 0), EQUILIBRADO);
 
         expect(result.total).toBe(4);
         expect(result.insufficientCoverage).toBe(false);
+        expect(result.blindspot).toBeNull();
+    });
+
+    it('lo afirma cuando hay medios suficientes para que la ausencia sea rara', () => {
+        // Ocho medios y ninguno de derecha. Con un tercio de tasa base,
+        // (2/3)⁸ = 0,039: por debajo del 5 %. Ahí sí se puede afirmar.
+        const result = analyzeCoverage(
+            sources(-0.6, -0.5, -0.4, -0.3, 0, 0.1, -0.05, 0.05),
+            EQUILIBRADO
+        );
+
+        expect(result.counts.right).toBe(0);
         expect(result.blindspot).not.toBeNull();
         expect(result.blindspot.spectrum).toBe('right');
     });
@@ -96,11 +126,63 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
         expect(result.blindspot).toBeNull();
     });
 
-    it('detecta el punto ciego de la izquierda', () => {
-        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0, 0));
+    it('detecta el punto ciego de la izquierda cuando la ausencia es improbable', () => {
+        const result = analyzeCoverage(
+            sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0),
+            EQUILIBRADO
+        );
 
         expect(result.blindspot.spectrum).toBe('left');
-        expect(result.blindspot.description).toContain('6');
+        expect(result.blindspot.description).toContain('8');
+    });
+});
+
+/**
+ * EL CORPUS REAL, QUE ES LO QUE DECIDE SI EL PRODUCTO MIENTE.
+ *
+ * Medido el 2026-08-08 sobre 4 807 historias: la izquierda aparece en el 3,1 %
+ * de ellas, el centro en el 58,5 % y la derecha en el 42,9 %. Con ese reparto,
+ * el sitio llevaba declarados 30 puntos ciegos de izquierda y CERO de derecha.
+ *
+ * Estas pruebas fijan la corrección para que no se pueda deshacer sin darse
+ * cuenta: son la diferencia entre señalar un silencio y publicar una acusación
+ * que solo refleja cuánto publica cada quien.
+ */
+describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () => {
+    const REAL = { left: 0.031, center: 0.585, right: 0.429 };
+
+    it('NO acusa a la izquierda de omitir: con el 3 % su ausencia es lo normal', () => {
+        // Ocho medios, ninguno de izquierda. Antes esto era un punto ciego.
+        // Ahora no: con la izquierda apareciendo en el 3 % de las historias,
+        // (1−0,031)⁸ = 0,78. Su ausencia es lo esperable en cuatro de cada cinco
+        // historias, así que no dice nada sobre lo que la izquierda decidió.
+        const result = analyzeCoverage(
+            sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0),
+            REAL
+        );
+
+        expect(result.counts.left).toBe(0);
+        expect(result.blindspot).toBeNull();
+    });
+
+    it('SÍ puede acusar a la derecha, que aparece en el 43 %', () => {
+        // Seis medios y ninguno de derecha: (1−0,429)⁶ = 0,035, por debajo del
+        // 5 %. Aquí la ausencia sí es rara y merece señalarse. Que el aviso
+        // pueda apuntar a los dos lados es lo que lo convierte en una medición
+        // en vez de en una constante.
+        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, -0.3, 0, 0), REAL);
+
+        expect(result.counts.right).toBe(0);
+        expect(result.blindspot).not.toBeNull();
+        expect(result.blindspot.spectrum).toBe('right');
+    });
+
+    it('sin tasas base no afirma nada, en vez de suponerlas', () => {
+        // Fallar cerrado: quien llame sin decir cada cuánto aparece cada
+        // espectro no obtiene una acusación por omisión.
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0));
+
+        expect(result.blindspot).toBeNull();
     });
 });
 
@@ -210,7 +292,7 @@ describe('describeBias', () => {
 describe('analyzeCoverage — puntos de énfasis', () => {
     it('marca énfasis cuando un lado concentra la cobertura', () => {
         // Cuatro de derecha y uno sin línea: el 80 % en un solo lado.
-        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3, 0));
+        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3, 0), EQUILIBRADO);
 
         expect(result.enfasis).not.toBeNull();
         expect(result.enfasis.spectrum).toBe('right');
@@ -249,7 +331,16 @@ describe('analyzeCoverage — puntos de énfasis', () => {
     it('un lado que copa TODO es a la vez énfasis y punto ciego', () => {
         // Las dos señales pueden coincidir, y cuando lo hacen es correcto que
         // las dos se disparen: son afirmaciones distintas sobre el mismo hecho.
-        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3));
+        //
+        // Hacen falta ocho medios y no cuatro desde que el punto ciego exige que
+        // la ausencia sea improbable. El énfasis NO cambió: con cuatro de un
+        // solo lado ya se dispara. Que una señal necesite más pruebas que la
+        // otra es correcto —el énfasis describe lo que hay, el punto ciego acusa
+        // de lo que falta— y es justamente por qué conviene no confundirlas.
+        const result = analyzeCoverage(
+            sources(0.5, 0.4, 0.6, 0.3, 0.55, 0.45, 0.35, 0.25),
+            EQUILIBRADO
+        );
 
         expect(result.enfasis?.spectrum).toBe('right');
         expect(result.blindspot?.spectrum).toBe('left');

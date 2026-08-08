@@ -58,6 +58,90 @@ export const BLINDSPOT_MIN_COBERTURA_LADO = 2;
 export const BLINDSPOT_MAX_RATIO = 0.15;
 
 /**
+ * LA AUSENCIA TIENE QUE SER SORPRENDENTE, NO SOLO UNA AUSENCIA (2026-08-08).
+ *
+ * POR QUÉ SE AÑADE ESTO. Medido sobre 4 807 historias, la función insignia del
+ * producto solo sabía decir una cosa:
+ *
+ *   puntos ciegos declarados ...... 30 de izquierda, 0 de derecha
+ *   tasa base de aparición ........ centro 58,5 % · derecha 42,9 % · izquierda 3,1 %
+ *   de las 35 historias con 4+ medios: 33 sin izquierda, 1 sin derecha
+ *
+ * Es decir: la izquierda falta en el 94 % de las historias evaluables porque
+ * publica el 3 % del volumen, no porque decida callar. El aviso estaba midiendo
+ * cadencia de publicación y presentándolo como comportamiento editorial. Un
+ * lector que ve treinta «punto ciego de la izquierda» y ninguno de la derecha
+ * concluye algo que estos datos no sostienen.
+ *
+ * QUÉ HACE LA CORRECCIÓN. Un espectro ausente solo se señala cuando esa ausencia
+ * es IMPROBABLE dada la frecuencia con la que ese espectro aparece en el corpus.
+ * Si un espectro está en la fracción `q` de las apariciones, la probabilidad de
+ * que no aparezca en una historia cubierta por `n` medios es aproximadamente
+ * (1 − q)^n. Se exige que esa probabilidad sea menor que este umbral.
+ *
+ * CONSECUENCIA, DICHA SIN ADORNOS: con la izquierda en el 3 %, su ausencia no
+ * será improbable casi nunca y esos treinta avisos desaparecen. La función pasa
+ * a disparar muy poco, y algunos días nada. Es correcto: un punto ciego que se
+ * afirma siempre no es un hallazgo, es una constante.
+ *
+ * El 0,05 es el convenio habitual para «esto no parece azar». No tiene nada de
+ * sagrado y está aquí, en una constante, para poder discutirlo.
+ */
+export const UMBRAL_SORPRESA = 0.05;
+
+/**
+ * Probabilidad de que un espectro con frecuencia `q` no aparezca entre `n`
+ * medios, si los medios que cubren un hecho fueran independientes de su línea.
+ *
+ * Es un modelo deliberadamente simple —y por tanto conservador—: supone
+ * independencia, que es justo lo que un punto ciego niega. Al suponerla, el
+ * modelo hace MÁS difícil declarar un punto ciego, nunca más fácil. Errar hacia
+ * callar es lo correcto cuando lo que se afirma es que alguien omitió algo.
+ *
+ * @param {number} q  fracción de apariciones del espectro en el corpus, [0,1]
+ * @param {number} n  medios distintos que cubren el hecho
+ */
+export function probabilidadDeAusencia(q, n) {
+    if (!(q > 0) || !(n > 0)) return 1;
+    return (1 - Math.min(q, 1)) ** n;
+}
+
+/**
+ * Con qué frecuencia aparece cada espectro en el corpus.
+ *
+ * Se cuenta sobre APARICIONES medio-historia, no sobre historias ni sobre
+ * medios del catálogo, y la diferencia importa:
+ *
+ *   · por historias, un espectro que cubre pocas historias pero muchas veces
+ *     cada una saldría infravalorado;
+ *   · por medios del catálogo daría la composición del registro —la izquierda
+ *     es el 23 % de los medios— y no la del material que de verdad circula,
+ *     que es el 3 %. La segunda es la que determina si una ausencia sorprende.
+ *
+ * @param {Array<{sources?: Array<{bias?: number}>}>} historias
+ * @returns {{left: number, center: number, right: number}}
+ */
+export function calcularTasasBase(historias) {
+    const conteo = { left: 0, center: 0, right: 0 };
+    let total = 0;
+
+    for (const historia of Array.isArray(historias) ? historias : []) {
+        for (const fuente of historia?.sources ?? []) {
+            const espectro = classifySpectrum(fuente?.bias);
+            conteo[espectro] += 1;
+            total += 1;
+        }
+    }
+
+    if (!total) return { left: 0, center: 0, right: 0 };
+    return {
+        left: conteo.left / total,
+        center: conteo.center / total,
+        right: conteo.right / total,
+    };
+}
+
+/**
  * Desde qué proporción un espectro concentra tanto la cobertura que deja de ser
  * cobertura y pasa a ser énfasis.
  *
@@ -220,7 +304,7 @@ function distributePercentages(counts, total) {
  *   enfasis: null | {spectrum: 'left'|'right', label: string, description: string}
  * }}
  */
-export function analyzeCoverage(sources) {
+export function analyzeCoverage(sources, tasasBase = null) {
     const list = Array.isArray(sources) ? sources : [];
     const biases = list
         .map((s) => (typeof s?.bias === 'number' && Number.isFinite(s.bias) ? s.bias : 0));
@@ -251,6 +335,21 @@ export function analyzeCoverage(sources) {
     const leftRatio = total ? counts.left / total : 0;
     const rightRatio = total ? counts.right / total : 0;
 
+    /**
+     * ¿Sorprende que falte este espectro, o es lo normal en él?
+     *
+     * Sin `tasasBase` no se puede responder, y entonces NO SE AFIRMA NADA. Es
+     * deliberado: afirmar un punto ciego sin saber cada cuánto aparece ese
+     * espectro es exactamente el fallo que esta comprobación corrige. Ante la
+     * duda, callar — lo contrario acusa a alguien de omitir con una prueba que
+     * no se tiene.
+     */
+    const sorprende = (espectro) => {
+        const q = tasasBase?.[espectro];
+        if (!(q > 0)) return false;
+        return probabilidadDeAusencia(q, total) < UMBRAL_SORPRESA;
+    };
+
     let blindspot = null;
     if (!insufficientCoverage) {
         /**
@@ -261,7 +360,8 @@ export function analyzeCoverage(sources) {
         if (
             rightRatio <= BLINDSPOT_MAX_RATIO &&
             leftRatio > BLINDSPOT_MAX_RATIO &&
-            counts.left >= BLINDSPOT_MIN_COBERTURA_LADO
+            counts.left >= BLINDSPOT_MIN_COBERTURA_LADO &&
+            sorprende(SPECTRUM.RIGHT)
         ) {
             blindspot = {
                 spectrum: SPECTRUM.RIGHT,
@@ -273,7 +373,8 @@ export function analyzeCoverage(sources) {
         } else if (
             leftRatio <= BLINDSPOT_MAX_RATIO &&
             rightRatio > BLINDSPOT_MAX_RATIO &&
-            counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
+            counts.right >= BLINDSPOT_MIN_COBERTURA_LADO &&
+            sorprende(SPECTRUM.LEFT)
         ) {
             blindspot = {
                 spectrum: SPECTRUM.LEFT,

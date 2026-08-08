@@ -101,21 +101,31 @@ export const OWNER_TYPES = {
 };
 
 /**
- * DISTINTIVO VISUAL POR TIPO DE CONTROL (2026-08-08, pedido de Jose).
+ * DISTINTIVO VISUAL: LA NATURALEZA DEL INTERÉS PRIMERO, EL ORIGEN DE APELLIDO.
  *
  * La pregunta que el lector quiere responder de un vistazo es «¿este medio
- * responde a un grupo económico o hace periodismo independiente?». Se resuelve
- * con un distintivo por tipo, y no con una etiqueta binaria, por una razón que
- * conviene dejar escrita:
+ * responde a un interés económico o hace periodismo independiente?». `ownerType`
+ * no la contestaba: repartía en cinco cajones donde tres —conglomerado, familiar
+ * e internacional— son la misma respuesta con distinto alcance.
  *
- *   NO SE COLAPSA LA TAXONOMÍA EN DOS. `familiar`, `publico` e `internacional`
- *   no son ni una cosa ni la otra. Meter a un diario regional de propiedad
- *   familiar en el saco de «grupo económico» sería afirmar algo que su ficha no
- *   dice, y ponerlo en «independiente» también. Los cinco tipos se muestran; lo
- *   que se hace es dar peso visual a los dos extremos que se preguntan.
+ * Así que el distintivo se invierte (decisión de Jose, 2026-08-08): manda
+ * **Grupo económico**, y el origen —nacional, regional, internacional— queda de
+ * apellido. `publico` e `independiente` se quedan solos porque sí responden otra
+ * cosa.
  *
- * `enfasis` marca esos dos. La interfaz puede resaltarlos sin que este archivo
- * decida cómo se ven, que es cosa del CSS.
+ * LO QUE ESTO AFIRMA Y LO QUE NO, porque la diferencia es la que sostiene el
+ * cambio. NO se está diciendo que las familias dueñas de diarios regionales
+ * tengan negocios ocultos en otros sectores: eso seguiría sin fuente y no se
+ * publica. Lo que se dice es que **controlar la empresa que publica un diario ya
+ * es un interés económico**, y eso consta en la ficha de cada uno. Es un cambio
+ * de qué cuenta como grupo económico, no una afirmación sobre patrimonios que no
+ * se pueden documentar.
+ *
+ * Donde SÍ hay negocios en otros sectores documentados, están en `holdings` con
+ * su fuente, que es donde deben leerse.
+ *
+ * `enfasis` resalta grupo económico e independiente, los dos polos de la
+ * pregunta. La interfaz decide cómo se ven; este archivo solo dice cuáles son.
  *
  * `icono` es el nombre del componente de lucide-react. Se declara aquí, junto al
  * tipo, para que no acabe habiendo un mapa de iconos distinto en cada pantalla
@@ -124,33 +134,47 @@ export const OWNER_TYPES = {
 export const OWNER_BADGES = {
     conglomerado: {
         icono: 'Building2',
-        corto: 'Grupo económico',
+        familia: 'Grupo económico',
+        apellido: 'nacional',
         enfasis: true,
-        explica: 'Responde a un grupo con intereses en otros sectores.',
+        explica:
+            'Controlado por un grupo con intereses mayoritarios en otros sectores y alcance ' +
+            'nacional.',
+    },
+    familiar: {
+        icono: 'Building2',
+        familia: 'Grupo económico',
+        apellido: 'regional',
+        enfasis: true,
+        explica:
+            'Controlado por una familia o sociedad con arraigo en su región. Sigue siendo un ' +
+            'interés económico: quien controla la empresa que publica el diario lo posee como ' +
+            'activo. Si además tiene negocios en otros sectores, consta en «holdings».',
+    },
+    internacional: {
+        icono: 'Building2',
+        familia: 'Grupo económico',
+        apellido: 'internacional',
+        enfasis: true,
+        explica:
+            'Controlado desde fuera de Colombia. «Internacional» dice DÓNDE está el dueño, no ' +
+            'qué es: el Grupo Prisa, por ejemplo, lo controla un banquero de inversión.',
     },
     independiente: {
         icono: 'Sprout',
-        corto: 'Independiente',
+        familia: 'Independiente',
+        apellido: null,
         enfasis: true,
-        explica: 'Sin dueño con intereses en otros sectores; vive de donaciones o membresías.',
-    },
-    familiar: {
-        icono: 'Users',
-        corto: 'Familiar regional',
-        enfasis: false,
-        explica: 'Controlado por una familia, normalmente con arraigo en su región.',
+        explica:
+            'Sin dueño que lo posea como activo económico: vive de donaciones, membresías o ' +
+            'cooperación. El conflicto de interés, si existe, viene de quién financia.',
     },
     publico: {
         icono: 'Landmark',
-        corto: 'Público',
+        familia: 'Público',
+        apellido: null,
         enfasis: false,
-        explica: 'Financiado por el Estado.',
-    },
-    internacional: {
-        icono: 'Globe',
-        corto: 'Internacional',
-        enfasis: false,
-        explica: 'Con sede fuera de Colombia.',
+        explica: 'Financiado por el Estado. Su línea tiende a seguir al gobierno de turno.',
     },
 };
 
@@ -170,7 +194,16 @@ export function getOwnerBadge(mediaId) {
     const ficha = getOwnership(mediaId);
     const distintivo = OWNER_BADGES[ficha?.ownerType];
     if (!distintivo) return null;
-    return { tipo: ficha.ownerType, ...distintivo, label: OWNER_TYPES[ficha.ownerType]?.label };
+    return {
+        tipo: ficha.ownerType,
+        ...distintivo,
+        // Texto ya compuesto, para que ninguna pantalla decida cómo se une la
+        // familia con su apellido y acaben viéndose distinto en dos sitios.
+        corto: distintivo.apellido
+            ? `${distintivo.familia} · ${distintivo.apellido}`
+            : distintivo.familia,
+        label: OWNER_TYPES[ficha.ownerType]?.label,
+    };
 }
 
 /**

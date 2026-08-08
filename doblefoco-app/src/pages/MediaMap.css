@@ -444,7 +444,12 @@
 
 .duenio-enfasis { font-weight: 600; }
 
-.duenio-conglomerado.duenio-enfasis {
+/* Los tres sabores de grupo económico comparten color: lo que se compara es la
+   naturaleza del interés, y el apellido —nacional, regional, internacional—
+   matiza el alcance sin cambiar la respuesta. */
+.duenio-conglomerado.duenio-enfasis,
+.duenio-familiar.duenio-enfasis,
+.duenio-internacional.duenio-enfasis {
     color: #b4531f;
     border-color: #b4531f66;
     background: #b4531f14;

@@ -240,21 +240,24 @@ const MediaMap = () => {
             <p className="map-warning">
                 <Info size={15} aria-hidden="true" />
                 <span>
-                    En la tabla, la columna <strong>«Responde a»</strong> dice a quién
-                    debe cuentas cada redacción. Los dos distintivos destacados son los
-                    extremos:{' '}
+                    La columna <strong>«Responde a»</strong> dice a quién debe cuentas
+                    cada redacción, y lo que manda es la naturaleza del interés:{' '}
                     <span className="duenio-badge duenio-conglomerado duenio-enfasis">
                         <Building2 size={13} aria-hidden="true" />Grupo económico
                     </span>{' '}
-                    para los controlados por un grupo con intereses en otros sectores, y{' '}
+                    frente a{' '}
                     <span className="duenio-badge duenio-independiente duenio-enfasis">
                         <Sprout size={13} aria-hidden="true" />Independiente
-                    </span>{' '}
-                    para los que viven de donaciones o membresías. Los demás —familiar
-                    regional, público, internacional— <strong>no son ni una cosa ni la
-                    otra</strong>, y forzarlos a un bando diría algo que su ficha no
-                    dice. Cada distintivo sale de la propiedad documentada con fuentes;
-                    donde no la hay, dice «sin documentar» en vez de suponer.
+                    </span>. El apellido —nacional, regional o internacional— dice el
+                    alcance del dueño, no cambia la respuesta: una familia que controla
+                    la empresa que publica un diario lo posee como activo igual que un
+                    conglomerado, y «internacional» dice dónde está el dueño, no qué es
+                    —al Grupo Prisa lo controla un banquero de inversión—.
+                    <br />
+                    Esto <strong>no afirma</strong> que esos dueños tengan negocios en
+                    otros sectores: donde los hay, constan con su fuente en la ficha del
+                    medio. Y donde la propiedad no está verificada dice «sin documentar»
+                    en vez de suponer.
                 </span>
             </p>
 

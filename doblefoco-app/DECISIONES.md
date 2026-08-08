@@ -22,16 +22,45 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 **Decisión de Jose.** El mapa debe dejar ver de un vistazo qué medios responden a
 un grupo económico y cuáles hacen periodismo independiente.
 
-**Cómo se resolvió, y qué NO se hizo.** Con un distintivo por tipo de control,
-no con una etiqueta binaria. **La taxonomía de cinco tipos no se colapsa en dos**:
-`familiar`, `publico` e `internacional` no son ni una cosa ni la otra, y meter a
-un diario regional de propiedad familiar en el saco de «grupo económico» —o en el
-de «independiente»— sería afirmar algo que su ficha no dice.
+**Cómo quedó, tras una corrección suya que mejoró el diseño.** La primera versión
+mostraba los cinco tipos de `ownerType` tal cual y destacaba solo `conglomerado`
+e `independiente`. Jose objetó, con razón: **`ownerType` responde «quién es el
+dueño» cuando la pregunta que importa es «qué naturaleza tiene ese interés»**, y
+tres de los cinco cajones —conglomerado, familiar e internacional— son la misma
+respuesta con distinto alcance.
 
-Lo que sí se hace es **dar peso visual a los dos extremos que se preguntan**:
-grupo económico e independiente van con color pleno, los otros tres en tono
-discreto. Mostrarlos todos con la misma fuerza sugeriría una oposición que la
-documentación no sostiene.
+Así que se invierte: manda **«Grupo económico»** y el origen queda de apellido —
+nacional, regional, internacional—. `Público` e `Independiente` se quedan solos
+porque sí responden otra cosa.
+
+**Reparto resultante**, que ahora dice algo de un vistazo:
+
+```
+19  Grupo económico   (10 nacional · 7 regional · 2 internacional)
+ 9  Independiente
+ 1  Público
+ 1  sin documentar
+```
+
+**LO QUE ESTO AFIRMA Y LO QUE NO**, porque es lo que sostiene el cambio. NO se
+dice que las familias dueñas de diarios regionales tengan negocios ocultos en
+otros sectores: eso seguiría sin fuente y no se publica. Se dice que **controlar
+la empresa que publica un diario ya es un interés económico**, y eso consta en
+cada ficha. Es un cambio de qué cuenta como grupo económico, no una afirmación
+sobre patrimonios indocumentados. Donde SÍ hay negocios en otros sectores, están
+en `holdings` con su enlace.
+
+**Y la evidencia que respalda los dos casos que Jose señaló**, encontrada al
+revisar las fichas:
+
+- **Caracol Radio y W Radio**: «internacional» decía dónde está el dueño, no qué
+  es. Su ficha dice que el Grupo Prisa está «controlado desde 2003 por el
+  banquero de inversión Joseph Oughourlian», y que W Radio tiene además un 14,4 %
+  de Inversiones Ferines, de la familia Londoño.
+- **El Colombiano y La Opinión** figuraban como familiares y ya no lo son: al
+  primero un grupo de empresarios antioqueños le compró el **51 %** en 2022
+  —entre ellos Manuel Santiago Mejía, del grupo Corbeta— y al segundo el Grupo
+  Empresarial Catalítico el **100 %** en 2024.
 
 **Sin ficha verificada no se pinta distintivo: dice «sin documentar».** Un medio
 del que no se ha comprobado nada no es independiente por defecto ni conglomerado

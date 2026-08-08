@@ -1,0 +1,56 @@
+# =============================================================================
+#  Vigilancia: ¿responde el sitio y hay algún medio caído?
+# =============================================================================
+#  Cierra dos de los tres puntos de la Fase C de la auditoría. El tercero —el
+#  desfase de despliegue— va aparte en `desfase.yml`, porque su cadencia y su
+#  arreglo son distintos.
+#
+#  QUÉ COMPRUEBA
+#    · Que doblefoco.co y la API responden 200, y que la API no se declara
+#      «degradado» (lo hace sola cuando la ingesta lleva demasiado sin correr).
+#    · Que ningún medio con feed lleva 14 días o más sin aportar un artículo.
+#
+#  LO QUE ESTO NO ES, Y CONVIENE NO CONFUNDIRLO
+#
+#  No es un monitor de disponibilidad. Corre cada 6 horas y el cron de GitHub se
+#  retrasa, así que una caída de una hora puede pasar desapercibida. Para eso
+#  hace falta un servicio de monitoreo de verdad, con sondeo por minuto y aviso
+#  inmediato. Esto detecta lo que hoy no se ve en absoluto: que algo lleve roto
+#  desde ayer. Decirlo importa, porque una comprobación cada 6 horas con nombre
+#  de «vigilancia» invita a creer que hay una red que no existe.
+# =============================================================================
+
+name: Vigilancia
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      # `pg` hace falta para la consulta de medios mudos. Se instalan las
+      # dependencias de la aplicación en vez de declarar otras aparte, para que
+      # no haya dos listas que mantener sincronizadas.
+      - run: npm ci
+        working-directory: doblefoco-app
+
+      # Desde doblefoco-app/ para que `pg` y el registro resuelvan por la vía
+      # normal del proyecto: NODE_PATH no sirve, los módulos ESM lo ignoran.
+      - name: Sitio, API y medios mudos
+        run: node scripts/comprobarMedios.mjs
+        working-directory: doblefoco-app
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

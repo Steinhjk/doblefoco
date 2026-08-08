@@ -71,6 +71,18 @@ CREATE TABLE IF NOT EXISTS sources (
     synced_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Última vez que este medio aportó un artículo. Existe porque `articles` retiene
+-- 72 horas: sin esta columna, un medio ausente desde ayer y otro ausente desde
+-- hace un mes son indistinguibles —los dos tienen cero filas— y no se puede
+-- avisar de un feed que se rompió.
+--
+-- La rellena la comprobación diaria (.github/scripts/comprobarMedios.mjs) desde
+-- `articles`, y NO el ciclo de ingesta: mantenerla al día no vale un UPDATE por
+-- medio en cada ciclo, y con umbral de 14 días un desfase de un día es
+-- irrelevante. Si la comprobación deja de correr, los valores envejecen y el
+-- aviso salta de más, que es el lado correcto por el que equivocarse.
+ALTER TABLE sources ADD COLUMN IF NOT EXISTS last_article_at TIMESTAMPTZ;
+
 -- ── 3. Artículos ─────────────────────────────────────────────────────────────
 -- El enlace canónico es la clave natural: es lo que hace la deduplicación
 -- idempotente entre ejecuciones. Ya funciona así en memoria.

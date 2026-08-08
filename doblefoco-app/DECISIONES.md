@@ -17,6 +17,37 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-07 · Vigilancia del sitio y de los medios mudos
+
+**Decisión.** Un workflow cada 6 horas comprueba que `doblefoco.co` y la API
+responden, que la API no se declara «degradado», y que ningún medio con feed
+lleva **14 días o más** sin aportar un artículo.
+
+**El umbral es generoso a propósito.** El catálogo tiene medios que publican poco
+POR OFICIO: Vorágine saca una pieza cada 74,7 h —más despacio que la ventana de
+retención— y Noticias Uno es un noticiero de fin de semana. Un umbral de dos o
+tres días los marcaría cada semana, y un aviso que grita cuando no pasa nada
+enseña a ignorarlo. Es el mismo error que costó los correos falsos de Actions,
+y se evitó a propósito.
+
+**Hizo falta memoria durable.** `articles` retiene 72 horas, así que un medio
+ausente desde ayer y otro desde hace un mes son indistinguibles: los dos tienen
+cero filas. Se añadió `sources.last_article_at`, que rellena la propia
+comprobación —no el ciclo de ingesta, porque no vale un UPDATE por medio cada 30
+minutos para un umbral de 14 días—.
+
+**Los «sin registro» no cuentan como fallo.** La columna nació hoy y solo se
+rellena con lo que hay en la ventana de 72 h, así que un medio callado en ese
+momento aparece sin fecha sin que eso signifique avería. Un aviso que nace en
+rojo se ignora desde el primer día.
+
+**Lo que esto NO es**: un monitor de disponibilidad. Corre cada 6 horas y el cron
+de GitHub se retrasa; una caída de una hora puede pasar desapercibida. Detecta lo
+que hoy no se ve en absoluto —que algo lleve roto desde ayer—, y así está dicho
+en la cabecera del workflow para que nadie crea que hay una red que no existe.
+
+---
+
 ## 2026-08-07 · El despliegue de Fly se comprueba solo
 
 **Decisión.** `/api/health` publica el commit y el número de feeds del código que

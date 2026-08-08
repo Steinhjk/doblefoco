@@ -1,11 +1,11 @@
 {
   "descripcion": "Muestra reproducible de programas de gobierno departamentales para calibrar la escala RILE contra las anclas externas (CHES-LA 2020 y V-Party 2018).",
   "semilla": 20260808,
-  "documentosPorPartido": 3,
+  "documentosPorPartido": 6,
   "generadoEl": "2026-08-08",
   "poblacion": "1132 filas descargadas de https://www.datos.gov.co/resource/h236-q58p.json?$limit=5000; se sortea sobre TODOS los programas de cada partido anclado, no sobre los ejemplos guardados en el índice.",
   "advertencia": "IMPORTANTE: son programas MUNICIPALES —de alcaldía—, no manifiestos nacionales, y eso agrava la advertencia en vez de suavizarla: un programa de alcaldía es aún más local que uno de gobernación. Habla de vías terciarias, acueductos y salud local, así que sus proporciones por categoría NO son directamente comparables con las de un programa presidencial. Para la calibración puede bastar —lo que se necesita es que el ORDEN de los partidos se conserve— pero hay que comprobarlo, no suponerlo, y declararlo. CONTRAPESO MEDIDO el 2026-08-08: el primer documento abierto (Alianza Verde, Cajamarca) trae apoyo al proceso de paz con las FARC, Asamblea Nacional Constituyente, presupuesto participativo, derechos del campesinado y oposición a la megaminería. No es un catálogo de obras: tiene contenido ideológico codificable.",
-  "comoReproducir": "npm run muestra:programas -- 3",
+  "comoReproducir": "npm run muestra:programas -- 6",
   "documentos": [
     {
       "partido": "PARTIDO ALIANZA VERDE",
@@ -47,6 +47,45 @@
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/07/PLAN_AL07091000004_E6.pdf"
     },
     {
+      "partido": "PARTIDO ALIANZA VERDE",
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "poblacion": 42,
+      "departamento": "VALLE",
+      "elegido": "OSPINA LOPEZ NYDIA LUCERO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/31/PLAN_AL31076000004_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO ALIANZA VERDE",
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "poblacion": 42,
+      "departamento": "VALLE",
+      "elegido": "ARCILA POSSO ELLICEL",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/31/PLAN_AL31007000004_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO ALIANZA VERDE",
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "poblacion": 42,
+      "departamento": "ANTIOQUIA",
+      "elegido": "VILLADA URIBE CARLOS MARIO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01052000004_E6.pdf"
+    },
+    {
       "partido": "PARTIDO CAMBIO RADICAL",
       "ancla": {
         "ches_lrgen": 7.64,
@@ -84,6 +123,45 @@
       "departamento": "ATLANTICO",
       "elegido": "PASOS ZAPATA KATHERINE LUZ",
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/03/PLAN_AL03061000003_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CAMBIO RADICAL",
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "poblacion": 62,
+      "departamento": "SANTANDER",
+      "elegido": "SANCHEZ SANTAMARIA OSCAR MAURICIO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/27/PLAN_AL27004000003_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CAMBIO RADICAL",
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "poblacion": 62,
+      "departamento": "HUILA",
+      "elegido": "PERDOMO GONZALEZ JONH JAIRO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/19/PLAN_AL19052000003_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CAMBIO RADICAL",
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "poblacion": 62,
+      "departamento": "ANTIOQUIA",
+      "elegido": "URIBE CASTRILLON JOHN JAIRO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01208000003_E6.pdf"
     },
     {
       "partido": "PARTIDO CENTRO DEMOCRATICO",
@@ -125,6 +203,45 @@
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46680000011_E6.pdf"
     },
     {
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "poblacion": 75,
+      "departamento": "NARIÑO",
+      "elegido": "MARTINEZ CORDOBA ALVARO EVELIO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/23/PLAN_AL23013000011_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "poblacion": 75,
+      "departamento": "BOYACA",
+      "elegido": "PEREZ QUIROZ OSWALDO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/07/PLAN_AL07157000011_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "poblacion": 75,
+      "departamento": "TOLIMA",
+      "elegido": "TAMAYO SALAS JUAN CARLOS",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/29/PLAN_AL29046000011_E6.pdf"
+    },
+    {
       "partido": "PARTIDO COLOMBIA JUSTA LIBRES",
       "ancla": {
         "ches_lrgen": 9.2,
@@ -162,6 +279,19 @@
       "departamento": "SUCRE",
       "elegido": "PEREZ MARQUEZ DIANA JUDITH",
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/28/PLAN_AL28055000014_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO COLOMBIA JUSTA LIBRES",
+      "ancla": {
+        "ches_lrgen": 9.2,
+        "ches_lrecon": 7.78,
+        "ches_galtan": 9.18,
+        "vparty": null
+      },
+      "poblacion": 4,
+      "departamento": "CAUCA",
+      "elegido": "MORALES MAZO CRISTOBAL",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11053000014_E6.pdf"
     },
     {
       "partido": "PARTIDO CONSERVADOR COLOMBIANO",
@@ -203,6 +333,45 @@
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11046000002_E6.pdf"
     },
     {
+      "partido": "PARTIDO CONSERVADOR COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "poblacion": 117,
+      "departamento": "HUILA",
+      "elegido": "CASANOVA NIPI HUGO FERNEY",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/19/PLAN_AL19058000002_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CONSERVADOR COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "poblacion": 117,
+      "departamento": "SANTANDER",
+      "elegido": "BARAJAS BARAJAS JESUS ALEXIS",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/27/PLAN_AL27139000002_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO CONSERVADOR COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "poblacion": 117,
+      "departamento": "ANTIOQUIA",
+      "elegido": "CIRO MORALES LIBARDO DE JESUS",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01238000002_E6.pdf"
+    },
+    {
       "partido": "PARTIDO LIBERAL COLOMBIANO",
       "ancla": {
         "ches_lrgen": 5.93,
@@ -242,6 +411,45 @@
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01061000001_E6.pdf"
     },
     {
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "poblacion": 103,
+      "departamento": "SANTANDER",
+      "elegido": "TOQUICA AGUILAR JAIRO DEMIS",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/27/PLAN_AL27169000001_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "poblacion": 103,
+      "departamento": "CASANARE",
+      "elegido": "BERNAL GALLEGO EDGAR YESID",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46760000001_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "poblacion": 103,
+      "departamento": "CALDAS",
+      "elegido": "CORTES BERMUDEZ JUAN CARLOS",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/09/PLAN_AL09106000001_E6.pdf"
+    },
+    {
       "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
       "ancla": {
         "ches_lrgen": 6.5,
@@ -279,6 +487,45 @@
       "departamento": "BOLIVAR",
       "elegido": "PUERTA OROZCO EDWIN",
       "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/05/PLAN_AL05124000008_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "poblacion": 91,
+      "departamento": "CAUCA",
+      "elegido": "ORTIZ BAMBAGUE DIEGO ANDRES",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11079000008_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "poblacion": 91,
+      "departamento": "CAUCA",
+      "elegido": "VALENCIA LEMUS SILVIO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11094000008_E6.pdf"
+    },
+    {
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "poblacion": 91,
+      "departamento": "TOLIMA",
+      "elegido": "SALINAS RUIZ CARLOS HUGO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/29/PLAN_AL29013000008_E6.pdf"
     }
   ]
 }

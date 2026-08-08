@@ -30,7 +30,7 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { basename } from 'node:path';
+import { basename, dirname, resolve } from 'node:path';
 
 const fichero = process.argv[2];
 const OBJETIVO = Number(process.argv[3]) || 80;
@@ -80,7 +80,9 @@ const salida = {
     muestra,
 };
 
-const destino = `C:/Users/geren/.claude/jobs/ba8780a5/tmp/pdf/${nombre}.cuasi.json`;
+// Junto al fichero de entrada, no en una ruta fija: con la ruta fija, preparar
+// los documentos cegados dejaba su salida en la carpeta del piloto.
+const destino = resolve(dirname(fichero), `${nombre}.cuasi.json`);
 writeFileSync(destino, `${JSON.stringify(salida, null, 2)}\n`, 'utf8');
 
 console.log(`\n  ${nombre}`);

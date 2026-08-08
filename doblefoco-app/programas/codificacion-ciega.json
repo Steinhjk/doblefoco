@@ -1,0 +1,41 @@
+{
+  "tanda": "Calibración a ciegas — 21 programas municipales de 7 partidos anclados",
+  "estado": "EN CURSO",
+  "fecha": "2026-08-08",
+  "codificador": "Claude (Opus 5), a ciegas: los documentos llevan identificador opaco y la correspondencia está en un sobre sin abrir",
+  "instrumento": "Manifesto Project (MARPOR), esquema de 56 categorías, codebook MPDS2024a. RILE = (Σ derecha − Σ izquierda) / N",
+  "ciego": {
+    "script": "node scripts/cegarProgramas.mjs preparar 3",
+    "semilla": 7314,
+    "comoSeRompe": "node scripts/cegarProgramas.mjs revelar — NO ejecutar hasta terminar de codificar los 21",
+    "sustitucionDeEscaneos": "3 documentos sin capa de texto se sustituyeron automáticamente por el siguiente del mismo partido, dentro del script y sin mostrarlo al codificador",
+    "limitacionConocida": "Ciego imperfecto: se tacharon los nombres de partido del texto, pero un documento puede delatarse por su contenido — que es justamente lo que se está midiendo. Se declara."
+  },
+  "codificaciones": [
+    {
+      "opaco": "doc-01",
+      "cuasiFrases": 60,
+      "izquierda": { "per506": 6, "per504": 6, "per202": 3, "per403": 1, "per701": 1, "total": 17 },
+      "derecha": { "per605": 3, "per402": 3, "per606": 2, "per603": 1, "per201": 1, "total": 10 },
+      "rile": -0.117,
+      "nota": "Mucho relleno de ODS repetido. Trae orden público y apoyo a la empresa, y a la vez mesa de género y población LGTBI."
+    },
+    {
+      "opaco": "doc-02",
+      "cuasiFrases": 57,
+      "izquierda": { "per504": 14, "per506": 6, "per403": 1, "total": 21 },
+      "derecha": { "per603": 2, "per414": 1, "per601": 1, "total": 4 },
+      "rile": -0.298,
+      "nota": "Vivienda y salud dominan. Aparece restauración de un santuario y comisaría de familia (603), y presupuesto disponible como límite (414)."
+    },
+    {
+      "opaco": "doc-03",
+      "cuasiFrases": 60,
+      "izquierda": { "per504": 7, "per506": 4, "per202": 4, "per106": 1, "total": 16 },
+      "derecha": { "per402": 2, "total": 2 },
+      "rile": -0.233,
+      "nota": "Quince cuasi-frases iniciales son biografía del candidato y encabezados repetidos: coste del muestreo sistemático, que no salta secciones."
+    }
+  ],
+  "pendientes": ["doc-04", "doc-05", "doc-06", "doc-07", "doc-08", "doc-09", "doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]
+}

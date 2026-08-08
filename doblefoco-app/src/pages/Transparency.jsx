@@ -263,13 +263,24 @@ const Transparency = () => (
                     pieza es otro oficio.
                 </li>
                 <li>
-                    <strong>Falta una ficha de propiedad.</strong> Treinta y nueve de los
-                    cuarenta medios del catálogo tienen documentado quién los controla, con la
-                    fuente al lado. Falta Colombia Informa: su razón social aparece en
-                    directorios de registro mercantil, pero no hemos podido citar una fuente
-                    consultable sobre quién la controla, así que la ficha se queda vacía en vez
-                    de verosímil. Saber quién es dueño de un medio importa tanto como su línea
-                    editorial, y por eso mismo no se afirma de oídas.
+                    <strong>Falta un nombre propio.</strong> Todos los medios del catálogo
+                    tienen documentado quién los controla, con la fuente al lado, y en los
+                    colombianos el hilo llega hasta las personas. Con una excepción: de{' '}
+                    <strong>Colombia Informa</strong> conocemos la razón social —Corporación
+                    Colombia Informa, NIT 900.408.141-8—, cómo se financia y con qué red
+                    trabaja, pero no quién la representa legalmente. Ese dato es público y está
+                    en el RUES; hasta tenerlo en la mano no escribimos ningún nombre. Saber
+                    quién es dueño de un medio importa tanto como su línea editorial, y por eso
+                    mismo no se afirma de oídas.
+                </li>
+                <li>
+                    <strong>Mandar no es lo mismo que poseer, y lo decimos.</strong> Cuando el
+                    dueño es una institución —el Estado, un partido, una fundación— la pregunta
+                    de quién manda no desaparece: se traslada a un cargo, y el cargo lo ocupa
+                    alguien. Por eso nombramos también a quien dirige el medio público o el
+                    semanario de un partido, siempre aclarando cuál de las dos cosas es.
+                    Nombrar a los accionistas de los grandes grupos y dejar en «institución» a
+                    los demás sería aplicar el escrutinio de forma desigual.
                 </li>
                 <li>
                     <strong>La propiedad documentada no es la propiedad real.</strong> Lo que

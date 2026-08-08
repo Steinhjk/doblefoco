@@ -907,9 +907,40 @@ export async function runIngestionBatch() {
         }
         const filteredArticles = Object.values(discardedByRule).reduce((a, b) => a + b, 0);
 
+        /**
+         * CUÁNTAS HORAS DE HISTORIA CUBRE DE VERDAD EL CORPUS.
+         *
+         * La retención DECLARADA son 72 horas. La efectiva es la edad del
+         * artículo más antiguo que sobrevivió a la poda, y las dos coinciden
+         * solo mientras el techo no muerda.
+         *
+         * POR QUÉ SE PUBLICA. Del 2026-07-30 al 2026-08-07 el corpus estuvo
+         * clavado en 5 000 artículos y la ventana real bajó a ~62 h sin que
+         * nada lo dijera. La tasa multifuente dejó de crecer el mismo día y
+         * pasaron once días antes de que alguien fuera a mirar por qué. Ese
+         * número, publicado desde el principio, lo habría delatado en el primer
+         * ciclo.
+         *
+         * Va también a la serie: así el estrechamiento se ve venir a lo largo
+         * de semanas en vez de descubrirse cuando ya pasó.
+         */
+        const masAntiguo = Math.min(
+            ...[...articlesByLink.values()].map((a) => {
+                const marca = a.publishedAt ? Date.parse(a.publishedAt) : a.ingestedAtMs;
+                return Number.isFinite(marca) ? marca : Date.now();
+            })
+        );
+        const ventanaHoras = Number.isFinite(masAntiguo)
+            ? Math.round(((Date.now() - masAntiguo) / 3_600_000) * 10) / 10
+            : null;
+        const ventanaRecortada =
+            ventanaHoras !== null && ventanaHoras < (RETENTION_MS / 3_600_000) - 1;
+
         const report = {
             startedAt: new Date(startedAt).toISOString(),
             durationMs: Date.now() - startedAt,
+            ventanaHoras,
+            ventanaRecortada,
             newArticles: perFeed.reduce((sum, f) => sum + f.added, 0),
             filteredArticles,
             discardedByRule,
@@ -933,6 +964,7 @@ export async function runIngestionBatch() {
             filteredArticles: report.filteredArticles,
             totalArticles: report.totalArticles,
             totalStories: report.totalStories,
+            ventanaHoras: report.ventanaHoras,
             ...shape,
         };
 
@@ -962,7 +994,14 @@ export async function runIngestionBatch() {
             (enriquecidas.mirados
                 ? ` · og:image ${enriquecidas.conImagen}/${enriquecidas.mirados}`
                 : '') +
-            (persisted ? ` · ${persisted}` : '')
+            (persisted ? ` · ${persisted}` : '') +
+            // Se dice SIEMPRE, no solo cuando hay problema: un número que solo
+            // aparece al fallar no deja línea base con la que comparar, y
+            // encontrárselo por primera vez el día malo obliga a averiguar
+            // entonces si es raro o normal.
+            (report.ventanaHoras !== null
+                ? ` · ventana ${report.ventanaHoras} h${report.ventanaRecortada ? ' ⚠ RECORTADA POR EL TECHO' : ''}`
+                : '')
         );
 
         return report;

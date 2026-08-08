@@ -628,8 +628,9 @@ export async function recordRun(row) {
         INSERT INTO ingest_runs
             (at, duration_ms, feeds_ok, feeds_failed, active_feeds, new_articles,
              total_articles, total_stories, multi_source_stories,
-             cross_spectrum_stories, blindspot_stories, filtered_articles)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+             cross_spectrum_stories, blindspot_stories, filtered_articles,
+             ventana_horas)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         ON CONFLICT (at) DO NOTHING
         `,
         [
@@ -645,6 +646,7 @@ export async function recordRun(row) {
             row.crossSpectrumStories ?? 0,
             row.blindspotStories ?? 0,
             row.filteredArticles ?? 0,
+            row.ventanaHoras ?? null,
         ],
         'registro del ciclo'
     );

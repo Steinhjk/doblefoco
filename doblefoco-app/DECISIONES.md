@@ -17,6 +17,50 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · CI comprueba que la base se levanta desde cero
+
+**Decisión.** Un job de CI aplica `schema.sql` sobre un Postgres vacío en cada
+push, comprueba que es idempotente, y encima restaura un respaldo mínimo.
+
+**Por qué, y no en abstracto.** Los tres fallos que hacían el respaldo
+irrestaurable habrían saltado aquí automáticamente. Ninguno era detectable contra
+producción —allí las tablas ya existen— y el patrón reaparece cada vez que
+alguien añade un `ALTER` o un bloque `DO`.
+
+**El paso de restauración no sobra.** El esquema por sí solo no prueba que un
+respaldo sirva: hace falta recorrer el camino entero. Dos ciclos de prueba bastan
+para comprobar que el formato encaja y que el orden de tablas no viola ninguna
+clave foránea.
+
+**Salvaguarda**: el script exige `DATABASE_URL_PRUEBA`, distinta de la de
+producción, y se niega a arrancar sin ella. Lo primero que hace es `DROP SCHEMA`,
+así que no puede quedar a merced de un descuido de configuración.
+
+---
+
+## 2026-08-08 · El ciclo publica la ventana efectiva
+
+**Decisión.** Cada ciclo informa de **cuántas horas de historia cubre realmente
+el corpus** —la edad del artículo más antiguo que sobrevivió a la poda— en el
+registro y en la serie (`ingest_runs.ventana_horas`).
+
+**Por qué esta versión y no la apuntada en la auditoría.** Allí decía «avisar si
+el techo recortó», que solo se entera el día del problema. La ventana efectiva se
+publica **siempre**, incluso cuando todo va bien: un número que solo aparece al
+fallar no deja línea base, y encontrárselo por primera vez el día malo obliga a
+averiguar entonces si es raro o normal.
+
+**Lo que habría evitado.** Del 2026-07-30 al 2026-08-07 la ventana real bajó a
+~62 h con la retención declarada en 72. La tasa multifuente dejó de crecer el
+mismo día y pasaron **once días** hasta que alguien fue a mirar por qué. Ese
+número, publicado desde el primer ciclo, lo habría delatado en el acto.
+
+En la serie, además, el estrechamiento se ve **venir** a lo largo de semanas en
+vez de descubrirse cuando ya ocurrió. Queda nula en los ciclos anteriores, que es
+lo correcto: no se inventa hacia atrás un dato que no se midió.
+
+---
+
 ## 2026-08-08 · El respaldo se restauró por primera vez, y no funcionaba
 
 **Qué se hizo.** Se descargó un artefacto REAL de la copia diaria (run

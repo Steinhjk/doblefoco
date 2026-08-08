@@ -53,6 +53,20 @@ CREATE INDEX IF NOT EXISTS ingest_runs_at_idx ON ingest_runs (at DESC);
 -- faltaron. Con la cifra en la serie, un salto se ve el mismo día.
 ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS filtered_articles INTEGER NOT NULL DEFAULT 0;
 
+-- Horas de historia que cubre REALMENTE el corpus: la edad del artículo más
+-- antiguo que sobrevivió a la poda. Coincide con la retención declarada (72 h)
+-- solo mientras el techo de MAX_ARTICLES no muerda.
+--
+-- Existe porque del 2026-07-30 al 2026-08-07 la ventana real bajó a ~62 h sin
+-- que nada lo dijera: la tasa multifuente dejó de crecer el mismo día y pasaron
+-- once días hasta que alguien fue a mirar por qué. Guardarlo en la serie hace
+-- que el estrechamiento se vea VENIR a lo largo de semanas, en vez de
+-- descubrirse cuando ya ocurrió.
+--
+-- Nula en los ciclos anteriores al 2026-08-08, que es lo correcto: no se
+-- inventa hacia atrás un dato que no se midió.
+ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS ventana_horas REAL;
+
 -- ── 2. Medios ────────────────────────────────────────────────────────────────
 -- PROYECCIÓN de shared/mediaRegistry.js. Se regenera; no se edita a mano.
 -- El sesgo vive en el registro y en ningún otro sitio: esa fue la tarea F1-04 y

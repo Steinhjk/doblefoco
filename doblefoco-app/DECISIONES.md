@@ -17,6 +17,77 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Google News ordena por relevancia, y eso nos silenció medios
+
+**Decisión.** El Espectador, Caracol Radio y W Radio salen de Google News y pasan
+a su RSS propio.
+
+**Cómo apareció.** Jose preguntó por qué El Espectador termina pareciendo de
+izquierda teniendo los dueños que tiene. Al ir al corpus a contrastarlo con
+conducta observable, la respuesta fue que **no se puede contrastar**: aportaba 24
+artículos en 72 h, con coincidencias de dos y tres casos. No hay señal, hay ruido.
+
+```
+El Espectador ....  24        Semana ........... 695
+Noticias Caracol .   6        El Heraldo ....... 383
+Noticias RCN .....  23        El País (Cali) ... 271
+Noticias Uno .....   0        El Tiempo ........ 234
+W Radio ..........   2
+```
+
+El segundo diario nacional aportaba la décima parte que su par, y menos que
+cualquier regional. El patrón parte en dos el catálogo:
+
+| Vía | Medios | Artículos | Media |
+|---|---|---|---|
+| Feed directo | 20 | 2 672 | **134** |
+| Google News | 10 | 162 | **16** |
+
+**LA PRIMERA EXPLICACIÓN ERA FALSA, y conviene dejarlo escrito.** Supuse que
+Google devolvía pocos ítems o viejos que la ventana descartaba. Medido, devuelve
+100 y 82 están dentro de la ventana. La causa real es el ORDEN:
+
+```
+                 gnews         propio
+mediana edad     39,9 h         1,5 h
+con imagen        0/15         15/15
+enlace       news.google.com   elespectador.com
+```
+
+**Google ordena por relevancia, no por fecha.** Cada 30 minutos pedimos los 15
+«más relevantes» y devuelve casi los mismos, con mediana de casi dos días. Se
+deduplican contra lo que ya teníamos y no se acumula nada. Un feed cronológico
+trae en cada sondeo lo publicado desde el anterior. Eso explica de paso por qué
+esos medios nunca tenían foto —0 de 15— y por qué sus enlaces iban a Google.
+
+**El peor caso era W Radio**: mediana de **32 551 horas, casi cuatro años**, con
+1 de 15 ítems dentro de la ventana. No aportaba poco: servía archivo viejo con
+apariencia de actualidad, que es peor que estar mudo.
+
+**Los feeds existían y nadie los había buscado donde estaban.** Los tres usan
+Arc, el mismo gestor que El Heraldo, El Universal, Vanguardia, El País de Cali y
+Semana, que ya entraban por ahí. La ficha de W Radio incluso afirmaba «SIGUE SIN
+PUBLICAR RSS PROPIO» tras probar cinco rutas — ninguna era la de Arc.
+
+**Efecto medido en UN ciclo:** El Espectador 24 → 38, Caracol Radio 54 → 67,
+W Radio 2 → 4, y todos los nuevos con fotografía mientras que de los 24 viejos de
+El Espectador ninguno la tenía.
+
+**LO QUE ESTO CONTAMINA, y hay que decirlo antes de que alguien lo cite.**
+Publicamos que la izquierda es el **3,3 % del volumen**, y sobre esa cifra se
+reconstruyó la función de puntos ciegos. Esa cifra está medida sobre un corpus en
+el que la principal contraparte nacional de Semana aportaba una décima parte de
+lo que le corresponde. **No es un hecho limpio sobre el país: lleva dentro un
+artefacto de qué feeds nos funcionaban.** Habrá que volver a medirla en unos días
+y corregir lo que haga falta.
+
+**Quedan siete medios en Google News** —Noticias Caracol, Noticias RCN, Blu Radio,
+La FM, Cambio, RTVC y Revista RAYA—. Se probó Arc en todos: no lo tienen.
+Noticias Caracol y Blu Radio declaran un `.atom` en su HTML que devuelve la
+página, no un feed. Siguen pendientes.
+
+---
+
 ## 2026-08-08 · También las instituciones tienen dueño
 
 **Decisión de Jose**, que corrigió la mía. Yo propuse cerrar los cuatro medios

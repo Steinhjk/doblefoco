@@ -187,7 +187,43 @@ export const MEDIA_REGISTRY = [
         domain: 'elespectador.com', country: 'CO', group: 'Grupo Valorem',
         bias: -0.20, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Diario nacional con tradición liberal; énfasis en derechos humanos y proceso de paz.',
-        feed: { url: gnews('elespectador.com'), via: 'gnews', category: 'Política' },
+        /**
+         * PASA DE GOOGLE NEWS A FEED PROPIO (2026-08-08).
+         *
+         * Aportaba 24 artículos en 72 h. El Tiempo, su par, aportaba 234; El
+         * Heraldo, un diario regional, 383. No es una diferencia de tamaño entre
+         * redacciones: era la tubería.
+         *
+         * Y NO por lo que parecía a primera vista. El feed de Google devuelve
+         * 100 ítems y 82 están dentro de la ventana, así que no era escasez.
+         * Medido item a item, la diferencia es el ORDEN:
+         *
+         *              gnews        propio
+         *   mediana     39,9 h       1,5 h
+         *   imagen      0/15        15/15
+         *   enlace   news.google.com  elespectador.com
+         *
+         * Google ordena por RELEVANCIA, no por fecha. Cada 30 minutos pedimos
+         * los 15 «más relevantes» y nos devuelve casi los mismos, con mediana de
+         * casi dos días. Se deduplican y no se acumula nada. Un feed cronológico
+         * trae en cada sondeo lo publicado desde el anterior, que es justo lo
+         * que este producto necesita.
+         *
+         * ES EL FEED DE «DISCOVER» y trae 20 ítems, no el archivo completo. Uno
+         * de los 20 era de mayo —contenido perenne—, y la ventana de 72 h se
+         * encarga de él. Se probaron además /arc/outboundfeeds/rss/ con y sin
+         * query, /mrss/ y dos variantes por sección —404 las cuatro— y
+         * /news-sitemap/, que sí existe pero no es RSS. Este es el único feed
+         * consumible que publica el medio.
+         *
+         * La CSP ya admitía elespectador.com, así que las fotos entran sin
+         * tocar nada. Antes no había ninguna que admitir.
+         */
+        feed: {
+            url: 'https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml',
+            via: 'direct',
+            category: 'Política',
+        },
     },
     {
         id: 'la-silla-vacia', name: 'La Silla Vacía', shortName: 'La Silla',
@@ -222,31 +258,52 @@ export const MEDIA_REGISTRY = [
          * REACTIVADO 2026-07-30, por decisión de Jose: no se silencia a ningún
          * medio del catálogo. Estuvo retirado desde el 2026-07-28.
          *
-         * SIGUE SIN PUBLICAR RSS PROPIO: se volvieron a probar /feed/, /rss/,
-         * /rss.xml, /feeds/rss/ y /feed/rss/ y los cinco dan 404. Así que entra
-         * por Google News, la misma vía que Caracol Radio, que además es del
-         * mismo dueño (Grupo Prisa).
+         * SÍ TENÍA RSS PROPIO (hallado el 2026-08-08). Aquí decía que no, tras
+         * probar /feed/, /rss/, /rss.xml, /feeds/rss/ y /feed/rss/ —los cinco
+         * dan 404, sigue siendo cierto—. Ninguna de las cinco era la ruta de
+         * Arc, que es el gestor que usa media Colombia: El Heraldo, El Universal,
+         * Vanguardia, El País de Cali y Semana ya entraban por ahí. Estaba a la
+         * vista en el catálogo.
          *
-         * QUÉ VA A APORTAR, dicho sin adornos: casi nada. Google apenas indexa
-         * este dominio — lo más reciente con contenido real es de enero de 2026,
-         * fuera de la ventana de 72 h. Se busca por `site:` y NO por nombre, que
-         * es la parte importante: buscar «W Radio» trae piezas de OTROS medios
-         * que la mencionan («Claro Sports por W Radio»), y atribuirlas a ella
-         * sería la misatribución que costó F1-07.
+         * MOTIVO DEL CAMBIO, y es el más grave de los tres: el feed de Google
+         * para este dominio tenía una MEDIANA DE EDAD DE 32 551 HORAS —casi
+         * cuatro años— entre los 15 ítems que tomábamos. Solo 1 de 15 caía
+         * dentro de la ventana. No es que aportara poco: es que servía archivo
+         * viejo con apariencia de actualidad, y eso es peor que estar mudo.
          *
-         * Su feed entrega además entradas que no son piezas —«Noticias y Radio
+         * LO QUE APORTA EL NUEVO, sin adornos: 2 ítems. Es poco, pero son dos
+         * piezas reales, recientes y con foto, en vez de una superviviente entre
+         * quince fósiles. Si algún día publica más, entra solo.
+         *
+         * Su feed entregaba además entradas que no son piezas —«Noticias y Radio
          * Online», fechada ayer, que habría salido en portada como noticia—. De
-         * eso se encarga la regla `no-es-articulo` de contentQuality, añadida
-         * junto a esta reactivación.
+         * eso se encarga la regla `no-es-articulo` de contentQuality, y se deja
+         * puesta: el feed nuevo puede traer lo mismo.
          */
-        feed: { url: gnews('wradio.com.co'), via: 'gnews', category: 'Política' },
+        feed: {
+            url: 'https://www.wradio.com.co/arc/outboundfeeds/rss/?outputType=xml',
+            via: 'direct',
+            category: 'Política',
+        },
     },
     {
         id: 'caracol-radio', name: 'Caracol Radio', shortName: 'Caracol',
         domain: 'caracol.com.co', country: 'CO', group: 'Grupo PRISA',
         bias: 0.05, factuality: 0.85, reviewedAt: null,
         biasRationale: 'Radio informativa de cobertura nacional con agenda noticiosa amplia.',
-        feed: { url: gnews('caracol.com.co'), via: 'gnews', category: 'Política' },
+        /**
+         * PASA A FEED PROPIO DE ARC (2026-08-08). El mejor de los tres hallados:
+         * 100 ítems, los 15 que tomamos dentro de la ventana y con foto, mediana
+         * de 1,2 h frente a las 21,7 h que daba Google.
+         *
+         * Aquí no había siquiera una nota que dijera por qué entraba por Google
+         * News: se asumió, y nadie volvió a mirar. El feed existía.
+         */
+        feed: {
+            url: 'https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml',
+            via: 'direct',
+            category: 'Política',
+        },
     },
     {
         // Caracol Televisión y Caracol Radio comparten nombre y no comparten

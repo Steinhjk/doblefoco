@@ -95,9 +95,25 @@ que no la tienen lo cubrió. Con los medios sin línea marcada en el 54 % de las
 apariciones, que falten todos es raro y dice algo del hecho, no de quien calla.
 
 Va la última de las tres: si alguna vez se pudiera afirmar un punto ciego de
-izquierda o de derecha, esa afirmación es más fuerte y tiene prioridad. Y exige
-las mismas garantías que las otras —cuatro medios, dos voces del lado que sí
-cubre, y que la ausencia sea improbable—.
+izquierda o de derecha, esa afirmación es más fuerte y tiene prioridad.
+
+**Ajustada el mismo día tras ver la salida real.** Con 4 medios disparó seis
+veces y **dos eran fútbol**: un gol de Luis Díaz cubierto por cuatro medios de
+derecha. Cierto y vacío — revela qué medios tienen sección de deportes, no un
+encuadre. Sube a **6 medios**, y con eso sobrevive el caso que la justifica:
+«Uribe llegó a Cali para la investidura», 7 medios, ninguno sin línea marcada.
+
+**En una constante APARTE**, `SOLO_LINEA_MARCADA_MIN_SOURCES`. Jose señaló el
+riesgo antes de que ocurriera: `BLINDSPOT_MIN_SOURCES` vale 4 porque él lo bajó
+de 6 el 2026-07-30, y subirlo en global habría deshecho esa decisión de paso y en
+silencio para el punto ciego de izquierda y derecha.
+
+**Se descartó restringir la señal a temas políticos**, que era la otra vía para
+quitar el fútbol. Razón de Jose: un hecho deportivo puede reflejar algo
+interesante el día menos pensado, y excluirlo por categoría lo dejaría fuera para
+siempre. Subir el listón **no excluye ningún tema, exige más evidencia**: si un
+día una noticia deportiva reúne seis medios y todos tienen línea marcada, la
+señal aparecerá.
 
 ---
 

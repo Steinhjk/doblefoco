@@ -90,6 +90,31 @@ export const BLINDSPOT_MAX_RATIO = 0.15;
 export const UMBRAL_SORPRESA = 0.05;
 
 /**
+ * Medios mínimos para la señal «solo medios con línea marcada».
+ *
+ * ES UNA CONSTANTE APARTE, Y ESO ES LO IMPORTANTE. `BLINDSPOT_MIN_SOURCES` vale
+ * 4 porque Jose lo bajó de 6 el 2026-07-30, y esa decisión sigue en pie para el
+ * punto ciego de izquierda y de derecha. Subir aquel a 6 para arreglar esta
+ * señal habría deshecho aquella decisión de paso y en silencio.
+ *
+ * POR QUÉ 6 (2026-08-08, decisión de Jose). Con 4 medios la señal disparó seis
+ * veces y dos eran fútbol: un gol de Luis Díaz cubierto por cuatro medios de
+ * derecha. Es cierto que solo lo cubrieron medios con línea marcada, y no
+ * significa nada: revela qué medios tienen sección de deportes, no un encuadre
+ * político. Con 7 medios, en cambio, «Uribe llegó a Cali para la investidura»
+ * —todos de derecha, ninguno sin línea— sí dice algo.
+ *
+ * NO SE EXCLUYE NINGÚN TEMA, Y ESA ES LA GRACIA. La alternativa era restringir
+ * la señal a temas políticos, y Jose la descartó por una razón que comparto: un
+ * hecho deportivo puede reflejar algo interesante el día menos pensado, y
+ * excluirlo por categoría lo dejaría fuera para siempre. Subir el listón de
+ * evidencia no excluye al deporte: exige que traiga más pruebas. Si algún día
+ * una noticia deportiva reúne seis medios y todos tienen línea marcada, la
+ * señal aparecerá.
+ */
+export const SOLO_LINEA_MARCADA_MIN_SOURCES = 6;
+
+/**
  * Probabilidad de que un espectro con frecuencia `q` no aparezca entre `n`
  * medios, si los medios que cubren un hecho fueran independientes de su línea.
  *
@@ -399,6 +424,7 @@ export function analyzeCoverage(sources, tasasBase = null) {
              * afirmar un punto ciego de izquierda o de derecha, esa afirmación
              * es más fuerte y tiene prioridad.
              */
+            total >= SOLO_LINEA_MARCADA_MIN_SOURCES &&
             centerRatio <= BLINDSPOT_MAX_RATIO &&
             counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO &&
             sorprende(SPECTRUM.CENTER)

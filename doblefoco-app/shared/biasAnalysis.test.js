@@ -17,6 +17,7 @@ import {
     classifySpectrum,
     describeBias,
     BLINDSPOT_MIN_SOURCES,
+    SOLO_LINEA_MARCADA_MIN_SOURCES,
     SPECTRUM_THRESHOLD,
 } from './biasAnalysis.js';
 
@@ -178,26 +179,41 @@ describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () =
     });
 
     it('señala cuando SOLO cubrieron medios con línea marcada', () => {
-        // Cinco medios de derecha y ninguno sin línea. Con el centro apareciendo
-        // en el 54 % de las historias, (1−0,585)⁵ = 0,012: su ausencia completa
-        // es rara y dice algo del hecho.
+        // Siete medios de derecha y ninguno sin línea. Es el caso real que la
+        // motivó: «Uribe llegó a Cali para la investidura», 7 medios, 0 sin
+        // línea marcada.
         //
         // No afirma que nadie omitiera nada: describe que el hecho solo interesó
         // a medios con posición declarada.
-        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35), REAL);
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0.55), REAL);
 
         expect(result.counts.center).toBe(0);
         expect(result.blindspot?.spectrum).toBe('center');
         expect(result.blindspot.label).toBe('Solo medios con línea marcada');
     });
 
-    it('no lo señala si un solo medio con línea cubre el hecho', () => {
-        // Misma regla que sostiene los otros dos: con una sola voz, lo que hay
-        // no es un patrón sino la decisión de un periódico.
-        const result = analyzeCoverage(sources(0.6, 0.1, 0.05, -0.05, 0), REAL);
+    it(`no la señala por debajo de ${SOLO_LINEA_MARCADA_MIN_SOURCES} medios`, () => {
+        // Cuatro medios de derecha: cumple la prueba estadística —(1−0,585)⁴ =
+        // 0,029— y aun así no se afirma. Con cuatro, la señal disparaba en
+        // noticias de fútbol donde la composición no dice nada del encuadre.
+        //
+        // OJO: no se excluye el deporte, se exige más evidencia. Estos mismos
+        // cuatro medios con dos más habrían disparado la señal.
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3), REAL);
 
-        expect(result.counts.left + result.counts.right).toBe(1);
+        expect(result.counts.center).toBe(0);
         expect(result.blindspot).toBeNull();
+    });
+
+    it('el umbral de 4 sigue en pie para izquierda y derecha', () => {
+        // La constante de esta señal es APARTE a propósito: BLINDSPOT_MIN_SOURCES
+        // vale 4 por decisión del 2026-07-30 y no se toca. Con seis medios de
+        // izquierda y ninguno de derecha, el punto ciego de derecha se afirma
+        // sin necesitar el umbral más alto.
+        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, -0.3, 0, 0), REAL);
+
+        expect(BLINDSPOT_MIN_SOURCES).toBe(4);
+        expect(result.blindspot?.spectrum).toBe('right');
     });
 
     it('sin tasas base no afirma nada, en vez de suponerlas', () => {

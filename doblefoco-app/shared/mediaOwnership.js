@@ -363,6 +363,9 @@ export const CONTROL_GROUPS = {
             },
         ],
     },
+
+    // Los grupos independientes llevan sus `personas` más abajo, junto a su
+    // definición original.
     'infobae-hadad': {
         label: 'Daniel Hadad — Grupo Infobae',
         sectores: ['radio', 'televisión'],
@@ -403,13 +406,38 @@ export const CONTROL_GROUPS = {
         label: 'Estado colombiano',
         sectores: [],
     },
+    // En estos el hilo siempre fue corto —las personas estaban en el `label`
+    // desde el principio— y por eso pasó desapercibido que se leía distinto que
+    // en los grupos grandes. Se suben al mismo campo para que la pregunta «¿en
+    // quién termina?» se responda igual en todo el mapa. Las fuentes son las que
+    // ya traía la ficha de cada medio.
     'la-silla-socios': {
         label: 'Juanita León y socios de La Silla Vacía',
         sectores: [],
+        personas: [{
+            nombre: 'Juanita León',
+            papel: 'Periodista, socia fundadora y directora desde el origen del medio.',
+            desde: '2009',
+            fuentes: ['https://www.lasillavacia.com/que-es-la-silla-vacia/'],
+        }],
     },
     'el-escarbabajo': {
         label: 'Diana Salinas y Claudia Báez — El Escarbabajo SAS',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Diana Salinas',
+                papel: 'Periodista; 66,37 % de El Escarbabajo SAS, la empresa que publica Cuestión Pública.',
+                desde: '2018-03-06',
+                fuentes: ['https://cuestionpublica.com/nosotros/'],
+            },
+            {
+                nombre: 'Claudia Báez',
+                papel: 'Periodista; 33,33 % de El Escarbabajo SAS.',
+                desde: '2018-03-06',
+                fuentes: ['https://cuestionpublica.com/nosotros/'],
+            },
+        ],
     },
     'ntc-television': {
         label: 'NTC Televisión — Noticias Uno',
@@ -418,6 +446,12 @@ export const CONTROL_GROUPS = {
     'voragine-fundacion': {
         label: 'Fundación Vorágine Periodismo Contracorriente',
         sectores: [],
+        personas: [{
+            nombre: 'Juan Pablo Barrientos, Francisco Escobar, José Guarnizo y Laila Abu Shihab',
+            papel: 'Periodistas fundadores de la fundación sin ánimo de lucro, con capital propio.',
+            desde: '2020-06-01',
+            fuentes: ['https://voragine.co/nosotros/'],
+        }],
     },
     'razon-publica-fundacion': {
         label: 'Fundación Razón Pública',
@@ -426,10 +460,39 @@ export const CONTROL_GROUPS = {
     'cambio-inversionistas': {
         label: 'Inversionistas de Cambio — Lara Salive, Silva Luján y Armitage',
         sectores: ['siderurgia'],
+        personas: [
+            {
+                nombre: 'Patricia Lara Salive, Gabriel Silva Luján y Maurice Armitage',
+                papel:
+                    'Compraron los derechos de publicación en 2021 y relanzaron la revista. Silva Luján ' +
+                    'fue ministro de Defensa; Armitage, alcalde de Cali y empresario siderúrgico.',
+                desde: '2021-09',
+                fuentes: ['https://es.wikipedia.org/wiki/Cambio_(revista)'],
+            },
+            {
+                nombre: 'Daniel Coronell',
+                papel:
+                    'Periodista, presidente del medio. Sostiene públicamente que «los accionistas no ' +
+                    'son los dueños de la información».',
+                desde: '2022-02',
+                fuentes: ['https://latamjournalismreview.org/es/articles/los-accionistas-no-son-los-duenos-de-la-informacion-dice-daniel-coronell-presidente-de-la-resucitada-revista-cambio-de-colombia/'],
+            },
+        ],
     },
     'kienyke-bernal': {
         label: 'Adriana Bernal Salgado — Kieneskien Editorial',
         sectores: ['seguros'],
+        personas: [{
+            nombre: 'Adriana Bernal Salgado',
+            papel:
+                'Dueña absoluta: 89,9 % vía Kieneskien Casa Editorial y 10,2 % a su nombre. Su ' +
+                'negocio principal está en los seguros (Red Assist).',
+            desde: '2010',
+            fuentes: [
+                'http://colombia.mom-gmr.org/es/media/detail/outlet/kienykecom/',
+                'https://www.lasillavacia.com/silla-nacional/el-quien-y-que-detras-de-kienykecom/',
+            ],
+        }],
     },
     'pcc-partido': {
         label: 'Partido Comunista Colombiano (PCC)',
@@ -438,6 +501,12 @@ export const CONTROL_GROUPS = {
     'raya-fundacion': {
         label: 'Fundación RAYA — sus nueve periodistas fundadores',
         sectores: [],
+        personas: [{
+            nombre: 'Edinson Bolaños e Isabel Caballero, con otros siete periodistas',
+            papel: 'Fundadores de la fundación sin ánimo de lucro; Bolaños la dirige.',
+            desde: '2022',
+            fuentes: ['https://revistaraya.com/staff.html'],
+        }],
     },
 
     // ── Internacionales ─────────────────────────────────────────────────────

@@ -15,9 +15,9 @@ import {
     analyzeCoverage,
     averageFactuality,
     classifySpectrum,
-    describeBias,
+    describirOrientacionMedia,
     BLINDSPOT_MIN_SOURCES,
-    SOLO_LINEA_MARCADA_MIN_SOURCES,
+    SOLO_EJE_MIN_SOURCES,
     SPECTRUM_THRESHOLD,
 } from './biasAnalysis.js';
 
@@ -189,10 +189,10 @@ describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () =
 
         expect(result.counts.center).toBe(0);
         expect(result.blindspot?.spectrum).toBe('center');
-        expect(result.blindspot.label).toBe('Solo medios con línea marcada');
+        expect(result.blindspot.label).toBe('Solo medios de izquierda y derecha');
     });
 
-    it(`no la señala por debajo de ${SOLO_LINEA_MARCADA_MIN_SOURCES} medios`, () => {
+    it(`no la señala por debajo de ${SOLO_EJE_MIN_SOURCES} medios`, () => {
         // Cuatro medios de derecha: cumple la prueba estadística —(1−0,585)⁴ =
         // 0,029— y aun así no se afirma. Con cuatro, la señal disparaba en
         // noticias de fútbol donde la composición no dice nada del encuadre.
@@ -310,13 +310,13 @@ describe('averageFactuality — la constante 0.88 no vuelve (F0-09)', () => {
     });
 });
 
-describe('describeBias', () => {
+describe('describirOrientacionMedia', () => {
     it('cubre la escala sin dejar huecos', () => {
-        expect(describeBias(-0.8)).toBe('Inclinación izquierda');
-        expect(describeBias(-0.2)).toBe('Izquierda moderada');
-        expect(describeBias(0)).toBe('Sin línea marcada');
-        expect(describeBias(0.2)).toBe('Derecha moderada');
-        expect(describeBias(0.8)).toBe('Inclinación derecha');
+        expect(describirOrientacionMedia(-0.8)).toBe('Inclinación izquierda');
+        expect(describirOrientacionMedia(-0.2)).toBe('Izquierda moderada');
+        expect(describirOrientacionMedia(0)).toBe('Orientación mixta');
+        expect(describirOrientacionMedia(0.2)).toBe('Derecha moderada');
+        expect(describirOrientacionMedia(0.8)).toBe('Inclinación derecha');
     });
 });
 

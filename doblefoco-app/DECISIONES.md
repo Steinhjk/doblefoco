@@ -17,6 +17,81 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Orientación y sesgo son dos cosas distintas
+
+**Decisión de Jose.** Separar dos conceptos que compartían una palabra:
+
+|  | Qué es | Cómo se establece |
+|---|---|---|
+| **Orientación** | Propiedad del **medio**: de dónde viene, a quién responde, qué considera noticia | Estructural. Se documenta |
+| **Sesgo** | Propiedad de una **pieza**: qué palabras elige, a quién cita | Frase por frase. **Todavía no se mide** |
+
+**Cómo surgió.** Yo buscaba un adjetivo mejor que «Sin línea marcada» y ofrecí
+cuatro; Jose propuso en cambio cambiar el marco. Su propuesta era mejor y resolvió
+el problema de raíz: el conflicto no estaba en la etiqueta sino en que un solo
+número tenía que decir a la vez algo del medio y algo del texto.
+
+**LO QUE ESTO CORRIGIÓ NO ES VOCABULARIO.** La interfaz decía «Sesgo medio de la
+cobertura» sobre un número que promedia **la orientación declarada de los medios
+que publicaron**. Eso afirmaba haber analizado la cobertura cuando lo que hicimos
+fue promediar quién la firmaba. Ahora dice «Orientación media de quienes lo
+publicaron», que es lo que el número contiene.
+
+**«Sin línea marcada» pasa a «Orientación mixta», y la primera era falsa.**
+Medidos los siete medios colombianos de esa banda, **seis pertenecen a grupos
+económicos**:
+
+```
+La Silla Vacía  −0,10   Juanita León y socios     ← el único independiente
+W Radio          0,00   Grupo Prisa
+El Tiempo       +0,05   Sarmiento Angulo (Aval)
+Caracol Radio   +0,05   Grupo Prisa
+Noticias Caracol +0,10  Santo Domingo (Valorem)
+Portafolio      +0,10   Sarmiento Angulo (Aval)
+La República    +0,15   Ardila Lülle
+```
+
+Portafolio y La República son **diarios económicos**: su línea es el capital,
+declarada y evidente. Decir de ellos que no tienen línea marcada era el falso
+balance que este proyecto existe para no producir. Lo que el número dice de
+verdad es que su orientación **no se sitúa en el eje izquierda-derecha**, no que
+no exista.
+
+**Se descartaron cuatro adjetivos** —«Fuera del eje», «Sin ubicar en el eje»,
+«Línea difusa», «Sin inclinación constante»— y toda la familia que suena a virtud
+(«no partidista», «línea propia», «transversal», «equidistante»): elogiar a El
+Tiempo por no tener bando es exactamente el falso equilibrio. También «mixta» y
+«oscilante» como descripciones de SESGO, porque afirmarían que la posición varía
+y el número no distingue variar de inclinarse siempre un poco hacia el mismo
+lado. Bajo el marco de ORIENTACIÓN, en cambio, «mixta» es una afirmación
+estructural y sí se sostiene.
+
+**Otros dos nombres cayeron con la taxonomía:**
+
+- `describeBias()` → **`describirOrientacionMedia()`**. Mantener el nombre viejo
+  habría dejado viva en el código la confusión que se acababa de quitar de la
+  pantalla.
+- «Solo medios con línea marcada» → **«Solo medios de izquierda y derecha»**
+  (constante `SOLO_EJE_MIN_SOURCES`). Si se afirma que todos los medios tienen
+  línea, distinguir a unos como «los que la tienen» se contradice con el resto
+  del sitio. La señal dice que el hecho solo interesó a medios situados en el
+  eje, y que ninguno de orientación mixta lo cubrió.
+
+**El campo se sigue llamando `bias`** en el registro, en la base y en la API. Es
+deliberado: renombrar `sources.bias` obliga a migrar la base y a romper la API por
+un cambio que el lector no ve. Lo que cambia es todo lo que el lector lee.
+
+**Y una copia que se retira**: `MediaMap.jsx` tenía su propio `SPECTRUM_LABEL`.
+Dos listas de etiquetas para el mismo concepto son dos listas que se separan, y
+esa pantalla es donde menos se habría notado.
+
+**De paso, el `shortName` de Caracol Radio.** Era «Caracol» a secas, y lo señaló
+Jose. «Noticias Caracol» es otra empresa de otro dueño —Prisa contra Santo
+Domingo—; en un sitio cuyo argumento central es quién posee qué, esa abreviatura
+invitaba justo a la confusión que el mapa existe para deshacer.
+
+---
+
 ## 2026-08-08 · Responder no es alimentar: se auditan los 39 feeds
 
 **Decisión de Jose**, tras el arreglo de los tres feeds: revisar los demás para

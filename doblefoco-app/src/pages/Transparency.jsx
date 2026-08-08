@@ -189,22 +189,26 @@ const Transparency = () => (
                     pensamiento afines.
                 </dd>
 
-                <dt className="tr-spectrum-center">Sin línea marcada</dt>
+                <dt className="tr-spectrum-center">Orientación mixta</dt>
                 <dd>
-                    <strong>No significa neutral, imparcial ni objetivo.</strong> Significa
-                    únicamente que no encontramos una inclinación consistente hacia ninguno de
-                    los dos lados. Eso admite lecturas muy distintas: cobertura efectivamente
-                    equilibrada, señal insuficiente para afirmar nada, inclinaciones que se
-                    cancelan entre temas, o un alineamiento con el poder institucional y
-                    económico que sencillamente no cabe en el eje izquierda-derecha.
+                    <strong>No significa neutral, imparcial ni objetivo — y tampoco significa
+                    que no tenga línea.</strong> Todos los medios tienen una. Significa que la
+                    suya no se sitúa en el eje izquierda-derecha, que es el único que aquí se
+                    mide. La de un diario económico es el capital: clarísima, declarada, y sin
+                    lugar en ese eje.
                     <br />
-                    Por eso esta banda no se llama «Centro». Dar por sentado que existe un
-                    centro político equivale a conceder que hay un punto neutral desde el cual
-                    se mira todo lo demás, y eso es precisamente lo que este sitio no da por
-                    sentado. Conviene además mirar quién es el dueño: varios de los medios que
-                    caen aquí pertenecen a los mayores grupos económicos del país, y eso está
-                    documentado, medio por medio, en el{' '}
+                    Esta banda se llamó «Sin línea marcada» hasta agosto de 2026, y se cambió
+                    porque era falsa. Seis de los siete medios colombianos que caen aquí
+                    pertenecen a grupos económicos —El Tiempo y Portafolio a Sarmiento Angulo,
+                    Noticias Caracol a los Santo Domingo, La República a Ardila Lülle, Caracol
+                    Radio y W Radio a Prisa—. Decir de ellos que no tienen línea marcada era
+                    exactamente el falso equilibrio que este sitio existe para no producir.
+                    Quién es dueño de cada uno está documentado, con su fuente, en el{' '}
                     <Link to="/mapa-medios">mapa mediático</Link>.
+                    <br />
+                    Tampoco se llama «Centro»: dar por sentado que existe un centro político
+                    equivale a conceder que hay un punto neutral desde el cual se mira todo lo
+                    demás, y eso es precisamente lo que este sitio no da por sentado.
                 </dd>
             </dl>
 

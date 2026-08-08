@@ -54,19 +54,29 @@
  * agencias internacionales para los medios que cubran. Donde no haya ancla
  * externa, se declara como criterio propio en vez de disimularlo.
  *
- * Escala: -1.0 (izquierda marcada) … 0.0 (sin línea marcada) … +1.0 (derecha
- * marcada). El 0.0 NO significa «neutral»: significa que no se detectó una
- * inclinación consistente. Ver el comentario de SPECTRUM_LABEL en
- * shared/biasAnalysis.js.
+ * Escala de ORIENTACIÓN: -1.0 (izquierda marcada) … 0.0 (orientación mixta) …
+ * +1.0 (derecha marcada). El 0.0 NO significa «neutral» ni «sin línea»:
+ * significa que la orientación de ese medio no se sitúa en el eje
+ * izquierda-derecha —la de Portafolio es el capital, y es clarísima—. Ver el
+ * comentario de SPECTRUM_LABEL en shared/biasAnalysis.js.
  * `factuality` es el historial de rigor factual del medio, NO una evaluación
  * de una noticia concreta.
  */
 
-/** Bandas del espectro. metodologia.txt debe describir exactamente estas. */
+/**
+ * Bandas de ORIENTACIÓN del medio. metodologia.txt debe describir exactamente
+ * estas.
+ *
+ * El campo se sigue llamando `bias` en el registro, en la base y en la API. Es
+ * deliberado y no un descuido: renombrar la columna `sources.bias` obligaría a
+ * migrar la base y a romper la API por un cambio que el lector no ve. Lo que sí
+ * cambia es TODO lo que el lector lee. Ver la nota de SPECTRUM_LABEL en
+ * shared/biasAnalysis.js para la distinción entre orientación y sesgo.
+ */
 export const SPECTRUM_BANDS = [
     { id: 'left', min: -1.0, max: -0.6, label: 'Izquierda' },
     { id: 'center-left', min: -0.6, max: -0.2, label: 'Izquierda moderada' },
-    { id: 'center', min: -0.2, max: 0.2, label: 'Sin línea marcada' },
+    { id: 'center', min: -0.2, max: 0.2, label: 'Orientación mixta' },
     { id: 'center-right', min: 0.2, max: 0.6, label: 'Derecha moderada' },
     { id: 'right', min: 0.6, max: 1.0, label: 'Derecha' },
 ];
@@ -287,7 +297,16 @@ export const MEDIA_REGISTRY = [
         },
     },
     {
-        id: 'caracol-radio', name: 'Caracol Radio', shortName: 'Caracol',
+        /**
+         * `shortName` ERA «Caracol» A SECAS, y sobraba el ahorro de dos palabras
+         * (2026-08-08, lo señaló Jose). «Noticias Caracol» es OTRA empresa, de
+         * OTRO dueño: esta es del Grupo Prisa y aquella de los Santo Domingo vía
+         * Valorem. En un sitio cuyo argumento central es quién posee qué, abreviar
+         * a «Caracol» invitaba justo a la confusión que el mapa existe para
+         * deshacer —y el propio archivo ya advertía, unas líneas más abajo, que
+         * las dos no comparten nada salvo el nombre—.
+         */
+        id: 'caracol-radio', name: 'Caracol Radio', shortName: 'Caracol Radio',
         domain: 'caracol.com.co', country: 'CO', group: 'Grupo PRISA',
         bias: 0.05, factuality: 0.85, reviewedAt: null,
         biasRationale: 'Radio informativa de cobertura nacional con agenda noticiosa amplia.',

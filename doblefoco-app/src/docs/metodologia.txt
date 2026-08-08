@@ -34,20 +34,26 @@ Cada medio recibe un valor entre -1.0 y +1.0. Las bandas son:
 
   [-1.0 a -0.6)  Izquierda
   [-0.6 a -0.2)  Izquierda moderada
-  [-0.2 a +0.2)  Sin línea marcada
+  [-0.2 a +0.2)  Orientación mixta
   [+0.2 a +0.6)  Derecha moderada
   [+0.6 a +1.0]  Derecha
 
 Para agrupar cobertura, el sistema colapsa esas cinco bandas en tres bloques,
-con frontera en Â±0.2: izquierda (â‰¤ -0.2), sin línea marcada y derecha (â‰¥ +0.2).
+con frontera en Â±0.2: izquierda (â‰¤ -0.2), orientación mixta y derecha (â‰¥ +0.2).
 
 La banda del medio NO se llama «centro», y es una decisión editorial: dar por
 sentado que existe un centro político equivale a conceder que hay un punto
-neutral desde el cual se mira todo lo demás. «Sin línea marcada» dice lo que de
-verdad se midió —no se detectó una inclinación consistente— y NO afirma
-neutralidad, imparcialidad ni objetividad: serían afirmaciones que esta medición
-no puede sostener. Por el mismo motivo las bandas contiguas pasaron a llamarse
-«moderada»; nombrarlas EN RELACIÓN a un centro lo reintroduciría por la puerta
+neutral desde el cual se mira todo lo demás. Se llama «orientación mixta», y eso
+NO afirma neutralidad, imparcialidad ni objetividad —serían afirmaciones que esta
+medición no puede sostener— ni tampoco ausencia de línea editorial: todos los
+medios tienen una. Dice que la suya no se sitúa en el eje izquierda-derecha, que
+es el único que aquí se mide; la de un diario económico es el capital.
+
+Se llamó «sin línea marcada» hasta agosto de 2026. Se cambió porque era falsa:
+seis de los siete medios colombianos de esa banda pertenecen a grupos económicos,
+y dos de ellos son diarios especializados en economía. Por el mismo motivo las
+bandas contiguas se llaman «moderada»; nombrarlas EN RELACIÓN a un centro lo
+reintroduciría por la puerta
 de atrás.
 
 La definición en prosa de cada bloque está en la página de transparencia.

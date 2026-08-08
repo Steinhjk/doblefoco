@@ -99,20 +99,20 @@ export const UMBRAL_SORPRESA = 0.05;
  *
  * POR QUÉ 6 (2026-08-08, decisión de Jose). Con 4 medios la señal disparó seis
  * veces y dos eran fútbol: un gol de Luis Díaz cubierto por cuatro medios de
- * derecha. Es cierto que solo lo cubrieron medios con línea marcada, y no
+ * derecha. Es cierto que solo lo cubrieron medios situados en el eje, y no
  * significa nada: revela qué medios tienen sección de deportes, no un encuadre
  * político. Con 7 medios, en cambio, «Uribe llegó a Cali para la investidura»
- * —todos de derecha, ninguno sin línea— sí dice algo.
+ * —todos de derecha, ninguno de orientación mixta— sí dice algo.
  *
  * NO SE EXCLUYE NINGÚN TEMA, Y ESA ES LA GRACIA. La alternativa era restringir
  * la señal a temas políticos, y Jose la descartó por una razón que comparto: un
  * hecho deportivo puede reflejar algo interesante el día menos pensado, y
  * excluirlo por categoría lo dejaría fuera para siempre. Subir el listón de
  * evidencia no excluye al deporte: exige que traiga más pruebas. Si algún día
- * una noticia deportiva reúne seis medios y todos tienen línea marcada, la
+ * una noticia deportiva reúne seis medios y todos están en el eje, la
  * señal aparecerá.
  */
-export const SOLO_LINEA_MARCADA_MIN_SOURCES = 6;
+export const SOLO_EJE_MIN_SOURCES = 6;
 
 /**
  * Probabilidad de que un espectro con frecuencia `q` no aparezca entre `n`
@@ -206,26 +206,46 @@ export const SPECTRUM = {
 };
 
 /**
- * LA BANDA DEL MEDIO NO SE LLAMA «CENTRO», Y ES UNA DECISIÓN EDITORIAL.
+ * ORIENTACIÓN Y SESGO SON DOS COSAS, Y ESTE ARCHIVO SOLO MIDE LA PRIMERA.
  *
- * Decisión de Jose (2026-07-30): no da por sentado que exista un centro
- * político, y llamar «Centro» a esa banda le atribuye una posición que nadie ha
- * demostrado que exista.
+ * Decisión de Jose (2026-08-08), y no es un cambio de vocabulario: es la
+ * separación de dos conceptos que compartían una palabra y no podían.
  *
- * También descarta «Objetivo» o «Sin sesgo», que fueron las primeras candidatas,
- * por el motivo contrario: afirman una cualidad que esta medición NO puede
- * sostener. Un valor cerca de cero significa que no detectamos una inclinación
- * consistente, y eso admite lecturas muy distintas —cobertura equilibrada, señal
- * insuficiente, sesgos que se cancelan entre temas, o alineamiento con el poder
- * institucional que no cabe en el eje izquierda-derecha—. Certificar a un medio
- * como «sin sesgo» sería la afirmación más fuerte del sitio y la menos
- * defendible.
+ *   ORIENTACIÓN  Propiedad del MEDIO. De dónde viene, a quién responde, qué
+ *                considera noticia. Es estructural y permanente. No se mide
+ *                contando adjetivos: se documenta. Es lo único que hay hoy.
+ *   SESGO        Propiedad de una PIEZA. Qué palabras elige, a quién cita, qué
+ *                llama «disturbios» y qué «protesta». Se demuestra frase por
+ *                frase — y TODAVÍA NO SE MIDE. Ver DISENO_ALGORITMO_SESGO.md.
  *
- * «Sin línea marcada» dice exactamente lo medido y nada más.
+ * QUÉ ARREGLA, porque no era solo estética. La interfaz decía «sesgo medio de
+ * la cobertura» sobre un número que promedia LA ORIENTACIÓN DECLARADA DE LOS
+ * MEDIOS QUE PUBLICARON. Eso afirmaba haber analizado la cobertura cuando lo
+ * que hicimos fue promediar quién la firmaba. Dos afirmaciones distintas, y la
+ * que se mostraba era la más fuerte de las dos.
+ *
+ * LA BANDA DEL MEDIO NO SE LLAMA «CENTRO», y esa decisión de Jose (2026-07-30)
+ * sigue en pie: no se da por sentado que exista un centro político, y llamar
+ * «Centro» a esa banda le atribuye una posición que nadie ha demostrado.
+ * Descartadas por el motivo contrario, «Objetivo» y «Sin sesgo»: afirman una
+ * cualidad que la medición no sostiene.
+ *
+ * «SIN LÍNEA MARCADA» PASA A «ORIENTACIÓN MIXTA», y el motivo es que la primera
+ * era falsa. Medido el 2026-08-08, seis de los siete medios de esa banda
+ * pertenecen a grupos económicos: El Tiempo y Portafolio son de Sarmiento
+ * Angulo, Noticias Caracol de los Santo Domingo, La República de Ardila Lülle,
+ * Caracol Radio y W Radio de Prisa. **Portafolio y La República son diarios
+ * económicos: su línea editorial es el capital, declarada y evidente.** Decir
+ * que no tienen línea marcada es el falso balance que este proyecto existe para
+ * no hacer.
+ *
+ * Lo que el número dice de verdad es que su orientación no se sitúa en el eje
+ * izquierda-derecha, no que no exista. «Mixta» describe eso. «Sin línea» lo
+ * negaba.
  */
 export const SPECTRUM_LABEL = {
     left: 'Izquierda',
-    center: 'Sin línea marcada',
+    center: 'Orientación mixta',
     right: 'Derecha',
 };
 
@@ -236,11 +256,11 @@ export const SPECTRUM_LABEL = {
  */
 export const SPECTRUM_LABEL_SHORT = {
     left: 'Izquierda',
-    center: 'Sin línea',
+    center: 'Mixta',
     right: 'Derecha',
 };
 
-/** Clasifica un sesgo numérico en uno de los tres espectros. */
+/** Clasifica una orientación numérica en uno de los tres espectros. */
 export function classifySpectrum(bias) {
     const value = typeof bias === 'number' && Number.isFinite(bias) ? bias : 0;
     if (value <= -SPECTRUM_THRESHOLD) return SPECTRUM.LEFT;
@@ -249,18 +269,26 @@ export function classifySpectrum(bias) {
 }
 
 /**
- * Etiqueta legible para el sesgo agregado de una historia.
+ * Etiqueta legible para la orientación MEDIA DE LOS MEDIOS que cubrieron una
+ * historia.
+ *
+ * SE LLAMABA `describeBias` Y ERA UN NOMBRE ENGAÑOSO. No describe el sesgo de
+ * la historia: promedia la orientación declarada de quienes la publicaron. Con
+ * el nombre viejo, un lector del código —y la interfaz, que decía «sesgo medio
+ * de la cobertura»— entendía que habíamos analizado los textos. No los
+ * analizamos. Mantener el nombre habría dejado la confusión viva en el código
+ * después de quitarla de la pantalla.
  *
  * «Centro-izquierda» y «Centro-derecha» pasan a «Izquierda moderada» y «Derecha
  * moderada». No es cosmética: si se retira «Centro» como posición, nombrar otras
  * dos bandas EN RELACIÓN a ella la reintroduce por la puerta de atrás. Lo que
  * esas bandas miden es intensidad —una inclinación leve—, y así se dicen.
  */
-export function describeBias(bias) {
+export function describirOrientacionMedia(bias) {
     const value = typeof bias === 'number' && Number.isFinite(bias) ? bias : 0;
     if (value <= -0.3) return 'Inclinación izquierda';
     if (value < -0.1) return 'Izquierda moderada';
-    if (value <= 0.1) return 'Sin línea marcada';
+    if (value <= 0.1) return 'Orientación mixta';
     if (value < 0.3) return 'Derecha moderada';
     return 'Inclinación derecha';
 }
@@ -394,7 +422,7 @@ export function analyzeCoverage(sources, tasasBase = null) {
                 label: 'Punto ciego de la derecha',
                 description:
                     `${counts.left + counts.center} de ${total} medios que cubren el hecho ` +
-                    `son de izquierda o sin línea marcada. Solo ${counts.right} de derecha lo reportan.`,
+                    `son de izquierda o de orientación mixta. Solo ${counts.right} de derecha lo reportan.`,
             };
         } else if (
             leftRatio <= BLINDSPOT_MAX_RATIO &&
@@ -407,34 +435,38 @@ export function analyzeCoverage(sources, tasasBase = null) {
                 label: 'Punto ciego de la izquierda',
                 description:
                     `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
-                    `son de derecha o sin línea marcada. Solo ${counts.left} de izquierda lo reportan.`,
+                    `son de derecha o de orientación mixta. Solo ${counts.left} de izquierda lo reportan.`,
             };
         } else if (
             /**
-             * SOLO MEDIOS CON LÍNEA MARCADA (2026-08-08, decisión de Jose).
+             * SOLO MEDIOS DE IZQUIERDA Y DERECHA (2026-08-08, decisión de Jose).
              *
-             * No es un punto ciego como los otros dos y por eso no se llama así:
-             * NO afirma que nadie omitiera nada. Dice que el hecho solo interesó
-             * a medios que tienen una posición declarada, y que ninguno de los
-             * que no la tienen lo cubrió. En un ecosistema donde los medios sin
-             * línea marcada son el 54 % de las apariciones, que estén todos
-             * ausentes de una historia es raro y dice algo del hecho.
+             * SE LLAMABA «Solo medios con línea marcada», y ese nombre murió con
+             * la separación entre orientación y sesgo: ahora se afirma que TODOS
+             * los medios tienen línea editorial, así que distinguir a unos como
+             * «los que la tienen» se contradice con el resto del sitio.
              *
-             * Va el ÚLTIMO de los tres a propósito: si alguna vez se pudiera
-             * afirmar un punto ciego de izquierda o de derecha, esa afirmación
-             * es más fuerte y tiene prioridad.
+             * Lo que la señal dice, dicho bien: el hecho solo interesó a medios
+             * cuya orientación SÍ se sitúa en el eje izquierda-derecha, y ninguno
+             * de orientación mixta lo cubrió. Con esos en el 54 % de las
+             * apariciones, que falten todos es raro y dice algo del hecho.
+             *
+             * No es un punto ciego y por eso no se llama así: NO afirma que nadie
+             * omitiera nada. Y va la ÚLTIMA de las tres a propósito: si alguna
+             * vez se pudiera afirmar un punto ciego de izquierda o de derecha,
+             * esa afirmación es más fuerte y tiene prioridad.
              */
-            total >= SOLO_LINEA_MARCADA_MIN_SOURCES &&
+            total >= SOLO_EJE_MIN_SOURCES &&
             centerRatio <= BLINDSPOT_MAX_RATIO &&
             counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO &&
             sorprende(SPECTRUM.CENTER)
         ) {
             blindspot = {
                 spectrum: SPECTRUM.CENTER,
-                label: 'Solo medios con línea marcada',
+                label: 'Solo medios de izquierda y derecha',
                 description:
                     `Los ${counts.left + counts.right} de ${total} medios que cubren el hecho ` +
-                    'tienen una línea editorial declarada. Ninguno de los que no la tienen lo reportó.',
+                    'se sitúan en el eje izquierda-derecha. Ninguno de orientación mixta lo reportó.',
             };
         }
     }

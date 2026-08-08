@@ -114,7 +114,7 @@ export function summarizeDiet(history) {
     } else if (avgBias < -0.1) {
         label = 'Izquierda moderada';
         recommendation =
-            'Tu lectura se inclina levemente a la izquierda. Revisa algunos hechos desde medios sin línea marcada o de derecha moderada.';
+            'Tu lectura se inclina levemente a la izquierda. Revisa algunos hechos desde medios de orientación mixta o de derecha moderada.';
     } else if (avgBias <= 0.1) {
         label = 'Lectura repartida';
         recommendation =
@@ -122,7 +122,7 @@ export function summarizeDiet(history) {
     } else if (avgBias < 0.3) {
         label = 'Derecha moderada';
         recommendation =
-            'Tu lectura se inclina levemente a la derecha. Revisa algunos hechos desde medios sin línea marcada o de izquierda moderada.';
+            'Tu lectura se inclina levemente a la derecha. Revisa algunos hechos desde medios de orientación mixta o de izquierda moderada.';
     } else {
         label = 'Sesgo de derecha';
         recommendation =

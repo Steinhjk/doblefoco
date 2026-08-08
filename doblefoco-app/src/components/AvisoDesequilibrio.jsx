@@ -12,7 +12,7 @@ import './AvisoDesequilibrio.css';
  *
  * Pedido por Jose (2026-07-30). Su formulación era «la mayoría de noticias
  * tendrán cobertura mayoritariamente de derechas», y el dato NO la sostiene: el
- * bloque más grande por volumen es el de medios sin línea marcada, con un 53 %.
+ * bloque más grande por volumen es el de medios de orientación mixta, con un 53 %.
  * Lo que sí sostiene, y es más fuerte, es que la IZQUIERDA ESTÁ CASI AUSENTE —
  * un artículo suyo por cada treinta y cinco de los demás.
  *
@@ -87,16 +87,18 @@ const AvisoDesequilibrio = () => {
 
             <p>
                 Por eso la mayoría de los hechos le llegarán contados por medios de derecha o
-                sin línea marcada. Y por eso muchos de los «puntos ciegos de la izquierda» que
-                verá <strong>no son un silencio deliberado</strong>: son un lado que casi no
-                publica.
+                de orientación mixta. Y por eso muchos de los «puntos ciegos de la izquierda»
+                que verá <strong>no son un silencio deliberado</strong>: son un lado que casi
+                no publica.
             </p>
 
             <p>
-                Conviene además no leer «sin línea marcada» como neutral. Es el bloque más
-                grande por volumen —{sinLinea.pctVolumen.toFixed(1)} %— y lo componen en buena
-                parte medios de los mayores grupos económicos del país. Quién es dueño de cada
-                uno está documentado, con su fuente, en el{' '}
+                Conviene además no leer «orientación mixta» como neutral. <strong>Mixta no
+                significa que no tengan línea</strong>, sino que la suya no se sitúa en el eje
+                izquierda-derecha: la de un diario económico es el capital, y es clarísima. Es
+                el bloque más grande por volumen —{sinLinea.pctVolumen.toFixed(1)} %— y lo
+                componen en buena parte medios de los mayores grupos económicos del país. Quién
+                es dueño de cada uno está documentado, con su fuente, en el{' '}
                 <Link to="/mapa-medios">mapa mediático</Link>.
             </p>
 

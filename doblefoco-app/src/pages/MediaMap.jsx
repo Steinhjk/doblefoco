@@ -7,7 +7,7 @@ import {
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
 import ReportePropiedad from '../components/ReportePropiedad';
-import { classifySpectrum } from '../../shared/biasAnalysis';
+import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
 } from '../../shared/mediaOwnership';
@@ -16,7 +16,7 @@ import { getMediaByName } from '../data/mediaLogos';
 import './MediaMap.css';
 
 /**
- * MAPA MEDIÁTICO — dispersión sesgo × factualidad.
+ * MAPA MEDIÁTICO — dispersión orientación × factualidad.
  *
  * Decisiones de visualización
  * ---------------------------
@@ -62,11 +62,13 @@ const SPECTRUM_FILL = {
     right: 'var(--map-right)',
 };
 
-const SPECTRUM_LABEL = {
-    left: 'Izquierda',
-    center: 'Sin línea marcada',
-    right: 'Derecha',
-};
+/*
+ * Aquí vivía una COPIA de SPECTRUM_LABEL. Se importa la de biasAnalysis
+ * (2026-08-08): dos listas de etiquetas para el mismo concepto son dos listas
+ * que se separan, y esta pantalla es justo donde se notaría menos, porque la
+ * copia local seguiría pintando lo de siempre mientras el resto del sitio dice
+ * otra cosa.
+ */
 
 const fmtBias = (bias) => `${bias >= 0 ? '+' : '−'}${Math.abs(bias).toFixed(2)}`;
 const fmtPct = (value) => `${Math.round(value * 100)}%`;
@@ -159,9 +161,13 @@ const MediaMap = () => {
      *
      * El mapa presentaba a todos los medios por igual, y no lo son: medido el
      * 2026-08-07, varios llevan días sin una sola pieza en la ventana —Vorágine
-     * publica una cada 74,7 h, Noticias Uno es un noticiero de fin de semana, W
-     * Radio no tiene RSS propio—. Enseñarlos junto a los que publican cientos de
-     * notas sugiere una comparación que no está ocurriendo.
+     * publica una cada 74,7 h y Noticias Uno es un noticiero de fin de semana—.
+     * Enseñarlos junto a los que publican cientos de notas sugiere una
+     * comparación que no está ocurriendo.
+     *
+     * (Aquí se citaba también a W Radio «porque no tiene RSS propio». Sí lo
+     * tiene: apareció el 2026-08-08 en la ruta de Arc que nadie había probado.
+     * Su bajo volumen es real, pero la causa que se daba era falsa.)
      *
      * No se retiran: su ficha de propiedad es contenido valioso por sí misma y
      * el criterio del proyecto es no silenciar a nadie. Lo que cambia es que se
@@ -295,7 +301,7 @@ const MediaMap = () => {
                         aria-labelledby={titleId}
                     >
                         <title id={titleId}>
-                            Dispersión de {media.length} medios: sesgo editorial en el eje
+                            Dispersión de {media.length} medios: orientación editorial en el eje
                             horizontal, factualidad en el vertical.
                         </title>
 
@@ -387,7 +393,7 @@ const MediaMap = () => {
                                         tabIndex={0}
                                         role="button"
                                         aria-label={
-                                            `${item.name}. Sesgo ${fmtBias(item.bias)}, ` +
+                                            `${item.name}. Orientación ${fmtBias(item.bias)}, ` +
                                             `factualidad ${fmtPct(item.factuality)}. ` +
                                             'Abrir ficha.'
                                         }
@@ -417,12 +423,12 @@ const MediaMap = () => {
                 <div className="map-table-wrap">
                     <table className="map-table">
                         <caption className="visually-hidden">
-                            Medios del catálogo con su sesgo, factualidad, banda y grupo propietario
+                            Medios del catálogo con su orientación, factualidad, banda y grupo propietario
                         </caption>
                         <thead>
                             <tr>
                                 <th scope="col">Medio</th>
-                                <th scope="col">Sesgo</th>
+                                <th scope="col">Orientación</th>
                                 <th scope="col">Banda</th>
                                 <th scope="col">Factualidad</th>
                                 <th scope="col">Grupo</th>

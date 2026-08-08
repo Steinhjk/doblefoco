@@ -11,7 +11,9 @@ import { useStories } from '../hooks/useStories';
 import { recordRead } from '../lib/readingHistory';
 import { useHistoriaInicial } from '../hooks/datosInicialesContext';
 import { idDesdeRuta } from '../../shared/storyPath.js';
-import { SPECTRUM_LABEL, describeBias, BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
+import {
+    SPECTRUM_LABEL, describirOrientacionMedia, BLINDSPOT_MIN_SOURCES,
+} from '../../shared/biasAnalysis.js';
 import NewsCard from '../components/NewsCard';
 import CoverageBar from '../components/CoverageBar';
 import CoverageTimeline from '../components/CoverageTimeline';
@@ -435,8 +437,15 @@ const NewsDetail = () => {
                             })}
                         </div>
 
+                        {/*
+                          * Decía «Sesgo medio de la cobertura», y eso afirmaba
+                          * haber analizado los textos. Lo que promedia es la
+                          * ORIENTACIÓN DECLARADA de los medios que publicaron.
+                          * La frase nueva dice de dónde sale el número.
+                          */}
                         <p className="detail-bias-verdict">
-                            Sesgo medio de la cobertura: <strong>{describeBias(coverage.meanBias)}</strong>
+                            Orientación media de quienes lo publicaron:{' '}
+                            <strong>{describirOrientacionMedia(coverage.meanBias)}</strong>
                             <br />
                             <span className="verdict-note">
                                 Dispersión entre fuentes: {coverage.polarization.toFixed(2)}

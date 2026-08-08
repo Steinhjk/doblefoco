@@ -582,7 +582,7 @@ const StoryCard = ({ story, busy, onDecide }) => {
                     <span>
                         Cobertura:{' '}
                         <strong>
-                            {story.coverage.left} izq · {story.coverage.center} sin línea ·{' '}
+                            {story.coverage.left} izq · {story.coverage.center} mixta ·{' '}
                             {story.coverage.right} der
                         </strong>
                     </span>

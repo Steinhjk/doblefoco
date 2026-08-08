@@ -9,7 +9,15 @@
     "semilla": 7314,
     "comoSeRompe": "node scripts/cegarProgramas.mjs revelar — NO ejecutar hasta terminar de codificar los 21",
     "sustitucionDeEscaneos": "3 documentos sin capa de texto se sustituyeron automáticamente por el siguiente del mismo partido, dentro del script y sin mostrarlo al codificador",
-    "limitacionConocida": "Ciego imperfecto: se tacharon los nombres de partido del texto, pero un documento puede delatarse por su contenido — que es justamente lo que se está midiendo. Se declara."
+    "limitacionConocida": "Ciego imperfecto: se tacharon los nombres de partido del texto, pero un documento puede delatarse por su contenido — que es justamente lo que se está midiendo. Se declara.",
+    "fugasReales": [
+      {
+        "opaco": "doc-05",
+        "que": "Incluye la plataforma ideológica del partido y menciona la «Asamblea Liberal Constituyente». Los patrones tachaban «Partido Liberal» pero no esa expresión.",
+        "consecuencia": "El codificador supo que es del Partido Liberal ANTES de terminar de codificarlo. Su RILE queda marcado como NO CIEGO y se reporta aparte al analizar.",
+        "leccion": "Tachar nombres de partido no basta: hay documentos que incrustan el ideario completo. Un filtro más agresivo tampoco lo resolvería sin borrar justamente el contenido que se quiere medir."
+      }
+    ]
   },
   "codificaciones": [
     {
@@ -35,7 +43,32 @@
       "derecha": { "per402": 2, "total": 2 },
       "rile": -0.233,
       "nota": "Quince cuasi-frases iniciales son biografía del candidato y encabezados repetidos: coste del muestreo sistemático, que no salta secciones."
+    },
+    {
+      "opaco": "doc-04",
+      "cuasiFrases": 60,
+      "izquierda": { "per504": 7, "per701": 3, "per506": 2, "per106": 2, "per404": 1, "per202": 1, "total": 16 },
+      "derecha": { "per402": 4, "per606": 1, "per601": 1, "total": 6 },
+      "rile": -0.167,
+      "nota": "Seis cuasi-frases iniciales son biografía. Trae paz y víctimas junto a cuatro de fomento empresarial."
+    },
+    {
+      "opaco": "doc-05",
+      "cuasiFrases": 60,
+      "cegado": false,
+      "izquierda": { "per506": 7, "per202": 7, "per504": 3, "per403": 1, "per106": 1, "total": 19 },
+      "derecha": { "per605": 4, "per402": 3, "per606": 3, "per603": 2, "per401": 1, "per414": 1, "total": 14 },
+      "rile": -0.083,
+      "nota": "CIEGO ROTO — ver fugasReales. El más equilibrado de los seis: economía de mercado (401) y economía global regulada (403) en el mismo texto, seguridad y familia junto a participación y oposición democrática."
+    },
+    {
+      "opaco": "doc-06",
+      "cuasiFrases": 60,
+      "izquierda": { "per504": 12, "per506": 8, "per202": 2, "total": 22 },
+      "derecha": { "per603": 3, "per402": 2, "per606": 2, "per605": 1, "per601": 1, "total": 9 },
+      "rile": -0.217,
+      "nota": "Doce cuasi-frases de salud seguidas: el diagnóstico municipal por sectores infla 504 sin decir nada de posición."
     }
   ],
-  "pendientes": ["doc-04", "doc-05", "doc-06", "doc-07", "doc-08", "doc-09", "doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]
+  "pendientes": ["doc-07", "doc-08", "doc-09", "doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]
 }

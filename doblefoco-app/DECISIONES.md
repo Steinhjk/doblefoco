@@ -17,6 +17,70 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Cambio sale de Google News; cinco medios se quedan y se dice por qué
+
+**Decisión.** Cambio pasa a su RSS propio. RTVC, Revista RAYA, La FM, Noticias
+RCN, Noticias Caracol y Blu Radio se quedan en Google News, y queda escrito qué
+se probó para que nadie repita la búsqueda.
+
+**Cambio: de 7 a 22 artículos en un ciclo.**
+
+```
+gnews    100 ítems ·  5/15 frescos · mediana 155,6 h
+propio    20 ítems · 15/15 frescos · piezas de hoy
+```
+
+Su feed **no está en ninguna ruta convencional**: vive en `/feeds/articulos/`.
+No habría aparecido probando rutas a ciegas — se encontró leyendo el
+`<link rel="alternate">` de su propio HTML, que pasa a ser el primer sitio donde
+mirar.
+
+**Publica con fechas de hasta dos días en el futuro** porque programa sus piezas.
+No hizo falta tocar nada: `parsePublishedAt` ya rechaza cualquier fecha a más de
+30 minutos vista, así que esas entradas entran cuando les llega su hora. Se
+comprueba en esa función y no en la ficha del medio, para que la regla valga para
+todos los feeds y no solo para este.
+
+**Los cinco que se quedan, con lo que se probó:** ninguno tiene feed propio por
+las tres vías (HTML declarado, Arc, rutas convencionales). Noticias Caracol y Blu
+Radio **declaran un `.atom` que devuelve la página, no un feed** — una pista
+falsa que cuesta media hora si no está anotada.
+
+**RTVC es distinto y ya estaba bien documentado.** Publica `rss.xml`, pero está
+abandonado: entrada más reciente de mayo de 2026 y de ahí salta a junio de 2024.
+Su ficha ya lo decía desde julio con esas mismas fechas; esta vez solo se
+reconfirmó. No había nada que arreglar.
+
+**Se anota en el helper `gnews()`**, no en una ficha suelta: es el sitio donde
+mira quien vaya a añadir un medio, y ahí queda tanto el coste de esa vía como el
+orden de búsqueda que sí funciona.
+
+---
+
+## 2026-08-08 · RTVC conserva su nombre, y se apunta una previsión antes de que ocurra
+
+**Decisión de Jose.** La entidad recuperó su nombre legal —Inravisión, con
+redirección permanente desde rtvc.gov.co— pero en el catálogo **se sigue llamando
+RTVC**: es el nombre con el que el medio se presenta ante su audiencia, y aquí los
+medios se nombran como el lector los conoce, no como figuran en el registro
+mercantil.
+
+**Y una previsión suya, anotada A PROPÓSITO ANTES de que pase.** Espera que RTVC
+cambie de dirección en los próximos días y pase a cubrir la actualidad desde una
+posición oficialista con el gobierno que entró el 7 de agosto. Su valor de
+orientación (−0,35) se fijó bajo el gobierno anterior.
+
+**Por qué escribirla antes.** Si el ajuste llega y no hay constancia previa,
+sería imposible distinguir una corrección honesta de una racionalización a
+posteriori. Escrita antes, la previsión se puede contrastar: o el medio se
+mueve como se esperaba, o no, y las dos cosas enseñan algo. Queda en `notes` de
+su ficha de propiedad, marcada como **previsión declarada, no medición**.
+
+Es además el único medio del catálogo cuyo dueño —el Estado— cambia de manos en
+una fecha conocida, y por eso el único con caducidad prevista.
+
+---
+
 ## 2026-08-08 · Orientación y sesgo son dos cosas distintas
 
 **Decisión de Jose.** Separar dos conceptos que compartían una palabra:

@@ -81,7 +81,38 @@ export const SPECTRUM_BANDS = [
     { id: 'right', min: 0.6, max: 1.0, label: 'Derecha' },
 ];
 
-/** Feed de búsqueda de Google News restringido a un dominio. */
+/**
+ * Feed de búsqueda de Google News restringido a un dominio.
+ *
+ * ES EL ÚLTIMO RECURSO, Y CUESTA MÁS DE LO QUE PARECE. Medido el 2026-08-08: los
+ * medios que entraban por aquí aportaban 16 artículos de media y los de feed
+ * directo 134. La causa no es que Google dé pocos ítems —da 100, y 82 dentro de
+ * la ventana— sino que **ordena por relevancia y no por fecha**: cada sondeo
+ * devuelve casi los mismos 15, con mediana de edad de 39,9 h, se deduplican
+ * contra lo que ya hay y no se acumula nada. Además ninguno trae `media:*` y los
+ * enlaces apuntan a news.google.com en vez de al medio.
+ *
+ * Antes de dejar a un medio aquí, hay que buscarle feed propio en serio. Ese día
+ * aparecieron cuatro que se daban por inexistentes: El Espectador, Caracol Radio,
+ * W Radio y Cambio. La ficha de W Radio llegó a afirmar «SIGUE SIN PUBLICAR RSS
+ * PROPIO» tras probar cinco rutas — ninguna era la correcta.
+ *
+ * DÓNDE MIRAR, por orden de acierto:
+ *   1. El `<link rel="alternate" type="application/rss+xml">` del propio HTML.
+ *      Así apareció el de Cambio, que vive en `/feeds/articulos/` y no habría
+ *      salido probando rutas a ciegas.
+ *   2. Arc, el gestor de media Colombia: `/arc/outboundfeeds/rss/?outputType=xml`
+ *      y la variante `/discover/`. **Probar con y sin la query**: en El Universal
+ *      la misma ruta da 0 ítems frescos sin ella y 100 con ella.
+ *   3. Las convencionales: /feed/, /rss, /rss.xml, /index.xml, /atom.xml.
+ *
+ * LO YA DESCARTADO el 2026-08-08, para no repetir la búsqueda: Revista RAYA,
+ * La FM, Noticias RCN, Noticias Caracol y Blu Radio no tienen feed propio por
+ * ninguna de las tres vías. Los dos últimos DECLARAN un `.atom` en su HTML que
+ * devuelve la página, no un feed. RTVC sí publica `rss.xml`, pero está
+ * abandonado —su entrada más reciente es de mayo de 2026 y de ahí salta a junio
+ * de 2024—, así que sigue entrando por aquí.
+ */
 const gnews = (domain) =>
     `https://news.google.com/rss/search?q=${encodeURIComponent(`site:${domain}`)}` +
     '&hl=es-419&gl=CO&ceid=CO:es-419';
@@ -141,7 +172,29 @@ export const MEDIA_REGISTRY = [
         domain: 'cambiocolombia.com', country: 'CO', group: 'Independiente',
         bias: -0.40, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Revista de investigación; agenda centrada en fiscalización del poder político y económico.',
-        feed: { url: gnews('cambiocolombia.com'), via: 'gnews', category: 'Política' },
+        /**
+         * PASA A FEED PROPIO (2026-08-08). Lo declara en su HTML y no está en
+         * ninguna ruta convencional: no es /feed/ ni /rss ni la de Arc, sino
+         * `/feeds/articulos/`. Por eso los sondeos anteriores no lo encontraron.
+         *
+         *   gnews    100 ítems ·  5/15 frescos · mediana 155,6 h
+         *   propio    20 ítems · 15/15 frescos · piezas de hoy
+         *
+         * PUBLICA CON FECHAS EN EL FUTURO —hasta dos días—, porque programa sus
+         * piezas. No es un fallo suyo ni nuestro, y no hace falta tocar nada:
+         * `parsePublishedAt` ya rechaza cualquier fecha a más de 30 min vista, así
+         * que esas entradas se ignoran hasta que les llega su hora y entran en un
+         * sondeo posterior. Se comprueba ahí y no aquí para que la regla valga
+         * para todos los feeds, no solo para este.
+         *
+         * NO TRAE `media:*`: sus fotos las rescata el enriquecedor por og:image,
+         * igual que las de El Tiempo.
+         */
+        feed: {
+            url: 'https://cambiocolombia.com/feeds/articulos/',
+            via: 'direct',
+            category: 'Política',
+        },
     },
     {
         id: 'noticias-uno', name: 'Noticias Uno', shortName: 'Noticias Uno',

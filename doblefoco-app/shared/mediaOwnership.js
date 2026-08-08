@@ -994,11 +994,12 @@ export const OWNERSHIP_PROFILES = {
         holdings: [
             'Sociedad entre entidades públicas del orden nacional, constituida en octubre de 2004 y sujeta al régimen de las Empresas Industriales y Comerciales del Estado.',
             'El presidente de la República ejerce el control sobre RTVC a través del Ministerio de Tecnologías de la Información y las Comunicaciones, y DESIGNA a su director general.',
-            'En 2026 la entidad recuperó su nombre histórico, Inravisión: rtvc.gov.co redirige de forma permanente a inravision.gov.co. Comprobado el 2026-08-08.',
+            'En 2026 la entidad recuperó su nombre histórico, Inravisión: rtvc.gov.co redirige de forma permanente a inravision.gov.co. Comprobado el 2026-08-08. AQUÍ SE LE SIGUE LLAMANDO RTVC por decisión de Jose: es el nombre con el que el medio se presenta ante su audiencia, y el catálogo nombra a los medios como el lector los conoce, no como figuran en el registro mercantil.',
         ],
         notes: [
-            'Que el jefe del Gobierno nombre a su director es la razón por la que la clasificación de sesgo de este medio es la más volátil del catálogo: cambia con el gobierno de turno, no con su sala de redacción.',
+            'Que el jefe del Gobierno nombre a su director es la razón por la que la clasificación de orientación de este medio es la más volátil del catálogo: cambia con el gobierno de turno, no con su sala de redacción.',
             'El período presidencial terminó el 7 de agosto de 2026. Quien designa al gerente cambió de manos, así que esta ficha necesita revisarse: es la única del catálogo con fecha de caducidad conocida.',
+            'PREVISIÓN DECLARADA, no medición (Jose, 2026-08-08): se espera que en los próximos días el medio cambie de dirección y pase a cubrir la actualidad desde una posición oficialista con el nuevo gobierno. Su valor actual de orientación (−0,35) se fijó bajo el gobierno anterior. Se deja escrito ANTES de que ocurra para que el ajuste, si llega, se pueda contrastar contra lo que se esperaba, en vez de justificarse después.',
         ],
         sources: [
             'https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=82339',

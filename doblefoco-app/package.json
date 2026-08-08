@@ -32,7 +32,8 @@
     "admin:create": "node scripts/createAdmin.mjs",
     "clean:filtered": "node scripts/cleanFiltered.mjs",
     "analyze:cocoverage": "node scripts/coCoverage.mjs",
-    "eval:clustering": "node scripts/evalClustering.mjs"
+    "eval:clustering": "node scripts/evalClustering.mjs",
+    "muestra:programas": "node scripts/muestrearProgramasAnclados.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",

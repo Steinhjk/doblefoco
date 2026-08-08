@@ -25,7 +25,13 @@ for (const f of filas) {
     const url = f.progama_de_gobierno?.url;
     if (!url) continue;
     (porPartido[p] ??= []).push({
+        // `corporacion` NO SE GUARDABA, y por eso este índice afirmó durante un
+        // día que eran programas de gobernadores. Medido el 2026-08-08: de los
+        // 494 documentos, 488 son de ALCALDÍA y 6 de GOBERNADOR. Sin este campo
+        // el error era invisible desde los datos guardados.
+        corporacion: f.corporacion,
         departamento: f.departamento,
+        municipio: f.municipio,
         elegido: f.nombre_del_elegido,
         url,
     });
@@ -33,20 +39,31 @@ for (const f of filas) {
 
 const indice = {
     descripcion:
-        'Programas de gobierno de gobernadores electos en 2019, radicados ante la Registraduría ' +
-        'Nacional. Se filtran los de partidos CON posición externa documentada en CHES-LA 2020 ' +
-        'y V-Party 2018, que son los que permiten calibrar la escala RILE contra un ancla.',
+        'Programas de gobierno de ALCALDES —y seis gobernadores— electos en 2019, radicados ante ' +
+        'la Registraduría Nacional. Se filtran los de partidos CON posición externa documentada ' +
+        'en CHES-LA 2020 y V-Party 2018, que son los que permiten calibrar la escala RILE contra ' +
+        'un ancla.',
+    correccion:
+        'Hasta el 2026-08-08 esta descripción decía «gobernadores electos». Es falso: de los 494 ' +
+        'documentos, 488 son de ALCALDÍA y solo 6 de GOBERNADOR. El script no guardaba el campo ' +
+        '`corporacion`, así que el error no se podía ver en los datos; se descubrió al abrir un ' +
+        'PDF y leer «PROGRAMA DE GOBIERNO PARA EL MUNICIPIO DE CAJAMARCA».',
     fuente: 'https://www.datos.gov.co/resource/h236-q58p.json (datos abiertos del Estado colombiano)',
     procedencia:
         'Los PDF están alojados en wapp.registraduria.gov.co: es la copia RADICADA, no una ' +
         'reproducción de un tercero. Resuelve el aviso de procedencia que quedaba abierto con ' +
         'los programas presidenciales de 2026.',
     advertenciaDeGenero:
-        'IMPORTANTE: son programas DEPARTAMENTALES, no manifiestos nacionales. Un programa de ' +
-        'gobernación habla de vías terciarias, acueductos y salud local, así que sus proporciones ' +
-        'por categoría NO son directamente comparables con las de un programa presidencial. Para ' +
-        'la calibración esto puede bastar —lo que se necesita es que el ORDEN de los partidos se ' +
-        'conserve— pero hay que comprobarlo, no suponerlo, y declararlo en la metodología.',
+        'IMPORTANTE: son programas MUNICIPALES —de alcaldía—, no manifiestos nacionales, y eso ' +
+        'agrava la advertencia en vez de suavizarla: un programa de alcaldía es aún más local que ' +
+        'uno de gobernación. Habla de vías terciarias, acueductos y salud local, así que sus ' +
+        'proporciones por categoría NO son directamente comparables con las de un programa ' +
+        'presidencial. Para la calibración puede bastar —lo que se necesita es que el ORDEN de los ' +
+        'partidos se conserve— pero hay que comprobarlo, no suponerlo, y declararlo. ' +
+        'CONTRAPESO MEDIDO el 2026-08-08: el primer documento abierto (Alianza Verde, Cajamarca) ' +
+        'trae apoyo al proceso de paz con las FARC, Asamblea Nacional Constituyente, presupuesto ' +
+        'participativo, derechos del campesinado y oposición a la megaminería. No es un catálogo ' +
+        'de obras: tiene contenido ideológico codificable.',
     consultadoEl: '2026-08-07',
     partidos: {},
 };

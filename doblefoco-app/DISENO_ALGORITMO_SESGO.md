@@ -1098,10 +1098,18 @@ de CHES, y en 2026 no hay más: los partidos tradicionales no llevaron candidato
 propio, se sumaron a Valencia o a Cepeda.
 
 **La salida apareció en los datos abiertos del Estado colombiano.** El conjunto
-`h236-q58p` de datos.gov.co contiene **1 132 programas de gobierno de
-gobernadores electos en 2019**, cada uno con su partido y **con el PDF alojado en
+`h236-q58p` de datos.gov.co contiene **1 132 programas de gobierno de cargos
+electos en 2019**, cada uno con su partido y **con el PDF alojado en
 `wapp.registraduria.gov.co`** — la copia radicada, no la reproducción de un
 tercero. De paso resuelve el aviso de procedencia que quedaba abierto.
+
+> **CORRECCIÓN DEL 2026-08-08.** Aquí decía «programas de gobierno de
+> gobernadores». Es falso, y el error estuvo escrito un día entero: de los 494
+> documentos de partidos anclados, **488 son de ALCALDÍA y solo 6 de
+> GOBERNADOR**. El script del índice no guardaba el campo `corporacion`, así que
+> el error no era visible en los datos que producía; se descubrió al abrir el
+> primer PDF y leer «PROGRAMA DE GOBIERNO PARA EL MUNICIPIO DE CAJAMARCA». Ya se
+> guarda ese campo, junto con el municipio.
 
 Cobertura de los partidos anclados (índice guardado en
 `programas/indice-programas-anclados.json`):
@@ -1122,10 +1130,20 @@ pendiente—.
 
 ### 20.4 La objeción que hay que resolver antes de usarlos
 
-**Son programas DEPARTAMENTALES, no manifiestos nacionales.** Un programa de
-gobernación habla de vías terciarias, acueductos y salud local; sus proporciones
-por categoría no son directamente comparables con las de un programa
-presidencial.
+**Son programas MUNICIPALES, no manifiestos nacionales** —y al corregir el error
+de arriba la objeción se AGRAVA, no se suaviza: un programa de alcaldía es aún
+más local que uno de gobernación—. Habla de vías terciarias, acueductos y salud
+local; sus proporciones por categoría no son directamente comparables con las de
+un programa presidencial.
+
+**PRIMER CONTRAPESO, MEDIDO.** El primer documento abierto de la muestra
+—Alianza Verde, Cajamarca (Tolima), 2 117 palabras— no es un catálogo de obras.
+Contiene apoyo explícito al proceso de paz con las FARC, convocatoria a Asamblea
+Nacional Constituyente, presupuesto participativo, reconocimiento político del
+campesinado, consulta popular contra la megaminería y oposición nominal a una
+multinacional. Es decir: **material ideológico codificable en categorías RILE de
+izquierda**, y no genérico. Un solo documento no resuelve la objeción, pero sí
+descarta la versión más pesimista de ella.
 
 Para calibrar puede bastar —lo que hace falta es que se conserve el ORDEN de los
 partidos, no el valor absoluto— pero **eso hay que comprobarlo, no suponerlo**.
@@ -1172,3 +1190,58 @@ Y sigue en pie lo que ya estaba escrito: si en algún punto el método no se
 sostiene, **el juicio editorial declarado, argumentado y sujeto a réplica es un
 resultado aceptable** — más honesto que un número inventado con aparato
 estadístico alrededor.
+
+---
+
+## 22. MUESTREO EJECUTADO — y dos fallos del método corregidos por el camino
+
+Fecha: 2026-08-08. Script: `npm run muestra:programas -- 3`, semilla **20260808**.
+
+### 22.1 El muestreo «reproducible» no lo era
+
+La primera versión sorteaba con semilla declarada, barajado de Fisher-Yates y
+todo el aparato… **sobre el campo `ejemplos` del índice, que guarda seis URL por
+partido obtenidas con `docs.slice(0, 6)`**: los primeros seis que devolvió la
+API, en un orden que nadie eligió.
+
+O sea que la garantía de reproducibilidad cubría el último paso mientras el
+filtro que de verdad decidía —quedarse con 6 de 103— quedaba fuera de ella. **Un
+muestreo reproducible sobre una preselección opaca no es un muestreo
+reproducible: es la apariencia de uno**, y habría pasado una auditoría
+superficial precisamente por tener el aparato a la vista.
+
+Corregido: el script descarga las 5 000 filas y sortea sobre la población entera.
+El efecto se ve en la muestra —antes salían dos Alianza Verde de Cundinamarca y
+dos Centro Democrático de Antioquia; ahora Tolima, Casanare, Bolívar, Nariño,
+Boyacá, Valle—.
+
+### 22.2 Los escaneos, y por qué la regla de reemplazo importa
+
+`PLAN_AL46880000011_E6.pdf` (Centro Democrático, Casanare) devuelve **2 palabras
+en 12 páginas**: es un escaneo sin capa de texto.
+
+**Regla:** se sustituye por el siguiente del orden barajado, nunca por uno
+elegido a mano, y se anota. Escoger el reemplazo a criterio reabriría el sesgo de
+selección que el sorteo cierra. Por eso se piden más documentos por partido de
+los que se van a codificar: los sobrantes son la cola de reemplazo, y como el
+barajado es determinista, pedir 5 no cambia cuáles son los 3 primeros.
+
+Un escaneo **no es un documento malo**: es un programa radicado igual de válido y
+lo que falla es nuestra capacidad de leerlo. Si la proporción de escaneos
+resultara distinta entre partidos, sería un sesgo de la muestra y habría que
+medirlo.
+
+### 22.3 La muestra
+
+21 documentos, 3 por cada uno de los 7 partidos anclados, sorteados sobre 494.
+Guardada en `programas/muestra-calibracion.json` con semilla, población y
+procedimiento de reproducción.
+
+### 22.4 Lo que sigue, y el orden importa
+
+**Primero la prueba de descarte, no los 21 documentos.** Codificar los dos
+extremos —Alianza Verde (CHES 3,86) y Centro Democrático (9,21)— y ver si se
+separan. Si el género municipal aplastó la señal, ahí se ve, y se ahorra el resto
+del trabajo. Si se separan, se codifican los 21 y se ajusta la recta.
+
+Es deliberado gastar el esfuerzo en el orden que puede hacer que sobre.

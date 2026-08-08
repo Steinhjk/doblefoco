@@ -1,8 +1,9 @@
 {
-  "descripcion": "Programas de gobierno de gobernadores electos en 2019, radicados ante la Registraduría Nacional. Se filtran los de partidos CON posición externa documentada en CHES-LA 2020 y V-Party 2018, que son los que permiten calibrar la escala RILE contra un ancla.",
+  "descripcion": "Programas de gobierno de ALCALDES —y seis gobernadores— electos en 2019, radicados ante la Registraduría Nacional. Se filtran los de partidos CON posición externa documentada en CHES-LA 2020 y V-Party 2018, que son los que permiten calibrar la escala RILE contra un ancla.",
+  "correccion": "Hasta el 2026-08-08 esta descripción decía «gobernadores electos». Es falso: de los 494 documentos, 488 son de ALCALDÍA y solo 6 de GOBERNADOR. El script no guardaba el campo `corporacion`, así que el error no se podía ver en los datos; se descubrió al abrir un PDF y leer «PROGRAMA DE GOBIERNO PARA EL MUNICIPIO DE CAJAMARCA».",
   "fuente": "https://www.datos.gov.co/resource/h236-q58p.json (datos abiertos del Estado colombiano)",
   "procedencia": "Los PDF están alojados en wapp.registraduria.gov.co: es la copia RADICADA, no una reproducción de un tercero. Resuelve el aviso de procedencia que quedaba abierto con los programas presidenciales de 2026.",
-  "advertenciaDeGenero": "IMPORTANTE: son programas DEPARTAMENTALES, no manifiestos nacionales. Un programa de gobernación habla de vías terciarias, acueductos y salud local, así que sus proporciones por categoría NO son directamente comparables con las de un programa presidencial. Para la calibración esto puede bastar —lo que se necesita es que el ORDEN de los partidos se conserve— pero hay que comprobarlo, no suponerlo, y declararlo en la metodología.",
+  "advertenciaDeGenero": "IMPORTANTE: son programas MUNICIPALES —de alcaldía—, no manifiestos nacionales, y eso agrava la advertencia en vez de suavizarla: un programa de alcaldía es aún más local que uno de gobernación. Habla de vías terciarias, acueductos y salud local, así que sus proporciones por categoría NO son directamente comparables con las de un programa presidencial. Para la calibración puede bastar —lo que se necesita es que el ORDEN de los partidos se conserve— pero hay que comprobarlo, no suponerlo, y declararlo. CONTRAPESO MEDIDO el 2026-08-08: el primer documento abierto (Alianza Verde, Cajamarca) trae apoyo al proceso de paz con las FARC, Asamblea Nacional Constituyente, presupuesto participativo, derechos del campesinado y oposición a la megaminería. No es un catálogo de obras: tiene contenido ideológico codificable.",
   "consultadoEl": "2026-08-07",
   "partidos": {
     "PARTIDO LIBERAL COLOMBIANO": {
@@ -15,32 +16,44 @@
       "documentos": 103,
       "ejemplos": [
         {
+          "corporacion": "GOBERNADOR",
           "departamento": "CORDOBA",
+          "municipio": "No Aplica",
           "elegido": "BENITEZ MORA ORLANDO DAVID",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/13/PLAN_GO13000000001_E6.pdf"
         },
         {
+          "corporacion": "GOBERNADOR",
           "departamento": "SUCRE",
+          "municipio": "No Aplica",
           "elegido": "ESPINOSA OLIVER HECTOR OLIMPO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/28/PLAN_GO28000000001_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "FRONTINO",
           "elegido": "ELEJALDE LOPEZ JORGE HUGO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01127000001_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "AMAGA",
           "elegido": "MOLINA RODAS LEONARDO DE JESUS",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01013000001_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "GUADALUPE",
           "elegido": "AGUDELO METRIO CESAR AUGUSTO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01140000001_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "HELICONIA",
           "elegido": "ORTIZ TABARES JOHN FREDY",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01148000001_E6.pdf"
         }
@@ -56,32 +69,44 @@
       "documentos": 117,
       "ejemplos": [
         {
+          "corporacion": "GOBERNADOR",
           "departamento": "CAQUETA",
+          "municipio": "No Aplica",
           "elegido": "GASCA TRUJILLO ARNULFO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/44/PLAN_GO44000000002_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "GIRALDO",
           "elegido": "USUGA CARMONA JORGE ALCONIDES",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01130000002_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "ITAGUI",
           "elegido": "ESCOBAR ESTRADA JOSE FERNANDO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01151000002_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "LA PINTADA",
           "elegido": "CORRALES CHALARCA MARY LUZ",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01170000002_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "MACEO",
           "elegido": "RESTREPO GONZALEZ CARLOS ALBERTO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01175000002_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "SAN LUIS",
           "elegido": "SUAREZ JIMENEZ HENRY EDILSON",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01232000002_E6.pdf"
         }
@@ -97,32 +122,44 @@
       "documentos": 75,
       "ejemplos": [
         {
+          "corporacion": "GOBERNADOR",
           "departamento": "CASANARE",
+          "municipio": "No Aplica",
           "elegido": "SANABRIA CHACON SALOMON ANDRES",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/46/PLAN_GO46000000011_E6.pdf"
         },
         {
+          "corporacion": "GOBERNADOR",
           "departamento": "VAUPES",
+          "municipio": "No Aplica",
           "elegido": "PEREZ GALVIS ELIECER",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/68/PLAN_GO68000000011_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "CONCORDIA",
           "elegido": "QUIJANO RESTREPO CARLOS GUSTAVO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01100000011_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "EBEJICO",
           "elegido": "TAMAYO MAYA EDISSON ARIEL",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01115000011_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "EL BAGRE",
           "elegido": "TRESPALACIO FABER ENRIQUE",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01117000011_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "JARDIN",
           "elegido": "RENDON OSORIO HECTOR JAIME",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01157000011_E6.pdf"
         }
@@ -138,32 +175,44 @@
       "documentos": 91,
       "ejemplos": [
         {
+          "corporacion": "GOBERNADOR",
           "departamento": "GUAINIA",
+          "municipio": "No Aplica",
           "elegido": "IRAL GOMEZ JUAN CARLOS",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/GOB/50/PLAN_GO50000000008_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "ITUANGO",
           "elegido": "MIRA SEPULVEDA EDWIN MAURICIO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01154000008_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "MARINILLA",
           "elegido": "HURTADO ALZATE JOSE GILDARDO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01178000008_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "NECHI",
           "elegido": "MADERA CAMERO MARCOS JAVIER",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01191000008_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "NECOCLI",
           "elegido": "TOBON CASTRO JORGE AUGUSTO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01192000008_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "PEÑOL",
           "elegido": "MARIN MARIN SORANY ANDREA",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01196000008_E6.pdf"
         }
@@ -179,32 +228,44 @@
       "documentos": 62,
       "ejemplos": [
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "GRANADA",
           "elegido": "CASTAÑO ARISTIZABAL FREDDY",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01139000003_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "REMEDIOS",
           "elegido": "URIBE CASTRILLON JOHN JAIRO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01208000003_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "ANORI",
           "elegido": "PIEDRAHITA CEBALLOS JUAN CAMILO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01028000003_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "COCORNA",
           "elegido": "GIRALDO GOMEZ SAUL ALBERTO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01094000003_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "CONCEPCION",
           "elegido": "LOPEZ ORREGO GUSTAVO ALONSO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01097000003_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CAUCA",
+          "municipio": "FLORENCIA",
           "elegido": "FUENTES ORTEGA ORBEY",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11027000003_E6.pdf"
         }
@@ -220,32 +281,44 @@
       "documentos": 42,
       "ejemplos": [
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "URRAO",
           "elegido": "HIGUITA RUEDA JHON JAIRO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01283000004_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "ANTIOQUIA",
+          "municipio": "BETANIA",
           "elegido": "VILLADA URIBE CARLOS MARIO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01052000004_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CAUCA",
+          "municipio": "ARGELIA",
           "elegido": "PATIÑO CERON JHONNATAN",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11005000004_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CAUCA",
+          "municipio": "PUERTO TEJADA",
           "elegido": "DOMINGUEZ CAICEDO DAGOBERTO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11064000004_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CUNDINAMARCA",
+          "municipio": "GUATAVITA",
           "elegido": "PRIETO PRIETO RUBY JIMENA",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/15/PLAN_AL15124000004_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CUNDINAMARCA",
+          "municipio": "ANOLAIMA",
           "elegido": "MARTINEZ ZABALETA LUIS HERNANDO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/15/PLAN_AL15013000004_E6.pdf"
         }
@@ -261,22 +334,30 @@
       "documentos": 4,
       "ejemplos": [
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CAUCA",
+          "municipio": "PADILLA",
           "elegido": "MORALES MAZO CRISTOBAL",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11053000014_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "SUCRE",
+          "municipio": "LOS PALMITOS",
           "elegido": "PEREZ MARQUEZ DIANA JUDITH",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/28/PLAN_AL28055000014_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CASANARE",
+          "municipio": "TAURAMENA",
           "elegido": "AMAYA ZORRO TELE WOSBON",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46850000014_E6.pdf"
         },
         {
+          "corporacion": "ALCALDIA",
           "departamento": "CALDAS",
+          "municipio": "ANSERMA",
           "elegido": "LONDOÑO MEDINA JOHN ALEJANDRO",
           "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/09/PLAN_AL09007000014_E6.pdf"
         }

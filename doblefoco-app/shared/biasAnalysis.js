@@ -334,6 +334,7 @@ export function analyzeCoverage(sources, tasasBase = null) {
 
     const leftRatio = total ? counts.left / total : 0;
     const rightRatio = total ? counts.right / total : 0;
+    const centerRatio = total ? counts.center / total : 0;
 
     /**
      * ¿Sorprende que falte este espectro, o es lo normal en él?
@@ -382,6 +383,32 @@ export function analyzeCoverage(sources, tasasBase = null) {
                 description:
                     `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
                     `son de derecha o sin línea marcada. Solo ${counts.left} de izquierda lo reportan.`,
+            };
+        } else if (
+            /**
+             * SOLO MEDIOS CON LÍNEA MARCADA (2026-08-08, decisión de Jose).
+             *
+             * No es un punto ciego como los otros dos y por eso no se llama así:
+             * NO afirma que nadie omitiera nada. Dice que el hecho solo interesó
+             * a medios que tienen una posición declarada, y que ninguno de los
+             * que no la tienen lo cubrió. En un ecosistema donde los medios sin
+             * línea marcada son el 54 % de las apariciones, que estén todos
+             * ausentes de una historia es raro y dice algo del hecho.
+             *
+             * Va el ÚLTIMO de los tres a propósito: si alguna vez se pudiera
+             * afirmar un punto ciego de izquierda o de derecha, esa afirmación
+             * es más fuerte y tiene prioridad.
+             */
+            centerRatio <= BLINDSPOT_MAX_RATIO &&
+            counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO &&
+            sorprende(SPECTRUM.CENTER)
+        ) {
+            blindspot = {
+                spectrum: SPECTRUM.CENTER,
+                label: 'Solo medios con línea marcada',
+                description:
+                    `Los ${counts.left + counts.right} de ${total} medios que cubren el hecho ` +
+                    'tienen una línea editorial declarada. Ninguno de los que no la tienen lo reportó.',
             };
         }
     }

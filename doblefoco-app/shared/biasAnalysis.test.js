@@ -177,6 +177,29 @@ describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () =
         expect(result.blindspot.spectrum).toBe('right');
     });
 
+    it('señala cuando SOLO cubrieron medios con línea marcada', () => {
+        // Cinco medios de derecha y ninguno sin línea. Con el centro apareciendo
+        // en el 54 % de las historias, (1−0,585)⁵ = 0,012: su ausencia completa
+        // es rara y dice algo del hecho.
+        //
+        // No afirma que nadie omitiera nada: describe que el hecho solo interesó
+        // a medios con posición declarada.
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35), REAL);
+
+        expect(result.counts.center).toBe(0);
+        expect(result.blindspot?.spectrum).toBe('center');
+        expect(result.blindspot.label).toBe('Solo medios con línea marcada');
+    });
+
+    it('no lo señala si un solo medio con línea cubre el hecho', () => {
+        // Misma regla que sostiene los otros dos: con una sola voz, lo que hay
+        // no es un patrón sino la decisión de un periódico.
+        const result = analyzeCoverage(sources(0.6, 0.1, 0.05, -0.05, 0), REAL);
+
+        expect(result.counts.left + result.counts.right).toBe(1);
+        expect(result.blindspot).toBeNull();
+    });
+
     it('sin tasas base no afirma nada, en vez de suponerlas', () => {
         // Fallar cerrado: quien llame sin decir cada cuánto aparece cada
         // espectro no obtiene una acusación por omisión.

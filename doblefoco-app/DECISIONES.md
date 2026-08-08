@@ -85,10 +85,19 @@ Eso obligó a pasarlas también en `feedStore`: sin ese cambio la función habr�
 desaparecido del sitio en silencio, que es un modo de fallo peor que el que se
 estaba corrigiendo.
 
-**Lo que esto deja a la vista.** El espectro cuya ausencia sí sería significativa
-con 4 medios es el **centro** —hay 6 historias que lo cumplen— pero el esquema
-solo admite `left` y `right`. Es decir: el único punto ciego afirmable hoy es el
-que el producto no puede expresar. Merece decisión editorial aparte.
+**Lo que esto dejó a la vista, y se resolvió el mismo día.** El espectro cuya
+ausencia sí es significativa con 4 medios es el **centro**. Decisión de Jose:
+se añade como señal propia, **«Solo medios con línea marcada»**.
+
+No se llama punto ciego y no lo es: **no afirma que nadie omitiera nada**. Dice
+que el hecho solo interesó a medios con posición declarada, y que ninguno de los
+que no la tienen lo cubrió. Con los medios sin línea marcada en el 54 % de las
+apariciones, que falten todos es raro y dice algo del hecho, no de quien calla.
+
+Va la última de las tres: si alguna vez se pudiera afirmar un punto ciego de
+izquierda o de derecha, esa afirmación es más fuerte y tiene prioridad. Y exige
+las mismas garantías que las otras —cuatro medios, dos voces del lado que sí
+cubre, y que la ausencia sea improbable—.
 
 ---
 

@@ -71,6 +71,11 @@ describe('coherencia entre las listas blancas de JS y las de SQL', () => {
         // columnas de `stories`. Si alguien renombrara una banda allí, estas
         // columnas dejarían de aceptar lo que el motor intenta escribir.
         expect(valoresDelCheck('dominant_spectrum')?.sort()).toEqual(['center', 'left', 'right']);
-        expect(valoresDelCheck('blindspot_spectrum')?.sort()).toEqual(['left', 'right']);
+
+        // `blindspot_spectrum` admite 'center' desde el 2026-08-08, para la
+        // señal «solo medios con línea marcada». No es un punto ciego como los
+        // otros dos —no afirma que nadie omitiera nada— pero comparte columna
+        // porque las tres etiquetas son excluyentes.
+        expect(valoresDelCheck('blindspot_spectrum')?.sort()).toEqual(['center', 'left', 'right']);
     });
 });

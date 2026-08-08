@@ -83,6 +83,16 @@ CREATE TABLE IF NOT EXISTS sources (
 -- aviso salta de más, que es el lado correcto por el que equivocarse.
 ALTER TABLE sources ADD COLUMN IF NOT EXISTS last_article_at TIMESTAMPTZ;
 
+-- `blindspot_spectrum` admite ahora también 'center', para la señal «solo
+-- medios con línea marcada» (2026-08-08). No es un punto ciego como los otros
+-- dos —no afirma que nadie omitiera nada— sino que el hecho solo interesó a
+-- medios con posición declarada. Se amplía el dominio en vez de crear otra
+-- columna porque las tres son excluyentes: una historia recibe una etiqueta o
+-- ninguna.
+ALTER TABLE stories DROP CONSTRAINT IF EXISTS stories_blindspot_spectrum_check;
+ALTER TABLE stories ADD CONSTRAINT stories_blindspot_spectrum_check
+    CHECK (blindspot_spectrum IN ('left', 'right', 'center'));
+
 -- ── 3. Artículos ─────────────────────────────────────────────────────────────
 -- El enlace canónico es la clave natural: es lo que hace la deduplicación
 -- idempotente entre ejecuciones. Ya funciona así en memoria.

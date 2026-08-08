@@ -17,6 +17,41 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · El respaldo se restauró por primera vez, y no funcionaba
+
+**Qué se hizo.** Se descargó un artefacto REAL de la copia diaria (run
+31247573013), se levantó un Postgres desechable en Docker y se restauró ahí. No
+contra producción, obviamente.
+
+**Resultado: 671 ciclos restaurados**, del 2026-07-27 al 2026-08-08, con 88 501
+artículos acumulados. Restaurar dos veces no duplica: la segunda pasada inserta
+0 filas. El camino de vuelta funciona.
+
+**Pero solo después de arreglar dos fallos que lo hacían imposible.** Ninguno se
+veía contra producción, porque las tablas ya existían; los dos hacían que
+`schema.sql` fuera inaplicable **sobre una base vacía**, que es exactamente la
+situación de una recuperación real:
+
+1. El `ALTER TABLE stories` para admitir `'center'` estaba cien líneas antes de
+   que `stories` se creara. Lo había introducido yo el mismo día.
+2. **Anterior y peor**: el bloque de migración de `moderation` ponía las dos
+   condiciones en un solo `IF ... AND NOT EXISTS (SELECT 1 FROM moderation)`, y
+   PL/pgSQL prepara la expresión entera antes de evaluarla. Sin la tabla,
+   fallaba y se llevaba por delante el resto del archivo.
+3. Y una tercera: `moderation` referencia `admin_users`, que se creaba después.
+
+**Lo que esto significa.** Durante un tiempo indeterminado, el respaldo diario
+corría en verde, subía su artefacto, y **no se podía restaurar**. La confianza
+descansaba en que el script de volcado no daba error — y el que fallaba era el
+otro extremo, el que nadie había ejecutado nunca.
+
+**Regla que queda:** todo `ALTER` va después de su `CREATE`, y un bloque `DO` que
+consulte una tabla tiene que comprobar antes que exista. Y sobre todo: **un
+respaldo no está probado hasta que se restaura sobre una base vacía**. Conviene
+repetirlo cada vez que el esquema cambie de forma.
+
+---
+
 ## 2026-08-08 · Estar en el catálogo no es lo mismo que aportar cobertura
 
 **Decisión.** El mapa distingue los medios que están publicando de los que no:

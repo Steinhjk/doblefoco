@@ -83,16 +83,6 @@ CREATE TABLE IF NOT EXISTS sources (
 -- aviso salta de más, que es el lado correcto por el que equivocarse.
 ALTER TABLE sources ADD COLUMN IF NOT EXISTS last_article_at TIMESTAMPTZ;
 
--- `blindspot_spectrum` admite ahora también 'center', para la señal «solo
--- medios con línea marcada» (2026-08-08). No es un punto ciego como los otros
--- dos —no afirma que nadie omitiera nada— sino que el hecho solo interesó a
--- medios con posición declarada. Se amplía el dominio en vez de crear otra
--- columna porque las tres son excluyentes: una historia recibe una etiqueta o
--- ninguna.
-ALTER TABLE stories DROP CONSTRAINT IF EXISTS stories_blindspot_spectrum_check;
-ALTER TABLE stories ADD CONSTRAINT stories_blindspot_spectrum_check
-    CHECK (blindspot_spectrum IN ('left', 'right', 'center'));
-
 -- ── 3. Artículos ─────────────────────────────────────────────────────────────
 -- El enlace canónico es la clave natural: es lo que hace la deduplicación
 -- idempotente entre ejecuciones. Ya funciona así en memoria.
@@ -196,7 +186,11 @@ CREATE TABLE IF NOT EXISTS stories (
     coverage_right       SMALLINT NOT NULL DEFAULT 0,
     dominant_spectrum    TEXT CHECK (dominant_spectrum IN ('left', 'center', 'right')),
     insufficient_coverage BOOLEAN NOT NULL DEFAULT TRUE,
-    blindspot_spectrum   TEXT CHECK (blindspot_spectrum IN ('left', 'right')),
+    -- 'center' no es un punto ciego: es la señal «solo medios con línea
+    -- marcada», que no afirma que nadie omitiera nada sino que el hecho solo
+    -- interesó a medios con posición declarada. Comparte columna porque las
+    -- tres etiquetas son excluyentes.
+    blindspot_spectrum   TEXT CHECK (blindspot_spectrum IN ('left', 'right', 'center')),
     factuality           REAL,                 -- NULL cuando no se puede calcular
     computed_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -210,6 +204,21 @@ CREATE TABLE IF NOT EXISTS stories (
 -- los datos serían del orden de un segundo, en CADA carga de la portada.
 -- Guardado, el feed es un ORDER BY sobre un índice con LIMIT.
 ALTER TABLE stories ADD COLUMN IF NOT EXISTS source_count INTEGER NOT NULL DEFAULT 0;
+
+-- SOLO PARA BASES QUE YA EXISTÍAN. En una base nueva el CHECK de arriba ya
+-- admite 'center'; esto reescribe la restricción en las que se crearon antes del
+-- 2026-08-08. Es idempotente y no hace nada donde no hace falta.
+--
+-- VA AQUÍ Y NO MÁS ARRIBA, y la diferencia no es de estilo. Estuvo colocado
+-- junto al ALTER de `sources`, unas cien líneas ANTES de que exista `stories`.
+-- Contra la base de producción funcionaba —la tabla ya estaba— pero sobre una
+-- base vacía el esquema entero fallaba con «relation "stories" does not exist»,
+-- así que el respaldo era irrestaurable y nada lo delataba. Lo destapó la
+-- primera prueba real de restauración, el 2026-08-08. Todo ALTER va después de
+-- su CREATE.
+ALTER TABLE stories DROP CONSTRAINT IF EXISTS stories_blindspot_spectrum_check;
+ALTER TABLE stories ADD CONSTRAINT stories_blindspot_spectrum_check
+    CHECK (blindspot_spectrum IN ('left', 'right', 'center'));
 
 -- Tema y ámbito de la historia, agregados desde sus artículos. Ver el comentario
 -- de `articles.topics`: mismos ids, misma razón para que sean dos columnas.
@@ -261,15 +270,55 @@ CREATE INDEX IF NOT EXISTS story_articles_article_idx ON story_articles (article
 -- visible, que es preferible a perder trabajo editorial en silencio. Cuando
 -- haya datos en producción esto pedirá una herramienta de migraciones de
 -- verdad; hoy hay una base y la tabla nació hace horas.
+-- LA SALIDA TEMPRANA NO ES DEFENSIVA DE MÁS, es lo que hace que el esquema se
+-- pueda aplicar sobre una base VACÍA. La versión anterior ponía las dos
+-- condiciones en un solo `IF ... AND NOT EXISTS (SELECT 1 FROM moderation)`, y
+-- PL/pgSQL prepara la expresión entera antes de evaluarla: sin la tabla creada
+-- todavía, fallaba con «relation "moderation" does not exist» y se llevaba por
+-- delante el resto del archivo. Contra la base de producción nunca se vio,
+-- porque la tabla ya existía. Lo destapó la primera prueba real de restauración
+-- (2026-08-08), y con él el esquema entero era inaplicable desde cero: es decir,
+-- el respaldo no se podía restaurar y nada lo delataba.
 DO $$
 BEGIN
+    IF to_regclass('public.moderation') IS NULL THEN
+        RETURN;
+    END IF;
+
     IF EXISTS (
         SELECT 1 FROM information_schema.columns
          WHERE table_schema = 'public' AND table_name = 'moderation' AND column_name = 'reviewer'
-    ) AND NOT EXISTS (SELECT 1 FROM moderation) THEN
-        DROP TABLE moderation;
+    ) THEN
+        -- Anidado y no en la misma condición: así esta consulta solo se prepara
+        -- cuando la tabla existe de verdad.
+        IF NOT EXISTS (SELECT 1 FROM moderation) THEN
+            DROP TABLE moderation;
+        END IF;
     END IF;
 END $$;
+
+-- `admin_users` SE CREA AQUÍ, antes que `moderation`, aunque su sección propia
+-- esté más abajo. El motivo es una dependencia y no una preferencia:
+-- `moderation.reviewer_id` la referencia, y con la definición en su sitio
+-- «natural» el esquema no se podía aplicar sobre una base vacía —fallaba con
+-- «relation "admin_users" does not exist»—. Contra producción nunca se notó
+-- porque la tabla ya existía; lo destapó la primera prueba real de restauración
+-- el 2026-08-08. La documentación de qué es y por qué existe sigue en su
+-- sección; aquí está solo la creación.
+CREATE TABLE IF NOT EXISTS admin_users (
+    id             TEXT PRIMARY KEY,
+    email          TEXT NOT NULL UNIQUE,
+    -- scrypt: sal + parámetros + derivada, todo en una cadena. Nunca la
+    -- contraseña. Ver server/auth/passwords.js.
+    password_hash  TEXT NOT NULL,
+    display_name   TEXT,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+    last_login_at  TIMESTAMPTZ,
+    -- Desactivar en vez de borrar: las decisiones de moderación que firmó esta
+    -- persona siguen apuntando aquí, y perder el rastro de quién aprobó qué
+    -- sería perder justo lo que este proyecto promete poder auditar.
+    disabled_at    TIMESTAMPTZ
+);
 
 CREATE TABLE IF NOT EXISTS moderation (
     story_id     TEXT PRIMARY KEY REFERENCES stories (id) ON DELETE CASCADE,
@@ -307,20 +356,8 @@ CREATE INDEX IF NOT EXISTS moderation_reviewer_idx ON moderation (reviewer_id);
 -- navegador guarda es una cookie httpOnly que su propio JavaScript no puede
 -- leer.
 
-CREATE TABLE IF NOT EXISTS admin_users (
-    id             TEXT PRIMARY KEY,
-    email          TEXT NOT NULL UNIQUE,
-    -- scrypt: sal + parámetros + derivada, todo en una cadena. Nunca la
-    -- contraseña. Ver server/auth/passwords.js.
-    password_hash  TEXT NOT NULL,
-    display_name   TEXT,
-    created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
-    last_login_at  TIMESTAMPTZ,
-    -- Desactivar en vez de borrar: las decisiones de moderación que firmó esta
-    -- persona siguen apuntando aquí, y perder el rastro de quién aprobó qué
-    -- sería perder justo lo que este proyecto promete poder auditar.
-    disabled_at    TIMESTAMPTZ
-);
+-- La tabla en sí se crea MÁS ARRIBA, antes de `moderation`, porque esa la
+-- referencia. Ver la nota allí.
 
 CREATE TABLE IF NOT EXISTS admin_sessions (
     -- Se guarda el HASH del testigo, no el testigo. Si alguien se lleva un

@@ -371,8 +371,50 @@ export const CONTROL_GROUPS = {
         sectores: ['radio', 'televisión'],
     },
     'el-colombiano-accionistas': {
-        label: 'Familia Gómez Martínez y empresarios antioqueños',
-        sectores: [],
+        label: 'Quince empresarios antioqueños y la familia Gómez Martínez',
+        // Los sectores salen de las empresas que los propios accionistas
+        // dirigen, nombradas en las crónicas de la operación. Es el caso más
+        // claro de por qué «familiar regional» escondía información: el 51 % lo
+        // tienen constructoras, comercio y textiles.
+        sectores: ['construcción', 'comercio', 'textiles', 'agroindustria', 'inmobiliario'],
+        personas: [
+            {
+                nombre: 'Manuel Santiago Mejía Correa',
+                papel: 'Cabeza del grupo Corbeta (Alkosto, Ktronix); uno de los dos que encabezaron la compra.',
+                desde: '2022-02',
+                fuentes: [
+                    'https://www.las2orillas.co/quienes-son-los-empresarios-antioquenos-que-se-quedaron-con-el-colombiano/',
+                    'https://www.lasillavacia.com/quien-es-quien/manuel-santiago-mejia-correa/',
+                ],
+            },
+            {
+                nombre: 'Pedro Estrada',
+                papel: 'Grupo Escala, expresidente de Compañía de Empaques; coencabezó la operación.',
+                desde: '2022-02',
+                fuentes: ['https://forbes.co/2022/02/04/actualidad/asi-fue-el-negocio-por-el-periodico-el-colombiano'],
+            },
+            {
+                nombre:
+                    'Juan Luis Aristizábal (Conconcreto), Francisco Martínez Restrepo (Arquitectura y ' +
+                    'Concreto), Luis Fernando Restrepo Echavarría (Crystal), Carlos Eduardo Mesa ' +
+                    '(Premex), Juan Carlos González Jaramillo (Acierto), Juan Manuel del Corral ' +
+                    '(Cadena), Josefina Trujillo de Agudelo (TTC) y Londoño Gómez',
+                papel:
+                    'Resto del grupo de quince que tomó el 51 % en febrero de 2022. Sus empresas están ' +
+                    'en construcción, comercio, textiles, agroindustria e inmobiliario.',
+                desde: '2022-02',
+                fuentes: [
+                    'https://www.bluradio.com/nacion/grupo-de-15-empresarios-antioquenos-compra-mayoria-de-acciones-del-periodico-el-colombiano',
+                    'https://www.larepublica.co/empresas/un-grupo-de-inversionistas-paisas-comprarian-51-del-periodico-local-de-medellin-3297296',
+                ],
+            },
+            {
+                nombre: 'Familia Gómez Martínez',
+                papel: 'Dueña única entre 2019 y 2022; conserva una participación minoritaria.',
+                desde: '2022-02',
+                fuentes: ['https://forbes.co/2022/02/04/actualidad/asi-fue-el-negocio-por-el-periodico-el-colombiano'],
+            },
+        ],
     },
     'el-heraldo-familias': {
         label: 'Familias Manotas, Pumarejo y Fernández',
@@ -395,6 +437,29 @@ export const CONTROL_GROUPS = {
     catalitico: {
         label: 'Grupo Empresarial Catalítico',
         sectores: ['tecnología', 'mercadeo'],
+        personas: [
+            {
+                nombre: 'Cristian Verbel',
+                papel:
+                    'Director del grupo, que compró el 100 % del diario. Catalítico opera negocios de ' +
+                    'tecnología y mercadeo en Estados Unidos, Bogotá, Cali y Barranquilla.',
+                desde: '2024-02-01',
+                fuentes: [
+                    'https://www.lasillavacia.com/en-vivo/grupo-empresarial-catalitico-compra-el-diario-la-opinion-de-cucuta/',
+                    'https://www.larepublica.co/empresas/grupo-empresarial-catalitico-comprara-el-diario-la-opinion-de-cucuta-3789641',
+                ],
+            },
+            {
+                // Se dice lo que NO se sabe, en vez de dejar el hilo colgando
+                // sin explicación: es el hueco concreto que habría que cerrar.
+                nombre: 'Socios del grupo: sin documentar',
+                papel:
+                    'La prensa que cubrió la operación nombra al director, pero no a los accionistas ' +
+                    'de Catalítico. Cerrarlo exige el registro mercantil.',
+                desde: null,
+                fuentes: [],
+            },
+        ],
     },
     'lopez-escauriaza-araujo': {
         label: 'Familias fundadoras, familia Araujo y Galvis Ramírez (Editora del Mar)',
@@ -968,7 +1033,15 @@ export const OWNERSHIP_PROFILES = {
     },
 
     'la-opinion': {
-        ownerType: 'familiar',
+        /**
+         * `conglomerado` y no `familiar` desde el 2026-08-08. La familia
+         * Colmenares lo tuvo 64 años, pero lo vendió: el Grupo Empresarial
+         * Catalítico cerró la compra del 100 % el 1 de febrero de 2024, y es un
+         * grupo de negocios de tecnología y mercadeo con presencia en Estados
+         * Unidos, Bogotá, Cali y Barranquilla. Dejarlo como «familiar regional»
+         * describía al dueño anterior.
+         */
+        ownerType: 'conglomerado',
         controlGroup: 'catalitico',
         holdings: [
             'Fundado en 1958 en Cúcuta. Estuvo siempre en manos de la familia del periodista Eustorgio Colmenares, asesinado por el ELN en marzo de 1993 y sucedido por su hijo José Eustorgio Colmenares.',
@@ -1050,6 +1123,14 @@ export const OWNERSHIP_PROFILES = {
     },
 
     'el-colombiano': {
+        /**
+         * `familiar` aquí NO significa «una familia»: significa control
+         * económico de alcance regional, que es como lo muestra el distintivo
+         * («Grupo económico · regional»). Desde febrero de 2022 lo controlan 15
+         * empresarios antioqueños con el 51 %, y la familia Gómez Martínez
+         * quedó en minoría. Sus negocios están en construcción, comercio,
+         * textiles y agroindustria: ver `sectores` del grupo.
+         */
         ownerType: 'familiar',
         controlGroup: 'el-colombiano-accionistas',
         holdings: [

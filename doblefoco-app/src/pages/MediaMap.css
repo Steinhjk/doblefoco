@@ -469,3 +469,49 @@
 }
 
 .profile-duenio { margin: 0 0 0.85rem; }
+
+/* ── En quién termina: las personas naturales detrás del grupo ───────────── */
+.profile-personas { margin: 0.9rem 0; }
+
+.profile-personas h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+}
+
+.persona {
+    display: flex;
+    flex-direction: column;
+    gap: 0.18rem;
+    margin: 0 0 0.7rem;
+    padding-left: 0.7rem;
+    border-left: 2px solid var(--border, rgba(128, 128, 128, 0.3));
+}
+
+.persona-nombre { font-weight: 600; }
+
+.persona-desde {
+    font-size: 0.74rem;
+    opacity: 0.6;
+}
+
+.persona-papel {
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.persona-fuentes { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+/* Un medio sin dueño de grupo cuyos socios SÍ tienen negocios en otros
+   sectores. No contradice la etiqueta: la matiza, y callarlo escondería lo que
+   este mapa existe para enseñar. */
+.profile-aviso-sectores {
+    margin: 0.6rem 0;
+    padding: 0.5rem 0.7rem;
+    border-left: 3px solid #b4531f;
+    background: #b4531f0f;
+    font-size: 0.87rem;
+    line-height: 1.45;
+}

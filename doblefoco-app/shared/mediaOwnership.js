@@ -1001,7 +1001,22 @@ export const OWNERSHIP_PROFILES = {
     },
 
     'kienyke': {
-        ownerType: 'independiente',
+        /**
+         * RECLASIFICADO EL 2026-08-08. Figuraba como `independiente` y no lo es.
+         *
+         * `independiente` significa «sin dueño que lo posea como activo
+         * económico: vive de donaciones, membresías o cooperación». KienyKe es
+         * lo contrario y su propia ficha lo dice desde siempre: lo posee **una
+         * empresaria al 100 %** —89,9 % vía su sociedad y 10,2 % a su nombre— y
+         * su **negocio principal está en los seguros**. El archivo ya le tenía
+         * puesto `sectores: ['seguros']`; lo que fallaba era la etiqueta, no el
+         * dato.
+         *
+         * Lo destapó el cambio de criterio de Jose —que manda la naturaleza del
+         * interés y no quién es el dueño—: con la taxonomía anterior, «no es un
+         * conglomerado» bastaba para dejarlo en independiente.
+         */
+        ownerType: 'conglomerado',
         controlGroup: 'kienyke-bernal',
         holdings: [
             'Lo publica Kieneskien Editorial S.A.S. Su dueña absoluta es la empresaria Adriana Bernal Salgado: 89,9 % a través de Kieneskien Casa Editorial y 10,2 % a su nombre.',

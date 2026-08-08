@@ -8,7 +8,9 @@ import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegis
 import PanoramaMediatico from '../components/PanoramaMediatico';
 import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum } from '../../shared/biasAnalysis';
-import { OWNER_TYPES, getOwnership, hasDocumentedOwnership, getOwnerBadge } from '../../shared/mediaOwnership';
+import {
+    OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
+} from '../../shared/mediaOwnership';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
 import './MediaMap.css';
@@ -473,6 +475,9 @@ const MediaProfile = ({ media, onClose }) => {
     const ownership = getOwnership(media.id);
     const documented = hasDocumentedOwnership(media.id);
     const ownerType = ownership ? OWNER_TYPES[ownership.ownerType] : null;
+    const grupo = ownership?.controlGroup ? CONTROL_GROUPS[ownership.controlGroup] : null;
+    const personas = grupo?.personas ?? [];
+    const sectoresDelDueno = grupo?.sectores ?? [];
     const presentation = getMediaByName(media.name);
 
     return (
@@ -530,6 +535,54 @@ const MediaProfile = ({ media, onClose }) => {
                     {ownerType && <span className="owner-type"> · {ownerType.label}</span>}
                 </p>
                 {ownerType && <p className="owner-type-desc">{ownerType.description}</p>}
+
+                {/**
+                 * HASTA QUIÉN LLEGA EL HILO.
+                 *
+                 * Un nombre de grupo —«Valorem», «Grupo Gilinski»— es un vehículo,
+                 * y quien decide es una persona. Enseñarlas aquí, con su enlace,
+                 * es lo que convierte el mapa de propiedad en algo verificable en
+                 * vez de en una lista de razones sociales.
+                 *
+                 * Se nombra el CONTROL —«preside la junta», «accionista
+                 * mayoritario»—, que es un hecho societario documentado, y no el
+                 * patrimonio, que sería interpretación.
+                 */}
+                {personas.length > 0 && (
+                    <div className="profile-personas">
+                        <h4>En quién termina</h4>
+                        {personas.map((p) => (
+                            <p key={p.nombre} className="persona">
+                                <span className="persona-nombre">{p.nombre}</span>
+                                {p.desde && <span className="persona-desde">desde {p.desde}</span>}
+                                <span className="persona-papel">{p.papel}</span>
+                                <span className="profile-sources persona-fuentes">
+                                    {p.fuentes.map((url) => (
+                                        <a key={url} href={url} target="_blank" rel="noopener noreferrer">
+                                            {url.replace(/^https?:\/\//, '').split('/')[0]}
+                                            <ExternalLink size={11} aria-hidden="true" />
+                                        </a>
+                                    ))}
+                                </span>
+                            </p>
+                        ))}
+                    </div>
+                )}
+
+                {/**
+                 * El aviso que Jose pidió para Cambio, generalizado: un medio
+                 * etiquetado como independiente cuyos dueños SÍ tienen negocios
+                 * documentados en otros sectores. No cambia la etiqueta —seguir
+                 * llamándolo independiente es correcto: no lo posee un grupo—
+                 * pero callar que sus socios están en la siderurgia o los seguros
+                 * sería esconder justo lo que este mapa existe para enseñar.
+                 */}
+                {sectoresDelDueno.length > 0 && ownership?.ownerType === 'independiente' && (
+                    <p className="profile-aviso-sectores">
+                        Aunque no lo posee un grupo económico, sus dueños tienen negocios
+                        documentados en <strong>{sectoresDelDueno.join(', ')}</strong>.
+                    </p>
+                )}
 
                 {documented ? (
                     <>

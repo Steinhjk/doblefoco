@@ -250,26 +250,118 @@ const VERIFICADO_AGO = '2026-08-02';
  * sector del que vive su dueño. Solo se listan los que constan en las fuentes
  * de la ficha; los que no se han documentado quedan vacíos en vez de supuestos.
  */
+/**
+ * `personas` — HASTA QUIÉN LLEGA EL HILO (2026-08-08, pedido de Jose).
+ *
+ * Un nombre de grupo no dice nada por sí solo: «Valorem» o «Grupo Gilinski» son
+ * vehículos, y detrás hay personas naturales que sí toman decisiones. Tirar del
+ * hilo hasta ellas es lo que convierte el mapa de propiedad en información
+ * utilizable.
+ *
+ * TRES CAUTELAS, y las tres importan porque aquí se nombra a gente real:
+ *
+ *   · Cada persona lleva su fuente. Sin enlace consultable no entra, igual que
+ *     el resto de este archivo.
+ *   · Se nombra el CONTROL, no el patrimonio. «Preside la junta» o «es el
+ *     accionista mayoritario» es un hecho societario documentado; «es el dueño
+ *     real» sería una interpretación.
+ *   · Donde el control es familiar y no hay una cabeza única documentada, se
+ *     dice así en vez de elegir a uno. Señalar a una persona concreta cuando la
+ *     fuente habla de una familia sería sobreafirmar.
+ *
+ * `desde` es la fecha del hecho que la fuente documenta, no la de consulta.
+ */
 export const CONTROL_GROUPS = {
     gilinski: {
         label: 'Grupo Gilinski',
         sectores: ['banca', 'alimentos'],
+        personas: [
+            {
+                nombre: 'Jaime Gilinski Bacal',
+                papel: 'Preside el conglomerado financiero que compró el 100 % de Publicaciones Semana.',
+                desde: '2020-11',
+                fuentes: [
+                    'https://www.larepublica.co/empresas/el-grupo-gilinski-compro-50-de-la-revista-semana-2822114',
+                    'https://www.elcolombiano.com/colombia/grupo-gilinski-ahora-es-dueno-de-todas-las-acciones-del-grupo-semana-IB14048303',
+                ],
+            },
+            {
+                nombre: 'Gabriel Gilinski Kardonski',
+                papel: 'Accionista mayoritario del Grupo Semana; la familia lo designó para llevar el medio.',
+                desde: '2020-11',
+                fuentes: ['https://forbes.co/2020/11/11/negocios/gabriel-gilinski-el-millonario-que-se-quedo-con-semana-y-va-por-nutresa/'],
+            },
+        ],
     },
     valorem: {
         label: 'Valorem — familia Santo Domingo',
         sectores: ['retail', 'logística', 'transporte', 'entretenimiento', 'industria', 'inmobiliario', 'turismo'],
+        personas: [
+            {
+                nombre: 'Alejandro Santo Domingo Dávila',
+                papel:
+                    'Preside la junta directiva de Valorem y encabeza las inversiones de la familia ' +
+                    'desde la muerte de su padre, Julio Mario Santo Domingo.',
+                desde: '2011',
+                fuentes: [
+                    'https://lasillavacia.com/quienesquien/perfilquien/alejandro-santo-domingo-davila',
+                    'https://forbes.co/2025/04/11/editors-picks/los-santo-domingo-un-imperio-que-crece/',
+                ],
+            },
+        ],
     },
     'ardila-lulle': {
         label: 'Organización Ardila Lülle',
         sectores: ['bebidas', 'azúcar', 'textiles', 'deporte'],
+        personas: [
+            {
+                nombre: 'Carlos Julio Ardila Gaviria',
+                papel:
+                    'Preside la Organización Ardila Lülle tras la muerte de su padre, Carlos Ardila ' +
+                    'Lülle, en 2021. Es el heredero que ha concentrado su interés en los medios.',
+                desde: '2021',
+                fuentes: [
+                    'https://www.produ.com/perfiles/carlos-julio-ardila-presidente-de-organizacion-ardila-lulle/',
+                    'https://forbes.co/2021/08/13/empresas/los-herederos-de-carlos-ardila-lulle/',
+                ],
+            },
+            {
+                nombre: 'Antonio José, María Eugenia y María Emma Ardila Gaviria',
+                papel: 'Coherederos del grupo junto a Carlos Julio; el control es familiar, no de una sola persona.',
+                desde: '2021',
+                fuentes: ['https://www.bloomberglinea.com/2021/08/13/los-herederos-de-la-fortuna-de-us2200-millones-del-empresario-carlos-ardila-lulle/'],
+            },
+        ],
     },
     prisa: {
         label: 'Grupo Prisa',
         sectores: ['educación editorial'],
+        personas: [
+            {
+                nombre: 'Joseph Oughourlian',
+                papel:
+                    'Banquero de inversión, fundador del fondo Amber Capital; controla el Grupo Prisa, ' +
+                    'que a su vez controla Caracol Radio y W Radio.',
+                desde: '2003',
+                // Ya constaba en la ficha de Caracol Radio; se sube aquí para que
+                // el hilo se lea desde el grupo y no solo desde un medio suelto.
+                fuentes: ['https://colombia.mom-gmr.org/es/proprietarios/companies-database/'],
+            },
+        ],
     },
     'sarmiento-aval': {
         label: 'Luis Carlos Sarmiento Angulo — Grupo Aval',
         sectores: ['banca', 'construcción', 'infraestructura'],
+        personas: [
+            {
+                nombre: 'Luis Carlos Sarmiento Angulo',
+                papel:
+                    'Compró Casa Editorial El Tiempo en 2012 y es el mayor accionista y presidente ' +
+                    'del Grupo Aval, el mayor conglomerado financiero del país.',
+                desde: '2012',
+                fuentes: ['https://colombia.mom-gmr.org/es/proprietarios/companies-database/'],
+            },
+        ],
     },
     'infobae-hadad': {
         label: 'Daniel Hadad — Grupo Infobae',

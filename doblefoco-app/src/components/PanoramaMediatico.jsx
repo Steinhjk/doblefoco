@@ -26,26 +26,42 @@ import './PanoramaMediatico.css';
  * evita meter un tercero en una página cuyo argumento es la independencia. La
  * CSP del sitio tampoco permitiría cargarlo desde una CDN.
  */
-const PanoramaMediatico = () => {
-    const [conteos, setConteos] = useState(null);
-    const [estado, setEstado] = useState(isApiConfigured ? 'cargando' : 'sin-datos');
+/**
+ * `conteosExternos` evita pedir /api/panorama dos veces en la misma página.
+ *
+ * MediaMap necesita los mismos datos para distinguir qué medios están aportando
+ * cobertura de cuáles están en el catálogo por su ficha de propiedad. En vez de
+ * que cada componente haga su llamada, el que está arriba la hace y la pasa. Si
+ * no la pasa —el componente puede usarse suelto—, este sigue pidiéndola por su
+ * cuenta y funciona igual.
+ */
+const PanoramaMediatico = ({ conteosExternos = null }) => {
+    const [conteosPropios, setConteosPropios] = useState(null);
+    const [estadoPropio, setEstadoPropio] = useState(isApiConfigured ? 'cargando' : 'sin-datos');
+
+    // Se DERIVA de las props en vez de copiarse a estado dentro de un efecto:
+    // copiarlo provoca un render en cascada y, peor, deja dos fuentes de verdad
+    // que pueden discrepar durante un instante.
+    const conteos = conteosExternos?.length ? conteosExternos : conteosPropios;
+    const estado = conteosExternos?.length ? 'listo' : estadoPropio;
 
     useEffect(() => {
+        if (conteosExternos?.length) return undefined;
         if (!isApiConfigured) return undefined;
         let vivo = true;
 
         fetchPanorama().then((r) => {
             if (!vivo) return;
             if (r.ok && r.medios.length) {
-                setConteos(r.medios);
-                setEstado('listo');
+                setConteosPropios(r.medios);
+                setEstadoPropio('listo');
             } else {
-                setEstado('sin-datos');
+                setEstadoPropio('sin-datos');
             }
         });
 
         return () => { vivo = false; };
-    }, []);
+    }, [conteosExternos]);
 
     /**
      * SOLO MEDIOS COLOMBIANOS (2026-08-07, misma decisión que en MediaMap).

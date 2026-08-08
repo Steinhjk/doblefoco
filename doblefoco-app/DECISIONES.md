@@ -17,6 +17,34 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Estar en el catálogo no es lo mismo que aportar cobertura
+
+**Decisión.** El mapa distingue los medios que están publicando de los que no:
+círculo hueco en el gráfico, columna «Piezas (72 h)» en la tabla, y un aviso que
+lo explica.
+
+**Por qué.** El mapa los presentaba a todos por igual, y no lo son. Medido el
+2026-08-07, varios llevan días sin una sola pieza en la ventana —Vorágine publica
+una cada 74,7 h, Noticias Uno es un noticiero de fin de semana, W Radio no tiene
+RSS propio—. Enseñarlos junto a los que publican cientos de notas sugiere una
+comparación que no está ocurriendo.
+
+**No se retira a nadie**: su ficha de propiedad es contenido valioso por sí misma
+y el criterio del proyecto es no silenciar a ningún medio. Lo que cambia es que
+se dice cuáles están aportando, y el aviso aclara que **algunos publican poco por
+oficio —investigación, periodicidad semanal—, no por avería**. Sin esa frase, el
+círculo hueco se leería como una acusación de dejadez.
+
+**«Todavía no se sabe» se trata distinto de «no aporta».** Mientras cargan los
+datos, los círculos se pintan llenos. Marcar un medio como silencioso por no
+tener el dato aún sería afirmar algo por ignorancia.
+
+**Detalle de implementación**: los conteos se piden una vez en `MediaMap` y se
+pasan a `PanoramaMediatico`, que antes hacía su propia llamada al mismo
+endpoint. El componente sigue funcionando suelto si nadie se los pasa.
+
+---
+
 ## 2026-08-08 · Un punto ciego solo se afirma si la ausencia sorprende
 
 **Decisión de Jose.** Un espectro ausente solo se señala cuando esa ausencia es

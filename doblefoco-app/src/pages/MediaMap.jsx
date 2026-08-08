@@ -1,4 +1,5 @@
-import { useMemo, useState, useId } from 'react';
+import { useMemo, useState, useId, useEffect } from 'react';
+import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import { ExternalLink, Table2, ScatterChart, Info } from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
@@ -110,12 +111,53 @@ const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY.filter(ES_COLOMBIANO);
 const MediaMap = () => {
     const [view, setView] = useState('mapa');
     const [selectedId, setSelectedId] = useState(null);
+    const [conteos, setConteos] = useState(null);
+    const [ventanaHoras, setVentanaHoras] = useState(72);
     const titleId = useId();
+
+    /**
+     * ESTAR EN EL CATÁLOGO NO ES LO MISMO QUE APORTAR COBERTURA.
+     *
+     * El mapa presentaba a todos los medios por igual, y no lo son: medido el
+     * 2026-08-07, varios llevan días sin una sola pieza en la ventana —Vorágine
+     * publica una cada 74,7 h, Noticias Uno es un noticiero de fin de semana, W
+     * Radio no tiene RSS propio—. Enseñarlos junto a los que publican cientos de
+     * notas sugiere una comparación que no está ocurriendo.
+     *
+     * No se retiran: su ficha de propiedad es contenido valioso por sí misma y
+     * el criterio del proyecto es no silenciar a nadie. Lo que cambia es que se
+     * dice cuáles están aportando y cuáles no.
+     */
+    useEffect(() => {
+        if (!isApiConfigured) return undefined;
+        let vivo = true;
+
+        fetchPanorama().then((r) => {
+            if (!vivo || !r.ok) return;
+            setConteos(r.medios);
+            setVentanaHoras(r.retentionHours ?? 72);
+        });
+
+        return () => { vivo = false; };
+    }, []);
+
+    /** id del medio → artículos en la ventana. `null` mientras no se sepa. */
+    const aportePorMedio = useMemo(() => {
+        if (!conteos?.length) return null;
+        return new Map(conteos.map((c) => [c.sourceId, c.articulos ?? 0]));
+    }, [conteos]);
 
     const media = useMemo(
         () => spread([...MEDIOS_COLOMBIANOS].sort((a, b) => a.bias - b.bias)),
         []
     );
+
+    /**
+     * `null` = todavía no se sabe, y se trata distinto de «no aporta». Marcar un
+     * medio como silencioso mientras carga sería afirmar algo por no tener el
+     * dato aún.
+     */
+    const aporta = (id) => (aportePorMedio ? (aportePorMedio.get(id) ?? 0) > 0 : null);
 
     const selected = media.find((m) => m.id === selectedId) ?? null;
 
@@ -157,6 +199,20 @@ const MediaMap = () => {
                     </button>
                 </div>
             </div>
+
+            {aportePorMedio && (
+                <p className="map-warning">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        Los círculos <strong>huecos</strong> son medios del catálogo que no
+                        han publicado nada en las últimas {ventanaHoras} horas. Siguen aquí
+                        porque su ficha de propiedad es parte del mapa, pero{' '}
+                        <strong>no están entrando en ninguna comparación de cobertura</strong>.
+                        Algunos publican poco por oficio —investigación, periodicidad
+                        semanal—, no por avería.
+                    </span>
+                </p>
+            )}
 
             <div className="map-legend" aria-hidden="true">
                 {['left', 'center', 'right'].map((key) => (
@@ -258,7 +314,12 @@ const MediaMap = () => {
                                         cx={item.x}
                                         cy={item.y}
                                         r={isSelected ? 9 : 6}
-                                        fill={SPECTRUM_FILL[spectrum]}
+                                        // Hueco cuando el medio no aporta nada a
+                                        // la ventana: sigue en el mapa, pero se
+                                        // ve que no está en la comparación.
+                                        fill={aporta(item.id) === false ? 'transparent' : SPECTRUM_FILL[spectrum]}
+                                        stroke={SPECTRUM_FILL[spectrum]}
+                                        strokeWidth={aporta(item.id) === false ? 2 : 0}
                                         className={`map-point ${isSelected ? 'selected' : ''}`}
                                         tabIndex={0}
                                         role="button"
@@ -302,6 +363,7 @@ const MediaMap = () => {
                                 <th scope="col">Banda</th>
                                 <th scope="col">Factualidad</th>
                                 <th scope="col">Grupo</th>
+                                <th scope="col">Piezas ({ventanaHoras} h)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -319,6 +381,13 @@ const MediaMap = () => {
                                     <td>{getBand(item.bias).label}</td>
                                     <td className="num">{fmtPct(item.factuality)}</td>
                                     <td>{item.group}</td>
+                                    <td>
+                                        {aporta(item.id) === null
+                                            ? '—'
+                                            : aporta(item.id)
+                                                ? `${aportePorMedio.get(item.id)}`
+                                                : 'sin piezas'}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -329,7 +398,7 @@ const MediaMap = () => {
             {/* Va DESPUÉS del mapa, no antes: el mapa responde «dónde está cada
                 medio» y esto responde «cuánto pesa cada dueño». Lo segundo solo
                 se entiende habiendo visto lo primero. */}
-            <PanoramaMediatico />
+            <PanoramaMediatico conteosExternos={conteos} />
 
             {selected && <MediaProfile media={selected} onClose={() => setSelectedId(null)} />}
         </div>

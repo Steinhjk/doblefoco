@@ -537,6 +537,24 @@ export const CONTROL_GROUPS = {
     'lopez-escauriaza-araujo': {
         label: 'Familias fundadoras, familia Araujo y Galvis Ramírez (Editora del Mar)',
         sectores: ['hotelería'],
+        personas: [
+            {
+                nombre: 'Domingo López Escauriaza y Eduardo Ferrer Ferrer',
+                papel: 'Cuñados y socios; fundaron el diario en 1948. Lo publica Editora del Mar S.A.',
+                desde: '1948',
+                fuentes: ['https://es.wikipedia.org/wiki/El_Universal_(Colombia)'],
+            },
+            {
+                nombre: 'Alejandro Galvis Ramírez',
+                papel:
+                    'Entró en 1980 con el 50 % de Editora del Mar. Es la misma familia dueña de ' +
+                    'Vanguardia, en este catálogo. El otro 50 % quedó en socios locales, así que ' +
+                    'ninguno de los dos bloques tiene mayoría y NO cuenta como dueño compartido en ' +
+                    'los avisos del sitio.',
+                desde: '1980',
+                fuentes: ['https://es.wikipedia.org/wiki/El_Universal_(Colombia)'],
+            },
+        ],
     },
 
     // ── Colombia: independientes y público ──────────────────────────────────
@@ -578,8 +596,35 @@ export const CONTROL_GROUPS = {
         ],
     },
     'ntc-television': {
-        label: 'NTC Televisión — Noticias Uno',
+        label: 'NTC Televisión — Daniel Coronell',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Daniel Coronell',
+                papel:
+                    'Accionista mayoritario de NTC Televisión con el 60,5 %, la empresa que produce ' +
+                    'el noticiero. ATENCIÓN: es además presidente de la revista Cambio, que aparece ' +
+                    'igualmente en este catálogo. Es la única persona con posición de control o ' +
+                    'dirección en dos medios del mapa.',
+                desde: null,
+                fuentes: ['https://www.las2orillas.co/el-gringo-dueno-de-canal-1-que-le-dio-la-espalda-a-noticias-uno-de-daniel-coronell/'],
+            },
+            {
+                nombre: 'María Cristina Uribe',
+                papel: 'Periodista, esposa de Coronell; 3,5 % de NTC Televisión.',
+                desde: null,
+                fuentes: ['https://www.las2orillas.co/el-gringo-dueno-de-canal-1-que-le-dio-la-espalda-a-noticias-uno-de-daniel-coronell/'],
+            },
+            {
+                // Se nombra para que quede claro que NO es dueño: el noticiero
+                // lleva su firma editorial y confundir dirección con propiedad
+                // es el error que este archivo evita en los regionales.
+                nombre: 'Ignacio Gómez — dirige, no posee',
+                papel: 'Director del noticiero desde 2024. Cargo editorial, sin participación documentada.',
+                desde: '2024',
+                fuentes: ['https://es.wikipedia.org/wiki/Noticias_Uno'],
+            },
+        ],
     },
     'voragine-fundacion': {
         label: 'Fundación Vorágine Periodismo Contracorriente',
@@ -1029,6 +1074,14 @@ export const OWNERSHIP_PROFILES = {
      */
     'el-universal': {
         ownerType: 'familiar',
+        /**
+         * FALTABA. El grupo `lopez-escauriaza-araujo` existía en CONTROL_GROUPS
+         * desde el principio, pero esta ficha no lo referenciaba: `controlGroup`
+         * venía `undefined`, así que el medio aparecía «sin grupo» y su cadena de
+         * propiedad no se podía leer. Detectado el 2026-08-08 al recorrer el mapa
+         * medio por medio.
+         */
+        controlGroup: 'lopez-escauriaza-araujo',
         holdings: [
             'Lo publica Editora del Mar S.A. Lo fundaron en 1948 Domingo López Escauriaza y Eduardo Ferrer Ferrer, cuñados y socios.',
             'Alejandro Galvis Ramírez —de la familia dueña de Vanguardia, en este mismo catálogo— entró en 1980 con el 50 % de Editora del Mar. El otro 50 % quedó en manos de socios locales, entre ellos la familia Araujo Perdomo, con intereses en hotelería y trayectoria política conservadora.',

@@ -34,10 +34,13 @@ describe('gruposCompartidos', () => {
         expect(gruposCompartidos(['semana', 'semana'])).toEqual([]);
     });
 
-    it('ignora los medios sin propiedad documentada', () => {
-        // `colombia-informa` es el único que sigue con la ficha vacía. Sin dueño
-        // documentado no puede entrar en el cálculo, ni para bien ni para mal.
-        expect(gruposCompartidos(['colombia-informa', 'semana'])).toEqual([]);
+    it('ignora los medios que no están en el catálogo', () => {
+        // Un id desconocido no tiene dueño documentado, así que no puede entrar
+        // en el cálculo ni para bien ni para mal. Antes esto se probaba con
+        // `colombia-informa`, que era el medio real sin ficha; desde el
+        // 2026-08-08 ya no hay ninguno, y la prueba no debe depender de que
+        // vuelva a haberlo.
+        expect(gruposCompartidos(['medio-que-no-existe', 'semana'])).toEqual([]);
     });
 
     it('los tres diarios regionales tienen cada uno su dueño y no se agrupan', () => {
@@ -111,13 +114,17 @@ describe('contrato de las fichas', () => {
         }
     });
 
-    it('el único medio sin documentar es colombia-informa', () => {
+    it('no queda ninguna ficha de propiedad sin documentar', () => {
         // La cabecera del archivo y la página de transparencia le dicen al lector
         // cuántas fichas faltan. Si alguien añade un medio al catálogo sin ficha,
         // esas dos afirmaciones pasan a ser falsas y nadie se enteraría: esta
         // prueba es la que se entera.
+        //
+        // Estuvo en 1 —`colombia-informa`— hasta el 2026-08-08. Que ahora esté en
+        // 0 no la vuelve inútil: es justo cuando más protege, porque el hueco
+        // siguiente entraría sin que nada más lo delate.
         const sinDocumentar = Object.keys(OWNERSHIP_PROFILES)
             .filter((id) => !hasDocumentedOwnership(id));
-        expect(sinDocumentar).toEqual(['colombia-informa']);
+        expect(sinDocumentar).toEqual([]);
     });
 });

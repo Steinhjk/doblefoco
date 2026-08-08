@@ -17,6 +17,12 @@ const REGISTRO = [
     { id: 'el-tiempo', name: 'El Tiempo', shortName: 'El Tiempo', bias: 0.05 },
     { id: 'portafolio', name: 'Portafolio', shortName: 'Portafolio', bias: 0.05 },
     { id: 'colombia-informa', name: 'Colombia Informa', shortName: 'Col. Informa', bias: -0.65 },
+    // Este NO es real, y por eso está aquí: hace falta un medio sin dueño
+    // documentado para probar ese camino, y desde el 2026-08-08 el catálogo ya no
+    // tiene ninguno. Antes se usaba `colombia-informa`, que sí lo estaba; atarlo a
+    // un medio de verdad hacía que documentarlo rompiera una prueba que no
+    // hablaba de él sino del reparto.
+    { id: 'medio-sin-ficha', name: 'Medio sin ficha', shortName: 'Sin ficha', bias: 0 },
 ];
 
 describe('repartoPorDueno', () => {
@@ -47,7 +53,7 @@ describe('repartoPorDueno', () => {
         const r = repartoPorDueno(
             [
                 { sourceId: 'semana', articulos: 50 },
-                { sourceId: 'colombia-informa', articulos: 50 },
+                { sourceId: 'medio-sin-ficha', articulos: 50 },
             ],
             REGISTRO
         );

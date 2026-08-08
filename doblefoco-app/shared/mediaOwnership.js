@@ -41,10 +41,20 @@
  *
  * Lo que sigue vacío, y por qué
  * -----------------------------
- * Queda UNO sin documentar: `colombia-informa`. Su razón social aparece en
- * directorios de registro mercantil, pero no se ha podido citar una fuente
- * consultable sobre quién la controla ni con qué financiación. Se queda vacía y
- * visible antes que verosímil.
+ * Ya no queda ninguna ficha vacía. `colombia-informa` se documentó el
+ * 2026-08-08 hasta donde llega lo público: razón social, NIT, financiación y
+ * articulación con la ALBA de los Movimientos Sociales. Lo que sigue abierto es
+ * un solo dato —QUIÉN la representa legalmente— y ya no por falta de rastro sino
+ * por un trámite: el certificado del RUES con el NIT 900.408.141-8, que exige un
+ * formulario manual. Es el único medio colombiano del catálogo cuyo hilo no
+ * termina en una persona natural.
+ *
+ * Las 29 restantes sí terminan en alguien. Las institucionales incluidas: que el
+ * dueño sea un partido, el Estado o una fundación no borra la pregunta, la
+ * desplaza a un cargo, y el cargo lo ocupa alguien con nombre. Nombrar a los
+ * accionistas de los grandes y callar a quien dirige el medio público habría
+ * sido aplicar el escrutinio de forma desigual —justo el sesgo que este mapa
+ * existe para no cometer—. Cuando la persona manda pero no posee, se dice.
  *
  * Son afirmaciones sobre personas y empresas reales e identificables. Escribir
  * "el dueño de X busca Y" sin poder enlazar dónde consta es exactamente lo que
@@ -206,21 +216,21 @@ export function getOwnerBadge(mediaId) {
     };
 }
 
-/**
- * Ficha vacía. Se usa para todo medio sin documentación todavía. Explícita, para
- * que la interfaz no tenga que adivinar.
+/*
+ * Aquí vivía `pending()`, la ficha vacía explícita para los medios que aún no
+ * se habían documentado. El 2026-08-08 se quedó sin usos —ninguna ficha del
+ * catálogo está vacía ya— y el linter lo señaló. Se retira en vez de silenciarlo:
+ * si algún día entra un medio nuevo sin documentar, que el hueco se note al
+ * escribirlo y no se rellene con una plantilla cómoda.
+ *
+ * La forma de una ficha, para quien añada una:
+ *   ownerType    uno de OWNER_TYPES.
+ *   controlGroup clave de CONTROL_GROUPS. Es lo que enlaza con las personas.
+ *   holdings     otros negocios del grupo. Requiere `sources`.
+ *   notes        señalamientos, sanciones o conflictos. Requiere `sources`.
+ *   sources      URLs consultables. Sin esto, lo de arriba no se publica.
+ *   verifiedAt   fecha de comprobación documental. null = nadie lo ha mirado.
  */
-const pending = (ownerType) => ({
-    ownerType,
-    /** Otros negocios del grupo propietario. Requiere `sources`. */
-    holdings: [],
-    /** Señalamientos, sanciones o conflictos documentados. Requiere `sources`. */
-    notes: [],
-    /** URLs consultables. Sin esto, lo de arriba no se publica. */
-    sources: [],
-    /** Fecha de verificación documental. null = nadie lo ha comprobado. */
-    verifiedAt: null,
-});
 
 /** Fecha de la documentación. */
 const VERIFICADO = '2026-07-29';
@@ -561,6 +571,34 @@ export const CONTROL_GROUPS = {
     'estado-colombiano': {
         label: 'Estado colombiano',
         sectores: [],
+        // Una institución no diluye la pregunta, solo la desplaza: aquí el hilo
+        // no termina en un accionista sino en un cargo, y el cargo lo ocupa
+        // alguien con nombre. Callarlo mientras nombramos a los Santo Domingo
+        // sería aplicar el escrutinio de forma desigual.
+        personas: [
+            {
+                nombre: 'Hollman Felipe Morris Rincón',
+                papel:
+                    'Gerente general. Dirige, no posee: el dueño es el Estado y quien lo designa es ' +
+                    'el presidente de la República. Es además una figura política —fue candidato a la ' +
+                    'Alcaldía de Bogotá por Colombia Humana en 2019—, un dato que en el medio público ' +
+                    'pesa más que en cualquier otro del catálogo.',
+                desde: '2024-04-05',
+                fuentes: [
+                    'https://www.inravision.gov.co/quienes-somos/perfiles-directivos',
+                    'https://en.wikipedia.org/wiki/Hollman_Morris',
+                ],
+            },
+            {
+                nombre: 'El presidente de la República en ejercicio',
+                papel:
+                    'Titular del control efectivo: designa al gerente a través del MinTIC. No se ' +
+                    'nombra aquí a una persona concreta a propósito, porque el cargo cambió de manos ' +
+                    'el 7 de agosto de 2026 y el catálogo no debe envejecer con el gobierno de turno.',
+                desde: null,
+                fuentes: ['https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=82339'],
+            },
+        ],
     },
     // En estos el hilo siempre fue corto —las personas estaban en el `label`
     // desde el principio— y por eso pasó desapercibido que se leía distinto que
@@ -639,6 +677,29 @@ export const CONTROL_GROUPS = {
     'razon-publica-fundacion': {
         label: 'Fundación Razón Pública',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Hernando Gómez Buendía',
+                papel:
+                    'Fundador, director y editor general. En una fundación sin ánimo de lucro nadie ' +
+                    'se reparte utilidades, pero la dirección editorial sí recae en una persona, y ' +
+                    'aquí lleva el mismo nombre desde 2008.',
+                desde: '2008',
+                fuentes: ['https://razonpublica.com/que-es-razon-publica/'],
+            },
+            {
+                nombre:
+                    'Consejo editorial: Armando Montenegro, Salomón Kalmanovitz, Eduardo Cifuentes, ' +
+                    'Marco Palacios y Alfredo Sarmiento, entre otros',
+                papel:
+                    'Orientan la línea sin poseerla. Vale nombrarlos porque varios vienen de la alta ' +
+                    'función pública y de la ortodoxia económica —Montenegro dirigió el DNP, Cifuentes ' +
+                    'fue magistrado de la Corte Constitucional—, lo que matiza la etiqueta de ' +
+                    '«independiente» sin desmentirla.',
+                desde: null,
+                fuentes: ['https://razonpublica.com/que-es-razon-publica/'],
+            },
+        ],
     },
     'cambio-inversionistas': {
         label: 'Inversionistas de Cambio — Lara Salive, Silva Luján y Armitage',
@@ -680,6 +741,42 @@ export const CONTROL_GROUPS = {
     'pcc-partido': {
         label: 'Partido Comunista Colombiano (PCC)',
         sectores: [],
+        personas: [
+            {
+                nombre: 'Jaime Caycedo Turriago',
+                papel:
+                    'Secretario general del partido, que es el propietario del semanario. Miembro del ' +
+                    'comité central desde 1971. El control editorial es del partido, no suyo a título ' +
+                    'personal, pero la línea del semanario responde a la dirección que él encabeza.',
+                desde: null,
+                fuentes: ['https://pacocol.org/secretario/'],
+            },
+            {
+                nombre: 'Zabier Hernández Buelvas',
+                papel: 'Director del semanario. Dirige, no posee.',
+                desde: '2023',
+                fuentes: ['https://es.wikipedia.org/wiki/Semanario_Voz'],
+            },
+        ],
+    },
+    'colombia-informa-corporacion': {
+        label: 'Corporación Colombia Informa',
+        sectores: [],
+        // Único grupo del catálogo colombiano sin una sola persona identificada.
+        // No es un descuido nuestro: el medio publica bajo autoría colectiva
+        // («Equipo Editor Nacional», «Editora Bogotá») y no divulga dirección.
+        // Lo que sí conseguimos es la puerta para averiguarlo —ver `personas`—,
+        // así que esto pasa de «sin documentar» a «pendiente con procedimiento».
+        personas: [{
+            nombre: 'Sin identificar — falta el certificado del RUES',
+            papel:
+                'La razón social es Corporación Colombia Informa, NIT 900.408.141-8, con domicilio ' +
+                'en Bogotá. Su representante legal es público por ley y consultable en el RUES con ' +
+                'ese NIT; el trámite exige un formulario que no se puede automatizar. Hasta tenerlo ' +
+                'en la mano no se escribe ningún nombre aquí.',
+            desde: null,
+            fuentes: ['https://www.colombiainforma.info/somos/', 'https://www.rues.org.co/'],
+        }],
     },
     'raya-fundacion': {
         label: 'Fundación RAYA — sus nueve periodistas fundadores',
@@ -787,7 +884,19 @@ export const OWNERSHIP_PROFILES = {
      * consultable sobre quién la controla ni de qué vive. Lo que hace falta es
      * el certificado de existencia del RUES o sus estatutos.
      */
-    'colombia-informa': pending('independiente'),
+    'colombia-informa': {
+        ownerType: 'independiente',
+        controlGroup: 'colombia-informa-corporacion',
+        holdings: [
+            'La sostiene la Corporación Colombia Informa (NIT 900.408.141-8, Bogotá). Se define como agencia de comunicación de los pueblos y trabaja con corresponsales regionales y colectivos de comunicación popular.',
+            'Se financia «con aportes voluntarios y dedicación solidaria». Se articula con la ALBA de los Movimientos Sociales, espacio continental de coordinación de movimientos populares.',
+        ],
+        notes: [
+            'Publica bajo autoría colectiva y no divulga quién la dirige. Es el único medio colombiano del catálogo cuyo hilo de propiedad no llega todavía a una persona natural.',
+        ],
+        sources: ['https://www.colombiainforma.info/somos/', 'https://www.colombiainforma.info/'],
+        verifiedAt: '2026-08-08',
+    },
 
     'noticias-uno': {
         ownerType: 'independiente',
@@ -885,9 +994,11 @@ export const OWNERSHIP_PROFILES = {
         holdings: [
             'Sociedad entre entidades públicas del orden nacional, constituida en octubre de 2004 y sujeta al régimen de las Empresas Industriales y Comerciales del Estado.',
             'El presidente de la República ejerce el control sobre RTVC a través del Ministerio de Tecnologías de la Información y las Comunicaciones, y DESIGNA a su director general.',
+            'En 2026 la entidad recuperó su nombre histórico, Inravisión: rtvc.gov.co redirige de forma permanente a inravision.gov.co. Comprobado el 2026-08-08.',
         ],
         notes: [
             'Que el jefe del Gobierno nombre a su director es la razón por la que la clasificación de sesgo de este medio es la más volátil del catálogo: cambia con el gobierno de turno, no con su sala de redacción.',
+            'El período presidencial terminó el 7 de agosto de 2026. Quien designa al gerente cambió de manos, así que esta ficha necesita revisarse: es la única del catálogo con fecha de caducidad conocida.',
         ],
         sources: [
             'https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=82339',

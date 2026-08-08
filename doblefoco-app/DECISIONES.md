@@ -17,7 +17,77 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · También las instituciones tienen dueño
+
+**Decisión de Jose**, que corrigió la mía. Yo propuse cerrar los cuatro medios
+que faltaban con la fórmula «no hay una persona: el dueño es un partido, el
+Estado, una fundación». Su respuesta: *«Todas las instituciones tienen dueño.
+Hasta de las org independientes deberíamos tratar de dar con las personas detrás
+de los medios.»*
+
+**Por qué tenía razón, y el argumento es más fuerte que el de completar fichas.**
+Nombrar a Alejandro Santo Domingo y a los Gilinski, y en cambio dejar en
+«institución» a quien dirige el medio público o el semanario de un partido, es
+**aplicar el escrutinio de forma desigual**. Esa asimetría es exactamente el
+sesgo que este mapa existe para no cometer. Una institución no disuelve la
+pregunta de quién manda: la traslada a un cargo, y el cargo lo ocupa alguien con
+nombre y apellido.
+
+**Lo que se documentó, cada uno con su fuente:**
+
+| Medio | Persona | Relación |
+|---|---|---|
+| RTVC | Hollman Felipe Morris Rincón | Gerente. Dirige, no posee |
+| RTVC | El presidente en ejercicio | Control efectivo: lo designa vía MinTIC |
+| Semanario VOZ | Jaime Caycedo Turriago | Secretario general del PCC, dueño del medio |
+| Semanario VOZ | Zabier Hernández Buelvas | Director. Dirige, no posee |
+| Razón Pública | Hernando Gómez Buendía | Fundador, director y editor general |
+| Razón Pública | Consejo editorial | Orientan sin poseer |
+
+**Se mantiene la regla de la tanda anterior: dirigir no es poseer**, y se dice
+cuál de las dos cosas es en cada línea. Sin esa distinción, nombrar a Morris
+insinuaría que el medio público es suyo.
+
+**Dos hallazgos que no se buscaban:**
+
+1. **RTVC ya no se llama RTVC.** `rtvc.gov.co` devuelve un 301 permanente a
+   `inravision.gov.co`: la entidad recuperó su nombre histórico, Inravisión. La
+   prueba es el propio redirect, comprobado hoy. **El catálogo sigue diciendo
+   RTVC** — cambiar el nombre visible de un medio es decisión editorial, no mía,
+   y queda anotado para que Jose decida.
+2. **La ficha de RTVC tiene fecha de caducidad conocida.** El período
+   presidencial terminó el 7 de agosto de 2026, o sea ayer. Quien designa al
+   gerente cambió de manos. Por eso **no se nombra al presidente concreto**: se
+   nombra el cargo. Un catálogo que envejece con el gobierno de turno es un
+   catálogo que miente a los pocos meses.
+
+**Colombia Informa pasa de «sin documentar» a «pendiente con procedimiento», que
+no es lo mismo.** Se encontró la razón social —**Corporación Colombia Informa,
+NIT 900.408.141-8**—, su financiación declarada y su articulación con la ALBA de
+los Movimientos Sociales. Lo que falta es un solo dato, el representante legal, y
+ya no por falta de rastro sino por un trámite: el certificado del RUES con ese
+NIT exige un formulario manual. **No se escribe ningún nombre hasta tenerlo.** Es
+el único medio colombiano cuyo hilo no termina todavía en una persona natural.
+
+**El linter dijo algo que ninguna prueba dijo.** Al documentar el último medio,
+`pending()` —la plantilla de ficha vacía— se quedó sin usos. Se retira en vez de
+silenciar el aviso: si algún día entra un medio sin documentar, que el hueco haya
+que escribirlo a mano y se note.
+
+**Dos pruebas se apoyaban en que existiera un medio sin documentar** y se rompieron
+al no haberlo. Se arreglaron **cambiando el sujeto, no el listón**: ahora usan un
+id inventado. Ataban una prueba sobre el reparto por dueños a un hecho sobre
+Colombia Informa, así que documentarlo rompía algo que no hablaba de él. La que
+contaba fichas vacías pasa a exigir **cero**, y es cuando más protege: el
+siguiente hueco entraría sin que nada más lo delate.
+
+---
+
 ## 2026-08-08 · Distintivo de a quién responde cada redacción
+
+> **Actualizado el mismo día.** El reparto de abajo dice «1 sin documentar». Ya
+> no: ver la entrada «También las instituciones tienen dueño». Se deja el número
+> original porque era el correcto cuando se tomó esta decisión.
 
 **Decisión de Jose.** El mapa debe dejar ver de un vistazo qué medios responden a
 un grupo económico y cuáles hacen periodismo independiente.

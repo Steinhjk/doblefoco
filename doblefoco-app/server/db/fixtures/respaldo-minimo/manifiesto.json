@@ -1,0 +1,10 @@
+{
+  "generadoEn": "2026-08-08T00:00:00.000Z",
+  "nota": "Respaldo mínimo de PRUEBA, no un volcado real. Existe para que la comprobación de CI recorra el camino de restauración completo —esquema vacío, luego restaurar— y no solo el esquema. Dos ciclos bastan: lo que se prueba es que el formato encaja y que el orden de tablas no viola ninguna clave foránea, no el volumen.",
+  "tablas": {
+    "ingest_runs": 2,
+    "moderation": 0,
+    "reader_reports": 0,
+    "reportes_propiedad": 0
+  }
+}

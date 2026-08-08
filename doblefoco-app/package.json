@@ -28,6 +28,7 @@
     "ingest:once": "node scripts/ingestOnce.mjs",
     "worker": "node scripts/ingestWorker.mjs",
     "deploy": "node scripts/desplegar.mjs",
+    "check:esquema": "node scripts/comprobarEsquemaVacio.mjs",
     "admin:create": "node scripts/createAdmin.mjs",
     "clean:filtered": "node scripts/cleanFiltered.mjs",
     "analyze:cocoverage": "node scripts/coCoverage.mjs",

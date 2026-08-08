@@ -72,3 +72,74 @@ jobs:
       # tarea F1-04 y es la clase de error que reaparece en silencio.
       - name: Integridad del catálogo
         run: npm run check:registry
+
+  # ===========================================================================
+  #  ¿Se puede levantar la base desde cero y restaurar una copia?
+  # ===========================================================================
+  #  Va en un job aparte porque necesita un Postgres de verdad, y el de arriba
+  #  no toca la red.
+  #
+  #  QUÉ PROBLEMA RESUELVE, con nombre y fecha. El 2026-08-08, al probar por
+  #  primera vez la restauración de una copia, aparecieron tres fallos que
+  #  hacían `schema.sql` inaplicable sobre una base vacía: un ALTER antes de su
+  #  CREATE, un bloque DO que consultaba una tabla inexistente, y una clave
+  #  foránea hacia una tabla que se creaba después.
+  #
+  #  Ninguno se veía contra producción, porque allí las tablas ya existen. Los
+  #  tres significaban lo mismo: la copia diaria salía en verde y NO SE PODÍA
+  #  RESTAURAR. La confianza estaba puesta en el volcado mientras el camino de
+  #  vuelta llevaba roto quién sabe cuánto tiempo.
+  #
+  #  Es la clase de fallo que reaparece cada vez que alguien añade un ALTER, y
+  #  que solo se ve haciendo exactamente esto.
+  # ===========================================================================
+  esquema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: prueba
+          POSTGRES_DB: doblefoco
+        ports:
+          - 5432:5432
+        # Sin esto los pasos empiezan antes de que Postgres acepte conexiones.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    defaults:
+      run:
+        working-directory: doblefoco-app
+
+    env:
+      # Variable DISTINTA de DATABASE_URL a propósito: la comprobación borra el
+      # esquema, y no debe poder apuntarse a producción por un descuido.
+      DATABASE_URL_PRUEBA: postgresql://postgres:prueba@localhost:5432/doblefoco
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+
+      - name: El esquema se aplica sobre una base vacía
+        run: npm run check:esquema
+
+      # El esquema por sí solo no prueba que un respaldo sirva. Esto recorre el
+      # camino entero —base vacía, luego restaurar— con un respaldo mínimo de
+      # prueba: dos ciclos bastan para comprobar que el formato encaja y que el
+      # orden de tablas no viola ninguna clave foránea.
+      - name: Y una copia se puede restaurar encima
+        run: node scripts/restore.mjs server/db/fixtures/respaldo-minimo
+        env:
+          DATABASE_URL: postgresql://postgres:prueba@localhost:5432/doblefoco

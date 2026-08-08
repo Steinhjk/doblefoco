@@ -71,12 +71,28 @@ if (commitDesplegado === 'desconocido') {
     );
 }
 
+/**
+ * SE USA `process.exitCode`, NO `process.exit()`, Y NO ES INDIFERENTE.
+ *
+ * `process.exit()` aquí aborta el proceso mientras el socket del `fetch` aún se
+ * está cerrando. En Windows eso dispara una aserción de libuv —«Assertion
+ * failed: !(handle->flags & UV_HANDLE_CLOSING)»— y el proceso muere con código
+ * -1073740791 DESPUÉS de haber impreso que todo está bien.
+ *
+ * En una comprobación cuyo único propósito es avisar, eso es el peor fallo
+ * posible: el workflow saldría en rojo con el despliegue perfectamente al día, y
+ * unas cuantas falsas alarmas bastan para que nadie vuelva a mirar el aviso. Es
+ * exactamente el problema que costó los correos falsos de Actions, reaparecido
+ * en la herramienta que se hizo para evitarlo.
+ *
+ * Con `exitCode`, Node termina cuando el socket se cierra solo. Tarda unos
+ * segundos más y no miente.
+ */
 if (!problemas.length) {
     console.log('  ✓ Al día: mismo commit y mismo número de feeds.\n');
-    process.exit(0);
+} else {
+    console.error('  ✗ DESFASE\n');
+    for (const p of problemas) console.error(`    · ${p}`);
+    console.error('\n  Se corrige con:  cd doblefoco-app && npm run deploy\n');
+    process.exitCode = 1;
 }
-
-console.error('  ✗ DESFASE\n');
-for (const p of problemas) console.error(`    · ${p}`);
-console.error('\n  Se corrige con:  cd doblefoco-app && npm run deploy\n');
-process.exit(1);

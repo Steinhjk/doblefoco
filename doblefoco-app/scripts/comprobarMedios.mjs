@@ -129,12 +129,15 @@ if (callados.length) {
 
 await pool.end();
 
+// `exitCode` y no `process.exit()`: abortar mientras los sockets del `fetch` se
+// cierran dispara una aserción de libuv en Windows y el proceso muere con un
+// código de error DESPUÉS de haber dicho que todo está bien. Un aviso que sale
+// en rojo cuando no pasa nada es un aviso que se acaba ignorando.
 if (!problemas.length) {
     console.log('\n  ✓ Todo en orden.\n');
-    process.exit(0);
+} else {
+    console.error('\n  ✗ HAY QUE MIRAR ESTO\n');
+    for (const p of problemas) console.error(`    · ${p}`);
+    console.error('');
+    process.exitCode = 1;
 }
-
-console.error('\n  ✗ HAY QUE MIRAR ESTO\n');
-for (const p of problemas) console.error(`    · ${p}`);
-console.error('');
-process.exit(1);

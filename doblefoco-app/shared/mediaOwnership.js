@@ -101,6 +101,79 @@ export const OWNER_TYPES = {
 };
 
 /**
+ * DISTINTIVO VISUAL POR TIPO DE CONTROL (2026-08-08, pedido de Jose).
+ *
+ * La pregunta que el lector quiere responder de un vistazo es «¿este medio
+ * responde a un grupo económico o hace periodismo independiente?». Se resuelve
+ * con un distintivo por tipo, y no con una etiqueta binaria, por una razón que
+ * conviene dejar escrita:
+ *
+ *   NO SE COLAPSA LA TAXONOMÍA EN DOS. `familiar`, `publico` e `internacional`
+ *   no son ni una cosa ni la otra. Meter a un diario regional de propiedad
+ *   familiar en el saco de «grupo económico» sería afirmar algo que su ficha no
+ *   dice, y ponerlo en «independiente» también. Los cinco tipos se muestran; lo
+ *   que se hace es dar peso visual a los dos extremos que se preguntan.
+ *
+ * `enfasis` marca esos dos. La interfaz puede resaltarlos sin que este archivo
+ * decida cómo se ven, que es cosa del CSS.
+ *
+ * `icono` es el nombre del componente de lucide-react. Se declara aquí, junto al
+ * tipo, para que no acabe habiendo un mapa de iconos distinto en cada pantalla
+ * que muestre esto.
+ */
+export const OWNER_BADGES = {
+    conglomerado: {
+        icono: 'Building2',
+        corto: 'Grupo económico',
+        enfasis: true,
+        explica: 'Responde a un grupo con intereses en otros sectores.',
+    },
+    independiente: {
+        icono: 'Sprout',
+        corto: 'Independiente',
+        enfasis: true,
+        explica: 'Sin dueño con intereses en otros sectores; vive de donaciones o membresías.',
+    },
+    familiar: {
+        icono: 'Users',
+        corto: 'Familiar regional',
+        enfasis: false,
+        explica: 'Controlado por una familia, normalmente con arraigo en su región.',
+    },
+    publico: {
+        icono: 'Landmark',
+        corto: 'Público',
+        enfasis: false,
+        explica: 'Financiado por el Estado.',
+    },
+    internacional: {
+        icono: 'Globe',
+        corto: 'Internacional',
+        enfasis: false,
+        explica: 'Con sede fuera de Colombia.',
+    },
+};
+
+/**
+ * Distintivo de un medio, o `null` si su propiedad no está documentada.
+ *
+ * DEVUELVE `null` Y NO UN TIPO POR OMISIÓN. Un medio sin ficha verificada no es
+ * «independiente por defecto» ni «grupo económico por defecto»: es un medio del
+ * que todavía no se ha comprobado nada, y la interfaz tiene que poder decirlo.
+ * Rellenarlo con una suposición sería exactamente la clase de afirmación sin
+ * fuente que el resto de este archivo existe para impedir.
+ *
+ * @param {string} mediaId
+ */
+export function getOwnerBadge(mediaId) {
+    if (!hasDocumentedOwnership(mediaId)) return null;
+    const ficha = getOwnership(mediaId);
+    const distintivo = OWNER_BADGES[ficha?.ownerType];
+    if (!distintivo) return null;
+    return { tipo: ficha.ownerType, ...distintivo, label: OWNER_TYPES[ficha.ownerType]?.label };
+}
+
+/**
  * Ficha vacía. Se usa para todo medio sin documentación todavía. Explícita, para
  * que la interfaz no tenga que adivinar.
  */

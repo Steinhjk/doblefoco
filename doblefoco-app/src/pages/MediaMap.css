@@ -423,3 +423,44 @@
     .media-map-page { padding: 1.25rem 0.9rem 3rem; }
     .map-controls { justify-content: flex-start; }
 }
+
+/* ── Distintivo de control: a quién responde la redacción ────────────────── */
+/* Los dos extremos que un lector pregunta —grupo económico e independiente—
+   llevan `duenio-enfasis` y se ven con color pleno. Los otros tres van en tono
+   discreto a propósito: mostrarlos con la misma fuerza sugeriría una oposición
+   que su ficha no afirma. */
+.duenio-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    padding: 0.16rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    line-height: 1.3;
+    white-space: nowrap;
+    border: 1px solid var(--border, rgba(128, 128, 128, 0.35));
+    color: var(--text-muted, #8a8a8a);
+}
+
+.duenio-enfasis { font-weight: 600; }
+
+.duenio-conglomerado.duenio-enfasis {
+    color: #b4531f;
+    border-color: #b4531f66;
+    background: #b4531f14;
+}
+
+.duenio-independiente.duenio-enfasis {
+    color: #1f7a5a;
+    border-color: #1f7a5a66;
+    background: #1f7a5a14;
+}
+
+/* Sin ficha verificada. Deliberadamente apagado: es una ausencia de dato, no
+   una categoría más. */
+.duenio-sin {
+    font-style: italic;
+    opacity: 0.65;
+}
+
+.profile-duenio { margin: 0 0 0.85rem; }

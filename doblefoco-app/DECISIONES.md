@@ -17,6 +17,37 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Distintivo de a quién responde cada redacción
+
+**Decisión de Jose.** El mapa debe dejar ver de un vistazo qué medios responden a
+un grupo económico y cuáles hacen periodismo independiente.
+
+**Cómo se resolvió, y qué NO se hizo.** Con un distintivo por tipo de control,
+no con una etiqueta binaria. **La taxonomía de cinco tipos no se colapsa en dos**:
+`familiar`, `publico` e `internacional` no son ni una cosa ni la otra, y meter a
+un diario regional de propiedad familiar en el saco de «grupo económico» —o en el
+de «independiente»— sería afirmar algo que su ficha no dice.
+
+Lo que sí se hace es **dar peso visual a los dos extremos que se preguntan**:
+grupo económico e independiente van con color pleno, los otros tres en tono
+discreto. Mostrarlos todos con la misma fuerza sugeriría una oposición que la
+documentación no sostiene.
+
+**Sin ficha verificada no se pinta distintivo: dice «sin documentar».** Un medio
+del que no se ha comprobado nada no es independiente por defecto ni conglomerado
+por defecto. Rellenarlo con una suposición sería la clase de afirmación sin
+fuente que `mediaOwnership.js` existe para impedir.
+
+**Reparto real** sobre los medios colombianos: 10 grupo económico · 9
+independientes · 7 familiares regionales · 2 internacionales · 1 público · 1 sin
+documentar.
+
+**Detalle**: el nombre del icono vive junto al tipo en `mediaOwnership.js`, no en
+la pantalla, para que no acabe habiendo un mapa de iconos distinto en cada sitio
+que lo muestre.
+
+---
+
 ## 2026-08-08 · CI comprueba que la base se levanta desde cero
 
 **Decisión.** Un job de CI aplica `schema.sql` sobre un Postgres vacío en cada

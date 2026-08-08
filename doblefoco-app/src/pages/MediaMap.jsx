@@ -1,11 +1,14 @@
 import { useMemo, useState, useId, useEffect } from 'react';
 import { fetchPanorama, isApiConfigured } from '../services/apiClient';
-import { ExternalLink, Table2, ScatterChart, Info } from 'lucide-react';
+import {
+    ExternalLink, Table2, ScatterChart, Info,
+    Building2, Sprout, Users, Landmark, Globe,
+} from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
 import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum } from '../../shared/biasAnalysis';
-import { OWNER_TYPES, getOwnership, hasDocumentedOwnership } from '../../shared/mediaOwnership';
+import { OWNER_TYPES, getOwnership, hasDocumentedOwnership, getOwnerBadge } from '../../shared/mediaOwnership';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
 import './MediaMap.css';
@@ -105,6 +108,40 @@ function spread(media) {
  * retirar a nadie (ver el criterio de no silenciar medios): es que la pregunta
  * de esta página tiene un sujeto, y el sujeto es Colombia.
  */
+/**
+ * El nombre del icono vive en `mediaOwnership.js`, junto al tipo; aquí solo se
+ * resuelve al componente. Así no hay dos listas de iconos que mantener.
+ */
+const ICONOS = { Building2, Sprout, Users, Landmark, Globe };
+
+/**
+ * Distintivo de control: a quién responde la sala de redacción.
+ *
+ * `enfasis` resalta los dos extremos que un lector pregunta —grupo económico e
+ * independiente—. Los otros tres se muestran igual, en tono discreto: un diario
+ * regional de propiedad familiar no es ninguna de las dos cosas y forzarlo a un
+ * bando sería afirmar lo que su ficha no dice.
+ *
+ * Sin ficha verificada NO se pinta distintivo, se dice «sin documentar». Un
+ * medio del que no se ha comprobado nada no es independiente por defecto.
+ */
+const Distintivo = ({ mediaId }) => {
+    const b = getOwnerBadge(mediaId);
+    if (!b) {
+        return <span className="duenio-badge duenio-sin" title="Propiedad no verificada todavía">sin documentar</span>;
+    }
+    const Icono = ICONOS[b.icono];
+    return (
+        <span
+            className={`duenio-badge duenio-${b.tipo}${b.enfasis ? ' duenio-enfasis' : ''}`}
+            title={`${b.label}. ${b.explica}`}
+        >
+            {Icono && <Icono size={13} aria-hidden="true" />}
+            {b.corto}
+        </span>
+    );
+};
+
 const ES_COLOMBIANO = (medio) => medio.country === 'CO';
 const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY.filter(ES_COLOMBIANO);
 
@@ -199,6 +236,27 @@ const MediaMap = () => {
                     </button>
                 </div>
             </div>
+
+            <p className="map-warning">
+                <Info size={15} aria-hidden="true" />
+                <span>
+                    En la tabla, la columna <strong>«Responde a»</strong> dice a quién
+                    debe cuentas cada redacción. Los dos distintivos destacados son los
+                    extremos:{' '}
+                    <span className="duenio-badge duenio-conglomerado duenio-enfasis">
+                        <Building2 size={13} aria-hidden="true" />Grupo económico
+                    </span>{' '}
+                    para los controlados por un grupo con intereses en otros sectores, y{' '}
+                    <span className="duenio-badge duenio-independiente duenio-enfasis">
+                        <Sprout size={13} aria-hidden="true" />Independiente
+                    </span>{' '}
+                    para los que viven de donaciones o membresías. Los demás —familiar
+                    regional, público, internacional— <strong>no son ni una cosa ni la
+                    otra</strong>, y forzarlos a un bando diría algo que su ficha no
+                    dice. Cada distintivo sale de la propiedad documentada con fuentes;
+                    donde no la hay, dice «sin documentar» en vez de suponer.
+                </span>
+            </p>
 
             {aportePorMedio && (
                 <p className="map-warning">
@@ -363,6 +421,7 @@ const MediaMap = () => {
                                 <th scope="col">Banda</th>
                                 <th scope="col">Factualidad</th>
                                 <th scope="col">Grupo</th>
+                                <th scope="col">Responde a</th>
                                 <th scope="col">Piezas ({ventanaHoras} h)</th>
                             </tr>
                         </thead>
@@ -381,6 +440,7 @@ const MediaMap = () => {
                                     <td>{getBand(item.bias).label}</td>
                                     <td className="num">{fmtPct(item.factuality)}</td>
                                     <td>{item.group}</td>
+                                    <td><Distintivo mediaId={item.id} /></td>
                                     <td>
                                         {aporta(item.id) === null
                                             ? '—'
@@ -426,6 +486,12 @@ const MediaProfile = ({ media, onClose }) => {
                     ×
                 </button>
             </div>
+
+            {/* Antes de las cifras: a quién responde la redacción es lo que da
+                contexto a todo lo demás, incluida la línea editorial. */}
+            <p className="profile-duenio">
+                <Distintivo mediaId={media.id} />
+            </p>
 
             <div className="profile-metrics">
                 <div className="profile-metric">

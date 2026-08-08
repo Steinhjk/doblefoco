@@ -354,7 +354,28 @@ export const MEDIA_REGISTRY = [
         domain: 'eluniversal.com.co', country: 'CO', group: 'Regional Cartagena',
         bias: 0.20, factuality: 0.86, reviewedAt: null,
         biasRationale: 'Diario regional de Cartagena; cobertura local con línea editorial conservadora moderada.',
-        feed: { url: 'https://www.eluniversal.com.co/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
+        /**
+         * `?outputType=xml` NO ES DECORATIVO (2026-08-08). Sin esa query, la
+         * MISMA ruta devuelve 100 ítems de los que NINGUNO entra en la ventana:
+         * mediana de 475 h —veinte días— y sin orden de fecha. Con ella, los 100
+         * son de las últimas 28 h.
+         *
+         *   sin query   100 ítems ·   0 frescos · mediana 475,3 h
+         *   con query   100 ítems · 100 frescos · mediana  27,9 h
+         *
+         * El feed respondía 200 y traía cien titulares, así que `check:feeds`
+         * lo daba por bueno mientras el medio aportaba una fracción de lo suyo.
+         * Es el fallo que hizo añadir la comprobación de frescura a ese script.
+         *
+         * OJO al copiar: El Heraldo, Vanguardia y El País de Cali usan esta misma
+         * ruta SIN la query y sus cien ítems sí son recientes. No es una regla de
+         * Arc, es de esta instalación. Hay que medir cada una.
+         */
+        feed: {
+            url: 'https://www.eluniversal.com.co/arc/outboundfeeds/rss/?outputType=xml',
+            via: 'direct',
+            category: 'Política',
+        },
     },
     {
         id: 'blu-radio', name: 'Blu Radio', shortName: 'Blu Radio',
@@ -386,9 +407,25 @@ export const MEDIA_REGISTRY = [
     },
     {
         id: 'la-opinion', name: 'La Opinión', shortName: 'La Opinión',
-        domain: 'laopinion.com.co', country: 'CO', group: 'Regional Norte de Santander',
+        /**
+         * EL DOMINIO CAMBIÓ A `laopinion.co` (corregido el 2026-08-08).
+         *
+         * Aquí decía `laopinion.com.co`. El medio migró y su propio feed —que
+         * sigue sirviéndose desde el dominio viejo— entrega enlaces e imágenes
+         * en el nuevo. La consecuencia era invisible desde el servidor y muy
+         * visible para el lector: sus **133 fotografías estaban en laopinion.co,
+         * que no figuraba en la CSP**, así que se guardaban, pasaban la
+         * validación —esa compara contra el dominio del propio artículo, no
+         * contra este campo— y el navegador las bloqueaba al pintarlas.
+         *
+         * Se añadió `laopinion.co` al `img-src` de vercel.json y se creó
+         * `check:csp`, que compara esa lista contra el registro. La CSP está
+         * escrita a mano y no tenía forma de enterarse de una migración.
+         */
+        domain: 'laopinion.co', country: 'CO', group: 'Regional Norte de Santander',
         bias: 0.30, factuality: 0.87, reviewedAt: null,
         biasRationale: 'Diario de Cúcuta; cobertura fronteriza con énfasis en seguridad y migración.',
+        // El feed sigue publicándose en el dominio antiguo, que redirige.
         feed: { url: 'https://www.laopinion.com.co/rss.xml', via: 'direct', category: 'Política' },
     },
     {

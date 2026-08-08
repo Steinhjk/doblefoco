@@ -21,6 +21,7 @@
 
 import Parser from 'rss-parser';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getIngestFeeds, getBand } from '../shared/mediaRegistry.js';
+import { ITEMS_PER_FEED, RETENTION_MS } from '../server/services/ingestDaemon.js';
 
 const STRICT = process.argv.includes('--strict');
 
@@ -37,7 +38,77 @@ const CONCURRENCY = 6;
 const USER_AGENT =
     'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
 
-const parser = new Parser({ headers: { 'User-Agent': USER_AGENT }, timeout: TIMEOUT_MS });
+const parser = new Parser({
+    headers: { 'User-Agent': USER_AGENT },
+    timeout: TIMEOUT_MS,
+    // Los mismos campos que pide el motor. Sin esto, `media:*` no llega y todos
+    // los feeds parecerían no traer imagen.
+    customFields: {
+        item: [
+            ['media:content', 'mediaContent', { keepArray: true }],
+            ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
+            ['content:encoded', 'contentEncoded'],
+        ],
+    },
+});
+
+/**
+ * RESPONDER NO ES ALIMENTAR — lo que este archivo aprendió el 2026-08-08.
+ *
+ * Hasta ese día un feed se daba por bueno con `items.length > 0`. Con ese
+ * criterio, el feed de W Radio estuvo MESES en verde sirviendo piezas cuya
+ * mediana de edad era de 32 551 horas —casi cuatro años—: devolvía 100 ítems y
+ * ninguno entraba en la ventana de retención. El indicador decía «✓» sobre un
+ * medio que no aportaba nada.
+ *
+ * Lo que de verdad predice si un medio alimenta el corpus son estas cuatro
+ * cosas, medidas SOBRE LOS 15 ÍTEMS QUE EL MOTOR TOMA y no sobre el feed entero:
+ *
+ *   frescos   cuántos caen dentro de la ventana. Cero = el feed responde y el
+ *             medio queda mudo igual.
+ *   mediana   la edad típica de lo que tomamos.
+ *   orden     SI LA MEDIANA ES ALTA, esto dice por qué, y son dos cosas muy
+ *             distintas. Un feed CRONOLÓGICO con ítems viejos es un medio que
+ *             publica despacio —Vorágine saca una pieza cada 74,7 h, y eso es
+ *             su oficio, no una avería—. Un feed DESORDENADO con ítems viejos
+ *             está ordenado por relevancia: existen piezas más nuevas que no nos
+ *             está dando, cada sondeo devuelve casi lo mismo, se deduplica y no
+ *             se acumula nada. Sin esta distinción el informe acusaría de estar
+ *             roto al periodismo de investigación, que es justo al revés.
+ *   imagen    cuántos traen `media:*`. NO es fatal que sea cero: el enriquecedor
+ *             rescata la `og:image` después —El Tiempo trae 0 en el feed y tiene
+ *             foto en todos sus artículos—. Es una dependencia, no una condena.
+ *   dominio   si el enlace no apunta al medio —el caso de news.google.com— se
+ *             pierde la URL canónica y el lector acaba en un intermediario.
+ */
+const edadMs = (item, ahora) => {
+    const fecha = item.isoDate ?? item.pubDate;
+    const t = fecha ? new Date(fecha).getTime() : NaN;
+    return Number.isFinite(t) ? ahora - t : NaN;
+};
+
+const mediana = (valores) => {
+    if (!valores.length) return NaN;
+    const orden = [...valores].sort((a, b) => a - b);
+    return orden[Math.floor(orden.length / 2)];
+};
+
+/**
+ * ¿Vienen los ítems de más nuevo a más viejo?
+ *
+ * Se admite algún desorden —muchos gestores publican con minutos de desfase—
+ * pero un feed por relevancia falla esto de forma escandalosa. Con menos de
+ * cuatro fechas no se afirma nada: devuelve `null`, que la interfaz trata como
+ * «no se sabe» y no como «desordenado».
+ */
+const esCronologico = (edades) => {
+    if (edades.length < 4) return null;
+    let enOrden = 0;
+    for (let i = 1; i < edades.length; i += 1) {
+        if (edades[i] >= edades[i - 1]) enOrden += 1;
+    }
+    return enOrden / (edades.length - 1) >= 0.8;
+};
 
 async function mapWithConcurrency(items, limit, worker) {
     const results = new Array(items.length);
@@ -66,12 +137,44 @@ async function probe(feed) {
     try {
         const parsed = await parser.parseURL(feed.url);
         const items = parsed?.items ?? [];
+        const ahora = Date.now();
+        // Solo los que el motor tomaría. Ver la nota «RESPONDER NO ES ALIMENTAR».
+        const tomados = items.slice(0, ITEMS_PER_FEED);
+        // Sin `filter` aquí el orden se rompería al quitar los que no tienen
+        // fecha, y `esCronologico` mediría un orden que el feed no tiene.
+        const edades = tomados.map((i) => edadMs(i, ahora)).filter(Number.isFinite);
+        const frescos = edades.filter((ms) => ms < RETENTION_MS).length;
+        const cronologico = esCronologico(edades);
+        const conImagen = tomados.filter(
+            (i) => i.mediaContent || i.mediaThumbnail || i.contentEncoded
+        ).length;
+
+        let dominioEnlace = null;
+        for (const item of tomados) {
+            try { dominioEnlace = new URL(item.link).hostname.replace(/^www\./, ''); break; } catch { /* siguiente */ }
+        }
+        const dominioAjeno = Boolean(
+            dominioEnlace && feed.domain && !dominioEnlace.endsWith(feed.domain.replace(/^www\./, ''))
+        );
+
         return {
             ...feed,
-            ok: items.length > 0,
+            ok: frescos > 0,
             items: items.length,
+            tomados: tomados.length,
+            frescos,
+            conImagen,
+            sinFecha: tomados.length - edades.length,
+            medianaHoras: edades.length ? mediana(edades) / 3_600_000 : NaN,
+            cronologico,
+            dominioEnlace,
+            dominioAjeno,
             ms: Date.now() - startedAt,
-            error: items.length ? null : 'respondió sin artículos',
+            error: items.length === 0
+                ? 'respondió sin artículos'
+                : frescos === 0
+                    ? `responde pero NADA entra: los ${tomados.length} ítems que tomamos están fuera de la ventana`
+                    : null,
             sample: items[0]?.title ?? null,
         };
     } catch (error) {
@@ -79,6 +182,14 @@ async function probe(feed) {
             ...feed,
             ok: false,
             items: 0,
+            tomados: 0,
+            frescos: 0,
+            conImagen: 0,
+            sinFecha: 0,
+            medianaHoras: NaN,
+            cronologico: null,
+            dominioEnlace: null,
+            dominioAjeno: false,
             ms: Date.now() - startedAt,
             error: error?.message ?? 'error desconocido',
             sample: null,
@@ -108,20 +219,90 @@ for (const result of results) {
 
 const registryById = new Map(MEDIA_REGISTRY.map((m) => [m.id, m]));
 
-console.log('FEEDS');
+console.log('FEEDS  —  «frescos» y «foto» se miden sobre los ' + ITEMS_PER_FEED + ' ítems que toma el motor');
+console.log('─'.repeat(78));
+console.log('   medio                  vía      ítems  frescos  foto   mediana  orden');
 console.log('─'.repeat(78));
 
-for (const [mediaId, entry] of byMedia) {
-    const media = registryById.get(mediaId);
-    const band = getBand(media.bias).label;
+for (const entry of byMedia.values()) {
     const mark = entry.ok ? '✓' : '✗';
-    console.log(`${mark} ${entry.name.padEnd(22)} ${band.padEnd(17)} ${String(entry.items).padStart(3)} art.`);
+    const via = entry.feeds.every((f) => f.via === 'gnews') ? 'gnews' : 'directo';
+    const frescos = entry.feeds.reduce((s, f) => s + f.frescos, 0);
+    const tomados = entry.feeds.reduce((s, f) => s + f.tomados, 0);
+    const foto = entry.feeds.reduce((s, f) => s + f.conImagen, 0);
+    const medianas = entry.feeds.map((f) => f.medianaHoras).filter(Number.isFinite);
+    const med = medianas.length ? `${mediana(medianas).toFixed(1)} h` : '—';
+    /*
+     * «fecha»  viene ordenado: lo viejo, si lo hay, es la cadencia del medio.
+     * «RELEV»  desordenado Y viejo — hay piezas nuevas que no nos está dando.
+     * «mezcl.» desordenado pero todo fresco. Se dice, y no se alarma: si lo que
+     *          llega es de hace una hora, da igual en qué orden venga.
+     */
+    const ordenes = entry.feeds.map((f) => f.cronologico).filter((v) => v !== null);
+    const medianaGrupo = medianas.length ? mediana(medianas) : 0;
+    const orden = !ordenes.length
+        ? '—'
+        : ordenes.every(Boolean)
+            ? 'fecha'
+            : medianaGrupo > 24
+                ? 'RELEV'
+                : 'mezcl.';
+
+    console.log(
+        `${mark}  ${entry.name.padEnd(22)} ${via.padEnd(8)} ` +
+        `${String(entry.items).padStart(5)}  ${String(frescos).padStart(4)}/${String(tomados).padEnd(3)} ` +
+        `${String(foto).padStart(4)}   ${med.padStart(8)}  ${orden}`
+    );
 
     for (const feed of entry.feeds) {
         if (feed.ok) continue;
-        const via = feed.via === 'gnews' ? 'gnews' : 'directo';
-        console.log(`    · ${via} ${feed.url}`);
-        console.log(`      ${feed.error} (${feed.ms} ms)`);
+        console.log(`      · ${feed.via === 'gnews' ? 'gnews' : 'directo'} ${feed.url}`);
+        console.log(`        ${feed.error} (${feed.ms} ms)`);
+    }
+}
+
+// ── Los tres fallos que «items.length > 0» no veía ───────────────────────────
+
+const mudosQueResponden = results.filter((r) => r.items > 0 && r.frescos === 0);
+const ajenos = results.filter((r) => r.dominioAjeno);
+// Viejo Y desordenado. Si viene en orden, es cadencia del medio y no un fallo.
+const desordenados = results.filter(
+    (r) => r.items > 0 && r.medianaHoras > 24 && r.cronologico === false
+);
+const lentosPeroSanos = results.filter(
+    (r) => r.frescos > 0 && r.medianaHoras > 72 && r.cronologico === true
+);
+
+if (mudosQueResponden.length || ajenos.length || desordenados.length) {
+    console.log();
+    console.log('AVISOS QUE «RESPONDE O NO RESPONDE» NO DABA');
+    console.log('─'.repeat(78));
+
+    for (const r of mudosQueResponden) {
+        console.log(`  ✗ ${r.name}: responde con ${r.items} ítems y NINGUNO entra en la ventana.`);
+        if (Number.isFinite(r.medianaHoras)) {
+            console.log(`     mediana ${(r.medianaHoras / 24).toFixed(0)} días — sirve archivo, no actualidad.`);
+        }
+    }
+    for (const r of desordenados) {
+        console.log(
+            `  ⚠ ${r.name}: mediana de ${r.medianaHoras.toFixed(0)} h y los ítems NO vienen por fecha.`
+        );
+        console.log('     Orden por relevancia: hay piezas más nuevas que este feed no nos da.');
+    }
+    for (const r of ajenos) {
+        console.log(`  ⚠ ${r.name}: los enlaces apuntan a ${r.dominioEnlace}, no a ${r.domain}.`);
+    }
+}
+
+if (lentosPeroSanos.length) {
+    console.log();
+    console.log('PUBLICAN DESPACIO, Y NO ES UN FALLO');
+    console.log('─'.repeat(78));
+    console.log('  Feeds en orden cronológico correcto: lo que devuelven ES lo último que');
+    console.log('  publicaron. Aparecen aquí para que su silencio no se lea como avería.');
+    for (const r of lentosPeroSanos) {
+        console.log(`  · ${r.name.padEnd(22)} pieza más reciente hace ${r.medianaHoras.toFixed(0)} h (mediana)`);
     }
 }
 

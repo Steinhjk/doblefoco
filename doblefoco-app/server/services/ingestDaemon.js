@@ -55,10 +55,25 @@ import { enriquecerImagenes } from './imageEnricher.js';
 const FEED_TIMEOUT_MS = 12_000;
 const FEED_RETRIES = 2;
 const FEED_CONCURRENCY = 4;
-const ITEMS_PER_FEED = 15;
 
-/** Ventana de retención. Más allá de esto los artículos se descartan. */
-const RETENTION_MS = 72 * 60 * 60 * 1000; // 72 horas
+/**
+ * Cuántos ítems se toman de cada feed por ciclo.
+ *
+ * SE EXPORTA para que `check:feeds` mida sobre los mismos 15 que entran de
+ * verdad. Comprobar la frescura del feed entero engañaría: un feed puede traer
+ * 100 ítems recientes y aun así no aportar nada si los 15 primeros son viejos,
+ * que es exactamente lo que pasaba con los de Google News.
+ */
+export const ITEMS_PER_FEED = 15;
+
+/**
+ * Ventana de retención. Más allá de esto los artículos se descartan.
+ *
+ * Se exporta por el mismo motivo: la comprobación de feeds necesita saber qué
+ * cuenta como «fresco», y una copia del número en el script se desincronizaría
+ * el día que este cambie.
+ */
+export const RETENTION_MS = 72 * 60 * 60 * 1000; // 72 horas
 
 /**
  * Techo duro de artículos en memoria, para que el proceso no crezca sin fin.

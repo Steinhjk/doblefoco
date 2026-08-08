@@ -73,6 +73,14 @@ jobs:
       - name: Integridad del catálogo
         run: npm run check:registry
 
+      # La CSP de vercel.json enumera a mano los dominios desde los que se
+      # permiten imágenes, y no tenía ninguna relación con el registro. Cuando
+      # La Opinión migró a laopinion.co, sus 133 fotos se siguieron guardando y
+      # el navegador las bloqueó al pintarlas: invisible en los registros del
+      # servidor y total para el lector. Esto compara las dos listas.
+      - name: La CSP permite las imágenes del catálogo
+        run: npm run check:csp
+
   # ===========================================================================
   #  ¿Se puede levantar la base desde cero y restaurar una copia?
   # ===========================================================================

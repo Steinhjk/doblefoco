@@ -17,6 +17,74 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-08 · Responder no es alimentar: se auditan los 39 feeds
+
+**Decisión de Jose**, tras el arreglo de los tres feeds: revisar los demás para
+asegurar los flujos. Se cambió lo que `check:feeds` considera un feed sano y se
+encontraron dos fallos que llevaban meses invisibles.
+
+**El criterio viejo era `items.length > 0`.** Con ese listón, el feed de W Radio
+estuvo meses en verde sirviendo piezas de hace cuatro años: devolvía 100 títulos,
+así que ✓. Ahora se mide sobre **los 15 ítems que el motor toma de verdad**:
+cuántos caen dentro de la ventana, la mediana de edad, si traen imagen, si el
+enlace apunta al medio, y **si el feed viene ordenado por fecha**.
+
+**Ese último dato es el que evita una acusación injusta.** Una mediana alta
+significa dos cosas opuestas según el orden:
+
+- **Cronológico y viejo** → el medio publica despacio. Vorágine saca una pieza
+  cada 74,7 h. Es su oficio, no una avería, y el informe lo dice en una sección
+  aparte titulada «publican despacio, y no es un fallo».
+- **Desordenado y viejo** → orden por relevancia: existen piezas más nuevas que
+  ese feed no nos está dando.
+
+Sin esa distinción, el informe habría señalado como rotos a Vorágine, Cuestión
+Pública, Razón Pública, Colombia Informa y Noticias Uno — justo el periodismo de
+investigación que el producto quiere conservar.
+
+**FALLO 1 — El Universal, y la causa es una query.** La misma ruta, con y sin
+`?outputType=xml`:
+
+```
+sin query   100 ítems ·   0 frescos · mediana 475,3 h  (veinte días)
+con query   100 ítems · 100 frescos · mediana  27,9 h
+```
+
+No es una regla de Arc: El Heraldo, Vanguardia y El País de Cali usan esa ruta
+sin query y sus cien ítems son recientes. Hay que medir instalación por
+instalación.
+
+**FALLO 2 — La Opinión: 133 fotografías bloqueadas en el navegador.** El medio
+migró a `laopinion.co` y el registro seguía diciendo `laopinion.com.co`. Sus
+imágenes se descargaban, **pasaban la validación** —`urlDeImagenValida` compara
+contra el dominio del propio artículo, no contra la CSP—, se guardaban en la
+base… y el navegador las bloqueaba al pintarlas, porque `laopinion.co` no estaba
+en el `img-src` de vercel.json.
+
+Es el peor tipo de fallo del catálogo: **invisible desde el servidor y total para
+el lector**. Ni un registro, ni un aviso, ni una prueba en rojo. Solo un hueco
+gris donde iba la foto.
+
+**Y se cierra la clase entera, no el caso.** La CSP enumera dominios A MANO y no
+tenía ninguna relación con el registro, así que no había forma de que se enterara
+de una migración. Se añade **`npm run check:csp`**, que compara las dos listas, y
+va en el CI.
+
+**Distingue por si el medio ingiere o no**, que es lo que evita que se vuelva
+ruido: siete medios están como referencia y sin feed —EFE, Reuters, CNN, NYT,
+WSJ, FT y La Vanguardia—. Sin feed no hay imágenes, así que no hacen fallar la
+comprobación; se listan como recordatorio para el día que alguien les ponga feed.
+
+**Lo que la comprobación NO puede ver**, y queda dicho en su cabecera: que un
+medio sirva fotos desde un host que no esté declarado en el registro. Eso solo se
+descubre mirando los `image_url` reales en la base.
+
+**Constantes compartidas.** `ITEMS_PER_FEED` y `RETENTION_MS` se exportan desde
+`ingestDaemon.js` en vez de copiarse al script: una copia se habría
+desincronizado el día que cambien, y la comprobación mediría un motor imaginario.
+
+---
+
 ## 2026-08-08 · Google News ordena por relevancia, y eso nos silenció medios
 
 **Decisión.** El Espectador, Caracol Radio y W Radio salen de Google News y pasan

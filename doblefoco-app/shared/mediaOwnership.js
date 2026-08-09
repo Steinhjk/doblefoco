@@ -1807,3 +1807,50 @@ export function gruposCompartidos(mediaIds) {
         }))
         .sort((a, b) => b.medios.length - a.medios.length);
 }
+
+/**
+ * SUBCATEGORÍAS DEL MAPA DE PROPIEDAD.
+ *
+ * POR QUÉ EXISTEN (2026-08-09, decisión de Jose). El catálogo tenía 10 medios
+ * regionales y va camino de ~28: uno por departamento. Sin separarlos, los
+ * regionales pasarían a ser la MITAD de los puntos del mapa mediático, y el
+ * retrato que esa página existe para dar —tres dueños concentran la mitad de lo
+ * que se publica en Colombia— quedaría enterrado bajo un enjambre de diarios de
+ * provincia que no compiten en ese espacio.
+ *
+ * No es esconderlos: es que la pregunta de esa página tiene un sujeto. El mismo
+ * argumento que ya sacó del mapa a los medios internacionales, y por eso mismo
+ * los regionales siguen ahí, a un clic, con su ficha entera.
+ */
+export const ALCANCES = {
+    nacional: {
+        label: 'Nacionales',
+        descripcion: 'Circulan en todo el país y pertenecen a grupos con intereses en otros sectores. Son los que deciden la agenda nacional.',
+    },
+    independiente: {
+        label: 'Independientes',
+        descripcion: 'Sin ánimo de lucro, por membresía o por cooperación. Su conflicto de interés, cuando lo hay, viene de quién los financia, no de quién los posee.',
+    },
+    regional: {
+        label: 'Regionales',
+        descripcion: 'Con sede y agenda en un departamento. Se muestran aparte porque son muchos y su espacio de competencia es otro, no porque cuenten menos.',
+    },
+};
+
+/**
+ * En cuál de las tres cae un medio. Excluyentes: un medio sale una sola vez.
+ *
+ * EL ORDEN DE LAS PREGUNTAS ES LA DECISIÓN. Se mira PRIMERO si tiene
+ * departamento, así que un futuro medio regional e independiente cuenta como
+ * regional y queda fuera de la vista por omisión. Es deliberado y es la parte
+ * discutible: al separarlos por alcance antes que por tipo de dueño, el mapa
+ * gana legibilidad nacional y pierde de vista al independiente de provincia,
+ * que suele ser justo el que menos se ve ya.
+ *
+ * @param {{id: string, departamento?: string}} medio
+ * @returns {'nacional'|'independiente'|'regional'}
+ */
+export function alcanceDe(medio) {
+    if (medio?.departamento) return 'regional';
+    return getOwnership(medio?.id)?.ownerType === 'independiente' ? 'independiente' : 'nacional';
+}

@@ -10,6 +10,7 @@ import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
+    ALCANCES, alcanceDe,
 } from '../../shared/mediaOwnership';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
@@ -149,8 +150,31 @@ const Distintivo = ({ mediaId }) => {
 const ES_COLOMBIANO = (medio) => medio.country === 'CO';
 const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY.filter(ES_COLOMBIANO);
 
+/** Cuántos hay de cada alcance. Se calcula una vez: el catálogo no cambia. */
+const CUANTOS_POR_ALCANCE = MEDIOS_COLOMBIANOS.reduce((cuenta, medio) => {
+    const alcance = alcanceDe(medio);
+    return { ...cuenta, [alcance]: (cuenta[alcance] ?? 0) + 1 };
+}, /** @type {Record<string, number>} */ ({}));
+
+/**
+ * Con qué alcances arranca la página.
+ *
+ * LOS REGIONALES EMPIEZAN APAGADOS, y conviene entender por qué antes de
+ * encenderlos «por completitud». El catálogo va de 10 medios regionales a uno
+ * por departamento: encendidos por omisión serían la mitad de los puntos, y lo
+ * que esta página existe para enseñar —que tres dueños concentran la mitad de
+ * lo publicado— se leería peor con el doble de puntos que no participan de esa
+ * concentración.
+ *
+ * Están a un clic y con su ficha entera. No es silenciarlos: es que la pregunta
+ * de esta página tiene un sujeto, igual que cuando se sacaron del mapa los
+ * medios internacionales.
+ */
+const ALCANCES_POR_OMISION = ['nacional', 'independiente'];
+
 const MediaMap = () => {
     const [view, setView] = useState('mapa');
+    const [alcances, setAlcances] = useState(ALCANCES_POR_OMISION);
     const [selectedId, setSelectedId] = useState(null);
     const [conteos, setConteos] = useState(null);
     const [ventanaHoras, setVentanaHoras] = useState(72);
@@ -192,10 +216,30 @@ const MediaMap = () => {
         return new Map(conteos.map((c) => [c.sourceId, c.articulos ?? 0]));
     }, [conteos]);
 
+    /**
+     * Los medios que se están mirando. El desplazamiento anticolisión se
+     * calcula DESPUÉS de filtrar, no antes: si se calculara sobre el catálogo
+     * entero, apagar los regionales dejaría huecos donde estaban y los puntos
+     * que quedan seguirían apartados de vecinos que ya no se ven.
+     */
     const media = useMemo(
-        () => spread([...MEDIOS_COLOMBIANOS].sort((a, b) => a.bias - b.bias)),
-        []
+        () =>
+            spread(
+                MEDIOS_COLOMBIANOS
+                    .filter((medio) => alcances.includes(alcanceDe(medio)))
+                    .sort((a, b) => a.bias - b.bias)
+            ),
+        [alcances]
     );
+
+    /** Encender o apagar un alcance. Nunca se pueden apagar los tres. */
+    const alternarAlcance = (clave) => {
+        setAlcances((previos) => {
+            if (!previos.includes(clave)) return [...previos, clave];
+            // Quedarse sin ninguno dejaría un mapa vacío que parece una avería.
+            return previos.length === 1 ? previos : previos.filter((p) => p !== clave);
+        });
+    };
 
     /**
      * `null` = todavía no se sabe, y se trata distinto de «no aporta». Marcar un
@@ -219,7 +263,7 @@ const MediaMap = () => {
                 <p className="map-warning">
                     <Info size={15} aria-hidden="true" />
                     <span>
-                        Las {MEDIOS_COLOMBIANOS.length} clasificaciones son juicios editoriales
+                        Las {media.length} clasificaciones que se ven son juicios editoriales
                         argumentados y <strong>ninguna ha pasado por revisión formal todavía</strong>.
                         Cada una lleva su justificación al lado, para que se pueda discutir.
                     </span>
@@ -243,7 +287,45 @@ const MediaMap = () => {
                         <Table2 size={15} aria-hidden="true" /> Tabla
                     </button>
                 </div>
+
+                {/*
+                  * SUBCATEGORÍAS POR ALCANCE. Casillas y no pestañas: se pueden
+                  * combinar, porque «nacionales + independientes» es la vista
+                  * por omisión y tiene que poder existir.
+                  */}
+                <fieldset className="map-alcances">
+                    <legend>Qué medios se muestran</legend>
+                    {Object.entries(ALCANCES).map(([clave, { label, descripcion }]) => (
+                        <label key={clave} className="map-alcance" title={descripcion}>
+                            <input
+                                type="checkbox"
+                                checked={alcances.includes(clave)}
+                                onChange={() => alternarAlcance(clave)}
+                            />
+                            <span>{label}</span>
+                            <span className="map-alcance-cifra">{CUANTOS_POR_ALCANCE[clave] ?? 0}</span>
+                        </label>
+                    ))}
+                </fieldset>
             </div>
+
+            {/*
+              * Se dice en voz alta lo que falta cuando falta, y no solo en el
+              * texto de ayuda de una casilla. Un mapa que oculta a un tercio del
+              * catálogo sin avisar es un mapa que miente por omisión.
+              */}
+            {!alcances.includes('regional') && (
+                <p className="map-nota-alcance">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        Faltan aquí <strong>{CUANTOS_POR_ALCANCE.regional ?? 0} medios regionales</strong>,
+                        y no porque cuenten menos: esta página mide la concentración de la
+                        propiedad en el espacio nacional, y un diario de provincia no compite
+                        en ese espacio. Sus fichas están completas y se ven marcando
+                        «Regionales».
+                    </span>
+                </p>
+            )}
 
             <p className="map-warning">
                 <Info size={15} aria-hidden="true" />
@@ -301,8 +383,7 @@ const MediaMap = () => {
                         aria-labelledby={titleId}
                     >
                         <title id={titleId}>
-                            Dispersión de {media.length} medios: orientación editorial en el eje
-                            horizontal, factualidad en el vertical.
+                            {`Dispersión de ${media.length} medios: orientación editorial en el eje horizontal, factualidad en el vertical.`}
                         </title>
 
                         {/* Bandas del espectro: contexto de fondo, deliberadamente recesivo. */}
@@ -405,8 +486,16 @@ const MediaMap = () => {
                                             }
                                         }}
                                     />
+                                    {/*
+                                      * UNA SOLA CADENA, no tres nodos. React
+                                      * exige que los hijos de <title> sean un
+                                      * único texto —el navegador solo sabe
+                                      * leer texto ahí dentro— y esta forma
+                                      * escupía un aviso por cada punto: 36 en
+                                      * cada renderizado de servidor.
+                                      */}
                                     <title>
-                                        {item.name} · {fmtBias(item.bias)} · {fmtPct(item.factuality)}
+                                        {`${item.name} · ${fmtBias(item.bias)} · ${fmtPct(item.factuality)}`}
                                     </title>
                                 </g>
                             );

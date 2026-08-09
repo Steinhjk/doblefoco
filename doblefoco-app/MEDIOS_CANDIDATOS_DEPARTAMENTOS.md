@@ -165,7 +165,8 @@ tres con ella.
 
 ## Estado de las fichas
 
-Dieciséis fichas escritas (2026-08-09), ninguna firmada. Se hacen por tandas y con
+Veintidós fichas escritas (2026-08-09), ninguna firmada. **Ya no falta ninguna**:
+todos los candidatos con feed verificado tienen la suya. Se hacen por tandas y con
 el registro mercantil por delante, no en bloque.
 
 | Departamento | Medio | Ficha | Estado |
@@ -185,6 +186,12 @@ el registro mercantil por delante, no en bloque.
 | Casanare | Prensa Libre Casanare | `fichas/prensa-libre-casanare.md` | **sin número**: hay editor, no hay sociedad |
 | Quindío | Quindío Noticias | `fichas/quindio-noticias.md` | **sin número**: nivel 1 vacío del todo |
 | Sucre | Sucre Noticias | `fichas/sucre-noticias.md` | **sin número**: nivel 1 vacío + feed parado 14 días |
+| Vichada | El Morichal | `fichas/el-morichal.md` | 0,00 provisional · **sin ánimo de lucro**, cubre también Guainía |
+| Guaviare | El Manduco | `fichas/el-manduco.md` | 0,00 provisional · cuatro cargos, un apellido |
+| Putumayo | MiPutumayo | `fichas/miputumayo.md` | 0,00 provisional · fundador-director desde 2004 |
+| Caquetá | Lente Regional | `fichas/lente-regional.md` | 0,00 provisional · pide «apoyo sin restricciones» |
+| San Andrés | El Isleño | `fichas/el-isleno.md` | **sin número**: solo un nombre comercial |
+| Cundinamarca | Diario de Cundinamarca | `fichas/diario-de-cundinamarca.md` | **sin número**: nivel 1 vacío + 18 días parado |
 | Nariño | Diario del Sur | `fichas/diario-del-sur.md` | **sin número**: editora en liquidación + feed sin fechas |
 
 ### Lo que se aprendió haciéndolas
@@ -203,10 +210,7 @@ convierte «lo dice su web» en nivel 1 de verdad.
 **Un feed sano no dice nada de la salud de la empresa.** Dos de los ocho
 publican con normalidad y tienen la editora en liquidación.
 
-### Faltan por ficha (con feed vivo verificado)
 
-Archipiélago de San Andrés, Caquetá, Cundinamarca, Guaviare, Putumayo y
-Vichada.
 
 ### Lo que apareció en la tercera tanda
 
@@ -276,3 +280,56 @@ frontera con presencia armada, eso no es un descuido administrativo.
 
 Y queda una pista sin explorar para Sucre: [mapeomedios.com](https://www.mapeomedios.com/),
 una plataforma que mapea el ecosistema de medios del departamento.
+
+---
+
+## Cerrada la serie: 22 fichas, ninguna firmada
+
+Todos los candidatos con feed verificado tienen ficha. El balance:
+
+| | |
+|---|---|
+| Con valor provisional propuesto | **11** |
+| Sin número, por falta de nivel 1 o por bloqueo | **11** |
+
+**Once de veintidós no publican quién los edita.** No es una casualidad
+regional: pasa en Magdalena, Arauca, Casanare, Quindío, Sucre, San Andrés y
+Cundinamarca por igual.
+
+### Lo que trajo la quinta tanda
+
+**El Morichal (Vichada) es el único sin ánimo de lucro de los veintidós**, y el
+único que cuenta su propia cadena societaria incluida una liquidación. Además
+**cubre Guainía** —Inírida y Barrancominas— con un cofundador indígena nacido
+allí. Guainía no deja de estar en blanco en la vista, porque el medio es de
+Vichada, pero el diagnóstico cambia: no es que nadie cuente Guainía, es que
+quien la cuenta está al lado.
+
+**El Morichal destapa además una decisión de producto.** Es regional e
+independiente a la vez, y `alcanceDe` mira primero el departamento: quedaría
+**oculto por omisión en el mapa de propiedad**. El compromiso estaba escrito al
+hacer el filtro, pero conviene verlo con un caso real: el primer medio
+independiente de provincia que llega es justo el que la regla esconde.
+
+**El Manduco (Guaviare) tiene cuatro cargos y un apellido**: fundador, director,
+director emérito y gerente son cuatro Díaz. En un departamento de 90 000
+habitantes, basta con que un Díaz tenga un interés para que el medio lo tenga.
+
+**Cundinamarca merece decidirse, no buscarse.** Rodea a Bogotá, y su cobertura
+la hacen El Tiempo, El Espectador, Semana y Blu, que ya están dentro. Un lector
+de Soacha que filtre por su departamento recibirá prensa bogotana, y el mapa
+dirá que está cubierto cuando lo que está es absorbido. Hay tres salidas y están
+escritas en `fichas/diario-de-cundinamarca.md`.
+
+### Lo que queda, y ya no es investigación
+
+1. **La afiliación de Ecos del Combeima a Blu Radio.** Lo más urgente.
+2. **Certificados de Cámara de Comercio**: Neiva, Tunja, Santa Marta,
+   Villavicencio (con NIT), Pereira, Arauca, San Andrés, Vichada.
+3. **Escribir a El Meridiano** — desbloquea Córdoba y Sucre de una vez.
+4. **Escribir a La Crónica del Quindío** — WordPress sin feed, y sería
+   preferible al medio anónimo que hoy es el único candidato del Quindío.
+5. **Escribir a Prensa Libre Casanare y a MiPutumayo**, que tienen persona
+   identificable, para preguntar sociedad y financiación.
+6. **Buscar prensa municipal** en Soacha/Girardot (Cundinamarca) y en Tumaco o
+   Ipiales (Nariño), los dos departamentos grandes sin candidato viable.

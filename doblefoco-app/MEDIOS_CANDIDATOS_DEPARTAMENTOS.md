@@ -165,7 +165,7 @@ tres con ella.
 
 ## Estado de las fichas
 
-Doce fichas escritas (2026-08-09), ninguna firmada. Se hacen por tandas y con
+Dieciséis fichas escritas (2026-08-09), ninguna firmada. Se hacen por tandas y con
 el registro mercantil por delante, no en bloque.
 
 | Departamento | Medio | Ficha | Estado |
@@ -181,6 +181,10 @@ el registro mercantil por delante, no en bloque.
 | Chocó | Chocó 7 Días | `fichas/choco-7-dias.md` | 0,00 provisional · única voz viva del Chocó |
 | Meta | Vive el Meta | `fichas/vive-el-meta.md` | 0,00 provisional · **propietario desconocido** |
 | Tolima | El Nuevo Día | `fichas/el-nuevo-dia.md` | **sin número**: editora en liquidación |
+| Arauca | Al Aire Noticias | `fichas/al-aire-noticias.md` | **sin número**: solo una razón social |
+| Casanare | Prensa Libre Casanare | `fichas/prensa-libre-casanare.md` | **sin número**: hay editor, no hay sociedad |
+| Quindío | Quindío Noticias | `fichas/quindio-noticias.md` | **sin número**: nivel 1 vacío del todo |
+| Sucre | Sucre Noticias | `fichas/sucre-noticias.md` | **sin número**: nivel 1 vacío + feed parado 14 días |
 | Nariño | Diario del Sur | `fichas/diario-del-sur.md` | **sin número**: editora en liquidación + feed sin fechas |
 
 ### Lo que se aprendió haciéndolas
@@ -201,8 +205,8 @@ publican con normalidad y tienen la editora en liquidación.
 
 ### Faltan por ficha (con feed vivo verificado)
 
-Arauca, Archipiélago de San Andrés, Caquetá, Casanare, Cundinamarca, Guaviare,
-Putumayo, Quindío, Sucre y Vichada.
+Archipiélago de San Andrés, Caquetá, Cundinamarca, Guaviare, Putumayo y
+Vichada.
 
 ### Lo que apareció en la tercera tanda
 
@@ -238,3 +242,37 @@ Los medios se parten en dos grupos, y no por su línea:
 **La transparencia de propiedad no correlaciona con el tamaño ni con la región:
 correlaciona con la decisión de publicarla.** Es, en sí mismo, un hallazgo del
 proyecto.
+
+### La cuarta tanda no dio ni un número, y ese es el resultado
+
+Arauca, Casanare, Quindío y Sucre: **los cuatro sin valor propuesto**, todos por
+la misma razón. Ninguno publica quién lo edita.
+
+Lo que se encontró de cada uno, entero:
+
+- **Al Aire Noticias** (Arauca) — «Al Aire Comunicar S.A.S.» en un pie de
+  copyright. Ni NIT ni personas.
+- **Prensa Libre Casanare** — un nombre, Miguel Ángel Cristancho, editor, con
+  correo de Gmail. Ninguna sociedad. **Es el único de los cuatro al que se le
+  puede escribir**, y eso lo convierte en el más fácil de desbloquear.
+- **Quindío Noticias** — nada, con más de 527 000 seguidores en Facebook.
+- **Sucre Noticias** — nada, y encima el feed lleva catorce días parado.
+
+**Que la tanda entera saliera sin número no es un fracaso de la investigación:
+es el dato.** Cuatro departamentos cuyo medio digital más visible no dice quién
+lo sostiene. En Casanare, que vive de regalías petroleras, y en Arauca, que es
+frontera con presencia armada, eso no es un descuido administrativo.
+
+### Dos gestiones que desbloquean cinco departamentos
+
+1. **El Meridiano** (`elmeridiano.co`) se define como el medio de «Córdoba,
+   Sucre y la región Caribe». Un solo obstáculo técnico —Next.js sin feed y 403
+   a los bots— **deja dos departamentos sin voz**. Resolverlo es la gestión más
+   rentable que queda.
+2. **La Crónica del Quindío** y **El Quindiano** son WordPress sin feed en las
+   23 rutas probadas. Un WordPress sin feed suele estar desactivado a propósito,
+   no ausente. La Crónica es el diario tradicional del departamento y sería
+   preferible al medio anónimo que hoy es el único candidato del Quindío.
+
+Y queda una pista sin explorar para Sucre: [mapeomedios.com](https://www.mapeomedios.com/),
+una plataforma que mapea el ecosistema de medios del departamento.

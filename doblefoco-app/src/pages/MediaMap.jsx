@@ -72,7 +72,16 @@ const SPECTRUM_FILL = {
  */
 
 const fmtBias = (bias) => `${bias >= 0 ? '+' : '−'}${Math.abs(bias).toFixed(2)}`;
-const fmtPct = (value) => `${Math.round(value * 100)}%`;
+
+/**
+ * `null` es «no medida», y se dice. Antes esto devolvía «NaN%» en cuanto
+ * llegaba un medio sin factualidad, que es peor que no decir nada: parece una
+ * avería del sitio en vez de un hueco del dato.
+ */
+const fmtPct = (value) => (typeof value === 'number' ? `${Math.round(value * 100)}%` : 'sin medir');
+
+/** ¿Se puede colocar este medio en el eje vertical? */
+const tieneFactualidad = (medio) => typeof medio?.factuality === 'number';
 
 /**
  * Separa puntos que caerían encima. Con 40 medios en un rango estrecho de
@@ -224,13 +233,22 @@ const MediaMap = () => {
      */
     const media = useMemo(
         () =>
-            spread(
-                MEDIOS_COLOMBIANOS
-                    .filter((medio) => alcances.includes(alcanceDe(medio)))
-                    .sort((a, b) => a.bias - b.bias)
-            ),
+            MEDIOS_COLOMBIANOS
+                .filter((medio) => alcances.includes(alcanceDe(medio)))
+                .sort((a, b) => a.bias - b.bias),
         [alcances]
     );
+
+    /**
+     * Los que SE PUEDEN DIBUJAR. Un medio sin factualidad medida no tiene
+     * altura en este gráfico: colocarlo exigiría inventarle una, y ponerlo en
+     * el suelo o en la media diría algo que no sabemos.
+     *
+     * Siguen en la tabla, con «sin medir» en su columna. Es la misma regla de
+     * siempre: el hueco se declara, no se rellena.
+     */
+    const puntos = useMemo(() => spread(media.filter(tieneFactualidad)), [media]);
+    const sinFactualidad = media.length - puntos.length;
 
     /** Encender o apagar un alcance. Nunca se pueden apagar los tres. */
     const alternarAlcance = (clave) => {
@@ -374,6 +392,27 @@ const MediaMap = () => {
                 ))}
             </div>
 
+            {/*
+              * Si faltan puntos en el gráfico hay que decirlo AQUÍ, y no solo
+              * en la tabla. Un lector que cuenta los puntos y los compara con
+              * la cifra del catálogo tiene que encontrar la explicación en el
+              * mismo sitio donde nota que algo no cuadra.
+              */}
+            {view === 'mapa' && sinFactualidad > 0 && (
+                <p className="map-warning">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        <strong>{sinFactualidad}</strong>{' '}
+                        {sinFactualidad === 1 ? 'medio no aparece' : 'medios no aparecen'} en el
+                        gráfico: no {sinFactualidad === 1 ? 'tiene' : 'tienen'} historial de rigor
+                        factual medido, así que no {sinFactualidad === 1 ? 'tiene' : 'tienen'}{' '}
+                        altura en el eje vertical. Colocar{sinFactualidad === 1 ? 'lo' : 'los'} en
+                        la media o en el suelo afirmaría algo que no sabemos.{' '}
+                        <strong>Están todos en la tabla</strong>, con «sin medir» en esa columna.
+                    </span>
+                </p>
+            )}
+
             {view === 'mapa' ? (
                 <div className="map-figure">
                     <svg
@@ -383,7 +422,7 @@ const MediaMap = () => {
                         aria-labelledby={titleId}
                     >
                         <title id={titleId}>
-                            {`Dispersión de ${media.length} medios: orientación editorial en el eje horizontal, factualidad en el vertical.`}
+                            {`Dispersión de ${puntos.length} medios: orientación editorial en el eje horizontal, factualidad en el vertical.`}
                         </title>
 
                         {/* Bandas del espectro: contexto de fondo, deliberadamente recesivo. */}
@@ -447,7 +486,7 @@ const MediaMap = () => {
                             Factualidad del medio
                         </text>
 
-                        {media.map((item) => {
+                        {puntos.map((item) => {
                             const spectrum = classifySpectrum(item.bias);
                             const isSelected = item.id === selectedId;
 

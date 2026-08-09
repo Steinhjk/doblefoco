@@ -613,6 +613,89 @@ export const MEDIA_REGISTRY = [
         biasRationale: 'Diario antioqueño de tradición conservadora; énfasis en empresa privada y orden institucional.',
         feed: { url: 'https://www.elcolombiano.com/rss/portada.xml', via: 'direct', category: 'Política' },
     },
+
+    /**
+     * ── REGIONALES DEPARTAMENTALES (alta del 2026-08-09) ─────────────────────
+     *
+     * Nueve medios, uno por departamento, de los 22 candidatos investigados.
+     * Cada uno tiene su ficha razonada en `fichas/<id>.md` y NINGUNO está
+     * firmado: entran con `reviewedAt: null` como los otros 45.
+     *
+     * `factuality: null` EN LOS NUEVE, y es deliberado. No existe ni una
+     * medición de rigor factual de ninguno. Ponerles 0.85 «como los otros
+     * regionales» habría sido inventar una medición, que es justo lo que la
+     * Fase 0 quitó del motor. El hueco se declara: la tabla dice «sin medir» y
+     * el gráfico no los coloca en el eje vertical.
+     *
+     * De los 22 candidatos NO entran aquí trece: nueve porque su ficha quedó
+     * sin número, uno —Ecos del Combeima— porque su alta está condicionada a
+     * resolver si es afiliada de Blu Radio, y tres —EL DIARIO de Boyacá, Vive
+     * el Meta y Lente Regional— porque dar de alta obliga a declarar un
+     * `ownerType`, y de esos tres no sé de quién son.
+     */
+    {
+        id: 'el-pilon', name: 'El Pilón', shortName: 'El Pilón',
+        domain: 'elpilon.com.co', departamento: 'Cesar', country: 'CO', group: 'Regional Cesar',
+        bias: 0.20, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Valledupar; sociedad anónima con junta empresarial y agenda regional. Valor provisional puesto por coherencia con la banda de los otros diarios comerciales regionales, no por evidencia propia — ver fichas/el-pilon.md.',
+        feed: { url: 'https://elpilon.com.co/api/rss', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'diario-del-huila', name: 'Diario del Huila', shortName: 'Diario del Huila',
+        domain: 'diariodelhuila.com', departamento: 'Huila', country: 'CO', group: 'Regional Huila',
+        bias: 0.20, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Neiva, casa familiar dirigida por la familia fundadora. Valor provisional por coherencia con la banda regional; el accionariado sigue sin documentar — ver fichas/diario-del-huila.md.',
+        feed: { url: 'https://diariodelhuila.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'diario-del-norte', name: 'Diario del Norte', shortName: 'Diario del Norte',
+        domain: 'diariodelnorte.net', departamento: 'La Guajira', country: 'CO', group: 'Sistema Cardenal',
+        bias: 0.20, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Riohacha del grupo radial Sistema Cardenal. Es el único candidato regional que publica su accionariado con porcentajes. Valor provisional por coherencia con la banda regional — ver fichas/diario-del-norte.md.',
+        feed: { url: 'https://diariodelnorte.net/feed', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'el-diario-pereira', name: 'El Diario (Pereira)', shortName: 'El Diario',
+        domain: 'eldiario.com.co', departamento: 'Risaralda', country: 'CO', group: 'Regional Risaralda',
+        bias: 0.20, factuality: null, reviewedAt: null,
+        biasRationale: 'Único diario de Pereira desde 2016, cuando la familia propietaria del Diario del Otún compró La Tarde y fusionó ambas cabeceras. Valor provisional por coherencia con la banda regional — ver fichas/el-diario-pereira.md.',
+        feed: { url: 'https://www.eldiario.com.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'proclama-del-pacifico', name: 'Proclama del Pacífico', shortName: 'Proclama',
+        domain: 'proclamadelpacifico.com', departamento: 'Cauca', country: 'CO', group: 'Digital independiente',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Medio digital de Santander de Quilichao, verificado en el directorio de SembraMedia. Orientación mixta provisional: nada de la evidencia lo sitúa en el eje y la regla manda ir a la banda más cercana a la mixta — ver fichas/proclama-del-pacifico.md.',
+        feed: { url: 'https://proclamadelpacifico.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'choco-7-dias', name: 'Chocó 7 Días', shortName: 'Chocó 7 Días',
+        domain: 'choco7dias.com', departamento: 'Chocó', country: 'CO', group: 'Regional Chocó',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Semanario de Quibdó, el único medio vivo del Chocó del catálogo. Declara denunciar las causas de la crisis del departamento; se clasifica en mixta porque denunciar al poder es el oficio y no una orientación, con la tensión declarada — ver fichas/choco-7-dias.md.',
+        feed: { url: 'https://choco7dias.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'el-manduco', name: 'El Manduco', shortName: 'El Manduco',
+        domain: 'elmanduco.com.co', departamento: 'Guaviare', country: 'CO', group: 'Regional Guaviare',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Medio de San José del Guaviare cuyos cuatro cargos —fundador, director, director emérito y gerente— ocupa la misma familia. La estructura dice quién manda, no hacia dónde tira — ver fichas/el-manduco.md.',
+        feed: { url: 'https://elmanduco.com.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'miputumayo', name: 'MiPutumayo', shortName: 'MiPutumayo',
+        domain: 'miputumayo.com.co', departamento: 'Putumayo', country: 'CO', group: 'Regional Putumayo',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Magazín digital de Mocoa fundado y dirigido por la misma persona desde 2004. Sin sociedad ni financiación declaradas; orientación mixta provisional — ver fichas/miputumayo.md.',
+        feed: { url: 'https://miputumayo.com.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'el-morichal', name: 'El Morichal', shortName: 'El Morichal',
+        domain: 'elmorichal.com', departamento: 'Vichada', country: 'CO', group: 'Corporación El Morichal',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Corporación sin ánimo de lucro de Puerto Carreño que cubre Vichada y Guainía. Único medio sin ánimo de lucro de la tanda departamental; orientación mixta provisional — ver fichas/el-morichal.md.',
+        feed: { url: 'https://elmorichal.com/feed/', via: 'direct', category: 'Política' },
+    },
     {
         id: 'semana', name: 'Semana', shortName: 'Semana',
         domain: 'semana.com', country: 'CO', group: 'Grupo Gilinski',

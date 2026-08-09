@@ -333,3 +333,59 @@ escritas en `fichas/diario-de-cundinamarca.md`.
    identificable, para preguntar sociedad y financiación.
 6. **Buscar prensa municipal** en Soacha/Girardot (Cundinamarca) y en Tumaco o
    Ipiales (Nariño), los dos departamentos grandes sin candidato viable.
+
+---
+
+## ALTA — 2026-08-09
+
+**Nueve medios dentro.** Los departamentos con medio propio pasan de **8 a 17**.
+
+| Departamento | Medio | Orientación provisional |
+|---|---|---|
+| Cesar | El Pilón | +0,20 |
+| Huila | Diario del Huila | +0,20 |
+| La Guajira | Diario del Norte | +0,20 |
+| Risaralda | El Diario (Pereira) | +0,20 |
+| Cauca | Proclama del Pacífico | 0,00 |
+| Chocó | Chocó 7 Días | 0,00 |
+| Guaviare | El Manduco | 0,00 |
+| Putumayo | MiPutumayo | 0,00 |
+| Vichada | El Morichal | 0,00 |
+
+Los nueve entran con `reviewedAt: null`, como los otros 45. **Ninguno está
+firmado.**
+
+### `factuality: null` en los nueve, y hubo que abrir la puerta para ello
+
+`checkRegistry` **exigía** un número de factualidad para dar de alta a
+cualquiera. Esa obligación tenía un efecto perverso: para meter un medio había
+que inventarle un historial de rigor factual. Es exactamente lo que la Fase 0
+quitó del motor —fijaba 0.88 para todo y la interfaz lo mostraba como
+«Factualidad IA: 88 %»— y volvía a colarse por la puerta del catálogo.
+
+Ahora `null` es válido y significa **no medida**. Se avisa, no se falla. En
+consecuencia:
+
+- La tabla del mapa mediático dice **«sin medir»** en esa columna.
+- El gráfico **no los coloca**: sin factualidad no tienen altura en el eje
+  vertical, y ponerlos en la media o en el suelo afirmaría algo que no sabemos.
+  La página dice cuántos faltan y por qué.
+
+### Trece candidatos NO entraron, y por tres motivos distintos
+
+- **Nueve** porque su ficha quedó sin número.
+- **Uno**, Ecos del Combeima, porque su alta está condicionada a resolver si es
+  afiliada de Blu Radio.
+- **Tres** —EL DIARIO de Boyacá, Vive el Meta y Lente Regional— porque dar de
+  alta obliga a declarar un `ownerType`, es decir, a afirmar de quién es el
+  medio, **y de esos tres no lo sé**. Sus propias fichas ya decían que debían ir
+  sin número; esto es la consecuencia práctica.
+
+### Lo que saltó al hacerlo
+
+La prueba de la CSP falló al añadirlos: los nueve dominios podían traer imagen
+en su feed y `img-src` no los permitía. Es la regla de «imágenes reales o
+ninguna» funcionando — se añadieron a `public/_headers` y a `vercel.json`.
+
+De los nueve, **ocho tienen logo**; Diario del Norte devolvió 404 y se pintará
+con monograma.

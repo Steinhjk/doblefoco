@@ -165,7 +165,7 @@ tres con ella.
 
 ## Estado de las fichas
 
-Ocho fichas escritas (2026-08-09), ninguna firmada. Se hacen por tandas y con
+Doce fichas escritas (2026-08-09), ninguna firmada. Se hacen por tandas y con
 el registro mercantil por delante, no en bloque.
 
 | Departamento | Medio | Ficha | Estado |
@@ -176,6 +176,10 @@ el registro mercantil por delante, no en bloque.
 | Boyacá | EL DIARIO | `fichas/el-diario-boyaca.md` | +0,20 provisional · **objeción de método sin resolver** |
 | Tolima | Ecos del Combeima | `fichas/ecos-del-combeima.md` | **alta condicionada**: ¿es afiliada de Blu Radio? |
 | Magdalena | El Informador | `fichas/el-informador.md` | **sin número**: nivel 1 a medias |
+| La Guajira | Diario del Norte | `fichas/diario-del-norte.md` | +0,20 provisional · **publica su accionariado** |
+| Risaralda | El Diario | `fichas/el-diario-pereira.md` | +0,20 provisional · absorbió al diario rival |
+| Chocó | Chocó 7 Días | `fichas/choco-7-dias.md` | 0,00 provisional · única voz viva del Chocó |
+| Meta | Vive el Meta | `fichas/vive-el-meta.md` | 0,00 provisional · **propietario desconocido** |
 | Tolima | El Nuevo Día | `fichas/el-nuevo-dia.md` | **sin número**: editora en liquidación |
 | Nariño | Diario del Sur | `fichas/diario-del-sur.md` | **sin número**: editora en liquidación + feed sin fechas |
 
@@ -197,5 +201,40 @@ publican con normalidad y tienen la editora en liquidación.
 
 ### Faltan por ficha (con feed vivo verificado)
 
-Arauca, Archipiélago de San Andrés, Caquetá, Casanare, Chocó, Cundinamarca,
-Guaviare, La Guajira, Meta, Putumayo, Quindío, Risaralda, Sucre y Vichada.
+Arauca, Archipiélago de San Andrés, Caquetá, Casanare, Cundinamarca, Guaviare,
+Putumayo, Quindío, Sucre y Vichada.
+
+### Lo que apareció en la tercera tanda
+
+**Pereira ya no tiene dos diarios, tiene uno.** El Diario nace en 2016 de
+fusionar *La Tarde* y *Diario del Otún*, y quedó en manos de los hermanos
+Ramírez Múnera, que ya eran dueños del segundo. Poner a El Diario como «el medio
+de Risaralda» es exacto y a la vez engañoso: es el único que queda, no el que
+ganó una competencia que siga existiendo. **Ese hecho merece salir en la propia
+vista departamental**, porque es información sobre pluralidad y de eso trata el
+sitio.
+
+**Diario del Norte publica su accionariado con porcentajes** —Demis Pacheco
+Fernández 80 %, y dos socias al 10 %— cosa que no hace ningún otro. Y no es solo
+un periódico: **Sistema Cardenal S.A.S. emite radio en Valledupar, San Juan del
+Cesar y Riohacha**, así que el dueño del único medio de La Guajira también tiene
+voz en el Cesar. Perdió tres emisoras en 2024, que pasaron a la radio adventista.
+
+**Un accionista al 80 % no tiene contrapeso interno**, y en el departamento del
+Cerrejón eso importa: su independencia declarada descansa en la voluntad de una
+persona, no en una estructura.
+
+### El patrón, tras doce fichas
+
+Los medios se parten en dos grupos, y no por su línea:
+
+- **Los que dicen quiénes son** — Diario del Norte (accionariado con
+  porcentajes), El Pilón (junta y accionista mayoritario), El Diario de Pereira
+  (dueños nombrados). Sus fichas se sostienen.
+- **Los que solo dicen cómo se llaman** — El Informador, Vive el Meta, EL DIARIO
+  de Boyacá, Chocó 7 Días. Nombre de empresa, a veces un NIT, y ningún dueño.
+  Sus fichas van sin número o con objeción de método sin resolver.
+
+**La transparencia de propiedad no correlaciona con el tamaño ni con la región:
+correlaciona con la decisión de publicarla.** Es, en sí mismo, un hallazgo del
+proyecto.

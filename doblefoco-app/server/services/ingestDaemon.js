@@ -33,6 +33,7 @@ import {
 } from '../../shared/clustering.js';
 import { analyzeHeadlineTone } from '../../shared/headlineTone.js';
 import { assessArticle } from '../../shared/contentQuality.js';
+import { detectarOpinion } from '../../shared/opinion.js';
 import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { recordIngestRun } from './metricsStore.js';
@@ -836,6 +837,20 @@ export async function runIngestionBatch() {
                         tone: analyzeHeadlineTone(headline),
                         publishedAt: parsePublishedAt(item),
                         ingestedAtMs: Date.now(),
+                        /**
+                         * OPINIÓN: se marca, se guarda y NO se agrupa.
+                         *
+                         * Decisión de Jose (2026-08-09). Una columna no es el
+                         * reporte de un hecho: si tres medios opinan del mismo
+                         * tema, el agrupador ve una historia multifuente
+                         * perfecta donde no hubo un hecho reportado.
+                         *
+                         * No se descarta —es el mejor indicio de la orientación
+                         * de un medio, porque a quién le das una columna es una
+                         * decisión deliberada y repetida— sino que se desvía al
+                         * agregado de formadores de opinión.
+                         */
+                        opinion: detectarOpinion(link),
                         outlet: {
                             // El id del registro es lo que enlaza el artículo
                             // con su medio en la base (articles.source_id).
@@ -1101,7 +1116,18 @@ function measureStoryShape() {
 
 /** Agrupa los artículos ingeridos en historias multifuente. */
 function buildMultisourceStories() {
-    const articles = [...articlesByLink.values()].sort((a, b) => {
+    /*
+     * LA OPINIÓN NO ENTRA AQUÍ (2026-08-09). Ver la nota de `opinion` en la
+     * construcción del artículo: agrupar columnas con noticias mezcla «quién
+     * informó de esto» con «quién opinó de esto». Medido ese día, 105 de 2 749
+     * artículos colombianos eran opinión y estaban entrando al agrupamiento.
+     *
+     * Siguen en `articlesByLink`, así que se guardan y alimentan el índice de
+     * columnistas. Lo único que no hacen es formar historias.
+     */
+    const articles = [...articlesByLink.values()]
+        .filter((a) => !a.opinion?.esOpinion)
+        .sort((a, b) => {
         const dateA = a.publishedAt ? Date.parse(a.publishedAt) : 0;
         const dateB = b.publishedAt ? Date.parse(b.publishedAt) : 0;
         return dateB - dateA;

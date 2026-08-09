@@ -160,3 +160,42 @@ Por cada medio que se dé de alta:
 Son 21 medios. **Hacerlo en bloque y de prisa sería exactamente lo que este
 proyecto no hace**: veintiuna clasificaciones sin evidencia valen menos que
 tres con ella.
+
+---
+
+## Estado de las fichas
+
+Ocho fichas escritas (2026-08-09), ninguna firmada. Se hacen por tandas y con
+el registro mercantil por delante, no en bloque.
+
+| Departamento | Medio | Ficha | Estado |
+|---|---|---|---|
+| Cesar | El Pilón | `fichas/el-pilon.md` | +0,20 provisional · nivel 1 completo |
+| Huila | Diario del Huila | `fichas/diario-del-huila.md` | +0,20 provisional · falta accionariado |
+| Cauca | Proclama del Pacífico | `fichas/proclama-del-pacifico.md` | 0,00 provisional · en SembraMedia |
+| Boyacá | EL DIARIO | `fichas/el-diario-boyaca.md` | +0,20 provisional · **objeción de método sin resolver** |
+| Tolima | Ecos del Combeima | `fichas/ecos-del-combeima.md` | **alta condicionada**: ¿es afiliada de Blu Radio? |
+| Magdalena | El Informador | `fichas/el-informador.md` | **sin número**: nivel 1 a medias |
+| Tolima | El Nuevo Día | `fichas/el-nuevo-dia.md` | **sin número**: editora en liquidación |
+| Nariño | Diario del Sur | `fichas/diario-del-sur.md` | **sin número**: editora en liquidación + feed sin fechas |
+
+### Lo que se aprendió haciéndolas
+
+**El +0,20 de los regionales se pone por parecido con los que ya están, y un
+parecido no es evidencia.** Está escrito en el apartado CONTRA de cada ficha.
+Si la banda regional del catálogo está mal calibrada, estas fichas la replican
+y encima le dan aspecto de método. Es lo primero que habría que atacar cuando
+haya corpus.
+
+**Tres trámites de Cámara de Comercio desbloquearían tres fichas**: Neiva
+(Editora del Huila), Tunja (EL DIARIO) y Santa Marta (Editorial Magdalena). Son
+en línea y de pago simbólico. Es la vía más barata que queda y la única que
+convierte «lo dice su web» en nivel 1 de verdad.
+
+**Un feed sano no dice nada de la salud de la empresa.** Dos de los ocho
+publican con normalidad y tienen la editora en liquidación.
+
+### Faltan por ficha (con feed vivo verificado)
+
+Arauca, Archipiélago de San Andrés, Caquetá, Casanare, Chocó, Cundinamarca,
+Guaviare, La Guajira, Meta, Putumayo, Quindío, Risaralda, Sucre y Vichada.

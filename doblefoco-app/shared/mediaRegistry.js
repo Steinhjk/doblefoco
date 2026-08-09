@@ -257,6 +257,49 @@ export const MEDIA_REGISTRY = [
          */
     },
     {
+        /**
+         * CANALES PÚBLICOS REGIONALES (2026-08-09, a petición de Jose).
+         *
+         * Añaden al mapa una capa de propiedad que no existía: medios cuyo dueño
+         * es un ALCALDE O UNA GOBERNACIÓN, no el presidente ni un grupo
+         * económico. Su línea depende del gobierno LOCAL de turno, así que
+         * heredan la misma volatilidad que ya está declarada para RTVC, pero con
+         * un calendario electoral distinto.
+         *
+         * Su valor de orientación entra en 0,00 —orientación mixta— a propósito:
+         * NO se les asigna posición sin haberla medido, y su ficha depende de
+         * quién gobierne la ciudad. `reviewedAt` en null como los otros 34.
+         */
+        id: 'telemedellin', name: 'Telemedellín', shortName: 'Telemedellín',
+        domain: 'telemedellin.tv', departamento: 'Antioquia', country: 'CO',
+        group: 'Público municipal — Alcaldía de Medellín',
+        bias: 0.0, factuality: 0.85, reviewedAt: null,
+        biasRationale: 'Canal público del municipio de Medellín. Su dirección la designa la Alcaldía, así que su línea sigue al gobierno local de turno. Valor sin medir: entra en orientación mixta hasta tener conducta observable.',
+        feed: { url: 'https://www.telemedellin.tv/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'canal-capital', name: 'Canal Capital', shortName: 'Canal Capital',
+        domain: 'canalcapital.gov.co', departamento: 'Bogotá D.C.', country: 'CO',
+        group: 'Público distrital — Alcaldía Mayor de Bogotá',
+        bias: 0.0, factuality: 0.85, reviewedAt: null,
+        biasRationale: 'Canal público del Distrito Capital. Su dirección la designa la Alcaldía Mayor, así que su línea sigue al gobierno distrital de turno. Valor sin medir.',
+        feed: { url: 'https://www.canalcapital.gov.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        /**
+         * SU RSS ESTÁ CASI PARADO, y se declara al entrar: medido el 2026-08-09,
+         * de los 15 ítems que tomamos solo 1 caía dentro de la ventana y la
+         * mediana era de 1 365 horas —57 días—. Entra igual, por el criterio de
+         * no silenciar a nadie, pero sabiendo que hoy aportará muy poco.
+         */
+        id: 'telecaribe', name: 'Telecaribe', shortName: 'Telecaribe',
+        domain: 'telecaribe.co', departamento: 'Atlántico', country: 'CO',
+        group: 'Público regional — Caribe',
+        bias: 0.0, factuality: 0.85, reviewedAt: null,
+        biasRationale: 'Canal público regional del Caribe colombiano, participado por las gobernaciones de la región. Valor sin medir.',
+        feed: { url: 'https://www.telecaribe.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
         id: 'rtvc', name: 'RTVC Noticias', shortName: 'RTVC',
         domain: 'rtvcnoticias.com', country: 'CO', group: 'Medio público nacional',
         bias: -0.35, factuality: 0.82, reviewedAt: null,
@@ -456,14 +499,14 @@ export const MEDIA_REGISTRY = [
     // ─────────── Centro-derecha / derecha ───────────
     {
         id: 'el-heraldo', name: 'El Heraldo', shortName: 'El Heraldo',
-        domain: 'elheraldo.co', country: 'CO', group: 'Regional Caribe',
+        domain: 'elheraldo.co', departamento: 'Atlántico', country: 'CO', group: 'Regional Caribe',
         bias: 0.20, factuality: 0.84, reviewedAt: null,
         biasRationale: 'Diario regional del Caribe; agenda local con encuadre institucional.',
         feed: { url: 'https://www.elheraldo.co/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
     },
     {
         id: 'el-universal', name: 'El Universal', shortName: 'El Universal',
-        domain: 'eluniversal.com.co', country: 'CO', group: 'Regional Cartagena',
+        domain: 'eluniversal.com.co', departamento: 'Bolívar', country: 'CO', group: 'Regional Cartagena',
         bias: 0.20, factuality: 0.86, reviewedAt: null,
         biasRationale: 'Diario regional de Cartagena; cobertura local con línea editorial conservadora moderada.',
         /**
@@ -505,14 +548,14 @@ export const MEDIA_REGISTRY = [
     },
     {
         id: 'la-patria', name: 'La Patria', shortName: 'La Patria',
-        domain: 'lapatria.com', country: 'CO', group: 'Regional Eje Cafetero',
+        domain: 'lapatria.com', departamento: 'Caldas', country: 'CO', group: 'Regional Eje Cafetero',
         bias: 0.25, factuality: 0.85, reviewedAt: null,
         biasRationale: 'Diario del Eje Cafetero; línea tradicional con agenda regional agroindustrial.',
         feed: { url: 'https://www.lapatria.com/rss.xml', via: 'direct', category: 'Política' },
     },
     {
         id: 'vanguardia', name: 'Vanguardia', shortName: 'Vanguardia',
-        domain: 'vanguardia.com', country: 'CO', group: 'Regional Santander',
+        domain: 'vanguardia.com', departamento: 'Santander', country: 'CO', group: 'Regional Santander',
         bias: 0.25, factuality: 0.85, reviewedAt: null,
         biasRationale: 'Diario de Santander; cobertura regional con encuadre empresarial.',
         feed: { url: 'https://www.vanguardia.com/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
@@ -534,7 +577,7 @@ export const MEDIA_REGISTRY = [
          * `check:csp`, que compara esa lista contra el registro. La CSP está
          * escrita a mano y no tenía forma de enterarse de una migración.
          */
-        domain: 'laopinion.co', country: 'CO', group: 'Regional Norte de Santander',
+        domain: 'laopinion.co', departamento: 'Norte de Santander', country: 'CO', group: 'Regional Norte de Santander',
         bias: 0.30, factuality: 0.87, reviewedAt: null,
         biasRationale: 'Diario de Cúcuta; cobertura fronteriza con énfasis en seguridad y migración.',
         // El feed sigue publicándose en el dominio antiguo, que redirige.
@@ -542,7 +585,7 @@ export const MEDIA_REGISTRY = [
     },
     {
         id: 'el-pais-cali', name: 'El País (Cali)', shortName: 'El País Cali',
-        domain: 'elpais.com.co', country: 'CO', group: 'Regional Valle',
+        domain: 'elpais.com.co', departamento: 'Valle del Cauca', country: 'CO', group: 'Regional Valle',
         bias: 0.30, factuality: 0.85, reviewedAt: null,
         biasRationale: 'Diario del Valle del Cauca; línea editorial conservadora con agenda empresarial regional.',
         feed: { url: 'https://www.elpais.com.co/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
@@ -565,7 +608,7 @@ export const MEDIA_REGISTRY = [
     },
     {
         id: 'el-colombiano', name: 'El Colombiano', shortName: 'El Colombiano',
-        domain: 'elcolombiano.com', country: 'CO', group: 'Regional Antioquia',
+        domain: 'elcolombiano.com', departamento: 'Antioquia', country: 'CO', group: 'Regional Antioquia',
         bias: 0.35, factuality: 0.86, reviewedAt: null,
         biasRationale: 'Diario antioqueño de tradición conservadora; énfasis en empresa privada y orden institucional.',
         feed: { url: 'https://www.elcolombiano.com/rss/portada.xml', via: 'direct', category: 'Política' },

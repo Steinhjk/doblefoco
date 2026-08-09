@@ -830,6 +830,28 @@ export const CONTROL_GROUPS = {
             },
         ],
     },
+    'gobiernos-locales': {
+        label: 'Gobiernos locales — alcaldías y gobernaciones',
+        sectores: [],
+        // Misma lógica que `estado-colombiano`: el dueño es una institución y el
+        // control lo ejerce un cargo electo. La diferencia es el CALENDARIO —los
+        // alcaldes y gobernadores se eligen en un ciclo distinto al presidencial—
+        // y el ÁMBITO: responden a una ciudad, no al país.
+        personas: [{
+            nombre: 'El alcalde o gobernador en ejercicio, según el canal',
+            papel:
+                'Titular del control efectivo: designa a la dirección del canal. No se ' +
+                'nombra a personas concretas porque cambian con cada elección local y el ' +
+                'catálogo no debe envejecer con ellas. Las direcciones de los tres canales ' +
+                'están SIN documentar: falta ir a la web de cada uno.',
+            desde: null,
+            fuentes: [
+                'https://www.telemedellin.tv/',
+                'https://www.canalcapital.gov.co/',
+                'https://www.telecaribe.co/',
+            ],
+        }],
+    },
     'raya-fundacion': {
         label: 'Fundación RAYA — sus nueve periodistas fundadores',
         sectores: [],
@@ -1066,6 +1088,33 @@ export const OWNERSHIP_PROFILES = {
             'https://www.lasillavacia.com/historias/silla-nacional/asi-resucita-la-revista-cambio-en-la-era-digital/',
         ],
         verifiedAt: VERIFICADO,
+    },
+
+    'telemedellin': {
+        ownerType: 'publico',
+        controlGroup: 'gobiernos-locales',
+        holdings: ['Canal público del municipio de Medellín. Su dirección la designa la Alcaldía.'],
+        notes: ['Su orientación depende del gobierno municipal de turno, igual que la de RTVC depende del nacional, pero con calendario electoral propio.'],
+        sources: ['https://www.telemedellin.tv/'],
+        verifiedAt: '2026-08-09',
+    },
+
+    'canal-capital': {
+        ownerType: 'publico',
+        controlGroup: 'gobiernos-locales',
+        holdings: ['Canal público del Distrito Capital. Su dirección la designa la Alcaldía Mayor de Bogotá.'],
+        notes: ['Su orientación depende del gobierno distrital de turno.'],
+        sources: ['https://www.canalcapital.gov.co/'],
+        verifiedAt: '2026-08-09',
+    },
+
+    'telecaribe': {
+        ownerType: 'publico',
+        controlGroup: 'gobiernos-locales',
+        holdings: ['Canal público regional del Caribe colombiano, participado por las gobernaciones de la región.'],
+        notes: ['Su RSS está casi parado: medido el 2026-08-09, solo 1 de los 15 ítems que tomamos caía dentro de la ventana de 72 h y la mediana era de 57 días. Entra por el criterio de no silenciar a ningún medio, sabiendo que hoy aporta muy poco.'],
+        sources: ['https://www.telecaribe.co/'],
+        verifiedAt: '2026-08-09',
     },
 
     'rtvc': {

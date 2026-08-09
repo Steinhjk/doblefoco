@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-09
-Medios en el catálogo: 45
+Medios en el catálogo: 48
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  19 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  22 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -124,6 +124,24 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  19 medios
     dw.com · Servicio público alemán · DE · RSS propio · PROVISIONAL
     Radiodifusora pública internacional alemana; encuadre
     institucional europeo.
+
+  Telemedellín  ·  sesgo +0.00  ·  factualidad 85%
+    telemedellin.tv · Público municipal — Alcaldía de Medellín · CO · RSS propio · PROVISIONAL
+    Canal público del municipio de Medellín. Su dirección la designa
+    la Alcaldía, así que su línea sigue al gobierno local de turno.
+    Valor sin medir: entra en orientación mixta hasta tener conducta
+    observable.
+
+  Canal Capital  ·  sesgo +0.00  ·  factualidad 85%
+    canalcapital.gov.co · Público distrital — Alcaldía Mayor de Bogotá · CO · RSS propio · PROVISIONAL
+    Canal público del Distrito Capital. Su dirección la designa la
+    Alcaldía Mayor, así que su línea sigue al gobierno distrital de
+    turno. Valor sin medir.
+
+  Telecaribe  ·  sesgo +0.00  ·  factualidad 85%
+    telecaribe.co · Público regional — Caribe · CO · RSS propio · PROVISIONAL
+    Canal público regional del Caribe colombiano, participado por las
+    gobernaciones de la región. Valor sin medir.
 
   W Radio  ·  sesgo +0.00  ·  factualidad 87%
     wradio.com.co · Grupo PRISA · CO · RSS propio · PROVISIONAL

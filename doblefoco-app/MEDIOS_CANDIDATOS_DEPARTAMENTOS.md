@@ -31,8 +31,11 @@ porque «responde» y «publica» no son lo mismo.
 
 | | Antes | Después |
 |---|---|---|
-| Departamentos con medio propio | **8** | **29** |
-| Departamentos en blanco | 25 | **4** |
+| Departamentos con medio propio | **8** | **28** |
+| Departamentos en blanco | 25 | **5** |
+
+Eran 29 y 4 hasta que la investigación de propiedad descartó a Nariño — ver más
+abajo. Los cinco en blanco: **Amazonas, Córdoba, Guainía, Nariño y Vaupés**.
 
 ---
 
@@ -57,12 +60,12 @@ momento de la comprobación.
 | La Guajira | Diario del Norte | `diariodelnorte.net/feed` | 3 h · 100 art. |
 | Magdalena | El Informador | `elinformador.com.co/index.php?format=feed&type=rss` | 19 h |
 | Meta | Vive el Meta | `viveelmeta.com/feed/` | 20 h |
-| Nariño | Diario del Sur | `diariodelsur.com.co/feed/` | **sin fecha** ⚠ |
+| Nariño | ~~Diario del Sur~~ | `diariodelsur.com.co/feed/` | **descartado** ✕ |
 | Putumayo | MiPutumayo | `miputumayo.com.co/feed/` | 51 h |
 | Quindío | Quindío Noticias | `quindionoticias.com/feed` | 0 h |
 | Risaralda | El Diario | `eldiario.com.co/feed/` | 5 h · 99 art. |
 | Sucre | Sucre Noticias | `sucrenoticias.com/feed/` | **332 h** ⚠ |
-| Tolima | El Nuevo Día | `elnuevodia.com.co/rss.xml` | 1 h |
+| Tolima | Ecos del Combeima | `ecosdelcombeima.com/rss.xml` | 2 h |
 | Vichada | El Morichal | `elmorichal.com/feed/` | 55 h |
 
 ### Segundos de su departamento, también vivos
@@ -78,6 +81,29 @@ una sola voz, que es justo lo que la vista venía a romper.
 | Tolima | Ecos del Combeima | `ecosdelcombeima.com/rss.xml` | 2 h |
 | Boyacá | Última Hora Boyacá | `ultimahoraboy.com/feed/` | 449 h ⚠ |
 | Chocó | Diario del Chocó | `diariodelchoco.com/feed/` | **2 302 h** ⚠ |
+| Tolima | El Nuevo Día | `elnuevodia.com.co/rss.xml` | 1 h · **editora en liquidación** ✕ |
+
+---
+
+## Lo que apareció al investigar la propiedad, y cambió dos recomendaciones
+
+Al hacer las fichas de los cuatro departamentos grandes (2026-08-09) salieron
+**dos casos que la comprobación de feeds no podía ver**, porque un feed sano no
+dice nada de la salud de la empresa:
+
+- **El Nuevo Día (Tolima)**: Editorial Aguasclaras S.A. está **en liquidación
+  judicial** y su matrícula RUES, cancelada. Cerró la rotativa tras 31 años y el
+  Ministerio de Trabajo le abrió averiguación por impago de salarios. Sigue
+  publicando en digital. **Para el Tolima se propone Ecos del Combeima**, que
+  además fue quien reportó el cierre de su competidor.
+- **Diario del Sur (Nariño)**: Grupo Editorial Diario del Sur S.A.S. **en
+  liquidación**, matrícula cancelada — y encima el feed sin fechas. Dos bloqueos
+  independientes. **Nariño se queda sin candidato** y hay que volver a buscar.
+
+Detalle y fuentes en `fichas/el-nuevo-dia.md` y `fichas/diario-del-sur.md`.
+
+**La lección para las 17 fichas que faltan: mirar el RUES ANTES que el feed.**
+Comprobar que publica es barato y no dice lo importante.
 
 ---
 

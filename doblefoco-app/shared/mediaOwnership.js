@@ -778,6 +778,58 @@ export const CONTROL_GROUPS = {
             fuentes: ['https://www.colombiainforma.info/somos/', 'https://www.rues.org.co/'],
         }],
     },
+    'casamacondo-direccion': {
+        label: 'CasaMacondo — su equipo directivo',
+        sectores: [],
+        personas: [
+            {
+                nombre: 'Christopher Tibble',
+                papel: 'Director general.',
+                desde: null,
+                fuentes: ['https://casamacondo.co/somos/'],
+            },
+            {
+                nombre: 'José Alejandro Castaño',
+                papel: 'Editor general.',
+                desde: null,
+                fuentes: ['https://casamacondo.co/somos/'],
+            },
+            {
+                nombre: 'Juan Pablo Barrientos',
+                papel:
+                    'Dirige la unidad investigativa. ATENCIÓN: es también uno de los cuatro ' +
+                    'periodistas fundadores de la Fundación Vorágine, que está en este mismo ' +
+                    'catálogo. Segundo caso de una persona con papel en dos medios nuestros, ' +
+                    'después de Daniel Coronell.',
+                desde: null,
+                fuentes: ['https://casamacondo.co/somos/', 'https://voragine.co/nosotros/'],
+            },
+        ],
+    },
+    'volcanicas-hoja-blanca': {
+        label: 'Fundación Hoja Blanca ONG — Catalina Ruiz-Navarro y Matilde de los Milagros Londoño',
+        sectores: [],
+        personas: [
+            {
+                nombre: 'Catalina Ruiz-Navarro',
+                papel: 'Cofundadora y directora. Periodista feminista colombiana.',
+                desde: '2021',
+                fuentes: ['https://volcanicas.com/nosotras/'],
+            },
+            {
+                nombre: 'Matilde de los Milagros Londoño Jaramillo',
+                papel: 'Cofundadora.',
+                desde: '2021',
+                fuentes: ['https://volcanicas.com/nosotras/'],
+            },
+            {
+                nombre: 'Martha Beatriz Navarro y Paula Henao Aristizábal',
+                papel: 'Gerencia administrativa y financiera, y coordinación general. Dirigen, no poseen.',
+                desde: null,
+                fuentes: ['https://volcanicas.com/nosotras/'],
+            },
+        ],
+    },
     'raya-fundacion': {
         label: 'Fundación RAYA — sus nueve periodistas fundadores',
         sectores: [],
@@ -884,6 +936,34 @@ export const OWNERSHIP_PROFILES = {
      * consultable sobre quién la controla ni de qué vive. Lo que hace falta es
      * el certificado de existencia del RUES o sus estatutos.
      */
+    'casa-macondo': {
+        ownerType: 'independiente',
+        controlGroup: 'casamacondo-direccion',
+        holdings: [
+            'Medio digital de periodismo de investigación, ambiental y cultural. Contenidos de libre acceso; se sostiene con suscripciones y donaciones.',
+        ],
+        notes: [
+            'Su página declara tener una sección «Así nos financiamos», pero el enlace directo devolvía 404 el 2026-08-08. La composición de sus ingresos queda SIN documentar hasta poder citarla.',
+            'Juan Pablo Barrientos dirige aquí la unidad investigativa y cofundó la Fundación Vorágine, también en este catálogo.',
+        ],
+        sources: ['https://casamacondo.co/somos/'],
+        verifiedAt: '2026-08-08',
+    },
+
+    'volcanicas': {
+        ownerType: 'independiente',
+        controlGroup: 'volcanicas-hoja-blanca',
+        holdings: [
+            'Proyecto de la Fundación Hoja Blanca ONG, organización sin ánimo de lucro. No tiene propietarios individuales: los recursos se reinvierten en la organización.',
+            'DECLARA SU FINANCIACIÓN CON PORCENTAJES, lo que casi ningún medio del catálogo hace: Hispanics in Philanthropy 40,8 %, Ford Foundation 24,5 %, Foundation for a Just Society 16,3 %, más aportes individuales vía Patreon. Open Society Foundation fue su principal donante hasta junio de 2025.',
+        ],
+        notes: [
+            'Depender de fundaciones filantrópicas internacionales es una forma de propiedad económica distinta de un grupo empresarial, pero no es ausencia de interés: sus donantes tienen agenda declarada. Se anota como se anota el sector de cualquier otro dueño.',
+        ],
+        sources: ['https://volcanicas.com/nosotras/', 'https://volcanicas.com/nuestra-historia/'],
+        verifiedAt: '2026-08-08',
+    },
+
     'colombia-informa': {
         ownerType: 'independiente',
         controlGroup: 'colombia-informa-corporacion',

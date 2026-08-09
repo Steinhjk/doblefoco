@@ -140,6 +140,46 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://www.colombiainforma.info/feed/', via: 'direct', category: 'Política' },
     },
     {
+        /**
+         * AÑADIDO EL 2026-08-08, a petición de Jose. Junto con Volcánicas es el
+         * primer medio que entra DESPUÉS del protocolo de juicio editorial, así
+         * que su valor se justifica solo con evidencia del presente (§2 del
+         * PROTOCOLO): lo que el medio declara HOY como su misión. Nada de
+         * fundaciones ni trayectorias.
+         *
+         * CRUCE QUE HAY QUE DECLARAR: Juan Pablo Barrientos dirige aquí la unidad
+         * investigativa y es a la vez uno de los cuatro periodistas fundadores de
+         * la Fundación Vorágine, que también está en este catálogo. Es el segundo
+         * caso de una persona con papel en dos medios nuestros, después de Daniel
+         * Coronell (Cambio y NTC Televisión).
+         *
+         * Ficha pendiente en `fichas/`. `reviewedAt` sigue en null: el número es
+         * una propuesta, no un juicio firmado.
+         */
+        id: 'casa-macondo', name: 'CasaMacondo', shortName: 'CasaMacondo',
+        domain: 'casamacondo.co', country: 'CO', group: 'Investigación independiente',
+        bias: -0.35, factuality: 0.88, reviewedAt: null,
+        biasRationale: 'Declara HOY como compromiso editorial «promover la justicia social, la divulgación ambiental y la complejidad cultural», con periodismo de investigación y ambiental. Valor derivado de esa declaración vigente, no de su historia.',
+        feed: { url: 'https://casamacondo.co/feed/', via: 'direct', category: 'Judicial' },
+    },
+    {
+        /**
+         * AÑADIDO EL 2026-08-08, a petición de Jose. Ver la nota de CasaMacondo
+         * sobre la regla del presente.
+         *
+         * Su financiación está DECLARADA con porcentajes por la propia
+         * organización, lo que es inusual y vale anotarlo: Hispanics in
+         * Philanthropy 40,8 %, Ford Foundation 24,5 %, Foundation for a Just
+         * Society 16,3 %, más aportes individuales. Es evidencia de nivel 4
+         * excepcionalmente concreta.
+         */
+        id: 'volcanicas', name: 'Volcánicas', shortName: 'Volcánicas',
+        domain: 'volcanicas.com', country: 'CO', group: 'Periodismo feminista independiente',
+        bias: -0.50, factuality: 0.88, reviewedAt: null,
+        biasRationale: 'Revista de periodismo feminista latinoamericano que declara HOY como misión «usar las herramientas del periodismo para avanzar los derechos de las mujeres». Es periodismo de causa declarada, y el valor se deriva de esa declaración vigente.',
+        feed: { url: 'https://volcanicas.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
         id: 'revista-raya', name: 'Revista RAYA', shortName: 'Revista RAYA',
         domain: 'revistaraya.com', country: 'CO', group: 'Investigación independiente',
         bias: -0.55, factuality: 0.89, reviewedAt: null,

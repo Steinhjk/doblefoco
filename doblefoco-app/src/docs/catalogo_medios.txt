@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-08
-Medios en el catálogo: 43
+Generado: 2026-08-09
+Medios en el catálogo: 45
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -33,7 +33,7 @@ IZQUIERDA  [−1.00 a −0.60)  —  2 medios
     campesinos; encuadre explícito desde movimientos de base.
 
 ----------------------------------------------------------------------
-IZQUIERDA MODERADA  [−0.60 a −0.20)  —  8 medios
+IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
 ----------------------------------------------------------------------
 
   Revista RAYA  ·  sesgo −0.55  ·  factualidad 89%
@@ -41,6 +41,13 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  8 medios
     Medio de investigación periodística independiente enfocado en
     derechos humanos, fiscalización del poder político y conflicto
     armado.
+
+  Volcánicas  ·  sesgo −0.50  ·  factualidad 88%
+    volcanicas.com · Periodismo feminista independiente · CO · RSS propio · PROVISIONAL
+    Revista de periodismo feminista latinoamericano que declara HOY
+    como misión «usar las herramientas del periodismo para avanzar los
+    derechos de las mujeres». Es periodismo de causa declarada, y el
+    valor se deriva de esa declaración vigente.
 
   Vorágine  ·  sesgo −0.50  ·  factualidad 90%
     voragine.co · Investigación independiente · CO · RSS propio · PROVISIONAL
@@ -68,6 +75,13 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  8 medios
     gobiernos sucesivos —Uribe, Santos, Duque—; su agenda es la
     corrupción y el abuso de poder, y esa vigilancia al
     establecimiento lo sitúa a la izquierda del eje colombiano.
+
+  CasaMacondo  ·  sesgo −0.35  ·  factualidad 88%
+    casamacondo.co · Investigación independiente · CO · RSS propio · PROVISIONAL
+    Declara HOY como compromiso editorial «promover la justicia
+    social, la divulgación ambiental y la complejidad cultural», con
+    periodismo de investigación y ambiental. Valor derivado de esa
+    declaración vigente, no de su historia.
 
   RTVC Noticias  ·  sesgo −0.35  ·  factualidad 82%
     rtvcnoticias.com · Medio público nacional · CO · vía Google News · PROVISIONAL

@@ -52,6 +52,39 @@ y 5.**
 | 4 | **Declaraciones del propio medio** | Su manifiesto, su línea declarada, su historia institucional | enlace directo |
 | 5 | **Hechos editoriales notorios** | Portadas, coberturas o decisiones que tuvieron consecuencia pública verificable | enlace directo |
 
+### REGLA DEL PRESENTE (añadida el 2026-08-08 por Jose, tras la primera ficha)
+
+**Toda evidencia de orientación tiene que ser sobre el presente. Estrictamente.**
+
+Un hecho del pasado —por notable, heroico o infame que sea— no dice nada de la
+línea de hoy. El caso que zanja la discusión es **Semana**: destapó las chuzadas
+del DAS bajo el gobierno de Uribe, y hoy está clasificada en **+0,45**. Misma
+cabecera, línea opuesta. Si el pasado contara como evidencia, Semana tendría que
+estar a la izquierda.
+
+Lo que esto excluye, aunque esté bien documentado y sea cierto:
+
+- fundaciones, efemérides y «tradiciones» («diario de tradición liberal»)
+- hechos editoriales notables de otra época —premios, denuncias, atentados
+  sufridos, directores asesinados—
+- la línea de un dueño o un director **anteriores**
+- la afirmación de un registro externo cuando esa afirmación es histórica: MOM
+  dice que El Espectador «ha estado asociado **desde su fundación** a la defensa
+  de ideas liberales», y eso describe 1887, no 2026
+
+**Esto invalidó las dos mitades de la primera ficha**, la que apoyaba la
+propuesta y la que la atacaba. La regla no se aplica solo cuando incomoda al
+argumento contrario.
+
+**Lo que sí sobrevive del pasado**: un hecho antiguo que además **sea una
+estructura vigente**. «Fundado en 1957» no vale; «es el órgano del Partido
+Comunista, que hoy lo posee» sí, porque la propiedad es comprobable hoy. La
+prueba: si el hecho dejara de ser cierto mañana, ¿cambiaría la clasificación? Si
+la respuesta es no, es historia y no evidencia.
+
+**Consecuencia para el nivel 5** de la tabla de arriba: «hechos editoriales
+notorios» solo cuenta si son **de los últimos 12 meses**.
+
 ### Lo que NO cuenta como evidencia
 
 - **El juicio de un modelo de lenguaje sobre la posición del medio.** Es una

@@ -3,174 +3,151 @@
 | | |
 |---|---|
 | **Valor actual** | −0,20 · `reviewedAt: null` |
-| **Valor propuesto** | **−0,15** |
+| **Propuesta** | **NO FIRMAR. Sin base admisible para ningún número.** |
 | **Firma** | ☐ pendiente — Jose Arbeláez |
-| **Fecha de la propuesta** | 2026-08-08 |
-| **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md`, fijado en `bf63e66` antes de examinar este medio |
+| **Fecha** | 2026-08-08 (v2, rehecha tras la regla del presente) |
+| **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` §2, regla del presente |
+
+> **Esta ficha se rehízo entera.** La v1 proponía −0,15 apoyándose en la
+> tradición liberal del diario y contra-argumentaba con el asesinato de Guillermo
+> Cano y el coche bomba de 1989. Jose señaló que **la evidencia de orientación
+> tiene que ser sobre el presente, estrictamente**, con el caso de Semana: destapó
+> las chuzadas del DAS y hoy está en +0,45. Eso invalidó **las dos mitades** de la
+> v1 — la que sostenía la propuesta y la que la atacaba.
 
 ---
 
-## EVIDENCIA
+## EVIDENCIA ADMISIBLE
 
-### Nivel 1 — Propiedad documentada
+### Nivel 1 — Propiedad, vigente
 
 Lo publica **Comunican S.A.**, del holding **Valorem**, controlado por la familia
-Santo Domingo. Valores Bavaria —hoy Valorem— compró la mayoría accionaria el 12
-de noviembre de 1997. Tras la muerte de Julio Mario Santo Domingo Pumarejo en
-2011, la dirección del grupo pasó a **Alejandro Santo Domingo Dávila**.
+Santo Domingo; la dirección del grupo la ejerce **Alejandro Santo Domingo Dávila**
+desde 2011. Valorem opera en retail (D1 vía Koba), logística (Suppla, Ditransa),
+entretenimiento (Cine Colombia), industria (Biofilm, Gases del Caribe).
 
-Valorem opera además en retail (almacenes D1 vía Koba International), logística
-(Suppla, Ditransa), entretenimiento (Cine Colombia), industria (Biofilm, Gases
-del Caribe), inmobiliario y turismo.
-
-**Y tiene otros dos medios en este mismo catálogo**: Blu Radio y Noticias
-Caracol.
+Es una estructura **comprobable hoy**, no una efeméride: si Valorem vendiera
+mañana, la ficha cambiaría. Pasa la prueba de la regla del presente.
 
 - [MOM/RSF — El Espectador](https://colombia.mom-gmr.org/es/media/detail/outlet/el-espectador/)
 - [MOM/RSF — Valorem S.A.](https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/)
 
-### Nivel 2 — Conducta medida en nuestro corpus
-
-Medido el 2026-08-08, **tras corregir su feed ese mismo día**:
+### Nivel 2 — Conducta medida, 2026-08-06 a 2026-08-09
 
 ```
-artículos ............................ 83   (eran 24 con el feed de Google News)
+artículos ............................ 83   (eran 24 antes de corregir su feed)
 historias ............................ 82   ·  multifuente 15
-agenda propia (nadie más la cubre) ... 67 de 82 = 82 %
+agenda propia ........................ 67 de 82 = 82 %
 compañía media ....................... +0,205  sobre 32 apariciones
 coincide más con ..................... La Opinión 5 · El Heraldo 4 · Infobae 3
 ```
 
-**Esta evidencia es débil y hay que decirlo**: son tres días de datos. La cifra
-de «agenda propia» está inflada porque un medio recién incorporado aún no ha
-tenido tiempo de coincidir con nadie, y la «compañía media» refleja sobre todo
-quién domina el corpus, no con quién se alinea él.
+**Son tres días.** El 82 % de agenda propia está inflado porque un medio recién
+incorporado no ha tenido tiempo de coincidir con nadie, y la compañía media
+refleja quién domina el corpus. **No decide nada, en ninguna dirección.**
 
-### Nivel 3 — Registros externos
+---
 
-El Media Ownership Monitor de RSF y FECOLPER registra que el diario **«ha estado
-asociado desde su fundación a la defensa de ideas liberales»**, fundado por el
-periodista Fidel Cano Gutiérrez, y que el digital «conserva la línea editorial
-del periódico impreso».
+## EVIDENCIA RETIRADA POR LA REGLA DEL PRESENTE
 
-### Nivel 4 — Lo que el medio declara de sí
+| Qué decía | Cuándo | Por qué sale |
+|---|---|---|
+| «Tradición liberal» (justificación actual del registro) | desde 1887 | La palabra misma afirma sobre el pasado |
+| MOM: «asociado desde su fundación a la defensa de ideas liberales» | 1887 | Fuente externa sólida, afirmación histórica |
+| Guillermo Cano asesinado; sede destruida con coche bomba | 1986, 1989 | Era mi contra-argumento. Cae igual |
 
-Tradición liberal desde 1887. Es la evidencia que sostenía el valor actual: la
-justificación en el registro dice *«diario nacional con tradición liberal;
-énfasis en derechos humanos y proceso de paz»* — una frase sin fuente ni fecha.
+**Lo que queda al retirarlas es el hallazgo de esta ficha.**
 
 ---
 
 ## ARGUMENTO
 
-**La evidencia más fuerte —nivel 1— apunta a la derecha, y la que sostiene el
-valor actual es de nivel 3-4 y de carácter histórico.**
+**El valor actual de −0,20 no tiene ninguna justificación admisible.**
 
-El dato que más pesa es una **inconsistencia interna de nuestro propio
-catálogo**: tres medios, un mismo dueño, tres valores muy distintos.
+De los 30 medios colombianos, cinco tienen justificaciones que apelan al pasado.
+En cuatro, la cláusula histórica va acompañada de una afirmación del presente que
+sí se sostiene sola —el Semanario VOZ **es hoy** órgano del PCC, El Nuevo Siglo
+declara **hoy** línea conservadora—. **El Espectador es el único cuya
+justificación entera es histórica.** Quitada esa frase, no queda nada.
 
-```
-El Espectador     −0,20        Valorem · Santo Domingo
-Noticias Caracol  +0,10        Valorem · Santo Domingo
-Blu Radio         +0,25        Valorem · Santo Domingo
-```
+Y lo admisible que hay apunta en dirección contraria a su valor actual:
 
-Un recorrido de 0,45 dentro de la misma casa. **O la propiedad no determina la
-orientación —lo que la regla 5.1 del protocolo admite explícitamente— o uno de
-los tres valores está mal.** Las dos cosas no pueden sostenerse a la vez sin
-explicación, y hoy no hay ninguna escrita.
+- **Propiedad**: el mayor grupo económico del país.
+- **Los otros dos medios del mismo dueño** están en +0,10 (Noticias Caracol) y
+  +0,25 (Blu Radio). Un recorrido de 0,45 dentro de la misma casa, sin ninguna
+  explicación escrita en el catálogo.
+- **La conducta de tres días** lo pone acompañado de medios en +0,205 de media.
 
-La tradición liberal es real y está documentada por una fuente externa, pero
-**describe su fundación en 1887, no su cobertura de 2026**. Un rasgo histórico no
-puede pesar más que la estructura de propiedad actual sin evidencia de conducta
-que lo sostenga — y la conducta que tenemos son tres días.
+### Y aun así NO se propone mover el número
 
-Por la **regla 5.2** —ante la duda entre dos bandas, la más cercana a la mixta,
-porque el error de clasificar de más acusa— el movimiento correcto es hacia el
-centro de la escala, no más a la izquierda.
+Sería sustituir un número sin fundamento por otro número sin fundamento.
 
-**Se propone −0,15**: reconoce la tradición liberal manteniéndolo en el lado
-izquierdo del cero, y deja de afirmar una posición de izquierda sobre el diario
-del mayor grupo económico del país sin conducta medida que la respalde.
+- La **regla 5.1** dice que la propiedad no determina la orientación. Es lo único
+  fuerte que hay, y por sí sola no ubica a nadie.
+- La **conducta**, que es lo que sí podría ubicarlo, tiene tres días.
+- Mover a −0,15 —lo que proponía la v1— sería aplicar una regla de prudencia
+  sobre un empate entre dos evidencias, cuando en realidad **no hay empate: hay
+  una sola evidencia admisible y es insuficiente**.
 
-### Un efecto colateral que conviene: sale de una costura del código
-
-En **−0,20 exacto las dos funciones de clasificación se contradicen**:
-
-```
-bias    classifySpectrum     getBand
-−0,25   left                 Izquierda moderada     ✓ coherente
-−0,20   left                 Orientación mixta      ✗ CONTRADICCIÓN
-−0,15   center               Orientación mixta      ✓ coherente
-```
-
-Hoy el mapa mediático muestra a El Espectador como «Orientación mixta» mientras
-el análisis de cobertura lo cuenta como izquierda. **Es un fallo real de nuestro
-código y hay que arreglarlo aparte** —no se puede usar como argumento para mover
-el número—, pero conviene saber que el valor actual está sobre esa junta.
+**La propuesta es declarar el valor como no sostenido y esperar la medición.** Es
+menos satisfactorio que un número nuevo y es lo único honesto que permite la
+evidencia de hoy.
 
 ---
 
-## CONTRA — el mejor caso en contra de esta propuesta
+## CONTRA — el mejor caso en contra de no firmar
 
-**El determinismo de propiedad es exactamente lo que el protocolo prohíbe.** La
-regla 5.1 dice que el dueño no determina la orientación. Mover a El Espectador
-hacia el centro *porque es de los Santo Domingo* es aplicar precisamente el
-razonamiento que se declaró inadmisible, con otro nombre.
+**Dejar −0,20 en pantalla mientras se declara que no tiene fundamento es peor que
+moverlo.** El lector sigue viendo el número; la declaración vive en un archivo que
+casi nadie abre. Si sabemos que no se sostiene, mantenerlo publicado es una
+afirmación activa, no una abstención.
 
-Y hay un contraejemplo histórico serio: **El Espectador denunció a Pablo Escobar
-cuando eso costaba la vida**; su director Guillermo Cano fue asesinado en 1986 y
-su sede fue destruida con un coche bomba en 1989. Un diario que sostuvo esa línea
-contra el poder real de su época no se explica por su accionista.
+Una salida coherente con esa objeción sería **marcar el medio como «orientación
+en revisión» en la interfaz** hasta tener corpus. Tiene un coste: si se aplica el
+mismo criterio a los otros 42 medios con `reviewedAt: null`, habría que marcar el
+catálogo entero, y un aviso que aparece en todos no informa de nada.
 
-**La evidencia de conducta no respalda el movimiento.** Tres días de datos no
-sirven ni para confirmarlo ni para desmentirlo, y la regla 5.3 dice que sin
-evidencia de nivel 1-3 no se mueve el número. Aquí hay nivel 1 y nivel 3 — pero
-apuntan en direcciones opuestas, y quien decide el empate es el criterio de
-prudencia, no un dato.
-
-**Un revisor razonable podría concluir que lo correcto es no mover nada y esperar
-tres meses de corpus.** Esa posición es defendible y queda registrada.
+**No está resuelto.** Es la decisión que Jose tiene que tomar al firmar.
 
 ---
 
-## REFUTACIÓN — qué cambiaría el número
+## REFUTACIÓN — qué cerraría esta ficha
 
-1. **Si a los 90 días** (a partir del 2026-11-06) su compañía media en historias
-   multifuente se sitúa **por debajo de 0,00**, la conducta contradice esta
-   propuesta y el valor vuelve a −0,20 o más a la izquierda.
-2. **Si su tasa de agenda propia se mantiene sobre el 50 %** con más de 300
-   historias, eso es evidencia de línea independiente del volumen dominante y
-   pesa a favor de la lectura liberal.
-3. **Si se documenta una intervención del accionista en la línea editorial**
-   —una fuente citable, no un rumor—, el valor se mueve a la derecha, no al
-   centro.
-4. **Si cambia la propiedad**, revisión extraordinaria inmediata.
+1. **A los 90 días** (2026-11-06), con más de 300 historias suyas en el corpus:
+   si su compañía media queda **bajo 0,00**, el −0,20 recupera fundamento y se
+   firma. Si queda **sobre +0,10**, se mueve a la derecha.
+2. **Si la agenda propia se mantiene sobre el 50 %** con ese volumen, es evidencia
+   de línea independiente del bloque dominante, y pesa por sí sola.
+3. **Si se documenta una intervención del accionista en la línea editorial**, con
+   fuente citable y **de los últimos 12 meses**, se mueve a la derecha.
+
+---
+
+## PENDIENTE APARTE — un fallo del código
+
+En **−0,20 exacto** `classifySpectrum` devuelve `left` y `getBand` devuelve
+«Orientación mixta»: el mapa lo muestra como mixto mientras el análisis de
+cobertura lo cuenta como izquierda. **Es un fallo real y se arregla por separado**
+— no se usa como argumento para mover ningún número.
 
 ---
 
 ## REVISIÓN POR MODELOS
 
-Pendiente. Según el §3 del protocolo, a cada modelo se le pide **argumentar en
-contra** de la propuesta de −0,15, nunca si está de acuerdo, y **el acuerdo no se
-registra como validación**.
+Se pide **argumentar en contra** de la propuesta de no firmar. El acuerdo no se
+registra como validación.
 
 | Modelo | Versión | Fecha | Objeción | Resolución |
 |---|---|---|---|---|
-| Claude Opus 5 | claude-opus-5 | 2026-08-08 | Redactor. La objeción de determinismo de propiedad, arriba en CONTRA, la formuló contra su propia propuesta | Declarada, no resuelta |
+| Claude Opus 5 | claude-opus-5 | 2026-08-08 | Redactor. Su v1 fue invalidada por la regla del presente | — |
 | Kimi K3 | | | | |
 | Fable | | | | |
 | ChatGPT | | | | |
-
-**Nota de honestidad sobre este cuadro**: el redactor y el primer objetor son el
-mismo modelo, lo que limita el valor de esa primera objeción. Las tres filas
-restantes son las que aportan independencia real, y aun así comparten datos de
-entrenamiento con él.
 
 ---
 
 ## ESTADO
 
-**Propuesta sin firmar.** El número del registro sigue siendo −0,20 y `reviewedAt`
-sigue en `null` hasta que Jose firme. Cambiar el valor antes de la firma
-convertiría el protocolo en decoración.
+**Sin firmar, y sin propuesta de número.** El registro sigue en −0,20 con
+`reviewedAt: null`, ahora con la constancia de que ese valor no tiene base
+admisible. La primera medición que puede cerrarla es del **2026-11-06**.

@@ -16,6 +16,7 @@
     "preview": "vite preview",
     "docs:catalog": "node scripts/generateCatalogDoc.mjs",
     "fonts:fetch": "node scripts/fetchFonts.mjs",
+    "mapa:generar": "node scripts/generarMapaColombia.mjs",
     "logos:fetch": "node scripts/fetchLogos.mjs",
     "backup": "node scripts/backup.mjs",
     "backup:restore": "node scripts/restore.mjs",

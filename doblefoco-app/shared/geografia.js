@@ -177,3 +177,35 @@ export function detectarDepartamento(titular) {
 
 /** Los 33 (32 departamentos + Bogotá), para la vista y los filtros. */
 export const DEPARTAMENTOS = Object.keys(CIUDADES).sort((a, b) => a.localeCompare(b, 'es'));
+
+/**
+ * El nombre tal como se escribe en la barra de direcciones.
+ *
+ * Los filtros del feed viven en la URL, y una URL la lee una persona:
+ * `?depto=norte-de-santander` se entiende, `?depto=CO-NSA` no, y
+ * `?depto=Nariño` llegaría escrito `Nari%C3%B1o`. Se quitan las tildes SOLO
+ * aquí: el detector sí las conserva, porque distinguen «Cesar» de «César».
+ *
+ * @param {string} nombre
+ */
+export const slugDepartamento = (nombre) =>
+    String(nombre)
+        .normalize('NFD')
+        // Por nombre y no por rango: un `[̀-ͯ]` escrito con los
+        // caracteres literales es invisible en el editor y nadie puede
+        // revisarlo.
+        .replace(/\p{Diacritic}/gu, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        // «bogota-d-c» sale de aplicar la regla general a «Bogotá D.C.», y es
+        // ilegible justo en el departamento que más se va a filtrar.
+        .replace(/^bogota-d-c$/, 'bogota');
+
+/** Slug → nombre. Construido del mismo sitio, así no pueden desalinearse. */
+export const DEPARTAMENTO_POR_SLUG = Object.fromEntries(
+    DEPARTAMENTOS.map((nombre) => [slugDepartamento(nombre), nombre])
+);
+
+/** Los slugs válidos, para validar lo que venga de la URL. */
+export const SLUGS_DEPARTAMENTO = Object.keys(DEPARTAMENTO_POR_SLUG);

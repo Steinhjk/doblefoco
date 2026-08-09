@@ -25,6 +25,7 @@
 
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { SLUGS_DEPARTAMENTO } from '../../shared/geografia.js';
 
 /** Cuántas historias añade cada pulsación de «ver más». */
 export const TAMANO_PAGINA = 10;
@@ -48,6 +49,14 @@ export const FILTROS = /** @type {const} */ ({
     ciego: { porDefecto: 'all', validos: ['all', 'only'] },
     polar: { porDefecto: 'all', validos: ['all', 'high'] },
     orden: { porDefecto: 'recent', validos: ['recent', 'polarization', 'coverage'] },
+    /**
+     * Departamento, en la forma que se lee en la barra: `?depto=la-guajira`.
+     *
+     * Los válidos NO se escriben aquí: salen de `shared/geografia.js`, que ya
+     * es dueño de la lista de los 33. Repetirlos sería el sitio donde el mapa y
+     * el detector acabarían discrepando sin que nada avisara.
+     */
+    depto: { porDefecto: 'all', validos: ['all', ...SLUGS_DEPARTAMENTO] },
 });
 
 /**

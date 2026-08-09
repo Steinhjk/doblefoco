@@ -46,8 +46,10 @@
        del primer escalón sin competir con él: son 25 de 33 departamentos sobre
        cien historias, y a plena intensidad el mapa era una manta de rayas con
        los datos escondidos debajo. */
-    --vacio: rgba(255, 255, 255, 0.05);
-    --rayado: rgba(255, 255, 255, 0.17);
+    --vacio: rgba(255, 255, 255, 0.06);
+    --rayado: rgba(255, 255, 255, 0.24);
+    /* El contorno de cada departamento. Ver la nota de `.mapa-pieza`. */
+    --contorno: rgba(255, 255, 255, 0.28);
 }
 
 [data-theme='light'] .mapa-deptos {
@@ -56,8 +58,9 @@
     --e3: #6c7b90;
     --e4: #4a5768;
     --e5: #232c39;
-    --vacio: rgba(15, 23, 42, 0.045);
-    --rayado: rgba(15, 23, 42, 0.2);
+    --vacio: rgba(15, 23, 42, 0.06);
+    --rayado: rgba(15, 23, 42, 0.3);
+    --contorno: rgba(15, 23, 42, 0.3);
 }
 
 .mapa-e1 { --tono: var(--e1); }
@@ -82,15 +85,26 @@
 }
 
 /**
- * El borde entre vecinos se pinta del color de la superficie, y no de un gris:
- * lo que separa dos manchas es un hueco, no una línea. `non-scaling-stroke`
- * mantiene el hueco en un pelo tanto en el móvil como en pantalla ancha; sin
- * él, al encoger el mapa los bordes se comen los departamentos pequeños.
+ * EL CONTORNO ES UNA LÍNEA, NO UN HUECO. Y esto se cambió mirando el mapa.
+ *
+ * Antes el borde se pintaba del color de la superficie —la idea de que lo que
+ * separa dos manchas es un hueco, que es lo correcto en un gráfico de barras—.
+ * En tema oscuro colaba. **En tema claro el mapa era invisible**: el borde
+ * quedaba blanco sobre blanco (1,00:1) y el relleno de los departamentos sin
+ * noticias, a 1,09:1. Como 25 de los 33 están a cero, no se veía el país hasta
+ * que el ratón pasaba por encima y el hover añadía el único trazo visible.
+ *
+ * Un coropleto no es un gráfico de barras: la silueta ES el dato. Ahora cada
+ * departamento lleva su línea, recesiva pero presente, y el mapa se lee quieto.
+ *
+ * `non-scaling-stroke` la mantiene en un pelo lo mismo en el móvil que en
+ * pantalla ancha; sin él, al encoger el mapa los bordes se comen los
+ * departamentos pequeños.
  */
 .mapa-pieza {
     fill: var(--tono);
-    stroke: var(--bg-card);
-    stroke-width: 0.9;
+    stroke: var(--contorno);
+    stroke-width: 0.7;
     vector-effect: non-scaling-stroke;
     cursor: pointer;
     transition: fill 0.15s ease;
@@ -120,7 +134,7 @@
 
 .mapa-recuadro {
     fill: none;
-    stroke: var(--border-color);
+    stroke: var(--contorno);
     stroke-width: 1.4;
     stroke-dasharray: 6 5;
     vector-effect: non-scaling-stroke;
@@ -171,7 +185,7 @@
     width: 18px;
     height: 9px;
     background: var(--tono);
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--contorno);
 }
 
 .mapa-muestra.mapa-e0,
@@ -232,7 +246,7 @@
     width: 9px;
     height: 9px;
     background: var(--tono);
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--contorno);
 }
 
 .mapa-fila-nombre {

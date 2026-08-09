@@ -144,7 +144,41 @@
       "derecha": { "per402": 8, "per601": 3, "per605": 2, "per606": 1, "per603": 1, "total": 15 },
       "rile": -0.050,
       "nota": "El más a la derecha de los quince. OCHO cuasi-frases de fomento empresarial —concursos de planes de negocio, formalización, marketing territorial, estímulos a constructoras privadas— más principios cívicos y patrios y policía."
+    },
+    {
+      "opaco": "doc-16",
+      "cuasiFrases": 60,
+      "izquierda": { "per506": 7, "per504": 7, "per202": 2, "per403": 1, "total": 17 },
+      "derecha": { "per605": 4, "per402": 3, "per414": 2, "per201": 1, "total": 10 },
+      "rile": -0.117,
+      "nota": "Cámaras de seguridad, control del tránsito y «Familias para la paz» con la Policía; a la vez política pública LGTBIQ, grupos étnicos y migración venezolana. Ocho cuasi-frases de grupos vulnerables, todas fuera del RILE."
+    },
+    {
+      "opaco": "doc-17",
+      "cuasiFrases": 60,
+      "cegado": false,
+      "duplicadoDelPiloto": "cd-bolivar",
+      "izquierda": { "per504": 9, "per506": 4, "per202": 2, "total": 15 },
+      "derecha": { "per603": 3, "per605": 3, "per203": 1, "per402": 1, "per606": 1, "total": 9 },
+      "rile": -0.100,
+      "nota": "CIEGO ROTO Y NO INDEPENDIENTE: mismo documento que cd-bolivar del piloto (Barranco de Loba)."
+    },
+    {
+      "opaco": "doc-18",
+      "cuasiFrases": 60,
+      "cegado": false,
+      "duplicadoDelPiloto": "verde-casanare",
+      "izquierda": { "per504": 11, "per506": 4, "per202": 1, "total": 16 },
+      "derecha": { "per402": 2, "total": 2 },
+      "rile": -0.233,
+      "nota": "CIEGO ROTO Y NO INDEPENDIENTE: mismo documento que verde-casanare del piloto (San Luis de Palenque)."
     }
   ],
+  "contaminacionPorElPiloto": {
+    "que": "Tres de los 21 documentos cegados —doc-11, doc-17, doc-18— son los MISMOS que se codificaron a cara descubierta en el piloto de extremos.",
+    "porQue": "Fallo de diseño, no casualidad. El piloto tomó 2 documentos por partido de la muestra con semilla 20260808; la tanda ciega toma los 3 primeros legibles de la MISMA muestra con la MISMA semilla. Los del piloto son necesariamente un subconjunto de los ciegos.",
+    "loQueHabriaEvitado": "Excluir del sorteo ciego los documentos ya codificados, o usar una semilla distinta para la muestra de la tanda definitiva. Ninguna de las dos se hizo porque no se previó que el piloto contaminara la muestra grande.",
+    "consecuencia": "Esos tres no son medidas independientes: sus códigos se repiten porque la entrada es idéntica y estaban en memoria. Al analizar se reportan aparte y NO cuentan para la fiabilidad."
+  },
   "pendientes": ["doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]
 }

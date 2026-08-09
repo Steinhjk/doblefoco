@@ -120,6 +120,30 @@
       "derecha": { "per601": 3, "per606": 1, "per414": 1, "per402": 1, "total": 6 },
       "rile": -0.233,
       "nota": "CIEGO ROTO: abre citando los principios de su partido. Diagnóstico de salud muy extenso —doce cuasi-frases— y tres apelaciones a lo histórico y lo propio."
+    },
+    {
+      "opaco": "doc-13",
+      "cuasiFrases": 60,
+      "izquierda": { "per504": 10, "per506": 3, "per202": 2, "total": 15 },
+      "derecha": { "per603": 2, "per606": 1, "total": 3 },
+      "rile": -0.200,
+      "nota": "Lleva el versículo Proverbios 29:2-4 como encabezado de página, y el muestreo sistemático lo recogió OCHO veces. Se codificó 603 solo en su primera aparición y 000 en las repeticiones: contarlo ocho veces mediría la maquetación, no el programa. Queda declarado porque cambia el RILE en 0,083."
+    },
+    {
+      "opaco": "doc-14",
+      "cuasiFrases": 60,
+      "izquierda": { "per202": 5, "per506": 4, "per701": 1, "per504": 1, "per106": 1, "total": 12 },
+      "derecha": { "per402": 1, "per603": 1, "per605": 1, "per201": 1, "per203": 1, "per606": 1, "total": 6 },
+      "rile": -0.100,
+      "nota": "Casi la mitad del documento es diagnóstico territorial sin contenido de posición. Nombra organizaciones campesinas y afro (FENSUAGRO, ANUC, COCCAM) y a la vez pide respeto a la Constitución."
+    },
+    {
+      "opaco": "doc-15",
+      "cuasiFrases": 60,
+      "izquierda": { "per504": 12, "per202": 3, "per506": 2, "per406": 1, "total": 18 },
+      "derecha": { "per402": 8, "per601": 3, "per605": 2, "per606": 1, "per603": 1, "total": 15 },
+      "rile": -0.050,
+      "nota": "El más a la derecha de los quince. OCHO cuasi-frases de fomento empresarial —concursos de planes de negocio, formalización, marketing territorial, estímulos a constructoras privadas— más principios cívicos y patrios y policía."
     }
   ],
   "pendientes": ["doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import AnimateIn from '../components/AnimateIn';
-import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
+import AnimateIn from '../../components/AnimateIn';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '../../lib/contacto';
 import { BookOpen, FileText, ListTree } from 'lucide-react';
-import metodologiaText from '../docs/metodologia.txt?raw';
-import catalogoText from '../docs/catalogo_medios.txt?raw';
-import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
-import './About.css';
+import metodologiaText from '../../docs/metodologia.txt?raw';
+import catalogoText from '../../docs/catalogo_medios.txt?raw';
+import { MEDIA_REGISTRY } from '../../../shared/mediaRegistry';
+import './SobreNosotros.css';
 
 /**
  * Las cifras se cuentan del catálogo, no se escriben a mano.
@@ -17,14 +17,14 @@ import './About.css';
 const NATIONAL_SOURCES = MEDIA_REGISTRY.filter((m) => m.country === 'CO' && m.feed?.url).length;
 const TOTAL_SOURCES = MEDIA_REGISTRY.filter((m) => m.feed?.url).length;
 
-const About = () => {
+const SobreNosotros = () => {
     const [showMethodology, setShowMethodology] = useState(false);
     const [showCatalog, setShowCatalog] = useState(false);
 
     return (
         <div className="about-page">
             <div className="about-hero">
-                <h1>Sobre DobleFoco.co</h1>
+                <h2 className="sn-titulo">Sobre DobleFoco.co</h2>
                 <p className="tagline">Información objetiva para un ciudadano informado.</p>
             </div>
 
@@ -153,4 +153,4 @@ const About = () => {
     );
 };
 
-export default About;
+export default SobreNosotros;

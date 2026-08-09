@@ -76,12 +76,52 @@ export const PAGINAS_ESTATICAS = {
             'todavía no funciona.',
         tipoSchema: 'WebPage',
     },
-    '/sobre-nosotros': {
+    /*
+     * SUB-PÁGINAS DE TRANSPARENCIA (2026-08-09).
+     *
+     * Antes todo esto vivía bajo `/transparencia` y `/sobre-nosotros`: ocho
+     * bloques largos compitiendo por dos URLs. Partirlas no es solo orden de
+     * lectura — cada tema gana ahora su propio título y su propia descripción,
+     * que es lo que un buscador puede mostrar a quien pregunta justo por eso.
+     *
+     * `/sobre-nosotros` YA NO SE RENDERIZA: es una redirección permanente a
+     * `/transparencia/sobre-nosotros`. Se quita de aquí para que el servidor no
+     * sirva dos veces el mismo contenido en dos direcciones, que es lo que un
+     * buscador penaliza.
+     */
+    '/transparencia/sobre-nosotros': {
         titulo: () => 'Sobre DobleFoco.co: comparar cómo cubre cada medio la misma noticia',
         descripcion: () =>
             'Qué hace DobleFoco, cómo agrupa una misma noticia entre varios medios y ' +
             'con qué metodología sitúa a cada uno en el espectro político colombiano.',
         tipoSchema: 'AboutPage',
+    },
+    '/transparencia/clasificacion': {
+        titulo: () => 'Qué significan izquierda y derecha en la escala de DobleFoco',
+        descripcion: () =>
+            'Las cinco bandas de orientación, por qué la banda media se llama ' +
+            '«orientación mixta» y no «centro», y qué NO afirma esa etiqueta.',
+        tipoSchema: 'WebPage',
+    },
+    '/transparencia/dinero': {
+        titulo: () => 'De dónde sale el dinero de DobleFoco.co',
+        descripcion: () =>
+            'Cómo se financia el proyecto hoy, qué patrocinadores tiene —ninguno— y ' +
+            'qué se publicará el día que entre el primero.',
+        tipoSchema: 'WebPage',
+    },
+    '/transparencia/datos': {
+        titulo: () => 'Qué hace DobleFoco con sus datos',
+        descripcion: () =>
+            'Qué se guarda del lector, qué no se guarda y qué terceros reciben algo. ',
+        tipoSchema: 'WebPage',
+    },
+    '/transparencia/limitaciones': {
+        titulo: () => 'Lo que DobleFoco todavía no hace bien',
+        descripcion: () =>
+            'Las limitaciones conocidas del sitio, declaradas por el propio proyecto, ' +
+            'y cómo corregirnos si encuentra un error.',
+        tipoSchema: 'WebPage',
     },
 };
 

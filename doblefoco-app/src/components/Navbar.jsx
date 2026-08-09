@@ -72,14 +72,18 @@ const Navbar = () => {
                                 Mapa mediático
                             </NavLink>
                         </li>
+                        {/*
+                          * «Sobre nosotros» dejó de ser pestaña el 2026-08-09 y
+                          * pasó a ser una sección dentro de Transparencia: decían
+                          * cosas contiguas en dos sitios distintos, y separarlas
+                          * gastaba un hueco de la navegación principal.
+                          *
+                          * La ruta vieja sigue viva como redirección, así que
+                          * cualquier enlace externo o resultado de Google llega.
+                          */}
                         <li>
                             <NavLink to="/transparencia" onClick={closeMenu}>
                                 Transparencia
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/sobre-nosotros" onClick={closeMenu}>
-                                Sobre nosotros
                             </NavLink>
                         </li>
                     </ul>

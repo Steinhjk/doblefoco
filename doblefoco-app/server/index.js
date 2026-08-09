@@ -339,7 +339,15 @@ const RUTAS_ESTATICAS = [
     { ruta: '/categorias', prioridad: '0.6', frecuencia: 'daily' },
     { ruta: '/mapa-medios', prioridad: '0.6', frecuencia: 'weekly' },
     { ruta: '/transparencia', prioridad: '0.5', frecuencia: 'monthly' },
-    { ruta: '/sobre-nosotros', prioridad: '0.4', frecuencia: 'monthly' },
+    // Sub-páginas de transparencia (2026-08-09). `/sobre-nosotros` SALE del
+    // sitemap: desde esa fecha es una redirección permanente, y anunciar en el
+    // sitemap una URL que redirige es pedirle al buscador que descubra por su
+    // cuenta que le dimos la dirección vieja.
+    { ruta: '/transparencia/sobre-nosotros', prioridad: '0.4', frecuencia: 'monthly' },
+    { ruta: '/transparencia/clasificacion', prioridad: '0.5', frecuencia: 'monthly' },
+    { ruta: '/transparencia/dinero', prioridad: '0.4', frecuencia: 'monthly' },
+    { ruta: '/transparencia/datos', prioridad: '0.3', frecuencia: 'monthly' },
+    { ruta: '/transparencia/limitaciones', prioridad: '0.4', frecuencia: 'monthly' },
 ];
 
 const escaparXml = (texto) =>

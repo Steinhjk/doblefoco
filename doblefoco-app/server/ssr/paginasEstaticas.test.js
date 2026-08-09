@@ -7,8 +7,23 @@ const SITIO = 'https://doblefoco.co';
 const COLOMBIANOS = MEDIA_REGISTRY.filter((m) => m.country === 'CO');
 
 describe('RUTAS_RENDERIZADAS', () => {
-    it('son las tres que no dependen de la base', () => {
-        expect(RUTAS_RENDERIZADAS).toEqual(['/mapa-medios', '/transparencia', '/sobre-nosotros']);
+    it('son las que no dependen de la base', () => {
+        expect(RUTAS_RENDERIZADAS).toEqual([
+            '/mapa-medios',
+            '/transparencia',
+            '/transparencia/sobre-nosotros',
+            '/transparencia/clasificacion',
+            '/transparencia/dinero',
+            '/transparencia/datos',
+            '/transparencia/limitaciones',
+        ]);
+    });
+
+    it('NO renderiza la ruta vieja de sobre-nosotros', () => {
+        // Es una redirección permanente desde el 2026-08-09. Si el servidor la
+        // renderizara además, el mismo contenido viviría en dos direcciones y el
+        // buscador tendría que elegir una — que es justo lo que penaliza.
+        expect(RUTAS_RENDERIZADAS).not.toContain('/sobre-nosotros');
     });
 
     it('NO incluye la portada', () => {

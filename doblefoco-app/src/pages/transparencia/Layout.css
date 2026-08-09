@@ -1,0 +1,94 @@
+/*
+ * Armazón de /transparencia: índice a la izquierda, contenido a la derecha.
+ *
+ * El índice va ARRIBA en móvil y a la izquierda desde tablet. No se colapsa en
+ * un desplegable: son seis entradas cortas, y esconderlas tras un botón añade
+ * un clic para ahorrar dos centímetros de pantalla.
+ */
+
+.tr-layout {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+.tr-cuerpo {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.tr-indice ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.tr-indice a {
+    display: block;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    color: var(--text-secondary, #9aa0a6);
+    text-decoration: none;
+    font-size: 0.92rem;
+    line-height: 1.3;
+    border: 1px solid transparent;
+    transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.tr-indice a:hover {
+    color: var(--text-primary, #e8eaed);
+    background: var(--surface-2, rgba(255, 255, 255, 0.04));
+}
+
+/*
+ * La sección activa se marca con color Y con una barra: el color solo la
+ * distinguiría de forma insuficiente para quien no separa bien esos dos tonos.
+ */
+.tr-indice a.is-active {
+    color: var(--text-primary, #e8eaed);
+    background: var(--surface-2, rgba(255, 255, 255, 0.06));
+    border-color: var(--border, rgba(255, 255, 255, 0.12));
+    font-weight: 600;
+}
+
+.tr-indice a:focus-visible {
+    outline: 2px solid var(--accent, #7aa2f7);
+    outline-offset: 2px;
+}
+
+@media (min-width: 860px) {
+    .tr-cuerpo {
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 3rem;
+        align-items: start;
+    }
+
+    /*
+     * `sticky` para que el índice acompañe en secciones largas. `top` deja hueco
+     * a la barra de navegación fija.
+     */
+    .tr-indice {
+        position: sticky;
+        top: 5rem;
+    }
+
+    .tr-indice ul {
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .tr-indice a.is-active {
+        border-left: 3px solid var(--accent, #7aa2f7);
+        border-radius: 0 8px 8px 0;
+    }
+}
+
+/* El contenido no debe estirarse a lo ancho: la lectura se rompe pasadas ~75ch. */
+.tr-contenido {
+    min-width: 0;
+    max-width: 70ch;
+}

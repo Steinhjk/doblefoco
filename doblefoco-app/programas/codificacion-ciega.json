@@ -68,7 +68,31 @@
       "derecha": { "per603": 3, "per402": 2, "per606": 2, "per605": 1, "per601": 1, "total": 9 },
       "rile": -0.217,
       "nota": "Doce cuasi-frases de salud seguidas: el diagnóstico municipal por sectores infla 504 sin decir nada de posición."
+    },
+    {
+      "opaco": "doc-07",
+      "cuasiFrases": 32,
+      "izquierda": { "per504": 5, "per506": 1, "per202": 1, "total": 7 },
+      "derecha": { "per606": 2, "per603": 1, "per605": 1, "per402": 1, "total": 5 },
+      "rile": -0.063,
+      "nota": "El más corto de los 21: solo 32 cuasi-frases codificables en todo el documento. Trabajo con Policía, Ejército y Armada; hogar como orgullo. Su RILE tiene el doble de ruido que los demás y hay que ponderarlo o declararlo."
+    },
+    {
+      "opaco": "doc-08",
+      "cuasiFrases": 60,
+      "izquierda": { "per506": 13, "per504": 12, "per202": 4, "per403": 1, "total": 30 },
+      "derecha": { "per203": 1, "per605": 1, "per414": 1, "per606": 1, "per601": 1, "per402": 1, "total": 6 },
+      "rile": -0.400,
+      "nota": "El más a la izquierda de los nueve, y casi todo por volumen educativo: trece cuasi-frases seguidas de cobertura, transporte escolar, becas y convenios. Ejemplo puro del artefacto de género."
+    },
+    {
+      "opaco": "doc-09",
+      "cuasiFrases": 60,
+      "izquierda": { "per504": 11, "per506": 5, "per202": 1, "per106": 1, "per403": 1, "per701": 1, "total": 20 },
+      "derecha": { "per414": 1, "per603": 1, "per201": 1, "per601": 1, "per606": 1, "total": 5 },
+      "rile": -0.250,
+      "nota": "Menciona los acuerdos de paz y a la vez «con la ayuda de Dios». Derecha repartida en cinco categorías distintas, una cada una."
     }
   ],
-  "pendientes": ["doc-07", "doc-08", "doc-09", "doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]
+  "pendientes": ["doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]
 }

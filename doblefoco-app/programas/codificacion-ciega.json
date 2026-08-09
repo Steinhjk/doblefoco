@@ -92,6 +92,34 @@
       "derecha": { "per414": 1, "per603": 1, "per201": 1, "per601": 1, "per606": 1, "total": 5 },
       "rile": -0.250,
       "nota": "Menciona los acuerdos de paz y a la vez «con la ayuda de Dios». Derecha repartida en cinco categorías distintas, una cada una."
+    },
+    {
+      "opaco": "doc-10",
+      "cuasiFrases": 60,
+      "cegado": false,
+      "izquierda": { "per504": 8, "per506": 5, "per202": 2, "per403": 1, "total": 16 },
+      "derecha": { "per605": 4, "per401": 1, "per402": 1, "total": 6 },
+      "rile": -0.167,
+      "nota": "CIEGO ROTO: repite literalmente la misma plataforma partidista que doc-05, incluida la «Consulta Liberal». Cuatro cuasi-frases de seguridad, reclusión y control del espacio público."
+    },
+    {
+      "opaco": "doc-11",
+      "cuasiFrases": 60,
+      "cegado": false,
+      "duplicadoDelPiloto": "verde-tolima",
+      "izquierda": { "per106": 5, "per202": 5, "per412": 3, "per404": 2, "per504": 4, "per506": 2, "per406": 1, "total": 22 },
+      "derecha": { "per402": 2, "per606": 1, "total": 3 },
+      "rile": -0.317,
+      "nota": "CIEGO ROTO Y NO INDEPENDIENTE: es el MISMO documento que codifiqué en el piloto (Cajamarca, Tolima). Se reconoce a la primera línea. Los códigos se repiten idénticos porque la entrada es idéntica y los tenía en memoria; NO cuenta como segunda codificación ni como medida de fiabilidad."
+    },
+    {
+      "opaco": "doc-12",
+      "cuasiFrases": 60,
+      "cegado": false,
+      "izquierda": { "per504": 12, "per506": 5, "per106": 1, "per202": 1, "per412": 1, "total": 20 },
+      "derecha": { "per601": 3, "per606": 1, "per414": 1, "per402": 1, "total": 6 },
+      "rile": -0.233,
+      "nota": "CIEGO ROTO: abre citando los principios de su partido. Diagnóstico de salud muy extenso —doce cuasi-frases— y tres apelaciones a lo histórico y lo propio."
     }
   ],
   "pendientes": ["doc-10", "doc-11", "doc-12", "doc-13", "doc-14", "doc-15", "doc-16", "doc-17", "doc-18", "doc-19", "doc-20", "doc-21"]

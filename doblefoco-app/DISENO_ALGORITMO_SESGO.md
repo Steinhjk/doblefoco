@@ -1333,3 +1333,87 @@ antes de gastar las 36-54 horas:
 
 Y sigue en pie lo de la sección 0: si al final ninguno de los dos separa, el
 resultado legítimo es **decirlo** y quedarse con el juicio editorial declarado.
+
+---
+
+## 24. LA CALIBRACIÓN NO FUNCIONA — resultado negativo, con los datos
+
+21 programas municipales, 3 por cada uno de los 7 partidos anclados, ~60
+cuasi-frases cada uno, codificados con MARPOR y con el partido oculto hasta el
+final. Datos completos en `programas/codificacion-ciega.json`.
+
+**La pregunta del §20.4 era: ¿reproduce el RILE de estos documentos el orden de
+CHES? La respuesta es NO.**
+
+```
+partido                 CHES   RILE medio   der media   izq media
+────────────────────────────────────────────────────────────────
+Alianza Verde           3,86      −0,283         3,0        19,7
+Liberal                 5,93      −0,104         8,3        14,0
+Partido de la U         6,50      −0,200         5,7        17,7
+Cambio Radical          7,64      −0,167         9,0        19,0
+Conservador             8,43      −0,239         7,0        21,3
+Colombia Justa Libres   9,20      −0,139         8,0        16,3
+Centro Democrático      9,21      −0,183         7,0        18,0
+
+correlación con CHES        Pearson   Spearman
+  RILE medio                  0,387      0,214
+  categorías de DERECHA       0,656      0,286
+  categorías de IZQUIERDA     0,034      0,000
+```
+
+**Con n=7 partidos, ninguna alcanza significación** —haría falta r ≈ 0,75— y el
+orden se rompe en el sitio más visible: **el Partido Conservador (8,43) sale casi
+tan a la izquierda como Alianza Verde (3,86)**, −0,239 contra −0,283. El Liberal,
+en el centro del anclaje, sale como el más a la derecha de los siete.
+
+### 24.1 Lo único que sobrevive
+
+**Alianza Verde tiene 3,0 categorías de derecha de media; el resto va de 5,7 a
+9,0.** Ese contraste sí es limpio y coincide con el piloto. Pero entre los seis
+partidos restantes el conteo no ordena nada: Cambio Radical (7,64) tiene más
+derecha que Centro Democrático (9,21).
+
+Es decir: el instrumento **distingue el extremo izquierdo del resto** y no
+distingue nada más. Para una escala continua eso no basta.
+
+### 24.2 Por qué falla, hasta donde se puede afirmar
+
+1. **El género domina el denominador.** Veinte de los 21 documentos dan RILE
+   negativo; el único que llega a 0,000 es de una ciudad grande, donde el
+   presupuesto da para hablar de inversión y no solo de acueductos. Un alcalde
+   suma izquierda por prometer salud y colegios.
+2. **La varianza dentro de cada partido es mayor que la que hay entre partidos.**
+   Los tres del Conservador van de −0,400 a −0,100. Con ese ruido, tres
+   documentos no fijan una media.
+3. **El programa municipal responde al municipio, no al partido.** Un alcalde de
+   Colombia Justa Libres en Sucre y otro en Caldas escriben sobre problemas
+   distintos, y esa diferencia pesa más que su etiqueta común.
+
+### 24.3 Lo que NO autoriza a concluir
+
+- **No dice que MARPOR no sirva.** Dice que no sirve **con este género**. En
+  manifiestos nacionales el método tiene décadas de validación.
+- **No prueba que los partidos colombianos no se ordenen.** CHES y V-Party los
+  ordenan y coinciden entre sí (§13). Lo que falla es nuestro puente hasta ellos.
+- **No es un resultado limpio**: 7 de 21 documentos perdieron el ciego —4 por
+  contaminación del piloto, 3 porque el texto trae su plataforma— y hay un solo
+  codificador sin segunda vuelta, así que no hay alfa de Krippendorff.
+
+### 24.4 Qué queda
+
+Con el corpus de programas municipales agotado como vía de calibración, las
+salidas que quedan son las que ya estaban escritas en §11.4 y §14.5:
+
+1. **Otro género documental anclado** —estatutos de partido, intervenciones en
+   plenaria del Congreso, programas de campaña a alcaldías de ciudades grandes—
+   donde el contenido no lo dicte el acueducto del municipio.
+2. **Encuesta propia a especialistas**, cara y lenta, que convertiría a DobleFoco
+   en productor de datos.
+3. **El juicio editorial declarado, argumentado y sujeto a réplica**, que la
+   sección 0 dejó explícitamente como resultado aceptable.
+
+**Y esto es lo que el diseño preveía.** La Fase 1 dijo que el anclaje existía; la
+calibración dice que no llegamos hasta él por esta vía. Publicar un número
+construido sobre una correlación de 0,39 con n=7 sería exactamente el aparato
+estadístico alrededor de una opinión que este documento existe para impedir.

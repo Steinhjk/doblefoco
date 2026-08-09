@@ -1,0 +1,318 @@
+{
+  "aviso": "NO ABRIR hasta terminar de codificar. Abrirlo antes invalida el ciego.",
+  "semillaCiego": 7314,
+  "generadoEl": "2026-08-08",
+  "fallos": [
+    {
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46880000011_E6.pdf",
+      "motivo": "sin capa de texto (escaneo)"
+    },
+    {
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/12/PLAN_AL12410000001_E6.pdf",
+      "motivo": "sin capa de texto (escaneo)"
+    },
+    {
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/29/PLAN_AL29073000008_E6.pdf",
+      "motivo": "sin capa de texto (escaneo)"
+    }
+  ],
+  "correspondencia": [
+    {
+      "opaco": "doc-01",
+      "partido": "PARTIDO CAMBIO RADICAL",
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "departamento": "ATLANTICO",
+      "elegido": "PASOS ZAPATA KATHERINE LUZ",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/03/PLAN_AL03061000003_E6.pdf",
+      "palabras": 7528
+    },
+    {
+      "opaco": "doc-02",
+      "partido": "PARTIDO ALIANZA VERDE",
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "departamento": "BOYACA",
+      "elegido": "RINCON MARIÑO WILMAR JULIAN",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/07/PLAN_AL07091000004_E6.pdf",
+      "palabras": 1911
+    },
+    {
+      "opaco": "doc-03",
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "departamento": "CAUCA",
+      "elegido": "ORTIZ BAMBAGUE DIEGO ANDRES",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11079000008_E6.pdf",
+      "palabras": 4483
+    },
+    {
+      "opaco": "doc-04",
+      "partido": "PARTIDO COLOMBIA JUSTA LIBRES",
+      "ancla": {
+        "ches_lrgen": 9.2,
+        "ches_lrecon": 7.78,
+        "ches_galtan": 9.18,
+        "vparty": null
+      },
+      "departamento": "CASANARE",
+      "elegido": "AMAYA ZORRO TELE WOSBON",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46850000014_E6.pdf",
+      "palabras": 8615
+    },
+    {
+      "opaco": "doc-05",
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "departamento": "ANTIOQUIA",
+      "elegido": "GRACIANO ZAPATA LUIS HERNANDO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01061000001_E6.pdf",
+      "palabras": 5846
+    },
+    {
+      "opaco": "doc-06",
+      "partido": "PARTIDO CONSERVADOR COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "departamento": "SUCRE",
+      "elegido": "RICARDO CANTILLO FREDDY ORLANDO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/28/PLAN_AL28100000002_E6.pdf",
+      "palabras": 4875
+    },
+    {
+      "opaco": "doc-07",
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "departamento": "SANTANDER",
+      "elegido": "TOQUICA AGUILAR JAIRO DEMIS",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/27/PLAN_AL27169000001_E6.pdf",
+      "palabras": 1551
+    },
+    {
+      "opaco": "doc-08",
+      "partido": "PARTIDO CONSERVADOR COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "departamento": "RISARALDA",
+      "elegido": "MURILLO BLANDON LUIS HERNANDO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/24/PLAN_AL24008000002_E6.pdf",
+      "palabras": 3838
+    },
+    {
+      "opaco": "doc-09",
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "departamento": "BOLIVAR",
+      "elegido": "PUERTA OROZCO EDWIN",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/05/PLAN_AL05124000008_E6.pdf",
+      "palabras": 7428
+    },
+    {
+      "opaco": "doc-10",
+      "partido": "PARTIDO LIBERAL COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 5.93,
+        "ches_lrecon": 6.29,
+        "ches_galtan": 5.07,
+        "vparty": -0.28
+      },
+      "departamento": "ANTIOQUIA",
+      "elegido": "ARROYAVE MOLINA OLGA CECILIA",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01286000001_E6.pdf",
+      "palabras": 16678
+    },
+    {
+      "opaco": "doc-11",
+      "partido": "PARTIDO ALIANZA VERDE",
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "departamento": "TOLIMA",
+      "elegido": "VARGAS MALAGON JULIO ROBERTO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/29/PLAN_AL29022000004_E6.pdf",
+      "palabras": 2191
+    },
+    {
+      "opaco": "doc-12",
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "departamento": "NARIÑO",
+      "elegido": "MARTINEZ CORDOBA ALVARO EVELIO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/23/PLAN_AL23013000011_E6.pdf",
+      "palabras": 8381
+    },
+    {
+      "opaco": "doc-13",
+      "partido": "PARTIDO COLOMBIA JUSTA LIBRES",
+      "ancla": {
+        "ches_lrgen": 9.2,
+        "ches_lrecon": 7.78,
+        "ches_galtan": 9.18,
+        "vparty": null
+      },
+      "departamento": "SUCRE",
+      "elegido": "PEREZ MARQUEZ DIANA JUDITH",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/28/PLAN_AL28055000014_E6.pdf",
+      "palabras": 10369
+    },
+    {
+      "opaco": "doc-14",
+      "partido": "PARTIDO CONSERVADOR COLOMBIANO",
+      "ancla": {
+        "ches_lrgen": 8.43,
+        "ches_lrecon": 8.43,
+        "ches_galtan": 9.29,
+        "vparty": 2.36
+      },
+      "departamento": "CAUCA",
+      "elegido": "DIAZ SALAMANCA FERNANDO ALBEIRO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/11/PLAN_AL11046000002_E6.pdf",
+      "palabras": 7055
+    },
+    {
+      "opaco": "doc-15",
+      "partido": "PARTIDO COLOMBIA JUSTA LIBRES",
+      "ancla": {
+        "ches_lrgen": 9.2,
+        "ches_lrecon": 7.78,
+        "ches_galtan": 9.18,
+        "vparty": null
+      },
+      "departamento": "CALDAS",
+      "elegido": "LONDOÑO MEDINA JOHN ALEJANDRO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/09/PLAN_AL09007000014_E6.pdf",
+      "palabras": 6590
+    },
+    {
+      "opaco": "doc-16",
+      "partido": "PARTIDO SOCIAL DE UNIDAD NACIONAL  PARTIDO DE LA U",
+      "ancla": {
+        "ches_lrgen": 6.5,
+        "ches_lrecon": 6.64,
+        "ches_galtan": 6.18,
+        "vparty": 0.58
+      },
+      "departamento": "VALLE",
+      "elegido": "TASCON OSPINA JORGE HUMBERTO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/31/PLAN_AL31118000008_E6.pdf",
+      "palabras": 6383
+    },
+    {
+      "opaco": "doc-17",
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "departamento": "BOLIVAR",
+      "elegido": "RAMOS BAYTER MANUEL ESTEBAN",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/05/PLAN_AL05010000011_E6.pdf",
+      "palabras": 8415
+    },
+    {
+      "opaco": "doc-18",
+      "partido": "PARTIDO ALIANZA VERDE",
+      "ancla": {
+        "ches_lrgen": 3.86,
+        "ches_lrecon": 5.07,
+        "ches_galtan": 2.07,
+        "vparty": -0.64
+      },
+      "departamento": "CASANARE",
+      "elegido": "PLATA PLATA JOVANI ALBERTO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46830000004_E6.pdf",
+      "palabras": 6354
+    },
+    {
+      "opaco": "doc-19",
+      "partido": "PARTIDO CENTRO DEMOCRATICO",
+      "ancla": {
+        "ches_lrgen": 9.21,
+        "ches_lrecon": 9.07,
+        "ches_galtan": 9.43,
+        "vparty": 2.68
+      },
+      "departamento": "CASANARE",
+      "elegido": "ESCOBAR BERNAL EUNICE",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/46/PLAN_AL46680000011_E6.pdf",
+      "palabras": 15272
+    },
+    {
+      "opaco": "doc-20",
+      "partido": "PARTIDO CAMBIO RADICAL",
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "departamento": "ANTIOQUIA",
+      "elegido": "GIRALDO GOMEZ SAUL ALBERTO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/01/PLAN_AL01094000003_E6.pdf",
+      "palabras": 8638
+    },
+    {
+      "opaco": "doc-21",
+      "partido": "PARTIDO CAMBIO RADICAL",
+      "ancla": {
+        "ches_lrgen": 7.64,
+        "ches_lrecon": 7.57,
+        "ches_galtan": 7.5,
+        "vparty": 1.57
+      },
+      "departamento": "ATLANTICO",
+      "elegido": "PUMAREJO HEINS JAIME ALBERTO",
+      "url": "https://wapp.registraduria.gov.co/electoral/Elecciones-2019/docs/proGobierno/ALC/03/PLAN_AL03001000003_E6.pdf",
+      "palabras": 12688
+    }
+  ]
+}

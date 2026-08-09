@@ -22,6 +22,7 @@
     "backup:restore": "node scripts/restore.mjs",
     "check:registry": "node scripts/checkRegistry.mjs",
     "check:feeds": "node scripts/verifyFeeds.mjs",
+    "feed:descubrir": "node scripts/descubrirFeed.mjs",
     "check:sources": "node scripts/verifySources.mjs",
     "recategorizar": "node scripts/recategorizar.mjs",
     "report:ingest": "node scripts/ingestReport.mjs",

@@ -612,3 +612,25 @@
         transition: none;
     }
 }
+
+/**
+ * QUIÉN ESCRIBE — distintivo de redacción automatizada.
+ *
+ * Deliberadamente NO usa el color de ningún bando ni el de los avisos: no dice
+ * que el medio sea peor, dice de dónde viene su texto. Va en el mismo tono
+ * discreto que los distintivos de propiedad sin énfasis, porque responde a la
+ * misma clase de pregunta.
+ */
+.redaccion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border: 1px dashed var(--border-color);
+    border-radius: 2px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    cursor: help;
+}

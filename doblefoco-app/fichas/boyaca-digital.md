@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| **Valor propuesto** | **ninguno** — y el alta se desaconseja, no se aplaza |
-| **Firma** | ☐ no procede |
+| **Valor propuesto** | **0,00** · Orientación mixta — **provisional de alta** |
+| **Firma** | ☐ pendiente — Jose Arbeláez |
 | **Fecha** | 2026-08-09 (candidatura, del barrido nacional) |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Departamento** | Boyacá |
@@ -30,11 +30,11 @@ Chiquinquirá, Paipa y Villa de Leyva.
 
 Fuente: [boyacadigital.com](https://www.boyacadigital.com/).
 
-### Nivel 1 — Quién lo posee: NADA
+### Nivel 1 — Quién lo posee
 
-Ni razón social, ni NIT, ni director, ni propietario, ni responsable
-identificable. **No hay a quién preguntarle por qué**, que es exactamente lo
-que el protocolo de este proyecto existe para garantizar.
+Se rastreó y hay algo, aunque incompleto: **Holding Consultants** lo opera y lo
+edita. Sigue sin haber razón social, NIT ni una persona con nombre que responda.
+El detalle está en el apartado «La propiedad, rastreada», más abajo.
 
 ### Nivel 2 — Conducta medida: NO EXISTE
 
@@ -44,47 +44,73 @@ esperable de una redacción automatizada y no es mérito.
 
 ---
 
-## POR QUÉ EL ALTA SE DESACONSEJA, Y NO SOLO SE APLAZA
+## ENTRA, POR DECISIÓN DE JOSE (2026-08-09)
 
-Las otras nueve fichas sin número están **aplazadas**: les falta un certificado
-de Cámara de Comercio y entran. Esta es distinta, y conviene no confundirlas.
+Esta ficha se escribió recomendando NO darlo de alta. **Jose decidió admitirlo:
+«es el primero».** Se admite con marca visible y con la propiedad rastreada, que
+era la condición implícita de esa decisión.
 
-**1. La orientación de un medio así no es una propiedad del medio, es una
-propiedad de su configuración.** El protocolo juzga «la orientación del medio:
-estructural, permanente, de la casa». Aquí la casa es un conjunto de
-instrucciones que se puede cambiar en una tarde sin que nada externo lo
-registre. Un número nuestro sobre eso caducaría sin aviso y sin forma de
-detectarlo.
+Los tres reparos que motivaban la recomendación contraria siguen en pie y se
+dejan escritos, porque admitirlo no los resuelve:
 
-**2. No hay nadie que responda.** La firma del protocolo significa «hay alguien
-a quien preguntarle por qué». Este medio no ofrece ninguna persona. Que diga
-acogerse al derecho de rectificación no lo resuelve: la rectificación se le pide
-a alguien.
+**1. Su orientación no es una propiedad de la casa sino de su configuración**,
+que puede cambiar en una tarde sin que nada externo lo registre. Un número
+nuestro sobre eso caducaría sin aviso. **Y aquí está el giro que apuntó Jose:
+eso lo hace MÁS medible, no menos.** En una redacción humana el sesgo se reparte
+entre personas y días; en una configurada es una propiedad del sistema, y su
+salida es sistemática. Con corpus suficiente, la deriva de este medio debería
+poder calcularse más directamente que la de uno humano, y una alteración de su
+configuración debería verse como un SALTO y no como ruido. Es trabajo del motor
+de sesgo y queda anotado en `shared/mediaRegistry.js`, junto al campo.
 
-**3. Y hay un problema que es de este proyecto en particular.** DobleFoco
-existe para comparar cómo cubren un mismo hecho **redacciones distintas**. La
-Fase 0 retiró del motor 600 citas fabricadas atribuidas a medios reales, porque
-presentar texto generado como reporte es la línea que el proyecto no cruza.
-**Ingerir un medio cuyo texto es generado, y contarlo como una fuente más en el
-recuento de «cuántos medios cubren esta historia», sería volver a cruzarla por
-la puerta de al lado** — con la diferencia de que esta vez el texto lo genera
-otro y nosotros solo lo contamos.
+**2. El recuento de pluralidad.** Todo el sitio se apoya en «cuántos medios
+distintos cubren este hecho». Una redacción que reescribe lo que ya publicaron
+otros suma sin aportar una voz. **Por eso la marca no es decorativa**: sin ella,
+este medio infla en silencio la cifra que da sentido a la portada.
 
-Un medio de IA sumando a la cifra de pluralidad no aporta una voz: aporta una
-copia rápida de las voces que ya están.
+**3. Nadie firma.** Su política editorial dice que un Editor en Jefe responde
+legalmente, pero no publica su nombre. El protocolo pide que haya alguien a
+quien preguntarle por qué; aquí hay un cargo, no una persona.
 
 ---
 
-## LO QUE NO SE ESTÁ DICIENDO
+## LA PROPIEDAD, RASTREADA
 
-**No se afirma que su contenido sea falso.** Dice citar fuentes y puede que las
-cite bien. Tampoco se le retira de nada: no estaba dentro.
+| Dato | Valor |
+|---|---|
+| Opera y edita | **Holding Consultants** (lo dice su política editorial) |
+| Responsable legal | «Editor en Jefe», **sin nombre publicado** |
+| Único humano con nombre | **Juan Pablo Sáenz**, columnista de «Escenario Político», periodista y estratega en comunicación política |
+| Razón social / NIT | no constan |
 
-Y **no se descarta para siempre**. Lo que hace falta antes de reconsiderarlo es
-una decisión de producto que hoy no existe: si el catálogo va a admitir medios
-con redacción automatizada y, en tal caso, **cómo se marcan en pantalla** para
-que un lector no los cuente como una redacción más. Eso es de Jose, no de una
-ficha.
+**LO QUE HAY QUE CONFIRMAR, Y ES LO PRIMERO.** Con ese nombre existe en Bogotá
+**Holding Consultants de Colombia**, consultora de sistemas de gestión —ISO 9001,
+seguridad y salud en el trabajo— con veinte años de actividad y clientes en el
+sector privado **y en el público**, con cobertura declarada en Cundinamarca y
+Boyacá.
+
+Si es la misma empresa, **una consultora que vende servicios a entidades
+públicas sería la dueña de un medio cuya redacción cubre a diario las alcaldías
+y la gobernación de Boyacá**. Coinciden el nombre y la geografía, y nada más:
+no se afirma, se señala dónde mirar.
+
+---
+
+## SUS TRECE PERIODISTAS TIENEN NOMBRE Y APELLIDO, Y NO EXISTEN
+
+Mariana Restrepo en judicial, Andrés Cárdenas en política, Carolina Pinilla en
+Boyacá hiperlocal, Diego Saavedra en deportes, Valeria Torres en economía, Don
+Hernán Bautista en agro… trece agentes con nombres humanos y sección asignada.
+
+**El medio lo declara en su página de equipo, y eso cuenta a su favor.** Pero la
+firma es donde el lector se encuentra al autor, y ahí parecen personas. Su feed
+RSS **no trae etiqueta de autor**, así que esa firma no nos llega y no podemos
+reproducirla ni corregirla: otra razón para que la marca esté en el medio.
+
+Declara además etiquetar las imágenes generadas y no simular personas reales.
+**Conviene comprobar qué proporción de sus fotos es generada antes de mostrarlas
+como «la foto del medio»**: la regla del proyecto es imagen real del medio o
+ninguna, y una ilustración de IA no es ninguna de las dos.
 
 ---
 
@@ -104,9 +130,14 @@ en una conversación.
 
 ## REFUTACIÓN — qué reabriría el expediente
 
-1. **Que Jose decida** si el catálogo admite redacciones automatizadas y con qué
-   marca visible.
+1. **Confirmar o descartar que Holding Consultants sea la consultora bogotana
+   del mismo nombre.** Es lo primero, y si se confirma la ficha cambia de tono:
+   pasaría a haber un conflicto de interés documentado.
 2. **Que el medio publique responsable identificable y sociedad**, que es el
    mínimo del protocolo para cualquiera.
 3. **Que se documente qué parte es generada y qué parte es reportería humana.**
    «Bajo supervisión editorial» no dice si alguien va al sitio de los hechos.
+4. **A los 90 días con más de 60 historias suyas**, y aquí es donde esta ficha
+   se separa de las demás: si la hipótesis de Jose es correcta, su orientación
+   se podrá calcular con menos ruido que la de cualquier medio humano del
+   catálogo. **Este medio es el primer caso de prueba de esa idea.**

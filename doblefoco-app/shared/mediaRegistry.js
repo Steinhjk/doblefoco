@@ -64,6 +64,56 @@
  */
 
 /**
+ * QUIÉN ESCRIBE: humanos o máquinas.
+ *
+ * Campo `redaccion`. Ausente significa redacción humana, que es lo normal y no
+ * hace falta declarar. `'automatizada'` significa que el medio DECLARA que su
+ * redacción son agentes de inteligencia artificial.
+ *
+ * POR QUÉ EXISTE (2026-08-09, decisión de Jose). Entró Boyacá Digital, que se
+ * anuncia como el primer periódico autónomo con agentes de IA de Colombia. Se
+ * admite —«es el primero»— pero no puede entrar disimulado, por dos razones que
+ * son de este proyecto en particular:
+ *
+ *   1. **El recuento de pluralidad.** Todo el sitio se apoya en «cuántos medios
+ *      distintos cubren este hecho». Una redacción automatizada que reescribe lo
+ *      que ya publicaron otros suma al recuento sin aportar una voz. Sin marca,
+ *      infla la cifra que da sentido a la portada.
+ *   2. **La firma.** El protocolo de juicio editorial dice que firmar significa
+ *      que hay alguien a quien preguntarle por qué. Aquí ese alguien existe
+ *      —un editor en jefe que responde legalmente— pero no publica su nombre.
+ *
+ * LO QUE ESTE CAMPO NO DICE: nada sobre la calidad de lo que publica. Un medio
+ * automatizado que cita bien sus fuentes puede ser más riguroso que uno humano
+ * que no las cita. Es una etiqueta de PROCEDENCIA, igual que la de propiedad.
+ *
+ * LO SIGUIENTE, y es idea de Jose: en un medio así **la orientación debería ser
+ * más medible, no menos**. En una redacción humana el sesgo se reparte entre
+ * personas y días; en una configurada, es una propiedad del sistema y su salida
+ * es sistemática. Con corpus suficiente, la deriva de un medio automatizado
+ * debería poder calcularse de forma más directa que la de uno humano —y una
+ * alteración de su configuración debería verse como un salto, no como ruido—.
+ * Eso es trabajo del motor de sesgo, no de este archivo, y queda anotado aquí
+ * porque es donde se buscará.
+ */
+export const REDACCIONES = {
+    automatizada: {
+        etiqueta: 'Redacción de IA',
+        explica:
+            'Este medio declara que sus contenidos los produce una redacción de agentes de '
+            + 'inteligencia artificial con supervisión editorial humana. No dice nada sobre su '
+            + 'rigor: dice de dónde viene el texto.',
+    },
+};
+
+/**
+ * ¿Este medio declara redacción automatizada?
+ *
+ * @param {{redaccion?: string}} medio
+ */
+export const esRedaccionAutomatizada = (medio) => medio?.redaccion === 'automatizada';
+
+/**
  * Bandas de ORIENTACIÓN del medio. metodologia.txt debe describir exactamente
  * estas.
  *
@@ -703,6 +753,19 @@ export const MEDIA_REGISTRY = [
         bias: 0.0, factuality: null, reviewedAt: null,
         biasRationale: 'Corporación sin ánimo de lucro de Puerto Carreño que cubre Vichada y Guainía. Único medio sin ánimo de lucro de la tanda departamental; orientación mixta provisional — ver fichas/el-morichal.md.',
         feed: { url: 'https://elmorichal.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        id: 'boyaca-digital', name: 'Boyacá Digital', shortName: 'Boyacá Digital',
+        domain: 'boyacadigital.com', departamento: 'Boyacá', country: 'CO',
+        group: 'Holding Consultants',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        /**
+         * PRIMER MEDIO DEL CATÁLOGO CON REDACCIÓN AUTOMATIZADA (2026-08-09).
+         * Ver el bloque REDACCIONES más abajo y fichas/boyaca-digital.md.
+         */
+        redaccion: 'automatizada',
+        biasRationale: 'Medio digital de Boyacá operado por una redacción de agentes de inteligencia artificial bajo supervisión editorial humana, según él mismo declara. Orientación mixta provisional: su línea no es una propiedad de la casa sino de su configuración — ver fichas/boyaca-digital.md.',
+        feed: { url: 'https://www.boyacadigital.com/rss.xml', via: 'direct', category: 'Política' },
     },
     {
         id: 'semana', name: 'Semana', shortName: 'Semana',

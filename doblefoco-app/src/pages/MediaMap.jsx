@@ -2,9 +2,9 @@ import { useMemo, useState, useId, useEffect } from 'react';
 import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import {
     ExternalLink, Table2, ScatterChart, Info,
-    Building2, Sprout, Users, Landmark, Globe,
+    Building2, Sprout, Users, Landmark, Globe, Bot,
 } from 'lucide-react';
-import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
+import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand, REDACCIONES, esRedaccionAutomatizada } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
 import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
@@ -152,6 +152,22 @@ const Distintivo = ({ mediaId }) => {
         >
             {Icono && <Icono size={13} aria-hidden="true" />}
             {b.corto}
+        </span>
+    );
+};
+
+/**
+ * QUIÉN ESCRIBE. Va al lado del distintivo de propiedad porque responde a la
+ * misma pregunta —de dónde viene esto— y porque el lector que mira quién es el
+ * dueño es el mismo que querría saber si hay una redacción detrás.
+ */
+const DistintivoRedaccion = ({ medio }) => {
+    if (!esRedaccionAutomatizada(medio)) return null;
+    const r = REDACCIONES.automatizada;
+    return (
+        <span className="redaccion-badge" title={r.explica}>
+            <Bot size={13} aria-hidden="true" />
+            {r.etiqueta}
         </span>
     );
 };
@@ -579,7 +595,7 @@ const MediaMap = () => {
                                     <td>{getBand(item.bias).label}</td>
                                     <td className="num">{fmtPct(item.factuality)}</td>
                                     <td>{item.group}</td>
-                                    <td><Distintivo mediaId={item.id} /></td>
+                                    <td><Distintivo mediaId={item.id} /> <DistintivoRedaccion medio={item} /></td>
                                     <td>
                                         {aporta(item.id) === null
                                             ? '—'
@@ -633,6 +649,7 @@ const MediaProfile = ({ media, onClose }) => {
                 contexto a todo lo demás, incluida la línea editorial. */}
             <p className="profile-duenio">
                 <Distintivo mediaId={media.id} />
+                <DistintivoRedaccion medio={media} />
             </p>
 
             <div className="profile-metrics">

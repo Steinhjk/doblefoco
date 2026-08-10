@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-10
-Medios en el catálogo: 58
+Medios en el catálogo: 59
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  28 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  29 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -189,6 +189,14 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  28 medios
     y Guainía. Único medio sin ánimo de lucro de la tanda
     departamental; orientación mixta provisional — ver
     fichas/el-morichal.md.
+
+  Boyacá Digital  ·  sesgo +0.00  ·  factualidad 0%
+    boyacadigital.com · Holding Consultants · CO · RSS propio · PROVISIONAL
+    Medio digital de Boyacá operado por una redacción de agentes de
+    inteligencia artificial bajo supervisión editorial humana, según
+    él mismo declara. Orientación mixta provisional: su línea no es
+    una propiedad de la casa sino de su configuración — ver
+    fichas/boyaca-digital.md.
 
   France 24 Español  ·  sesgo +0.00  ·  factualidad 90%
     france24.com · Servicio público francés · FR · RSS propio · PROVISIONAL

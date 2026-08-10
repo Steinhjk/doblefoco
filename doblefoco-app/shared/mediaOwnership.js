@@ -1685,6 +1685,25 @@ export const OWNERSHIP_PROFILES = {
         ],
         verifiedAt: null,
     },
+    'boyaca-digital': {
+        ownerType: 'conglomerado',
+        holdings: [
+            'Su política editorial declara que el medio lo «opera y edita» Holding Consultants, y que un Editor en Jefe humano supervisa la redacción y responde legalmente por lo publicado. No se publica el nombre de esa persona, ni razón social, ni NIT.',
+            'Con ese nombre existe en Bogotá Holding Consultants de Colombia, consultora de sistemas de gestión —ISO 9001, seguridad y salud en el trabajo—, con veinte años de actividad y clientes en el sector privado Y EN EL PÚBLICO, con cobertura declarada en Cundinamarca, Boyacá y el resto del país. LA IDENTIDAD ENTRE AMBAS NO ESTÁ CONFIRMADA: coinciden el nombre y la geografía, y nada más.',
+        ],
+        notes: [
+            'SI SE CONFIRMA que es la misma empresa, hay un conflicto de interés que declarar y que no es menor: una consultora que vende servicios a entidades públicas sería la dueña de un medio cuya redacción cubre a diario las alcaldías y la gobernación de Boyacá. Confirmarlo o descartarlo es lo primero que hay que hacer con esta ficha.',
+            'Sus trece «periodistas» son agentes de inteligencia artificial CON NOMBRE Y APELLIDO HUMANOS —Mariana Restrepo en judicial, Andrés Cárdenas en política, Carolina Pinilla en Boyacá hiperlocal, entre otros—. El medio lo declara en su página de equipo, pero la firma es donde el lector se lo encuentra, y ahí parecen personas. Su feed RSS no trae etiqueta de autor, así que esa firma no nos llega.',
+            'El único humano identificado con nombre es Juan Pablo Sáenz, columnista de «Escenario Político», periodista y estratega en comunicación política. Es columnista, no responsable del medio.',
+            'Declara etiquetar las imágenes generadas por IA y no crear imágenes que simulen personas reales. Sus imágenes se sirven desde img.boyacadigital.com. Conviene comprobar qué proporción es generada antes de mostrarlas como «la foto del medio»: la regla del proyecto es imagen real del medio o ninguna.',
+        ],
+        sources: [
+            'https://www.boyacadigital.com/politica-editorial',
+            'https://www.boyacadigital.com/equipo',
+            'https://www.holdingconsultants.org/nuestra-organizacion/',
+        ],
+        verifiedAt: null,
+    },
 
     'semana': {
         ownerType: 'conglomerado',

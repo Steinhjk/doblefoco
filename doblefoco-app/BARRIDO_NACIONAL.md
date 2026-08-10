@@ -132,3 +132,57 @@ npm run feed:descubrir -- d.txt               # cuáles publican de verdad
 
 Ninguna de las dos herramientas decide nada: encuentran y comprueban. Quién
 entra al catálogo lo sigue decidiendo una ficha de propiedad y una firma.
+
+---
+
+## Segunda vuelta, dirigida — 2026-08-09
+
+Tras ver que las fuentes estructuradas no sirven para lo regional, se atacaron a
+mano **los cinco departamentos que seguían sin ningún candidato**. Resultado: dos
+se desbloquean y tres se confirman como huecos reales.
+
+### Córdoba y Nariño dejan de estar bloqueados
+
+Los dos figuraban como imposibles: Córdoba porque El Meridiano devuelve 403 a
+los bots, y Nariño porque Diario del Sur tiene la editora en liquidación y el
+feed sin fechas. **Ninguno de los dos era el único medio de su departamento.**
+
+| Departamento | Medio | Feed | Último |
+|---|---|---|---|
+| **Córdoba** | Chicanoticias | `chicanoticias.com/feed/` | 1 h · 25 art. |
+| **Córdoba** | La Razón | `larazon.co/feed/` | 1 h |
+| **Córdoba** | Río Noticias | `rionoticias.co/feed/` | 5 h |
+| **Nariño** | Nariño Ahora | `narinoahora.com/feed/` | 29 h |
+| **Nariño** | Abra Noticias | `abranoticias.com/feed/` | 27 h |
+
+Descartados en la misma vuelta: `eldiariodecordoba.co` lleva **21 meses** sin
+publicar, e `ipitimes.com` no expone feed.
+
+**La lección se repite**: dar un departamento por perdido porque su medio más
+conocido está bloqueado es el mismo error que dar un medio por mudo sin probar
+el `<link rel="alternate">`. En los dos casos el fallo fue detenerse en el
+primero.
+
+### Amazonas, Guainía y Vaupés: el hueco es real
+
+Tercera búsqueda con ángulos nuevos —medios municipales, radio comunitaria,
+comunicación indígena— y **sigue sin aparecer un solo medio con presencia web**.
+Lo que sí hay:
+
+- **RTVC montó estudios de radio y televisión en Leticia**, dirigidos por Nelly
+  Kuiru, comunicadora indígena del pueblo Murui, con emisión en lenguas de la
+  región.
+- **El MinTIC abrió en agosto de 2026** —resolución 03202 del 3 de agosto— las
+  condiciones para concesiones de radiodifusión comunitaria indígena.
+
+Es decir: **en esos tres departamentos la comunicación existe y es radio, no
+web**. Un agregador de RSS no puede alcanzarla, y eso no es un fallo del
+catálogo sino un límite del formato. Decirlo en la vista departamental es más
+honesto que dejar tres departamentos en blanco como si allí no hubiera nadie
+contando nada.
+
+### FLIP, tercer intento fallido
+
+`flip.org.co/cartografias-informacion` devolvió 502 y después 404 en dos rutas
+distintas. Su sitio está roto o reestructurado, no bloqueándonos. Sigue siendo
+la mejor fuente pendiente.

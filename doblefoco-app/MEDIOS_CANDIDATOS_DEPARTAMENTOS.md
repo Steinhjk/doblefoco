@@ -35,7 +35,10 @@ porque «responde» y «publica» no son lo mismo.
 | Departamentos en blanco | 25 | **5** |
 
 Eran 29 y 4 hasta que la investigación de propiedad descartó a Nariño — ver más
-abajo. Los cinco en blanco: **Amazonas, Córdoba, Guainía, Nariño y Vaupés**.
+abajo. Los cinco en blanco eran **Amazonas, Córdoba, Guainía, Nariño y Vaupés**. Tras la
+segunda vuelta del barrido (ver BARRIDO_NACIONAL.md) **Córdoba y Nariño tienen
+candidatos vivos**; los tres amazónicos se confirman como huecos reales, donde la
+comunicación existe pero es radio comunitaria y no web.
 
 ---
 

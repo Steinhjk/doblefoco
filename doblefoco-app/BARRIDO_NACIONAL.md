@@ -57,7 +57,7 @@ dirección la designan las gobernaciones de Caldas, Risaralda y Quindío.
 
 **Y hay que corregir lo que decía este mismo informe**: se anotó que Telecafé
 «cubre Quindío, que hoy solo tiene un medio anónimo», dando a entender que le
-daba a Quindío un medio propio. No es así. El campo  dice de
+daba a Quindío un medio propio. No es así. El campo `departamento` dice de
 dónde ES el medio, y Telecafé emite desde Manizales, o sea Caldas. **Quindío
 sigue sin medio suyo.** Lo que sí llegará son titulares que nombren Armenia o
 Calarcá, y esos los etiqueta el detector geográfico.
@@ -69,7 +69,7 @@ Colombia. No hay responsable identificable, su orientación es una propiedad de
 su configuración y no de una casa, y contarlo como una redacción más en el
 recuento de pluralidad sería volver a cruzar la línea que la Fase 0 trazó al
 retirar 600 citas fabricadas. El razonamiento entero está en
-, y la decisión de si el catálogo admite
+`fichas/boyaca-digital.md`, y la decisión de si el catálogo admite
 redacciones automatizadas es de Jose.
 
 **Ojo con lo que esto anuncia.** Si Boyacá Digital es el primero, habrá más, y

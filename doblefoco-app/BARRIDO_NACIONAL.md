@@ -43,7 +43,7 @@ académicas o medios ya conocidos. **Cinco valen la pena:**
 
 | Medio | Feed | Último | Por qué importa |
 |---|---|---|---|
-| **Boyacá Digital** | `boyacadigital.com/rss.xml` | 1 h · 20 art. | **NO ENTRA: su redacción son agentes de IA** — ver abajo |
+| **Boyacá Digital** | `boyacadigital.com/rss.xml` | 1 h · 20 art. | **DADO DE ALTA Y MARCADO**: su redacción son agentes de IA — ver abajo |
 | **Telecafé** | `telecafe.gov.co/feed/` | 35 h | Canal público regional del Eje Cafetero. **DADO DE ALTA** — ver la corrección de abajo |
 | **La Libertad** | `diariolalibertad.com/feed` | 1 h · 50 art. | Segunda voz del Atlántico, que hoy depende de El Heraldo y Telecaribe |
 | **Canal TRO** | `canaltro.com/feed/` | 2 h | Segunda voz de Norte de Santander |
@@ -62,15 +62,22 @@ dónde ES el medio, y Telecafé emite desde Manizales, o sea Caldas. **Quindío
 sigue sin medio suyo.** Lo que sí llegará son titulares que nombren Armenia o
 Calarcá, y esos los etiqueta el detector geográfico.
 
-**Boyacá Digital NO entra, y no por falta de papeles.** Declara ser «un medio
-operado por una redacción de agentes de inteligencia artificial bajo supervisión
-editorial» y se anuncia como el primer periódico autónomo con agentes de IA de
-Colombia. No hay responsable identificable, su orientación es una propiedad de
-su configuración y no de una casa, y contarlo como una redacción más en el
-recuento de pluralidad sería volver a cruzar la línea que la Fase 0 trazó al
-retirar 600 citas fabricadas. El razonamiento entero está en
-`fichas/boyaca-digital.md`, y la decisión de si el catálogo admite
-redacciones automatizadas es de Jose.
+**Boyacá Digital entra MARCADO.** Declara ser «un medio operado por una
+redacción de agentes de inteligencia artificial bajo supervisión editorial» y se
+anuncia como el primer periódico autónomo con agentes de IA de Colombia. Esta
+ficha recomendaba no admitirlo; **Jose decidió admitirlo —«es el primero»—** con
+marca visible y con la propiedad rastreada.
+
+Lleva el campo `redaccion: 'automatizada'`, ausente en todos los demás, y
+distintivo propio en el mapa mediático. **La marca no es decorativa**: el sitio
+entero se apoya en «cuántos medios distintos cubren este hecho», y una redacción
+que reescribe lo que ya publicaron otros suma al recuento sin aportar una voz.
+
+Al rastrear su propiedad apareció un **conflicto de interés que se declara**: lo
+opera Holding Consultants, y `boyacadigital.com` comparte cuenta de Cloudflare
+con `holdingconsultants.org` —consultora bogotana de sistemas de gestión con
+clientes en el sector público—. El detalle y sus límites, en
+`fichas/boyaca-digital.md`.
 
 **Ojo con lo que esto anuncia.** Si Boyacá Digital es el primero, habrá más, y
 llegarán a los departamentos vacíos antes que los medios humanos: montar un
@@ -115,8 +122,8 @@ hace falta, se pide permiso.**
    intentos.
 2. **Escribir a prensaescrita.com** pidiendo permiso o una copia del listado.
 3. **Identificar Melodía Stereo** y darle departamento.
-4. **Decidir si el catálogo admite redacciones automatizadas**, y con qué marca
-   visible. Lo obliga Boyacá Digital y no puede esperar a que lleguen tres más.
+4. **Fichas y alta de los cinco candidatos nuevos** de Córdoba y Nariño, y de
+   La Libertad y Canal TRO como segundas voces.
 5. **SembraMedia por su API**, si la tiene. El raspado de su directorio devolvió
    dos fichas de once páginas; el selector estaba mal y no se depuró.
 

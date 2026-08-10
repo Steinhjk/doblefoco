@@ -83,16 +83,40 @@ quien preguntarle por qué; aquí hay un cargo, no una persona.
 | Único humano con nombre | **Juan Pablo Sáenz**, columnista de «Escenario Político», periodista y estratega en comunicación política |
 | Razón social / NIT | no constan |
 
-**LO QUE HAY QUE CONFIRMAR, Y ES LO PRIMERO.** Con ese nombre existe en Bogotá
-**Holding Consultants de Colombia**, consultora de sistemas de gestión —ISO 9001,
-seguridad y salud en el trabajo— con veinte años de actividad y clientes en el
-sector privado **y en el público**, con cobertura declarada en Cundinamarca y
-Boyacá.
+### El vínculo, y cómo se comprobó
 
-Si es la misma empresa, **una consultora que vende servicios a entidades
-públicas sería la dueña de un medio cuya redacción cubre a diario las alcaldías
-y la gobernación de Boyacá**. Coinciden el nombre y la geografía, y nada más:
-no se afirma, se señala dónde mirar.
+Con ese nombre existe en Bogotá **Holding Consultants de Colombia**, consultora
+de sistemas de gestión —ISO 9001, seguridad y salud en el trabajo— con veinte
+años de actividad, cobertura declarada en Cundinamarca y Boyacá, y clientes en
+el sector privado **y en el público**.
+
+Que sea la misma organización dejó de ser una coincidencia de nombre:
+
+| Indicio | Qué muestra |
+|---|---|
+| Declaración del propio medio | Su política editorial y su política de privacidad dicen que lo «opera y edita» Holding Consultants |
+| **Servidores de nombres** | `boyacadigital.com` y `holdingconsultants.org` comparten **el mismo par de Cloudflare** —`dylan` y `fatima`—, y Cloudflare asigna un par por cuenta |
+| Geografía | La consultora declara cobertura en Boyacá; el medio es de Boyacá |
+
+**No es un certificado de Cámara de Comercio**, y por eso no se afirma identidad
+jurídica. Es evidencia convergente y se publica como tal.
+
+### EL CONFLICTO DE INTERÉS QUE SE DECLARA
+
+**Una consultora que vende servicios de sistemas de gestión a entidades públicas
+es, con toda probabilidad, la dueña de un medio cuya redacción automatizada
+cubre a diario las alcaldías y la gobernación de Boyacá.**
+
+Se declara siguiendo la regla que ya gobierna el resto del catálogo: **no se
+afirma que haya influido en ninguna pieza** —eso no consta y no se publica—; se
+expone quién está detrás, que es comprobable, y el lector saca su conclusión con
+el dato delante en vez de sin él.
+
+Y hay una consecuencia práctica: **si esa cobertura resulta sistemáticamente
+favorable a las entidades que podrían ser sus clientes, ya no será un conflicto
+potencial sino conducta medida.** Es la comprobación de nivel 2 que esta ficha
+deja anotada, y en un medio automatizado debería detectarse antes que en uno
+humano.
 
 ---
 
@@ -130,9 +154,10 @@ en una conversación.
 
 ## REFUTACIÓN — qué reabriría el expediente
 
-1. **Confirmar o descartar que Holding Consultants sea la consultora bogotana
-   del mismo nombre.** Es lo primero, y si se confirma la ficha cambia de tono:
-   pasaría a haber un conflicto de interés documentado.
+1. **El certificado de Cámara de Comercio de Holding Consultants**, que llevaría
+   el vínculo de «evidencia convergente» a identidad jurídica probada. Hoy se
+   apoya en la declaración del medio y en que ambos dominios comparten cuenta de
+   Cloudflare.
 2. **Que el medio publique responsable identificable y sociedad**, que es el
    mínimo del protocolo para cualquiera.
 3. **Que se documente qué parte es generada y qué parte es reportería humana.**

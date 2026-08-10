@@ -392,3 +392,39 @@ ninguna» funcionando — se añadieron a `public/_headers` y a `vercel.json`.
 
 De los nueve, **ocho tienen logo**; Diario del Norte devolvió 404 y se pintará
 con monograma.
+
+---
+
+## Balance final de la jornada — 2026-08-09
+
+| | |
+|---|---|
+| Candidatos investigados | **27** |
+| Fichas escritas | **24** (una es conjunta para cuatro medios) |
+| **Dados de alta** | **10** — nueve regionales + Telecafé + Boyacá Digital |
+| Departamentos con medio propio | **de 8 a 18** |
+| Sin número, por falta de nivel 1 | **14** |
+
+**Diecisiete de los veintisiete candidatos no publican quién los edita.** Es el
+hallazgo más consistente de toda la jornada, y no correlaciona con el tamaño ni
+con la región: correlaciona con la decisión de publicarlo.
+
+### Lo que desbloquea más departamentos por menos trabajo
+
+1. **El Meridiano** (Córdoba) — cubre también Sucre. Un solo obstáculo técnico
+   deja dos departamentos sin voz. Escribirles.
+2. **Ocho certificados de Cámara de Comercio** — Neiva, Tunja, Santa Marta,
+   Villavicencio, Pereira, Arauca, San Andrés, Montería. Desbloquean fichas ya
+   escritas y a la espera.
+3. **La afiliación de Ecos del Combeima a Blu Radio** — decide si el Tolima
+   tiene voz propia o una afiliada de Valorem.
+4. **La FLIP**, cuando su web vuelva.
+
+### Lo que no se arregla buscando más
+
+**Amazonas, Guainía y Vaupés** no tienen medios web, y tras tres búsquedas con
+ángulos distintos eso es un resultado, no una carencia del método. Allí la
+comunicación es radio comunitaria e indígena. Un agregador de RSS no la alcanza.
+
+Decirlo en la vista departamental —«aquí no llegamos, y esta es la razón»— es
+más honesto que dejar tres departamentos en blanco como si nadie contara nada.

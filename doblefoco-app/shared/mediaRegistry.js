@@ -300,6 +300,14 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://www.telecaribe.co/feed/', via: 'direct', category: 'Política' },
     },
     {
+        id: 'telecafe', name: 'Telecafé', shortName: 'Telecafé',
+        domain: 'telecafe.gov.co', departamento: 'Caldas', country: 'CO',
+        group: 'Público regional — Eje Cafetero',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Canal público regional del Eje Cafetero, participado por las gobernaciones de Caldas, Risaralda y Quindío. Su dirección la designa el poder político de turno, así que su línea sigue a quien gobierna — ver fichas/telecafe.md.',
+        feed: { url: 'https://telecafe.gov.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
         id: 'rtvc', name: 'RTVC Noticias', shortName: 'RTVC',
         domain: 'rtvcnoticias.com', country: 'CO', group: 'Medio público nacional',
         bias: -0.35, factuality: 0.82, reviewedAt: null,

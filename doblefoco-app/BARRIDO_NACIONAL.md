@@ -43,16 +43,40 @@ académicas o medios ya conocidos. **Cinco valen la pena:**
 
 | Medio | Feed | Último | Por qué importa |
 |---|---|---|---|
-| **Boyacá Digital** | `boyacadigital.com/rss.xml` | 1 h · 20 art. | **Boyacá tiene por fin un candidato con propiedad por investigar** que no es EL DIARIO, cuya alta quedó bloqueada por no saber de quién es |
-| **Telecafé** | `telecafe.gov.co/feed/` | 35 h | Canal público regional del Eje Cafetero. Cubre **Quindío**, que hoy solo tiene un medio anónimo |
+| **Boyacá Digital** | `boyacadigital.com/rss.xml` | 1 h · 20 art. | **NO ENTRA: su redacción son agentes de IA** — ver abajo |
+| **Telecafé** | `telecafe.gov.co/feed/` | 35 h | Canal público regional del Eje Cafetero. **DADO DE ALTA** — ver la corrección de abajo |
 | **La Libertad** | `diariolalibertad.com/feed` | 1 h · 50 art. | Segunda voz del Atlántico, que hoy depende de El Heraldo y Telecaribe |
 | **Canal TRO** | `canaltro.com/feed/` | 2 h | Segunda voz de Norte de Santander |
 | **Melodía Stereo** | `melodiastereo.com/feed/` | 1 h | Muy activo; **falta identificar de dónde es** |
 
-**Telecafé es el hallazgo con más recorrido**: es canal público regional, así
-que su ficha de propiedad se resuelve sola —depende de las gobernaciones del
-Eje Cafetero— y eso es justo lo que bloqueó a los cuatro candidatos de la
-cuarta tanda.
+### Telecafé entró; Boyacá Digital, no
+
+**Telecafé está dado de alta** con orientación mixta provisional, como los otros
+tres canales públicos del catálogo. Su ficha de propiedad se resolvía sola: la
+dirección la designan las gobernaciones de Caldas, Risaralda y Quindío.
+
+**Y hay que corregir lo que decía este mismo informe**: se anotó que Telecafé
+«cubre Quindío, que hoy solo tiene un medio anónimo», dando a entender que le
+daba a Quindío un medio propio. No es así. El campo  dice de
+dónde ES el medio, y Telecafé emite desde Manizales, o sea Caldas. **Quindío
+sigue sin medio suyo.** Lo que sí llegará son titulares que nombren Armenia o
+Calarcá, y esos los etiqueta el detector geográfico.
+
+**Boyacá Digital NO entra, y no por falta de papeles.** Declara ser «un medio
+operado por una redacción de agentes de inteligencia artificial bajo supervisión
+editorial» y se anuncia como el primer periódico autónomo con agentes de IA de
+Colombia. No hay responsable identificable, su orientación es una propiedad de
+su configuración y no de una casa, y contarlo como una redacción más en el
+recuento de pluralidad sería volver a cruzar la línea que la Fase 0 trazó al
+retirar 600 citas fabricadas. El razonamiento entero está en
+, y la decisión de si el catálogo admite
+redacciones automatizadas es de Jose.
+
+**Ojo con lo que esto anuncia.** Si Boyacá Digital es el primero, habrá más, y
+llegarán a los departamentos vacíos antes que los medios humanos: montar un
+portal automatizado para Vaupés cuesta mucho menos que sostener una redacción
+allí. El mapa podría llenarse de departamentos «cubiertos» sin nadie
+reporteando.
 
 ---
 
@@ -91,7 +115,8 @@ hace falta, se pide permiso.**
    intentos.
 2. **Escribir a prensaescrita.com** pidiendo permiso o una copia del listado.
 3. **Identificar Melodía Stereo** y darle departamento.
-4. **Telecafé y Boyacá Digital**: ficha de propiedad y alta.
+4. **Decidir si el catálogo admite redacciones automatizadas**, y con qué marca
+   visible. Lo obliga Boyacá Digital y no puede esperar a que lleguen tres más.
 5. **SembraMedia por su API**, si la tiene. El raspado de su directorio devolvió
    dos fichas de once páginas; el selector estaba mal y no se depuró.
 

@@ -1116,6 +1116,23 @@ export const OWNERSHIP_PROFILES = {
         sources: ['https://www.telecaribe.co/'],
         verifiedAt: '2026-08-09',
     },
+    'telecafe': {
+        ownerType: 'publico',
+        controlGroup: 'gobiernos-locales',
+        holdings: [
+            'Canal público regional del Eje Cafetero, participado por las gobernaciones de Caldas, Risaralda y Quindío. Cubre 53 municipios y emite desde Manizales.',
+            'Lo gerencia Amanda Jaimes, comunicadora nacida en Toledo (Norte de Santander) y exgerente del Canal TRO entre 2020 y 2023.',
+        ],
+        notes: [
+            'Su departamento es Caldas porque el canal está en Manizales, no porque solo cubra Caldas: el campo dice de dónde ES el medio. Quindío sigue sin medio propio en el catálogo.',
+            'La dirección la designan tres gobernaciones a la vez, así que su clasificación es de las más volátiles del catálogo: un cambio de gobernación en cualquiera de los tres departamentos obliga a revisarla.',
+        ],
+        sources: [
+            'https://telecafe.gov.co/',
+            'https://www.lapatria.com/eje-cafetero/amanda-jaimes-cambia-de-canal-nueva-gerente-de-telecafe',
+        ],
+        verifiedAt: null,
+    },
 
     'rtvc': {
         ownerType: 'publico',

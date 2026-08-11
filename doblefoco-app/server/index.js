@@ -658,8 +658,11 @@ app.get('/api/portada', async (req, res) => {
                 articulos: s.articulos,
                 angulos: s.angulos,
                 publishedAt: s.publishedAt,
-                lider: s.lider,
-                // Los ángulos, sin repetir el líder: ya va entero arriba.
+                // La pieza que se enseña. No siempre es la más cubierta: si esa
+                // es una galería de fotos o un explicativo, titula la siguiente.
+                // Ver `shared/titularDeSuceso.js`.
+                lider: s.representante,
+                // Los ángulos, sin repetir el que va entero arriba.
                 historias: s.historias.filter((h) => h.id !== s.id),
             }));
 

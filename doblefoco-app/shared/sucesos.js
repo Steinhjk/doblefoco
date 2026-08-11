@@ -55,6 +55,7 @@
 
 import { buildIdf, cosineSimilarity, tokenize } from './clustering.js';
 import { mediosDeHistoria, porRelevancia, puntuacionDeRelevancia } from './relevancia.js';
+import { elegirRepresentante } from './titularDeSuceso.js';
 
 /**
  * Umbral de similitud coseno para que una historia entre en un suceso.
@@ -280,6 +281,19 @@ export function agruparEnSucesos(historias, opciones = {}) {
  * un medio que cubrió el terremoto desde cinco ángulos es un medio, no cinco.
  * Sumarlos daría el número grande y halagador, y sería exactamente la cobertura
  * inventada que el umbral de la capa de abajo existe para evitar.
+ *
+ * EL LÍDER Y EL REPRESENTANTE NO TIENEN POR QUÉ SER EL MISMO, y conviene tener
+ * clara la diferencia:
+ *
+ *   · el LÍDER es contra quien se compara todo para formar el grupo. Es la
+ *     historia más relevante, y cambiarlo cambiaría qué entra en el suceso.
+ *   · el REPRESENTANTE es la pieza que se enseña: da titular, foto y enlace.
+ *
+ * Se separaron porque la más cubierta puede ser una pieza de acompañamiento —el
+ * accidente de helicóptero se titulaba «Las últimas fotos de las turistas
+ * colombianas antes del accidente»—. Ver `titularDeSuceso.js`. Lo que NO se hace
+ * es dejar que esa elección altere el agrupamiento: el suceso se forma igual, y
+ * solo cambia con qué cara se presenta.
  */
 function resumirSuceso(grupo, ahora) {
     const medios = new Set();
@@ -300,9 +314,15 @@ function resumirSuceso(grupo, ahora) {
     // que es lo único verificable que queda.
     const cuantos = medios.size || mediosDeHistoria(grupo.lider);
 
+    const representante = elegirRepresentante(grupo.historias, ahora) ?? grupo.lider;
+
     return {
-        id: grupo.lider.id,
-        titular: grupo.lider.title,
+        // El id es el del REPRESENTANTE: es la historia a la que lleva el enlace
+        // del destacado, y que el id apuntara a otra haría que la portada
+        // enviara a una pieza distinta de la que anuncia.
+        id: representante.id,
+        titular: representante.title,
+        representante,
         lider: grupo.lider,
         historias: grupo.historias,
         medios: cuantos,

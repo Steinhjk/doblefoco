@@ -2,7 +2,7 @@
 
 Nota de traspaso del **2026-08-11**, escrita al cerrar.
 
-Todo está en `main`. **449 tests** en verde, lint y typecheck limpios, árbol
+Todo está en `main`. **454 tests** en verde, lint y typecheck limpios, árbol
 limpio. **Vercel y Fly desplegados**, base migrada, portada y mapa verificados en
 producción con captura y sin errores de consola.
 
@@ -60,21 +60,46 @@ artículo obligaría a cambiar esa decisión.
 
 ---
 
+## Valora Analitik, y la tilde que lo bloqueaba
+
+**Alta el 2026-08-11**, a petición de Jose. Medio económico y bursátil, ~51
+artículos/día, 11.º del catálogo por volumen. Sesgo **+0,10** —el de Portafolio—,
+`factuality: null`, ficha sin firmar.
+
+Lo edita **Valora Inversiones S.A.S.** (NIT 900.811.192-0), de sus dos
+fundadores, **sin ningún grupo detrás**. La misma sociedad vende una plataforma
+de pago para inversionistas sobre las emisoras que su redacción cubre: está
+declarado en la ficha como desvelamiento, no como acusación.
+
+**Figuraba «sin feed», y el problema era nuestro.** El User-Agent llevaba una
+tilde —«periodística»—, una cabecera HTTP solo admite ASCII y los cortafuegos la
+rechazaban con un 403. Lo peor: quedó escrito como decisión que
+«prensaescrita.com nos bloquea y se respeta». **Nunca nos bloqueó.** Sin la
+tilde responde 200.
+
+Queda una tarea que sale de ahí: **repasar el barrido de 124 dominios**, porque
+no se sabe cuántos candidatos se apuntaron como mudos por esto.
+
+---
+
 ## Lo primero al volver
 
-1. **La foto del destacado.** Es lo único de la portada del terremoto que quedó
+1. **Repasar el barrido nacional** con el User-Agent arreglado
+   (`npm run feed:descubrir`). Es lo que más catálogo puede desbloquear por menos
+   trabajo, y hoy no se sabe cuánto hay ahí.
+2. **La foto del destacado.** Es lo único de la portada del terremoto que quedó
    sin mirar: viene con crédito de Telemedellín y no está claro que sea del
    sismo. Jose lo señaló y no se tocó.
-2. **Escribir a El Meridiano** (`elmeridiano.co`). Cubre Córdoba **y** Sucre: un
+3. **Escribir a El Meridiano** (`elmeridiano.co`). Cubre Córdoba **y** Sucre: un
    solo obstáculo técnico deja dos departamentos sin voz. Sigue siendo lo que más
    desbloquea por menos trabajo.
-3. **La afiliación de Ecos del Combeima a Blu Radio.** Decide si el Tolima tiene
+4. **La afiliación de Ecos del Combeima a Blu Radio.** Decide si el Tolima tiene
    voz propia o una afiliada de Valorem. Está en `fichas/ecos-del-combeima.md`
    como alta condicionada.
-4. **Ocho certificados de Cámara de Comercio** — Neiva, Tunja, Santa Marta,
+5. **Ocho certificados de Cámara de Comercio** — Neiva, Tunja, Santa Marta,
    Villavicencio, Pereira, Arauca, San Andrés, Montería. No se tramitan desde
    aquí.
-5. **La FLIP** y sus «Cartografías de la Información», que mapean 141 municipios
+6. **La FLIP** y sus «Cartografías de la Información», que mapean 141 municipios
    y visitaron justo los huecos del catálogo. Su web daba 502 y 404 el 9 de
    agosto: estaba rota, no bloqueando.
 

@@ -13,30 +13,71 @@ import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './CompactHeroGrid.css';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
+import { porRelevancia } from '../../shared/relevancia.js';
+import { analyzeCoverage } from '../../shared/biasAnalysis.js';
+import { usePortada } from '../hooks/usePortada';
+
+/**
+ * Los medios de un suceso: la UNIÓN de los de todos sus ángulos.
+ *
+ * Un medio que cubrió el hecho desde cinco ángulos es un medio. Concatenar las
+ * listas daría la cifra grande y sería la cobertura inventada que toda esta capa
+ * se diseñó para no producir.
+ */
+function mediosDeSuceso(suceso) {
+    const porNombre = new Map();
+    for (const historia of [suceso.lider, ...suceso.historias]) {
+        for (const fuente of historia?.sources ?? []) {
+            if (fuente?.name && !porNombre.has(fuente.name)) porNombre.set(fuente.name, fuente);
+        }
+    }
+    return [...porNombre.values()];
+}
+
+/** El reparto por espectro del suceso entero, con la misma función que el feed. */
 
 /**
  * Portada destacada.
  *
  * Antes fijaba `newsData[0]` y `newsData.slice(1, 4)`, así que la portada era
- * idéntica en cada visita. Ahora selecciona por relevancia: primero cuántos
- * medios cubren el hecho, luego qué tan polarizada está la cobertura. Esas dos
- * señales son las que hacen que una historia merezca portada en este producto.
+ * idéntica en cada visita. Ahora selecciona por relevancia: cuántos medios
+ * cubren el hecho, con una vida media de 24 h, y la polarización de la cobertura
+ * como desempate.
+ *
+ * LA ANTIGÜEDAD PESA, YA NO SOLO DESEMPATA (2026-08-10). El orden era cobertura
+ * y, en caso de empate, polarización. Nada envejecía: el día del terremoto del
+ * Chocó el radar mostraba la muerte de Jorge Messi y un ataque con drones en
+ * Cesar, ambos del 8 de agosto. Se ordena con el mismo `porRelevancia` que usan
+ * el motor y la base, para que las tres vistas coincidan.
  */
 const CompactHeroGrid = () => {
     // La portada es un destacado: si no hay cobertura real no se pinta nada, y
     // el aviso de ausencia lo da el feed de debajo una sola vez.
     const { stories, status } = useStories({ limit: 40 });
+    const { sucesos } = usePortada({ limit: 100 });
 
     const featured = useMemo(() => {
-        const ranked = [...stories].sort((a, b) => {
-            if (b.coverage.total !== a.coverage.total) {
-                return b.coverage.total - a.coverage.total;
-            }
-            return b.coverage.polarization - a.coverage.polarization;
-        });
+        /*
+         * CON SUCESOS SE PREFIEREN LOS SUCESOS, y no es un detalle de orden. Un
+         * hecho grande se cuenta desde muchos ángulos, así que ordenar por
+         * historias sueltas lo parte y lo hunde: el día del terremoto del Chocó
+         * el destacado era «murió el hijo del alcalde de Bahía Solano» —8
+         * medios— mientras el hecho entero sumaba 18 repartidos en cinco piezas.
+         *
+         * Sin sucesos se cae al orden por historias. Pasa mientras la API de Fly
+         * no tenga la ruta, porque el cliente se despliega antes.
+         */
+        if (sucesos.length) {
+            return {
+                main: sucesos[0].lider,
+                suceso: sucesos[0],
+                secondary: sucesos.slice(1, 4).map((s) => s.lider),
+            };
+        }
 
-        return { main: ranked[0] ?? null, secondary: ranked.slice(1, 4) };
-    }, [stories]);
+        const ranked = [...stories].sort(porRelevancia());
+        return { main: ranked[0] ?? null, suceso: null, secondary: ranked.slice(1, 4) };
+    }, [stories, sucesos]);
 
     // Mientras llega la respuesta se reserva el sitio con la forma del destacado.
     // Devolver null aquí era la mitad de la pantalla en blanco al recargar.
@@ -44,7 +85,18 @@ const CompactHeroGrid = () => {
 
     if (!featured.main) return null;
 
-    const { main, secondary } = featured;
+    const { main, secondary, suceso } = featured;
+
+    /*
+     * La cobertura del SUCESO, no la del líder. Se calcula sobre la unión de
+     * medios de todos sus ángulos —un medio que cubrió el hecho cinco veces
+     * cuenta una— para que la barra y el «18 medios» de arriba digan lo mismo.
+     * Pintar aquí la del líder daría una barra de 8 medios bajo un titular que
+     * anuncia 18.
+     */
+    const fuentes = suceso ? mediosDeSuceso(suceso) : main.sources;
+    const cobertura = suceso ? analyzeCoverage(fuentes) : main.coverage;
+    const medios = suceso ? suceso.medios : main.coverage.total;
 
     return (
         <section className="compact-hero-section">
@@ -53,7 +105,13 @@ const CompactHeroGrid = () => {
                     <span className="hero-badge-tag">
                         <Sparkles size={12} aria-hidden="true" /> Destacado
                     </span>
-                    <h2>Mayor cobertura del día</h2>
+                    {/*
+                      * «del día» era falso: no hay filtro de fecha en ninguna
+                      * parte y el radar llegó a mostrar historias de hacía dos
+                      * días bajo ese rótulo. «Ahora» sí describe lo que hace la
+                      * vida media de 24 h.
+                      */}
+                    <h2>Lo más cubierto ahora</h2>
                 </div>
                 <div className="hero-col-title secondary-title-col">
                     <span className="hero-badge-tag">Radar</span>
@@ -91,8 +149,18 @@ const CompactHeroGrid = () => {
                             )}
                             <span className="meta-time">{storyTimeLabel(main)}</span>
                             <span className="meta-sources-count">
-                                <Layers size={12} aria-hidden="true" /> {main.coverage.total} medios
+                                <Layers size={12} aria-hidden="true" /> {medios} medios
                             </span>
+                            {/*
+                              * De cuántas piezas distintas hace falta para contar
+                              * el hecho. Es el dato que distingue un desastre
+                              * nacional de un nombramiento, no un adorno.
+                              */}
+                            {suceso && suceso.angulos > 1 && (
+                                <span className="meta-angulos">
+                                    {suceso.articulos} artículos · {suceso.angulos} ángulos
+                                </span>
+                            )}
                         </div>
 
                         <h3 className="spotlight-title">
@@ -103,10 +171,28 @@ const CompactHeroGrid = () => {
 
                         {main.summary && <p className="spotlight-summary">{main.summary}</p>}
 
-                        <CoverageBar coverage={main.coverage} />
+                        <CoverageBar coverage={cobertura} />
+
+                        {suceso && suceso.historias.length > 0 && (
+                            <ul className="spotlight-angulos">
+                                {suceso.historias.slice(0, 4).map((angulo) => (
+                                    <li key={angulo.id}>
+                                        <Link
+                                            to={rutaDeHistoria(angulo)}
+                                            onClick={() => recordRead(angulo)}
+                                        >
+                                            {angulo.title}
+                                        </Link>
+                                        <span className="angulo-medios">
+                                            {angulo.coverage.total} medios
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
 
                         <div className="spotlight-sources-list">
-                            {main.sources.map((source, idx) => {
+                            {fuentes.map((source, idx) => {
                                 const media = getMediaByName(source.name);
                                 const bias = typeof source.bias === 'number' ? source.bias : media.bias;
 

@@ -32,7 +32,24 @@
 import { analyzeCoverage, averageFactuality, classifySpectrum, SPECTRUM } from '../../shared/biasAnalysis.js';
 import { buildCoverageTimeline } from '../../shared/coverageTimeline.js';
 import { analyzeArticleTone } from '../../shared/headlineTone.js';
+import { ordenPorRelevanciaSQL } from '../../shared/relevancia.js';
 import { safeQuery } from './pool.js';
+
+/**
+ * El orden del feed, en SQL.
+ *
+ * La fecha se toma con `COALESCE` hasta `now()` para que una historia sin fecha
+ * pese como nueva y no como antiquísima: es exactamente lo que hace
+ * `factorDeAntiguedad` en JavaScript, y las dos tienen que coincidir o la
+ * portada y la base contarían historias distintas.
+ *
+ * El recuento va sin `::int`: aquí es un factor de una multiplicación, y
+ * truncarlo antes de multiplicar no cambia nada pero invita a confusión.
+ */
+const ORDEN_DEL_FEED = ordenPorRelevanciaSQL(
+    'count(DISTINCT a.source_id)',
+    'COALESCE(s.published_at, s.first_seen_at, now())'
+);
 
 /**
  * Trae historias con sus artículos en DOS consultas, no en N+1.
@@ -62,7 +79,9 @@ async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }
          WHERE (m.state IS NULL OR m.state <> 'rechazada')
            ${where}
          GROUP BY s.id, src.name
-         ORDER BY medios DESC, s.published_at DESC NULLS LAST
+         -- Relevancia: medios distintos, con vida media de 24 h. La fecha ya no
+         -- desempata solamente, pesa. Ver shared/relevancia.js.
+         ORDER BY ${ORDEN_DEL_FEED} DESC, s.published_at DESC NULLS LAST
          LIMIT $${params.length + 1} OFFSET $${params.length + 2}
         `,
         [...params, limit, offset],
@@ -374,6 +393,45 @@ export async function readFeed({ limit = 20, offset = 0, ambito = 'all', temas =
         limit,
         offset,
     });
+}
+
+/**
+ * Los titulares de TODO el corpus, para calcular el IDF de la capa de suceso.
+ *
+ * POR QUÉ TODO Y NO LA PÁGINA. Está medido en `shared/sucesos.js`: con el IDF de
+ * cien historias, el 32 % de las agrupaciones eran falsas, porque un token que
+ * sale dos veces en cien parece rarísimo y esas dos veces son justo las dos
+ * historias que se unen mal. Con el corpus entero desaparecen sin tocar el
+ * umbral. El vocabulario pesa más que el umbral.
+ *
+ * SE CACHEA, porque son ~4 700 filas y la portada las pediría en cada visita.
+ * Cinco minutos: el vocabulario de un corpus de miles no cambia de forma
+ * apreciable en ese plazo, y una entrada nueva que tarde cinco minutos en pesar
+ * en el IDF no mueve ninguna agrupación.
+ *
+ * Solo los titulares: es lo único que el IDF necesita, y traer las filas enteras
+ * multiplicaría por diez el tráfico contra la base para tirar el resto.
+ */
+const VIGENCIA_VOCABULARIO_MS = 5 * 60 * 1000;
+let vocabularioCacheado = null;
+let vocabularioCaducaEn = 0;
+
+export async function vocabularioDelCorpus() {
+    if (vocabularioCacheado && Date.now() < vocabularioCaducaEn) return vocabularioCacheado;
+
+    const filas = await safeQuery(
+        'SELECT title FROM stories WHERE title IS NOT NULL',
+        [],
+        'vocabulario del corpus'
+    );
+
+    // Sin base se devuelve lo último que se supo, o vacío. Nunca se lanza: la
+    // portada sin vocabulario agrupa peor, pero agrupa; sin portada no hay sitio.
+    if (!filas) return vocabularioCacheado ?? [];
+
+    vocabularioCacheado = filas.rows.map((f) => f.title);
+    vocabularioCaducaEn = Date.now() + VIGENCIA_VOCABULARIO_MS;
+    return vocabularioCacheado;
 }
 
 /** Una historia por su id. `null` si no existe o si está retirada. */

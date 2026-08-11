@@ -35,6 +35,7 @@
     "clean:filtered": "node scripts/cleanFiltered.mjs",
     "analyze:cocoverage": "node scripts/coCoverage.mjs",
     "eval:clustering": "node scripts/evalClustering.mjs",
+    "eval:sucesos": "node scripts/evalSucesos.mjs",
     "muestra:programas": "node scripts/muestrearProgramasAnclados.mjs",
     "medios:cosechar": "node scripts/cosecharMedios.mjs"
   },

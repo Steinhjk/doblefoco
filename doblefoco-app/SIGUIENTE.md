@@ -1,55 +1,64 @@
 # Por dónde seguir
 
-Nota de traspaso del **2026-08-10**. Todo está en `main`, **439 tests** en verde,
-lint y typecheck limpios.
+Nota de traspaso del **2026-08-10**, escrita al cerrar.
 
-**Publicado y verificado en producción:** Vercel y Fly desplegados, y el catálogo
-recategorizado. El mapa por departamentos también está en el aire.
+Todo está en `main`. **439 tests** en verde, lint y typecheck limpios, árbol
+limpio. **Vercel y Fly desplegados**, catálogo recategorizado, portada verificada
+en producción con captura y sin errores de consola.
 
----
-
-## Lo que se hizo hoy, y por qué
-
-El terremoto del Chocó no era portada. No era una causa, eran dos.
-
-| | |
-|---|---|
-| **Nada envejecía** | `medios DESC, published_at DESC`: la fecha solo desempataba. El radar mostraba a Jorge Messi y un ataque con drones, ambos del 8 de agosto |
-| **La fragmentación castigaba lo importante** | 22 medios y 104 artículos repartidos en 20 historias de 3 a 7 medios. Un nombramiento, que solo admite una forma de contarse, ganaba con 8 limpios |
-| **El titular lo daba la pieza más cubierta** | Y esa puede ser una galería de fotos. El accidente con tres muertas se titulaba «Las últimas fotos de las turistas colombianas» |
-
-Tres módulos nuevos: `shared/relevancia.js`, `shared/sucesos.js` y
-`shared/titularDeSuceso.js`. Ruta nueva `/api/portada`. Calibración reproducible
-con `npm run eval:sucesos`.
+No queda nada a medias. Lo de abajo es trabajo nuevo, no arrastre.
 
 ---
 
-## La sección nueva: Desastres y accidentes
+## Qué se hizo hoy, y por qué
 
-Los desastres no tenían casa. Medidos 400 artículos del terremoto: 236 sin tema y
-los demás repartidos entre **trece** secciones —el Congreso aplazando sesión en
-Política, los bancos reabriendo en Economía, el Ejército buscando desaparecidos
-en Justicia, Shakira en Entretenimiento—. Después: 330 de 400 en la sección
-nueva, 1 sin tema.
+Empezó con una pregunta de Jose: el terremoto del Chocó, con 111 muertos, no era
+portada. Resultaron ser tres cosas distintas, en tres capas.
 
-**Los accidentes van dentro**, siguiendo la forma de IPTC Media Topics, el
-vocabulario de las agencias: su categoría es «disaster, accident and emergency
-incident». Medidos: 56 accidentes con el mismo problema. **La meteorología no se
-separa** aunque IPTC sí la separe — su motivo es el pronóstico diario y aquí no
-se ingiere: 14 artículos en 4 000.
+**1. Nada envejecía.** El orden era `medios DESC, published_at DESC`: la fecha
+solo desempataba. El radar mostraba a Jorge Messi y un ataque con drones, ambos
+de dos días antes. → `shared/relevancia.js`, vida media de 24 h.
 
-Añadir una sección toca **tres** sitios: `TEMAS`, `categories.js` y la lámina de
-`CategoryMark.jsx`. Hay una prueba por cada uno, y las tres avisan.
+**2. La fragmentación castigaba lo importante.** El terremoto eran 22 medios y
+104 artículos repartidos en 20 historias de 3 a 7 medios. El ranking cuenta
+medios *por historia*, así que un hecho grande genera más ángulos, se parte más y
+pesa menos cada trozo. Un nombramiento, que solo admite una forma de contarse,
+ganaba con 8 limpios. → `shared/sucesos.js` y la ruta `/api/portada`.
+
+**3. El titular lo daba la pieza más cubierta.** Y esa puede ser una galería de
+fotos: el accidente con tres muertas se titulaba «Las últimas fotos de las
+turistas colombianas». → `shared/titularDeSuceso.js`.
+
+Y por el camino apareció una cuarta, que era el defecto que Jose veía en la
+tarjeta: **los desastres no tenían sección** y se repartían entre trece. →
+`desastres` en la taxonomía, y `nombreDeSeccion` en `src/lib/seccion.js`.
+
+Calibración reproducible: `npm run eval:sucesos` y `npm run recategorizar`
+(ensayo por defecto los dos).
 
 ---
 
 ## Lo primero al volver
 
-1. **La foto del destacado.** Sigue viniendo con crédito de Telemedellín y no
-   está claro que sea del sismo. Es lo único de la portada que quedó sin mirar.
-2. **`articles.departamento`.** Ahora que desplegar Fly ya no está bloqueado, es
-   el momento: los conteos del mapa siguen siendo de las historias cargadas y no
-   del catálogo.
+1. **La foto del destacado.** Es lo único de la portada del terremoto que quedó
+   sin mirar: viene con crédito de Telemedellín y no está claro que sea del
+   sismo. Jose lo señaló y no se tocó.
+2. **`articles.departamento`.** Los conteos del mapa siguen siendo de las
+   historias cargadas y no del catálogo, porque el departamento se detecta en el
+   navegador. Persistirlo es trabajo de la API — y **desplegar Fly ya no está
+   bloqueado**, así que no hay nada que lo frene.
+3. **Escribir a El Meridiano** (`elmeridiano.co`). Cubre Córdoba **y** Sucre: un
+   solo obstáculo técnico deja dos departamentos sin voz. Sigue siendo lo que más
+   desbloquea por menos trabajo.
+4. **La afiliación de Ecos del Combeima a Blu Radio.** Decide si el Tolima tiene
+   voz propia o una afiliada de Valorem. Está en `fichas/ecos-del-combeima.md`
+   como alta condicionada.
+5. **Ocho certificados de Cámara de Comercio** — Neiva, Tunja, Santa Marta,
+   Villavicencio, Pereira, Arauca, San Andrés, Montería. No se tramitan desde
+   aquí.
+6. **La FLIP** y sus «Cartografías de la Información», que mapean 141 municipios
+   y visitaron justo los huecos del catálogo. Su web daba 502 y 404 el 9 de
+   agosto: estaba rota, no bloqueando.
 
 ---
 
@@ -57,73 +66,93 @@ Añadir una sección toca **tres** sitios: `TEMAS`, `categories.js` y la lámina
 
 **La vida media son 24 h y está medida.** Cualquier decaimiento barre lo rancio
 —el salto está entre «sin decaimiento» y el resto, no entre los valores—. Lo que
-separa unos de otros es el monocultivo: a 6 h el top 10 son ocho piezas del
-mismo hecho. 24 h además se explica sin enseñar la fórmula, y un parámetro de
-orden que no se puede explicar es uno que nadie va a auditar.
+separa unos de otros es el monocultivo: a 6 h el top 10 son ocho piezas del mismo
+hecho. 24 h además se explica sin enseñar la fórmula, y un parámetro de orden que
+no se puede explicar es uno que nadie va a auditar.
 
 **Un suceso agrupa para ordenar y presentar, nunca para fusionar.** Cada historia
-conserva su titular y su recuento. No se bajó el umbral de `clustering.js`: está
-en 0,34 con medición detrás. «Estas piezas hablan del terremoto» y «estas piezas
-son el mismo hecho» son afirmaciones distintas, y solo la segunda inventaría
-cobertura.
+conserva su titular y su recuento. **No se bajó el umbral de `clustering.js`**:
+está en 0,34 con medición detrás. «Estas piezas hablan del terremoto» y «estas
+piezas son el mismo hecho» son afirmaciones distintas, y solo la segunda
+inventaría cobertura.
 
 **Agrupamiento por líder, no por encadenamiento.** Un umbral laxo con enlace
 simple encadena: A se parece a B, B a C, y C acaba dentro sin parecerse a A.
 
-**El titular se elige por FORMATO, nunca por tema ni por importancia.** Mismo
+**El titular se elige por FORMATO, nunca por tema ni por importancia** — mismo
 criterio que `contentQuality.js`. Y no se descarta nada: la galería sigue en el
-suceso con su recuento y su enlace; lo único que no puede es dar nombre al
-conjunto.
+suceso con su recuento; lo único que no puede es dar nombre al conjunto.
 
-**El medoide se probó y se descartó.** Sobre los seis sucesos de 3+ ángulos del
-día: cambiaba el titular en los seis, acertaba en dos y empeoraba en tres.
-Metía «En directo: Netanyahu rechaza el plan…» como titular de Gaza. La
-centralidad mide parecido, no vocación de titular.
+**El medoide se probó y se descartó.** Sobre los seis sucesos de 3+ ángulos:
+cambiaba el titular en los seis, acertaba en dos y empeoraba en tres. Metía «En
+directo: Netanyahu rechaza el plan…» como titular de Gaza. La centralidad mide
+parecido, no vocación de titular.
+
+**Los accidentes van en Desastres, la meteorología no se separa.** La forma la
+zanjó IPTC Media Topics, el vocabulario de las agencias: su categoría es
+«disaster, accident and emergency incident». Separa «weather» por el pronóstico
+diario, que aquí no se ingiere —14 artículos en 4 000—. Copiar una división sin
+el contenido que la justifica deja una sección vacía.
 
 ---
 
-## El hallazgo que no estaba previsto
+## Dos hallazgos que no estaban previstos
 
 **El vocabulario pesa más que el umbral.** Con el IDF de las 100 historias de una
-página, 6 de 19 agrupaciones eran falsas —«Colombia reconoce la soberanía de
-Marruecos sobre el Sáhara» unida a «reconoce soberanía de Israel sobre el
-Golán», porque «soberania» salía dos veces en cien y parecía rarísima—. Con el
-IDF de los 4 684 titulares del corpus, y **sin tocar el umbral**, desaparecen las
-seis.
+página, 6 de 19 agrupaciones eran falsas: «Colombia reconoce la soberanía de
+Marruecos sobre el Sáhara» se unía a «reconoce soberanía de Israel sobre el
+Golán» porque «soberania» salía dos veces en cien y parecía rarísima. Con el IDF
+de los 4 684 titulares del corpus, **sin tocar el umbral**, desaparecen las seis.
 
-Es la advertencia que `evalClustering.mjs` ya llevaba escrita desde antes —«un
-IDF sobre 144 titulares no dice lo mismo»— ahora con la medida al lado. Y es la
-razón de que el agrupamiento viva en el servidor: el navegador solo descarga la
-página y no tiene con qué hacerlo bien.
-
----
-
-## Lo que sigue pendiente de antes
-
-Sin tocar desde la nota del 9 de agosto:
-
-1. **Escribir a El Meridiano** (`elmeridiano.co`). Cubre Córdoba **y** Sucre. Es
-   lo que más desbloquea por menos trabajo.
-2. **La afiliación de Ecos del Combeima a Blu Radio.** Decide si el Tolima tiene
-   voz propia. Está en `fichas/ecos-del-combeima.md` como alta condicionada.
-3. **Ocho certificados de Cámara de Comercio.** No se tramitan desde aquí.
-4. **La FLIP** y sus «Cartografías de la Información». Su web daba 502 y 404.
-
-Y del mapa: los conteos siguen siendo **de las historias cargadas, no del
-catálogo**. Persistir `articles.departamento` es trabajo de la API, y ahora que
-desplegar Fly ya no está bloqueado, no hay nada que lo frene.
-
----
-
-## Una trampa que costó encontrar
+Es la advertencia que `evalClustering.mjs` ya llevaba escrita —«un IDF sobre 144
+titulares no dice lo mismo»— ahora con la medida al lado. Y es la razón de que el
+agrupamiento viva en el servidor: el navegador solo descarga la página.
 
 **`category` no es el campo de presentación.** Es la sección heredada del feed, y
 `recategorizar.mjs` la conserva intacta a propósito: es el archivo de lo que el
 sitio mostró antes de cada migración. Pero cuatro componentes la pintaban como
 etiqueta, así que la tarjeta decía «Política» mientras la historia vivía en
-Desastres. Ahora se pinta `nombreDeSeccion` (`src/lib/seccion.js`), que usa el
-mismo orden de preferencia que `perteneceA` para que no puedan divergir.
+Desastres — dos respuestas distintas a la misma pregunta en la misma pantalla.
+Ahora se pinta `nombreDeSeccion`, con el mismo orden de preferencia que
+`perteneceA` para que no puedan divergir.
 
-De paso quedó completa una separación que `categories.js` tenía escrita como
-pendiente: Gaza y el fiscal general salían como «Internacional», que es ámbito y
-no tema.
+---
+
+## Trampas que ya mordieron, para no repetirlas
+
+- **Añadir una sección toca TRES sitios**: `TEMAS` (`shared/topicClassifier.js`),
+  `categories.js` y la lámina de `CategoryMark.jsx`. Hay una prueba por cada uno,
+  y las tres avisan.
+- **«Huracán» es un equipo de fútbol** argentino que la prensa colombiana cubre.
+  Está fuera de las listas de `desastres` a propósito, con prueba. Y **«accidente
+  cerebrovascular» es un ictus**: por eso «accidente» suelto va como débil.
+- **Tokenizar dentro del bucle de comparación es O(n²)** y con miles de historias
+  no termina. Está precomputado; no deshacer.
+- **Nada de backticks dentro de una plantilla SQL** en `feedStore.js`: rompen el
+  template literal y el error que da es un parse error críptico.
+- **El orden del despliegue importa**: primero `main` (Vercel), luego
+  `npm run deploy` (Fly), y la recategorización DESPUÉS de Fly — si no, el worker
+  sigue ingiriendo con el léxico viejo.
+
+---
+
+## Lo que no se arregla buscando más
+
+**Amazonas, Guainía y Vaupés no tienen medios web.** Tres búsquedas con ángulos
+distintos y ni uno. Allí la comunicación existe y es radio. Un agregador de RSS
+no alcanza eso: **no es un fallo del catálogo, es un límite del formato**, y
+decirlo en la vista departamental es más honesto que dejar tres departamentos en
+blanco como si allí no pasara nada.
+
+---
+
+## La idea apuntada que sigue sin empezar
+
+En un medio de redacción automatizada **la orientación debería ser más medible,
+no menos**. En una redacción humana el sesgo se reparte entre personas y días; en
+una configurada es una propiedad del sistema. Con corpus suficiente su deriva
+debería calcularse más directamente, y **una alteración de su configuración
+debería verse como un salto y no como ruido**.
+
+Boyacá Digital es el primer caso de prueba. Está en `shared/mediaRegistry.js`,
+junto al campo `redaccion`, que es donde se buscará.

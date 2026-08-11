@@ -10,6 +10,24 @@
 #      «degradado» (lo hace sola cuando la ingesta lleva demasiado sin correr).
 #    · Que ningún medio con feed lleva 14 días o más sin aportar un artículo.
 #
+#  CÓMO AVISA, Y POR QUÉ NO BASTA CON FALLAR
+#
+#  Detectar y avisar no son lo mismo, y esto costó una caída aprenderlo. El
+#  2026-08-11 el motor de ingesta llevaba diez horas muerto; esta vigilancia lo
+#  detectó a la primera —«API responde HTTP 503»— y falló en rojo a las 06:53.
+#  Nadie se enteró: un aspa roja en la pestaña de Actions no la ve quien no está
+#  mirando, y el correo automático de GitHub se pierde entre los demás.
+#
+#  Así que al fallar se ABRE UN ISSUE, y al recuperarse se CIERRA SOLO. Un issue
+#  es persistente —sigue ahí mañana—, notificable, y no necesita ningún servicio
+#  externo ni ningún secreto nuevo que rotar.
+#
+#  UNO SOLO A LA VEZ. Si ya hay uno abierto se le añade un comentario en vez de
+#  abrir otro: cuatro comprobaciones al día durante un fin de semana serían ocho
+#  issues del mismo incidente, y un aviso que se repite deja de leerse. Es el
+#  mismo motivo por el que se cierra solo — un tablero lleno de avisos viejos ya
+#  resueltos entrena a ignorarlo.
+#
 #  LO QUE ESTO NO ES, Y CONVIENE NO CONFUNDIRLO
 #
 #  No es un monitor de disponibilidad. Corre cada 6 horas y el cron de GitHub se
@@ -18,6 +36,9 @@
 #  inmediato. Esto detecta lo que hoy no se ve en absoluto: que algo lleve roto
 #  desde ayer. Decirlo importa, porque una comprobación cada 6 horas con nombre
 #  de «vigilancia» invita a creer que hay una red que no existe.
+#
+#  Y la ventana sigue siendo de seis horas: el issue mejora QUE TE ENTERES, no
+#  CUÁNDO. La caída del 11 de agosto habría seguido durando cinco horas.
 # =============================================================================
 
 name: Vigilancia
@@ -26,6 +47,11 @@ on:
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
+
+# Solo para abrir, comentar y cerrar el issue de aviso. Nada más.
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   comprobar:
@@ -49,8 +75,78 @@ jobs:
 
       # Desde doblefoco-app/ para que `pg` y el registro resuelvan por la vía
       # normal del proyecto: NODE_PATH no sirve, los módulos ESM lo ignoran.
+      #
+      # `continue-on-error` NO significa que dé igual: el resultado se guarda y
+      # el último paso vuelve a fallar el job. Existe para que los pasos del
+      # aviso lleguen a correr, porque un fallo aquí los saltaría — que es justo
+      # lo que pasaba antes.
+      #
+      # La salida se guarda además en un fichero para meterla en el issue: un
+      # aviso que dice «algo falló, mira los logs» obliga a abrir Actions, y
+      # entonces no ha ahorrado nada.
       - name: Sitio, API y medios mudos
-        run: node scripts/comprobarMedios.mjs
+        id: comprobacion
+        continue-on-error: true
+        run: node scripts/comprobarMedios.mjs 2>&1 | tee "$RUNNER_TEMP/vigilancia.txt"
         working-directory: doblefoco-app
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      # ── Aviso ──────────────────────────────────────────────────────────────
+      # Se busca por etiqueta y no por título: el título lleva la fecha, así que
+      # buscarlo abriría un issue nuevo cada día del mismo incidente.
+      - name: Buscar el aviso abierto
+        id: abierto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          numero=$(gh issue list --label vigilancia --state open \
+                     --limit 1 --json number --jq '.[0].number // empty')
+          echo "numero=$numero" >> "$GITHUB_OUTPUT"
+
+      - name: Abrir o actualizar el aviso
+        if: steps.comprobacion.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "La vigilancia falló. Salida completa:"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/vigilancia.txt"
+            echo '```'
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/cuerpo.md"
+
+          if [ -n "$NUMERO" ]; then
+            # Sigue roto desde la comprobación anterior: se comenta, no se abre
+            # otro. Cuatro al día durante un fin de semana serían ocho issues
+            # del mismo incidente.
+            gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
+          else
+            gh issue create \
+              --title "Vigilancia en rojo — $(date -u '+%Y-%m-%d %H:%M UTC')" \
+              --label vigilancia \
+              --body-file "$RUNNER_TEMP/cuerpo.md"
+          fi
+
+      - name: Cerrar el aviso si ya se recuperó
+        if: steps.comprobacion.outcome == 'success' && steps.abierto.outputs.numero != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+        run: |
+          gh issue close "$NUMERO" --comment \
+            "Recuperado: la vigilancia volvió a pasar el $(date -u '+%Y-%m-%d %H:%M UTC')."
+
+      # El job tiene que quedar en rojo igual. El issue es el aviso; el aspa
+      # sigue siendo el registro, y un job en verde con un issue abierto sería
+      # una contradicción que acabaría creyéndose la parte cómoda.
+      - name: Reflejar el resultado
+        if: steps.comprobacion.outcome == 'failure'
+        run: |
+          echo "La comprobación falló; hay un issue abierto con el detalle."
+          exit 1

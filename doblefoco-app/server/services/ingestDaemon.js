@@ -38,6 +38,7 @@ import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { porRelevancia } from '../../shared/relevancia.js';
 import { detectarDepartamento } from '../../shared/geografia.js';
+import { USER_AGENT } from '../../shared/userAgent.js';
 import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
@@ -119,16 +120,15 @@ export const RETENTION_MS = 72 * 60 * 60 * 1000; // 72 horas
  */
 const MAX_ARTICLES = 8_000;
 
-/**
- * User-Agent identificable con URL de contacto.
+/*
+ * El User-Agent vive en `shared/userAgent.js`, en un solo sitio.
  *
- * El anterior se disfrazaba de Chrome con "SincuentoBot/1.0" pegado al final
- * (el proyecto se llamaba Sincuento.co antes del cambio de nombre).
- * Si vamos a leer los feeds de medios ajenos, que sepan quiénes somos y cómo
- * pedirnos que paremos.
+ * Sigue siendo identificable y con URL de contacto —el anterior se disfrazaba de
+ * Chrome, y si vamos a leer los feeds de medios ajenos que sepan quiénes somos y
+ * cómo pedirnos que paremos—. Lo que cambió el 2026-08-11 es que llevaba una
+ * tilde, y una cabecera HTTP con caracteres no ASCII es inválida: nos devolvían
+ * 403 servidores que no nos bloqueaban en absoluto. Ver la nota de ese archivo.
  */
-const USER_AGENT =
-    'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
 
 const parser = new Parser({
     headers: { 'User-Agent': USER_AGENT },

@@ -1,4 +1,5 @@
 import { writeFileSync } from 'node:fs';
+import { CABECERAS } from '../shared/userAgent.js';
 
 const DST = 'C:/Users/geren/OneDrive/Documentos/Proyectos antigravity/doblefoco/doblefoco-app/programas';
 
@@ -14,7 +15,7 @@ const ANCLADOS = {
 };
 
 const r = await fetch('https://www.datos.gov.co/resource/h236-q58p.json?$limit=5000', {
-    headers: { 'User-Agent': 'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia)' },
+    headers: CABECERAS,
 });
 const filas = await r.json();
 

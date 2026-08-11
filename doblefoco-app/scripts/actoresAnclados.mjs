@@ -4,6 +4,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import dotenv from 'dotenv';
 import pg from 'pg';
+import { CABECERAS } from '../shared/userAgent.js';
 
 const APP = 'C:/Users/geren/OneDrive/Documentos/Proyectos antigravity/doblefoco/doblefoco-app';
 const TMP = 'C:/Users/geren/.claude/jobs/ba8780a5/tmp';
@@ -20,7 +21,7 @@ if (existsSync(CACHE)) {
       SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". } }`;
     const r = await fetch(
         `https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(q)}`,
-        { headers: { 'User-Agent': 'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia)' } }
+        { headers: CABECERAS }
     );
     const j = await r.json();
     actores = j.results.bindings.map((b) => ({

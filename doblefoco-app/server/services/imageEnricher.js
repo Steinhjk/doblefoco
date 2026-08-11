@@ -34,8 +34,7 @@ import { articulosSinImagen, guardarImagenesEnriquecidas } from '../db/contentSt
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { urlDeImagenValida } from './ingestDaemon.js';
 
-const USER_AGENT =
-    'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
+import { USER_AGENT } from '../../shared/userAgent.js';
 
 /** Tope de artículos por ciclo. Con ~100 nuevos por ciclo, esto además desatasca. */
 const POR_CICLO = 150;

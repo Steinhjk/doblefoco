@@ -28,8 +28,7 @@
 import fs from 'node:fs';
 
 /** El mismo que anuncia la ingesta: si nos bloquean, que sepan a quién. */
-const USER_AGENT =
-    'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
+import { USER_AGENT } from '../shared/userAgent.js';
 
 const TIMEOUT_MS = 15_000;
 const CONCURRENCIA = 4;

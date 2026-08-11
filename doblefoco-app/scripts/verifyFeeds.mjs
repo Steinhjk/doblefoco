@@ -35,8 +35,7 @@ const CONCURRENCY = 6;
  * cambio de nombre: un dominio que ya no es nuestro y una página de contacto
  * que no existe. Justo lo contrario de para qué sirve identificarse.
  */
-const USER_AGENT =
-    'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
+import { USER_AGENT } from '../shared/userAgent.js';
 
 const parser = new Parser({
     headers: { 'User-Agent': USER_AGENT },

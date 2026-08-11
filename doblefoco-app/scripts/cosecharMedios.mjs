@@ -46,7 +46,7 @@
 import fs from 'node:fs';
 import { MEDIA_REGISTRY } from '../shared/mediaRegistry.js';
 
-const UA = 'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia; agregador de cobertura periodística)';
+import { USER_AGENT as UA } from '../shared/userAgent.js';
 const SOLO_LISTA = process.argv.includes('--lista');
 
 const decir = (...a) => { if (!SOLO_LISTA) console.log(...a); };

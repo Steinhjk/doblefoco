@@ -61,6 +61,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CABECERAS } from '../shared/userAgent.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const FUENTE = 'https://www.datos.gov.co/resource/h236-q58p.json?$limit=5000';
@@ -91,7 +92,7 @@ const indice = JSON.parse(
 
 // La población completa, no los seis ejemplos guardados. Ver la cabecera.
 const respuesta = await fetch(FUENTE, {
-    headers: { 'User-Agent': 'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia)' },
+    headers: CABECERAS,
 });
 if (!respuesta.ok) {
     console.error(`\n  ✗ No se pudo descargar la población: HTTP ${respuesta.status}\n`);

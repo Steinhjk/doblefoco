@@ -52,6 +52,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { USER_AGENT } from '../shared/userAgent.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const TRABAJO = 'C:/Users/geren/.claude/jobs/ba8780a5/tmp/ciego';
@@ -107,7 +108,7 @@ function extraer(url, destinoBase) {
     try {
         execFileSync('curl', [
             '-s', '-L', '--max-time', '60',
-            '-A', 'DobleFocoBot/1.0 (+https://doblefoco.co/transparencia)',
+            '-A', USER_AGENT,
             url, '-o', `${destinoBase}.pdf`,
         ]);
         execFileSync('pdftotext', ['-enc', 'UTF-8', `${destinoBase}.pdf`, `${destinoBase}.txt`], {

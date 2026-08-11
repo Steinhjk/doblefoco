@@ -537,6 +537,46 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://www.portafolio.co/rss/economia.xml', via: 'direct', category: 'Economía' },
     },
     {
+        /**
+         * VALORA ANALITIK — alta del 2026-08-11, a petición de Jose.
+         *
+         * Lo edita Valora Inversiones S.A.S. (NIT 900.811.192-0, Medellín,
+         * constituida en enero de 2015), de sus dos fundadores: Camilo Silva y
+         * Alejandro Montoya. **No pertenece a ningún grupo**, y eso es lo
+         * inusual: en este catálogo tres dueños concentran la mitad de lo
+         * publicado.
+         *
+         * EL SESGO, EN +0,10 Y NO EN +0,15. Es un medio de mercados con
+         * audiencia inversionista, lo que empujaría hacia La República, pero su
+         * cobertura de la reforma laboral se lee del lado del trabajador —«lo
+         * que deben pagarle de más», «el salario no bajará», «las empresas
+         * tendrán prohibido»— y no con encuadre patronal. Queda con Portafolio,
+         * que es su comparable exacto. `reviewedAt: null`: sin firmar.
+         *
+         * CONFLICTO DE INTERÉS, DECLARADO EN LA FICHA. La misma sociedad vende
+         * una plataforma de pago para inversionistas sobre las acciones de la
+         * Bolsa de Valores de Colombia, y publica avisos de ley pagados de
+         * empresas, mientras su redacción cubre esas mismas emisoras. No es
+         * asesoría ni recomendación de compra: es desvelamiento, no acusación.
+         *
+         * Su feed figuraba como inexistente hasta hoy, y el problema era
+         * nuestro: el User-Agent llevaba una tilde y su cortafuegos lo
+         * rechazaba. Ver `shared/userAgent.js`.
+         *
+         * SU `pubDate` NO DECLARA ZONA HORARIA —«2026-08-11 18:10:48» a secas—,
+         * así que `rss-parser` lo interpreta con la del proceso. Con TZ=UTC
+         * entran sus 50 artículos; en UTC-5 sus fechas quedan cinco horas en el
+         * futuro y el filtro de fechas futuras descarta 19 de 50. Por eso
+         * `fly.toml` fija `TZ = 'UTC'` explícitamente desde hoy.
+         */
+        id: 'valora-analitik', name: 'Valora Analitik', shortName: 'Valora',
+        domain: 'valoraanalitik.com', departamento: 'Antioquia', country: 'CO',
+        group: 'Valora Inversiones S.A.S.',
+        bias: 0.10, factuality: null, reviewedAt: null,
+        biasRationale: 'Medio económico y bursátil independiente, de sus dos fundadores; encuadre desde el mercado y la empresa, con cobertura laboral de servicio.',
+        feed: { url: 'https://www.valoraanalitik.com/feed/', via: 'direct', category: 'Economía' },
+    },
+    {
         id: 'infobae-co', name: 'Infobae Colombia', shortName: 'Infobae',
         domain: 'infobae.com', country: 'AR', group: 'Infobae',
         bias: 0.15, factuality: 0.80, reviewedAt: null,

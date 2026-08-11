@@ -36,6 +36,19 @@ primary_region = 'gru'
 [env]
   PORT = '5000'
   TRUST_PROXY_HOPS = '1'
+
+  # UTC EXPLÍCITO, y no por costumbre. Todo el sistema habla ISO-8601 en UTC —
+  # ver la nota de `types.setTypeParser` en server/db/pool.js— pero además hay
+  # feeds cuyo `pubDate` NO declara zona horaria, y `rss-parser` los interpreta
+  # con la del proceso.
+  #
+  # Medido con Valora Analitik el 2026-08-11, cuyo feed publica «2026-08-11
+  # 18:10:48» a secas: con TZ=UTC entran sus 50 artículos; con America/Bogota
+  # (UTC-5) sus fechas quedan cinco horas en el futuro y el filtro de fechas
+  # futuras descarta 19 de 50. La imagen de node ya arranca en UTC, así que esto
+  # no cambia nada hoy: lo que hace es que dejar de estarlo sea una decisión
+  # visible y no una pérdida silenciosa del 38 % de un medio.
+  TZ = 'UTC'
   # Cada 30 min. Cada feed solo expone sus últimos 15 titulares y un medio
   # activo puede publicar más de 15 en una hora: los que se pierdan no vuelven,
   # y perder artículos sesga la medición de F1-01.

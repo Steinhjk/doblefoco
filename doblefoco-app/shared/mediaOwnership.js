@@ -615,6 +615,34 @@ export const CONTROL_GROUPS = {
             fuentes: ['https://www.lasillavacia.com/que-es-la-silla-vacia/'],
         }],
     },
+    'valora-fundadores': {
+        label: 'Camilo Silva y Alejandro Montoya — Valora Inversiones S.A.S.',
+        /*
+         * `sectores` lleva los negocios del dueño AJENOS al medio, que es donde
+         * se buscaría un conflicto. Aquí el otro negocio no es ajeno: es una
+         * plataforma de pago de información bursátil sobre las mismas emisoras
+         * que la redacción cubre, bajo la misma sociedad. Se declara como sector
+         * propio y se explica en las notas de la ficha.
+         */
+        sectores: ['información financiera'],
+        personas: [
+            {
+                nombre: 'Camilo Silva',
+                papel: 'Cofundador y gerente de Valora Inversiones S.A.S., la sociedad que publica Valora Analitik.',
+                desde: '2015-01-20',
+                fuentes: [
+                    'https://es.wikipedia.org/wiki/Valora_Analitik',
+                    'https://www.datacreditoempresas.com.co/directorio/valora-inversiones-sas.html',
+                ],
+            },
+            {
+                nombre: 'Alejandro Montoya',
+                papel: 'Cofundador y CFO de Valora Inversiones S.A.S.',
+                desde: '2015-01-20',
+                fuentes: ['https://es.wikipedia.org/wiki/Valora_Analitik'],
+            },
+        ],
+    },
     'el-escarbabajo': {
         label: 'Diana Salinas y Claudia Báez — El Escarbabajo SAS',
         sectores: [],
@@ -1305,6 +1333,28 @@ export const OWNERSHIP_PROFILES = {
             'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
         ],
         verifiedAt: VERIFICADO,
+    },
+
+    'valora-analitik': {
+        ownerType: 'independiente',
+        controlGroup: 'valora-fundadores',
+        holdings: [
+            'Lo edita Valora Inversiones S.A.S. (NIT 900.811.192-0), constituida el 20 de enero de 2015 y domiciliada en Medellín, Carrera 43A n.º 5A-113, oficina 2020.',
+            'Sus dueños son sus dos fundadores, Camilo Silva (gerente) y Alejandro Montoya (CFO), con capital propio. No pertenece a ningún grupo de medios ni a ningún conglomerado.',
+            'Se financia con pauta publicitaria, suscripciones a un servicio premium y avisos de ley pagados (convocatorias, liquidaciones, escisiones) de empresas.',
+        ],
+        notes: [
+            'La misma sociedad opera una plataforma de pago para inversionistas del mercado accionario colombiano, con gráficos y análisis de las acciones que cotizan en la Bolsa de Valores de Colombia. Su redacción cubre a esas mismas emisoras: es ahí donde ese cruce se haría visible. No ofrece asesoría personalizada ni recomendaciones de compra.',
+            'Los avisos de ley son una relación comercial con las empresas sobre las que informa, del mismo tipo que la pauta y con el mismo lugar donde mirar.',
+            'Es de los pocos medios del catálogo sin dueño en un conglomerado, y eso conviene decirlo con el mismo cuidado que lo contrario: la independencia societaria no es independencia editorial, solo quita un conflicto conocido.',
+        ],
+        sources: [
+            'https://www.valoraanalitik.com/Terminos_Condiciones_Valora_Inversiones.pdf',
+            'https://www.datacreditoempresas.com.co/directorio/valora-inversiones-sas.html',
+            'https://es.wikipedia.org/wiki/Valora_Analitik',
+            'https://plataforma.valoraanalitik.com/plataforma/index.php',
+        ],
+        verifiedAt: '2026-08-11',
     },
 
     'el-heraldo': {

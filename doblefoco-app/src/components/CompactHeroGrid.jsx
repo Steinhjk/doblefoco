@@ -16,6 +16,16 @@ import { rutaDeHistoria } from '../../shared/storyPath.js';
 import { porRelevancia } from '../../shared/relevancia.js';
 import { analyzeCoverage } from '../../shared/biasAnalysis.js';
 import { usePortada } from '../hooks/usePortada';
+import { nombreDeSeccion } from '../lib/seccion';
+import { categories } from '../data/categories';
+
+/**
+ * La sección que se enseña en la tarjeta. Sale de `topics`, no de `category`:
+ * esa última es el archivo de lo que mostró el feed de origen, y pintarla hacía
+ * que la etiqueta contradijera a la sección donde vive la historia. Ver
+ * `lib/seccion.js`.
+ */
+const seccionDe = (story) => nombreDeSeccion(story, categories);
 
 /**
  * Los medios de un suceso: la UNIÓN de los de todos sus ángulos.
@@ -137,7 +147,7 @@ const CompactHeroGrid = () => {
                                 height={450}
                                 eager
                             >
-                                <span className="spotlight-category-tag">{main.category}</span>
+                                <span className="spotlight-category-tag">{seccionDe(main)}</span>
                             </StoryImage>
                         </Link>
                     )}
@@ -145,7 +155,7 @@ const CompactHeroGrid = () => {
                     <div className="spotlight-body">
                         <div className="spotlight-meta">
                             {!tieneImagen(main) && main.category && (
-                                <span className="spotlight-category-inline">{main.category}</span>
+                                <span className="spotlight-category-inline">{seccionDe(main)}</span>
                             )}
                             <span className="meta-time">{storyTimeLabel(main)}</span>
                             <span className="meta-sources-count">
@@ -239,7 +249,7 @@ const CompactHeroGrid = () => {
 
                             <div className="secondary-content">
                                 <div className="secondary-meta">
-                                    <span className="secondary-cat">{story.category}</span>
+                                    <span className="secondary-cat">{seccionDe(story)}</span>
                                     <span className="secondary-time">{storyTimeLabel(story)}</span>
                                 </div>
 

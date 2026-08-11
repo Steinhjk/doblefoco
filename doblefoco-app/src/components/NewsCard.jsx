@@ -10,6 +10,11 @@ import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './NewsCard.css';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
+import { nombreDeSeccion } from '../lib/seccion';
+import { categories } from '../data/categories';
+
+/** Ver la nota de `nombreDeSeccion`: la etiqueta sale de `topics`, no del feed. */
+const seccionDe = (story) => nombreDeSeccion(story, categories);
 
 const NewsCard = ({ story: rawStory }) => {
     // Tolerante a historias sin normalizar para que ninguna pantalla reviente
@@ -63,7 +68,7 @@ const NewsCard = ({ story: rawStory }) => {
                         aria-hidden="true"
                     >
                         <StoryImage story={story} className="news-card-img">
-                            <span className="news-card-category-badge">{story.category}</span>
+                            <span className="news-card-category-badge">{seccionDe(story)}</span>
                         </StoryImage>
                     </Link>
                 )}
@@ -73,7 +78,7 @@ const NewsCard = ({ story: rawStory }) => {
                         {/* El distintivo de categoría vivía sobre la imagen. Sin
                             imagen desaparecía, así que aquí va cuando hace falta. */}
                         {!muestraImagen && story.category && (
-                            <span className="news-card-category-inline">{story.category}</span>
+                            <span className="news-card-category-inline">{seccionDe(story)}</span>
                         )}
                         {timeLabel && (
                             <time

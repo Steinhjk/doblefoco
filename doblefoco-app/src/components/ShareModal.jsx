@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Share2, Check, Copy, Linkedin, X } from 'lucide-react';
 import './ShareModal.css';
+import { nombreDeSeccion } from '../lib/seccion';
+import { categories } from '../data/categories';
+
+/** Ver la nota de `nombreDeSeccion`: la etiqueta sale de `topics`, no del feed. */
+const seccionDe = (story) => nombreDeSeccion(story, categories);
 
 /**
  * Diálogo para compartir.
@@ -104,7 +109,7 @@ const ShareModal = ({ story, isOpen, onClose }) => {
                 </div>
 
                 <div className="share-preview-card">
-                    <span className="preview-tag">{story.category}</span>
+                    <span className="preview-tag">{seccionDe(story)}</span>
                     <h3 className="preview-title">{story.title}</h3>
                     <p className="preview-sources-summary">
                         {story.coverage?.total ?? story.sources?.length ?? 0} medios cubriendo el hecho

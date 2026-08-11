@@ -24,6 +24,11 @@ import UserFeedbackWidget from '../components/UserFeedbackWidget';
 import ShareModal from '../components/ShareModal';
 import DuenoCompartido from '../components/DuenoCompartido';
 import './NewsDetail.css';
+import { nombreDeSeccion } from '../lib/seccion';
+import { categories } from '../data/categories';
+
+/** Ver la nota de `nombreDeSeccion`: la etiqueta sale de `topics`, no del feed. */
+const seccionDe = (story) => nombreDeSeccion(story, categories);
 
 /**
  * Tarjeta de perspectiva.
@@ -246,7 +251,7 @@ const NewsDetail = () => {
         <div className="news-detail-page">
             <div className="detail-header">
                 <Link to="/" className="back-link">← Volver al feed</Link>
-                <span className="detail-category-badge">{story.category}</span>
+                <span className="detail-category-badge">{seccionDe(story)}</span>
             </div>
 
             <article className="detail-article detail-split-layout">
@@ -458,7 +463,7 @@ const NewsDetail = () => {
 
             {related.length > 0 && (
                 <section className="detail-related">
-                    <h2>Más en {story.category}</h2>
+                    <h2>Más en {seccionDe(story)}</h2>
                     <div className="detail-related-grid">
                         {related.map((s) => <NewsCard key={s.id} story={s} />)}
                     </div>

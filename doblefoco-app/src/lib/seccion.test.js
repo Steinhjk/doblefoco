@@ -22,7 +22,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { perteneceA } from './seccion.js';
+import { perteneceA, nombreDeSeccion } from './seccion.js';
 import { categories } from '../data/categories.js';
 import { TEMAS } from '../../shared/topicClassifier.js';
 
@@ -124,6 +124,45 @@ describe('catálogo de secciones', () => {
             .map((c) => `${c.id}: «${c.name}» vs «${porId.get(c.id)}»`);
 
         expect(desajustes).toEqual([]);
+    });
+
+    /**
+     * LA ETIQUETA Y LA PERTENENCIA NO PUEDEN CONTRADECIRSE. El día del terremoto
+     * del Chocó el destacado salía marcado «Política» —así llegó del feed—
+     * mientras la historia vivía en Desastres y accidentes. Dos respuestas
+     * distintas a la misma pregunta en la misma pantalla.
+     */
+    describe('nombreDeSeccion', () => {
+        const historia = { category: 'Política', topics: ['desastres', 'politica'] };
+
+        it('etiqueta por el tema, no por la sección heredada del feed', () => {
+            expect(nombreDeSeccion(historia, categories)).toBe('Desastres y accidentes');
+        });
+
+        it('la etiqueta coincide con una sección a la que la historia pertenece', () => {
+            const nombre = nombreDeSeccion(historia, categories);
+            const seccion = categories.find((c) => c.name === nombre);
+            expect(perteneceA({ ...historia, ambito: null }, seccion)).toBe(true);
+        });
+
+        /** Mientras la API vigente no mande `topics`, el respaldo sigue siendo el feed. */
+        it('cae a la categoría del feed cuando no hay temas', () => {
+            expect(nombreDeSeccion({ category: 'Política', topics: null }, categories))
+                .toBe('Política');
+            expect(nombreDeSeccion({ category: 'Política', topics: [] }, categories))
+                .toBe('Política');
+        });
+
+        it('no inventa nada si no hay ni temas ni categoría', () => {
+            expect(nombreDeSeccion({}, categories)).toBe('');
+            expect(nombreDeSeccion(null, categories)).toBe('');
+        });
+
+        /** Un tema que el clasificador escribe pero que no tiene baldosa no se enseña. */
+        it('ignora un tema sin sección declarada', () => {
+            expect(nombreDeSeccion({ category: 'Política', topics: ['inventado'] }, categories))
+                .toBe('Política');
+        });
     });
 
     it('no hay ids repetidos', () => {

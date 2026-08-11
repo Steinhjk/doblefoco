@@ -47,3 +47,37 @@ export function perteneceA(story, categoria) {
         ? story.topics.includes(categoria.id)
         : story.category === categoria.name;
 }
+
+/**
+ * El nombre de sección que se le enseña al lector en una tarjeta.
+ *
+ * POR QUÉ NO SIRVE `category` A SECAS (2026-08-10). Es la sección heredada del
+ * feed, y `recategorizar.mjs` la conserva intacta a propósito: guarda lo que el
+ * sitio mostró antes de cada migración, para poder auditar qué decía y cuándo.
+ * Es un registro de archivo, no un campo de presentación.
+ *
+ * Pintarla en la tarjeta hacía que la etiqueta contradijera a la sección. El día
+ * del terremoto del Chocó el destacado salía marcado «Política» —porque así
+ * llegó del feed— mientras la historia vivía, correctamente, en Desastres y
+ * accidentes. Dos respuestas distintas a la misma pregunta en la misma pantalla.
+ *
+ * Se usa el MISMO orden de preferencia que `perteneceA`, y por el mismo motivo:
+ * `topics` cuando la API los manda, `category` mientras no. Así la etiqueta y la
+ * pertenencia no pueden divergir.
+ *
+ * @param {{category?: string, topics?: string[]|null}} story
+ * @param {Array<{id: string, name: string, tipo: string}>} categorias
+ * @returns {string} Cadena vacía si no hay nada honesto que decir.
+ */
+export function nombreDeSeccion(story, categorias) {
+    const temas = story?.topics;
+
+    if (Array.isArray(temas) && temas.length) {
+        // El primero es el de mayor puntaje: el clasificador los devuelve
+        // ordenados y la base conserva ese orden.
+        const principal = categorias.find((c) => c.tipo === 'tema' && c.id === temas[0]);
+        if (principal) return principal.name;
+    }
+
+    return story?.category ?? '';
+}

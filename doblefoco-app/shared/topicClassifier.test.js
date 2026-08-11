@@ -40,7 +40,25 @@ describe('asignación por titular', () => {
             ['Disidencias de las FARC hostigaron a la fuerza pública en Cauca', 'conflicto'],
             ['Aumentan los feminicidios en el Valle del Cauca', 'derechos'],
             ['El Festival de Cine de Cartagena anunció su programación', 'cultura'],
+            ['Un terremoto de magnitud 7,4 sacudió el Chocó', 'desastres'],
         ];
+
+        /**
+         * Los accidentes van en la misma sección, como en IPTC Media Topics
+         * —«disaster, accident and emergency incident»—. Antes se repartían: el
+         * helicóptero caía en Medio Ambiente y el desplome de una viga, en
+         * Tecnología.
+         */
+        const accidentes = [
+            'Tres colombianas mueren en accidente de helicóptero en Dominicana',
+            'Un concejal murió por el desplome de una viga en un gimnasio',
+            'Choque múltiple en la vía Bogotá-Girardot deja cuatro heridos',
+            'Mineros atrapados tras un derrumbe en una mina de Boyacá',
+        ];
+
+        for (const titular of accidentes) {
+            expect(temas(titular), titular).toContain('desastres');
+        }
 
         for (const [titular, esperado] of casos) {
             expect(temas(titular), titular).toContain(esperado);
@@ -107,6 +125,46 @@ describe('términos ambiguos — regresiones de falsos positivos reales', () => 
 
     it('un incendio forestal no convierte cualquier incendio en ambiental', () => {
         expect(temas('Incendio en un edificio del centro dejó dos heridos')).not.toContain('ambiente');
+    });
+
+    /**
+     * «Huracán» es el Club Atlético Huracán, que juega el clásico con San
+     * Lorenzo y al que cubre la prensa colombiana. Como término fuerte se
+     * llevaba la tabla de posiciones del Torneo Clausura a Desastres; como
+     * débil tampoco bastaba, porque la entradilla aportaba lo que faltaba.
+     * Está fuera de las dos listas, y esta prueba existe para que siga fuera.
+     */
+    it('«Huracán» el club no es un huracán', () => {
+        expect(temas('San Lorenzo y Huracán animarán una nueva edición del clásico'))
+            .not.toContain('desastres');
+        expect(temas('Así están las posiciones del Torneo Clausura: los saltos de Huracán'))
+            .not.toContain('desastres');
+    });
+
+    /** Y el fenómeno se sigue reconociendo, por el término que no es ambiguo. */
+    it('una onda tropical sí es un desastre en potencia', () => {
+        expect(temas('Nueva onda tropical pone en alerta al Atlántico'))
+            .toContain('desastres');
+    });
+
+    /**
+     * «accidente cerebrovascular» es un ictus, y va a Salud. Es la razón de que
+     * «accidente» suelto esté como débil y no como fuerte.
+     */
+    it('un accidente cerebrovascular no es un accidente de tráfico', () => {
+        expect(principal('Aumentan los casos de accidente cerebrovascular en Nueva EPS'))
+            .toBe('salud');
+    });
+
+    /**
+     * Metáforas de uso corriente en la prensa en español. Suman pero no deciden,
+     * que es justo por lo que están como débiles.
+     */
+    it('las metáforas sísmicas no son sismos', () => {
+        expect(temas('El epicentro del escándalo está en la Casa de Nariño'))
+            .not.toContain('desastres');
+        expect(temas('Un tsunami de críticas contra el ministro'))
+            .not.toContain('desastres');
     });
 });
 

@@ -34,6 +34,13 @@
  * el motor sin baldosa donde aparecer, así que su cobertura era invisible en
  * esta pantalla.
  *
+ * Y FALTABA UNA ENTERA. Los desastres no tenían sección: medidos 400 artículos
+ * del terremoto del Chocó, 236 se quedaban sin tema y los demás se repartían
+ * entre TRECE. El Congreso aplazando sesión en Política, los bancos reabriendo
+ * en Economía, el Ejército buscando desaparecidos en Justicia, Shakira en
+ * Entretenimiento. Quien quisiera saber qué pasó con el terremoto no tenía
+ * dónde ir. Se añadió `desastres` el 2026-08-10.
+ *
  * Y SOBRABA UNA MAL HECHA. «Cultura y medios» era el cajón de lo que no cabía
  * en ninguna otra: el cine y los museos, la libertad de prensa, y la telenovela
  * con el influencer. Jose la señaló como difusa y al abrir el léxico se vio por
@@ -107,6 +114,12 @@ export const categories = [
         name: 'Educación',
         tipo: 'tema',
         description: 'Educación superior, ICETEX y formación regional.',
+    },
+    {
+        id: 'desastres',
+        name: 'Desastres y accidentes',
+        tipo: 'tema',
+        description: 'Sismos, ola invernal, accidentes y la respuesta a la emergencia.',
     },
     {
         id: 'ambiente',

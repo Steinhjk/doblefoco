@@ -202,6 +202,121 @@ export const TEMAS = [
         ],
     },
     {
+        /**
+         * DESASTRES Y EMERGENCIAS — añadido el 2026-08-10, decisión de Jose.
+         *
+         * POR QUÉ HACÍA FALTA UNA SECCIÓN ENTERA. Medido sobre 400 artículos del
+         * terremoto del Chocó, el hecho más cubierto del año: 236 se quedaban sin
+         * tema y los 164 restantes se repartían entre TRECE secciones. El
+         * Congreso aplazando sesión iba a Política; los bancos reabriendo, a
+         * Economía; el Ejército activando sus emisoras para buscar
+         * desaparecidos, a Justicia; Shakira, a Entretenimiento; el partido
+         * aplazado, a Deportes. Sesenta y tres de ellos por rescate, es decir
+         * por una única señal débil.
+         *
+         * «Gobierno declara desastre nacional tras terremoto en Chocó que deja
+         * 71 muertos» puntuaba 1,5 en Política —la palabra «gobierno»— y nada le
+         * competía, porque no había contra qué. Un lector que quisiera saber qué
+         * pasó con el terremoto no tenía dónde ir.
+         *
+         * No es un problema del terremoto: vuelve con cada ola invernal.
+         *
+         * LA SECCIÓN ES EL HECHO Y SU RESPUESTA. Los albergues, la ayuda
+         * humanitaria y los bancos reabriendo son cobertura del desastre, no de
+         * otra cosa. Por eso el nombre lleva «y emergencias».
+         *
+         * SOBRE LA AMBIGÜEDAD, que es donde estos ficheros se rompen. Aquí el
+         * riesgo es el uso metafórico, que en la prensa en español es constante:
+         * «el epicentro del escándalo», «un tsunami de críticas», «temblor en
+         * los mercados», «réplica» como respuesta, «sala de emergencias». Todos
+         * esos van como débiles o exigen contexto en el mismo patrón. Lo que va
+         * como fuerte es lo que en español colombiano no significa otra cosa:
+         * «damnificados», «rescatistas», «desastre natural».
+         */
+        id: 'desastres',
+        nombre: 'Desastres y accidentes',
+        fuertes: [
+            /*
+             * LOS ACCIDENTES VAN AQUÍ, y no es una licencia: es la forma que
+             * tiene la categoría equivalente del estándar del oficio. IPTC Media
+             * Topics —el vocabulario que usan las agencias— llama a la suya
+             * «disaster, accident and emergency incident», los tres juntos.
+             *
+             * Medido antes de decidirlo, sobre 4 000 artículos: 56 eran
+             * accidentes y tenían el mismo problema que los desastres, 25 sin
+             * tema y el resto dispersos. Las tres colombianas muertas en el
+             * helicóptero caían en Medio Ambiente; el concejal muerto por el
+             * desplome de una viga, en Tecnología; los accidentes viales, en
+             * Infraestructura. Y en una semana sin terremoto los accidentes son
+             * el flujo constante, no el pico.
+             *
+             * IPTC además separa «weather», y aquí NO se separa. Su motivo es el
+             * pronóstico diario que mueven las agencias, y este sitio no ingiere
+             * pronósticos —`contentQuality` los descartaría como formato sin
+             * encuadre, igual que la TRM—. Medidos: 14 artículos de meteorología
+             * en 4 000. Copiar la división sin el contenido que la justifica
+             * dejaría una sección vacía.
+             */
+            /\baccidente (de transito|vial|aereo|de trafico|laboral|de trabajo)\b/,
+            /\b(siniestro vial|choque multiple|volcamiento|descarrilamiento)\b/,
+            /\b(naufragio|naufrag[oa]|embarcacion (se hundio|volcada))\b/,
+            // «de una viga» fallaba con `(un|el|la)`: el `\b` del final caía a
+            // mitad de «una». Van los artículos completos.
+            /\b(derrumbe|desplome|desprendimiento) de (un|una|el|la|los|las)\b/,
+            /\bcolapso (de|del) (un |una |el |la )?(edificio|puente|techo|colegio|muro|estructura)\b/,
+            /\b(mineros? atrapad[oa]s|derrumbe en (una|la) mina)\b/,
+
+            // «sismo» y «terremoto» no tienen uso metafórico corriente;
+            // «temblor» y «epicentro» sí, y por eso están abajo.
+            /\b(terremoto|sismos?|sismicos?|movimiento telurico|maremoto)\b/,
+            /\b(replicas? (sismicas?|del (sismo|terremoto)))\b/,
+            /\b(damnificad[oa]s?|desastre (natural|nacional)|calamidad publica|zona de desastre)\b/,
+            /\b(ungrd|gestion del riesgo de desastres|defensa civil|rescatistas?|socorristas?)\b/,
+            /\b(erupcion|volcan|volcanica|ceniza volcanica)\b/,
+            /\b(tormenta tropical|onda tropical|depresion tropical|ciclon|tornado)\b/,
+            /\b(incendio forestal|avalancha|creciente subita)\b/,
+            /\b(deslizamiento de tierra|remocion en masa)\b/,
+        ],
+        debiles: [
+            /*
+             * «HURACÁN» NO ESTÁ EN NINGUNA DE LAS DOS LISTAS, y merece la pena
+             * dejar escrito por qué para que nadie lo «arregle» añadiéndolo.
+             *
+             * El Club Atlético Huracán juega el clásico con San Lorenzo en el
+             * Nuevo Gasómetro, y la prensa colombiana lo cubre. Como término
+             * fuerte se llevaba a esta sección la tabla de posiciones del Torneo
+             * Clausura. Bajarlo a débil tampoco bastó: las entradillas de
+             * Infobae hacían casar un patrón fuerte por su cuenta —1,8— y con el
+             * 1,5 del titular se cruzaba el umbral igual. «San Lorenzo y Huracán
+             * animarán una nueva edición del clásico» acababa empatado a 3,3 con
+             * Deportes y ganaba esta sección por orden de array.
+             *
+             * Colombia no cubre huracanes propios casi nunca —San Andrés
+             * aparte—, así que el término aporta poco y ensucia mucho. Lo que sí
+             * identifica el fenómeno sin ambigüedad es «onda tropical»,
+             * «depresión tropical» y «tormenta tropical», que están arriba como
+             * fuertes. El caso real que había en el corpus —«Nueva onda tropical
+             * pone en alerta al Atlántico: ¿podría convertirse en huracán?»— se
+             * clasifica por ahí.
+             */
+
+            // Metafóricos frecuentes: suman, no deciden.
+            /\b(temblor|epicentro|escala de richter)\b/,
+            /\b(tsunami|alerta de tsunami)\b/,
+            /\b(emergencia|emergencias|evacuacion|evacuad[oa]s?)\b/,
+            /\b(inundacion(es)?|deslizamiento|sequia|granizada|vendaval|ola invernal)\b/,
+            /\b(albergues?|ayuda humanitaria|centro de acopio|damnificados)\b/,
+
+            /*
+             * «accidente» suelto va aquí y no arriba por «accidente
+             * cerebrovascular», que es un ictus y pertenece a Salud. Como débil
+             * suma 1,5 y deja que el término fuerte de Salud decida.
+             */
+            /\baccidente\b/,
+            /\b(avioneta|helicoptero|rescate|atrapad[oa]s|desaparecid[oa]s)\b/,
+        ],
+    },
+    {
         id: 'ambiente',
         nombre: 'Medio Ambiente',
         fuertes: [

@@ -89,6 +89,20 @@ const LAMINAS = {
        Las tres curvas empezaron paralelas y separadas por 8, y a 56 px se leían
        como un único trazo grueso. Ahora se separan y la de arriba es más corta:
        es lo que hace que se vean como cotas de una ladera y no como un adorno. */
+    /* Sismograma: la línea de base y el registro. Se dibuja el INSTRUMENTO y no
+       la catástrofe —ni escombros ni casas partidas— por lo mismo que el sitio
+       no ilustra con fotos de archivo: la lámina anuncia una sección, no aporta
+       dramatismo. El trazo plano a izquierda y derecha es lo que hace legible el
+       pico; sin él se lee como un garabato. */
+    desastres: (
+        <>
+            <path d="M6 34h12" className="mark-field" />
+            <path d="M18 34l4-9 4 18 4-24 4 30 4-21 4 12 4-6" />
+            <path d="M46 34h12" className="mark-field" />
+            <path d="M6 52h52" strokeWidth="2.5" />
+        </>
+    ),
+
     ambiente: (
         <>
             <path className="mark-field" d="M16 28c8-6 14-3 20-8" />

@@ -79,11 +79,30 @@ CREATE TABLE IF NOT EXISTS sources (
     country         CHAR(2) NOT NULL,
     media_group     TEXT,
     bias            REAL NOT NULL CHECK (bias BETWEEN -1 AND 1),
-    factuality      REAL NOT NULL CHECK (factuality > 0 AND factuality <= 1),
+    factuality      REAL CHECK (factuality > 0 AND factuality <= 1),  -- NULL = no medida
     bias_rationale  TEXT NOT NULL,
     reviewed_at     DATE,                      -- NULL = clasificación provisional
     synced_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- `factuality` PUEDE SER NULL, y significa «no medida».
+--
+-- Era obligatoria, y esa obligación forzaba a inventar un historial de rigor
+-- para dar de alta a cualquier medio — lo mismo que la Fase 0 quitó del motor.
+-- Se decidió el 2026-08-09 y se aplicó a `stories.factuality` (ver su comentario
+-- más abajo), pero AQUÍ no, y esta tabla es la proyección del registro.
+--
+-- La bomba quedó puesta y estalló al desplegar: once de los cincuenta y nueve
+-- medios del registro entran sin medir —los departamentales dados de alta ese
+-- día—, así que la proyección del catálogo fallaba entera con
+-- «null value in column "factuality" violates not-null constraint», el servidor
+-- arrancaba declarándose «sin persistencia» y el worker no ingería. Diez horas
+-- de feed parado el 2026-08-11, y nada avisó.
+--
+-- El CHECK se conserva y sigue haciendo su trabajo: en SQL una comparación con
+-- NULL da NULL, que no es falso, así que la restricción sigue rechazando un 0 o
+-- un 1,5 y deja pasar el «no sé».
+ALTER TABLE sources ALTER COLUMN factuality DROP NOT NULL;
 
 -- Última vez que este medio aportó un artículo. Existe porque `articles` retiene
 -- 72 horas: sin esta columna, un medio ausente desde ayer y otro ausente desde

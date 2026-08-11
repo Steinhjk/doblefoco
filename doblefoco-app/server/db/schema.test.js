@@ -79,3 +79,41 @@ describe('coherencia entre las listas blancas de JS y las de SQL', () => {
         expect(valoresDelCheck('blindspot_spectrum')?.sort()).toEqual(['center', 'left', 'right']);
     });
 });
+
+/**
+ * EL REGISTRO Y EL ESQUEMA TIENEN QUE ADMITIR LO MISMO.
+ *
+ * Es la misma clase de divergencia que el resto de este archivo, pero con un
+ * final peor: `factuality: null` se decidió válido el 2026-08-09 y se aplicó a
+ * `stories`, no a `sources`. Nada lo comprobaba, y como Fly llevaba días sin
+ * desplegarse la contradicción no se notó hasta el despliegue siguiente —el
+ * 2026-08-11—, cuando la proyección del catálogo empezó a fallar entera, el
+ * servidor arrancó «sin persistencia» y el feed pasó diez horas parado.
+ *
+ * Un valor que el registro produce y el esquema rechaza no es un desacuerdo de
+ * estilo: es una caída diferida hasta el próximo despliegue.
+ */
+describe('el esquema admite lo que el registro produce', () => {
+    it('sources.factuality acepta NULL, porque el registro lo produce', async () => {
+        const { MEDIA_REGISTRY } = await import('../../shared/mediaRegistry.js');
+        const medios = Array.isArray(MEDIA_REGISTRY)
+            ? MEDIA_REGISTRY
+            : Object.values(MEDIA_REGISTRY);
+
+        // Si algún día ninguno viniera sin medir, la prueba seguiría siendo
+        // válida: lo que se afirma es que la columna admite el caso.
+        const sinMedir = medios.filter((m) => m?.factuality == null);
+        expect(sinMedir.length, 'el registro ya no produce factuality nula').toBeGreaterThan(0);
+
+        const definicion = SCHEMA.match(/^\s*factuality\s+REAL[^\n]*/m)?.[0] ?? '';
+        expect(definicion, 'no se encontró la columna factuality').not.toBe('');
+        expect(definicion, `sources.factuality es NOT NULL y ${sinMedir.length} medios entran sin medir`)
+            .not.toMatch(/NOT\s+NULL/i);
+    });
+
+    it('y el CHECK sigue rechazando un valor fuera de rango', () => {
+        // NULL pasa el CHECK porque en SQL una comparación con NULL da NULL, que
+        // no es falso. El rango se sigue vigilando para los que sí traen número.
+        expect(SCHEMA).toMatch(/factuality\s+REAL\s+CHECK\s*\(\s*factuality\s*>\s*0/i);
+    });
+});

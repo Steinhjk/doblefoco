@@ -36,6 +36,7 @@ import { assessArticle } from '../../shared/contentQuality.js';
 import { detectarOpinion } from '../../shared/opinion.js';
 import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
+import { porRelevancia } from '../../shared/relevancia.js';
 import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
@@ -1298,11 +1299,10 @@ function buildMultisourceStories() {
         };
     });
 
-    // Primero las historias con más medios distintos; luego, las más recientes.
-    storiesFeed.sort((a, b) => {
-        if (b.sources.length !== a.sources.length) return b.sources.length - a.sources.length;
-        return Date.parse(b.publishedAt ?? 0) - Date.parse(a.publishedAt ?? 0);
-    });
+    // Medios distintos con vida media de 24 h, la misma fórmula que usa la base
+    // en su ORDER BY. Antes la fecha solo desempataba, y eso dejaba historias de
+    // hace dos días por delante de las del día. Ver `shared/relevancia.js`.
+    storiesFeed.sort(porRelevancia());
 
     storiesById = new Map(storiesFeed.map((s) => [s.id, s]));
 

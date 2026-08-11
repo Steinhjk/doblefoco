@@ -13,14 +13,21 @@ import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './CompactHeroGrid.css';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
+import { porRelevancia } from '../../shared/relevancia.js';
 
 /**
  * Portada destacada.
  *
  * Antes fijaba `newsData[0]` y `newsData.slice(1, 4)`, así que la portada era
- * idéntica en cada visita. Ahora selecciona por relevancia: primero cuántos
- * medios cubren el hecho, luego qué tan polarizada está la cobertura. Esas dos
- * señales son las que hacen que una historia merezca portada en este producto.
+ * idéntica en cada visita. Ahora selecciona por relevancia: cuántos medios
+ * cubren el hecho, con una vida media de 24 h, y la polarización de la cobertura
+ * como desempate.
+ *
+ * LA ANTIGÜEDAD PESA, YA NO SOLO DESEMPATA (2026-08-10). El orden era cobertura
+ * y, en caso de empate, polarización. Nada envejecía: el día del terremoto del
+ * Chocó el radar mostraba la muerte de Jorge Messi y un ataque con drones en
+ * Cesar, ambos del 8 de agosto. Se ordena con el mismo `porRelevancia` que usan
+ * el motor y la base, para que las tres vistas coincidan.
  */
 const CompactHeroGrid = () => {
     // La portada es un destacado: si no hay cobertura real no se pinta nada, y
@@ -28,13 +35,7 @@ const CompactHeroGrid = () => {
     const { stories, status } = useStories({ limit: 40 });
 
     const featured = useMemo(() => {
-        const ranked = [...stories].sort((a, b) => {
-            if (b.coverage.total !== a.coverage.total) {
-                return b.coverage.total - a.coverage.total;
-            }
-            return b.coverage.polarization - a.coverage.polarization;
-        });
-
+        const ranked = [...stories].sort(porRelevancia());
         return { main: ranked[0] ?? null, secondary: ranked.slice(1, 4) };
     }, [stories]);
 
@@ -53,7 +54,13 @@ const CompactHeroGrid = () => {
                     <span className="hero-badge-tag">
                         <Sparkles size={12} aria-hidden="true" /> Destacado
                     </span>
-                    <h2>Mayor cobertura del día</h2>
+                    {/*
+                      * «del día» era falso: no hay filtro de fecha en ninguna
+                      * parte y el radar llegó a mostrar historias de hacía dos
+                      * días bajo ese rótulo. «Ahora» sí describe lo que hace la
+                      * vida media de 24 h.
+                      */}
+                    <h2>Lo más cubierto ahora</h2>
                 </div>
                 <div className="hero-col-title secondary-title-col">
                     <span className="hero-badge-tag">Radar</span>

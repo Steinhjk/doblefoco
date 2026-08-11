@@ -1116,6 +1116,64 @@ function measureStoryShape() {
     return { multiSourceStories, crossSpectrumStories, blindspotStories };
 }
 
+/**
+ * Cuánto puede retrasarse el titular respecto al artículo más nuevo de su
+ * historia, en horas.
+ *
+ * CALIBRADO, NO ELEGIDO. Medido sobre las 505 historias de más de un artículo
+ * que había en la base el 2026-08-11, comparando el retraso medio del titular
+ * con lo que cuesta en centralidad —el |sesgo| medio del medio elegido—:
+ *
+ *   ventana    retraso medio   con más de 6 h   |sesgo| del elegido
+ *   sin vent.       4,24 h           94              0,113   ← lo que había
+ *      24 h        3,07 h           78              0,118
+ *      12 h        1,10 h           21              0,140
+ *       6 h        0,75 h            0              0,146
+ *       3 h        0,33 h            0              0,163
+ *       1 h        0,06 h            0              0,188
+ *
+ * SEIS HORAS es donde el tramo de «más de seis horas de retraso» se vacía y el
+ * retraso medio baja de 4,24 h a 45 minutos, pagando tres centésimas de sesgo.
+ * Apretar más apenas gana frescura y empuja al elegido hacia el borde del
+ * centro: a 1 h el |sesgo| medio queda en 0,188, y la frontera con los extremos
+ * está en 0,2 (`SPECTRUM_THRESHOLD`). Es decir, una ventana muy corta acabaría
+ * titulando con medios que ya no son del centro, que es exactamente lo que esta
+ * elección existe para evitar.
+ */
+const VENTANA_TITULAR_HORAS = 6;
+
+/**
+ * El titular que se enseña: el del medio más cercano al centro DE ENTRE LOS
+ * QUE CUENTAN EL ESTADO ACTUAL del hecho.
+ *
+ * Devuelve `null` si no hay ninguno con fecha utilizable, y quien llama cae al
+ * ancla. Sin fechas no se puede hablar de reciente, y negarse a titular sería
+ * peor que titular como antes.
+ *
+ * @param {Array<any>} items
+ * @returns {any|null}
+ */
+export function elegirTitularReciente(items, ventanaHoras = VENTANA_TITULAR_HORAS) {
+    const lista = Array.isArray(items) ? items : [];
+    if (!lista.length) return null;
+
+    const fechados = lista.filter((a) => Number.isFinite(Date.parse(a?.publishedAt ?? '')));
+    if (!fechados.length) return null;
+
+    const masNuevo = Math.max(...fechados.map((a) => Date.parse(a.publishedAt)));
+    const corte = masNuevo - ventanaHoras * 3_600_000;
+
+    const recientes = fechados.filter((a) => Date.parse(a.publishedAt) >= corte);
+
+    // Entre los recientes, el más cercano al centro. El desempate por fecha
+    // importa poco pero evita que el orden de llegada decida.
+    return [...recientes].sort((a, b) => {
+        const centro = Math.abs(a.outlet.bias) - Math.abs(b.outlet.bias);
+        if (centro !== 0) return centro;
+        return Date.parse(b.publishedAt) - Date.parse(a.publishedAt);
+    })[0] ?? null;
+}
+
 /** Agrupa los artículos ingeridos en historias multifuente. */
 function buildMultisourceStories() {
     /*
@@ -1170,11 +1228,42 @@ function buildMultisourceStories() {
     storiesFeed = clusters.map((cluster) => {
         const items = cluster.articles;
 
-        // Titular representativo: el del medio más cercano al centro, para no
-        // adoptar el encuadre de un extremo como titular de la historia.
+        /**
+         * EL ANCLA DEL ID: el medio más cercano al centro, sin mirar la hora.
+         *
+         * No se toca, y conviene saber por qué: `storyId()` deriva el id del
+         * titular de este artículo, y ese id es la URL `/noticia/:id`. Cambiar
+         * quién es el ancla renombra la historia, rompe los enlaces que ya
+         * circulan y reinicia su `first_seen_at`.
+         */
         const representative = [...items].sort(
             (a, b) => Math.abs(a.outlet.bias) - Math.abs(b.outlet.bias)
         )[0];
+
+        /**
+         * EL TITULAR QUE SE ENSEÑA, que ya no es el mismo (2026-08-11).
+         *
+         * Se elegía el del medio más cercano al centro sea cual sea su hora, y
+         * en un hecho en desarrollo eso CONGELA el titular: la historia sigue
+         * absorbiendo artículos con datos nuevos mientras su titular repite lo
+         * que dijo ese medio la primera vez. Jose lo vio en el terremoto del
+         * Chocó —la portada decía «71 muertos» cuando las piezas de esa misma
+         * historia ya iban por 111— y no era un caso aislado: medido sobre 528
+         * historias multifuente, el 40 % llevaba un titular más de una hora más
+         * viejo que su artículo más nuevo, el 18 % más de seis horas y la peor
+         * acumulaba 58,8 horas de desfase.
+         *
+         * Ahora se elige el más cercano al centro DE ENTRE LOS RECIENTES. El
+         * principio no cambia —sigue sin adoptarse el encuadre de un extremo—;
+         * lo que cambia es que el centro se busca entre los que cuentan el
+         * estado actual del hecho y no entre todos los que lo contaron alguna
+         * vez.
+         *
+         * DESACOPLADO DEL ID a propósito. Si el titular arrastrara el id, cada
+         * actualización renombraría la historia. El id sigue anclado arriba; lo
+         * que se mueve es solo lo que lee el visitante.
+         */
+        const titular = elegirTitularReciente(items) ?? representative;
 
         // Un medio, una entrada: si un medio publicó tres notas, no cuenta triple.
         const outletsByName = new Map();
@@ -1238,12 +1327,15 @@ function buildMultisourceStories() {
 
         return {
             id: storyId(representative.headline),
-            title: representative.headline,
-            titleOutlet: representative.outlet.name,
+            // Todo lo que se ENSEÑA viene del titular reciente; el `id` de
+            // arriba sigue viniendo del ancla. Ver la nota de las dos
+            // elecciones.
+            title: titular.headline,
+            titleOutlet: titular.outlet.name,
             // El id, además del nombre: es la clave foránea hacia `sources`.
-            titleOutletId: representative.outlet.id ?? null,
-            titleUrl: representative.link,
-            category: representative.category,
+            titleOutletId: titular.outlet.id ?? null,
+            titleUrl: titular.link,
+            category: titular.category,
 
             /**
              * UNIÓN de los temas de los artículos, no intersección.

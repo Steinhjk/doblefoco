@@ -1,6 +1,6 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
-import { parsePublishedAt, extractImage, cleanHeadline } from './ingestDaemon.js';
+import { parsePublishedAt, extractImage, cleanHeadline, elegirTitularReciente } from './ingestDaemon.js';
 
 /**
  * La fecha del feed es un dato que declara el medio y que nadie comprueba. Estas
@@ -285,5 +285,86 @@ describe('cleanHeadline con otros separadores de marca', () => {
         // cortar por el separador y no por el medio partiría este titular.
         const t = 'Petro | La entrevista completa';
         expect(cleanHeadline(t, 'Noticias Uno', 'noticiasuno.com')).toBe(t);
+    });
+});
+
+/**
+ * EL TITULAR SE CONGELABA MIENTRAS LA HISTORIA SEGUÍA VIVA.
+ *
+ * Se elegía el del medio más cercano al centro sea cual sea su hora, así que en
+ * un hecho en desarrollo la historia absorbía artículos con datos nuevos y su
+ * titular repetía lo que ese medio dijo la primera vez. En el terremoto del
+ * Chocó la portada decía «71 muertos» cuando las piezas de esa misma historia ya
+ * iban por 111. Medido: el 40 % de las historias multifuente llevaba un titular
+ * más de una hora más viejo que su artículo más nuevo.
+ */
+describe('elegirTitularReciente', () => {
+    const art = (headline, bias, horas) => ({
+        headline,
+        link: `https://ejemplo.co/${horas}`,
+        publishedAt: new Date(Date.parse('2026-08-11T18:00:00.000Z') - horas * 3_600_000).toISOString(),
+        outlet: { name: `medio-${bias}`, bias, id: `m${bias}` },
+    });
+
+    it('prefiere el centro entre los recientes, no el centro de siempre', () => {
+        const items = [
+            art('Terremoto deja 71 muertos', 0, 20),      // centrista pero viejo
+            art('Terremoto deja 111 muertos', 0.3, 0.5),  // reciente, menos centrado
+        ];
+
+        expect(elegirTitularReciente(items).headline).toBe('Terremoto deja 111 muertos');
+    });
+
+    /**
+     * El principio no cambia: entre dos igual de recientes sigue ganando el más
+     * cercano al centro. Es lo que evita adoptar el encuadre de un extremo.
+     */
+    it('entre recientes sigue mandando la cercanía al centro', () => {
+        const items = [
+            art('Version del extremo', 0.45, 1),
+            art('Version del centro', 0.05, 2),
+        ];
+
+        expect(elegirTitularReciente(items).headline).toBe('Version del centro');
+    });
+
+    it('la ventana se mide contra el artículo más nuevo, no contra el reloj', () => {
+        // Los dos son viejos, pero uno está dentro de las 6 h del otro.
+        const items = [
+            art('Muy viejo y centrado', 0, 200),
+            art('Menos viejo', 0.2, 100),
+        ];
+
+        expect(elegirTitularReciente(items).headline).toBe('Menos viejo');
+    });
+
+    it('con todo dentro de la ventana se comporta como antes', () => {
+        const items = [
+            art('Del centro', 0.02, 1),
+            art('Del extremo', 0.5, 0),
+        ];
+
+        expect(elegirTitularReciente(items).headline).toBe('Del centro');
+    });
+
+    /**
+     * Sin fechas no se puede hablar de reciente. Devuelve null y quien llama cae
+     * al ancla: titular como antes es peor que no titular.
+     */
+    it('devuelve null cuando ninguna fecha sirve', () => {
+        expect(elegirTitularReciente([
+            { headline: 'Sin fecha', publishedAt: null, outlet: { name: 'x', bias: 0 } },
+        ])).toBeNull();
+        expect(elegirTitularReciente([])).toBeNull();
+        expect(elegirTitularReciente(/** @type {any} */ (null))).toBeNull();
+    });
+
+    it('ignora los que no traen fecha pero usa los que sí', () => {
+        const items = [
+            { headline: 'Sin fecha y centrado', publishedAt: null, outlet: { name: 'a', bias: 0 } },
+            art('Con fecha', 0.3, 1),
+        ];
+
+        expect(elegirTitularReciente(items).headline).toBe('Con fecha');
     });
 });

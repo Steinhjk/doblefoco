@@ -50,7 +50,24 @@ for (const media of MEDIA_REGISTRY) {
         fail(`${media.id}: sesgo fuera de rango (${media.bias})`);
     }
 
-    if (typeof media.factuality !== 'number' || media.factuality <= 0 || media.factuality > 1) {
+    /**
+     * `factuality: null` ES VÁLIDO Y SIGNIFICA «no medida».
+     *
+     * Antes era obligatoria, y esa obligación tenía un efecto perverso: para
+     * dar de alta un medio había que inventarle un número de rigor factual. Es
+     * exactamente lo que la Fase 0 quitó del motor —fijaba 0.88 para todo y la
+     * interfaz lo mostraba como «Factualidad IA: 88 %», una constante
+     * disfrazada de medición— y volvía a colarse por la puerta del catálogo.
+     *
+     * El resto del código ya lo contemplaba: `averageFactuality` filtra los no
+     * numéricos y devuelve `null` en vez de un valor por defecto.
+     *
+     * Se avisa, no se falla: un medio sin factualidad medida es un hueco
+     * declarado, no un error.
+     */
+    if (media.factuality === null || media.factuality === undefined) {
+        warn(`${media.id}: sin factualidad medida`);
+    } else if (typeof media.factuality !== 'number' || media.factuality <= 0 || media.factuality > 1) {
         fail(`${media.id}: factualidad fuera de rango (${media.factuality})`);
     }
 

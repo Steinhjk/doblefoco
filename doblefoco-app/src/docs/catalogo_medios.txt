@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-09
-Medios en el catálogo: 48
+Generado: 2026-08-10
+Medios en el catálogo: 59
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  22 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  29 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -143,10 +143,60 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  22 medios
     Canal público regional del Caribe colombiano, participado por las
     gobernaciones de la región. Valor sin medir.
 
+  Telecafé  ·  sesgo +0.00  ·  factualidad 0%
+    telecafe.gov.co · Público regional — Eje Cafetero · CO · RSS propio · PROVISIONAL
+    Canal público regional del Eje Cafetero, participado por las
+    gobernaciones de Caldas, Risaralda y Quindío. Su dirección la
+    designa el poder político de turno, así que su línea sigue a quien
+    gobierna — ver fichas/telecafe.md.
+
   W Radio  ·  sesgo +0.00  ·  factualidad 87%
     wradio.com.co · Grupo PRISA · CO · RSS propio · PROVISIONAL
     Radio informativa con entrevistas a todo el arco político;
     encuadre variable según franja.
+
+  Proclama del Pacífico  ·  sesgo +0.00  ·  factualidad 0%
+    proclamadelpacifico.com · Digital independiente · CO · RSS propio · PROVISIONAL
+    Medio digital de Santander de Quilichao, verificado en el
+    directorio de SembraMedia. Orientación mixta provisional: nada de
+    la evidencia lo sitúa en el eje y la regla manda ir a la banda más
+    cercana a la mixta — ver fichas/proclama-del-pacifico.md.
+
+  Chocó 7 Días  ·  sesgo +0.00  ·  factualidad 0%
+    choco7dias.com · Regional Chocó · CO · RSS propio · PROVISIONAL
+    Semanario de Quibdó, el único medio vivo del Chocó del catálogo.
+    Declara denunciar las causas de la crisis del departamento; se
+    clasifica en mixta porque denunciar al poder es el oficio y no una
+    orientación, con la tensión declarada — ver
+    fichas/choco-7-dias.md.
+
+  El Manduco  ·  sesgo +0.00  ·  factualidad 0%
+    elmanduco.com.co · Regional Guaviare · CO · RSS propio · PROVISIONAL
+    Medio de San José del Guaviare cuyos cuatro cargos —fundador,
+    director, director emérito y gerente— ocupa la misma familia. La
+    estructura dice quién manda, no hacia dónde tira — ver
+    fichas/el-manduco.md.
+
+  MiPutumayo  ·  sesgo +0.00  ·  factualidad 0%
+    miputumayo.com.co · Regional Putumayo · CO · RSS propio · PROVISIONAL
+    Magazín digital de Mocoa fundado y dirigido por la misma persona
+    desde 2004. Sin sociedad ni financiación declaradas; orientación
+    mixta provisional — ver fichas/miputumayo.md.
+
+  El Morichal  ·  sesgo +0.00  ·  factualidad 0%
+    elmorichal.com · Corporación El Morichal · CO · RSS propio · PROVISIONAL
+    Corporación sin ánimo de lucro de Puerto Carreño que cubre Vichada
+    y Guainía. Único medio sin ánimo de lucro de la tanda
+    departamental; orientación mixta provisional — ver
+    fichas/el-morichal.md.
+
+  Boyacá Digital  ·  sesgo +0.00  ·  factualidad 0%
+    boyacadigital.com · Holding Consultants · CO · RSS propio · PROVISIONAL
+    Medio digital de Boyacá operado por una redacción de agentes de
+    inteligencia artificial bajo supervisión editorial humana, según
+    él mismo declara. Orientación mixta provisional: su línea no es
+    una propiedad de la casa sino de su configuración — ver
+    fichas/boyaca-digital.md.
 
   France 24 Español  ·  sesgo +0.00  ·  factualidad 90%
     france24.com · Servicio público francés · FR · RSS propio · PROVISIONAL
@@ -208,7 +258,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  22 medios
     económico.
 
 ----------------------------------------------------------------------
-DERECHA MODERADA  [+0.20 a +0.60)  —  14 medios
+DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
 ----------------------------------------------------------------------
 
   El Heraldo  ·  sesgo +0.20  ·  factualidad 84%
@@ -220,6 +270,34 @@ DERECHA MODERADA  [+0.20 a +0.60)  —  14 medios
     eluniversal.com.co · Regional Cartagena · CO · RSS propio · PROVISIONAL
     Diario regional de Cartagena; cobertura local con línea editorial
     conservadora moderada.
+
+  El Pilón  ·  sesgo +0.20  ·  factualidad 0%
+    elpilon.com.co · Regional Cesar · CO · RSS propio · PROVISIONAL
+    Diario de Valledupar; sociedad anónima con junta empresarial y
+    agenda regional. Valor provisional puesto por coherencia con la
+    banda de los otros diarios comerciales regionales, no por
+    evidencia propia — ver fichas/el-pilon.md.
+
+  Diario del Huila  ·  sesgo +0.20  ·  factualidad 0%
+    diariodelhuila.com · Regional Huila · CO · RSS propio · PROVISIONAL
+    Diario de Neiva, casa familiar dirigida por la familia fundadora.
+    Valor provisional por coherencia con la banda regional; el
+    accionariado sigue sin documentar — ver
+    fichas/diario-del-huila.md.
+
+  Diario del Norte  ·  sesgo +0.20  ·  factualidad 0%
+    diariodelnorte.net · Sistema Cardenal · CO · RSS propio · PROVISIONAL
+    Diario de Riohacha del grupo radial Sistema Cardenal. Es el único
+    candidato regional que publica su accionariado con porcentajes.
+    Valor provisional por coherencia con la banda regional — ver
+    fichas/diario-del-norte.md.
+
+  El Diario (Pereira)  ·  sesgo +0.20  ·  factualidad 0%
+    eldiario.com.co · Regional Risaralda · CO · RSS propio · PROVISIONAL
+    Único diario de Pereira desde 2016, cuando la familia propietaria
+    del Diario del Otún compró La Tarde y fusionó ambas cabeceras.
+    Valor provisional por coherencia con la banda regional — ver
+    fichas/el-diario-pereira.md.
 
   Blu Radio  ·  sesgo +0.25  ·  factualidad 85%
     bluradio.com · Grupo Valorem · CO · vía Google News · PROVISIONAL

@@ -16,11 +16,13 @@
     "preview": "vite preview",
     "docs:catalog": "node scripts/generateCatalogDoc.mjs",
     "fonts:fetch": "node scripts/fetchFonts.mjs",
+    "mapa:generar": "node scripts/generarMapaColombia.mjs",
     "logos:fetch": "node scripts/fetchLogos.mjs",
     "backup": "node scripts/backup.mjs",
     "backup:restore": "node scripts/restore.mjs",
     "check:registry": "node scripts/checkRegistry.mjs",
     "check:feeds": "node scripts/verifyFeeds.mjs",
+    "feed:descubrir": "node scripts/descubrirFeed.mjs",
     "check:sources": "node scripts/verifySources.mjs",
     "recategorizar": "node scripts/recategorizar.mjs",
     "report:ingest": "node scripts/ingestReport.mjs",
@@ -33,7 +35,8 @@
     "clean:filtered": "node scripts/cleanFiltered.mjs",
     "analyze:cocoverage": "node scripts/coCoverage.mjs",
     "eval:clustering": "node scripts/evalClustering.mjs",
-    "muestra:programas": "node scripts/muestrearProgramasAnclados.mjs"
+    "muestra:programas": "node scripts/muestrearProgramasAnclados.mjs",
+    "medios:cosechar": "node scripts/cosecharMedios.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",

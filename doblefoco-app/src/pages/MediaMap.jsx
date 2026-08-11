@@ -2,14 +2,15 @@ import { useMemo, useState, useId, useEffect } from 'react';
 import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import {
     ExternalLink, Table2, ScatterChart, Info,
-    Building2, Sprout, Users, Landmark, Globe,
+    Building2, Sprout, Users, Landmark, Globe, Bot,
 } from 'lucide-react';
-import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand } from '../../shared/mediaRegistry';
+import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand, REDACCIONES, esRedaccionAutomatizada } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
 import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
+    ALCANCES, alcanceDe,
 } from '../../shared/mediaOwnership';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
@@ -71,7 +72,16 @@ const SPECTRUM_FILL = {
  */
 
 const fmtBias = (bias) => `${bias >= 0 ? '+' : '−'}${Math.abs(bias).toFixed(2)}`;
-const fmtPct = (value) => `${Math.round(value * 100)}%`;
+
+/**
+ * `null` es «no medida», y se dice. Antes esto devolvía «NaN%» en cuanto
+ * llegaba un medio sin factualidad, que es peor que no decir nada: parece una
+ * avería del sitio en vez de un hueco del dato.
+ */
+const fmtPct = (value) => (typeof value === 'number' ? `${Math.round(value * 100)}%` : 'sin medir');
+
+/** ¿Se puede colocar este medio en el eje vertical? */
+const tieneFactualidad = (medio) => typeof medio?.factuality === 'number';
 
 /**
  * Separa puntos que caerían encima. Con 40 medios en un rango estrecho de
@@ -146,11 +156,50 @@ const Distintivo = ({ mediaId }) => {
     );
 };
 
+/**
+ * QUIÉN ESCRIBE. Va al lado del distintivo de propiedad porque responde a la
+ * misma pregunta —de dónde viene esto— y porque el lector que mira quién es el
+ * dueño es el mismo que querría saber si hay una redacción detrás.
+ */
+const DistintivoRedaccion = ({ medio }) => {
+    if (!esRedaccionAutomatizada(medio)) return null;
+    const r = REDACCIONES.automatizada;
+    return (
+        <span className="redaccion-badge" title={r.explica}>
+            <Bot size={13} aria-hidden="true" />
+            {r.etiqueta}
+        </span>
+    );
+};
+
 const ES_COLOMBIANO = (medio) => medio.country === 'CO';
 const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY.filter(ES_COLOMBIANO);
 
+/** Cuántos hay de cada alcance. Se calcula una vez: el catálogo no cambia. */
+const CUANTOS_POR_ALCANCE = MEDIOS_COLOMBIANOS.reduce((cuenta, medio) => {
+    const alcance = alcanceDe(medio);
+    return { ...cuenta, [alcance]: (cuenta[alcance] ?? 0) + 1 };
+}, /** @type {Record<string, number>} */ ({}));
+
+/**
+ * Con qué alcances arranca la página.
+ *
+ * LOS REGIONALES EMPIEZAN APAGADOS, y conviene entender por qué antes de
+ * encenderlos «por completitud». El catálogo va de 10 medios regionales a uno
+ * por departamento: encendidos por omisión serían la mitad de los puntos, y lo
+ * que esta página existe para enseñar —que tres dueños concentran la mitad de
+ * lo publicado— se leería peor con el doble de puntos que no participan de esa
+ * concentración.
+ *
+ * Están a un clic y con su ficha entera. No es silenciarlos: es que la pregunta
+ * de esta página tiene un sujeto, igual que cuando se sacaron del mapa los
+ * medios internacionales.
+ */
+const ALCANCES_POR_OMISION = ['nacional', 'independiente'];
+
 const MediaMap = () => {
     const [view, setView] = useState('mapa');
+    const [alcances, setAlcances] = useState(ALCANCES_POR_OMISION);
     const [selectedId, setSelectedId] = useState(null);
     const [conteos, setConteos] = useState(null);
     const [ventanaHoras, setVentanaHoras] = useState(72);
@@ -192,10 +241,39 @@ const MediaMap = () => {
         return new Map(conteos.map((c) => [c.sourceId, c.articulos ?? 0]));
     }, [conteos]);
 
+    /**
+     * Los medios que se están mirando. El desplazamiento anticolisión se
+     * calcula DESPUÉS de filtrar, no antes: si se calculara sobre el catálogo
+     * entero, apagar los regionales dejaría huecos donde estaban y los puntos
+     * que quedan seguirían apartados de vecinos que ya no se ven.
+     */
     const media = useMemo(
-        () => spread([...MEDIOS_COLOMBIANOS].sort((a, b) => a.bias - b.bias)),
-        []
+        () =>
+            MEDIOS_COLOMBIANOS
+                .filter((medio) => alcances.includes(alcanceDe(medio)))
+                .sort((a, b) => a.bias - b.bias),
+        [alcances]
     );
+
+    /**
+     * Los que SE PUEDEN DIBUJAR. Un medio sin factualidad medida no tiene
+     * altura en este gráfico: colocarlo exigiría inventarle una, y ponerlo en
+     * el suelo o en la media diría algo que no sabemos.
+     *
+     * Siguen en la tabla, con «sin medir» en su columna. Es la misma regla de
+     * siempre: el hueco se declara, no se rellena.
+     */
+    const puntos = useMemo(() => spread(media.filter(tieneFactualidad)), [media]);
+    const sinFactualidad = media.length - puntos.length;
+
+    /** Encender o apagar un alcance. Nunca se pueden apagar los tres. */
+    const alternarAlcance = (clave) => {
+        setAlcances((previos) => {
+            if (!previos.includes(clave)) return [...previos, clave];
+            // Quedarse sin ninguno dejaría un mapa vacío que parece una avería.
+            return previos.length === 1 ? previos : previos.filter((p) => p !== clave);
+        });
+    };
 
     /**
      * `null` = todavía no se sabe, y se trata distinto de «no aporta». Marcar un
@@ -219,7 +297,7 @@ const MediaMap = () => {
                 <p className="map-warning">
                     <Info size={15} aria-hidden="true" />
                     <span>
-                        Las {MEDIOS_COLOMBIANOS.length} clasificaciones son juicios editoriales
+                        Las {media.length} clasificaciones que se ven son juicios editoriales
                         argumentados y <strong>ninguna ha pasado por revisión formal todavía</strong>.
                         Cada una lleva su justificación al lado, para que se pueda discutir.
                     </span>
@@ -243,7 +321,45 @@ const MediaMap = () => {
                         <Table2 size={15} aria-hidden="true" /> Tabla
                     </button>
                 </div>
+
+                {/*
+                  * SUBCATEGORÍAS POR ALCANCE. Casillas y no pestañas: se pueden
+                  * combinar, porque «nacionales + independientes» es la vista
+                  * por omisión y tiene que poder existir.
+                  */}
+                <fieldset className="map-alcances">
+                    <legend>Qué medios se muestran</legend>
+                    {Object.entries(ALCANCES).map(([clave, { label, descripcion }]) => (
+                        <label key={clave} className="map-alcance" title={descripcion}>
+                            <input
+                                type="checkbox"
+                                checked={alcances.includes(clave)}
+                                onChange={() => alternarAlcance(clave)}
+                            />
+                            <span>{label}</span>
+                            <span className="map-alcance-cifra">{CUANTOS_POR_ALCANCE[clave] ?? 0}</span>
+                        </label>
+                    ))}
+                </fieldset>
             </div>
+
+            {/*
+              * Se dice en voz alta lo que falta cuando falta, y no solo en el
+              * texto de ayuda de una casilla. Un mapa que oculta a un tercio del
+              * catálogo sin avisar es un mapa que miente por omisión.
+              */}
+            {!alcances.includes('regional') && (
+                <p className="map-nota-alcance">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        Faltan aquí <strong>{CUANTOS_POR_ALCANCE.regional ?? 0} medios regionales</strong>,
+                        y no porque cuenten menos: esta página mide la concentración de la
+                        propiedad en el espacio nacional, y un diario de provincia no compite
+                        en ese espacio. Sus fichas están completas y se ven marcando
+                        «Regionales».
+                    </span>
+                </p>
+            )}
 
             <p className="map-warning">
                 <Info size={15} aria-hidden="true" />
@@ -292,6 +408,27 @@ const MediaMap = () => {
                 ))}
             </div>
 
+            {/*
+              * Si faltan puntos en el gráfico hay que decirlo AQUÍ, y no solo
+              * en la tabla. Un lector que cuenta los puntos y los compara con
+              * la cifra del catálogo tiene que encontrar la explicación en el
+              * mismo sitio donde nota que algo no cuadra.
+              */}
+            {view === 'mapa' && sinFactualidad > 0 && (
+                <p className="map-warning">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        <strong>{sinFactualidad}</strong>{' '}
+                        {sinFactualidad === 1 ? 'medio no aparece' : 'medios no aparecen'} en el
+                        gráfico: no {sinFactualidad === 1 ? 'tiene' : 'tienen'} historial de rigor
+                        factual medido, así que no {sinFactualidad === 1 ? 'tiene' : 'tienen'}{' '}
+                        altura en el eje vertical. Colocar{sinFactualidad === 1 ? 'lo' : 'los'} en
+                        la media o en el suelo afirmaría algo que no sabemos.{' '}
+                        <strong>Están todos en la tabla</strong>, con «sin medir» en esa columna.
+                    </span>
+                </p>
+            )}
+
             {view === 'mapa' ? (
                 <div className="map-figure">
                     <svg
@@ -301,8 +438,7 @@ const MediaMap = () => {
                         aria-labelledby={titleId}
                     >
                         <title id={titleId}>
-                            Dispersión de {media.length} medios: orientación editorial en el eje
-                            horizontal, factualidad en el vertical.
+                            {`Dispersión de ${puntos.length} medios: orientación editorial en el eje horizontal, factualidad en el vertical.`}
                         </title>
 
                         {/* Bandas del espectro: contexto de fondo, deliberadamente recesivo. */}
@@ -366,7 +502,7 @@ const MediaMap = () => {
                             Factualidad del medio
                         </text>
 
-                        {media.map((item) => {
+                        {puntos.map((item) => {
                             const spectrum = classifySpectrum(item.bias);
                             const isSelected = item.id === selectedId;
 
@@ -405,8 +541,16 @@ const MediaMap = () => {
                                             }
                                         }}
                                     />
+                                    {/*
+                                      * UNA SOLA CADENA, no tres nodos. React
+                                      * exige que los hijos de <title> sean un
+                                      * único texto —el navegador solo sabe
+                                      * leer texto ahí dentro— y esta forma
+                                      * escupía un aviso por cada punto: 36 en
+                                      * cada renderizado de servidor.
+                                      */}
                                     <title>
-                                        {item.name} · {fmtBias(item.bias)} · {fmtPct(item.factuality)}
+                                        {`${item.name} · ${fmtBias(item.bias)} · ${fmtPct(item.factuality)}`}
                                     </title>
                                 </g>
                             );
@@ -451,7 +595,7 @@ const MediaMap = () => {
                                     <td>{getBand(item.bias).label}</td>
                                     <td className="num">{fmtPct(item.factuality)}</td>
                                     <td>{item.group}</td>
-                                    <td><Distintivo mediaId={item.id} /></td>
+                                    <td><Distintivo mediaId={item.id} /> <DistintivoRedaccion medio={item} /></td>
                                     <td>
                                         {aporta(item.id) === null
                                             ? '—'
@@ -505,6 +649,7 @@ const MediaProfile = ({ media, onClose }) => {
                 contexto a todo lo demás, incluida la línea editorial. */}
             <p className="profile-duenio">
                 <Distintivo mediaId={media.id} />
+                <DistintivoRedaccion medio={media} />
             </p>
 
             <div className="profile-metrics">

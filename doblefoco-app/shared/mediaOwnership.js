@@ -1116,6 +1116,23 @@ export const OWNERSHIP_PROFILES = {
         sources: ['https://www.telecaribe.co/'],
         verifiedAt: '2026-08-09',
     },
+    'telecafe': {
+        ownerType: 'publico',
+        controlGroup: 'gobiernos-locales',
+        holdings: [
+            'Canal público regional del Eje Cafetero, participado por las gobernaciones de Caldas, Risaralda y Quindío. Cubre 53 municipios y emite desde Manizales.',
+            'Lo gerencia Amanda Jaimes, comunicadora nacida en Toledo (Norte de Santander) y exgerente del Canal TRO entre 2020 y 2023.',
+        ],
+        notes: [
+            'Su departamento es Caldas porque el canal está en Manizales, no porque solo cubra Caldas: el campo dice de dónde ES el medio. Quindío sigue sin medio propio en el catálogo.',
+            'La dirección la designan tres gobernaciones a la vez, así que su clasificación es de las más volátiles del catálogo: un cambio de gobernación en cualquiera de los tres departamentos obliga a revisarla.',
+        ],
+        sources: [
+            'https://telecafe.gov.co/',
+            'https://www.lapatria.com/eje-cafetero/amanda-jaimes-cambia-de-canal-nueva-gerente-de-telecafe',
+        ],
+        verifiedAt: null,
+    },
 
     'rtvc': {
         ownerType: 'publico',
@@ -1512,6 +1529,182 @@ export const OWNERSHIP_PROFILES = {
         ],
         verifiedAt: VERIFICADO,
     },
+    // ── Regionales departamentales (alta del 2026-08-09) ────────────────────
+    //
+    // Nueve fichas escritas a la vez que se dieron de alta los medios. La
+    // razonada completa de cada uno está en fichas/<id>.md; aquí va solo lo
+    // que es propiedad, que es lo que esta estructura publica.
+    //
+    // NINGUNA está verificada en registro mercantil: todas salen de fuentes
+    // secundarias o de lo que el propio medio declara, y por eso 'verifiedAt'
+    // va vacío en las nueve. Ocho certificados de Cámara de Comercio cerrarían
+    // el hueco, y están pedidos en las fichas.
+
+    'el-pilon': {
+        ownerType: 'familiar',
+        holdings: [
+            'El Pilón S.A., NIT 824000056, constituida el 23 de mayo de 1995 en Valledupar y con matrícula mercantil activa. Su junta directiva la preside Juan Carlos Quintero Castro, accionista mayoritario.',
+            'Quintero Castro es empresario de La Loma (Cesar), abogado y economista. Fue gobernador encargado del Cesar y consejero presidencial para la Costa Atlántica, cargos que dejó hace más de veinte años; desde entonces se dedica a la gestión empresarial y a juntas directivas.',
+        ],
+        notes: [
+            'El paso por cargos públicos se declara porque de quién es un medio se dice siempre, no porque indique su línea: son cargos de hace más de dos décadas y la regla del presente los excluye como evidencia de orientación.',
+        ],
+        sources: [
+            'https://elpilon.com.co/el-pilon-30-anos/amp/',
+            'https://www.datacreditoempresas.com.co/directorio/el-pilon-sa.html',
+        ],
+        verifiedAt: null,
+    },
+
+    'diario-del-huila': {
+        ownerType: 'familiar',
+        holdings: [
+            'Lo edita Editora del Huila S.A., con sede en Neiva. Existe además una segunda sociedad, Diario del Huila Digital S.A.S., constituida el 7 de septiembre de 2021.',
+            'Lo dirige María Pia Duque Rengifo. Sus fundadores fueron Max Duque Gómez y Max Duque Palma: la dirección sigue en la familia fundadora, y esa continuidad es estructura de control vigente, no efeméride.',
+        ],
+        notes: [
+            'El accionariado no está documentado: se sabe quién dirige, no de quién es el capital. Tampoco está explicado por qué existen dos sociedades, ni si la digital tiene otros socios.',
+        ],
+        sources: [
+            'https://diariodelhuila.com/directorio/',
+            'https://www.datacreditoempresas.com.co/directorio/diario-del-huila-digital-sas.html',
+        ],
+        verifiedAt: null,
+    },
+
+    'diario-del-norte': {
+        ownerType: 'familiar',
+        holdings: [
+            'Lo edita Sistema Cardenal S.A.S., empresa privada constituida en 2009. El propio medio publica su accionariado: Demis Pacheco Fernández con el 80 %, Demis Consuelo Fernández Pacheco con el 10 % y Mercy Edith Fernández Pacheco con el 10 %. La junta directiva la forman esos mismos accionistas.',
+            'Sistema Cardenal no es solo un periódico: opera emisoras en Valledupar (1050 AM), San Juan del Cesar (94.7 FM) y Riohacha (91.7 FM). Tenía además frecuencias en Barranquilla, Cartagena y Sincelejo, que dejaron de operar entre enero y febrero de 2024 y hoy pertenecen a AWR 360, la radio de la Iglesia Adventista en Colombia.',
+        ],
+        notes: [
+            'Es el único medio regional del catálogo que publica su accionariado con porcentajes. Es autodeclarado y no un certificado de Cámara de Comercio, pero es nominal y contrastable.',
+            'Un accionista con el 80 % no tiene contrapeso interno, y los otros dos comparten apellido con él. La independencia editorial que el medio declara por escrito descansa en la voluntad de una persona, no en una estructura.',
+            'El dueño del único medio de La Guajira del catálogo también emite en el Cesar, donde el único medio del catálogo es El Pilón. No hay propiedad compartida entre ambos, pero sí un mismo actor con voz en dos departamentos vecinos.',
+        ],
+        sources: [
+            'https://diariodelnorte.net/directrices-editoriales/',
+        ],
+        verifiedAt: null,
+    },
+
+    'el-diario-pereira': {
+        ownerType: 'familiar',
+        holdings: [
+            'Lo edita R.R. Editores Ramírez y Ramírez S.A.S. Sus propietarios son los hermanos Luis Carlos y Javier Ignacio Ramírez Múnera; Luis Carlos es además el director.',
+            'El Diario nació en noviembre de 2016 de la fusión de los dos diarios rivales de Pereira. Los hermanos Ramírez Múnera eran dueños del Diario del Otún —fundado por su padre, Javier Ramírez González, en 1982— y compraron La Tarde. De dos cabeceras que competían quedó una.',
+        ],
+        notes: [
+            'La fusión no es historia sino la estructura de hoy: Pereira tiene un solo diario y es de esta familia. Presentarlo como «el medio de Risaralda» es exacto y a la vez engañoso — es el único que queda, no el que ganó una competencia que siga existiendo.',
+            'El accionariado no está verificado en registro mercantil: falta el certificado de la Cámara de Comercio de Pereira, que diría si hay más capital que el de los dos hermanos.',
+        ],
+        sources: [
+            'https://es.wikipedia.org/wiki/El_Diario_(Colombia)',
+            'https://www.elcolombiano.com/colombia/el-diario-el-nuevo-periodico-de-los-pereiranos-IB5425875',
+        ],
+        verifiedAt: null,
+    },
+
+    'proclama-del-pacifico': {
+        ownerType: 'independiente',
+        holdings: [
+            'Lo dirige el periodista Alfonso José Luna Geller, desde Santander de Quilichao (Cauca). Está registrado como publicación periódica con el nombre Proclama del Cauca por resolución 004785 de la Dirección Nacional de Derecho de Autor, del 29 de diciembre de 1983.',
+            'En enero de 2025 cambió de nombre a Proclama del Pacífico y amplió su cobertura declarada a Chocó, Nariño y Valle del Cauca, además del Cauca.',
+        ],
+        notes: [
+            'Figura en el directorio de SembraMedia, la red de medios digitales independientes de Iberoamérica. Eso acredita su naturaleza —medio digital independiente verificado—, no su orientación.',
+            'El accionariado no está documentado y no consta ninguna fuente de financiación.',
+        ],
+        sources: [
+            'https://www.proclamadelpacifico.com/nosotros/',
+            'https://directorio.sembramedia.org/proclama-cauca-y-valle/',
+        ],
+        verifiedAt: null,
+    },
+
+    'choco-7-dias': {
+        ownerType: 'familiar',
+        holdings: [
+            'Su propietario y editor es Iván Cañadas Garrido, abogado, comerciante y periodista. El semanario lo fundó en Quibdó, el 7 de agosto de 1995, Donaldo Cañadas Moreno, hermano de padre del anterior, que lo dirigió durante años.',
+        ],
+        notes: [
+            'No consta la sociedad que lo edita —ni razón social, ni NIT, ni matrícula— ni quién ejerce hoy la dirección.',
+            'La fuente es la hemeroteca digital de la Universidad Tecnológica del Chocó, es decir, una universidad pública del propio departamento, y no el medio hablando de sí mismo.',
+        ],
+        sources: [
+            'https://hemeroteca.utch.edu.co/choco-7-dias-1995-2025/',
+        ],
+        verifiedAt: null,
+    },
+
+    'el-manduco': {
+        ownerType: 'familiar',
+        holdings: [
+            'Los cuatro cargos de la cabecera los ocupa la misma familia: Carlos Díaz Carrasco como fundador, Gonzalo Díaz García como director, Jhon Díaz Cañadas como director emérito y Marvin Díaz García como gerente.',
+        ],
+        notes: [
+            'No consta la sociedad que lo edita. La familia controla dirección, gerencia y fundación, y el propio medio lo publica sin disimulo.',
+            'En un departamento de unos 90 000 habitantes, no hay ninguna estructura interna que contrapese un interés de la familia propietaria. Eso no dice hacia dónde tira su línea; dice de quién depende.',
+        ],
+        sources: [
+            'https://elmanduco.com.co/',
+        ],
+        verifiedAt: null,
+    },
+
+    'miputumayo': {
+        ownerType: 'familiar',
+        holdings: [
+            'Lo fundó Luis Carlos Chamorro Burbano el 17 de marzo de 2004 en Mocoa, y lo sigue dirigiendo. Propiedad y dirección son la misma persona natural.',
+        ],
+        notes: [
+            'No consta sociedad, ni NIT, ni fuente de financiación. En un medio de una sola persona, de quién viene el dinero es la pregunta que más determina, y esta ficha no la responde.',
+            'Se define a sí mismo como «un magazín informativo imparcial, neutral e independiente». Es una declaración suya, no una comprobación nuestra.',
+        ],
+        sources: [
+            'https://miputumayo.com.co/quienes-somos/',
+        ],
+        verifiedAt: null,
+    },
+
+    'el-morichal': {
+        ownerType: 'independiente',
+        holdings: [
+            'Lo sostiene la Corporación El Morichal, sin ánimo de lucro, constituida en agosto de 2025. Antes fue El Morichal Comunicaciones S.A.S., creada en 2016 y liquidada, y después operó como persona natural a nombre de Edwin Suárez.',
+            'Lo dirige Edwin Suárez Narváez, periodista y cofundador. Cofundan también Gardenia Nazaret Rebolledo Anija, abogada venezolana con estudios en comunicación social, y Edgar Guajo Bernavé, comunicador indígena originario de Cacahual (Guainía).',
+            'Cubre Vichada y Guainía: Cumaribo, La Primavera, Puerto Carreño y Santa Rosalía en el primero; Inírida y Barrancominas en el segundo. Dejó de imprimir en diciembre de 2025 y sigue en digital.',
+        ],
+        notes: [
+            'Es el único medio de la tanda departamental que declara su propia trayectoria societaria, incluida la liquidación de su primera sociedad. A otros dos candidatos esa misma situación se les descubrió consultando el registro mercantil.',
+            'No consta ninguna fuente de financiación. En un medio sin ánimo de lucro es la pregunta central: el conflicto de interés, cuando existe, viene de quién financia y no de quién posee.',
+            'La corporación tiene menos de un año, así que esa figura no tiene todavía historial.',
+        ],
+        sources: [
+            'https://elmorichal.com/nosotros/',
+        ],
+        verifiedAt: null,
+    },
+    'boyaca-digital': {
+        ownerType: 'conglomerado',
+        holdings: [
+            'Su política editorial declara que el medio lo «opera y edita» Holding Consultants, y que un Editor en Jefe humano supervisa la redacción y responde legalmente por lo publicado. No se publica el nombre de esa persona, ni razón social, ni NIT.',
+            'Con ese nombre existe en Bogotá Holding Consultants de Colombia, consultora de sistemas de gestión —ISO 9001, seguridad y salud en el trabajo—, con veinte años de actividad y clientes en el sector privado Y EN EL PÚBLICO, con cobertura declarada en Cundinamarca, Boyacá y el resto del país. EL VÍNCULO ESTÁ RESPALDADO TÉCNICAMENTE, no solo por el nombre: boyacadigital.com y holdingconsultants.org comparten el MISMO PAR de servidores de nombres de Cloudflare (dylan.ns.cloudflare.com y fatima.ns.cloudflare.com), y Cloudflare asigna un par por cuenta. Sumado a que el propio medio declara que lo opera Holding Consultants, y a que la consultora declara cobertura en Boyacá, la conclusión razonable es que se trata de la misma organización. No es un certificado de Cámara de Comercio: es evidencia convergente, y se publica como tal.',
+        ],
+        notes: [
+            'CONFLICTO DE INTERÉS QUE SE DECLARA: una consultora que vende servicios de sistemas de gestión a entidades públicas es, con toda probabilidad, la dueña de un medio cuya redacción automatizada cubre a diario las alcaldías y la gobernación de Boyacá. No se afirma que haya influido en ninguna pieza —eso no consta y no se publica—; se expone quién está detrás, que es un hecho comprobable, y el lector saca su conclusión con el dato delante en vez de sin él.',
+            'Sus trece «periodistas» son agentes de inteligencia artificial CON NOMBRE Y APELLIDO HUMANOS —Mariana Restrepo en judicial, Andrés Cárdenas en política, Carolina Pinilla en Boyacá hiperlocal, entre otros—. El medio lo declara en su página de equipo, pero la firma es donde el lector se lo encuentra, y ahí parecen personas. Su feed RSS no trae etiqueta de autor, así que esa firma no nos llega.',
+            'El único humano identificado con nombre es Juan Pablo Sáenz, columnista de «Escenario Político», periodista y estratega en comunicación política. Es columnista, no responsable del medio.',
+            'Declara etiquetar las imágenes generadas por IA y no crear imágenes que simulen personas reales. Sus imágenes se sirven desde img.boyacadigital.com. Conviene comprobar qué proporción es generada antes de mostrarlas como «la foto del medio»: la regla del proyecto es imagen real del medio o ninguna.',
+        ],
+        sources: [
+            'https://www.boyacadigital.com/politica-editorial',
+            'https://www.boyacadigital.com/equipo',
+            'https://www.holdingconsultants.org/nuestra-organizacion/',
+            'https://www.boyacadigital.com/politica-de-privacidad',
+        ],
+        verifiedAt: null,
+    },
 
     'semana': {
         ownerType: 'conglomerado',
@@ -1806,4 +1999,51 @@ export function gruposCompartidos(mediaIds) {
             medios,
         }))
         .sort((a, b) => b.medios.length - a.medios.length);
+}
+
+/**
+ * SUBCATEGORÍAS DEL MAPA DE PROPIEDAD.
+ *
+ * POR QUÉ EXISTEN (2026-08-09, decisión de Jose). El catálogo tenía 10 medios
+ * regionales y va camino de ~28: uno por departamento. Sin separarlos, los
+ * regionales pasarían a ser la MITAD de los puntos del mapa mediático, y el
+ * retrato que esa página existe para dar —tres dueños concentran la mitad de lo
+ * que se publica en Colombia— quedaría enterrado bajo un enjambre de diarios de
+ * provincia que no compiten en ese espacio.
+ *
+ * No es esconderlos: es que la pregunta de esa página tiene un sujeto. El mismo
+ * argumento que ya sacó del mapa a los medios internacionales, y por eso mismo
+ * los regionales siguen ahí, a un clic, con su ficha entera.
+ */
+export const ALCANCES = {
+    nacional: {
+        label: 'Nacionales',
+        descripcion: 'Circulan en todo el país y pertenecen a grupos con intereses en otros sectores. Son los que deciden la agenda nacional.',
+    },
+    independiente: {
+        label: 'Independientes',
+        descripcion: 'Sin ánimo de lucro, por membresía o por cooperación. Su conflicto de interés, cuando lo hay, viene de quién los financia, no de quién los posee.',
+    },
+    regional: {
+        label: 'Regionales',
+        descripcion: 'Con sede y agenda en un departamento. Se muestran aparte porque son muchos y su espacio de competencia es otro, no porque cuenten menos.',
+    },
+};
+
+/**
+ * En cuál de las tres cae un medio. Excluyentes: un medio sale una sola vez.
+ *
+ * EL ORDEN DE LAS PREGUNTAS ES LA DECISIÓN. Se mira PRIMERO si tiene
+ * departamento, así que un futuro medio regional e independiente cuenta como
+ * regional y queda fuera de la vista por omisión. Es deliberado y es la parte
+ * discutible: al separarlos por alcance antes que por tipo de dueño, el mapa
+ * gana legibilidad nacional y pierde de vista al independiente de provincia,
+ * que suele ser justo el que menos se ve ya.
+ *
+ * @param {{id: string, departamento?: string}} medio
+ * @returns {'nacional'|'independiente'|'regional'}
+ */
+export function alcanceDe(medio) {
+    if (medio?.departamento) return 'regional';
+    return getOwnership(medio?.id)?.ownerType === 'independiente' ? 'independiente' : 'nacional';
 }

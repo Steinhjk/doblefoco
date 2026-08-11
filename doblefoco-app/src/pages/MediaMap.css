@@ -515,3 +515,122 @@
     font-size: 0.87rem;
     line-height: 1.45;
 }
+
+/* ── Subcategorías por alcance ──────────────────────────────────────────── */
+
+.map-alcances {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.map-alcances legend {
+    /* El grupo necesita nombre para el lector de pantalla, pero en pantalla lo
+       dicen ya las tres etiquetas y un rótulo más solo añadiría ruido. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.map-alcance {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.map-alcance:hover {
+    border-color: var(--text-muted);
+}
+
+.map-alcance:has(input:checked) {
+    background: var(--bg-card);
+    color: var(--text-main);
+    font-weight: 700;
+    border-color: var(--text-main);
+}
+
+/* El foco va en la etiqueta entera: la casilla es de 13 px y su anillo se
+   pierde contra el borde de la pastilla. */
+.map-alcance:has(input:focus-visible) {
+    box-shadow: var(--focus-ring);
+}
+
+.map-alcance input {
+    width: 13px;
+    height: 13px;
+    margin: 0;
+    accent-color: var(--text-main);
+    cursor: pointer;
+}
+
+.map-alcance-cifra {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.map-alcance:has(input:checked) .map-alcance-cifra {
+    color: var(--text-main);
+}
+
+/* Mismo aire que los demás avisos de la página, sin repetir su regla. */
+.map-nota-alcance {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-left: 2px solid var(--border-color);
+    padding: 10px 14px;
+    margin: 0 0 18px;
+}
+
+.map-nota-alcance strong {
+    color: var(--text-main);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-alcance {
+        transition: none;
+    }
+}
+
+/**
+ * QUIÉN ESCRIBE — distintivo de redacción automatizada.
+ *
+ * Deliberadamente NO usa el color de ningún bando ni el de los avisos: no dice
+ * que el medio sea peor, dice de dónde viene su texto. Va en el mismo tono
+ * discreto que los distintivos de propiedad sin énfasis, porque responde a la
+ * misma clase de pregunta.
+ */
+.redaccion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border: 1px dashed var(--border-color);
+    border-radius: 2px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    cursor: help;
+}

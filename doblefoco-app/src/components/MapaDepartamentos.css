@@ -1,0 +1,339 @@
+/**
+ * MAPA DE DEPARTAMENTOS.
+ *
+ * LA RAMPA ES MONOCROMA A PROPÓSITO. Rojo y azul están tomados: en todo el
+ * sitio significan izquierda y derecha. Un coropleto en rojo diría que
+ * Antioquia es de izquierdas, que es una afirmación política escrita sin
+ * querer. La rampa sale del gris pizarra de la paleta, que no dice nada.
+ *
+ * LOS CINCO ESCALONES ESTÁN COMPROBADOS, no elegidos a ojo, con el validador
+ * del sistema de diseño (`validateOrdinal`) contra las dos superficies reales:
+ * luminosidad monótona, salto mínimo entre vecinos de 0,06 y el escalón más
+ * flojo por encima de 2:1 contra su fondo. Ese último es el que obligó a
+ * arrancar la rampa clara en un gris medio: empezando más claro, «una historia»
+ * era indistinguible del papel.
+ *
+ *   claro  (sobre #ffffff): #aab6c6 #8b99ab #6c7b90 #4a5768 #232c39
+ *   oscuro (sobre #202226): #4a525e #636e7c #848f9e #a8b2bf #d8dee7
+ *
+ * El modo oscuro INVIERTE el anclaje, no da la vuelta a los mismos valores:
+ * más volumen es más claro sobre fondo oscuro y más oscuro sobre fondo claro.
+ */
+
+.mapa-deptos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.mapa-deptos-cuerpo {
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* ── Escalones ──────────────────────────────────────────────────────────── */
+
+.mapa-deptos {
+    --e1: #4a525e;
+    --e2: #636e7c;
+    --e3: #848f9e;
+    --e4: #a8b2bf;
+    --e5: #d8dee7;
+    /* El cero: un fondo tenue y un rayado flojo encima. Tiene que distinguirse
+       del primer escalón sin competir con él: son 25 de 33 departamentos sobre
+       cien historias, y a plena intensidad el mapa era una manta de rayas con
+       los datos escondidos debajo. */
+    --vacio: rgba(255, 255, 255, 0.06);
+    --rayado: rgba(255, 255, 255, 0.24);
+    /* El contorno de cada departamento. Ver la nota de `.mapa-pieza`. */
+    --contorno: rgba(255, 255, 255, 0.28);
+}
+
+[data-theme='light'] .mapa-deptos {
+    --e1: #aab6c6;
+    --e2: #8b99ab;
+    --e3: #6c7b90;
+    --e4: #4a5768;
+    --e5: #232c39;
+    --vacio: rgba(15, 23, 42, 0.06);
+    --rayado: rgba(15, 23, 42, 0.3);
+    --contorno: rgba(15, 23, 42, 0.3);
+}
+
+.mapa-e1 { --tono: var(--e1); }
+.mapa-e2 { --tono: var(--e2); }
+.mapa-e3 { --tono: var(--e3); }
+.mapa-e4 { --tono: var(--e4); }
+.mapa-e5 { --tono: var(--e5); }
+
+/* ── El lienzo ──────────────────────────────────────────────────────────── */
+
+.mapa-lienzo {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mapa-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/**
+ * EL CONTORNO ES UNA LÍNEA, NO UN HUECO. Y esto se cambió mirando el mapa.
+ *
+ * Antes el borde se pintaba del color de la superficie —la idea de que lo que
+ * separa dos manchas es un hueco, que es lo correcto en un gráfico de barras—.
+ * En tema oscuro colaba. **En tema claro el mapa era invisible**: el borde
+ * quedaba blanco sobre blanco (1,00:1) y el relleno de los departamentos sin
+ * noticias, a 1,09:1. Como 25 de los 33 están a cero, no se veía el país hasta
+ * que el ratón pasaba por encima y el hover añadía el único trazo visible.
+ *
+ * Un coropleto no es un gráfico de barras: la silueta ES el dato. Ahora cada
+ * departamento lleva su línea, recesiva pero presente, y el mapa se lee quieto.
+ *
+ * `non-scaling-stroke` la mantiene en un pelo lo mismo en el móvil que en
+ * pantalla ancha; sin él, al encoger el mapa los bordes se comen los
+ * departamentos pequeños.
+ */
+.mapa-pieza {
+    fill: var(--tono);
+    stroke: var(--contorno);
+    stroke-width: 0.7;
+    vector-effect: non-scaling-stroke;
+    cursor: pointer;
+    transition: fill 0.15s ease;
+}
+
+/* Cero: sin `--tono`, así que el relleno lo pone el rayado desde el JSX. */
+.mapa-e0 { --tono: transparent; }
+
+.mapa-vacio {
+    fill: var(--vacio);
+}
+
+.mapa-rayado {
+    stroke: var(--rayado);
+    stroke-width: 1.6;
+}
+
+.mapa-pieza.es-destacado {
+    stroke: var(--text-main);
+    stroke-width: 1.6;
+}
+
+.mapa-pieza.es-seleccionado {
+    stroke: var(--text-main);
+    stroke-width: 2.2;
+}
+
+.mapa-recuadro {
+    fill: none;
+    stroke: var(--contorno);
+    stroke-width: 1.4;
+    stroke-dasharray: 6 5;
+    vector-effect: non-scaling-stroke;
+}
+
+.mapa-recuadro-texto {
+    fill: var(--text-muted);
+    font-family: var(--font-main);
+    font-size: 40px;
+    font-weight: 600;
+    text-anchor: middle;
+}
+
+/* ── Pie: lectura y escala ──────────────────────────────────────────────── */
+
+.mapa-pie {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/**
+ * Altura fija. El texto cambia al pasar por encima y, si el bloque se
+ * redimensionara, el mapa daría un salto bajo el cursor justo mientras se
+ * intenta apuntar a un departamento pequeño.
+ */
+.mapa-lectura {
+    min-height: 1.2em;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.mapa-escala {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.mapa-escala-tope {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.mapa-muestra {
+    width: 18px;
+    height: 9px;
+    background: var(--tono);
+    border: 1px solid var(--contorno);
+}
+
+.mapa-muestra.mapa-e0,
+.mapa-punto.mapa-e0 {
+    background-color: var(--vacio);
+    background-image: repeating-linear-gradient(
+        45deg,
+        var(--rayado) 0 1px,
+        transparent 1px 4px
+    );
+}
+
+/* ── La lista, que es el control de verdad ──────────────────────────────── */
+
+.mapa-lista ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 1px 10px;
+}
+
+.mapa-fila {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-family: var(--font-main);
+    font-size: 0.78rem;
+    color: var(--text-main);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+}
+
+.mapa-fila:hover {
+    background: var(--bg-subtle);
+}
+
+.mapa-fila:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.mapa-fila.es-seleccionado {
+    background: var(--bg-subtle);
+    border-color: var(--text-main);
+    font-weight: 700;
+}
+
+.mapa-punto {
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    background: var(--tono);
+    border: 1px solid var(--contorno);
+}
+
+.mapa-fila-nombre {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mapa-fila-cifra {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.72rem;
+}
+
+.mapa-fila.es-seleccionado .mapa-fila-cifra {
+    color: var(--text-main);
+}
+
+/* ── Pastilla del filtro puesto ─────────────────────────────────────────── */
+
+.mapa-activo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--text-main);
+    font-size: 0.8rem;
+    color: var(--text-main);
+}
+
+.mapa-quitar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding: 3px 8px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    font-family: var(--font-main);
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.mapa-quitar:hover {
+    color: var(--text-main);
+    border-color: var(--text-main);
+}
+
+/* ── La nota ────────────────────────────────────────────────────────────── */
+
+.mapa-nota {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-light);
+    padding-top: 10px;
+    margin: 0;
+}
+
+.mapa-nota strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+/* ── Estrecho ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .mapa-deptos-cuerpo {
+        grid-template-columns: 1fr;
+    }
+
+    /* El mapa solo no basta para elegir con el dedo, pero centrado y a un
+       tamaño en el que se distinga Quindío de Risaralda, sí orienta. */
+    .mapa-lienzo {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mapa-pieza,
+    .mapa-fila {
+        transition: none;
+    }
+}

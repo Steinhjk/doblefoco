@@ -1,15 +1,30 @@
 // @ts-check
-import { useMemo } from 'react';
-import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown, Info } from 'lucide-react';
+import { lazy, Suspense, useId, useMemo, useState } from 'react';
+import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown, Info, Map as MapaIcono } from 'lucide-react';
 import NewsCard from './NewsCard';
 import AnimateIn from './AnimateIn';
 import { useStories } from '../hooks/useStories';
 import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
 import { resumenDelFeed } from '../lib/resumenDelFeed.js';
+import { repartoGeografico } from '../lib/geografiaDelFeed.js';
 import EmptyState from './EmptyState';
 import { EsqueletoTarjetas } from './Esqueleto';
 import { BLINDSPOT_MIN_SOURCES, SPECTRUM_LABEL_SHORT } from '../../shared/biasAnalysis.js';
+import { DEPARTAMENTO_POR_SLUG, slugDepartamento } from '../../shared/geografia.js';
 import './NewsFeed.css';
+
+/**
+ * EL MAPA SE DESCARGA AL ABRIRLO, no al entrar en la portada.
+ *
+ * La geometría de los 32 departamentos son 40 kB, 15,8 kB comprimidos: más de
+ * la mitad de todo el JavaScript de la portada, para un panel que arranca
+ * plegado. Con `lazy` se va a su propio trozo y solo lo paga quien lo abre.
+ *
+ * El filtro NO depende de esto: el reparto por departamento lo calcula
+ * `geografiaDelFeed`, que solo necesita el detector. Un enlace con `?depto=`
+ * recorta el feed aunque el trozo del mapa todavía esté viajando.
+ */
+const MapaDepartamentos = lazy(() => import('./MapaDepartamentos'));
 
 const NewsFeed = () => {
     // Una sola fuente para todo el sitio (F2-03). Ya no hay respaldo al fixture:
@@ -32,7 +47,16 @@ const NewsFeed = () => {
         ciego: blindspotFilter,
         polar: polarizationFilter,
         orden: sortBy,
+        depto: deptoFilter,
     } = filtros;
+
+    /**
+     * El mapa arranca plegado, salvo que la URL ya traiga departamento: quien
+     * llega por un enlace compartido tiene que ver de dónde sale su filtro, no
+     * un feed recortado sin explicación visible.
+     */
+    const [mapaAbierto, setMapaAbierto] = useState(() => deptoFilter !== 'all');
+    const idPanelMapa = useId();
 
     const {
         stories: allNews,
@@ -58,12 +82,32 @@ const NewsFeed = () => {
      */
     const resumen = resumenDelFeed(counts, allNews.length);
 
+    /**
+     * De qué departamento habla cada historia, y cuántas por departamento.
+     *
+     * Se detecta AQUÍ, en el navegador y sobre lo descargado, porque el
+     * departamento todavía no está en la base. Por eso el mapa dice en su nota
+     * que sus cifras son de las historias cargadas y no del catálogo: son dos
+     * cosas distintas y confundirlas ya produjo un error en la portada.
+     */
+    const geografia = useMemo(() => repartoGeografico(allNews), [allNews]);
+
+    /** El nombre que corresponde al slug de la URL, o `null` si no hay filtro. */
+    const deptoSeleccionado = DEPARTAMENTO_POR_SLUG[deptoFilter] ?? null;
+
     const filteredNews = useMemo(
         () =>
             allNews.filter((story) => {
                 const { coverage } = story;
 
                 // El ámbito ya no se filtra aquí: lo aplicó la consulta.
+
+                // El departamento se lee del reparto ya calculado, no se vuelve
+                // a detectar: hacerlo aquí repetiría el análisis del titular en
+                // cada repintado y por cada historia.
+                if (deptoSeleccionado && geografia.porHistoria.get(story.id) !== deptoSeleccionado) {
+                    return false;
+                }
 
                 // Filtro por espectro DOMINANTE en la cobertura, no por la
                 // media de sesgos. Promediar fuentes opuestas las cancela: con
@@ -77,7 +121,7 @@ const NewsFeed = () => {
 
                 return true;
             }),
-        [allNews, spectrumFilter, polarizationFilter, blindspotFilter]
+        [allNews, spectrumFilter, polarizationFilter, blindspotFilter, deptoSeleccionado, geografia]
     );
 
     const sortedNews = useMemo(() => {
@@ -209,6 +253,71 @@ const NewsFeed = () => {
                         </button>
                     </div>
                 </div>
+
+                {/*
+                  * MAPA. Plegado por omisión: son 33 nombres y un mapa, y
+                  * abierto siempre empujaría el feed media pantalla hacia
+                  * abajo en cada visita. El botón lleva el departamento puesto
+                  * escrito, para que un filtro activo no quede escondido
+                  * detrás de un panel cerrado.
+                  */}
+                <div className="controls-group">
+                    <span className="controls-label">
+                        <MapaIcono size={14} aria-hidden="true" /> Mapa:
+                    </span>
+                    <div className="filter-buttons">
+                        <button
+                            className={`filter-btn ${mapaAbierto || deptoSeleccionado ? 'active' : ''}`}
+                            aria-expanded={mapaAbierto}
+                            aria-controls={idPanelMapa}
+                            /*
+                             * En internacional no se ofrece: el etiquetado por
+                             * departamento se salta esas historias a propósito
+                             * —«Santander» también es una ciudad de España— así
+                             * que aquí el mapa saldría entero a cero y parecería
+                             * una avería en vez de una decisión.
+                             */
+                            disabled={scopeFilter === 'internacional'}
+                            title={
+                                scopeFilter === 'internacional'
+                                    ? 'El departamento solo se etiqueta en las noticias de Colombia'
+                                    : undefined
+                            }
+                            onClick={() => setMapaAbierto((abierto) => !abierto)}
+                        >
+                            {deptoSeleccionado ?? 'Por departamento'}
+                            <ChevronDown
+                                size={14}
+                                aria-hidden="true"
+                                className={`mapa-chevron ${mapaAbierto ? 'esta-abierto' : ''}`}
+                            />
+                        </button>
+                    </div>
+                </div>
+
+                {mapaAbierto && scopeFilter !== 'internacional' && (
+                    <div id={idPanelMapa} className="mapa-panel">
+                        <Suspense
+                            fallback={
+                                <p className="mapa-cargando" role="status">
+                                    Cargando el mapa…
+                                </p>
+                            }
+                        >
+                            <MapaDepartamentos
+                                conteos={geografia.conteos}
+                                maximo={geografia.maximo}
+                                etiquetadas={geografia.etiquetadas}
+                                total={geografia.total}
+                                vacios={geografia.vacios}
+                                seleccionado={deptoSeleccionado}
+                                onSeleccionar={(nombre) =>
+                                    asignar('depto', nombre ? slugDepartamento(nombre) : 'all')
+                                }
+                            />
+                        </Suspense>
+                    </div>
+                )}
 
                 <div className="controls-row-2">
                     <div className="controls-group">

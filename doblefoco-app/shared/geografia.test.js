@@ -1,6 +1,13 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
-import { detectarDepartamento, DEPARTAMENTOS, AMBIGUOS } from './geografia.js';
+import {
+    detectarDepartamento,
+    DEPARTAMENTOS,
+    AMBIGUOS,
+    slugDepartamento,
+    SLUGS_DEPARTAMENTO,
+    DEPARTAMENTO_POR_SLUG,
+} from './geografia.js';
 
 describe('detectarDepartamento', () => {
     it('etiqueta por ciudad, que es la señal fuerte', () => {
@@ -76,5 +83,41 @@ describe('DEPARTAMENTOS', () => {
         expect(DEPARTAMENTOS).toHaveLength(33);
         expect(DEPARTAMENTOS).toContain('Bogotá D.C.');
         expect(DEPARTAMENTOS).toContain('Vaupés');
+    });
+});
+
+describe('slugDepartamento', () => {
+    it('produce algo que se puede leer en la barra de direcciones', () => {
+        expect(slugDepartamento('Norte de Santander')).toBe('norte-de-santander');
+        expect(slugDepartamento('La Guajira')).toBe('la-guajira');
+        expect(slugDepartamento('Nariño')).toBe('narino');
+    });
+
+    it('«Bogotá D.C.» no acaba en bogota-d-c', () => {
+        // Es el departamento que más se va a filtrar; aplicar la regla general
+        // le dejaba el slug más ilegible de los 33.
+        expect(slugDepartamento('Bogotá D.C.')).toBe('bogota');
+    });
+
+    /**
+     * Dos departamentos con el mismo slug harían que uno de los dos fuera
+     * INALCANZABLE desde la URL: el mapa lo ofrecería, el filtro devolvería lo
+     * del otro y nada avisaría.
+     */
+    it('los 33 slugs son distintos entre sí', () => {
+        expect(SLUGS_DEPARTAMENTO).toHaveLength(33);
+        expect(new Set(SLUGS_DEPARTAMENTO).size).toBe(33);
+    });
+
+    it('el viaje de ida y vuelta devuelve el nombre exacto, tildes incluidas', () => {
+        for (const nombre of DEPARTAMENTOS) {
+            expect(DEPARTAMENTO_POR_SLUG[slugDepartamento(nombre)]).toBe(nombre);
+        }
+    });
+
+    it('no deja guiones sueltos en los extremos', () => {
+        for (const slug of SLUGS_DEPARTAMENTO) {
+            expect(slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+        }
     });
 });

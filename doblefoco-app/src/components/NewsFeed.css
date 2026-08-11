@@ -282,3 +282,46 @@
 }
 
 .clear-filters-inline:hover { opacity: 1; }
+
+/**
+ * EL PANEL DEL MAPA.
+ *
+ * Ocupa toda la anchura de la barra de filtros y se separa con una línea: es
+ * un panel dentro del bloque de controles, no un control más de la fila, y sin
+ * la separación se leía como si perteneciera al grupo de arriba.
+ */
+.mapa-panel {
+    border-top: 1px solid var(--border-light);
+    padding-top: 16px;
+}
+
+/* El botón que lo despliega gira la punta de flecha. Es la única señal de que
+   hay algo plegado cuando el panel está cerrado y no hay departamento puesto. */
+.filter-btn .mapa-chevron {
+    margin-left: 6px;
+    vertical-align: -2px;
+    transition: transform 0.2s ease;
+}
+
+.filter-btn .mapa-chevron.esta-abierto {
+    transform: rotate(180deg);
+}
+
+.filter-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filter-btn .mapa-chevron {
+        transition: none;
+    }
+}
+
+.mapa-cargando {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+    padding: 24px 0;
+    text-align: center;
+}

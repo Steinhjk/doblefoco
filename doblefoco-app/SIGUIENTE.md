@@ -2,7 +2,7 @@
 
 Nota de traspaso del **2026-08-11**, escrita al cerrar.
 
-Todo está en `main`. **454 tests** en verde, lint y typecheck limpios, árbol
+Todo está en `main`. **460 tests** en verde, lint y typecheck limpios, árbol
 limpio. **Vercel y Fly desplegados**, base migrada, portada y mapa verificados en
 producción con captura y sin errores de consola.
 
@@ -82,11 +82,41 @@ no se sabe cuántos candidatos se apuntaron como mudos por esto.
 
 ---
 
+## El titular que no se actualizaba
+
+Jose lo vio en el terremoto: la portada decía «71 muertos» cuando las piezas de
+esa misma historia ya iban por 111. El titular salía del medio **más cercano al
+centro sea cual sea su hora**, así que en un hecho en desarrollo se congelaba en
+lo que ese medio dijo primero. Medido: el 40 % de las historias multifuente
+llevaba más de una hora de desfase, el 18 % más de seis, y la peor 58,8 h.
+
+Ahora se elige el más centrado **de entre los recientes**, con ventana de 6 h
+calibrada. Después del arreglo: **0 % por encima de seis horas** y el retraso
+medio baja de 4,24 h a 45 minutos.
+
+**Desacoplado del id a propósito**: `storyId()` deriva el id del titular, y ese
+id es la URL. Si el titular arrastrara el id, cada actualización renombraría la
+historia y rompería los enlaces. El id sigue anclado al más centrista de todos.
+
+**Lo que queda de eso, y es decisión de producto:** dos sucesos del terremoto
+conviven diciendo «111 muertos» y «169». Su similitud es **0,200** contra un
+umbral de **0,22** — se quedan a dos centésimas. Lo que los separa son las
+cifras: el tokenizador conserva los números porque «distinguen hechos», cierto
+para fechas, pero **en un balance de víctimas el número cambia precisamente
+porque es el mismo hecho actualizándose**. Bajar el umbral reintroduce las
+fusiones falsas que costó calibrar; tratar los números aparte afecta al
+agrupamiento entero. No se tocó.
+
+---
+
 ## Lo primero al volver
 
-1. **Repasar el barrido nacional** con el User-Agent arreglado
-   (`npm run feed:descubrir`). Es lo que más catálogo puede desbloquear por menos
-   trabajo, y hoy no se sabe cuánto hay ahí.
+1. **Terminar el barrido nacional.** Se hizo con los 16 dominios que el informe
+   nombra y aparecieron dos que sí publican: **larazon.co** (Montería, Córdoba,
+   hace 2 h) y **narinoahora.com** (Nariño, hace 21 h), ambos en departamentos
+   que estaban bloqueados. Los otros 124 no se pudieron rehacer:
+   **`query.wikidata.org` devolvía 502** las dos veces que se intentó. Reintentar
+   `npm run medios:cosechar -- --lista` cuando su servicio vuelva.
 2. **La foto del destacado.** Es lo único de la portada del terremoto que quedó
    sin mirar: viene con crédito de Telemedellín y no está claro que sea del
    sismo. Jose lo señaló y no se tocó.

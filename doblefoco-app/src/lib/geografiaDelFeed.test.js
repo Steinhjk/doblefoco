@@ -171,3 +171,91 @@ describe('la geometría casa con la lista de departamentos', () => {
         }
     });
 });
+
+/**
+ * EL MAPA CUENTA EL CATÁLOGO, LA LISTA CUENTA LO DESCARGADO.
+ *
+ * Eran lo mismo hasta el 2026-08-11 y por eso el color del mapa crecía al pulsar
+ * «cargar más»: un coropleto cuya intensidad depende de cuánto hayas bajado no
+ * responde «cuánto se habla de aquí», que es la única pregunta que un mapa así
+ * puede contestar.
+ */
+describe('conteos del catálogo frente a lo descargado', () => {
+    const descargadas = [
+        { id: '1', title: 'Capturan a alias El Costeño en Cúcuta', ambito: 'nacional' },
+        { id: '2', title: 'Nuevo escándalo de corrupción en Quibdó', ambito: 'nacional' },
+    ];
+
+    it('sin conteos del catálogo cuenta lo descargado, como antes', () => {
+        const r = repartoGeografico(descargadas);
+
+        expect(r.delCatalogo).toBe(false);
+        expect(r.conteos['Norte de Santander']).toBe(1);
+        expect(r.etiquetadas).toBe(2);
+    });
+
+    it('con conteos del catálogo manda el catálogo', () => {
+        const r = repartoGeografico(descargadas, { 'Norte de Santander': 40, 'Chocó': 900 });
+
+        expect(r.delCatalogo).toBe(true);
+        expect(r.conteos['Norte de Santander']).toBe(40);
+        expect(r.conteos['Chocó']).toBe(900);
+        expect(r.etiquetadas).toBe(940);
+        expect(r.maximo).toBe(900);
+    });
+
+    /**
+     * `porHistoria` filtra la lista de abajo, que solo puede mostrar lo que se
+     * descargó. Que los conteos vengan del catálogo no la cambia.
+     */
+    it('el reparto por historia sigue siendo de lo descargado', () => {
+        const r = repartoGeografico(descargadas, { 'Chocó': 900 });
+
+        expect(r.porHistoria.get('1')).toBe('Norte de Santander');
+        expect(r.total).toBe(2);
+    });
+
+    it('un departamento que no está en los 33 no entra por la puerta de atrás', () => {
+        const r = repartoGeografico(descargadas, { 'Chocó': 5, 'Cundinamarca del Norte': 999 });
+
+        expect(r.conteos['Cundinamarca del Norte']).toBeUndefined();
+        expect(r.maximo).toBe(5);
+    });
+});
+
+describe('departamentoDe prefiere lo que manda la API', () => {
+    it('usa el campo persistido en vez de volver a detectar', () => {
+        // El titular dice Cúcuta, pero la base dice Chocó: gana la base. Es el
+        // mismo valor calculado con esta misma función durante la ingesta, y
+        // preferirlo evita recalcular en cada render.
+        expect(departamentoDe({
+            title: 'Capturan a alias El Costeño en Cúcuta',
+            ambito: 'nacional',
+            departamento: 'Chocó',
+        })).toBe('Chocó');
+    });
+
+    it('respeta un null persistido: la base ya dijo que no se puede etiquetar', () => {
+        expect(departamentoDe({
+            title: 'Capturan a alias El Costeño en Cúcuta',
+            ambito: 'nacional',
+            departamento: null,
+        })).toBeNull();
+    });
+
+    /** Mientras la API desplegada no mande el campo, se detecta aquí. */
+    it('cae a la detección local cuando el campo no viene', () => {
+        expect(departamentoDe({
+            title: 'Capturan a alias El Costeño en Cúcuta',
+            ambito: 'nacional',
+        })).toBe('Norte de Santander');
+    });
+
+    it('lo internacional no se etiqueta aunque la base traiga algo', () => {
+        expect(departamentoDe({
+            title: 'El Santander gana en bolsa',
+            ambito: 'internacional',
+            departamento: 'Santander',
+        })).toBeNull();
+    });
+});

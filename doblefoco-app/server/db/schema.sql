@@ -264,6 +264,34 @@ ALTER TABLE stories ADD COLUMN IF NOT EXISTS topics TEXT[];
 ALTER TABLE stories ADD COLUMN IF NOT EXISTS ambito TEXT
     CHECK (ambito IS NULL OR ambito IN ('nacional', 'internacional'));
 
+-- De qué departamento habla la historia. NULL cuando el titular no lo dice, que
+-- es el caso mayoritario y es correcto: el detector de `shared/geografia.js` es
+-- corto de vista a propósito, porque etiquetar mal manda un hecho de Cúcuta al
+-- departamento de otro y el lector que filtra por su región deja de fiarse.
+--
+-- SE MIRA SOLO EL TITULAR DE LA HISTORIA, no los de cada medio que la cubre.
+-- Es la misma decisión que ya tomaba el cálculo en el navegador, y se conserva
+-- al persistirlo: un grupo con ocho titulares podría nombrar tres departamentos
+-- distintos y habría que elegir por votación — más recall a cambio de una
+-- etiqueta que ya no se puede justificar leyendo una sola frase.
+--
+-- Es la única columna de esta tabla que NO se agrega desde `articles`, y por eso
+-- no hay `articles.departamento`: no habría de dónde agregarla sin cambiar esa
+-- decisión.
+--
+-- POR QUÉ SE PERSISTE (2026-08-11). Se calculaba en el navegador sobre lo
+-- descargado, así que los conteos del mapa eran «de las historias cargadas, no
+-- del catálogo» y crecían al pulsar «cargar más». Un mapa cuyo número cambia
+-- según cuánto hayas bajado no se puede leer.
+ALTER TABLE stories ADD COLUMN IF NOT EXISTS departamento TEXT;
+
+-- Parcial: la mayoría de historias no tienen departamento y no hace falta
+-- indexarlas. El índice sirve para dos cosas —filtrar el feed por departamento y
+-- contar cuántas hay en cada uno— y ambas ignoran las nulas.
+CREATE INDEX IF NOT EXISTS stories_departamento_idx
+    ON stories (departamento, published_at DESC NULLS LAST)
+    WHERE departamento IS NOT NULL;
+
 -- El orden exacto del feed: primero las historias con más medios distintos,
 -- luego las más recientes. Con este índice la consulta lee solo las filas que
 -- devuelve, no la tabla entera.

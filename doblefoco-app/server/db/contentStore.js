@@ -411,7 +411,7 @@ export async function persistStories(entrada) {
                          first_seen_at, mean_bias, polarization, coverage_left,
                          coverage_center, coverage_right, dominant_spectrum,
                          insufficient_coverage, blindspot_spectrum, factuality,
-                         source_count, topics, ambito, computed_at)
+                         source_count, topics, ambito, departamento, computed_at)
                     -- Mismo motivo que en el guardado de artículos: los temas
                     -- viajan como cadena porque unnest no admite arrays de
                     -- longitud desigual.
@@ -420,16 +420,17 @@ export async function persistStories(entrada) {
                            insuficiente, punto_ciego, factual, medios,
                            CASE WHEN temas = '' THEN '{}'::text[]
                                 ELSE string_to_array(temas, ',') END,
-                           ambito, now()
+                           ambito, departamento, now()
                       FROM unnest(
                         $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
                         $6::timestamptz[], $7::timestamptz[], $8::real[], $9::real[],
                         $10::smallint[], $11::smallint[], $12::smallint[], $13::text[],
                         $14::boolean[], $15::text[], $16::real[], $17::int[],
-                        $18::text[], $19::text[]
+                        $18::text[], $19::text[], $20::text[]
                     ) AS t(id, titulo, src, url, categoria, publicado, visto,
                            sesgo, polar, izq, centro, der, dominante,
-                           insuficiente, punto_ciego, factual, medios, temas, ambito)
+                           insuficiente, punto_ciego, factual, medios, temas, ambito,
+                           departamento)
                     ON CONFLICT (id) DO UPDATE SET
                         title                 = EXCLUDED.title,
                         title_source_id       = EXCLUDED.title_source_id,
@@ -454,6 +455,7 @@ export async function persistStories(entrada) {
                         -- de otro medio y con ellos un tema que antes no tenía.
                         topics                = EXCLUDED.topics,
                         ambito                = EXCLUDED.ambito,
+                        departamento          = EXCLUDED.departamento,
                         computed_at           = now()
                     `,
                     [
@@ -481,6 +483,7 @@ export async function persistStories(entrada) {
                         stories.map((s) => s.sources?.length ?? 0),
                         stories.map((s) => (s.topics ?? []).join(',')),
                         stories.map((s) => s.ambito ?? null),
+                        stories.map((s) => s.departamento ?? null),
                     ]
                 );
             }

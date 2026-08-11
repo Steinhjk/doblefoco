@@ -6,17 +6,22 @@
  * que necesita además el reparto y su lectura honesta. Vive aparte del
  * componente para poder probarse sin montar React.
  *
- * SE CALCULA EN EL NAVEGADOR, SOBRE LO DESCARGADO
- * -----------------------------------------------
- * El departamento todavía NO está en la base: no hay columna `articles.departamento`
- * ni índice por el que consultar. El detector es una función pura sobre el
- * titular, así que puede correrse aquí sin tocar la ingesta.
+ * YA VIENE DE LA BASE (2026-08-11)
+ * --------------------------------
+ * `stories.departamento` lo calcula la ingesta y lo sirve la API, y los conteos
+ * del mapa salen de `/api/departamentos`, que cuenta el CATÁLOGO ENTERO.
  *
- * La consecuencia hay que decirla y no esconderla: **los conteos son de las
- * historias cargadas, no del catálogo**. Cargar más los hace crecer. Es lo
- * contrario de lo que hacen las cifras de las pestañas de ámbito, que sí son
- * del catálogo porque las cuenta el servidor, y por eso la vista lo declara en
- * vez de dejar que se confundan.
+ * Antes se calculaba aquí sobre lo descargado, y la consecuencia era que los
+ * conteos crecían al pulsar «cargar más»: un coropleto cuyo color cambia según
+ * cuánto hayas bajado no dice nada, porque la intensidad tiene que significar
+ * «cuánto se habla de aquí» y no «cuánto has cargado». Era lo contrario de lo
+ * que ya hacían las pestañas de ámbito, que siempre contaron el catálogo.
+ *
+ * EL DETECTOR SIGUE AQUÍ, y no por inercia: mientras la API desplegada no mande
+ * el campo —el cliente sale en Vercel y la API en Fly, por separado— hay que
+ * seguir diciendo algo cierto en vez de dejar el mapa en blanco. Es el mismo
+ * respaldo que `perteneceA` mantiene para `topics`, y desaparece solo en cuanto
+ * el campo llega.
  *
  * LO INTERNACIONAL NO SE ETIQUETA
  * -------------------------------
@@ -40,11 +45,17 @@ import { DEPARTAMENTOS, detectarDepartamento } from '../../shared/geografia.js';
  * más recall a cambio de una etiqueta que ya no se puede justificar leyendo una
  * sola frase. El detector es corto de vista a propósito y esto lo respeta.
  *
- * @param {{title?: string, ambito?: string|null}} historia
+ * PREFIERE LO QUE MANDA LA API. Es el mismo valor calculado con esta misma
+ * función, pero en la ingesta: preferirlo no cambia el resultado y evita
+ * recalcular en cada render lo que ya viene resuelto. Se cae a la detección
+ * local solo mientras la API desplegada no traiga el campo.
+ *
+ * @param {{title?: string, ambito?: string|null, departamento?: string|null}} historia
  * @returns {string|null}
  */
 export function departamentoDe(historia) {
     if (historia?.ambito === 'internacional') return null;
+    if (historia?.departamento !== undefined) return historia.departamento;
     return detectarDepartamento(historia?.title).departamento;
 }
 
@@ -56,6 +67,7 @@ export function departamentoDe(historia) {
  * @property {number} total - cuántas se miraron
  * @property {number} maximo - el conteo más alto, para escalar el color
  * @property {number} vacios - cuántos de los 33 se quedaron en cero
+ * @property {boolean} [delCatalogo] - si los conteos son del catálogo o de lo descargado
  */
 
 /**
@@ -66,10 +78,27 @@ export function departamentoDe(historia) {
  * simplemente no se encontraría en el filtro. Un cero se puede leer; una
  * ausencia, no.
  *
- * @param {Array<{id?: string, title?: string, ambito?: string|null}>} historias
+ * LOS CONTEOS SON DEL CATÁLOGO; `porHistoria` ES DE LO DESCARGADO, y son dos
+ * cosas distintas a propósito:
+ *
+ *   · `conteos` pinta el mapa, y tiene que responder «cuánto se habla de aquí».
+ *     Sale de `/api/departamentos`, que cuenta el catálogo entero.
+ *   · `porHistoria` filtra la lista de abajo, que solo puede mostrar lo que se
+ *     ha descargado.
+ *
+ * Confundirlas ya produjo el fallo que esto arregla: el color del mapa crecía al
+ * pulsar «cargar más». Es la misma distinción que `useStories` documenta entre
+ * `counts` y `stories`.
+ *
+ * Sin `conteosDelCatalogo` se cuenta lo descargado, como antes. Pasa mientras la
+ * API desplegada no tenga la ruta, y es peor pero sigue siendo cierto para lo
+ * que hay a la vista.
+ *
+ * @param {Array<{id?: string, title?: string, ambito?: string|null, departamento?: string|null}>} historias
+ * @param {Record<string, number>|null} [conteosDelCatalogo]
  * @returns {RepartoGeografico}
  */
-export function repartoGeografico(historias) {
+export function repartoGeografico(historias, conteosDelCatalogo = null) {
     const lista = Array.isArray(historias) ? historias : [];
 
     /** @type {Record<string, number>} */
@@ -88,15 +117,29 @@ export function repartoGeografico(historias) {
         etiquetadas += 1;
     }
 
+    const delCatalogo = conteosDelCatalogo && Object.keys(conteosDelCatalogo).length;
+
+    if (delCatalogo) {
+        // Solo los 33 conocidos: un nombre que no esté en la lista canónica no
+        // tiene silueta en el mapa y aparecería como un conteo huérfano.
+        for (const departamento of DEPARTAMENTOS) {
+            conteos[departamento] = conteosDelCatalogo[departamento] ?? 0;
+        }
+    }
+
     const valores = Object.values(conteos);
+    const totalEtiquetadas = delCatalogo
+        ? valores.reduce((a, b) => a + b, 0)
+        : etiquetadas;
 
     return {
         conteos,
         porHistoria,
-        etiquetadas,
+        etiquetadas: totalEtiquetadas,
         total: lista.length,
         maximo: valores.reduce((a, b) => Math.max(a, b), 0),
         vacios: valores.filter((n) => n === 0).length,
+        delCatalogo: Boolean(delCatalogo),
     };
 }
 

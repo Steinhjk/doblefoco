@@ -62,7 +62,7 @@ const ORDEN_DEL_FEED = ordenPorRelevanciaSQL(
 async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }) {
     const historias = await safeQuery(
         `
-        SELECT s.id, s.title, s.category, s.topics, s.ambito,
+        SELECT s.id, s.title, s.category, s.topics, s.ambito, s.departamento,
                s.published_at, s.first_seen_at,
                s.title_source_id, s.title_url,
                src.name AS title_outlet,
@@ -265,6 +265,9 @@ function componerHistoria(fila, articulos, tasasBase = null) {
         category: fila.category,
         topics: fila.topics ?? [],
         ambito: fila.ambito ?? 'nacional',
+        // NULL cuando el titular no dice de donde habla, que es el caso
+        // mayoritario y es correcto: el detector es corto de vista a proposito.
+        departamento: fila.departamento ?? null,
         image,
 
         publishedAt: fila.published_at,
@@ -372,7 +375,13 @@ function componerHistoria(fila, articulos, tasasBase = null) {
  * `{salud, politica}` sale tanto en Salud como en Política, que es el sentido de
  * haberla etiquetado dos veces.
  */
-export async function readFeed({ limit = 20, offset = 0, ambito = 'all', temas = [] } = {}) {
+export async function readFeed({
+    limit = 20,
+    offset = 0,
+    ambito = 'all',
+    temas = [],
+    departamento = null,
+} = {}) {
     const condiciones = [];
     const params = [];
 
@@ -387,12 +396,60 @@ export async function readFeed({ limit = 20, offset = 0, ambito = 'all', temas =
         condiciones.push(`s.topics && $${params.length}::text[]`);
     }
 
+    // Igualdad exacta contra el nombre canónico. La lista blanca la aplica la
+    // ruta contra `DEPARTAMENTOS`, así que aquí no puede llegar nada inventado —
+    // el mismo trato que reciben los temas.
+    if (departamento) {
+        params.push(departamento);
+        condiciones.push(`s.departamento = $${params.length}`);
+    }
+
     return leerHistorias({
         where: condiciones.length ? `AND ${condiciones.join(' AND ')}` : undefined,
         params,
         limit,
         offset,
     });
+}
+
+/**
+ * Cuántas historias hay en cada departamento, EN TODO EL CATÁLOGO.
+ *
+ * POR QUÉ EXISTE (2026-08-11). El mapa contaba en el navegador sobre las
+ * historias descargadas, así que sus números crecían al pulsar «cargar más». Un
+ * coropleto cuyo color cambia según cuánto hayas bajado no dice nada: la
+ * intensidad tiene que significar «cuánto se habla de aquí», no «cuánto has
+ * cargado».
+ *
+ * Es el mismo problema que ya se había resuelto para las pestañas de ámbito —
+ * `counts` son del catálogo y `stories` es lo descargado— y aquí faltaba.
+ *
+ * Devuelve SOLO los que tienen alguna historia. Los 33 los pone la interfaz, que
+ * es la que sabe que un cero se puede leer y una ausencia no; devolver treinta y
+ * tres filas, la mayoría en cero, sería mandar por red una lista que el cliente
+ * ya tiene en `shared/geografia.js`.
+ *
+ * @returns {Promise<Record<string, number>>}
+ */
+export async function countByDepartamento() {
+    const filas = await safeQuery(
+        `
+        SELECT s.departamento, count(*)::int AS n
+          FROM stories s
+          LEFT JOIN moderation m ON m.story_id = s.id
+         WHERE (m.state IS NULL OR m.state <> 'rechazada')
+           AND s.departamento IS NOT NULL
+         GROUP BY s.departamento
+        `,
+        [],
+        'conteo por departamento'
+    );
+
+    if (!filas) return {};
+
+    const conteos = {};
+    for (const fila of filas.rows) conteos[fila.departamento] = fila.n;
+    return conteos;
 }
 
 /**

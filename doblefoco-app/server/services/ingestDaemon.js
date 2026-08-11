@@ -37,6 +37,7 @@ import { detectarOpinion } from '../../shared/opinion.js';
 import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { porRelevancia } from '../../shared/relevancia.js';
+import { detectarDepartamento } from '../../shared/geografia.js';
 import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
@@ -1219,6 +1220,22 @@ function buildMultisourceStories() {
             .map((a) => (a.publishedAt ? Date.parse(a.publishedAt) : a.ingestedAtMs))
             .filter((d) => Number.isFinite(d));
 
+        /**
+         * El ámbito por MAYORÍA, no por el representante.
+         *
+         * El artículo representativo es el del medio de mayor factualidad, y esa
+         * elección no tiene nada que ver con si el hecho es colombiano. Con el
+         * empate a favor de lo nacional, por lo mismo que dentro del
+         * clasificador: «Petro se reunió con Lula» es una noticia colombiana con
+         * contexto exterior.
+         *
+         * Se saca del literal porque el departamento lo necesita.
+         */
+        const ambito =
+            items.filter((a) => a.ambito === 'internacional').length > items.length / 2
+                ? 'internacional'
+                : 'nacional';
+
         return {
             id: storyId(representative.headline),
             title: representative.headline,
@@ -1240,19 +1257,30 @@ function buildMultisourceStories() {
              */
             topics: [...new Set(items.flatMap((a) => a.topics ?? []))],
 
+            ambito,
+
             /**
-             * El ámbito por MAYORÍA, no por el representante.
+             * De qué departamento habla. Se calcula AQUÍ y se guarda desde el
+             * 2026-08-11; antes lo hacía el navegador sobre lo descargado, así
+             * que los conteos del mapa eran de las historias cargadas y crecían
+             * al pulsar «cargar más». Un número que cambia según cuánto hayas
+             * bajado no se puede leer.
              *
-             * El artículo representativo es el del medio de mayor factualidad,
-             * y esa elección no tiene nada que ver con si el hecho es
-             * colombiano. Con el empate a favor de lo nacional, por lo mismo
-             * que dentro del clasificador: «Petro se reunió con Lula» es una
-             * noticia colombiana con contexto exterior.
+             * SOLO EL TITULAR DE LA HISTORIA, no los de cada medio. Es la misma
+             * decisión que tomaba el cálculo en el navegador y se conserva al
+             * moverlo: ocho titulares podrían nombrar tres departamentos y
+             * habría que elegir por votación — más recall a cambio de una
+             * etiqueta que ya no se justifica leyendo una sola frase.
+             *
+             * Lo internacional no se etiqueta. «Santander» es un departamento
+             * colombiano y también un banco y una ciudad española; sin este
+             * corte, la portada de un medio español mandaría noticias a
+             * Bucaramanga.
              */
-            ambito:
-                items.filter((a) => a.ambito === 'internacional').length > items.length / 2
-                    ? 'internacional'
-                    : 'nacional',
+            departamento:
+                ambito === 'internacional'
+                    ? null
+                    : detectarDepartamento(representative.headline).departamento,
 
             // Fechas reales, no cadenas fijas. El texto relativo ("hace 2
             // horas") lo calcula el frontend en cada render.

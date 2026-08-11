@@ -112,6 +112,25 @@ export async function fetchPortada({ limit = 100 } = {}) {
     };
 }
 
+/**
+ * Cuántas historias hay por departamento, en todo el catálogo.
+ *
+ * Degrada igual que `fetchPortada` y por el mismo motivo: el cliente sale en
+ * Vercel antes de que la API salga en Fly, así que hay una ventana en la que
+ * esta ruta todavía no existe. Devuelve `{}` y el mapa cuenta lo descargado,
+ * como hacía antes — peor, pero cierto para lo que hay a la vista.
+ */
+export async function fetchConteosPorDepartamento() {
+    const result = await request('/api/departamentos');
+    if (!result.ok) return { ok: false, conteos: {} };
+
+    const conteos = result.data?.conteos;
+    return {
+        ok: true,
+        conteos: conteos && typeof conteos === 'object' ? conteos : {},
+    };
+}
+
 /** Detalle de una historia. */
 export async function fetchStory(id) {
     const result = await request(`/api/story/${encodeURIComponent(id)}`);

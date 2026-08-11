@@ -33,7 +33,19 @@ import './MapaDepartamentos.css';
 /** El recuadro del archipiélago, en coordenadas del lienzo. */
 const RECUADRO = { x: 14, y: 16, ancho: 236, alto: 196 };
 
-const MapaDepartamentos = ({ conteos, maximo, etiquetadas, total, vacios, seleccionado, onSeleccionar }) => {
+const MapaDepartamentos = ({
+    conteos,
+    maximo,
+    etiquetadas,
+    total,
+    vacios,
+    // `true` cuando los conteos vienen del catálogo entero y no de lo
+    // descargado. Cambia lo que la nota puede afirmar, así que se pasa en vez
+    // de deducirlo aquí: quien cuenta es quien sabe qué contó.
+    delCatalogo = false,
+    seleccionado,
+    onSeleccionar,
+}) => {
     /** Lo que está bajo el cursor. Solo pinta; no cambia el filtro. */
     const [rozado, setRozado] = useState(/** @type {string|null} */ (null));
 
@@ -233,10 +245,21 @@ const MapaDepartamentos = ({ conteos, maximo, etiquetadas, total, vacios, selecc
               * en vivo y el texto explica qué significa el hueco.
               */}
             <p className="mapa-nota">
-                Estas cifras salen de <strong>{etiquetadas}</strong> de las{' '}
-                <strong>{total}</strong> historias cargadas: solo se etiqueta cuando el titular
-                nombra el sitio, y ante la duda no se etiqueta. Se cuentan las historias que
-                tienes delante, no el catálogo entero — al cargar más, crecen.{' '}
+                {delCatalogo ? (
+                    <>
+                        <strong>{etiquetadas}</strong> historias del catálogo entero llevan
+                        departamento: solo se etiqueta cuando el titular nombra el sitio, y ante
+                        la duda no se etiqueta. Estas cifras no cambian al cargar más.{' '}
+                    </>
+                ) : (
+                    <>
+                        Estas cifras salen de <strong>{etiquetadas}</strong> de las{' '}
+                        <strong>{total}</strong> historias cargadas: solo se etiqueta cuando el
+                        titular nombra el sitio, y ante la duda no se etiqueta. Se cuentan las
+                        historias que tienes delante, no el catálogo entero — al cargar más,
+                        crecen.{' '}
+                    </>
+                )}
                 {vacios > 0 && (
                     <>
                         <strong>{vacios}</strong> departamentos están a cero, y eso es una

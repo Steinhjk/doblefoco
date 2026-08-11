@@ -7,6 +7,7 @@ import { useStories } from '../hooks/useStories';
 import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
 import { resumenDelFeed } from '../lib/resumenDelFeed.js';
 import { repartoGeografico } from '../lib/geografiaDelFeed.js';
+import { useConteosPorDepartamento } from '../hooks/useConteosPorDepartamento';
 import EmptyState from './EmptyState';
 import { EsqueletoTarjetas } from './Esqueleto';
 import { BLINDSPOT_MIN_SOURCES, SPECTRUM_LABEL_SHORT } from '../../shared/biasAnalysis.js';
@@ -85,12 +86,16 @@ const NewsFeed = () => {
     /**
      * De qué departamento habla cada historia, y cuántas por departamento.
      *
-     * Se detecta AQUÍ, en el navegador y sobre lo descargado, porque el
-     * departamento todavía no está en la base. Por eso el mapa dice en su nota
-     * que sus cifras son de las historias cargadas y no del catálogo: son dos
-     * cosas distintas y confundirlas ya produjo un error en la portada.
+     * LOS CONTEOS SON DEL CATÁLOGO y vienen del servidor; el reparto por
+     * historia es de lo descargado, porque la lista de abajo solo puede mostrar
+     * lo que se ha bajado. Son dos cosas distintas y confundirlas es lo que
+     * hacía que el color del mapa creciera al pulsar «cargar más».
      */
-    const geografia = useMemo(() => repartoGeografico(allNews), [allNews]);
+    const { conteos: conteosDelCatalogo } = useConteosPorDepartamento();
+    const geografia = useMemo(
+        () => repartoGeografico(allNews, conteosDelCatalogo),
+        [allNews, conteosDelCatalogo]
+    );
 
     /** El nombre que corresponde al slug de la URL, o `null` si no hay filtro. */
     const deptoSeleccionado = DEPARTAMENTO_POR_SLUG[deptoFilter] ?? null;
@@ -310,6 +315,7 @@ const NewsFeed = () => {
                                 etiquetadas={geografia.etiquetadas}
                                 total={geografia.total}
                                 vacios={geografia.vacios}
+                                delCatalogo={geografia.delCatalogo}
                                 seleccionado={deptoSeleccionado}
                                 onSeleccionar={(nombre) =>
                                     asignar('depto', nombre ? slugDepartamento(nombre) : 'all')

@@ -28,6 +28,7 @@ import {
     readSitemapEntries,
     readStory,
     vocabularioDelCorpus,
+    countByDepartamento,
 } from './db/feedStore.js';
 import { agruparEnSucesos, porRelevanciaDeSuceso } from '../shared/sucesos.js';
 import { dailySummary } from './services/metricsStore.js';
@@ -49,6 +50,7 @@ import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
 import { RUTAS_RENDERIZADAS, metadatosDePagina } from './ssr/paginasEstaticas.js';
 import { esRutaCanonica, idDesdeRuta, rutaDeHistoria } from '../shared/storyPath.js';
 import { TEMAS } from '../shared/topicClassifier.js';
+import { DEPARTAMENTOS } from '../shared/geografia.js';
 import { contarSinResolver, erroresRecientes, marcarResuelto, registrarError } from './db/errorStore.js';
 import { instalarCapturaDeErrores, middlewareDeErrores } from './observabilidad.js';
 
@@ -603,8 +605,15 @@ app.get('/api/feed', async (req, res) => {
             .map((t) => t.trim())
             .filter((t) => idsValidos.has(t));
 
+        // Misma lista blanca que los temas, y por el mismo motivo: acaba en una
+        // cláusula SQL. `DEPARTAMENTOS` son los 33 nombres canónicos, así que un
+        // nombre inventado no llega a la consulta — se cae aquí y el filtro
+        // simplemente no se aplica.
+        const pedido = String(req.query.departamento ?? '').trim();
+        const departamento = DEPARTAMENTOS.includes(pedido) ? pedido : null;
+
         const [stories, counts] = await Promise.all([
-            readFeed({ limit, offset, ambito, temas }),
+            readFeed({ limit, offset, ambito, temas, departamento }),
             countFeed(),
         ]);
 
@@ -669,6 +678,28 @@ app.get('/api/portada', async (req, res) => {
         res.json({ success: true, vocabulario: vocabulario.length, sucesos });
     } catch (error) {
         console.error('[api] fallo en /api/portada', error);
+        res.status(500).json({ success: false, error: 'Error interno' });
+    }
+});
+
+/**
+ * Cuántas historias hay por departamento, en TODO el catálogo.
+ *
+ * El mapa las contaba en el navegador sobre lo descargado, así que sus números
+ * crecían al pulsar «cargar más». Un coropleto cuyo color cambia según cuánto
+ * hayas bajado no dice nada: la intensidad tiene que significar «cuánto se habla
+ * de aquí», no «cuánto has cargado».
+ *
+ * Devuelve solo los departamentos con alguna historia. Los 33 los pone la
+ * interfaz —es la que sabe que un cero se puede leer y una ausencia no— y ya
+ * tiene la lista en `shared/geografia.js`; mandarla por red sería repetirla.
+ */
+app.get('/api/departamentos', async (req, res) => {
+    try {
+        const conteos = await countByDepartamento();
+        res.json({ success: true, conteos });
+    } catch (error) {
+        console.error('[api] fallo en /api/departamentos', error);
         res.status(500).json({ success: false, error: 'Error interno' });
     }
 });

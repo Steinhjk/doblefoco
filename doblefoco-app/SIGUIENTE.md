@@ -1,16 +1,16 @@
 # Por dónde seguir
 
-Nota de traspaso del **2026-08-10**, escrita al cerrar.
+Nota de traspaso del **2026-08-11**, escrita al cerrar.
 
-Todo está en `main`. **439 tests** en verde, lint y typecheck limpios, árbol
-limpio. **Vercel y Fly desplegados**, catálogo recategorizado, portada verificada
-en producción con captura y sin errores de consola.
+Todo está en `main`. **449 tests** en verde, lint y typecheck limpios, árbol
+limpio. **Vercel y Fly desplegados**, base migrada, portada y mapa verificados en
+producción con captura y sin errores de consola.
 
 No queda nada a medias. Lo de abajo es trabajo nuevo, no arrastre.
 
 ---
 
-## Qué se hizo hoy, y por qué
+## Qué se hizo el 10 de agosto, y por qué
 
 Empezó con una pregunta de Jose: el terremoto del Chocó, con 111 muertos, no era
 portada. Resultaron ser tres cosas distintas, en tres capas.
@@ -38,25 +38,43 @@ Calibración reproducible: `npm run eval:sucesos` y `npm run recategorizar`
 
 ---
 
+## Lo del 11 de agosto
+
+**El feed estuvo diez horas parado** (01:45–12:10 UTC). `factuality: null` se
+decidió válida el día 9 y se aplicó a `stories`, no a `sources`, que es la
+proyección del registro: once medios entran sin medir, así que la proyección
+fallaba entera y el worker moría con código 1 hasta que Fly se rindió («max
+restart count of 10»). No estalló antes porque Fly llevaba sin desplegarse desde
+el día 8. **El desfase de despliegue no da números peores: acumula una bomba.**
+
+**La vigilancia lo detectó y no avisó.** Falló en rojo a las 06:53 y nadie lo
+vio. Ahora abre un issue con la salida completa y lo cierra sola al recuperarse
+— probado de punta a punta en una rama desechable. Mejora *que te enteres*, no
+*cuándo*: la ventana sigue siendo de seis horas.
+
+**El departamento ya se persiste.** `stories.departamento` lo calcula la ingesta
+y `/api/departamentos` cuenta el catálogo entero, así que el mapa dejó de contar
+lo descargado. Va en `stories` y no en `articles` —contra lo que decía esta
+nota— porque el detector mira solo el titular de la historia, y persistirlo por
+artículo obligaría a cambiar esa decisión.
+
+---
+
 ## Lo primero al volver
 
 1. **La foto del destacado.** Es lo único de la portada del terremoto que quedó
    sin mirar: viene con crédito de Telemedellín y no está claro que sea del
    sismo. Jose lo señaló y no se tocó.
-2. **`articles.departamento`.** Los conteos del mapa siguen siendo de las
-   historias cargadas y no del catálogo, porque el departamento se detecta en el
-   navegador. Persistirlo es trabajo de la API — y **desplegar Fly ya no está
-   bloqueado**, así que no hay nada que lo frene.
-3. **Escribir a El Meridiano** (`elmeridiano.co`). Cubre Córdoba **y** Sucre: un
+2. **Escribir a El Meridiano** (`elmeridiano.co`). Cubre Córdoba **y** Sucre: un
    solo obstáculo técnico deja dos departamentos sin voz. Sigue siendo lo que más
    desbloquea por menos trabajo.
-4. **La afiliación de Ecos del Combeima a Blu Radio.** Decide si el Tolima tiene
+3. **La afiliación de Ecos del Combeima a Blu Radio.** Decide si el Tolima tiene
    voz propia o una afiliada de Valorem. Está en `fichas/ecos-del-combeima.md`
    como alta condicionada.
-5. **Ocho certificados de Cámara de Comercio** — Neiva, Tunja, Santa Marta,
+4. **Ocho certificados de Cámara de Comercio** — Neiva, Tunja, Santa Marta,
    Villavicencio, Pereira, Arauca, San Andrés, Montería. No se tramitan desde
    aquí.
-6. **La FLIP** y sus «Cartografías de la Información», que mapean 141 municipios
+5. **La FLIP** y sus «Cartografías de la Información», que mapean 141 municipios
    y visitaron justo los huecos del catálogo. Su web daba 502 y 404 el 9 de
    agosto: estaba rota, no bloqueando.
 
@@ -130,6 +148,13 @@ Ahora se pinta `nombreDeSeccion`, con el mismo orden de preferencia que
   no termina. Está precomputado; no deshacer.
 - **Nada de backticks dentro de una plantilla SQL** en `feedStore.js`: rompen el
   template literal y el error que da es un parse error críptico.
+- **Lo que el registro produce, el esquema tiene que admitirlo.** `factuality:
+  null` era válida en `mediaRegistry` y `NOT NULL` en `sources`, y esa
+  contradicción tumbó el feed diez horas. Hay prueba que las compara. Un valor
+  que uno genera y el otro rechaza es una caída diferida hasta el despliegue.
+- **En YAML, un escalar plano no puede contener `": "`.** Un `run:` de una línea
+  con dos puntos y espacio deja el workflow inválido, y GitHub lo reporta como
+  una ejecución fallida de 0 s, no como un error de sintaxis. Usa un bloque `|`.
 - **El orden del despliegue importa**: primero `main` (Vercel), luego
   `npm run deploy` (Fly), y la recategorización DESPUÉS de Fly — si no, el worker
   sigue ingiriendo con el léxico viejo.

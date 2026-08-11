@@ -1,9 +1,10 @@
 # Por dónde seguir
 
-Nota de traspaso del **2026-08-10**. Rama `orden-por-importancia`, empujada,
-árbol limpio, **430 tests** en verde, lint y typecheck limpios.
+Nota de traspaso del **2026-08-10**. Todo está en `main`, **439 tests** en verde,
+lint y typecheck limpios.
 
-El mapa por departamentos ya está en `main` (`10a1419`) y publicado en Vercel.
+**Publicado y verificado en producción:** Vercel y Fly desplegados, y el catálogo
+recategorizado. El mapa por departamentos también está en el aire.
 
 ---
 
@@ -23,18 +24,32 @@ con `npm run eval:sucesos`.
 
 ---
 
+## La sección nueva: Desastres y accidentes
+
+Los desastres no tenían casa. Medidos 400 artículos del terremoto: 236 sin tema y
+los demás repartidos entre **trece** secciones —el Congreso aplazando sesión en
+Política, los bancos reabriendo en Economía, el Ejército buscando desaparecidos
+en Justicia, Shakira en Entretenimiento—. Después: 330 de 400 en la sección
+nueva, 1 sin tema.
+
+**Los accidentes van dentro**, siguiendo la forma de IPTC Media Topics, el
+vocabulario de las agencias: su categoría es «disaster, accident and emergency
+incident». Medidos: 56 accidentes con el mismo problema. **La meteorología no se
+separa** aunque IPTC sí la separe — su motivo es el pronóstico diario y aquí no
+se ingiere: 14 artículos en 4 000.
+
+Añadir una sección toca **tres** sitios: `TEMAS`, `categories.js` y la lámina de
+`CategoryMark.jsx`. Hay una prueba por cada uno, y las tres avisan.
+
+---
+
 ## Lo primero al volver
 
-1. **Fusionar a `main` y desplegar Fly**, en ese orden. Empujar a `main` publica
-   el cliente; la API la despliega `npm run deploy`. **No hay prisa entre los
-   dos pasos**: si `/api/portada` todavía no existe, la portada se cae sola al
-   orden por historias sin romperse ni avisar. Está hecho a propósito.
-2. **La categoría del terremoto es «Política»**, porque el titular dice
-   «Gobierno declara desastre nacional». Un sismo con 111 muertos no es
-   política. No hay sección de desastres en la taxonomía y la más cercana sería
-   Ambiente: **es decisión de producto, no se tocó.**
-3. **La foto del destacado** viene con crédito de Telemedellín y conviene
-   mirarla: no está claro que sea del sismo.
+1. **La foto del destacado.** Sigue viniendo con crédito de Telemedellín y no
+   está claro que sea del sismo. Es lo único de la portada que quedó sin mirar.
+2. **`articles.departamento`.** Ahora que desplegar Fly ya no está bloqueado, es
+   el momento: los conteos del mapa siguen siendo de las historias cargadas y no
+   del catálogo.
 
 ---
 
@@ -96,5 +111,19 @@ Sin tocar desde la nota del 9 de agosto:
 
 Y del mapa: los conteos siguen siendo **de las historias cargadas, no del
 catálogo**. Persistir `articles.departamento` es trabajo de la API, y ahora que
-hay que desplegar Fly de todas formas, es buen momento para hacerlo en el mismo
-viaje.
+desplegar Fly ya no está bloqueado, no hay nada que lo frene.
+
+---
+
+## Una trampa que costó encontrar
+
+**`category` no es el campo de presentación.** Es la sección heredada del feed, y
+`recategorizar.mjs` la conserva intacta a propósito: es el archivo de lo que el
+sitio mostró antes de cada migración. Pero cuatro componentes la pintaban como
+etiqueta, así que la tarjeta decía «Política» mientras la historia vivía en
+Desastres. Ahora se pinta `nombreDeSeccion` (`src/lib/seccion.js`), que usa el
+mismo orden de preferencia que `perteneceA` para que no puedan divergir.
+
+De paso quedó completa una separación que `categories.js` tenía escrita como
+pendiente: Gaza y el fiscal general salían como «Internacional», que es ámbito y
+no tema.

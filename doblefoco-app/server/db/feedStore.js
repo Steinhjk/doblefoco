@@ -395,6 +395,45 @@ export async function readFeed({ limit = 20, offset = 0, ambito = 'all', temas =
     });
 }
 
+/**
+ * Los titulares de TODO el corpus, para calcular el IDF de la capa de suceso.
+ *
+ * POR QUÉ TODO Y NO LA PÁGINA. Está medido en `shared/sucesos.js`: con el IDF de
+ * cien historias, el 32 % de las agrupaciones eran falsas, porque un token que
+ * sale dos veces en cien parece rarísimo y esas dos veces son justo las dos
+ * historias que se unen mal. Con el corpus entero desaparecen sin tocar el
+ * umbral. El vocabulario pesa más que el umbral.
+ *
+ * SE CACHEA, porque son ~4 700 filas y la portada las pediría en cada visita.
+ * Cinco minutos: el vocabulario de un corpus de miles no cambia de forma
+ * apreciable en ese plazo, y una entrada nueva que tarde cinco minutos en pesar
+ * en el IDF no mueve ninguna agrupación.
+ *
+ * Solo los titulares: es lo único que el IDF necesita, y traer las filas enteras
+ * multiplicaría por diez el tráfico contra la base para tirar el resto.
+ */
+const VIGENCIA_VOCABULARIO_MS = 5 * 60 * 1000;
+let vocabularioCacheado = null;
+let vocabularioCaducaEn = 0;
+
+export async function vocabularioDelCorpus() {
+    if (vocabularioCacheado && Date.now() < vocabularioCaducaEn) return vocabularioCacheado;
+
+    const filas = await safeQuery(
+        'SELECT title FROM stories WHERE title IS NOT NULL',
+        [],
+        'vocabulario del corpus'
+    );
+
+    // Sin base se devuelve lo último que se supo, o vacío. Nunca se lanza: la
+    // portada sin vocabulario agrupa peor, pero agrupa; sin portada no hay sitio.
+    if (!filas) return vocabularioCacheado ?? [];
+
+    vocabularioCacheado = filas.rows.map((f) => f.title);
+    vocabularioCaducaEn = Date.now() + VIGENCIA_VOCABULARIO_MS;
+    return vocabularioCacheado;
+}
+
 /** Una historia por su id. `null` si no existe o si está retirada. */
 export async function readStory(id) {
     const historias = await leerHistorias({

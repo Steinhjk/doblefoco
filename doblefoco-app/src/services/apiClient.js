@@ -90,6 +90,28 @@ export async function fetchFeed({ limit = 20, offset = 0, ambito = 'all' } = {})
     };
 }
 
+/**
+ * La portada agrupada en sucesos.
+ *
+ * DEGRADA EN SILENCIO Y A PROPÓSITO. El cliente se publica en Vercel y la API en
+ * Fly, y empujar a `main` solo despliega el primero: hay una ventana en la que
+ * este código ya está en producción y `/api/portada` todavía no existe. Un 404
+ * ahí no es un fallo, es el orden normal de los dos despliegues.
+ *
+ * Por eso devuelve `sucesos: []` en vez de un error, y la portada se queda con
+ * el orden por historias hasta que la API se ponga al día. Lo que no puede pasar
+ * es que la portada se vea rota durante esa ventana.
+ */
+export async function fetchPortada({ limit = 100 } = {}) {
+    const result = await request(`/api/portada?limit=${limit}`);
+    if (!result.ok) return { ok: false, sucesos: [], error: result.error };
+
+    return {
+        ok: true,
+        sucesos: Array.isArray(result.data?.sucesos) ? result.data.sucesos : [],
+    };
+}
+
 /** Detalle de una historia. */
 export async function fetchStory(id) {
     const result = await request(`/api/story/${encodeURIComponent(id)}`);

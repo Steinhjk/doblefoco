@@ -149,6 +149,67 @@
     gap: 4px;
 }
 
+/*
+ * El tamaño del suceso: cuántos artículos y desde cuántos ángulos. Va junto al
+ * recuento de medios porque es la misma afirmación —cuánto se ha cubierto esto—
+ * y separarlo haría pensar que son cifras de cosas distintas.
+ */
+.meta-angulos {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/*
+ * Los ángulos del suceso.
+ *
+ * Debajo de la barra de cobertura y no encima: primero el hecho y su reparto,
+ * después las piezas. Cada una conserva su recuento propio, que es lo que
+ * distingue esta lista de un sumario — no son subtítulos, son historias enteras
+ * con su propia cobertura.
+ */
+.spotlight-angulos {
+    list-style: none;
+    margin: 0 0 10px;
+    padding: 8px 0 0;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.spotlight-angulos li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+}
+
+.spotlight-angulos a {
+    color: var(--text-main);
+    text-decoration: none;
+    /* Un ángulo no puede robarle la jerarquía al titular del suceso. */
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.spotlight-angulos a:hover {
+    color: var(--text-muted);
+    text-decoration: underline;
+}
+
+.angulo-medios {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
 .spotlight-title {
     font-family: var(--font-heading);
     font-size: 1.05rem;

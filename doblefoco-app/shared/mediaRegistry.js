@@ -725,11 +725,14 @@ export const MEDIA_REGISTRY = [
      * Fase 0 quitó del motor. El hueco se declara: la tabla dice «sin medir» y
      * el gráfico no los coloca en el eje vertical.
      *
-     * De los 22 candidatos NO entran aquí trece: nueve porque su ficha quedó
+     * De los 22 candidatos NO entraron aquí trece: nueve porque su ficha quedó
      * sin número, uno —Ecos del Combeima— porque su alta está condicionada a
      * resolver si es afiliada de Blu Radio, y tres —EL DIARIO de Boyacá, Vive
-     * el Meta y Lente Regional— porque dar de alta obliga a declarar un
-     * `ownerType`, y de esos tres no sé de quién son.
+     * el Meta y Lente Regional— porque dar de alta obligaba a declarar un
+     * `ownerType`, y de esos tres no se sabía de quién son.
+     *
+     * ESOS TRES ÚLTIMOS YA ENTRARON el 2026-08-12, con la ausencia declarada.
+     * Ver el bloque LOS TRES QUE VUELVEN más abajo. Quedan fuera diez.
      */
     {
         id: 'el-pilon', name: 'El Pilón', shortName: 'El Pilón',
@@ -818,6 +821,7 @@ export const MEDIA_REGISTRY = [
          * departamentos que el mapa pintaba en blanco. Al lector le decíamos
          * «aquí no hay medios» cuando lo cierto era «aquí no hemos podido
          * comprobar de quién son». Ver AUSENCIA DECLARADA en mediaOwnership.js.
+         * Los tres entraron al día siguiente, el 2026-08-12.
          *
          * SU FICHA DICE QUE NO SABEMOS, con la fecha en que se buscó y el
          * documento que cerraría el hueco. No dice «independiente», que sería
@@ -839,6 +843,86 @@ export const MEDIA_REGISTRY = [
         biasRationale: 'Diario nativo digital de Montería, activo desde 2014 y de los que más publican en Córdoba. Orientación mixta provisional, y por ausencia de evidencia y no por evidencia de equilibrio: no se ha podido establecer quién lo controla, y nada de lo observable lo sitúa en el eje. La regla del protocolo manda entonces la banda más cercana a la mixta — ver fichas/la-razon-cordoba.md.',
         feed: { url: 'https://larazon.co/feed/', via: 'direct', category: 'Política' },
         imageHosts: ['larazon.co'],
+    },
+
+    /**
+     * ── LOS TRES QUE VUELVEN (alta del 2026-08-12) ───────────────────────────
+     *
+     * EL DIARIO de Boyacá, Vive el Meta y Lente Regional estaban fuera por una
+     * regla, no por una carencia suya: dar de alta obligaba a declarar dueño y
+     * de los tres no se sabía de quién son. Esa regla se cambió el 2026-08-11 y
+     * estos tres eran la deuda que dejaba. Entran los tres con `ownerType: null`
+     * declarado con fecha — ver mediaOwnership.js.
+     *
+     * ABREN META Y CAQUETÁ, dos departamentos que el mapa pintaba en blanco.
+     * Boyacá ya tenía voz —Boyacá Digital—, y este es el segundo: el primero de
+     * redacción humana.
+     *
+     * LOS TRES FEEDS SE VOLVIERON A PROBAR EL 2026-08-12 con el User-Agent ya
+     * corregido: 200 los tres, con 10 ítems, y el más rezagado de 23 h.
+     *
+     * LOS TRES ENTRAN EN 0,00, y conviene leer bien qué dice ese número: es la
+     * Regla 2 —sin nada que sitúe al medio en el eje, la banda más cercana a la
+     * mixta—, o sea AUSENCIA DE EVIDENCIA y no evidencia de equilibrio. EL
+     * DIARIO venía con +0,20 propuesto por analogía con los diarios comerciales
+     * regionales; se descartó la analogía por lo mismo que en La Razón.co y en
+     * Proclama del Pacífico: aquellos son sociedades conocidas con junta y
+     * trayectoria en papel, y de estos no se sabe quién manda. Importar el
+     * parecido sería inventarlo. Decisión de Jose, 2026-08-12.
+     */
+    {
+        /**
+         * EL DIARIO (Tunja) — Y LA LECCIÓN DE QUE UNA FICHA CADUCA EN TRES DÍAS.
+         *
+         * Su ficha del 9 de agosto daba como nivel 1 a un cofundador que seguía
+         * dirigiendo. Al comprobarlo hoy, su web no menciona a ninguno de los
+         * dos nombres que la ficha citaba: desde junio de 2026 lo dirige Ricardo
+         * Rodríguez Puerto, que además compró participación accionaria a la
+         * familia propietaria. La regla del presente no es solo una regla sobre
+         * el pasado lejano; tres días bastaron.
+         *
+         * COLISIÓN DE NOMBRE, la cuarta del catálogo: no tiene relación con El
+         * Diario de Pereira, que ya está dado de alta. Por eso los dos llevan la
+         * ciudad en el nombre y distinto `shortName`.
+         */
+        id: 'el-diario-boyaca', name: 'EL DIARIO (Boyacá)', shortName: 'EL DIARIO',
+        domain: 'eldiarioboyaca.com', departamento: 'Boyacá', country: 'CO', group: 'Regional Boyacá',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Tunja con edición impresa y digital, el más activo de los candidatos de Boyacá. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio: no se ha podido establecer qué sociedad lo edita ni qué familia lo posee, y nada de lo observable lo sitúa en el eje — ver fichas/el-diario-boyaca.md.',
+        feed: { url: 'https://eldiarioboyaca.com/feed/', via: 'direct', category: 'Política' },
+        imageHosts: ['eldiarioboyaca.com'],
+    },
+    {
+        /**
+         * VIVE EL META (Villavicencio) — PRIMER MEDIO DEL META.
+         *
+         * Es el caso de Pulzo a escala departamental: la sociedad editora está
+         * nombrada y con NIT —Grupo La Independencia S.A.S., 901092043-9—, y
+         * quién la controla no consta en ninguna parte. Conocer el vehículo no
+         * es conocer al dueño, y el registro no debe dejar creer que sí.
+         */
+        id: 'vive-el-meta', name: 'Vive el Meta', shortName: 'Vive el Meta',
+        domain: 'viveelmeta.com', departamento: 'Meta', country: 'CO', group: 'Grupo La Independencia S.A.S.',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Periódico digital de Villavicencio, primero del Meta en el catálogo. Publica su sociedad editora con NIT, pero ni un propietario ni un accionista. Orientación mixta provisional por ausencia de evidencia: nada de lo observable lo sitúa en el eje — ver fichas/vive-el-meta.md.',
+        feed: { url: 'https://viveelmeta.com/feed/', via: 'direct', category: 'Política' },
+        imageHosts: ['viveelmeta.com'],
+    },
+    {
+        /**
+         * LENTE REGIONAL (Florencia) — PRIMER MEDIO DEL CAQUETÁ.
+         *
+         * De los tres es el que más gente nombra —cinco personas con cargo y
+         * biografía— y el único que declara cómo se financia: pide «apoyo sin
+         * restricciones» de empresas y de la región, y no dice de quién lo
+         * recibe. Va en la ficha como desvelamiento, no como acusación.
+         */
+        id: 'lente-regional', name: 'Lente Regional', shortName: 'Lente Regional',
+        domain: 'lenteregional.com', departamento: 'Caquetá', country: 'CO', group: 'Regional Caquetá',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Informativo web de Florencia, primero del Caquetá en el catálogo. Se declara de «periodismo equilibrado» con la fórmula de destacar lo positivo sin esconder lo negativo. Orientación mixta provisional por ausencia de evidencia, con la tensión de esa fórmula y de su petición de apoyo empresarial declarada — ver fichas/lente-regional.md.',
+        feed: { url: 'https://lenteregional.com/feed/', via: 'direct', category: 'Política' },
+        imageHosts: ['lenteregional.com'],
     },
     {
         /**

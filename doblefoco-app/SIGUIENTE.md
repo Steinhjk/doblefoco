@@ -1,5 +1,44 @@
 # Por dónde seguir
 
+## Los tres que faltaban ya están dentro (2026-08-12)
+
+Rama **`altas-boyaca-meta-caqueta`**. **EL DIARIO de Boyacá, Vive el Meta y
+Lente Regional** entran con `ownerType: null` declarado con fecha. **Meta y
+Caquetá dejan de estar en blanco**: de 18 departamentos con voz propia viva a
+**20**. Catálogo: 62 → **65 medios**, 52 colombianos, cero firmados.
+
+**No se copió ninguna ficha: se comprobaron los tres sitios de campo el día 12.**
+Y esa decisión pagó sola:
+
+- **La ficha de EL DIARIO había caducado en tres días.** Daba como nivel 1 a un
+  cofundador que seguía dirigiendo, y hoy su web no menciona a ninguno de los dos
+  nombres que citaba. Cambió de manos en junio: **Ricardo Rodríguez Puerto lo
+  dirige y además compró participación accionaria a la familia propietaria**
+  ([Orfetv, 17-06-2026](https://www.orfetv.com/2026/06/17/el-periodico-el-diario-inicia-una-nueva-etapa/)).
+  La regla del presente no va solo de los años noventa.
+- **Vive el Meta sí declara su editora**, y la ficha lo daba por desconocido:
+  «La persona jurídica **Grupo La Independencia S.A.S** es propietaria y editora
+  de viveelmeta.com», NIT 901092043-9, en tres páginas suyas. Quién controla esa
+  sociedad sigue sin constar — es el caso de Pulzo a escala departamental.
+- **Lente Regional** nombra a cinco personas con cargo y a ninguna como
+  propietaria. Sin razón social ni NIT: no hay ni por dónde entrar al registro.
+
+**Los tres entran en 0,00 por la Regla 2** —ausencia de evidencia, no evidencia
+de equilibrio—. EL DIARIO venía con +0,20 propuesto por analogía con los diarios
+comerciales regionales y **se descartó la analogía**: aquellos son sociedades
+conocidas y de este no se sabe ni cuál lo edita. Decisión de Jose.
+
+Verificado: 486 pruebas, lint, typecheck, `check:registry` limpio, `docs:catalog`
+regenerado y los tres feeds probados con `check:feeds` —200, dentro de ventana,
+medianas de 16 h, 42 h y 41 h—. La CSP lleva sus tres dominios; de paso quedó
+ordenada alfabéticamente, sin perder ninguna entrada de las 124 anteriores.
+
+**Lo que NO se cerró:** los tres certificados de Cámara de Comercio —Tunja,
+Villavicencio y Caquetá— siguen siendo trámite manual. El de Villavicencio es el
+más fácil, porque el NIT ya está en la mano.
+
+---
+
 ## Fusionada y desplegada (2026-08-12)
 
 `fichas-propiedad-ausencia-y-altas` está **en `main` y en producción**. Se

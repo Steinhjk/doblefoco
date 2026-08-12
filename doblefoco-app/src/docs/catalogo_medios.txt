@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-12
-Medios en el catálogo: 62
+Medios en el catálogo: 65
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  32 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  35 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -206,6 +206,32 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  32 medios
     podido establecer quién lo controla, y nada de lo observable lo
     sitúa en el eje. La regla del protocolo manda entonces la banda
     más cercana a la mixta — ver fichas/la-razon-cordoba.md.
+
+  EL DIARIO (Boyacá)  ·  sesgo +0.00  ·  factualidad 0%
+    eldiarioboyaca.com · Regional Boyacá · CO · RSS propio · PROVISIONAL
+    Diario de Tunja con edición impresa y digital, el más activo de
+    los candidatos de Boyacá. Orientación mixta provisional por
+    ausencia de evidencia y no por evidencia de equilibrio: no se ha
+    podido establecer qué sociedad lo edita ni qué familia lo posee, y
+    nada de lo observable lo sitúa en el eje — ver
+    fichas/el-diario-boyaca.md.
+
+  Vive el Meta  ·  sesgo +0.00  ·  factualidad 0%
+    viveelmeta.com · Grupo La Independencia S.A.S. · CO · RSS propio · PROVISIONAL
+    Periódico digital de Villavicencio, primero del Meta en el
+    catálogo. Publica su sociedad editora con NIT, pero ni un
+    propietario ni un accionista. Orientación mixta provisional por
+    ausencia de evidencia: nada de lo observable lo sitúa en el eje —
+    ver fichas/vive-el-meta.md.
+
+  Lente Regional  ·  sesgo +0.00  ·  factualidad 0%
+    lenteregional.com · Regional Caquetá · CO · RSS propio · PROVISIONAL
+    Informativo web de Florencia, primero del Caquetá en el catálogo.
+    Se declara de «periodismo equilibrado» con la fórmula de destacar
+    lo positivo sin esconder lo negativo. Orientación mixta
+    provisional por ausencia de evidencia, con la tensión de esa
+    fórmula y de su petición de apoyo empresarial declarada — ver
+    fichas/lente-regional.md.
 
   Pulzo  ·  sesgo +0.00  ·  factualidad 0%
     pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL

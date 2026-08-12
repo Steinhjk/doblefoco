@@ -1,5 +1,13 @@
 # ¿Tiene cada departamento un medio propio que funcione?
 
+> **Actualización del 2026-08-12.** Entraron tres medios más —EL DIARIO de
+> Boyacá, Vive el Meta y Lente Regional— con la propiedad declarada como no
+> comprobada. **Meta y Caquetá dejan de estar en blanco**, así que el recuento
+> de abajo pasa de **18 a 20 departamentos con voz propia viva** y de 15 a 13
+> sin ningún medio propio. Los tres feeds se verificaron ese día: 200, dentro de
+> ventana, medianas de 16 h, 42 h y 41 h. El resto del barrido no se ha
+> rehecho, así que las cifras siguientes son las del día 11.
+
 Barrido del **2026-08-11**, a petición de Jose. Se comprueban dos cosas
 distintas y se informan por separado, porque tener medio en el catálogo y tener
 voz viva no son lo mismo:

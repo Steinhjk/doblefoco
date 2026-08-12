@@ -380,9 +380,13 @@ consecuencia:
 - **Uno**, Ecos del Combeima, porque su alta está condicionada a resolver si es
   afiliada de Blu Radio.
 - **Tres** —EL DIARIO de Boyacá, Vive el Meta y Lente Regional— porque dar de
-  alta obliga a declarar un `ownerType`, es decir, a afirmar de quién es el
-  medio, **y de esos tres no lo sé**. Sus propias fichas ya decían que debían ir
-  sin número; esto es la consecuencia práctica.
+  alta obligaba a declarar un `ownerType`, es decir, a afirmar de quién es el
+  medio, **y de esos tres no se sabía**. Sus propias fichas ya decían que debían
+  ir sin número; esto era la consecuencia práctica.
+
+  **Esos tres entraron el 2026-08-12**, con la ausencia declarada con fecha en
+  vez de con un dueño inventado. Siguen sin saberse sus dueños: lo que cambió es
+  qué se hace con eso. Quedan diez fuera.
 
 ### Lo que saltó al hacerlo
 

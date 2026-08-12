@@ -1870,6 +1870,146 @@ export const OWNERSHIP_PROFILES = {
         ],
     },
 
+    /*
+     * ── LOS TRES QUE LA REGLA VIEJA DEJABA FUERA (2026-08-12) ────────────────
+     *
+     * EL DIARIO de Boyacá, Vive el Meta y Lente Regional entran hoy con la
+     * regla que se estrenó con La Razón de Montería. No hay hallazgo nuevo que
+     * los habilite: lo que cambió es que la ausencia de dueño se puede declarar
+     * en vez de obligar a dejar el medio fuera.
+     *
+     * LOS TRES SE COMPROBARON DE NUEVO EL 2026-08-12, sitio por sitio, y NO se
+     * copió lo que decían sus fichas del 9 de agosto. Menos mal: la de EL
+     * DIARIO había caducado en tres días —ver su registro— y la de Vive el Meta
+     * se quedaba corta.
+     */
+
+    'el-diario-boyaca': {
+        ownerType: null,
+        holdings: [
+            'Publica en papel y en web —«producción impresa y virtual», según su propia misión— desde Tunja, con corresponsalía en Occidente y el Valle de Tenza.',
+            'Dice ser la cuenta número uno de YouTube entre los medios de Boyacá, y mantiene canal propio (EDtv) con entrevistas a candidatos.',
+        ],
+        notes: [
+            'CAMBIÓ DE MANOS EN JUNIO DE 2026, Y LA FICHA DEL 9 DE AGOSTO NO SE HABÍA ENTERADO. Ricardo Rodríguez Puerto —26 años como jefe de redacción de Boyacá Siete Días— asumió la dirección tras un acuerdo con la familia propietaria por el cual adquirió participación accionaria y pasó a ser copropietario. Su web ya no menciona a Julio César Peña Suárez ni a Pedro Esaú Mendieta, que eran los dos nombres de la ficha anterior.',
+            'El director es hoy además accionista. Eso concentra en una persona la decisión editorial y el interés patrimonial, que en un diario regional pequeño es la estructura habitual y conviene decirla en voz alta.',
+            'La gerencia figura a nombre de Camila Mendieta. Comparte apellido con el Pedro Esaú Mendieta que la ficha anterior daba como director general, lo que APUNTA a que la familia propietaria sea la Mendieta, pero no se afirma: no hay documento que lo diga y un apellido no es una prueba.',
+        ],
+        sources: [
+            'https://eldiarioboyaca.com/quienes-somos/',
+            'https://www.orfetv.com/2026/06/17/el-periodico-el-diario-inicia-una-nueva-etapa/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-12',
+        buscadoEn: [
+            {
+                fuente: 'Su página «¿Quiénes somos?»',
+                resultado: 'Publica cargos y correos —Director: Ricardo Rodríguez Puerto; Gerencia: Camila Mendieta— y la dirección de Tunja (Transversal 4 n.º 46-53). NO publica razón social, NI NIT, NI accionariado. El pie dice solo «Periódico EL DIARIO, la casa de la información de Boyacá © 2020».',
+                url: 'https://eldiarioboyaca.com/quienes-somos/',
+            },
+            {
+                fuente: 'Orfetv (medio local de Boyacá), 17-06-2026',
+                resultado: 'Informa del cambio de etapa: «Se concretó un acuerdo con la familia propietaria del periódico mediante el cual Ricardo Rodríguez Puerto adquirió una participación accionaria». Es la única fuente de tercero que dice que hay una familia detrás, y NO la nombra ni da el porcentaje.',
+                url: 'https://www.orfetv.com/2026/06/17/el-periodico-el-diario-inicia-una-nueva-etapa/',
+            },
+            {
+                fuente: '/contacto/ del propio medio',
+                resultado: 'Devuelve 404. El único canal es el formulario de la página de «¿Quiénes somos?».',
+                url: 'https://eldiarioboyaca.com/contacto/',
+            },
+        ],
+        falta: [
+            'El certificado de existencia y representación de la Cámara de Comercio de Tunja, que diría la razón social de la editora, sus socios y el porcentaje que compró el director. Sin razón social ni NIT hay que buscarlo por nombre comercial: es trámite manual y no se alcanza desde aquí.',
+            'Confirmar si la familia propietaria es la Mendieta. Un solo documento del registro lo cierra en cualquiera de los dos sentidos.',
+        ],
+    },
+
+    'vive-el-meta': {
+        ownerType: null,
+        holdings: [
+            'La sociedad editora está nombrada y con NIT: Grupo La Independencia S.A.S., NIT 901092043-9, de Villavicencio. El medio lo declara en tres páginas distintas —contacto, política de ética y pie— con la fórmula «es propietaria y editora de viveelmeta.com».',
+            'El sitio anuncia además secciones de Emisora y TV, así que la sociedad no se limita al portal escrito. No se ha comprobado qué son esas señales ni con qué licencia operan.',
+        ],
+        notes: [
+            'QUIÉN CONTROLA LA SOCIEDAD NO CONSTA, y esa es toda la diferencia. Se conoce el vehículo y no a la persona, igual que en Pulzo. La única página de equipo publica dos cargos de redacción —Fernando Betancourt Durán, periodista, y Camilo Aguirre Grajales, editor general— y ningún propietario, accionista ni representante legal.',
+            'Un medio digital pequeño en un departamento con política departamental con dinero es exactamente el perfil donde la propiedad más importa. La ausencia se declara por eso, no a pesar de eso.',
+        ],
+        sources: [
+            'https://viveelmeta.com/contacto/',
+            'https://viveelmeta.com/politica-de-etica/',
+            'https://www.viveelmeta.com/equipo-editorial/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-12',
+        buscadoEn: [
+            {
+                fuente: 'Su página de contacto',
+                resultado: 'Es la más explícita del catálogo entre las que no cierran la propiedad: «La persona jurídica Grupo La Independencia S.A.S es propietaria y editora de viveelmeta.com». Da NIT 901092043-9 y ciudad, y ni un nombre de persona.',
+                url: 'https://viveelmeta.com/contacto/',
+            },
+            {
+                fuente: 'Su página de equipo editorial',
+                resultado: 'Dos cargos de redacción y nada más: Fernando Betancourt Durán (periodista) y Camilo Aguirre Grajales (editor general). No hay director, ni gerente, ni representante legal.',
+                url: 'https://www.viveelmeta.com/equipo-editorial/',
+            },
+            {
+                fuente: 'Espejos del RUES que sí respondieron con El Pilón, Aguasclaras y Diario del Sur',
+                resultado: 'Grupo La Independencia S.A.S. no aparece en ninguno (consulta del 2026-08-09, repetida el 2026-08-12). La API pública de ruesapi.rues.org.co devuelve 404 a las cuatro rutas probadas, así que no se pudo consultar por programa.',
+                url: 'https://www.rues.org.co/',
+            },
+        ],
+        falta: [
+            'El certificado de la Cámara de Comercio de Villavicencio con el NIT 901092043-9: socios, representante legal y estado de la matrícula. Es el trámite más directo de los tres, porque el NIT ya está en la mano.',
+            'Comprobar que la matrícula está activa. Dos de los doce candidatos examinados el 9 de agosto tenían la editora en liquidación, así que la ausencia de dato no tranquiliza.',
+            'Qué son la Emisora y la TV que anuncia, y a nombre de quién están.',
+        ],
+    },
+
+    'lente-regional': {
+        ownerType: null,
+        holdings: [
+            'Es un informativo web de Florencia con equipo nombrado y biografiado: Juan Pablo Sánchez Cardozo (director), Wendy Barrios Gasca (periodista y cofundadora), Cristian Sánchez (productor), Andrés Elías Cuellar (director comercial) y Alexander Cruz Aponte (productor general).',
+        ],
+        notes: [
+            'PIDE «APOYO SIN RESTRICCIONES» de empresas y de la región, y no publica quién se lo da. Es lo que ellos mismos escriben, y deja abierto el conflicto de interés más común de la prensa regional: el que viene de quién financia, no de quién posee.',
+            'Su fórmula editorial declarada es «destacar lo positivo, pero sin esconder lo negativo». En un departamento, quien produce las buenas noticias suele ser la gobernación, la alcaldía y las empresas — los mismos a los que pide apoyo. No se afirma que ocurra: se deja anotado dónde se vería.',
+        ],
+        sources: [
+            'https://lenteregional.com/quienes-somos/',
+            'https://lenteregional.com/equipo/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-12',
+        buscadoEn: [
+            {
+                fuente: 'Su página «Quiénes somos»',
+                resultado: 'Presenta el proyecto y a sus dos fundadores con trayectoria, pero no publica razón social, NI NIT, NI socios. Los metadatos de la web declaran una S.A.S.: existe la figura societaria, no está publicada su identidad.',
+                url: 'https://lenteregional.com/quienes-somos/',
+            },
+            {
+                fuente: 'Su página de equipo',
+                resultado: 'Cinco personas con cargo y biografía, incluido un director comercial. Ninguna figura como propietaria ni como socia.',
+                url: 'https://lenteregional.com/equipo/',
+            },
+            {
+                fuente: 'Su página de contacto',
+                resultado: 'Solo un número de móvil (311 892 5721). Sin sociedad, sin dirección física y sin representante.',
+                url: 'https://lenteregional.com/contacto/',
+            },
+        ],
+        falta: [
+            'La razón social y el NIT, que su web no publica pese a declararse S.A.S. en los metadatos. Sin uno de los dos no hay por dónde entrar en el registro mercantil.',
+            'El certificado de la Cámara de Comercio del Caquetá una vez se tenga el nombre.',
+            'Quién le da hoy el «apoyo sin restricciones» que pide. Es la pregunta que su propia página deja abierta, y en cuanto se conozca es evidencia de nivel 1.',
+        ],
+    },
+
     /**
      * PULZO — EL HILO LLEGA A UNA SOCIEDAD Y AHÍ SE PARA (2026-08-11).
      *

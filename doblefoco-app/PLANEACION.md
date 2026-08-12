@@ -99,5 +99,7 @@ conversación de planeación y conviene que el hilo quede completo.
 **Cerrado el 2026-08-11.** Se declara la ausencia con fecha de consulta en vez de
 dejar el medio fuera del catálogo. Implementado en `shared/mediaOwnership.js`.
 
-Consecuencia todavía sin ejecutar: **EL DIARIO de Boyacá, Vive el Meta y Lente
-Regional** están fuera por la regla vieja y hoy podrían entrar.
+Consecuencia ejecutada el **2026-08-12**: **EL DIARIO de Boyacá, Vive el Meta y
+Lente Regional** entraron con la ausencia declarada. Meta y Caquetá dejan de
+estar en blanco. Los tres se volvieron a comprobar de campo antes del alta, y
+menos mal: la ficha de EL DIARIO había caducado en tres días.

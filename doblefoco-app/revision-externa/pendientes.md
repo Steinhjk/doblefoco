@@ -1,7 +1,10 @@
 # Cola de revisión
 
-Estado al **2026-08-11**. **62 medios en el catálogo, 49 colombianos, CERO
-firmados.** La cifra de firmados no ha subido desde que existe este archivo.
+Estado al **2026-08-12**. **65 medios en el catálogo, 52 colombianos, CERO
+firmados.** La cifra de firmados no ha subido desde que existe este archivo; la
+del catálogo subió tres el día 12 —EL DIARIO de Boyacá, Vive el Meta y Lente
+Regional—, así que **la distancia entre lo que se publica y lo que se ha
+auditado vuelve a crecer**.
 
 ---
 
@@ -15,13 +18,20 @@ procedimiento, `PROMPT.md` y `CONTEXTO.md` son lo que se pega, y **`respuestas/`
 está vacía salvo la plantilla**. Ese es el estado, y es el único dato que hacía
 falta aquí.
 
-**Hay 17 fichas con valor propuesto**, listas para enviar. Las tres que este
-archivo ya marcaba —El Espectador, CasaMacondo, Volcánicas— más catorce
-regionales con valor provisional de alta: Boyacá Digital, Chocó 7 Días, Diario
-del Huila, Diario del Norte, Ecos del Combeima, EL DIARIO de Boyacá, El Diario de
-Pereira, El Manduco, El Morichal, El Pilón, La Razón.co, Lente Regional,
-MiPutumayo, Proclama del Pacífico, Pulzo, Telecafé, Valora Analitik y Vive el
-Meta.
+**Hay 21 fichas con valor propuesto**, listas para enviar —este archivo decía 17
+y «catorce regionales», y ninguna de las dos cifras cuadraba con su propia
+lista; contadas una por una son 3 + 18—. Las tres que ya marcaba —El Espectador,
+CasaMacondo, Volcánicas— más dieciocho regionales con valor provisional de alta:
+Boyacá Digital, Chocó 7 Días, Diario del Huila, Diario del Norte, Ecos del
+Combeima, EL DIARIO de Boyacá, El Diario de Pereira, El Manduco, El Morichal, El
+Pilón, La Razón.co, Lente Regional, MiPutumayo, Proclama del Pacífico, Pulzo,
+Telecafé, Valora Analitik y Vive el Meta.
+
+**Tres de esa lista dejaron de ser candidatos y ya están publicándose**: EL
+DIARIO de Boyacá, Lente Regional y Vive el Meta entraron el 2026-08-12. Su ficha
+sigue igual de pendiente de revisión; lo que cambió es que ahora el lector ya ve
+su número. **EL DIARIO entró en 0,00 y no en el +0,20 que proponía su ficha** —
+si se manda a revisión, es ese valor el que hay que contrastar.
 
 **Los medios grandes no tienen ficha.** Noticias Caracol, El Tiempo, Semana,
 Caracol Radio, Noticias RCN y La FM entraron antes del protocolo: su
@@ -98,6 +108,14 @@ un defecto que estas fichas introduzcan: es el estado actual, que las fichas
 vienen a hacer visible y a corregir uno por uno.**
 
 Y la cifra sube, no baja: el 2026-08-11 entraron tres medios más —**Pulzo, La
-Razón.co de Montería y la ingesta de EFE**—, los tres sin firmar como el resto.
-El catálogo crece más rápido de lo que se audita, y eso es una decisión implícita
-que conviene tomar en voz alta alguna vez.
+Razón.co de Montería y la ingesta de EFE**— y el 2026-08-12 otros tres —**EL
+DIARIO de Boyacá, Vive el Meta y Lente Regional**—, los seis sin firmar como el
+resto. El catálogo crece más rápido de lo que se audita, y eso es una decisión
+implícita que conviene tomar en voz alta alguna vez.
+
+**Un dato del día 12 que vale para toda la cola:** al comprobar de campo las
+tres fichas antes del alta, **una había caducado en tres días**. La de EL DIARIO
+apoyaba su nivel 1 en dos cargos que el medio ya no publicaba, porque había
+cambiado de manos en junio. Si una ficha de agosto envejece así, **las fichas que
+se manden a revisión externa hay que comprobarlas el día que se mandan**, no
+darlas por buenas porque estén escritas.

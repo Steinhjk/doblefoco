@@ -2,11 +2,12 @@
 
 | | |
 |---|---|
-| **Valor propuesto** | **0,00** · Orientación mixta — **provisional de alta** |
+| **Valor vigente** | **0,00** · Orientación mixta — **provisional, en catálogo** |
 | **Firma** | ☐ pendiente — Jose Arbeláez |
-| **Fecha** | 2026-08-09 (candidatura, medio aún no ingerido) |
+| **Alta** | 2026-08-12 · propiedad declarada como no comprobada |
+| **Revisión de campo** | 2026-08-12 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
-| **Departamento** | Meta — sería el primero del departamento |
+| **Departamento** | Meta — **primero del departamento** |
 
 ---
 
@@ -16,19 +17,37 @@
 
 | Dato | Valor |
 |---|---|
-| Empresa | **Grupo La Independencia S.A.S.** |
+| Empresa propietaria y editora | **Grupo La Independencia S.A.S.** |
 | NIT | **901092043-9** |
+| Sede | Villavicencio |
 | Periodista | Fernando Betancourt Durán |
 | Editor general | Camilo Aguirre Grajales |
 
-Fuente: [equipo editorial del propio medio](https://www.viveelmeta.com/equipo-editorial/).
+Fuentes: [contacto](https://viveelmeta.com/contacto/),
+[política de ética](https://viveelmeta.com/politica-de-etica/) y
+[equipo editorial](https://www.viveelmeta.com/equipo-editorial/).
+
+**Lo dice él mismo, con todas las letras y en tres páginas distintas:** «La
+persona jurídica **Grupo La Independencia S.A.S** es propietaria y editora de
+viveelmeta.com». Es la declaración de propiedad más explícita del catálogo entre
+las que aun así no cierran nada — comprobado el 2026-08-12.
 
 **Hay NIT, que es más de lo que dieron la mayoría** —permite pedir el
 certificado sin buscar primero la razón social— pero **no consta ni un
 propietario ni un accionista ni un director.** Dos nombres de redacción no son
-la propiedad. Intenté el NIT en los espejos del RUES que sí funcionaron con El
-Pilón, Aguasclaras y Diario del Sur, y **Grupo La Independencia S.A.S. no
-aparece en ninguno.**
+la propiedad. Se intentó el NIT en los espejos del RUES que sí funcionaron con
+El Pilón, Aguasclaras y Diario del Sur, y **Grupo La Independencia S.A.S. no
+aparece en ninguno** (2026-08-09, repetido el 2026-08-12). La API pública de
+`ruesapi.rues.org.co` devuelve 404 en las cuatro rutas probadas, así que la
+consulta por programa no es una vía.
+
+**Es el caso de Pulzo a escala departamental:** el hilo llega a una sociedad y
+ahí se para. Conocer el vehículo no es conocer al dueño, y el registro no debe
+dejar creer que sí.
+
+**Y hay algo más que este medio es y no se ha mirado:** anuncia secciones de
+**Emisora y TV**. Si la misma sociedad opera señales con licencia, eso amplía lo
+que hay que saber de ella, y no se ha comprobado.
 
 **Lo que eso NO significa.** No he comprobado el estado de su matrícula. Dado
 que dos de los doce candidatos examinados tenían la editora en liquidación, la
@@ -41,9 +60,13 @@ de Villavicencio y el departamento. Su página de equipo describe un proceso de
 control editorial, pero **no declara línea, ni financiación, ni independencia**,
 al contrario que Diario del Norte.
 
-### Nivel 2 — Conducta medida: NO EXISTE
+### Nivel 2 — Conducta medida: NO EXISTE TODAVÍA
 
-No está ingerido. Su feed devolvió artículos de hace 20 horas.
+Entra en ingesta el 2026-08-12. Primera fecha con corpus utilizable: **2026-11-10**.
+
+Su feed responde 200 con 10 ítems, 9 de 10 dentro de ventana y mediana de 42 h
+—medido con el verificador el 2026-08-12—. Es el más lento de los tres altas de
+hoy, y aun así muy por encima del umbral.
 
 ---
 
@@ -87,11 +110,19 @@ menos afirma, y con esta objeción a la vista para quien firme.
    favorable, es la señal que la propiedad desconocida no permite ver.
 4. **Comprobar que la matrícula está activa**, dado el precedente de dos
    editoras en liquidación entre los candidatos.
+5. **Qué son la Emisora y la TV que anuncia**, y a nombre de quién están. Una
+   licencia de radiodifusión es un documento público y tiene titular.
 
 ---
 
 ## ESTADO
 
-**Valor provisional de alta con objeción de método sin resolver.** Junto con
-EL DIARIO de Boyacá, es de las dos fichas más flojas de las doce. Recomiendo
-pedir el certificado antes del alta — con el NIT en la mano, es el más fácil.
+**En catálogo desde el 2026-08-12, con 0,00 provisional y la propiedad declarada
+como no comprobada.** La recomendación del 9 de agosto —pedir el certificado
+antes del alta— **no se cumplió**, y no porque se descartara: la regla cambió el
+2026-08-11 y la ausencia pasó a poder declararse. **El certificado sigue siendo
+el trámite pendiente más fácil de los tres**, porque el NIT ya está en la mano.
+
+Mientras tanto, el lector ve en su ficha que no sabemos de quién es, con la fecha
+en que se buscó y qué documento lo cerraría. Eso es lo que se afirma; ni una
+palabra más.

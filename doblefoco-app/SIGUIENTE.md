@@ -4,19 +4,21 @@
 
 Los dos que Jose pidió anotar al cerrar, antes que nada de lo demás:
 
-1. **Auditar las fichas de sesgo con IAs externas.** Es el pendiente de mayor
-   alcance: no va sobre un medio, va sobre el método. **Cero de 62 medios están
-   firmados.** La infraestructura está en `revision-externa/` y el detalle en
-   `revision-externa/pendientes.md`. Regla que no se negocia: a los modelos se
-   les pide **refutar**, y **su acuerdo no vale como aval**; quien firma es Jose,
-   contra las objeciones que sobrevivieron.
-
-2. **Lo de YouTube.** Marcador, no tarea: **no hay detalle escrito y no se
-   inventa.** Puede ser (a) los canales de los medios que ya están —vía para los
-   que hoy entran mudos o por Google News—, (b) YouTube como espacio informativo
-   propio, que abriría qué cuenta como medio, o (c) el dato de audiencia.
-   **Preguntar a Jose cuál antes de tocar nada.** Las tres opciones, en
+1. **Enviar las fichas a las IAs externas.** Lo hace Jose, con modelos de ventana
+   grande. El circuito está montado en `revision-externa/` y **no se ha enviado
+   nada**: hay 17 fichas con valor propuesto y `respuestas/` está vacía. Los
+   medios grandes —Noticias Caracol, El Tiempo, Semana, Caracol Radio, Noticias
+   RCN, La FM— **no tienen ficha que enviar**. Detalle en
    `revision-externa/pendientes.md`.
+
+2. **La categoría de canales de YouTube.** Una categoría con los canales
+   distribuidos. Se habló en una sesión anterior y no quedó nada escrito; el hilo
+   reconstruido está en **`PLANEACION.md`**, con lo que falta preguntar y lo que
+   ya se sabe del terreno.
+
+**Y a partir de ahora, lo que se hable de planeación se anota en
+`PLANEACION.md` en el momento**, no al cerrar. Justo por lo que pasó con lo de
+YouTube.
 
 ---
 

@@ -5,59 +5,49 @@ firmados.** La cifra de firmados no ha subido desde que existe este archivo.
 
 ---
 
-## PENDIENTE ABIERTO: auditar las fichas de sesgo con IAs externas
+## PENDIENTE ABIERTO: enviar las fichas a las IAs externas
 
-Pedido de Jose el **2026-08-11**. Es el pendiente de mayor alcance de la cola: no
-va sobre un medio, va sobre **el método entero**.
+Pedido de Jose el **2026-08-11**. Lo hace él, con modelos de ventana grande, para
+que analicen el sesgo real de cada medio con evidencia fáctica.
 
-**Qué hay que hacer.** Pasar las fichas de sesgo por modelos externos para que
-las auditen antes de firmar ninguna. La infraestructura ya está aquí:
-`PROMPT.md`, `CONTEXTO.md` y la carpeta `respuestas/`.
+**El circuito está montado y no se ha enviado nada.** `LEEME.md` explica el
+procedimiento, `PROMPT.md` y `CONTEXTO.md` son lo que se pega, y **`respuestas/`
+está vacía salvo la plantilla**. Ese es el estado, y es el único dato que hacía
+falta aquí.
 
-**CÓMO SE LES PREGUNTA, y esto no es un detalle de forma.** Se les pide
-**refutar**, no opinar. Un modelo al que se le pregunta «¿está bien este +0,45?»
-tiende a decir que sí, y ese sí no vale nada: **el acuerdo de un modelo no es un
-aval**. Lo que sirve es lo que consiga tumbar. Quien firme al final es Jose, y
-firma contra las objeciones que sobrevivieron, no con el respaldo de nadie.
+**Hay 17 fichas con valor propuesto**, listas para enviar. Las tres que este
+archivo ya marcaba —El Espectador, CasaMacondo, Volcánicas— más catorce
+regionales con valor provisional de alta: Boyacá Digital, Chocó 7 Días, Diario
+del Huila, Diario del Norte, Ecos del Combeima, EL DIARIO de Boyacá, El Diario de
+Pereira, El Manduco, El Morichal, El Pilón, La Razón.co, Lente Regional,
+MiPutumayo, Proclama del Pacífico, Pulzo, Telecafé, Valora Analitik y Vive el
+Meta.
 
-**Por dónde empezar, ahora que hay criterio de orden.** Desde el 2026-08-11 el
-catálogo tiene un tramo prioritario de 20 fichas ordenado por audiencia
-(`shared/audiencia.js`). Ese mismo orden vale aquí y es mejor que el de «mayor
-volumen» que esta cola usaba en el punto 3: **un sesgo mal puesto en Noticias
-Caracol lo ven 42 de cada 100 colombianos; en un semanario de provincia, nadie.**
-
-Los seis primeros del tramo, por orden: Noticias Caracol, El Tiempo, Noticias
-RCN, Caracol Radio, Semana y Pulzo.
-
-**Ojo con los tres del tramo que ni siquiera tienen ficha razonada todavía**:
-Noticias Caracol, Caracol Radio y La FM entraron antes del protocolo y su
-`biasRationale` es una frase suelta sin evidencia enlazada.
+**Los medios grandes no tienen ficha.** Noticias Caracol, El Tiempo, Semana,
+Caracol Radio, Noticias RCN y La FM entraron antes del protocolo: su
+`biasRationale` es una frase en el registro, no un expediente. No hay nada que
+enviar de ellos hasta que se escriba.
 
 ---
 
-## PENDIENTE ABIERTO: lo de YouTube
+## PENDIENTE ABIERTO: la categoría de canales de YouTube
 
-Pedido de Jose el **2026-08-11**, anotado aquí para que no se pierda.
+Pedido de Jose, retomado el **2026-08-11**. Se le dedicó tiempo en una sesión
+anterior y **no quedó nada escrito en el repositorio**, así que se reconstruye
+desde aquí.
 
-**No hay detalle escrito todavía, y no me lo invento.** No aparece nada de
-YouTube en el repositorio —ni en el registro, ni en el roadmap, ni en las notas
-de traspaso—, así que esto es un marcador, no una tarea especificada.
+**La idea, con sus palabras:** una **categoría con los canales distribuidos**.
 
-Lo que hay que aclarar antes de empezar, porque cada lectura es un trabajo
-distinto:
+Lo que falta por concretar antes de tocar código —preguntar, no suponer—:
 
-- **¿Los canales de YouTube de los medios que ya están?** Noticias Caracol,
-  Noticias RCN y City TV publican ahí antes que en su web, y sería una vía para
-  medios que hoy entran mudos o por Google News.
-- **¿O YouTube como espacio informativo propio?** Los canales de opinión política
-  colombianos que no son medios registrados. Eso abre la pregunta de qué cuenta
-  como medio y toca la taxonomía entera.
-- **¿O el dato de audiencia?** En el ranking de Semrush, `youtube.com` sale como
-  el sitio de «noticias» más visitado de Colombia, por delante de El Tiempo. Es
-  ruido de su categorización, pero apunta a algo real sobre dónde se consumen
-  noticias.
+- **Distribuidos ¿según qué?** El espectro es el eje del producto, pero puede ser
+  otra cosa.
+- **Qué canales entran**: los de los medios que ya están en el catálogo, canales
+  que solo existen en YouTube, o ambos.
+- **Si un canal cuenta como medio** a efectos de propiedad, sesgo y ficha, o es
+  una capa aparte.
 
-**Preguntar a Jose cuál de las tres antes de tocar nada.**
+Ver `PLANEACION.md` en la raíz de la app, donde vive el hilo completo.
 
 ## Listas para pasar a revisión externa
 

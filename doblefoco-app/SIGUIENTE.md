@@ -2,6 +2,11 @@
 
 ## Los tres que faltaban ya están dentro (2026-08-12)
 
+**Fusionado y en producción**, con el orden de siempre: `main` (Vercel) →
+`npm run deploy` (Fly, commit `540e95c`) → recategorizar. Fly va por 63 feeds con
+60 OK y **cero caídos**. En el mapa, Caquetá pasó de 1 historia a 3, Meta de 23 a
+25 y Boyacá de 19 a 26.
+
 Rama **`altas-boyaca-meta-caqueta`**. **EL DIARIO de Boyacá, Vive el Meta y
 Lente Regional** entran con `ownerType: null` declarado con fecha. **Meta y
 Caquetá dejan de estar en blanco**: de 18 departamentos con voz propia viva a
@@ -332,6 +337,16 @@ Ahora se pinta `nombreDeSeccion`, con el mismo orden de preferencia que
 - **En YAML, un escalar plano no puede contener `": "`.** Un `run:` de una línea
   con dos puntos y espacio deja el workflow inválido, y GitHub lo reporta como
   una ejecución fallida de 0 s, no como un error de sintaxis. Usa un bloque `|`.
+- **`npm run dev:server` INGIERE CONTRA LA BASE DE PRODUCCIÓN.** No hay base de
+  desarrollo: `.env.local` apunta a la misma Postgres que Fly, y el servidor
+  arranca su propio ciclo de ingesta al levantarse. Levantarlo «para mirar una
+  página» escribe artículos reales, y si el registro local va por delante del de
+  Fly, deja los dos desincronizados. Pasó el 2026-08-12 y no rompió nada porque
+  el despliegue iba detrás; con un cambio de esquema por medio habría sido la
+  caída de las diez horas otra vez.
+- **Y ese servidor no sirve páginas**: es solo API. El SSR lo hace Vercel, así
+  que `curl http://localhost:5000/medios` devuelve «Cannot GET». Para ver una
+  pantalla, `npm run dev` o el preview de Vercel.
 - **El orden del despliegue importa**: primero `main` (Vercel), luego
   `npm run deploy` (Fly), y la recategorización DESPUÉS de Fly — si no, el worker
   sigue ingiriendo con el léxico viejo.

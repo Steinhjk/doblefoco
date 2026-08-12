@@ -2,7 +2,7 @@ import { useMemo, useState, useId, useEffect } from 'react';
 import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import {
     ExternalLink, Table2, ScatterChart, Info,
-    Building2, Sprout, Users, Landmark, Globe, Bot,
+    Building2, Sprout, Users, Landmark, Globe, Bot, FileSearch, Mail,
 } from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand, REDACCIONES, esRedaccionAutomatizada } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
@@ -10,8 +10,9 @@ import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
-    ALCANCES, alcanceDe,
+    ALCANCES, alcanceDe, ausenciaDeclarada, conAusenciaDeclarada,
 } from '../../shared/mediaOwnership';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
 import './MediaMap.css';
@@ -142,6 +143,24 @@ const ICONOS = { Building2, Sprout, Users, Landmark, Globe };
 const Distintivo = ({ mediaId }) => {
     const b = getOwnerBadge(mediaId);
     if (!b) {
+        /*
+          * DOS AUSENCIAS DISTINTAS, Y NO SE PUEDEN PINTAR IGUAL. «Nadie lo ha
+          * mirado» y «se buscó el 11 de agosto en tres sitios y no consta» son
+          * afirmaciones muy diferentes sobre nuestro propio trabajo, y la
+          * segunda es la que le dice al lector que el hueco no es pereza.
+          */
+        const ausencia = ausenciaDeclarada(mediaId);
+        if (ausencia) {
+            return (
+                <span
+                    className="duenio-badge duenio-noconsta"
+                    title={`Se buscó el ${ausencia.consultadoEl} en ${ausencia.buscadoEn.length} sitio(s) y no consta quién lo controla. Abra la ficha para ver dónde se buscó.`}
+                >
+                    <FileSearch size={13} aria-hidden="true" />
+                    no consta
+                </span>
+            );
+        }
         return <span className="duenio-badge duenio-sin" title="Propiedad no verificada todavía">sin documentar</span>;
     }
     const Icono = ICONOS[b.icono];
@@ -266,6 +285,9 @@ const MediaMap = () => {
     const puntos = useMemo(() => spread(media.filter(tieneFactualidad)), [media]);
     const sinFactualidad = media.length - puntos.length;
 
+    /** Los que se están viendo y cuya propiedad no se ha podido establecer. */
+    const sinPropiedad = useMemo(() => conAusenciaDeclarada(media), [media]);
+
     /** Encender o apagar un alcance. Nunca se pueden apagar los tres. */
     const alternarAlcance = (clave) => {
         setAlcances((previos) => {
@@ -357,6 +379,36 @@ const MediaMap = () => {
                         propiedad en el espacio nacional, y un diario de provincia no compite
                         en ese espacio. Sus fichas están completas y se ven marcando
                         «Regionales».
+                    </span>
+                </p>
+            )}
+
+            {/*
+              * EL HUECO SE CUENTA EN VOZ ALTA, no medio por medio.
+              *
+              * Un lector que abre siete fichas y encuentra «no consta» en dos no
+              * sabe si dio con la excepción o con la norma. La cifra agregada lo
+              * responde de una vez, y de paso pone el pedido de documentos donde
+              * se ve —que es lo que puede convertir a un lector de provincia en
+              * la fuente que a nosotros nos falta—.
+              */}
+            {sinPropiedad.length > 0 && (
+                <p className="map-nota-ausencia">
+                    <FileSearch size={15} aria-hidden="true" />
+                    <span>
+                        De los {media.length} medios que se están viendo,{' '}
+                        <strong>
+                            {sinPropiedad.length === 1
+                                ? 'de uno no sabemos quién lo controla'
+                                : `de ${sinPropiedad.length} no sabemos quién los controla`}
+                        </strong>{' '}
+                        ({sinPropiedad.map((m) => m.name).join(', ')}). Su ficha dice
+                        en qué fecha se buscó y en qué registros, en vez de rellenar
+                        el hueco con una suposición. Si tiene documentos sobre la
+                        propiedad de alguno, escríbanos a{' '}
+                        <a href={`${CONTACT_MAILTO}?subject=${encodeURIComponent('Propiedad de un medio del catálogo')}`}>
+                            {CONTACT_EMAIL}
+                        </a>.
                     </span>
                 </p>
             )}
@@ -620,10 +672,97 @@ const MediaMap = () => {
     );
 };
 
+/**
+ * LO QUE NO SABEMOS, CON FECHA Y CON RECIBO.
+ *
+ * Es la contrapartida honesta de haber dado de alta medios cuya propiedad no se
+ * ha podido establecer. Sin este bloque, el alta sería una rebaja del listón; con
+ * él, es una forma distinta de aplicarlo: se publica la búsqueda en vez del
+ * resultado que no hay.
+ *
+ * TRES COSAS Y NINGUNA MÁS: dónde se buscó y qué dio cada sitio, qué documento
+ * cerraría el hueco, y cómo ayudar. Nada de conjeturas sobre quién podría ser el
+ * dueño —esa es justo la afirmación que no se puede hacer—.
+ *
+ * EL AVISO NO VA EN ROJO, por lo mismo que los de conflicto de interés: no es
+ * una alarma sobre el medio. Que no publique su mástil puede ser opacidad o
+ * puede ser una web pequeña sin página de créditos, y decidir cuál sería
+ * exactamente lo que no podemos documentar.
+ */
+const AusenciaDeclarada = ({ ausencia, medio }) => (
+    <div className="profile-ausencia">
+        <h4>
+            <FileSearch size={15} aria-hidden="true" />
+            No sabemos quién controla este medio
+        </h4>
+
+        <p className="profile-ausencia-lede">
+            Se buscó el <strong>{ausencia.consultadoEl}</strong> y no consta. Lo que
+            sigue es dónde se miró, para que se pueda repetir la comprobación o
+            señalar dónde no miramos. No decimos «independiente» ni ninguna otra
+            cosa: <strong>una suposición cómoda ocuparía el sitio de un dato</strong>.
+        </p>
+
+        {ausencia.buscadoEn.length > 0 && (
+            <ul className="profile-buscado">
+                {ausencia.buscadoEn.map((intento) => (
+                    <li key={intento.fuente}>
+                        {intento.url ? (
+                            <a href={intento.url} target="_blank" rel="noopener noreferrer">
+                                {intento.fuente}
+                                <ExternalLink size={11} aria-hidden="true" />
+                            </a>
+                        ) : (
+                            <span className="profile-buscado-fuente">{intento.fuente}</span>
+                        )}
+                        <span className="profile-buscado-resultado">{intento.resultado}</span>
+                    </li>
+                ))}
+            </ul>
+        )}
+
+        {ausencia.falta.length > 0 && (
+            <>
+                <p className="profile-ausencia-falta-titulo">Qué cerraría el hueco</p>
+                <ul className="profile-list">
+                    {ausencia.falta.map((f) => <li key={f}>{f}</li>)}
+                </ul>
+            </>
+        )}
+
+        {/*
+          * LA PETICIÓN AL LECTOR, y va aquí y no en una página de contacto
+          * porque este es el momento en que alguien de Montería está mirando
+          * justo el hueco que quizá pueda llenar.
+          *
+          * PIDE DOCUMENTOS, NO OPINIONES, y la diferencia es la misma regla de
+          * siempre: el pulgar arriba/abajo de más arriba señala dónde mirar y no
+          * cambia nada; un certificado de Cámara de Comercio sí cambia la ficha.
+          * Prometer lo segundo a cambio de lo primero sería mentir sobre cómo
+          * funciona esto.
+          */}
+        <p className="profile-ausencia-ayuda">
+            <Mail size={14} aria-hidden="true" />
+            <span>
+                ¿Tiene un documento que diga quién es dueño de {medio.name} —un
+                certificado de Cámara de Comercio, un registro mercantil, un
+                comunicado del propio medio—? Escríbanos a{' '}
+                <a href={`${CONTACT_MAILTO}?subject=${encodeURIComponent(`Propiedad de ${medio.name}`)}`}>
+                    {CONTACT_EMAIL}
+                </a>{' '}
+                y lo publicamos con su enlace. Solo sirven documentos consultables:
+                sin eso no podemos publicarlo, por mucha razón que tenga quien lo
+                cuente.
+            </span>
+        </p>
+    </div>
+);
+
 /** Ficha de un medio: por qué está donde está, y quién está detrás. */
 const MediaProfile = ({ media, onClose }) => {
     const ownership = getOwnership(media.id);
     const documented = hasDocumentedOwnership(media.id);
+    const ausencia = ausenciaDeclarada(media.id);
     const ownerType = ownership ? OWNER_TYPES[ownership.ownerType] : null;
     const grupo = ownership?.controlGroup ? CONTROL_GROUPS[ownership.controlGroup] : null;
     const personas = grupo?.personas ?? [];
@@ -757,8 +896,20 @@ const MediaProfile = ({ media, onClose }) => {
                                 </li>
                             ))}
                         </ul>
+                        {/*
+                          * LA FECHA DE COMPROBACIÓN, A LA VISTA. Una ficha de
+                          * propiedad sin fecha se lee como si fuera de hoy, y no
+                          * lo es: los dueños cambian. Decir cuándo se comprobó
+                          * deja que el lector calcule por su cuenta cuánto
+                          * confiar, en vez de tener que confiar del todo o nada.
+                          */}
+                        {ownership.verifiedAt && (
+                            <p className="profile-fecha">
+                                Comprobado contra estas fuentes el <strong>{ownership.verifiedAt}</strong>.
+                            </p>
+                        )}
                     </>
-                ) : (
+                ) : !ausencia && (
                     <p className="profile-missing">
                         <strong>Ficha de propiedad pendiente de documentar.</strong> Quiénes son
                         las personas dueñas, qué otros negocios tiene el grupo y qué señalamientos
@@ -767,6 +918,8 @@ const MediaProfile = ({ media, onClose }) => {
                         la vista antes que llenarlo con algo verosímil.
                     </p>
                 )}
+
+                {ausencia && <AusenciaDeclarada ausencia={ausencia} medio={media} />}
 
                 {/* Solo cuando hay algo que juzgar: preguntar «¿es correcta?»
                     sobre una ficha vacía no tiene respuesta posible. */}

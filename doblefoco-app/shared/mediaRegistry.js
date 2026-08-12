@@ -808,6 +808,39 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://www.boyacadigital.com/rss.xml', via: 'direct', category: 'Política' },
     },
     {
+        /**
+         * LA RAZÓN.CO (Montería) — alta del 2026-08-11, a petición de Jose.
+         *
+         * ES EL PRIMER MEDIO QUE ENTRA CON LA PROPIEDAD SIN RESOLVER, y eso es
+         * un cambio de regla, no un descuido. Hasta hoy dar de alta obligaba a
+         * declarar un `ownerType`, y esa exigencia dejó fuera a EL DIARIO de
+         * Boyacá, a Vive el Meta y a Lente Regional: medios vivos, con feed, en
+         * departamentos que el mapa pintaba en blanco. Al lector le decíamos
+         * «aquí no hay medios» cuando lo cierto era «aquí no hemos podido
+         * comprobar de quién son». Ver AUSENCIA DECLARADA en mediaOwnership.js.
+         *
+         * SU FICHA DICE QUE NO SABEMOS, con la fecha en que se buscó y el
+         * documento que cerraría el hueco. No dice «independiente», que sería
+         * la suposición cómoda.
+         *
+         * CÓRDOBA DEJA DE ESTAR EN BLANCO. El departamento figuraba como
+         * imposible porque El Meridiano —el grupo dominante— responde 403 a los
+         * bots. El error fue detenerse en el más conocido: este publica cada
+         * pocas horas y su feed responde 200.
+         *
+         * COLISIÓN DE NOMBRE QUE HAY QUE DECLARAR, la tercera del catálogo tras
+         * Caracol y El País: no tiene NINGUNA relación con La Razón de Madrid
+         * (Grupo Planeta) ni con La Razón de México o de Buenos Aires. El
+         * `shortName` lleva la ciudad por eso.
+         */
+        id: 'la-razon-cordoba', name: 'La Razón.co (Montería)', shortName: 'La Razón.co',
+        domain: 'larazon.co', departamento: 'Córdoba', country: 'CO', group: 'Regional Córdoba',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario nativo digital de Montería, activo desde 2014 y de los que más publican en Córdoba. Orientación mixta provisional, y por ausencia de evidencia y no por evidencia de equilibrio: no se ha podido establecer quién lo controla, y nada de lo observable lo sitúa en el eje. La regla del protocolo manda entonces la banda más cercana a la mixta — ver fichas/la-razon-cordoba.md.',
+        feed: { url: 'https://larazon.co/feed/', via: 'direct', category: 'Política' },
+        imageHosts: ['larazon.co'],
+    },
+    {
         id: 'semana', name: 'Semana', shortName: 'Semana',
         domain: 'semana.com', country: 'CO', group: 'Grupo Gilinski',
         bias: 0.45, factuality: 0.78, reviewedAt: null,
@@ -862,6 +895,33 @@ export const MEDIA_REGISTRY = [
         bias: -0.20, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Diario español de referencia con línea editorial socialdemócrata.',
         feed: { url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada', via: 'direct', category: 'Internacional' },
+        /**
+         * EDICIÓN AMÉRICA — COLOMBIA (alta del 2026-08-11, a petición de Jose).
+         *
+         * VA COMO FEED SECUNDARIO Y NO COMO MEDIO NUEVO, y la razón es registral
+         * antes que editorial: El País América no tiene dominio propio, vive en
+         * `elpais.com/america-colombia/`. Darlo de alta aparte exigiría repetir
+         * `elpais.com` en el catálogo, y el verificador falla por dominio
+         * duplicado —con razón: dos entradas con el mismo dominio son dos sesgos
+         * que pueden divergir para el mismo sitio web—.
+         *
+         * Es además lo correcto: la edición América es la misma casa y el mismo
+         * dueño (Prisa), con corresponsalía propia en Bogotá. Su sesgo y su ficha
+         * de propiedad son los de El País, y heredarlos es la respuesta exacta.
+         *
+         * LO QUE HAY QUE VIGILAR, y se deja escrito porque no se ha medido: el
+         * clasificador de ámbito desempata por `country`, y este medio es 'ES'.
+         * Una pieza de la edición Colombia sin marca geográfica en el titular
+         * puede acabar en Internacional en vez de en Nacional. La sección de la
+         * que se descuelga este feed es toda de Colombia, así que el desempate
+         * está apuntando al revés precisamente aquí.
+         */
+        extraFeeds: [
+            {
+                url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america-colombia/portada',
+                category: 'Política',
+            },
+        ],
     },
 
     // Medios sin feed configurado: aparecen citados como fuente en el catálogo
@@ -872,7 +932,24 @@ export const MEDIA_REGISTRY = [
         domain: 'efe.com', country: 'ES', group: 'Agencia de noticias',
         bias: 0.0, factuality: 0.92, reviewedAt: null,
         biasRationale: 'Agencia de noticias; produce despachos factuales destinados a ser reutilizados por medios de todo el espectro.',
-        feed: null,
+        /**
+         * PASA DE CITA A INGESTA el 2026-08-11, a petición de Jose.
+         *
+         * ENTRA POR GOOGLE NEWS, Y NO POR PEREZA. efe.com es un WordPress que
+         * tiene los feeds DESACTIVADOS en el servidor: `/feed/`, `/?feed=rss2` y
+         * las de sección devuelven las tres un 500 de WordPress con el mensaje
+         * «No feed available». No es un bloqueo ni una cabecera mal puesta —la
+         * lección de la tilde en el User-Agent ya está aprendida—: es una
+         * decisión del medio, comprobada el 2026-08-11.
+         *
+         * SÍ tiene abierta la API REST de WordPress (`/wp-json/wp/v2/posts`), que
+         * devuelve las notas en JSON. Sería mejor vía que Google News —completa y
+         * ordenada por fecha en vez de por relevancia—, pero el motor solo sabe
+         * leer RSS: `via` admite 'direct' y 'gnews' y nada más. Abrir una tercera
+         * vía es trabajo de otro día, y queda anotado aquí para que quien lo
+         * mire no repita el descarte.
+         */
+        feed: { url: gnews('efe.com'), via: 'gnews', category: 'Internacional' },
     },
     {
         id: 'reuters', name: 'Reuters', shortName: 'Reuters',

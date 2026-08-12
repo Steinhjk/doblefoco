@@ -468,6 +468,17 @@
     opacity: 0.65;
 }
 
+/* Buscado y no encontrado. BORDE DISCONTINUO Y NO UN COLOR PROPIO: el trazo
+   partido lee como hueco a primera vista, que es lo que es, mientras que un
+   color lo convertiría en una categoría de dueño más —justo lo contrario de lo
+   que dice—. Se distingue de `.duenio-sin` porque aquí sí hubo trabajo: no está
+   en cursiva ni atenuado. */
+.duenio-noconsta {
+    border-style: dashed;
+    border-color: var(--border-color);
+    color: var(--text-muted);
+}
+
 .profile-duenio { margin: 0 0 0.85rem; }
 
 /* ── En quién termina: las personas naturales detrás del grupo ───────────── */
@@ -605,6 +616,127 @@
 
 .map-nota-alcance strong {
     color: var(--text-main);
+}
+
+/* Recuento agregado de fichas sin propiedad establecida. Mismo tratamiento que
+   la nota de alcance: es información sobre el catálogo, no una advertencia
+   sobre los medios que nombra. */
+.map-nota-ausencia {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-left: 2px dashed var(--border-color);
+    padding: 10px 14px;
+    margin: 0 0 18px;
+}
+
+.map-nota-ausencia strong { color: var(--text-main); }
+
+.map-nota-ausencia svg { flex-shrink: 0; margin-top: 2px; }
+
+/* ── Ausencia declarada dentro de la ficha ──────────────────────────────── */
+
+/*
+ * NI ROJO NI RECUADRO DE ALARMA. Que un medio no publique su mástil puede ser
+ * opacidad o puede ser una web pequeña sin página de créditos, y decidir cuál
+ * es exactamente la afirmación que no podemos documentar. El borde discontinuo
+ * repite el mismo signo que el distintivo: esto es un hueco, no un cargo.
+ */
+.profile-ausencia {
+    margin-top: 0.9rem;
+    padding: 0.85rem 1rem;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+}
+
+.profile-ausencia h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+.profile-ausencia-lede {
+    margin: 0 0 0.7rem;
+    font-size: 0.88rem !important;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.profile-ausencia-lede strong { color: var(--text-main); }
+
+.profile-buscado {
+    list-style: none;
+    margin: 0 0 0.8rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.profile-buscado li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-left: 0.7rem;
+    border-left: 2px solid var(--border-color);
+}
+
+.profile-buscado a,
+.profile-buscado-fuente {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.profile-buscado a:hover { text-decoration: underline; }
+
+.profile-buscado-resultado {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.profile-ausencia-falta-titulo {
+    margin: 0;
+    font-size: 0.78rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+.profile-ausencia-ayuda {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0.8rem 0 0;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem !important;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.profile-ausencia-ayuda svg { flex-shrink: 0; margin-top: 3px; }
+
+/* Fecha de comprobación de una ficha que SÍ está documentada. */
+.profile-fecha {
+    margin: 0.7rem 0 0;
+    font-size: 0.8rem !important;
+    color: var(--text-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

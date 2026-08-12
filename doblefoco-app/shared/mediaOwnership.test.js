@@ -5,6 +5,9 @@ import {
     OWNERSHIP_PROFILES,
     gruposCompartidos,
     hasDocumentedOwnership,
+    ausenciaDeclarada,
+    conAusenciaDeclarada,
+    getOwnerBadge,
 } from './mediaOwnership.js';
 
 describe('gruposCompartidos', () => {
@@ -126,5 +129,63 @@ describe('contrato de las fichas', () => {
         const sinDocumentar = Object.keys(OWNERSHIP_PROFILES)
             .filter((id) => !hasDocumentedOwnership(id));
         expect(sinDocumentar).toEqual([]);
+    });
+});
+
+/**
+ * OJO CON LO QUE PROMETE LA PRUEBA DE ARRIBA, desde el 2026-08-11.
+ *
+ * «Documentada» y «sabemos de quién es» dejaron de ser lo mismo. La ficha de La
+ * Razón.co pasa `hasDocumentedOwnership` —tiene afirmaciones y tiene fuentes—
+ * y aun así su dueño no consta. Es correcto: lo que está documentado ahí es la
+ * búsqueda, no el resultado.
+ *
+ * Por eso la ausencia necesita su propio contrato. Sin esto, `ownerType: null`
+ * sería la salida cómoda para cualquier ficha incómoda, y nadie se enteraría.
+ */
+describe('ausencia declarada', () => {
+    const conAusencia = Object.entries(OWNERSHIP_PROFILES)
+        .filter(([, perfil]) => perfil.ownerType === null);
+
+    it('toda ficha sin ownerType dice CUÁNDO se buscó', () => {
+        // Sin fecha, «no consta» es una afirmación sobre el mundo que envejece
+        // sola: mañana pueden registrar al representante legal y la ficha
+        // seguiría diciendo que no existe.
+        for (const [id, perfil] of conAusencia) {
+            expect(perfil.consultadoEl, `${id}`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        }
+    });
+
+    it('toda ficha sin ownerType dice DÓNDE se buscó, con el resultado de cada sitio', () => {
+        for (const [id, perfil] of conAusencia) {
+            expect(perfil.buscadoEn?.length, `${id}`).toBeGreaterThan(0);
+
+            for (const intento of perfil.buscadoEn) {
+                expect(intento.fuente, `${id}`).toBeTruthy();
+                expect(intento.resultado, `${id}`).toBeTruthy();
+            }
+        }
+    });
+
+    it('`ausenciaDeclarada` distingue el hueco del dato, y no al revés', () => {
+        // Las dos direcciones importan. Que devuelva la ficha de La Razón es la
+        // mitad fácil; que NO devuelva nada para un medio con dueño conocido es
+        // lo que impide que el aviso salga donde no toca y se vuelva decorado.
+        expect(ausenciaDeclarada('la-razon-cordoba')?.consultadoEl).toBe('2026-08-11');
+        expect(ausenciaDeclarada('el-tiempo')).toBeNull();
+        expect(ausenciaDeclarada('medio-que-no-existe')).toBeNull();
+    });
+
+    it('una ausencia declarada NO se pinta como un tipo de dueño', () => {
+        // El fallo que esto evita es silencioso y grave: que «no lo sabemos»
+        // acabe leyéndose como «independiente», que es la suposición cómoda
+        // para un medio pequeño de provincia.
+        expect(getOwnerBadge('la-razon-cordoba')).toBeNull();
+    });
+
+    it('conAusenciaDeclarada solo devuelve los medios con el hueco declarado', () => {
+        const medios = [{ id: 'el-tiempo' }, { id: 'la-razon-cordoba' }, { id: 'semana' }];
+        expect(conAusenciaDeclarada(medios).map((m) => m.id)).toEqual(['la-razon-cordoba']);
+        expect(conAusenciaDeclarada([])).toEqual([]);
     });
 });

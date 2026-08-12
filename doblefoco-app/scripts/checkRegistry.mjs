@@ -215,7 +215,46 @@ for (const media of MEDIA_REGISTRY) {
         continue;
     }
 
-    if (!OWNER_TYPES[profile.ownerType]) {
+    /**
+     * `ownerType: null` ES VÁLIDO Y SIGNIFICA «no consta quién lo controla».
+     *
+     * Pero cuesta más que un tipo cualquiera, y ese es justo el punto: para
+     * poder decir «no lo sabemos» hay que decir CUÁNDO se buscó y DÓNDE. Sin
+     * esas dos cosas, «no consta» es una afirmación sobre el mundo que envejece
+     * sola —mañana pueden registrar al representante legal y la ficha seguiría
+     * diciendo que no existe—. Con ellas es una afirmación sobre una consulta
+     * concreta, que es lo único que podemos sostener.
+     *
+     * Si no se comprobara aquí, la salida cómoda sería poner `null` en cualquier
+     * ficha incómoda y quedarse tan tranquilo. La regla lo impide: declarar la
+     * ausencia es un trabajo documental, no un atajo para no hacerlo.
+     */
+    if (profile.ownerType === null) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(profile.consultadoEl ?? '')) {
+            fail(
+                `${media.id}: la ficha declara la propiedad como no comprobada pero no dice ` +
+                `cuándo se buscó. "consultadoEl" es obligatorio con ownerType null (AAAA-MM-DD).`
+            );
+        }
+
+        if (!Array.isArray(profile.buscadoEn) || profile.buscadoEn.length === 0) {
+            fail(
+                `${media.id}: la ficha declara la propiedad como no comprobada sin decir dónde ` +
+                `se buscó. "buscadoEn" necesita al menos un sitio consultado con su resultado.`
+            );
+        }
+
+        for (const intento of profile.buscadoEn ?? []) {
+            if (!intento?.fuente || !intento?.resultado) {
+                fail(`${media.id}: cada entrada de "buscadoEn" necesita "fuente" y "resultado"`);
+            }
+            if (intento?.url && !/^https?:\/\/\S+$/.test(intento.url)) {
+                fail(`${media.id}: url mal formada en "buscadoEn": "${intento.url}"`);
+            }
+        }
+
+        warn(`${media.id}: propiedad NO comprobada, declarada como tal (buscado el ${profile.consultadoEl})`);
+    } else if (!OWNER_TYPES[profile.ownerType]) {
         fail(`${media.id}: ownerType desconocido "${profile.ownerType}"`);
     }
 

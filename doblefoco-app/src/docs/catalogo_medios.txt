@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-11
-Medios en el catálogo: 60
+Generado: 2026-08-12
+Medios en el catálogo: 61
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  30 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  31 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -198,13 +198,22 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  30 medios
     una propiedad de la casa sino de su configuración — ver
     fichas/boyaca-digital.md.
 
+  La Razón.co (Montería)  ·  sesgo +0.00  ·  factualidad 0%
+    larazon.co · Regional Córdoba · CO · RSS propio · PROVISIONAL
+    Diario nativo digital de Montería, activo desde 2014 y de los que
+    más publican en Córdoba. Orientación mixta provisional, y por
+    ausencia de evidencia y no por evidencia de equilibrio: no se ha
+    podido establecer quién lo controla, y nada de lo observable lo
+    sitúa en el eje. La regla del protocolo manda entonces la banda
+    más cercana a la mixta — ver fichas/la-razon-cordoba.md.
+
   France 24 Español  ·  sesgo +0.00  ·  factualidad 90%
     france24.com · Servicio público francés · FR · RSS propio · PROVISIONAL
     Cadena internacional pública francesa; cobertura global con
     encuadre descriptivo.
 
   Agencia EFE  ·  sesgo +0.00  ·  factualidad 92%
-    efe.com · Agencia de noticias · ES · sin feed (solo referencia) · PROVISIONAL
+    efe.com · Agencia de noticias · ES · vía Google News · PROVISIONAL
     Agencia de noticias; produce despachos factuales destinados a ser
     reutilizados por medios de todo el espectro.
 

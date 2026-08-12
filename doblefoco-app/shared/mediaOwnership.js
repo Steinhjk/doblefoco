@@ -224,13 +224,67 @@ export function getOwnerBadge(mediaId) {
  * escribirlo y no se rellene con una plantilla cómoda.
  *
  * La forma de una ficha, para quien añada una:
- *   ownerType    uno de OWNER_TYPES.
+ *   ownerType    uno de OWNER_TYPES, o `null` — ver AUSENCIA DECLARADA abajo.
  *   controlGroup clave de CONTROL_GROUPS. Es lo que enlaza con las personas.
  *   holdings     otros negocios del grupo. Requiere `sources`.
  *   notes        señalamientos, sanciones o conflictos. Requiere `sources`.
  *   sources      URLs consultables. Sin esto, lo de arriba no se publica.
  *   verifiedAt   fecha de comprobación documental. null = nadie lo ha mirado.
+ *   consultadoEl fecha en que se BUSCÓ. Obligatoria si `ownerType` es null.
+ *   buscadoEn    dónde se buscó y qué dio. Obligatoria si `ownerType` es null.
+ *   falta        qué documento cerraría el hueco.
  */
+
+/**
+ * AUSENCIA DECLARADA — «no sabemos de quién es, y aquí está cuándo lo buscamos».
+ *
+ * POR QUÉ EXISTE (2026-08-11, decisión de Jose). Hasta hoy el catálogo tenía una
+ * sola forma de tratar un medio del que no se sabe quién manda: no darlo de
+ * alta. Es la regla que dejó fuera a EL DIARIO de Boyacá, a Vive el Meta y a
+ * Lente Regional, y la que estuvo a punto de dejar fuera a La Razón de Montería
+ * —tres medios vivos, con feed, en departamentos que el mapa dibuja en blanco—.
+ *
+ * El coste de esa regla estaba mal repartido. Al lector le decíamos «aquí no hay
+ * medios» cuando lo cierto era «aquí no hemos podido comprobar de quién son», y
+ * esas dos frases no significan lo mismo ni de lejos. La primera describe el
+ * territorio; la segunda describe nuestro trabajo.
+ *
+ * Así que `ownerType: null` pasa a ser un estado de primera clase, y NO es
+ * volver a la ficha vacía que se retiró: una ficha vacía no afirmaba nada, y
+ * esta afirma tres cosas comprobables —dónde se buscó, qué día, y qué documento
+ * cerraría el hueco—. La ausencia deja de ser un silencio y pasa a ser un dato
+ * con fecha, que es lo mismo que ya hacemos con la cobertura que falta.
+ *
+ * LA FECHA NO ES DECORACIÓN. «No consta el representante legal» sin fecha es una
+ * afirmación sobre el mundo, y envejece mal: mañana pueden registrarlo. Con
+ * fecha es una afirmación sobre una consulta concreta, que es lo único que
+ * podemos sostener, y le dice al lector cuánto tiempo lleva sin revisarse.
+ *
+ * @param {string} mediaId
+ * @returns {{consultadoEl: string|null, buscadoEn: Array<{fuente: string, resultado: string, url?: string}>, falta: string[]}|null}
+ */
+export function ausenciaDeclarada(mediaId) {
+    const ficha = getOwnership(mediaId);
+    if (!ficha || ficha.ownerType !== null) return null;
+
+    return {
+        consultadoEl: ficha.consultadoEl ?? null,
+        buscadoEn: ficha.buscadoEn ?? [],
+        falta: ficha.falta ?? [],
+    };
+}
+
+/**
+ * Medios cuya propiedad está declarada como no comprobada, en orden de catálogo.
+ *
+ * Lo usa la vista de fichas para contar el hueco en voz alta en vez de dejar que
+ * el lector lo descubra medio por medio.
+ *
+ * @param {Array<{id: string}>} medios
+ */
+export function conAusenciaDeclarada(medios) {
+    return (Array.isArray(medios) ? medios : []).filter((m) => ausenciaDeclarada(m?.id));
+}
 
 /** Fecha de la documentación. */
 const VERIFICADO = '2026-07-29';
@@ -1754,6 +1808,66 @@ export const OWNERSHIP_PROFILES = {
             'https://www.boyacadigital.com/politica-de-privacidad',
         ],
         verifiedAt: null,
+    },
+
+    /**
+     * LA RAZÓN.CO (Montería) — PRIMERA FICHA CON AUSENCIA DECLARADA (2026-08-11).
+     *
+     * Lo que se sabe está abajo con su fuente. Lo que NO se sabe —quién controla
+     * el medio— se dice con la fecha en que se buscó, dónde se buscó y qué
+     * documento lo cerraría. Es la diferencia entre un hueco y un silencio.
+     *
+     * UNA PISTA QUE NO SE PUBLICA, Y CONVIENE DEJAR ESCRITO POR QUÉ. Una búsqueda
+     * devolvió que el medio pertenecería a «A&J Medios S.A.S.», dirigido por el
+     * periodista Luis Darío Díaz con su esposa Ana Carolina Buitrago en la
+     * gerencia. NO ENTRA EN LA FICHA: ninguna de las páginas que lo sostendrían
+     * se pudo abrir —DataCrédito devuelve 403 y el perfil de infoperiodistas es
+     * el de La Razón de Madrid, otro medio— y la única corroboración era el
+     * resumen de un buscador, que no es una fuente consultable.
+     *
+     * Es exactamente el fallo que este archivo ya cometió dos veces y documenta
+     * arriba: la compra de El Heraldo por Gilinski y el supuesto control de
+     * Galvis sobre El Universal. Y es peor aquí, porque señalaría a dos personas
+     * naturales con nombre y apellido. La pista queda en fichas/ como línea de
+     * trabajo, no como afirmación.
+     */
+    'la-razon-cordoba': {
+        ownerType: null,
+        holdings: [
+            'Su feed y su sitio son un WordPress activo desde 2014, con publicación cada pocas horas y agenda de Montería y el resto de Córdoba (Chinú, Sahagún, Lorica).',
+        ],
+        notes: [
+            'No comparte nada con La Razón de Madrid, de La Razón de México ni de La Razón de Buenos Aires. Es la tercera colisión de nombre del catálogo, después de los dos Caracol y los dos El País.',
+        ],
+        sources: [
+            'https://larazon.co/',
+            'https://larazon.co/feed/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-11',
+        buscadoEn: [
+            {
+                fuente: 'Su propia página «Nosotros»',
+                resultado: 'No publica mástil. El pie de página es solo «© 2026 Todos los derechos reservados», sin razón social, sin NIT y sin director. Su presentación institucional está maquetada como imagen, así que no hay texto que leer ni por programa ni con lector de pantalla.',
+                url: 'https://larazon.co/nosotros/',
+            },
+            {
+                fuente: 'Su página de contacto',
+                resultado: 'Tampoco nombra responsable ni sociedad editora.',
+                url: 'https://larazon.co/contacto/',
+            },
+            {
+                fuente: 'Directorio del registro mercantil (DataCrédito Empresas)',
+                resultado: 'Consta el establecimiento «Larazon.co Diario Digital», constituido el 24-09-2014, en la carrera 5 n.º 68-09 de Montería. NO constan ni representante legal ni socios. El servidor responde 403 a las consultas automatizadas, así que el dato viene de la consulta manual anotada en la ficha del 2026-08-09.',
+                url: 'https://www.datacreditoempresas.com.co/directorio/larazonco-diario-digital.html',
+            },
+        ],
+        falta: [
+            'El certificado de existencia y representación de la Cámara de Comercio de Montería, que diría el representante legal y los socios. Es un trámite con formulario manual: no se alcanza desde aquí.',
+            'El mástil que el medio publica como imagen, transcrito leyéndolo en un navegador.',
+        ],
     },
 
     'semana': {

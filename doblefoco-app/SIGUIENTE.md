@@ -1,5 +1,33 @@
 # Por dónde seguir
 
+## Fusionada y desplegada (2026-08-12)
+
+`fichas-propiedad-ausencia-y-altas` está **en `main` y en producción**. Se
+verificó antes de fusionar —486 pruebas, lint, typecheck, `check:registry` sin
+errores de integridad y `npm run build` limpio— y se siguió el orden escrito:
+`main` (Vercel) → `npm run deploy` (Fly) → recategorizar.
+
+- **Fly va por el commit `d2141e0`**, el mismo que `main`. Sin desfase.
+- **Ingesta viva**: 56 feeds OK, **cero caídos**, última pasada 11:50 UTC.
+- **Recategorización aplicada** sobre 6 794 artículos y 5 479 historias. El
+  reparto salió idéntico al que ya había en base salvo la corrección de **EFE
+  como medio español** —Fly venía ingiriendo sin EFE en el registro, así que su
+  país caía al valor por defecto—. Eso es exactamente lo que este paso viene a
+  arreglar y por lo que va después de Fly, no antes.
+- Comprobado en producción: portada, `/medios` y `/api/departamentos` responden
+  200 y con contenido coherente.
+
+**Dos números para mirar con calma, que NO los trae este despliegue** —ya
+estaban en base y siguen igual—:
+
+- **Desastres se lleva el 37 %** del corpus (2 505 de 6 794). El terremoto copa
+  la portada entera, así que puede ser real; conviene confirmarlo cuando el
+  hecho envejezca, no ahora.
+- **El 29 % de los artículos se queda sin tema** (1 997), y un 14 % entra solo
+  rescatado por señal débil.
+
+---
+
 ## PENDIENTES ABIERTOS (2026-08-11)
 
 Los dos que Jose pidió anotar al cerrar, antes que nada de lo demás:
@@ -24,8 +52,8 @@ YouTube.
 
 ## Lo del 11 de agosto, por la tarde
 
-**Rama `fichas-propiedad-ausencia-y-altas`, subida y sin fusionar.** Tres
-commits, 486 pruebas en verde, lint y typecheck limpios.
+**Rama `fichas-propiedad-ausencia-y-altas`** — fusionada el 2026-08-12, ver
+arriba. Cinco commits, 486 pruebas en verde, lint y typecheck limpios.
 
 **La ausencia de dueño se declara con fecha.** `ownerType: null` pasa a ser un
 estado válido si la ficha dice dónde y cuándo se buscó y qué documento cerraría
@@ -45,8 +73,8 @@ cuarto medio más consumido del país y faltaba: lo destapó cambiar el criterio
 orden. Su propiedad **no se cerró** —sus tres fuentes públicas se contradicen— y
 por eso NO lleva `controlGroup`; ver `fichas/pulzo.md`.
 
-**Antes de fusionar:** `main` (Vercel) → `npm run deploy` (Fly) → recategorizar.
-Los tres medios nuevos no entran hasta el paso 2.
+**El despliegue ya se hizo** el 2026-08-12, en ese orden. Los tres medios nuevos
+están dentro.
 
 **El punto flojo:** EFE va por Google News con mediana de 41 h y enlaces a
 `news.google.com`. Sus feeds propios están desactivados en el servidor; su API
@@ -170,7 +198,8 @@ agrupamiento entero. No se tocó.
    hace 2 h) y **narinoahora.com** (Nariño, hace 21 h), ambos en departamentos
    que estaban bloqueados. Los otros 124 no se pudieron rehacer:
    **`query.wikidata.org` devolvía 502** las dos veces que se intentó. Reintentar
-   `npm run medios:cosechar -- --lista` cuando su servicio vuelva.
+   `npm run medios:cosechar -- --lista` cuando su servicio vuelva. **El
+   2026-08-12 responde 200: ya se puede rehacer.**
 2. **La foto del destacado.** Es lo único de la portada del terremoto que quedó
    sin mirar: viene con crédito de Telemedellín y no está claro que sea del
    sismo. Jose lo señaló y no se tocó.

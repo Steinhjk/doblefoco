@@ -1,6 +1,58 @@
 # Por dónde seguir
 
-Nota de traspaso del **2026-08-11**, escrita al cerrar.
+## PENDIENTES ABIERTOS (2026-08-11)
+
+Los dos que Jose pidió anotar al cerrar, antes que nada de lo demás:
+
+1. **Auditar las fichas de sesgo con IAs externas.** Es el pendiente de mayor
+   alcance: no va sobre un medio, va sobre el método. **Cero de 62 medios están
+   firmados.** La infraestructura está en `revision-externa/` y el detalle en
+   `revision-externa/pendientes.md`. Regla que no se negocia: a los modelos se
+   les pide **refutar**, y **su acuerdo no vale como aval**; quien firma es Jose,
+   contra las objeciones que sobrevivieron.
+
+2. **Lo de YouTube.** Marcador, no tarea: **no hay detalle escrito y no se
+   inventa.** Puede ser (a) los canales de los medios que ya están —vía para los
+   que hoy entran mudos o por Google News—, (b) YouTube como espacio informativo
+   propio, que abriría qué cuenta como medio, o (c) el dato de audiencia.
+   **Preguntar a Jose cuál antes de tocar nada.** Las tres opciones, en
+   `revision-externa/pendientes.md`.
+
+---
+
+## Lo del 11 de agosto, por la tarde
+
+**Rama `fichas-propiedad-ausencia-y-altas`, subida y sin fusionar.** Tres
+commits, 486 pruebas en verde, lint y typecheck limpios.
+
+**La ausencia de dueño se declara con fecha.** `ownerType: null` pasa a ser un
+estado válido si la ficha dice dónde y cuándo se buscó y qué documento cerraría
+el hueco; lo exige `check:registry`. La regla vieja —dar de alta obliga a
+declarar dueño— dejaba departamentos en blanco por no saber. **Quedan por
+reevaluar EL DIARIO de Boyacá, Vive el Meta y Lente Regional**, que están fuera
+por ese motivo y hoy podrían entrar.
+
+**«Mayor cobertura» es audiencia, no volumen** (aclaración de Jose). Nuevo
+`shared/audiencia.js` con el Digital News Report del Reuters Institute, sacado de
+los CSV de sus gráficos. Tramo prioritario de 20 fichas con **dos grados de
+certeza marcados**: 13 medidas y 7 estimadas por volumen propio. Ningún estimado
+adelanta a un medido.
+
+**Tres altas: Pulzo, La Razón.co (Montería) y la ingesta de EFE.** Pulzo es el
+cuarto medio más consumido del país y faltaba: lo destapó cambiar el criterio de
+orden. Su propiedad **no se cerró** —sus tres fuentes públicas se contradicen— y
+por eso NO lleva `controlGroup`; ver `fichas/pulzo.md`.
+
+**Antes de fusionar:** `main` (Vercel) → `npm run deploy` (Fly) → recategorizar.
+Los tres medios nuevos no entran hasta el paso 2.
+
+**El punto flojo:** EFE va por Google News con mediana de 41 h y enlaces a
+`news.google.com`. Sus feeds propios están desactivados en el servidor; su API
+REST de WordPress sería mejor vía, pero el motor solo lee RSS.
+
+---
+
+Nota de traspaso del **2026-08-11**, escrita al cerrar la sesión de la mañana.
 
 Todo está en `main`. **460 tests** en verde, lint y typecheck limpios, árbol
 limpio. **Vercel y Fly desplegados**, base migrada, portada y mapa verificados en

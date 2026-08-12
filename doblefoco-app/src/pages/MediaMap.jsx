@@ -13,6 +13,9 @@ import {
     ALCANCES, alcanceDe, ausenciaDeclarada, conAusenciaDeclarada,
 } from '../../shared/mediaOwnership';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
+import {
+    FUENTE_AUDIENCIA, audienciaDe, alcanceMaximo, sinAudienciaMedida,
+} from '../../shared/audiencia';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
 import './MediaMap.css';
@@ -288,6 +291,9 @@ const MediaMap = () => {
     /** Los que se están viendo y cuya propiedad no se ha podido establecer. */
     const sinPropiedad = useMemo(() => conAusenciaDeclarada(media), [media]);
 
+    /** Los que se están viendo y no tienen audiencia medida por nadie. */
+    const sinMedicion = useMemo(() => sinAudienciaMedida(media), [media]);
+
     /** Encender o apagar un alcance. Nunca se pueden apagar los tres. */
     const alternarAlcance = (clave) => {
         setAlcances((previos) => {
@@ -392,6 +398,43 @@ const MediaMap = () => {
               * se ve —que es lo que puede convertir a un lector de provincia en
               * la fuente que a nosotros nos falta—.
               */}
+            {/*
+              * DÓNDE SE ACABA LA MEDICIÓN DE AUDIENCIA.
+              *
+              * La tabla dice «sin medir» en la mayoría de las filas, y sin esta
+              * nota eso se lee como una tarea pendiente nuestra. No lo es: en
+              * Colombia no hay medición pública de audiencia por debajo de la
+              * quincena de marcas que encuesta el Reuters Institute, y la que
+              * usa el sector es de pago y no republicable.
+              *
+              * El dato que lo explica mejor está en la propia encuesta: TODA la
+              * prensa regional junta cabe en una sola fila agregada.
+              */}
+            {sinMedicion.length > 0 && (
+                <p className="map-nota-audiencia">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        El <strong>alcance semanal</strong> es el porcentaje de
+                        colombianos que dice haber usado cada marca en la última
+                        semana, según el{' '}
+                        <a href={FUENTE_AUDIENCIA.url} target="_blank" rel="noopener noreferrer">
+                            {FUENTE_AUDIENCIA.nombre}
+                        </a>. Mide <strong>personas, no visitas</strong>, e incluye
+                        televisión y radio.{' '}
+                        <strong>
+                            {sinMedicion.length} de los {media.length} medios que se ven
+                            aparecen como «sin medir»
+                        </strong>
+                        , y no es un pendiente nuestro: la encuesta llega a dieciséis
+                        marcas y por debajo de ahí no existe medición pública de
+                        audiencia en Colombia. La prensa regional entera cabe en una
+                        sola fila agregada de esa encuesta, así que ni El Colombiano ni
+                        El Heraldo ni El País de Cali tienen cifra propia pese a estar
+                        entre los que más publican.
+                    </span>
+                </p>
+            )}
+
             {sinPropiedad.length > 0 && (
                 <p className="map-nota-ausencia">
                     <FileSearch size={15} aria-hidden="true" />
@@ -624,6 +667,15 @@ const MediaMap = () => {
                         <thead>
                             <tr>
                                 <th scope="col">Medio</th>
+                                {/*
+                                  * LA AUDIENCIA VA JUNTO AL NOMBRE, antes que
+                                  * la orientación: es lo que dice si el juicio
+                                  * editoral que viene detrás afecta a media
+                                  * Colombia o a un municipio.
+                                  */}
+                                <th scope="col" title={FUENTE_AUDIENCIA.metodo}>
+                                    Alcance semanal
+                                </th>
                                 <th scope="col">Orientación</th>
                                 <th scope="col">Banda</th>
                                 <th scope="col">Factualidad</th>
@@ -643,6 +695,11 @@ const MediaMap = () => {
                                             {item.name}
                                         </button>
                                     </th>
+                                    <td className="num">
+                                        {alcanceMaximo(item.id) === null
+                                            ? <span className="sin-medir">sin medir</span>
+                                            : `${alcanceMaximo(item.id)}%`}
+                                    </td>
                                     <td className="num">{fmtBias(item.bias)}</td>
                                     <td>{getBand(item.bias).label}</td>
                                     <td className="num">{fmtPct(item.factuality)}</td>
@@ -763,6 +820,7 @@ const MediaProfile = ({ media, onClose }) => {
     const ownership = getOwnership(media.id);
     const documented = hasDocumentedOwnership(media.id);
     const ausencia = ausenciaDeclarada(media.id);
+    const audiencia = audienciaDe(media.id);
     const ownerType = ownership ? OWNER_TYPES[ownership.ownerType] : null;
     const grupo = ownership?.controlGroup ? CONTROL_GROUPS[ownership.controlGroup] : null;
     const personas = grupo?.personas ?? [];
@@ -802,6 +860,32 @@ const MediaProfile = ({ media, onClose }) => {
                     <span className="metric-value">{fmtPct(media.factuality)}</span>
                     <span className="metric-sub">historial del medio</span>
                 </div>
+                {/*
+                  * CUÁNTA GENTE LO LEE. Va junto al sesgo y a la factualidad
+                  * porque responde la tercera pregunta obvia sobre un medio, y
+                  * porque cambia cómo se leen las otras dos: una orientación
+                  * discutible en un medio que ve el 30 % del país pesa distinto
+                  * que la misma en uno que ven cuatro personas.
+                  *
+                  * Solo aparece cuando hay medición. La mayoría del catálogo no
+                  * la tiene, y el hueco se dice abajo en voz alta en vez de
+                  * ponerle aquí un guion que parezca un cero.
+                  */}
+                {audiencia && (
+                    <div className="profile-metric">
+                        <span className="metric-label">Alcance semanal</span>
+                        <span className="metric-value">
+                            {alcanceMaximo(media.id)}%
+                        </span>
+                        <span className="metric-sub">
+                            {audiencia.online !== null && audiencia.offline !== null
+                                ? `${audiencia.online}% en internet · ${audiencia.offline}% fuera`
+                                : audiencia.online !== null
+                                    ? 'en internet'
+                                    : 'fuera de internet'}
+                        </span>
+                    </div>
+                )}
                 <div className="profile-metric">
                     <span className="metric-label">Revisión</span>
                     <span className="metric-value small">
@@ -812,6 +896,23 @@ const MediaProfile = ({ media, onClose }) => {
                     </span>
                 </div>
             </div>
+
+            {/*
+              * LA CIFRA DE AUDIENCIA NO ES NUESTRA Y SE DICE DE QUIÉN ES. Es el
+              * único número de esta ficha que no producimos: el sesgo lo
+              * juzgamos nosotros y la factualidad la medimos, pero esto lo
+              * midió una encuesta ajena y tiene que poder rastrearse hasta ella.
+              */}
+            {audiencia && (
+                <p className="profile-fuente-audiencia">
+                    «{audiencia.marca}» en el{' '}
+                    <a href={FUENTE_AUDIENCIA.url} target="_blank" rel="noopener noreferrer">
+                        {FUENTE_AUDIENCIA.nombre}
+                        <ExternalLink size={11} aria-hidden="true" />
+                    </a>{' '}
+                    del {FUENTE_AUDIENCIA.editor}. {FUENTE_AUDIENCIA.advertencia}
+                </p>
+            )}
 
             <section className="profile-section">
                 <h3>Por qué lo clasificamos así</h3>

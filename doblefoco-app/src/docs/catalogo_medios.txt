@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-12
-Medios en el catálogo: 61
+Medios en el catálogo: 62
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  31 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  32 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -206,6 +206,14 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  31 medios
     podido establecer quién lo controla, y nada de lo observable lo
     sitúa en el eje. La regla del protocolo manda entonces la banda
     más cercana a la mixta — ver fichas/la-razon-cordoba.md.
+
+  Pulzo  ·  sesgo +0.00  ·  factualidad 0%
+    pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL
+    Nativo digital de alto alcance —cuarto medio más consumido del
+    país— con mezcla de agregación, virales y nación. Orientación
+    mixta provisional: su volumen es de titular rápido y no de línea
+    editorial declarada, y nada de la evidencia admisible lo mueve del
+    centro. Sin factualidad medida — ver fichas/pulzo.md.
 
   France 24 Español  ·  sesgo +0.00  ·  factualidad 90%
     france24.com · Servicio público francés · FR · RSS propio · PROVISIONAL

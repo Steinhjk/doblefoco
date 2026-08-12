@@ -841,6 +841,38 @@ export const MEDIA_REGISTRY = [
         imageHosts: ['larazon.co'],
     },
     {
+        /**
+         * PULZO — alta del 2026-08-11, a petición de Jose.
+         *
+         * ES EL CUARTO MEDIO MÁS CONSUMIDO DEL PAÍS y llevaba ausente del
+         * catálogo desde el principio. Lo destapó ordenar por audiencia en vez
+         * de por volumen: el Digital News Report 2026 le da un 19 % de alcance
+         * semanal en internet, por delante de El Espectador (16 %), de Caracol
+         * Radio (16 %) y de Blu Radio (15 %), que sí estaban.
+         *
+         * El hueco no era casual, y por eso conviene entenderlo: un catálogo que
+         * se arma mirando quién publica RSS y quién es prensa «de referencia» se
+         * salta justo a los nativos digitales de gran público. Ver
+         * `shared/audiencia.js`.
+         *
+         * SU FEED VA POR SECCIÓN, no hay uno general: `/rss/<sección>` con
+         * nacion, economia, mundo, deportes y entretenimiento. Se toma `nacion`,
+         * que es la que corresponde a lo que este producto agrega. Devuelve 600
+         * ítems y el motor se queda con los 15 primeros, como con todos.
+         *
+         * OJO CON EL PRIMER ÍTEM: viene uno de junio de 2025 encabezando la
+         * lista, delante de los frescos. Gasta un hueco de los quince y nada
+         * más, pero si algún día parece que Pulzo entra poco, mirar aquí.
+         */
+        id: 'pulzo', name: 'Pulzo', shortName: 'Pulzo',
+        domain: 'pulzo.com', country: 'CO', group: 'INQLAB S.A.S.',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Nativo digital de alto alcance —cuarto medio más consumido del país— con mezcla de agregación, virales y nación. Orientación mixta provisional: su volumen es de titular rápido y no de línea editorial declarada, y nada de la evidencia admisible lo mueve del centro. Sin factualidad medida — ver fichas/pulzo.md.',
+        feed: { url: 'https://www.pulzo.com/rss/nacion', via: 'direct', category: 'Política' },
+        // Sirve sus imágenes desde CloudFront, no desde su propio dominio.
+        imageHosts: ['d2yoo3qu6vrk5d.cloudfront.net'],
+    },
+    {
         id: 'semana', name: 'Semana', shortName: 'Semana',
         domain: 'semana.com', country: 'CO', group: 'Grupo Gilinski',
         bias: 0.45, factuality: 0.78, reviewedAt: null,

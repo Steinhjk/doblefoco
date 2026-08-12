@@ -739,6 +739,49 @@
     color: var(--text-muted);
 }
 
+/* ── Audiencia ──────────────────────────────────────────────────────────── */
+
+/* La atribución de la cifra ajena. Discreta pero enlazada: quien quiera
+   discutir el número tiene que poder llegar a quien lo produjo. */
+.profile-fuente-audiencia {
+    margin: -0.4rem 0 1rem;
+    font-size: 0.78rem !important;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.profile-fuente-audiencia a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--text-muted);
+}
+
+.map-nota-audiencia {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-left: 2px solid var(--border-color);
+    padding: 10px 14px;
+    margin: 0 0 18px;
+}
+
+.map-nota-audiencia strong { color: var(--text-main); }
+
+.map-nota-audiencia svg { flex-shrink: 0; margin-top: 2px; }
+
+/* «sin medir» en la columna de alcance. Atenuado a propósito: es una ausencia
+   de dato, y tiene que distinguirse de un cero de un vistazo. */
+.map-table .sin-medir {
+    font-style: italic;
+    opacity: 0.6;
+    font-size: 0.85em;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .map-alcance {
         transition: none;

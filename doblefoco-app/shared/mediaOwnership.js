@@ -1870,6 +1870,67 @@ export const OWNERSHIP_PROFILES = {
         ],
     },
 
+    /**
+     * PULZO — EL HILO LLEGA A UNA SOCIEDAD Y AHÍ SE PARA (2026-08-11).
+     *
+     * Es el cuarto medio más consumido del país y su propiedad última es la peor
+     * documentada de todo el tramo de audiencia alta. Merece explicarse, porque
+     * la tentación de cerrarlo era grande.
+     *
+     * TRES FUENTES Y NO COINCIDEN:
+     *
+     *   · El **Media Ownership Monitor** —proyecto dedicado justo a esto— dice
+     *     que el 100 % de las acciones está a nombre de INQLAB S.A.S., y nombra a
+     *     Guillermo Eduardo Franco Morales como fundador y CEO y a Julio Mario
+     *     Camacho como representante legal. Es la única fuente abierta con
+     *     estructura societaria, y su estudio es viejo: La República publicó
+     *     después que Franco se retiró del medio, así que sus personas están
+     *     caducadas aunque la sociedad siga.
+     *   · **Wikipedia** afirma que INQLAB está registrada en Panamá y pertenece
+     *     al grupo Santo Domingo. Su única referencia para eso es la ficha de
+     *     SembraMedia, y **esa ficha no dice nada de Santo Domingo ni de
+     *     INQLAB**: da otro fundador (Andrés Murcia), otro año (2012) y describe
+     *     el medio como sociedad con fines de lucro financiada por publicidad.
+     *   · **La República** lo llama «un portal web del Grupo Santo Domingo» EN EL
+     *     TITULAR, y su propio texto no lo sostiene en ninguna línea.
+     *
+     * POR ESO NO SE LE ASIGNA `controlGroup`, y no es prudencia decorativa: si se
+     * le pusiera `valorem`, el aviso de dueño compartido diría que CUATRO medios
+     * de este catálogo —El Espectador, Blu Radio, Noticias Caracol y Pulzo—
+     * responden ante la familia Santo Domingo. Sería la concentración más grande
+     * que este mapa habría enseñado nunca, construida sobre un titular sin
+     * cuerpo y una nota de Wikipedia que su propia fuente desmiente.
+     *
+     * Es el mismo error de la compra de El Heraldo por Gilinski, que se anunció y
+     * se deshizo, con el agravante de que aquí el aviso saldría en cada noticia
+     * que cubran dos de los cuatro.
+     *
+     * LA CONTRADICCIÓN SÍ SE PUBLICA. Que la propiedad última del cuarto medio
+     * más leído del país esté en disputa entre sus tres fuentes públicas es un
+     * hecho sobre el espacio mediático colombiano, y ocultarlo para que la ficha
+     * quedara limpia sería justo lo contrario de lo que hace este archivo.
+     */
+    'pulzo': {
+        ownerType: 'conglomerado',
+        holdings: [
+            'El 100 % de las acciones figura a nombre de INQLAB S.A.S., según la ficha del Media Ownership Monitor de Colombia, que es el único registro público abierto con su estructura societaria.',
+            'La misma sociedad participa en otras tres empresas de tecnología y comercio electrónico: Quantum (49 %), Chicplace (43 %) y Appto (15 %). Son participaciones minoritarias, no control.',
+            'Quién controla INQLAB S.A.S. NO CONSTA en ninguna fuente que se haya podido abrir. El hilo llega a la sociedad y ahí se detiene, a diferencia del resto de medios colombianos del catálogo, donde termina en personas.',
+        ],
+        notes: [
+            'SUS TRES FUENTES PÚBLICAS SE CONTRADICEN, y se deja constancia en vez de elegir una: el Media Ownership Monitor da a Guillermo Eduardo Franco Morales como fundador y CEO y a Julio Mario Camacho como representante legal; Wikipedia afirma que INQLAB está registrada en Panamá y pertenece al grupo Santo Domingo; y la ficha de SembraMedia que Wikipedia cita como única prueba de eso no menciona ni a Santo Domingo ni a INQLAB, sino a otro fundador (Andrés Murcia) y otro año de fundación (2012).',
+            'La República tituló «Guillermo Franco se retira de Pulzo, un portal web del Grupo Santo Domingo», pero el cuerpo de esa nota no afirma nada sobre la propiedad. NO se le atribuye por eso ningún grupo de control: hacerlo pondría a cuatro medios de este catálogo bajo el mismo dueño a partir de un titular que su propio texto no respalda.',
+            'Los datos de personas del Media Ownership Monitor están caducados en al menos un punto: la propia La República informó de la salida de Franco del medio. La sociedad se mantiene; los cargos, no necesariamente.',
+        ],
+        sources: [
+            'https://colombia.mom-gmr.org/en/media/detail/outlet/pulzocom/',
+            'https://directorio.sembramedia.org/pulzo/',
+            'https://es.wikipedia.org/wiki/Pulzo_(medio_digital)',
+            'https://www.larepublica.co/internet-economy/guillermo-franco-se-retira-de-pulzo-un-portal-web-del-grupo-santo-domingo-2741710',
+        ],
+        verifiedAt: '2026-08-11',
+    },
+
     'semana': {
         ownerType: 'conglomerado',
         controlGroup: 'gilinski',

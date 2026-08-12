@@ -185,11 +185,25 @@ for (const file of readdirSync(DOCS_DIR).filter((f) => f.endsWith('.txt'))) {
 
 // ── 5. El catálogo público está sincronizado con el registro ────────────────
 
-const stripDate = (text) => text.replace(GENERATED_LINE, 'Generado: —');
+/**
+ * Se normalizan los saltos de línea antes de comparar, y NO es cosmético.
+ *
+ * La comparación era de cadenas exactas, así que en Windows daba **falsa alarma**:
+ * git deja el archivo con CRLF al hacer checkout o merge, `renderCatalog()` lo
+ * genera con LF, y la comprobación anunciaba «catálogo desactualizado» sobre un
+ * archivo cuyo contenido era idéntico —`git diff` no mostraba ni una línea—.
+ *
+ * Pasó el 2026-08-12, dos veces en la misma sesión. El daño real no es el susto:
+ * es que la salida correcta ante ese aviso es ejecutar `docs:catalog`, que
+ * reescribe el archivo y produce un cambio de solo saltos de línea en el commit.
+ * Una comprobación que avisa en falso es una que se acaba ignorando, y esta
+ * comprueba algo que importa.
+ */
+const normalizar = (text) => text.replace(GENERATED_LINE, 'Generado: —').replace(/\r\n/g, '\n');
 
 try {
-    const onDisk = stripDate(readFileSync(OUTPUT, 'utf8'));
-    const expected = stripDate(renderCatalog());
+    const onDisk = normalizar(readFileSync(OUTPUT, 'utf8'));
+    const expected = normalizar(renderCatalog());
 
     if (onDisk !== expected) {
         fail(`${GENERATED_DOC} está desactualizado respecto al registro. Ejecuta: npm run docs:catalog`);

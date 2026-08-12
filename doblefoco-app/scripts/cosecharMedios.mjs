@@ -20,12 +20,24 @@
  *   algo que Wikidata casi nunca tiene relleno: en qué departamento está el
  *   medio.
  *
- * NO se usa prensaescrita.com, que tiene el mejor listado de prensa regional
- * colombiana por ciudad. Devuelve **403 a nuestro bot y 200 a un navegador**:
- * es un bloqueo deliberado y se respeta. Cambiar el User-Agent para saltarlo
- * contradiría lo que el motor declara de sí mismo —«si nos bloquean, que sepan
- * a quién»— y sería incoherente con lo que hacemos cuando nos bloquea un medio,
- * que es escribirle. Si algún día hace falta ese listado, se pide permiso.
+ * TODAVÍA no se usa prensaescrita.com, que tiene el mejor listado de prensa
+ * regional colombiana por ciudad — y la razón que estaba escrita aquí era
+ * FALSA. Decía: «devuelve 403 a nuestro bot y 200 a un navegador: es un bloqueo
+ * deliberado y se respeta». **Nunca nos bloqueó.** El 403 lo causaba nuestro
+ * propio User-Agent, que llevaba una tilde —«periodística»— cuando una cabecera
+ * HTTP solo admite ASCII, y los cortafuegos lo rechazaban por inválido.
+ *
+ * Comprobado el 2026-08-12 con el User-Agent ya corregido: **responde 200**,
+ * 32 KB de HTML, con Colombia dentro.
+ *
+ * Así que no hay bloqueo que respetar, y este sigue siendo el mejor listado que
+ * existe para el hueco regional. Lo que queda es integrarlo: hay que leer su
+ * estructura por ciudad y decidir cómo se cosecha. Es trabajo, no un veto.
+ *
+ * Se conserva el párrafo del error a la vista, y no se borra, porque la lección
+ * es la que importa: **cuando un servicio ajeno falla solo con nosotros, el
+ * primer sospechoso somos nosotros.** La misma semana pasó con los 502 y 504 de
+ * Wikidata, que eran nuestra consulta y no su servicio.
  *
  * La FLIP publica «Cartografías de la Información», que mapea los medios de 141
  * municipios y es la mejor fuente que existe para lo regional. Su web devolvía
@@ -57,6 +69,32 @@ async function json(url, cabeceras = {}) {
     return r.json();
 }
 
+/**
+ * REINTENTO CON ESPERA, para los 502 y 504 del endpoint de Wikidata.
+ *
+ * No es tolerancia a fallos por costumbre: es que `query.wikidata.org` es un
+ * servicio público con límite de tiempo por consulta y devuelve **504 cuando la
+ * consulta tarda demasiado, no cuando está caído**. El barrido del 2026-08-11 se
+ * quedó a medias por esto y se anotó como «Wikidata devolvía 502», que hacía
+ * pensar en una avería ajena y en esperar. No era eso.
+ */
+async function jsonConReintento(url, cabeceras = {}, intentos = 4) {
+    let ultimo;
+    for (let i = 1; i <= intentos; i += 1) {
+        try {
+            return await json(url, cabeceras);
+        } catch (e) {
+            ultimo = e;
+            const recuperable = /\b(429|500|502|503|504)\b/.test(String(e.message));
+            if (!recuperable || i === intentos) throw e;
+            const espera = 2000 * i;
+            decir(`  · ${e.message.slice(0, 24)}… reintento ${i + 1}/${intentos} en ${espera / 1000} s`);
+            await new Promise((r) => setTimeout(r, espera));
+        }
+    }
+    throw ultimo;
+}
+
 const dominioDe = (web) => {
     try { return new URL(web).hostname.replace(/^www\./, ''); } catch { return null; }
 };
@@ -69,12 +107,32 @@ const dominioDe = (web) => {
  * después por dominio y por nombre; quitar el tipo dejaría fuera revistas de
  * información general que sí interesan.
  */
-const SPARQL = `
+const TIPOS = [
+    'wd:Q11032',    // periódico
+    'wd:Q1002697',  // publicación periódica
+    'wd:Q1616075',  // emisora de radio
+    'wd:Q15265344', // cadena de televisión
+    'wd:Q17232649', // periódico digital
+    'wd:Q1110794',  // diario
+    'wd:Q11033',    // medio de comunicación
+];
+
+/**
+ * UNA CONSULTA POR TIPO, Y NO LAS SIETE JUNTAS.
+ *
+ * La versión de una sola consulta con `VALUES ?tipo { … }` y las siete clases
+ * devolvía **504 sistemáticamente** el 2026-08-12 —cuatro intentos seguidos—,
+ * porque `wdt:P31/wdt:P279*` sobre siete jerarquías más dos OPTIONAL no cabe en
+ * el límite de tiempo del endpoint público. Partida por tipo, cada consulta es
+ * pequeña y entra. Es la misma pregunta hecha en siete trozos.
+ *
+ * Se tolera que un tipo falle: se avisa y se sigue con los demás. Perder una
+ * clase es un barrido incompleto y declarado; abortar los siete por una es
+ * quedarse sin nada, que es lo que pasó el día 11.
+ */
+const sparqlDeTipo = (tipo) => `
 SELECT DISTINCT ?item ?itemLabel ?web ?lugarLabel WHERE {
-  VALUES ?tipo {
-    wd:Q11032 wd:Q1002697 wd:Q1616075 wd:Q15265344 wd:Q17232649 wd:Q1110794 wd:Q11033
-  }
-  ?item wdt:P31/wdt:P279* ?tipo .
+  ?item wdt:P31/wdt:P279* ${tipo} .
   ?item wdt:P17 wd:Q739 .
   OPTIONAL { ?item wdt:P856 ?web . }
   OPTIONAL { ?item wdt:P131 ?lugar . }
@@ -86,24 +144,43 @@ const ES_ACADEMICO = /\.edu(\.co)?$|revistas?\.|journals?\.|elsevier|scielo|reda
 const NOMBRE_ACADEMICO = /^(revista|anuario|bolet[ií]n|estudios|cuadernos|acta|archivos|papeles|memorias)\b|revista de|journal/i;
 const NO_ES_MEDIO = /facebook|twitter|instagram|youtube|blogspot|wordpress\.com|wikipedia/i;
 
-decir('· preguntando a Wikidata…');
-const sparql = await json(
-    'https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(SPARQL),
-    { Accept: 'application/sparql-results+json' }
-);
+decir('· preguntando a Wikidata, un tipo por consulta…');
 
 /** @type {Map<string, {nombre: string, dominio: string, lugar: string|null, fuente: string}>} */
 const cosecha = new Map();
+const tiposFallidos = [];
 
-for (const fila of sparql.results.bindings) {
-    const nombre = fila.itemLabel?.value;
-    const dominio = fila.web?.value ? dominioDe(fila.web.value) : null;
-    if (!nombre || !dominio || /^Q\d+$/.test(nombre)) continue;
-    if (!cosecha.has(dominio)) {
-        cosecha.set(dominio, { nombre, dominio, lugar: fila.lugarLabel?.value ?? null, fuente: 'wikidata' });
+for (const tipo of TIPOS) {
+    let sparql;
+    try {
+        sparql = await jsonConReintento(
+            'https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(sparqlDeTipo(tipo)),
+            { Accept: 'application/sparql-results+json' }
+        );
+    } catch (e) {
+        tiposFallidos.push(`${tipo} (${e.message.slice(0, 40)})`);
+        decir(`  ✗ ${tipo}: ${e.message.slice(0, 60)}`);
+        continue;
     }
+
+    let nuevos = 0;
+    for (const fila of sparql.results.bindings) {
+        const nombre = fila.itemLabel?.value;
+        const dominio = fila.web?.value ? dominioDe(fila.web.value) : null;
+        if (!nombre || !dominio || /^Q\d+$/.test(nombre)) continue;
+        if (!cosecha.has(dominio)) {
+            cosecha.set(dominio, { nombre, dominio, lugar: fila.lugarLabel?.value ?? null, fuente: 'wikidata' });
+            nuevos += 1;
+        }
+    }
+    decir(`  ${tipo}: +${nuevos}`);
 }
+
 decir(`  ${cosecha.size} medios con sitio web oficial`);
+if (tiposFallidos.length) {
+    decir(`  ⚠ BARRIDO INCOMPLETO: ${tiposFallidos.length} de ${TIPOS.length} tipos no respondieron`);
+    for (const t of tiposFallidos) decir(`    · ${t}`);
+}
 
 // ── 2. Categorías por departamento en Wikipedia ──────────────────────────────
 

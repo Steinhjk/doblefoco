@@ -1,5 +1,71 @@
 # Por dónde seguir
 
+## Lo del 12 de agosto, por la tarde
+
+### Las 20 fichas del tramo prioritario están escritas
+
+**Jose las revisa hoy con Kimi K3 y Fable 5.** Eran 2 de 20 por la mañana. La cola
+completa, con qué propone cada una y cinco preguntas que atraviesan varias, está en
+**`revision-externa/pendientes.md`**.
+
+**Ninguna propone firmar.** Cinco se cierran con búsqueda documental —Noticias RCN,
+La FM, El Colombiano, Semana y La Opinión necesitan tres a cinco piezas fechadas del
+último año—, y la de Semana es la más cerca de firmarse de todo el catálogo: le falta
+cambiar una frase y añadir cinco enlaces.
+
+**Lo que salió al escribirlas, y no se resuelve ficha por ficha:**
+
+- **«Fiscalizar al poder» se resuelve de tres formas distintas** en el catálogo:
+  Chocó 7 Días va a la mixta porque «denunciar al poder es el oficio y no una
+  orientación»; Noticias Uno está en −0,40 justamente por eso; La Silla Vacía en
+  −0,10 por lo mismo sin decirlo. **Las tres no pueden tener razón.**
+- **Los siete diarios regionales están todos a la derecha**, de +0,15 a +0,35. Si el
+  criterio es «familia empresarial regional → derecha moderada», eso es la regla 5.1
+  al revés y hay que escribirlo o sustituirlo por evidencia.
+- **Los trece internacionales están clasificados en el eje de su país**, no en el
+  colombiano. Nadie ha justificado la traslación.
+- **Noticias Uno es el caso de El Espectador otra vez**, con la mitad de la
+  justificación histórica, la propiedad sin cerrar y cero corpus — y con el valor más
+  extremo del catálogo.
+
+**Nuevo: `npm run conducta`** mide la conducta de nivel 2 —agenda propia, compañía
+media, con quién coincide— y `revision-externa/CONDUCTA-MEDIDA.md` explica **por qué
+hoy casi no discrimina**: tres días, corpus dominado por el terremoto, y compañía
+media saturada entre +0,08 y +0,19 para los veinte. Si un revisor la usa para mover
+un número, es una objeción válida contra la ficha.
+
+### El barrido nacional está hecho, y estaba bloqueado por nuestra propia consulta
+
+Detalle en **`BARRIDO_2026-08-12.md`**. Wikidata nunca estuvo caído: el 502 y el 504
+los daba **nuestra** consulta, demasiado pesada para el límite de tiempo del
+endpoint. Partida en siete —una por tipo— con reintentos, pasa. **103 candidatos
+nuevos, 40 con feed vivo.**
+
+**Es el mismo error de diagnóstico que la tilde del User-Agent, en la misma semana:
+las dos veces el fallo era nuestro y la nota culpaba al otro lado.** Y de paso queda
+comprobado que **`prensaescrita.com` responde 200** — la nota del código que decía
+que nos bloqueaba era falsa y está corregida.
+
+**Lo que hay que hacer con eso:**
+
+1. **El Nuevo Día (Ibagué) publica cada dos horas** y está fuera del catálogo. **Es
+   el único candidato que desbloquea un departamento entero, el Tolima.** Ojo: es de
+   la familia Galvis, la de Vanguardia — si entra, hay dueño compartido que marcar.
+2. **Cablenoticias publica cada hora**, y es el canal donde emite Noticias Uno, que
+   hoy aporta cero artículos.
+3. **La Nación (Neiva)** cada 4 h y **Diario La Libertad (Barranquilla)** con 50
+   ítems al día. No desbloquean departamento; añaden voz donde hay una sola.
+
+### Dos arreglos pequeños que evitaban avisos en falso
+
+- **`check:registry` daba falsa alarma en Windows**: comparaba cadenas exactas y git
+  deja el catálogo con CRLF tras un checkout, así que anunciaba «desactualizado» un
+  archivo idéntico. Pasó dos veces hoy. Ahora normaliza los saltos de línea.
+- **La política de propiedad desconocida ya es política**, no caso por caso: ver
+  `DECISIONES.md` del 2026-08-12.
+
+---
+
 ## Los tres que faltaban ya están dentro (2026-08-12)
 
 **Fusionado y en producción**, con el orden de siempre: `main` (Vercel) →

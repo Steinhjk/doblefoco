@@ -8,15 +8,86 @@ auditado vuelve a crecer**.
 
 ---
 
+## EL TRAMO PRIORITARIO YA ESTÁ LISTO PARA ENVIAR (2026-08-12)
+
+**Jose hace la comprobación hoy con Kimi K3 y Fable 5.** Lo que faltaba eran las
+fichas de los medios de mayor relevancia nacional, y ya están: **los 20 del tramo
+prioritario de `shared/audiencia.js` tienen ficha.** Eran 2 de 20 esta mañana.
+
+### Las 20, en orden de audiencia
+
+| # | Medio | Valor | Ficha | Qué propone la ficha |
+|---|---|---|---|---|
+| 1 | Noticias Caracol | +0,10 | `fichas/noticias-caracol.md` | No firmar: sin evidencia propia, y 21 artículos de corpus |
+| 2 | El Tiempo | +0,05 | `fichas/el-tiempo.md` | No firmar: el número calibra el resto del catálogo y no está fundado |
+| 3 | Noticias RCN | +0,25 | `fichas/noticias-rcn.md` | **Cerca de firmable**: la afirmación es del presente, faltan las piezas |
+| 4 | Caracol Radio | +0,05 | `fichas/caracol-radio.md` | No firmar: su justificación **no afirma nada** sobre orientación |
+| 5 | Semana | +0,45 | `fichas/semana.md` | **La más cerca de firmarse.** Cambiar una frase y añadir cinco enlaces |
+| 6 | Pulzo | 0,00 | `fichas/pulzo.md` | Ficha del 2026-08-11 |
+| 7 | El Espectador | −0,20 | `fichas/el-espectador.md` | **NO FIRMAR**, sin base admisible (ficha del 08-08) |
+| 8 | Blu Radio | +0,25 | `fichas/blu-radio.md` | No firmable **por separado**: vértice de los 0,45 de Valorem |
+| 9 | Infobae Colombia | +0,15 | `fichas/infobae-co.md` | No firmar: **confunde factualidad con orientación** |
+| 10 | CNN en Español | −0,15 | `fichas/cnn-es.md` | No firmar: clasificado en un eje que no es el colombiano |
+| 11 | La Silla Vacía | −0,10 | `fichas/la-silla-vacia.md` | No firmar: su propia justificación apunta a 0,00 |
+| 12 | La FM | +0,35 | `fichas/la-fm.md` | No firmar: afirmación buena, cero evidencia, 11 artículos |
+| 13 | Noticias Uno | −0,40 | `fichas/noticias-uno.md` | **No firmar**: mitad histórica, propiedad sin cerrar, cero corpus |
+| 14 | El Heraldo | +0,20 | `fichas/el-heraldo.md` | No firmar: mejor ficha de propiedad, justificación más vacía |
+| 15 | El Colombiano | +0,35 | `fichas/el-colombiano.md` | No firmar: «tradición conservadora» es histórico |
+| 16 | El País (Cali) | +0,30 | `fichas/el-pais-cali.md` | No firmable por separado: mismo dueño que Semana |
+| 17 | La República | +0,15 | `fichas/la-republica.md` | No firmar: el conflicto de interés más nítido del catálogo, sin mencionar |
+| 18 | El Universal | +0,20 | `fichas/el-universal.md` | No firmar: vínculo político de los dueños documentado y no citado |
+| 19 | La Opinión | +0,30 | `fichas/la-opinion.md` | No firmar: cambió de dueño en 2024 y la justificación es anterior |
+| 20 | Vanguardia | +0,25 | `fichas/vanguardia.md` | No firmar: el caso puro del patrón regional sin criterio escrito |
+
+### Antes de enviarlas: lee esto y decide si va con ellas
+
+**`CONDUCTA-MEDIDA.md`**, en esta misma carpeta. Explica de dónde salen las tres
+cifras de nivel 2 de cada ficha y **por qué hoy casi no discriminan**: son tres
+días, el corpus está dominado por el terremoto, y la compañía media está saturada
+—los veinte medios van de +0,08 a +0,19—. Si un revisor usa la compañía media para
+mover un número, eso es una objeción válida contra la ficha, y conviene que lo
+sepa.
+
+Se puede recalcular en cualquier momento: `npm run conducta`.
+
+### Cinco preguntas que atraviesan varias fichas
+
+Salieron al escribirlas y **ninguna se resuelve ficha por ficha**. Merece la pena
+llevarlas a los modelos como preguntas propias:
+
+1. **Los tres de Valorem** —Noticias Caracol +0,10, Blu Radio +0,25, El Espectador
+   −0,20—: **0,45 de recorrido en la misma casa, sin explicación escrita.** Es lo
+   primero que encuentra un auditor. Enviar las tres juntas.
+2. **«Fiscalizar al poder» se resuelve de tres formas distintas.** Chocó 7 Días va a
+   la mixta porque «denunciar al poder es el oficio y no una orientación»; Noticias
+   Uno va a −0,40 justamente por su vigilancia al establecimiento; La Silla Vacía
+   está en −0,10 por lo mismo sin decirlo. **Las tres no pueden tener razón.**
+3. **Los siete diarios regionales están todos a la derecha**, de +0,15 a +0,35,
+   ninguno en la mixta. Si el criterio es «familia empresarial regional → derecha
+   moderada», eso es la regla 5.1 al revés y hay que escribirlo o sustituirlo.
+4. **Los trece medios internacionales están clasificados en el eje de su país**, no
+   en el colombiano. Nadie ha justificado la traslación. Bloquea las trece fichas.
+5. **La prensa económica no tiene ancla.** La República, Portafolio y Valora
+   Analitik están calibrados unos con otros —Valora entró tomando «el de
+   Portafolio»— y ninguno tiene evidencia propia.
+
+### Lo que las fichas piden y NO es opinión de modelo
+
+Cinco de ellas se cierran con **búsqueda documental**, no con juicio: Noticias RCN,
+La FM, El Colombiano, Semana y La Opinión necesitan **tres a cinco piezas fechadas
+de los últimos 12 meses**. Si los modelos aportan eso con enlaces comprobables,
+esas cinco pasan de «no firmar» a firmables.
+
+---
+
 ## PENDIENTE ABIERTO: enviar las fichas a las IAs externas
 
 Pedido de Jose el **2026-08-11**. Lo hace él, con modelos de ventana grande, para
 que analicen el sesgo real de cada medio con evidencia fáctica.
 
-**El circuito está montado y no se ha enviado nada.** `LEEME.md` explica el
-procedimiento, `PROMPT.md` y `CONTEXTO.md` son lo que se pega, y **`respuestas/`
-está vacía salvo la plantilla**. Ese es el estado, y es el único dato que hacía
-falta aquí.
+**El circuito está montado.** `LEEME.md` explica el procedimiento, `PROMPT.md` y
+`CONTEXTO.md` son lo que se pega, y **`respuestas/` sigue vacía salvo la
+plantilla**. El envío es del 2026-08-12, con Kimi K3 y Fable 5.
 
 **Hay 21 fichas con valor propuesto**, listas para enviar —este archivo decía 17
 y «catorce regionales», y ninguna de las dos cifras cuadraba con su propia

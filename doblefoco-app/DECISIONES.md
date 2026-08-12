@@ -17,6 +17,34 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-12 · Los regionales sin ficha de propiedad se quedan como desconocidos, y la tarea se anota
+
+**Decisión de Jose.** Un medio regional del que no se ha podido establecer la
+propiedad **entra y se queda con `ownerType: null`** —desconocido, declarado con
+fecha— en vez de esperar a resolverlo. **Y la tarea de resolverlo queda anotada**,
+no cerrada.
+
+**Qué la motiva.** Es la generalización de la regla del 2026-08-11: la ausencia de
+dueño se declara. Ese día se aplicó a un medio (La Razón.co) y el 12 a tres más
+(EL DIARIO de Boyacá, Vive el Meta, Lente Regional). Jose la eleva a política:
+**por defecto, desconocido y anotado.** Deja de haber que decidir caso por caso si
+un medio se queda fuera por no saber de quién es.
+
+**Lo que NO autoriza.** No autoriza dejar de buscar, y no autoriza una ficha vacía:
+`check:registry` sigue exigiendo `consultadoEl`, `buscadoEn` y `falta` para
+aceptar un `ownerType: null`. La diferencia entre «desconocido» y «no lo hemos
+mirado» es esa lista, y sin ella el alta no pasa.
+
+**El coste que se asume.** Los certificados de Cámara de Comercio pendientes son
+ya once, todos trámite manual. La lista crece más rápido de lo que se cierra, y
+esta decisión hace explícito que se acepta: **es preferible un catálogo con huecos
+declarados a un mapa con departamentos en blanco.**
+
+Dónde vive el detalle: `AUSENCIA DECLARADA` en `shared/mediaOwnership.js`, y la
+lista de lo que falta en cada ficha.
+
+---
+
 ## 2026-08-08 · Cambio sale de Google News; cinco medios se quedan y se dice por qué
 
 **Decisión.** Cambio pasa a su RSS propio. RTVC, Revista RAYA, La FM, Noticias

@@ -24,29 +24,74 @@ idea completa olvidada. Si falta detalle, se escribe qué falta y quién lo sabe
 
 ---
 
-## ABIERTO · Categoría de canales de YouTube
+## ABIERTO · Medios alternativos — la categoría de canales de YouTube
 
 **Planteado:** en una sesión anterior (fecha sin registrar — se perdió).
-**Retomado:** 2026-08-11.
+**Retomado:** 2026-08-11. **Contexto dado por Jose:** 2026-08-12.
 
-### La idea
+### La idea, ya con forma
 
-Una **categoría con los canales de YouTube distribuidos**.
+**Una categoría grande llamada «Medios alternativos», al lado de Tendencias**,
+con los canales de YouTube más prominentes que hacen noticias, **cada uno con su
+sesgo político declarado**: mixta, izquierda o derecha.
 
-Es lo que Jose dijo, textual en lo esencial. Se anota así, corto y sin adornar,
-porque cualquier ampliación a estas alturas sería invención.
+Ejemplos que Jose nombró: **Daniel Coronell, María Jimena Duzán, Diego Ruzzarin,
+Daniel Briceño**, «etc.». La lista no está cerrada y **la investigación está por
+hacer**.
 
-### Lo que hace falta preguntar
+### Lo que el contexto del 12 de agosto ya resuelve
 
-- **«Distribuidos» ¿según qué eje?** El espectro político es el eje del producto
-  y es la lectura más probable, pero no está dicho.
-- **Qué canales entran.** ¿Los de los medios que ya están en el catálogo
-  —Noticias Caracol, Noticias RCN, City TV publican ahí—, canales que solo
-  existen en YouTube, o los dos?
-- **¿Un canal es un medio?** Si lleva ficha de propiedad, valor de sesgo y entra
-  en el mapa, o si es una capa aparte con sus propias reglas.
-- **Qué se muestra**: ¿los vídeos como piezas dentro del feed normal, o una
-  pantalla propia?
+- **Dónde vive:** categoría propia y grande, hermana de Tendencias. No es una
+  etiqueta dentro del feed normal. → contesta la pregunta de «qué se muestra».
+- **Qué entran:** canales prominentes de noticias, y por los ejemplos se ve que
+  son **personas, no cabeceras** — Coronell, Duzán, Ruzzarin, Briceño no son
+  medios del catálogo. → contesta «qué canales entran»: los que solo existen ahí.
+- **Se etiqueta el sesgo**, con las mismas bandas del producto.
+
+### Lo que esto cambia respecto a un medio normal, y hay que resolver
+
+- **«En muchos casos son personas naturales y ellos mismos determinan su
+  orientación»** (Jose). Eso es un cambio de fondo, no un detalle: en un medio la
+  orientación se infiere de la propiedad y de la conducta; **en un canal
+  personal, el autor la declara**. Es evidencia de nivel 4 —lo que dice de sí
+  mismo— convertida en la fuente principal, que es justo lo contrario de lo que
+  manda el protocolo para los medios.
+  - A favor: una declaración propia y pública es contrastable, y clasificar a
+    Briceño como derecha o a Coronell como izquierda no se lo inventa nadie.
+  - En contra: **el protocolo prohíbe apoyar una ficha solo en niveles 4 y 5.**
+    O se le hace una excepción escrita para canales personales, o se les exige
+    también conducta medida. **No decidido.**
+- **La propiedad no aplica igual.** Un canal personal no tiene sociedad editora
+  ni accionistas: el dueño es la persona, y lo que importa es **de qué vive** —
+  patrocinios, membresías, quién le paga—. Habría que decidir si eso va en el
+  campo de propiedad o en uno nuevo.
+- **Qué es «prominente».** Ya hay precedente: la cobertura se mide por audiencia,
+  no por volumen (`shared/audiencia.js`). Para YouTube el equivalente sería
+  suscriptores o visualizaciones, y hay que decidir cuál y con qué corte.
+
+### Lo que ya se sabe del terreno y sirve
+
+- El motor **solo sabe leer RSS** (`via: 'direct' | 'gnews'`). YouTube publica
+  feed RSS por canal:
+  `https://www.youtube.com/feeds/videos.xml?channel_id=<ID>`. Es RSS estándar, así
+  que por ahí no habría que tocar el motor.
+- La CSP de `vercel.json` tendría que admitir las miniaturas
+  (`i.ytimg.com`), y eso choca con la regla de **imagen real del medio o
+  ninguna**: una miniatura de YouTube la elige el canal, no es foto periodística.
+  Aunque aquí la regla podría leerse al revés: **la miniatura SÍ es del autor**,
+  que es de quien se predica la orientación. Merece decidirse aparte.
+- Si un canal cuenta como medio, arrastra ficha de propiedad y valor de sesgo, y
+  ambos exigen el protocolo entero. No es un alta barata — y por eso lo de la
+  autodeclaración hay que resolverlo antes y no sobre la marcha.
+- **EL DIARIO de Boyacá, ya en el catálogo, presume de ser el canal número uno
+  de YouTube entre los medios de Boyacá** y publica entrevistas ahí (EDtv). Es
+  el caso mixto —cabecera con canal— que la categoría no cubre y conviene tener
+  a la vista.
+
+### Lo que falta, y es trabajo, no pregunta
+
+**La investigación de los canales está sin empezar.** Ni lista cerrada, ni
+identificadores de canal, ni suscriptores, ni orientación declarada por cada uno.
 
 ### Lo que ya se sabe y sirve
 

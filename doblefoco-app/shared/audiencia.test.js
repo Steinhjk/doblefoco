@@ -8,6 +8,10 @@ import {
     alcanceMaximo,
     ordenadosPorAudiencia,
     sinAudienciaMedida,
+    AMPLIACION_POR_VOLUMEN,
+    TAMANO_TRAMO,
+    prioridadDe,
+    tramoPrioritario,
 } from './audiencia.js';
 import { MEDIA_REGISTRY } from './mediaRegistry.js';
 
@@ -141,7 +145,62 @@ describe('ordenar por audiencia', () => {
         expect(medidos.filter((m) => sinMedir.includes(m))).toEqual([]);
     });
 
+    it('el tramo prioritario son veinte fichas y ninguna repetida', () => {
+        const tramo = tramoPrioritario(MEDIA_REGISTRY);
+        expect(tramo).toHaveLength(TAMANO_TRAMO);
+        expect(TAMANO_TRAMO).toBe(20);
+        expect(new Set(tramo.map((m) => m.id)).size).toBe(20);
+        // Los puestos son 1..20 sin huecos: una lista de prioridades con un
+        // número repetido o saltado no es una lista de prioridades.
+        expect(tramo.map((m) => m.prioridad.puesto)).toEqual(
+            Array.from({ length: 20 }, (_, i) => i + 1)
+        );
+    });
+
+    it('NINGÚN estimado adelanta a un medido', () => {
+        // Es la regla que impide que las dos escalas se mezclen. El Heraldo
+        // publica 348 piezas en 72 h y Noticias Uno once; ponerlos en la misma
+        // escala exigiría convertir piezas en lectores, que no se puede.
+        const tramo = tramoPrioritario(MEDIA_REGISTRY);
+        const ultimoMedido = tramo.map((m) => m.prioridad.certeza).lastIndexOf('medida');
+        const primerEstimado = tramo.map((m) => m.prioridad.certeza).indexOf('estimada');
+
+        expect(ultimoMedido).toBe(12);
+        expect(primerEstimado).toBe(13);
+    });
+
+    it('cada ficha del tramo dice con qué certeza entró y con qué cifra', () => {
+        for (const m of tramoPrioritario(MEDIA_REGISTRY)) {
+            expect(['medida', 'estimada'], m.id).toContain(m.prioridad.certeza);
+            expect(typeof m.prioridad.cifra, m.id).toBe('number');
+            expect(m.prioridad.unidad, m.id).toBeTruthy();
+        }
+    });
+
+    it('los siete estimados NO tienen audiencia medida, y al revés', () => {
+        // Si un medio estuviera en las dos listas, su puesto dependería de cuál
+        // se mirara primero.
+        for (const id of Object.keys(AMPLIACION_POR_VOLUMEN.piezas)) {
+            expect(audienciaDe(id), id).toBeNull();
+            expect(MEDIA_REGISTRY.some((m) => m.id === id), id).toBe(true);
+        }
+    });
+
+    it('el recuento de volumen está fechado', () => {
+        // Es una foto, no un valor vivo: sin fecha nadie sabría de cuándo es la
+        // lista de fichas que está trabajando.
+        expect(AMPLIACION_POR_VOLUMEN.medidoEl).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(AMPLIACION_POR_VOLUMEN.ventanaHoras).toBeGreaterThan(0);
+    });
+
+    it('prioridadDe devuelve null fuera del tramo', () => {
+        expect(prioridadDe('la-razon-cordoba')).toBeNull();
+        expect(prioridadDe('medio-que-no-existe')).toBeNull();
+    });
+
     it('aguanta entradas vacías o inválidas', () => {
+        expect(tramoPrioritario([])).toEqual([]);
+        expect(tramoPrioritario(null)).toEqual([]);
         expect(ordenadosPorAudiencia([])).toEqual([]);
         expect(ordenadosPorAudiencia(null)).toEqual([]);
         expect(sinAudienciaMedida(undefined)).toEqual([]);

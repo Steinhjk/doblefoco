@@ -782,6 +782,72 @@
     font-size: 0.85em;
 }
 
+/* ── Fichas prioritarias: dos grados de certeza ─────────────────────────── */
+
+/*
+ * EL TRAZO DISTINGUE LO MEDIDO DE LO ESTIMADO, y es el mismo signo que usa la
+ * ausencia de propiedad: continuo cuando hay dato, discontinuo cuando hay
+ * aproximación. Así el lector que solo mira las formas —sin leer la nota ni
+ * pasar el ratón— ya separa las trece de las siete.
+ *
+ * Sin color propio: no es una categoría de medio, es una nota sobre nuestro
+ * orden de trabajo.
+ */
+.prioridad-marca {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    padding: 0 0.28rem;
+    margin-right: 0.45rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.prioridad-medida { border-style: solid; }
+
+.prioridad-estimada {
+    border-style: dashed;
+    opacity: 0.75;
+}
+
+.map-nota-prioridad {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-left: 2px solid var(--border-color);
+    padding: 10px 14px;
+    margin: 0 0 18px;
+}
+
+.map-nota-prioridad strong { color: var(--text-main); }
+
+.map-nota-prioridad > svg { flex-shrink: 0; margin-top: 4px; }
+
+/* En la ficha: la marca y la explicación en una línea. */
+.profile-prioridad {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.15rem;
+    margin: 0 0 0.9rem;
+    font-size: 0.83rem !important;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.profile-prioridad .prioridad-marca { flex-shrink: 0; }
+
 @media (prefers-reduced-motion: reduce) {
     .map-alcance {
         transition: none;

@@ -253,6 +253,124 @@ export function ordenadosPorAudiencia(medios) {
 }
 
 /**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * EL TRAMO PRIORITARIO: VEINTE FICHAS, DOS GRADOS DE CERTEZA
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Jose pidió veinte fichas de propiedad prioritarias. La encuesta del Reuters
+ * Institute solo llega a trece de nuestros medios, así que las siete restantes
+ * entran por otra vía —y **esa diferencia se marca en vez de disimularse**, que
+ * es la parte que él pidió aclarar—.
+ *
+ *   · **Trece con audiencia MEDIDA.** Porcentaje de colombianos que declara
+ *     haber usado la marca en la última semana. Es un dato ajeno, citable, y
+ *     mide personas.
+ *
+ *   · **Siete con volumen ESTIMADO.** Piezas que ingerimos de cada uno en una
+ *     ventana de 72 horas. Es un dato NUESTRO, no citable como audiencia, y mide
+ *     lo que publica un RSS. Aquí se usa como aproximación al peso de un medio
+ *     porque no hay nada mejor, no porque sea lo mismo.
+ *
+ * POR QUÉ EL VOLUMEN NO ES AUDIENCIA, otra vez y en corto: Infobae publica
+ * 1.700 piezas en 72 horas y La FM diez, y La FM llega al 11 % de los
+ * colombianos. Un medio puede publicar mucho y leerlo poca gente, y al revés.
+ * Las siete de abajo son diarios grandes que casi con seguridad tienen mucha
+ * audiencia —El Colombiano y El Heraldo son los dos mayores diarios regionales
+ * del país—, pero **nadie lo ha medido públicamente y nosotros tampoco**.
+ *
+ * EL RECUENTO ES UNA FOTO CON FECHA, no un valor vivo. Se congela aquí a
+ * propósito: si el tramo prioritario se recalculara con cada consulta, la lista
+ * de fichas a trabajar cambiaría sola de un día para otro y nadie sabría por
+ * qué. Para actualizarla hay que volver a medir y cambiar estos números a mano,
+ * que es exactamente la fricción que se quiere.
+ *
+ * LO QUE ESTA AMPLIACIÓN LE HACE AL EQUILIBRIO, y conviene mirarlo de frente:
+ * seis de los siete que entran son de derecha. El tramo pasa de 7 mixtos / 4
+ * derecha / 2 izquierda a **8 mixtos / 10 derecha / 2 izquierda**. No se corrige
+ * ni se compensa: el desequilibrio del espacio mediático colombiano es lo que
+ * este proyecto existe para enseñar, y maquillarlo en la lista de fichas sería
+ * empezar por mentir en el índice.
+ */
+export const AMPLIACION_POR_VOLUMEN = {
+    medidoEl: '2026-08-11',
+    ventanaHoras: 72,
+    fuente: 'Recuento propio de piezas ingeridas (/api/panorama)',
+    advertencia:
+        'NO es audiencia. Son piezas que publicaron y nosotros recogimos, no personas que ' +
+        'las leyeran. Se usa como aproximación al peso de un medio porque no existe ' +
+        'medición pública de audiencia por debajo de las dieciséis marcas de la encuesta.',
+    /** id → piezas en la ventana, medidas el día de arriba. */
+    piezas: {
+        'el-heraldo': 348,
+        'el-colombiano': 303,
+        'el-pais-cali': 232,
+        'la-republica': 222,
+        'el-universal': 175,
+        'vanguardia': 139,
+        'la-opinion': 139,
+    },
+};
+
+/**
+ * El orden del tramo, calculado una vez. Primero los medidos por audiencia, y
+ * detrás los estimados por volumen: **ningún estimado adelanta a un medido**,
+ * por poco que este último alcance. Mezclarlos por una escala común exigiría
+ * convertir piezas en lectores, que es justo lo que no se puede hacer.
+ */
+const ORDEN_PRIORITARIO = [
+    ...Object.keys(ALCANCE_SEMANAL)
+        .sort((a, b) => {
+            const porPico = (alcanceMaximo(b) ?? 0) - (alcanceMaximo(a) ?? 0);
+            if (porPico !== 0) return porPico;
+            const porOnline = (ALCANCE_SEMANAL[b].online ?? 0) - (ALCANCE_SEMANAL[a].online ?? 0);
+            return porOnline !== 0 ? porOnline : a.localeCompare(b);
+        })
+        .map((id) => ({ id, certeza: /** @type {const} */ ('medida') })),
+    ...Object.entries(AMPLIACION_POR_VOLUMEN.piezas)
+        .sort(([idA, a], [idB, b]) => (b - a) || idA.localeCompare(idB))
+        .map(([id]) => ({ id, certeza: /** @type {const} */ ('estimada') })),
+];
+
+/** Cuántas fichas componen el tramo prioritario. */
+export const TAMANO_TRAMO = ORDEN_PRIORITARIO.length;
+
+/**
+ * Puesto de un medio en el tramo prioritario, o `null` si no está.
+ *
+ * @param {string} mediaId
+ * @returns {{puesto: number, certeza: 'medida'|'estimada', cifra: number, unidad: string}|null}
+ */
+export function prioridadDe(mediaId) {
+    const i = ORDEN_PRIORITARIO.findIndex((e) => e.id === mediaId);
+    if (i === -1) return null;
+
+    const { certeza } = ORDEN_PRIORITARIO[i];
+    return {
+        puesto: i + 1,
+        certeza,
+        cifra:
+            certeza === 'medida'
+                ? /** @type {number} */ (alcanceMaximo(mediaId))
+                : AMPLIACION_POR_VOLUMEN.piezas[mediaId],
+        unidad: certeza === 'medida' ? '% de alcance semanal' : 'piezas en 72 h',
+    };
+}
+
+/**
+ * Los veinte, en orden, para quien tenga que trabajarlas.
+ *
+ * @template {{id: string}} T
+ * @param {T[]} medios
+ * @returns {Array<T & {prioridad: NonNullable<ReturnType<typeof prioridadDe>>}>}
+ */
+export function tramoPrioritario(medios) {
+    return (Array.isArray(medios) ? medios : [])
+        .filter((m) => prioridadDe(m?.id))
+        .map((m) => ({ ...m, prioridad: /** @type {any} */ (prioridadDe(m.id)) }))
+        .sort((a, b) => a.prioridad.puesto - b.prioridad.puesto);
+}
+
+/**
  * Los que NO tienen medición, en el orden en que vengan.
  *
  * Existe para poder decir la cifra en voz alta —«de 49 medios, 13 tienen

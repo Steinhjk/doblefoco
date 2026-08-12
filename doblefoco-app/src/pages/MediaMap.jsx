@@ -15,6 +15,7 @@ import {
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
 import {
     FUENTE_AUDIENCIA, audienciaDe, alcanceMaximo, sinAudienciaMedida,
+    prioridadDe, AMPLIACION_POR_VOLUMEN, TAMANO_TRAMO,
 } from '../../shared/audiencia';
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
@@ -190,6 +191,37 @@ const DistintivoRedaccion = ({ medio }) => {
         <span className="redaccion-badge" title={r.explica}>
             <Bot size={13} aria-hidden="true" />
             {r.etiqueta}
+        </span>
+    );
+};
+
+/**
+ * MARCA DE FICHA PRIORITARIA — y sobre todo, CON QUÉ CERTEZA.
+ *
+ * Las veinte fichas del tramo no se ganaron el sitio de la misma manera: trece
+ * por audiencia medida en una encuesta ajena, siete por el volumen que nosotros
+ * mismos contamos. Enseñarlas con la misma marca sugeriría que sabemos de las
+ * siete lo que sabemos de las trece, y no es así.
+ *
+ * Por eso hay dos: la sólida para lo medido y la discontinua para lo estimado,
+ * el mismo signo que ya usa la ausencia de propiedad. Un lector que solo mire
+ * las formas ya distingue lo comprobado de lo aproximado.
+ */
+const MarcaPrioritaria = ({ mediaId }) => {
+    const p = prioridadDe(mediaId);
+    if (!p) return null;
+
+    const medida = p.certeza === 'medida';
+    return (
+        <span
+            className={`prioridad-marca ${medida ? 'prioridad-medida' : 'prioridad-estimada'}`}
+            title={
+                medida
+                    ? `Ficha prioritaria n.º ${p.puesto} de ${TAMANO_TRAMO}. Audiencia medida: ${p.cifra} ${p.unidad} (${FUENTE_AUDIENCIA.nombre}).`
+                    : `Ficha prioritaria n.º ${p.puesto} de ${TAMANO_TRAMO}, por VOLUMEN y no por audiencia: ${p.cifra} ${p.unidad}, medidas el ${AMPLIACION_POR_VOLUMEN.medidoEl}. Nadie ha medido públicamente cuánta gente lo lee.`
+            }
+        >
+            {p.puesto}
         </span>
     );
 };
@@ -410,6 +442,38 @@ const MediaMap = () => {
               * El dato que lo explica mejor está en la propia encuesta: TODA la
               * prensa regional junta cabe en una sola fila agregada.
               */}
+            {/*
+              * LAS VEINTE FICHAS, Y POR QUÉ SIETE VALEN MENOS QUE TRECE.
+              *
+              * Esta nota existe porque la marca numerada de la tabla, sola,
+              * mentiría por omisión: un «14» al lado de El Heraldo y un «2» al
+              * lado de El Tiempo parecen la misma clase de dato y no lo son.
+              * Uno sale de preguntarle a la gente qué lee; el otro, de contar
+              * cuánto publica un RSS.
+              */}
+            <p className="map-nota-prioridad">
+                <Info size={15} aria-hidden="true" />
+                <span>
+                    Los números al lado de {TAMANO_TRAMO} medios marcan las{' '}
+                    <strong>fichas de propiedad prioritarias</strong>: las que más
+                    gente lee, y por tanto donde un error nuestro haría más daño.
+                    Se ordenan con <strong>dos grados de certeza distintos</strong>,
+                    y la diferencia importa:{' '}
+                    <span className="prioridad-marca prioridad-medida">1</span>{' '}
+                    los <strong>trece con audiencia medida</strong> por la encuesta
+                    del Reuters Institute, en personas;{' '}
+                    <span className="prioridad-marca prioridad-estimada">14</span>{' '}
+                    los <strong>siete añadidos por volumen</strong> —piezas que
+                    ingerimos, contadas por nosotros el{' '}
+                    {AMPLIACION_POR_VOLUMEN.medidoEl}—, que{' '}
+                    <strong>no es audiencia</strong>. Son diarios grandes que casi
+                    seguro tienen muchos lectores, pero nadie lo ha medido en
+                    público y nosotros tampoco. Ningún estimado adelanta a un
+                    medido: mezclarlos exigiría convertir piezas en lectores, y eso
+                    no se puede hacer.
+                </span>
+            </p>
+
             {sinMedicion.length > 0 && (
                 <p className="map-nota-audiencia">
                     <Info size={15} aria-hidden="true" />
@@ -688,6 +752,7 @@ const MediaMap = () => {
                             {media.map((item) => (
                                 <tr key={item.id}>
                                     <th scope="row">
+                                        <MarcaPrioritaria mediaId={item.id} />
                                         <button
                                             className="map-table-link"
                                             onClick={() => setSelectedId(item.id)}
@@ -821,6 +886,7 @@ const MediaProfile = ({ media, onClose }) => {
     const documented = hasDocumentedOwnership(media.id);
     const ausencia = ausenciaDeclarada(media.id);
     const audiencia = audienciaDe(media.id);
+    const prioridad = prioridadDe(media.id);
     const ownerType = ownership ? OWNER_TYPES[ownership.ownerType] : null;
     const grupo = ownership?.controlGroup ? CONTROL_GROUPS[ownership.controlGroup] : null;
     const personas = grupo?.personas ?? [];
@@ -903,6 +969,36 @@ const MediaProfile = ({ media, onClose }) => {
               * juzgamos nosotros y la factualidad la medimos, pero esto lo
               * midió una encuesta ajena y tiene que poder rastrearse hasta ella.
               */}
+            {/*
+              * Por qué esta ficha se trabaja antes que otras, dicho en la propia
+              * ficha. Y con la salvedad delante cuando toca: que un medio esté
+              * en el tramo por volumen no significa que sepamos cuánta gente lo
+              * lee.
+              */}
+            {prioridad && (
+                <p className={`profile-prioridad prioridad-${prioridad.certeza}`}>
+                    <span className={`prioridad-marca prioridad-${prioridad.certeza}`}>
+                        {prioridad.puesto}
+                    </span>
+                    <span>
+                        <strong>Ficha prioritaria</strong> n.º {prioridad.puesto} de{' '}
+                        {TAMANO_TRAMO}.{' '}
+                        {prioridad.certeza === 'medida' ? (
+                            <>Su audiencia está medida: {prioridad.cifra} {prioridad.unidad}.</>
+                        ) : (
+                            <>
+                                Entra por <strong>volumen, no por audiencia</strong>:{' '}
+                                {prioridad.cifra} {prioridad.unidad}, contadas por nosotros
+                                el {AMPLIACION_POR_VOLUMEN.medidoEl}.{' '}
+                                <strong>Nadie ha medido en público cuánta gente lo lee</strong>,
+                                así que su puesto es una aproximación por el peso que tiene, no
+                                una cifra de lectores.
+                            </>
+                        )}
+                    </span>
+                </p>
+            )}
+
             {audiencia && (
                 <p className="profile-fuente-audiencia">
                     «{audiencia.marca}» en el{' '}

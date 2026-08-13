@@ -17,6 +17,65 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-13 · Un dueño histórico documentado no basta para marcar dueño compartido
+
+**Al dar de alta El Nuevo Día (Ibagué) NO se le asigna `controlGroup: 'galvis'`**,
+pese a que está documentado que la familia Galvis —dueña de Vanguardia, en este
+catálogo— fundó y controló el periódico.
+
+**La evidencia, y por qué no alcanza.** Galvis creó **Editorial Aguasclaras S.A.**
+en 1992 con empresarios tolimenses que tomaron el 30 %. Esa sociedad consta hoy
+como **EN LIQUIDACIÓN JUDICIAL, con la matrícula cancelada** (NIT 800052169), y el
+impreso cerró el 22-10-2023. Lo que publica hoy es **EL NUEVO DÍA DIGITAL S.A.S.**,
+otra sociedad, que no publica NIT, socios ni representante legal. **Ningún
+documento consultable enlaza una con otra.**
+
+**Qué se estaba decidiendo de verdad.** No es una duda de catalogación: con
+`controlGroup: 'galvis'`, la vista de concentración **afirmaría** ante el lector
+que Vanguardia y El Nuevo Día responden a la misma familia. Es una afirmación
+sobre personas identificables, y la sostendríamos con un hecho de 1992 sobre una
+empresa que ya no existe.
+
+**La regla que queda.** *La propiedad histórica documentada es una pista, no un
+grupo de control.* Para marcar dueño compartido hace falta evidencia de que la
+estructura está **vigente**; si no la hay, la pista se escribe en la ficha —donde
+se puede leer y refutar— y el campo se queda vacío.
+
+**Lo que se descartó.** Marcarlo «provisionalmente» y corregirlo si aparecía algo:
+un aviso de concentración no admite provisionalidad, porque el daño lo hace al
+mostrarse. Y también lo contrario, no anotar nada: eso borraría del expediente la
+única pista que existe.
+
+**Es simétrico con Pulzo**, donde tampoco se asignó grupo, y con la analogía
+descartada en EL DIARIO de Boyacá el día 12. La diferencia es que allí las fuentes
+se contradecían y aquí simplemente no llegan hasta hoy. Es además la **regla del
+presente** aplicada por primera vez para **no añadir** un vínculo.
+
+Detalle en `fichas/el-nuevo-dia.md` y en el comentario de `shared/mediaOwnership.js`.
+
+---
+
+## 2026-08-13 · La factualidad no medida se publica «sin medir», nunca «0%»
+
+Corrección de un defecto, anotada aquí porque toca una decisión anterior. El
+catálogo público imprimía **«factualidad 0%»** para los 18 medios con
+`factuality: null`.
+
+**Anulaba la decisión del 2026-08-09** que hizo válida la factualidad no medida.
+Aquella existe para no tener que inventar un número de rigor al dar de alta un
+medio; convertido en 0, el número inventado volvía por la puerta de atrás y encima
+era el más dañino posible.
+
+**La regla:** un valor ausente se muestra como ausente, con la misma palabra en
+todas las pantallas. La interfaz ya decía «sin medir» (`fmtPct` en `MediaMap.jsx`);
+ahora el catálogo también, y hay prueba que lo exige.
+
+**Lo que enseña sobre las comprobaciones:** `check:registry` no lo detectó porque
+compara el archivo generado contra `renderCatalog()` — y los dos producían el mismo
+0 %. **Una comprobación de coherencia no ve un error que está en el generador.**
+
+---
+
 ## 2026-08-12 · Los regionales sin ficha de propiedad se quedan como desconocidos, y la tarea se anota
 
 **Decisión de Jose.** Un medio regional del que no se ha podido establecer la

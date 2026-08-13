@@ -1,5 +1,83 @@
 # Por dónde seguir
 
+## Lo del 13 de agosto
+
+### El Tolima ya tiene voz: alta de El Nuevo Día (Ibagué)
+
+Rama **`alta-el-nuevo-dia`**, dos commits, **sin fusionar todavía**. Catálogo
+65 → **66 medios**, 53 colombianos. Departamentos con voz propia viva: 20 → **21**
+—sin contar Bogotá D.C.—. Feed probado: 200, **10 de 10 ítems en ventana, mediana
+5,9 h**.
+
+**LO IMPORTANTE NO ES EL ALTA, ES LO QUE NO SE MARCÓ.** La nota del barrido decía
+«es de la familia Galvis, la de Vanguardia — si entra, hay dueño compartido que
+marcar». **Es falso hoy**, y comprobarlo era el trabajo:
+
+- La sociedad que Galvis cofundó en 1992, **Editorial Aguasclaras S.A.**, consta
+  **EN LIQUIDACIÓN JUDICIAL con la matrícula cancelada** (NIT 800052169). El
+  impreso cerró el 22-10-2023.
+- Lo que publica hoy es **EL NUEVO DÍA DIGITAL S.A.S.**, otra sociedad, que no
+  publica NIT, ni socios, ni representante legal.
+- **No hay ni un documento que enlace las dos.** Con `controlGroup: 'galvis'` el
+  mapa de concentración *afirmaría* que Vanguardia y El Nuevo Día responden a la
+  misma familia. No se marca; la pista queda escrita en `mediaOwnership.js`.
+
+Es la **regla del presente por tercera vez en una semana** —tras Semana y tras EL
+DIARIO— y la primera que sirve para **no añadir** un vínculo en vez de para
+quitarlo. Y otra vez pagó no copiar la ficha vieja: la del 9 de agosto se cerró
+sin número por la liquidación y dejó escrito qué la reabriría. Pasó exactamente
+eso.
+
+**Lo que NO cierra:** el NIT de la S.A.S. no está en ninguna fuente abierta que
+responda, así que el certificado de la **Cámara de Comercio de Ibagué** es el
+noveno pendiente manual. Y **Ecos del Combeima sigue vivo como alta condicionada**:
+esta alta no lo sustituye.
+
+### El catálogo público decía que 18 medios tienen 0 % de rigor factual
+
+Salió al regenerar el catálogo con el medio nuevo. `fmtFactuality` no miraba el
+tipo, así que `factuality: null` se imprimía **«factualidad 0%»** — la peor nota
+posible, con nombre y apellidos, sobre medios a los que no se ha medido nada.
+
+**No lo detectaba nada, y la razón importa:** `check:registry` compara el archivo
+generado contra `renderCatalog()`, y los dos producían el mismo 0 %. Una
+comprobación de coherencia no ve un error que está en el generador.
+
+La interfaz ya lo hacía bien —`fmtPct` en `MediaMap.jsx` dice «sin medir»—, así
+que era además una divergencia entre el mapa y el catálogo. Arreglado con la misma
+palabra y con cuatro pruebas en `scripts/generateCatalogDoc.test.mjs`. **490
+pruebas** en verde.
+
+### EL DIARIO de Boyacá se cayó, y no es cosa nuestra
+
+`check:feeds` lo da con **0 ítems** un día después de darlo de alta. El diagnóstico
+está hecho y **el fallo es suyo**: `curl` da exit 6 —no resuelve el host— y el
+resolver público de Google devuelve *«Name servers did not respond
+[63.250.39.105]»* en la delegación de `eldiarioboyaca.com`, mientras
+`viveelmeta.com` resuelve bien desde el mismo sitio. **Sus servidores de nombres
+están caídos.**
+
+**Decisión de Jose: no se toca el catálogo, se vigila.** Boyacá conserva voz con
+Boyacá Digital. Revisar en unos días; si no vuelve, buscarle otra vía —no se mutea
+a nadie—.
+
+> Y esta vez se comprobó contra un resolver externo **antes** de escribir la nota,
+> que es justo lo que no se hizo con la tilde del User-Agent ni con el 504 de
+> Wikidata.
+
+### Lo siguiente en esta rama, si se sigue por aquí
+
+1. **Fusionar** `alta-el-nuevo-dia`, y antes `fichas-tramo-prioritario-y-barrido`,
+   que sigue pendiente. Orden de siempre: `main` (Vercel) → `npm run deploy`
+   (Fly) → recategorizar.
+2. Del barrido quedan **Cablenoticias** (decisión de producto: es el canal donde
+   emite Noticias Uno, que aporta cero), **La Nación (Neiva)** y **Diario La
+   Libertad (Barranquilla)**.
+3. **`prensaescrita.com`**: la nota falsa sigue en `cosecharMedios.mjs`.
+4. **Los 16 dominios del día 11**, los únicos que pudo marcar mal el User-Agent.
+
+---
+
 ## Lo del 12 de agosto, por la tarde
 
 ### Las 20 fichas del tramo prioritario están escritas

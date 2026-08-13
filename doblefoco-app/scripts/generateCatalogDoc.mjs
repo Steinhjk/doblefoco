@@ -32,7 +32,27 @@ export const OUTPUT = resolve(here, '../src/docs/catalogo_medios.txt');
 export const GENERATED_LINE = /^Generado: \d{4}-\d{2}-\d{2}$/m;
 
 const fmtBias = (bias) => `${bias >= 0 ? '+' : '−'}${Math.abs(bias).toFixed(2)}`;
-const fmtFactuality = (value) => `${Math.round(value * 100)}%`;
+/**
+ * `factuality: null` SE PINTA «sin medir», NUNCA «0%».
+ *
+ * Esto decía `${Math.round(value * 100)}%` a secas, y con null eso da 0. O sea
+ * que el catálogo público —el documento cuya cabecera promete que lo que se
+ * publica aquí es exactamente lo que usa el sistema— afirmaba que DIECIOCHO
+ * medios reales tienen un 0 % de rigor factual. No es un redondeo desafortunado:
+ * es la peor nota posible, publicada con nombre y apellidos, sobre medios a los
+ * que no se ha medido nada.
+ *
+ * Y anulaba la decisión del 2026-08-09 que hizo válida la factualidad no medida.
+ * Aquella existe para no tener que inventar un número de rigor al dar de alta un
+ * medio; si el documento lo convierte en un 0, el número inventado vuelve por la
+ * puerta de atrás y encima es el más dañino de todos.
+ *
+ * La interfaz ya lo hacía bien —`fmtPct` en src/pages/MediaMap.jsx dice «sin
+ * medir»— así que esto era además una divergencia entre lo que el lector ve en
+ * el mapa y lo que lee en el catálogo. Se usa la misma palabra a propósito.
+ */
+const fmtFactuality = (value) =>
+    typeof value === 'number' ? `${Math.round(value * 100)}%` : 'sin medir';
 
 /** Envuelve texto a un ancho fijo, con sangría, para leerlo en <pre>. */
 function wrap(text, width, indent) {

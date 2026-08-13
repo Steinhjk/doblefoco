@@ -143,7 +143,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     Canal público regional del Caribe colombiano, participado por las
     gobernaciones de la región. Valor sin medir.
 
-  Telecafé  ·  sesgo +0.00  ·  factualidad 0%
+  Telecafé  ·  sesgo +0.00  ·  factualidad sin medir
     telecafe.gov.co · Público regional — Eje Cafetero · CO · RSS propio · PROVISIONAL
     Canal público regional del Eje Cafetero, participado por las
     gobernaciones de Caldas, Risaralda y Quindío. Su dirección la
@@ -155,14 +155,14 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     Radio informativa con entrevistas a todo el arco político;
     encuadre variable según franja.
 
-  Proclama del Pacífico  ·  sesgo +0.00  ·  factualidad 0%
+  Proclama del Pacífico  ·  sesgo +0.00  ·  factualidad sin medir
     proclamadelpacifico.com · Digital independiente · CO · RSS propio · PROVISIONAL
     Medio digital de Santander de Quilichao, verificado en el
     directorio de SembraMedia. Orientación mixta provisional: nada de
     la evidencia lo sitúa en el eje y la regla manda ir a la banda más
     cercana a la mixta — ver fichas/proclama-del-pacifico.md.
 
-  Chocó 7 Días  ·  sesgo +0.00  ·  factualidad 0%
+  Chocó 7 Días  ·  sesgo +0.00  ·  factualidad sin medir
     choco7dias.com · Regional Chocó · CO · RSS propio · PROVISIONAL
     Semanario de Quibdó, el único medio vivo del Chocó del catálogo.
     Declara denunciar las causas de la crisis del departamento; se
@@ -170,27 +170,27 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     orientación, con la tensión declarada — ver
     fichas/choco-7-dias.md.
 
-  El Manduco  ·  sesgo +0.00  ·  factualidad 0%
+  El Manduco  ·  sesgo +0.00  ·  factualidad sin medir
     elmanduco.com.co · Regional Guaviare · CO · RSS propio · PROVISIONAL
     Medio de San José del Guaviare cuyos cuatro cargos —fundador,
     director, director emérito y gerente— ocupa la misma familia. La
     estructura dice quién manda, no hacia dónde tira — ver
     fichas/el-manduco.md.
 
-  MiPutumayo  ·  sesgo +0.00  ·  factualidad 0%
+  MiPutumayo  ·  sesgo +0.00  ·  factualidad sin medir
     miputumayo.com.co · Regional Putumayo · CO · RSS propio · PROVISIONAL
     Magazín digital de Mocoa fundado y dirigido por la misma persona
     desde 2004. Sin sociedad ni financiación declaradas; orientación
     mixta provisional — ver fichas/miputumayo.md.
 
-  El Morichal  ·  sesgo +0.00  ·  factualidad 0%
+  El Morichal  ·  sesgo +0.00  ·  factualidad sin medir
     elmorichal.com · Corporación El Morichal · CO · RSS propio · PROVISIONAL
     Corporación sin ánimo de lucro de Puerto Carreño que cubre Vichada
     y Guainía. Único medio sin ánimo de lucro de la tanda
     departamental; orientación mixta provisional — ver
     fichas/el-morichal.md.
 
-  Boyacá Digital  ·  sesgo +0.00  ·  factualidad 0%
+  Boyacá Digital  ·  sesgo +0.00  ·  factualidad sin medir
     boyacadigital.com · Holding Consultants · CO · RSS propio · PROVISIONAL
     Medio digital de Boyacá operado por una redacción de agentes de
     inteligencia artificial bajo supervisión editorial humana, según
@@ -198,7 +198,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     una propiedad de la casa sino de su configuración — ver
     fichas/boyaca-digital.md.
 
-  La Razón.co (Montería)  ·  sesgo +0.00  ·  factualidad 0%
+  La Razón.co (Montería)  ·  sesgo +0.00  ·  factualidad sin medir
     larazon.co · Regional Córdoba · CO · RSS propio · PROVISIONAL
     Diario nativo digital de Montería, activo desde 2014 y de los que
     más publican en Córdoba. Orientación mixta provisional, y por
@@ -207,7 +207,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     sitúa en el eje. La regla del protocolo manda entonces la banda
     más cercana a la mixta — ver fichas/la-razon-cordoba.md.
 
-  EL DIARIO (Boyacá)  ·  sesgo +0.00  ·  factualidad 0%
+  EL DIARIO (Boyacá)  ·  sesgo +0.00  ·  factualidad sin medir
     eldiarioboyaca.com · Regional Boyacá · CO · RSS propio · PROVISIONAL
     Diario de Tunja con edición impresa y digital, el más activo de
     los candidatos de Boyacá. Orientación mixta provisional por
@@ -216,7 +216,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     nada de lo observable lo sitúa en el eje — ver
     fichas/el-diario-boyaca.md.
 
-  Vive el Meta  ·  sesgo +0.00  ·  factualidad 0%
+  Vive el Meta  ·  sesgo +0.00  ·  factualidad sin medir
     viveelmeta.com · Grupo La Independencia S.A.S. · CO · RSS propio · PROVISIONAL
     Periódico digital de Villavicencio, primero del Meta en el
     catálogo. Publica su sociedad editora con NIT, pero ni un
@@ -224,7 +224,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     ausencia de evidencia: nada de lo observable lo sitúa en el eje —
     ver fichas/vive-el-meta.md.
 
-  Lente Regional  ·  sesgo +0.00  ·  factualidad 0%
+  Lente Regional  ·  sesgo +0.00  ·  factualidad sin medir
     lenteregional.com · Regional Caquetá · CO · RSS propio · PROVISIONAL
     Informativo web de Florencia, primero del Caquetá en el catálogo.
     Se declara de «periodismo equilibrado» con la fórmula de destacar
@@ -233,7 +233,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     fórmula y de su petición de apoyo empresarial declarada — ver
     fichas/lente-regional.md.
 
-  El Nuevo Día (Ibagué)  ·  sesgo +0.00  ·  factualidad 0%
+  El Nuevo Día (Ibagué)  ·  sesgo +0.00  ·  factualidad sin medir
     elnuevodia.com.co · Regional Tolima · CO · RSS propio · PROVISIONAL
     Diario de Ibagué, digital desde que cerró su rotativa en octubre
     de 2023, y el medio más activo del Tolima. Orientación mixta
@@ -243,7 +243,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     sociedad hoy cancelada y no se da por vigente — ver
     fichas/el-nuevo-dia.md.
 
-  Pulzo  ·  sesgo +0.00  ·  factualidad 0%
+  Pulzo  ·  sesgo +0.00  ·  factualidad sin medir
     pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL
     Nativo digital de alto alcance —cuarto medio más consumido del
     país— con mezcla de agregación, virales y nación. Orientación
@@ -292,7 +292,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     Diario económico; encuadre desde indicadores y perspectiva
     empresarial.
 
-  Valora Analitik  ·  sesgo +0.10  ·  factualidad 0%
+  Valora Analitik  ·  sesgo +0.10  ·  factualidad sin medir
     valoraanalitik.com · Valora Inversiones S.A.S. · CO · RSS propio · PROVISIONAL
     Medio económico y bursátil independiente, de sus dos fundadores;
     encuadre desde el mercado y la empresa, con cobertura laboral de
@@ -330,28 +330,28 @@ DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
     Diario regional de Cartagena; cobertura local con línea editorial
     conservadora moderada.
 
-  El Pilón  ·  sesgo +0.20  ·  factualidad 0%
+  El Pilón  ·  sesgo +0.20  ·  factualidad sin medir
     elpilon.com.co · Regional Cesar · CO · RSS propio · PROVISIONAL
     Diario de Valledupar; sociedad anónima con junta empresarial y
     agenda regional. Valor provisional puesto por coherencia con la
     banda de los otros diarios comerciales regionales, no por
     evidencia propia — ver fichas/el-pilon.md.
 
-  Diario del Huila  ·  sesgo +0.20  ·  factualidad 0%
+  Diario del Huila  ·  sesgo +0.20  ·  factualidad sin medir
     diariodelhuila.com · Regional Huila · CO · RSS propio · PROVISIONAL
     Diario de Neiva, casa familiar dirigida por la familia fundadora.
     Valor provisional por coherencia con la banda regional; el
     accionariado sigue sin documentar — ver
     fichas/diario-del-huila.md.
 
-  Diario del Norte  ·  sesgo +0.20  ·  factualidad 0%
+  Diario del Norte  ·  sesgo +0.20  ·  factualidad sin medir
     diariodelnorte.net · Sistema Cardenal · CO · RSS propio · PROVISIONAL
     Diario de Riohacha del grupo radial Sistema Cardenal. Es el único
     candidato regional que publica su accionariado con porcentajes.
     Valor provisional por coherencia con la banda regional — ver
     fichas/diario-del-norte.md.
 
-  El Diario (Pereira)  ·  sesgo +0.20  ·  factualidad 0%
+  El Diario (Pereira)  ·  sesgo +0.20  ·  factualidad sin medir
     eldiario.com.co · Regional Risaralda · CO · RSS propio · PROVISIONAL
     Único diario de Pereira desde 2016, cuando la familia propietaria
     del Diario del Otún compró La Tarde y fusionó ambas cabeceras.

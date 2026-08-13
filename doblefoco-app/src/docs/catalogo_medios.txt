@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-12
-Medios en el catálogo: 65
+Generado: 2026-08-13
+Medios en el catálogo: 66
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  35 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -232,6 +232,16 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  35 medios
     provisional por ausencia de evidencia, con la tensión de esa
     fórmula y de su petición de apoyo empresarial declarada — ver
     fichas/lente-regional.md.
+
+  El Nuevo Día (Ibagué)  ·  sesgo +0.00  ·  factualidad 0%
+    elnuevodia.com.co · Regional Tolima · CO · RSS propio · PROVISIONAL
+    Diario de Ibagué, digital desde que cerró su rotativa en octubre
+    de 2023, y el medio más activo del Tolima. Orientación mixta
+    provisional por ausencia de evidencia y no por evidencia de
+    equilibrio: la sociedad que lo edita hoy no publica socios ni NIT,
+    y el vínculo histórico con la familia Galvis se refiere a una
+    sociedad hoy cancelada y no se da por vigente — ver
+    fichas/el-nuevo-dia.md.
 
   Pulzo  ·  sesgo +0.00  ·  factualidad 0%
     pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL

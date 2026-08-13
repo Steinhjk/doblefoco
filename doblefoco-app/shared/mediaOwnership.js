@@ -2011,6 +2011,101 @@ export const OWNERSHIP_PROFILES = {
     },
 
     /**
+     * EL NUEVO DÍA (Ibagué) — UN VÍNCULO QUE NO SE MARCA, Y POR QUÉ (2026-08-13).
+     *
+     * Este es el caso inverso de Pulzo. Allí la tentación era cerrar la propiedad
+     * con fuentes que no aguantan; aquí la tentación es cerrarla con un hecho
+     * VERDADERO pero caducado: que la familia Galvis —dueña de Vanguardia, en
+     * este mismo catálogo— fundó y controló el periódico.
+     *
+     * ES VERDAD, Y ES DE OTRA EMPRESA. Alejandro Galvis Ramírez creó Editorial
+     * Aguasclaras S.A. en 1992 con un grupo de empresarios tolimenses que tomaron
+     * el 30 % de las acciones. Esa sociedad consta hoy como EDITORIAL AGUASCLARAS
+     * S.A. EN LIQUIDACIÓN JUDICIAL, NIT 800052169, CON LA MATRÍCULA CANCELADA. El
+     * impreso cerró el 22 de octubre de 2023 tras 31 años, y el Ministerio de
+     * Trabajo le había abierto averiguación preliminar por impago de salarios,
+     * liquidaciones y seguridad social.
+     *
+     * LO QUE PUBLICA HOY ES OTRA SOCIEDAD: EL NUEVO DÍA DIGITAL S.A.S., que
+     * aparece en el pie, en los términos y en la política de datos del sitio, con
+     * objeto social «la industria periodística en todas las manifestaciones». No
+     * publica NIT, ni socios, ni representante legal, y no tiene página de equipo.
+     *
+     * NO HAY NI UN DOCUMENTO QUE ENLACE LAS DOS. Puede que sea la misma gente
+     * detrás de un vehículo nuevo —es lo habitual cuando una editorial se liquida
+     * y el cabecero sobrevive— y puede que no. Marcar `controlGroup: 'galvis'`
+     * sobre esa suposición haría que el mapa de concentración afirmara que
+     * Vanguardia y El Nuevo Día responden a la misma familia. Es una afirmación
+     * sobre personas identificables y no tenemos con qué sostenerla, así que no
+     * se hace. La pista queda escrita aquí, que es su sitio.
+     */
+    'el-nuevo-dia': {
+        ownerType: null,
+        holdings: [
+            'Lo edita EL NUEVO DÍA DIGITAL S.A.S., de Ibagué, según el pie, los términos y condiciones y la política de tratamiento de datos de su propio sitio. Su objeto social declarado es «la industria periodística en todas las manifestaciones».',
+            'Es digital desde el 22 de octubre de 2023, cuando circuló el último ejemplar impreso tras 31 años. Inauguró sede propia en el centro comercial La Estación de Ibagué el 13 de junio de 2026.',
+            'Publica avisos legales de CORTOLIMA y de la rama judicial, y mantiene un portal de clasificados aparte (clasificadoselnuevodia.com.co).',
+        ],
+        notes: [
+            'LA SOCIEDAD ANTERIOR NO ES LA ACTUAL, Y ESA DISTINCIÓN ES TODO EL EXPEDIENTE. El periódico lo editaba Editorial Aguasclaras S.A., creada en 1992 por Alejandro Galvis Ramírez —de la familia dueña de Vanguardia, en este catálogo— junto a empresarios tolimenses que tomaron el 30 % de las acciones. Esa sociedad figura hoy como «EDITORIAL AGUASCLARAS S.A. EN LIQUIDACIÓN JUDICIAL», NIT 800052169, con la matrícula cancelada.',
+            'NO SE LE ASIGNA GRUPO DE CONTROL. Que Galvis controlara la editorial de 1992 no dice quién controla la S.A.S. de 2026, y no hay documento que las enlace. Con `controlGroup: galvis` el aviso de dueño compartido afirmaría que Vanguardia y El Nuevo Día responden a la misma familia; es un señalamiento sobre personas concretas y no hay con qué sostenerlo.',
+            'Los cargos que el propio medio publica, en su nota del 13 de junio de 2026: Leónidas López, presidente de la junta directiva; Laura Millán, gerencia; Edwin Gutiérrez, jefatura de redacción; Loreny Cruz, dirección comercial. Ninguno figura como propietario ni como socio. Que exista junta directiva implica accionistas, y no están nombrados.',
+            'Leónidas López era gerente del periódico en 2023, bajo la sociedad anterior, y hoy preside la junta de la nueva. Es continuidad de personas, no prueba de continuidad de propiedad, y se anota por lo primero.',
+            'El impreso no cerró solo por el mercado: el Ministerio de Trabajo abrió averiguación preliminar a Editorial Aguas Claras S.A. por impago de liquidaciones, salarios y seguridad social. No dice nada de su orientación y no entra en ningún número, pero sí dice algo de su independencia, y por eso se deja escrito.',
+        ],
+        sources: [
+            'https://www.elnuevodia.com.co/terminos-y-condiciones',
+            'https://www.elnuevodia.com.co/politica-de-privacidad-de-datos',
+            'https://www.elnuevodia.com.co/ibague/el-nuevo-dia-inicia-una-nueva-era-con-la-inauguracion-de-su-sede-propia-537295',
+            'https://empresas.larepublica.co/colombia/tolima/ibague/editorial-aguasclaras-s-a-800052169',
+            'https://elcronista.co/actualidad/el-nuevo-dia-otro-medio-impreso-que-pasa-a-la-era-digital',
+            'https://www.ecosdelcombeima.com/ibague/nota-235510-se-acabo-el-impreso-de-el-nuevo-dia',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-13',
+        buscadoEn: [
+            {
+                fuente: 'Sus términos y condiciones',
+                resultado: 'Dan la razón social —EL NUEVO DÍA DIGITAL S.A.S.—, la dirección (Calle 6 n.º 1-27, Ibagué) y tres correos de contacto. NO dan NIT, NI socios, NI representante legal.',
+                url: 'https://www.elnuevodia.com.co/terminos-y-condiciones',
+            },
+            {
+                fuente: 'Su política de tratamiento de datos',
+                resultado: 'Transcribe el objeto social completo de la sociedad —«la industria periodística en todas las manifestaciones»— y es la página más explícita del sitio sobre la empresa. Tampoco publica NIT ni accionariado, que es lo llamativo: detalla párrafos de objeto social y omite quién la posee.',
+                url: 'https://www.elnuevodia.com.co/politica-de-privacidad-de-datos',
+            },
+            {
+                fuente: 'Su página de contacto',
+                resultado: 'Repite la razón social y da otra dirección, la de la sede nueva: Calle 60 n.º 12-224, centro comercial La Estación, locales P4, P5 y P6. Sin nombres.',
+                url: 'https://www.elnuevodia.com.co/contactenos',
+            },
+            {
+                fuente: 'Páginas de equipo o «quiénes somos» del propio medio',
+                resultado: 'NO EXISTEN. /quienes-somos y /nosotros devuelven 404, y /equipo es un listado de noticias, no una plantilla de redacción. Los únicos cargos publicados están dentro de una nota informativa suya.',
+                url: 'https://www.elnuevodia.com.co/quienes-somos',
+            },
+            {
+                fuente: 'Espejo del RUES en empresas.larepublica.co, para la sociedad anterior',
+                resultado: 'EDITORIAL AGUASCLARAS S.A. EN LIQUIDACIÓN JUDICIAL, NIT 800052169, Ibagué, matrícula cancelada, CIIU de publicidad y edición de periódicos. Confirma que la editora histórica —la de Galvis— ya no opera. No dice nada de la sociedad actual.',
+                url: 'https://empresas.larepublica.co/colombia/tolima/ibague/editorial-aguasclaras-s-a-800052169',
+            },
+            {
+                fuente: 'Directorios mercantiles para EL NUEVO DÍA DIGITAL S.A.S.',
+                resultado: 'Solo confirman existencia, ciudad, dirección (Calle 6 n.º 1-27) y actividad de publicidad. Ninguno publica NIT, socios ni representante legal. informacolombia.com devolvió 429 en las dos consultas del día; empresas.larepublica.co no tiene ficha de esta sociedad y datacreditoempresas.com.co responde 403.',
+                url: 'https://www.informacolombia.com/directorio-empresas/informacion-empresa/nuevo-dia-digital-sas',
+            },
+        ],
+        falta: [
+            'El NIT de EL NUEVO DÍA DIGITAL S.A.S. Es la llave de todo lo demás y hoy no está en ninguna fuente abierta que responda: sin él hay que buscar por nombre comercial en el registro.',
+            'El certificado de existencia y representación de la Cámara de Comercio de Ibagué: socios, representante legal y fecha de constitución. Es el noveno certificado pendiente y es trámite manual.',
+            'SI HAY O NO CONTINUIDAD SOCIETARIA CON EDITORIAL AGUASCLARAS. Es la pregunta que decide si este medio comparte dueño con Vanguardia. La cierran en cualquiera de los dos sentidos la fecha de constitución de la S.A.S. y su lista de socios.',
+            'Cómo terminó la averiguación preliminar del Ministerio de Trabajo contra Editorial Aguas Claras S.A.',
+        ],
+    },
+
+    /**
      * PULZO — EL HILO LLEGA A UNA SOCIEDAD Y AHÍ SE PARA (2026-08-11).
      *
      * Es el cuarto medio más consumido del país y su propiedad última es la peor

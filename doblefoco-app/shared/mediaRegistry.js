@@ -924,6 +924,47 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://lenteregional.com/feed/', via: 'direct', category: 'Política' },
         imageHosts: ['lenteregional.com'],
     },
+
+    /**
+     * ── EL NUEVO DÍA (Ibagué) — alta del 2026-08-13 ──────────────────────────
+     *
+     * ABRE EL TOLIMA, el último departamento con prensa web activa que el mapa
+     * pintaba en blanco. Lo destapó el barrido del 2026-08-12: publica cada dos
+     * horas y llevaba fuera del catálogo desde el principio.
+     *
+     * NO ESTABA FUERA POR NO PUBLICAR: estaba fuera porque su ficha del
+     * 2026-08-09 se cerró sin número, y con razón. Entonces la sociedad que lo
+     * editaba —Editorial Aguasclaras S.A.— constaba EN LIQUIDACIÓN JUDICIAL y
+     * con la matrícula cancelada, y clasificar la línea de una casa que podía no
+     * existir en seis meses era empezar por el tejado. Aquella ficha dejó escrito
+     * qué reabriría el expediente: «que la liquidación se resuelva y aparezca una
+     * sociedad editora con matrícula activa». Es lo que pasó.
+     *
+     * Y AQUÍ LA PARTE QUE HAY QUE LEER DESPACIO: **NO ES DE LOS GALVIS, o al
+     * menos nada de lo consultable dice que hoy lo sea.** La nota del barrido lo
+     * daba por hecho —«es de la familia Galvis, la de Vanguardia; si entra, hay
+     * dueño compartido que marcar»— y eso es el dato de 1992 repetido. Galvis
+     * cofundó Editorial Aguasclaras, y Editorial Aguasclaras está cancelada. Lo
+     * que publica hoy es EL NUEVO DÍA DIGITAL S.A.S., otra sociedad, que no
+     * publica ni NIT ni socios. Sin documento que enlace una con otra, marcar
+     * `controlGroup: 'galvis'` sería inventar una concentración: exactamente el
+     * error contrario al que la vista de concentración existe para evitar.
+     *
+     * Es la regla del presente por tercera vez en una semana —tras Semana y tras
+     * EL DIARIO de Boyacá—, y por primera vez para NO añadir un vínculo en vez de
+     * para quitarlo.
+     *
+     * ENTRA EN 0,00 POR LA REGLA 2: ausencia de evidencia, no evidencia de
+     * equilibrio. Mismo criterio que los tres del día 12 y que La Razón.co.
+     */
+    {
+        id: 'el-nuevo-dia', name: 'El Nuevo Día (Ibagué)', shortName: 'El Nuevo Día',
+        domain: 'elnuevodia.com.co', departamento: 'Tolima', country: 'CO', group: 'Regional Tolima',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Ibagué, digital desde que cerró su rotativa en octubre de 2023, y el medio más activo del Tolima. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio: la sociedad que lo edita hoy no publica socios ni NIT, y el vínculo histórico con la familia Galvis se refiere a una sociedad hoy cancelada y no se da por vigente — ver fichas/el-nuevo-dia.md.',
+        feed: { url: 'https://www.elnuevodia.com.co/rss.xml', via: 'direct', category: 'Política' },
+        imageHosts: ['elnuevodia.com.co'],
+    },
     {
         /**
          * PULZO — alta del 2026-08-11, a petición de Jose.

@@ -1,6 +1,56 @@
 # Por dónde seguir
 
-## Lo del 13 de agosto
+## Lo del 13 de agosto, por la tarde
+
+### El Meridiano nunca nos bloqueó, y prensaescrita da 73 feeds regionales vivos
+
+Rama **`limpiar-diagnosticos-falsos`**, un commit, **sin fusionar**. Detalle
+completo en **`BARRIDO_2026-08-13.md`**.
+
+Eran dos tareas de limpieza y destaparon la mayor cosecha regional del proyecto.
+
+**`elmeridiano.co` responde 200.** Figuraba desde el 9 de agosto como «devuelve 403
+a los bots», y sobre esa frase se dio Córdoba por bloqueado y se escribió que «un
+solo obstáculo técnico deja dos departamentos sin voz». **Era la tilde otra vez.**
+Sigue sin poder ingerirse porque **no declara feed** — pero eso es otro problema y
+tiene otra salida: a un medio sin RSS se le escribe, a uno que te bloquea no.
+
+**`prensaescrita.com/america/colombia.php`: 145 medios, 109 candidatos nuevos, 73
+con feed fresco.** Wikidata el día 12 dio 40 de 103. Es la fuente más productiva
+que ha tenido el proyecto y la única buena para lo regional. Ya está escrito en
+`cosecharMedios.mjs` cómo se cosecha, para integrarla.
+
+**SEIS DEPARTAMENTOS EN BLANCO TIENEN CANDIDATO VIVO** —departamento tomado de la
+cabecera del propio sitio, sin ficha todavía—:
+
+| Departamento | Candidato | Frescura |
+|---|---|---|
+| Cundinamarca | `periodismopublico.com` | 0 h |
+| Magdalena | `seguimiento.co` | 2 h |
+| Quindío | `quindionoticias.com` | 2 h |
+| Nariño | `abranoticias.com` | 1 h |
+| Casanare | `prensalibrecasanare.com` | 15 h |
+| San Andrés | `thearchipielagopress.co` | 30 h |
+
+**No son altas.** Cada una necesita ficha de propiedad y de orientación comprobada
+de campo, y ya se vio con EL DIARIO lo que pasa al copiar una ficha de tres días.
+
+**Sucre y Arauca siguen sin salida.** Sucre porque su único candidato lleva 18 días
+quieto; Arauca porque los dos suyos no declaran feed — aunque ahí el candidato ya
+existe y tiene ficha: `fichas/al-aire-noticias.md`, pendiente de alta, no de
+búsqueda.
+
+**Y `boyaca7dias.com.co` publica ahora mismo**, que importa hoy porque EL DIARIO de
+Boyacá tiene el DNS caído.
+
+**El cuarto fallo propio de la semana, y este dentro del propio arreglo:** mi filtro
+de ruido llevaba `as.com` sin anclar, así que descartó `sucrenoticias.com`,
+`quindionoticias.com` y `araucanoticias.com.co` por la subcadena «as.com» — justo
+los de los departamentos que faltaban. Queda avisado en el código.
+
+---
+
+## Lo del 13 de agosto, por la mañana
 
 ### El Tolima ya tiene voz: alta de El Nuevo Día (Ibagué)
 

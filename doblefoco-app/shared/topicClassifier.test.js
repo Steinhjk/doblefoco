@@ -166,6 +166,49 @@ describe('términos ambiguos — regresiones de falsos positivos reales', () => 
         expect(temas('Un tsunami de críticas contra el ministro'))
             .not.toContain('desastres');
     });
+
+    /**
+     * UN INCENDIO URBANO ES UN DESASTRE. Solo estaba «incendio forestal», y eso
+     * dejaba fuera 85 artículos del corpus: por IPTC la rúbrica es «disaster,
+     * accident and emergency incident», no «desastre natural».
+     */
+    it('el incendio no tiene que ser forestal', () => {
+        expect(temas('Incendio en centro comercial de El Cairo deja dos personas muertas'))
+            .toContain('desastres');
+        expect(temas('Alarma por incendio en el municipio de Yumbo'))
+            .toContain('desastres');
+    });
+
+    /**
+     * «ESCOMBROS» VA DÉBIL PORQUE LOS DEJA TAMBIÉN UNA OBRA. Rinde 70 artículos
+     * y en 99 de 123 ya coincidía con Desastres, pero como fuerte archivaría la
+     * obra del metro como catástrofe. Estas dos pruebas fijan las dos mitades.
+     */
+    it('los escombros de un rescate son un desastre', () => {
+        expect(temas('Bomberos de Tunja rescatan pareja de adultos mayores entre los escombros'))
+            .toContain('desastres');
+        expect(temas('Médica que duró 30 horas bajo los escombros'))
+            .toContain('desastres');
+    });
+
+    /**
+     * ESTA ES LA PRUEBA QUE FALTABA Y QUE DESTAPÓ EL FALLO.
+     *
+     * La primera versión usaba «escombros» suelto y se comprobaba con el metro
+     * de Bogotá, que pasaba —pero por Infraestructura, que puntuaba 4,5 y ganaba,
+     * no porque el término se portara bien—. Sin competidor fuerte, el falso
+     * positivo salía: este titular se rescataba como desastre siendo residuo de
+     * obra. Por eso el patrón exige ahora la preposición.
+     */
+    it('los escombros de una obra no son un desastre, ni aunque nada compita', () => {
+        const r = classifyTopics({
+            headline: 'CAR impuso medidas preventivas a predio en Suba por mala disposición de escombros',
+        });
+        expect(r.temas).not.toContain('desastres');
+
+        expect(temas('Metro de Bogotá: la enorme cantidad de escombros que deja la obra'))
+            .not.toContain('desastres');
+    });
 });
 
 describe('la entradilla suma pero no decide sola', () => {
@@ -241,6 +284,44 @@ describe('señales de refuerzo', () => {
             headline: 'Sin señales temáticas aquí',
             link: 'https://www.vanguardia.com/bucaramanga/nota-123',
         }).temas).toEqual([]);
+    });
+
+    /**
+     * EL PAÍS DELANTE DE LA SECCIÓN NO PUEDE TAPARLA.
+     *
+     * Infobae archiva como `/{país}/{sección}/{fecha}/{slug}` y el detector
+     * devolvía el primer segmento, o sea el país. De sus 2 041 artículos, 1 460
+     * tenían por «sección» un país, y el medio se iba sin clasificar en el 51 %
+     * de sus piezas: el 38 % de todo el «sin tema» del corpus salía de aquí.
+     */
+    it('prefiere el segmento que mapea a un tema, no el primero', () => {
+        expect(
+            seccionDeLaUrl(
+                'https://www.infobae.com/colombia/deportes/2026/08/14/el-futbolista-jhon-arias-hablo/'
+            )
+        ).toBe('deportes');
+
+        expect(
+            classifyTopics({
+                headline: 'Una entrevista larga con el protagonista',
+                link: 'https://www.infobae.com/colombia/deportes/2026/08/14/el-futbolista-jhon-arias-hablo/',
+            }).temas
+        ).toContain('deportes');
+    });
+
+    it('si ningún segmento mapea, conserva el primero plausible', () => {
+        // El respaldo no clasifica nada —classifyTopics solo usa la sección si
+        // está en el mapa— pero es lo que leen los diagnósticos.
+        expect(seccionDeLaUrl('https://www.vanguardia.com/bucaramanga/nota-123')).toBe('bucaramanga');
+    });
+
+    it('no inventa sección donde solo hay región y teletipo', () => {
+        // Infobae publica cable de agencia bajo /america/agencias/ y eso no es
+        // un tema: que no mapee es el resultado correcto, no un hueco.
+        const s = seccionDeLaUrl(
+            'https://www.infobae.com/america/agencias/2026/08/13/ohla-gano-05-millones/'
+        );
+        expect(s).toBe('america');
     });
 
     it('la etiqueta <category> del medio cuenta cuando es un tema', () => {

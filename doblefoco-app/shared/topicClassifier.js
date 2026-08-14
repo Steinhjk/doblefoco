@@ -276,6 +276,56 @@ export const TEMAS = [
             /\b(tormenta tropical|onda tropical|depresion tropical|ciclon|tornado)\b/,
             /\b(incendio forestal|avalancha|creciente subita)\b/,
             /\b(deslizamiento de tierra|remocion en masa)\b/,
+
+            /*
+             * «INCENDIO» A SECAS, añadido el 2026-08-14 tras medirlo.
+             *
+             * Arriba solo estaba «incendio forestal», y eso dejaba fuera el
+             * incendio urbano, que por IPTC es la misma categoría: su rúbrica es
+             * «disaster, accident and emergency incident», no «desastre natural».
+             *
+             * Medido sobre el corpus con `npm run medir:termino`: **85 artículos
+             * hoy sin tema** lo llevan en el titular —«Incendio en centro
+             * comercial de El Cairo deja dos personas muertas», «Alarma por
+             * incendio en el municipio de Yumbo»— y de los 90 que ya tienen tema
+             * y lo contienen, **60 están ya en Desastres**. Los demás no son
+             * falsos positivos sino piezas multietiqueta de incendios reales: el
+             * de Economía es «Voraz incendio en zona rural de El Banco deja
+             * heridos y pérdidas materiales».
+             *
+             * VA COMO FUERTE porque en español colombiano no significa otra cosa,
+             * que es la regla de esta lista. Compárese con «escombros», abajo.
+             */
+            /\bincendi(o|os|arse|aron|ada?s?)\b/,
+
+            /*
+             * «ESCOMBROS» EXIGE LA PREPOSICIÓN, Y LA PRIMERA VERSIÓN ESTABA MAL.
+             * Añadido y corregido el mismo día, 2026-08-14.
+             *
+             * Suelto rendía 70 artículos y coincidía con Desastres en 99 de 123,
+             * así que se metió como débil dando por hecho que era seguro. Al
+             * trazar qué hacía apareció el fallo: **«CAR impuso medidas
+             * preventivas a predio en Suba por mala disposición de escombros»**
+             * se rescataba como desastre, y eso es residuo de obra.
+             *
+             * Y LO TAPABA LA PRUEBA QUE SE ESCRIBIÓ PRIMERO. Se comprobaba con
+             * «Metro de Bogotá: la enorme cantidad de escombros…», que pasaba —
+             * pero no porque el término se portara bien, sino porque
+             * Infraestructura puntuaba 4,5 y ganaba—. Sin competidor fuerte el
+             * falso positivo salía igual. Una prueba que pasa por el motivo
+             * equivocado es peor que no tenerla.
+             *
+             * Con la preposición el término deja de ser ambiguo, y por eso está
+             * aquí arriba y no entre los débiles: estar BAJO o ENTRE los
+             * escombros, o ser rescatado DE ellos, no significa otra cosa en
+             * español. «Disposición de escombros» y «cantidad de escombros» son
+             * la obra, y no casan.
+             *
+             * SE PIERDE ALCANCE A PROPÓSITO: «La vida surge de los escombros» es
+             * un rescate real y no casa. Se acepta. Una etiqueta falsa afirma
+             * algo; una ausente solo calla.
+             */
+            /\b(entre|bajo|sepultad[oa]s? (en|entre|bajo)|rescatad[oa]s? de|remocion de|retiro de) (los |las )?escombros\b/,
         ],
         debiles: [
             /*
@@ -306,6 +356,7 @@ export const TEMAS = [
             /\b(emergencia|emergencias|evacuacion|evacuad[oa]s?)\b/,
             /\b(inundacion(es)?|deslizamiento|sequia|granizada|vendaval|ola invernal)\b/,
             /\b(albergues?|ayuda humanitaria|centro de acopio|damnificados)\b/,
+
 
             /*
              * «accidente» suelto va aquí y no arriba por «accidente
@@ -807,6 +858,32 @@ const esSlug = (s) => s.length > 28 || s.split('-').length > 4 || /\.html?$/.tes
  * (`news.google.com/rss/articles/CBM…`) y no llevan sección: son el 37 % del
  * catálogo y fingir que sí la tienen sería peor que no mirarla.
  *
+ * SE ELIGE EL PRIMER SEGMENTO QUE MAPEA A UN TEMA, NO EL PRIMERO A SECAS
+ * ----------------------------------------------------------------------
+ * Esto devolvía el primer segmento que no fuera ruido, y con eso perdía la
+ * sección de cualquier medio que anteponga el país o la región. El caso medido
+ * es Infobae, que archiva como `/{país}/{sección}/{fecha}/{slug}`:
+ *
+ *   infobae.com/colombia/deportes/2026/08/14/el-futbolista-jhon-arias…
+ *                └ devolvía esto  └ y la sección era esta
+ *
+ * De sus 2 041 artículos, **1 460 tenían por «sección» un país** —526 «america»,
+ * 339 «espana», 328 «mexico», 166 «peru», 150 «colombia», 51 «estados-unidos»—.
+ * Ninguno mapea a un tema, así que la señal de sección se perdía entera y el
+ * medio se iba sin clasificar en el 51 % de sus piezas: 1 050 artículos, el 38 %
+ * de todo el «sin tema» del corpus. No era el léxico: era mirar el segmento
+ * equivocado.
+ *
+ * NO SE LISTAN PAÍSES NI SE TRATA A INFOBAE APARTE, a propósito. Una lista de
+ * países habría que mantenerla y solo arregla a quien ya conocemos. Preferir el
+ * segmento que mapea funciona para cualquier estructura y no puede empeorar
+ * nada: si el primer segmento ya mapeaba, sigue ganando él.
+ *
+ * Se conserva el respaldo de devolver el primer segmento plausible aunque no
+ * mapee. No influye en la clasificación —`classifyTopics` solo usa la sección si
+ * está en `SECCION_URL_A_TEMA`— pero sí es lo que leen los diagnósticos, y ahí
+ * saber que un medio archiva por ciudad es información.
+ *
  * @param {string} link
  * @returns {string|null}
  */
@@ -815,12 +892,19 @@ export function seccionDeLaUrl(link) {
         const url = new URL(link);
         if (/(^|\.)news\.google\.com$/.test(url.hostname)) return null;
 
+        /** El primero plausible, por si ninguno mapea. */
+        let respaldo = null;
+
         for (const parte of url.pathname.split('/').filter(Boolean)) {
             const limpio = normalizar(decodeURIComponent(parte));
             if (RUIDO_URL.test(limpio)) continue;
             if (esSlug(limpio)) continue;
-            return limpio;
+
+            if (SECCION_URL_A_TEMA[limpio]) return limpio;
+            if (respaldo === null) respaldo = limpio;
         }
+
+        return respaldo;
     } catch {
         /* enlace ilegible: no es motivo para descartar el artículo */
     }

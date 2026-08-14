@@ -2106,6 +2106,272 @@ export const OWNERSHIP_PROFILES = {
     },
 
     /**
+     * ── LOS SEIS DEPARTAMENTALES DEL 2026-08-14 ──────────────────────────────
+     *
+     * Comprobados de campo sitio por sitio los días 13 y 14, no copiados de
+     * ningún listado. Los seis quedan con `ownerType: null`.
+     *
+     * QUE LOS SEIS SALGAN OPACOS NO ES CASUALIDAD Y CONVIENE DECIRLO. No es que
+     * se buscara mal: es que la prensa digital departamental colombiana no
+     * publica quién la posee, y en varios casos ni siquiera quién la dirige. El
+     * patrón se repitió idéntico en las altas del 9, del 11, del 12 y del 13.
+     * Cuando una ausencia se repite en veinte de veinte, deja de ser un hueco de
+     * nuestra investigación y pasa a ser un hallazgo sobre el sector.
+     */
+
+    'periodismo-publico': {
+        ownerType: null,
+        holdings: [
+            'Existe una sociedad localizable, PERIODISMO PUBLICO SAS, con domicilio en la Calle 7 n.º 5-61 de Soacha y actividad registrada de portales web. Es el único de los seis del lote cuya razón social aparece en un directorio mercantil.',
+            'Nació en 2009 dentro de la Corporación Humanista, entidad sin ánimo de lucro de Soacha, como uno de sus tres proyectos. El medio se presenta como respuesta a la falta de contenidos locales del municipio.',
+            'Su web publica un equipo con cargos: Ariel González (director), Diana Patricia Gómez (administración de contenidos), Germán Bustos (webmaster) y Camila Castillo Guerrero (reportería).',
+        ],
+        notes: [
+            'SE CONOCE AL DIRECTOR Y NO AL DUEÑO. Ariel González figura como director en su propia web y en una página de perfil del medio; ninguna de las dos dice si fundó la sociedad, si es socio o si solo la dirige. Dirigir no es poseer, y el registro no debe dejar creer que sí.',
+            'EL ORIGEN EN UNA CORPORACIÓN SIN ÁNIMO DE LUCRO Y LA SOCIEDAD ACTUAL SON DOS COSAS DISTINTAS, y no consta cómo se pasó de una a otra ni si la corporación conserva participación. Es la misma cautela que en El Nuevo Día: una entidad fundadora documentada no equivale a un dueño vigente.',
+            'Se declara sobre tres pilares —«Denuncia Ciudadana, Investigación Periodística y Opinión Pública»— y sobre contar «la verdad». Eso describe un método, no una posición en el eje. Un medio cuyo oficio declarado es fiscalizar a la administración local no queda por ello a la izquierda ni a la derecha; mismo criterio con que Chocó 7 Días quedó en la mixta.',
+            'Cubre Soacha, un municipio de más de medio millón de habitantes pegado a Bogotá y con administración propia. Es el perfil donde la financiación por pauta oficial más pesa, y no se ha podido establecer de qué vive.',
+        ],
+        sources: [
+            'https://periodismopublico.com/quienes-somos/',
+            'https://periodismopublico.com/ariel-gonzalez-director-de-periodismo-publico',
+            'https://www.informacolombia.com/directorio-empresas/informacion-empresa/periodismo-publico-sas',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Su página «Quiénes somos»',
+                resultado: 'Publica misión, los tres pilares editoriales y cuatro personas con cargo y correo, encabezadas por Ariel González como director. NO publica razón social, NI NIT, NI socios, NI de qué se financia.',
+                url: 'https://periodismopublico.com/quienes-somos/',
+            },
+            {
+                fuente: 'Su página de perfil del director',
+                resultado: 'Confirma el cargo de Ariel González y nada más: sin trayectoria, sin decir si es fundador o socio, y sin mencionar la estructura societaria.',
+                url: 'https://periodismopublico.com/ariel-gonzalez-director-de-periodismo-publico',
+            },
+            {
+                fuente: 'Directorio mercantil informacolombia.com',
+                resultado: 'PERIODISMO PUBLICO SAS, Calle 7 n.º 5-61, Soacha (Cundinamarca), actividad de portales web. Confirma que la sociedad existe y dónde. NO publica NIT, NI representante legal, NI socios.',
+                url: 'https://www.informacolombia.com/directorio-empresas/informacion-empresa/periodismo-publico-sas',
+            },
+        ],
+        falta: [
+            'El NIT de PERIODISMO PUBLICO SAS y su certificado de la Cámara de Comercio de Bogotá, que cubre Soacha: socios, representante legal y fecha de constitución. Con la razón social en la mano es el trámite más directo de los seis.',
+            'Si Ariel González es además socio, y con qué porcentaje. Es la diferencia entre un director contratado y un dueño-director, que en un medio pequeño cambia mucho.',
+            'Qué relación conserva hoy la Corporación Humanista con la sociedad, si conserva alguna.',
+            'De qué vive: proporción de pauta oficial del municipio de Soacha y de la Gobernación de Cundinamarca frente a ingreso privado.',
+        ],
+    },
+
+    'seguimiento': {
+        ownerType: null,
+        holdings: [
+            'Publica desde el 2 de abril de 2010, según su propia página de historia, con el proyecto gestado en 2009 y una refundación fechada el 1 de julio de 2016.',
+            'Da dirección física: Carrera 3 n.º 17-27, oficina 208, Centro Histórico de Santa Marta.',
+            'Se describe sobre tres pilares —periodismo de investigación, interacción con el lector por redes y memoria histórica— y se declara vigilante de la gestión de los servidores públicos de Santa Marta y del Magdalena.',
+        ],
+        notes: [
+            'NO PUBLICA NI UN NOMBRE PROPIO. Ni director, ni editor, ni fundador, ni socio: su página de equipo se refiere a «un grupo de periodistas profesionales» sin nombrar a ninguno, y solo menciona que en 2016 existía un editor general, tampoco nombrado. El único nombre propio de todo el sitio es el de quien lo diseñó.',
+            'ES LLAMATIVO EN UN MEDIO QUE SE DECLARA FISCALIZADOR. Quien pide cuentas a los servidores públicos de su departamento no publica quién responde por lo que él mismo escribe. Se anota como observación sobre la transparencia del medio, no como juicio sobre su contenido, y no entra en el número.',
+            'La dirección de oficina en el Centro Histórico es el dato más sólido que da de sí mismo, y es el que permitiría buscarlo en el registro por ubicación si el nombre comercial no bastara.',
+        ],
+        sources: [
+            'https://seguimiento.co/quienes-somos/',
+            'https://seguimiento.co/contacto/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Su página «Quiénes somos»',
+                resultado: 'Cuenta la historia del medio con fechas precisas (2009, 2 de abril de 2010, 1 de julio de 2016) y sus pilares editoriales. NO nombra a ninguna persona, NO da razón social y NO da NIT.',
+                url: 'https://seguimiento.co/quienes-somos/',
+            },
+            {
+                fuente: 'Su página de contacto',
+                resultado: 'Solo la dirección: Carrera 3 n.º 17-27 of. 208, Centro Histórico, Santa Marta. Sin representante, sin sociedad, sin NIT.',
+                url: 'https://seguimiento.co/contacto/',
+            },
+            {
+                fuente: 'Su página de equipo',
+                resultado: 'Existe y no lista personas: describe al medio como obra de «un grupo de periodistas profesionales». Es la única página de equipo del catálogo que no nombra a nadie.',
+                url: 'https://seguimiento.co/equipo/',
+            },
+        ],
+        falta: [
+            'La razón social. Sin ella no hay por dónde entrar al registro mercantil: habría que buscar por nombre comercial en la Cámara de Comercio de Santa Marta, o por la dirección de la oficina 208.',
+            'Quién dirige el medio hoy. Un solo nombre público bastaría para empezar.',
+            'De qué vive, y en particular qué peso tiene la pauta de la Alcaldía de Santa Marta y de la Gobernación del Magdalena en un medio que se declara vigilante de ambas.',
+        ],
+    },
+
+    'prensa-libre-casanare': {
+        ownerType: null,
+        holdings: [
+            'Publica un nombre con cargo y teléfono directo: Miguel Ángel Cristancho como editor, con móvil y correo de contacto en el pie del sitio.',
+            'Cubre Yopal y el Casanare, con secciones propias de salud, medio ambiente, judicial y «información comercial».',
+        ],
+        notes: [
+            'EL ÚNICO NOMBRE ES EL DEL EDITOR, Y NO SE DICE QUE SEA EL DUEÑO. En un digital regional pequeño lo habitual es que coincidan, pero suponerlo sería inventarlo: puede haber una sociedad detrás, o puede ser una persona natural. No consta ninguna de las dos cosas.',
+            'NO HAY RAZÓN SOCIAL NI NIT en ninguna página del sitio, así que no hay por dónde entrar al registro salvo por nombre comercial.',
+            'Mantiene una sección declarada de «información comercial». Que el contenido pagado esté señalado como tal es lo correcto y se anota a su favor; qué anunciantes hay detrás no consta, y en un departamento petrolero con regalías esa es la pregunta que importa.',
+        ],
+        sources: [
+            'https://prensalibrecasanare.com/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Pie y cabecera de su portada',
+                resultado: 'Publica «Editor Miguel Ángel Cristancho» con móvil (310 216 5320) y correo. Es todo lo que declara de sí mismo. NO hay razón social, NI NIT, NI socios, NI representante legal.',
+                url: 'https://prensalibrecasanare.com/',
+            },
+            {
+                fuente: 'Rutas habituales de «quiénes somos», «nosotros», «contacto», «equipo» y avisos legales',
+                resultado: 'NINGUNA EXISTE. Diez rutas convencionales probadas el 2026-08-14 y ninguna devuelve una página propia. El medio no tiene página institucional de ningún tipo.',
+                url: 'https://prensalibrecasanare.com/quienes-somos/',
+            },
+        ],
+        falta: [
+            'Si existe sociedad editora o si el medio lo explota una persona natural. Es la primera bifurcación y hoy no se sabe cuál de las dos.',
+            'El certificado de la Cámara de Comercio del Casanare, buscando por nombre comercial y por el nombre del editor.',
+            'Qué peso tiene la pauta oficial de la Gobernación del Casanare y de la Alcaldía de Yopal, y qué anunciantes hay tras su sección de información comercial.',
+        ],
+    },
+
+    'quindio-noticias': {
+        ownerType: null,
+        holdings: [
+            'Reivindica actividad continuada desde 2011: su pie dice «Quindío Noticias® — 2011-2025», con el símbolo de marca registrada.',
+            'Cubre Armenia y el Quindío, y sirve sus imágenes por la CDN de Jetpack en vez de desde su propio dominio.',
+        ],
+        notes: [
+            'NO PUBLICA ABSOLUTAMENTE NADA SOBRE SÍ MISMO: ni sociedad, ni NIT, ni director, ni editor, ni dirección, ni teléfono. De los seis del lote es, junto con The Archipielago Press, el más cerrado.',
+            'SU SERVIDOR RESPONDE 200 A CUALQUIER RUTA devolviendo la portada, y eso es una trampa de comprobación que hay que declarar: `/quienes-somos/`, `/nosotros/`, `/about/`, `/equipo/` y `/aviso-legal/` devuelven los mismos 106 kB de la portada. Quien las pruebe y vea «200» creerá que ha mirado sus páginas institucionales. No existen. La comprobación del 2026-08-14 tuvo que hacerse comparando tamaños de respuesta.',
+            'El símbolo ® del pie AFIRMA una marca registrada, lo que implicaría un titular identificable ante la Superintendencia de Industria y Comercio. Es la vía de entrada más prometedora y no se ha recorrido: no se afirma que el registro exista, solo que el medio dice tenerlo.',
+        ],
+        sources: [
+            'https://quindionoticias.com/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Pie de su portada',
+                resultado: 'Todo lo que declara de sí mismo son cinco caracteres: «Quindío Noticias® - 2011-2025». Ni una persona, ni una sociedad, ni una dirección.',
+                url: 'https://quindionoticias.com/',
+            },
+            {
+                fuente: 'Diez rutas institucionales habituales',
+                resultado: 'Todas devuelven 200 con el contenido de la portada, incluidas `/about/` y `/aviso-legal/`. Es un catch-all: ninguna de esas páginas existe. Comprobado comparando el tamaño de las respuestas el 2026-08-14.',
+                url: 'https://quindionoticias.com/quienes-somos/',
+            },
+            {
+                fuente: 'Búsqueda web por director y propietario',
+                resultado: 'Confirma que el medio existe y tiene audiencia grande en redes, y NO devuelve ningún nombre de director, propietario ni sociedad editora (consulta del 2026-08-14).',
+            },
+        ],
+        falta: [
+            'El titular de la marca «Quindío Noticias» en el registro de la Superintendencia de Industria y Comercio. Es la única vía de entrada que su propio sitio sugiere, por el ® que exhibe.',
+            'Cualquier nombre propio. Es la ficha con menos asideros del lote junto a la del Archipiélago.',
+            'La razón social, para poder pedir el certificado en la Cámara de Comercio de Armenia.',
+        ],
+    },
+
+    'archipielago-press': {
+        ownerType: null,
+        holdings: [
+            'Se presenta como diario digital del Archipiélago de San Andrés y Providencia, y publica en español e inglés, que es lo propio del departamento.',
+            'Comparte casa con una emisora, `radioarchipielago.com`, a la que enlaza desde su sitio. Es el único vínculo institucional que expone.',
+            'Su aviso de derechos es de 2024, y el desarrollo del sitio lo firma Zona Creativos SAS.',
+        ],
+        notes: [
+            'ES LA FICHA MÁS VACÍA DEL CATÁLOGO. No publica un solo nombre propio: ni director, ni editor, ni redactor, ni socio. Los artículos van firmados «The Archipielago Press», es decir por la cabecera. Tampoco hay razón social, NIT ni dirección física.',
+            'ZONA CREATIVOS SAS APARECE COMO DESARROLLADOR, NO COMO EDITOR, y no se le atribuye la propiedad: firmar el desarrollo de un sitio no es poseerlo. Se anota porque es el único nombre de sociedad que aparece en todo el dominio y porque es la primera puerta a la que llamar, no porque signifique nada todavía.',
+            'LA RELACIÓN CON RADIO ARCHIPIÉLAGO ESTÁ SIN ESTABLECER y es la pista más prometedora: una emisora necesita licencia del MinTIC, y una licencia tiene titular público. Si las dos son de la misma casa, el nombre está en un registro estatal.',
+            'ENTRA PESE A TODO ESTO, y merece decirse por qué: es la única voz web del Archipiélago que publica con regularidad. Excluirlo por opaco dejaría en blanco a un departamento insular de unos 60 000 habitantes, con una historia de conflicto territorial con Nicaragua y una población raizal con lengua propia. El mapa callaría justo donde menos debe.',
+        ],
+        sources: [
+            'https://www.thearchipielagopress.co/nosotros/',
+            'https://www.thearchipielagopress.co/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Su página «Nosotros»',
+                resultado: 'Existe y no dice quién es nadie: sin director, sin equipo, sin sociedad, sin NIT, sin dirección y sin fecha de fundación. Es la página institucional más vacía que se ha encontrado en el catálogo.',
+                url: 'https://www.thearchipielagopress.co/nosotros/',
+            },
+            {
+                fuente: 'Pie del sitio',
+                resultado: '«Copyright © 2024 Todos los derechos reservados» y el crédito de desarrollo de Zona Creativos SAS. Ningún titular nombrado.',
+                url: 'https://www.thearchipielagopress.co/',
+            },
+            {
+                fuente: 'Su página de contacto',
+                resultado: 'Enlace genérico sin dirección postal ni representante. El único enlace externo institucional es a radioarchipielago.com.',
+                url: 'https://www.thearchipielagopress.co/contacto/',
+            },
+        ],
+        falta: [
+            'Quién es el titular de la licencia de Radio Archipiélago ante el MinTIC. Es la vía más prometedora, porque una concesión de radiodifusión tiene titular en un registro público, y cerraría la propiedad de las dos si resultan ser la misma casa.',
+            'Confirmar o descartar que Zona Creativos SAS tenga algo más que el desarrollo del sitio.',
+            'El certificado de la Cámara de Comercio de San Andrés, en cuanto haya un nombre que buscar. Hoy no lo hay.',
+        ],
+    },
+
+    'abra-noticias': {
+        ownerType: null,
+        holdings: [
+            'Publica cobertura local de Nariño con varias piezas al día, con Pasto e Ipiales como focos principales.',
+            'Corre sobre el tema comercial «MoreNews», de AF themes, según su propio pie.',
+        ],
+        notes: [
+            'SU PÁGINA DE CONTACTO ES LA DE LA PLANTILLA, SIN EDITAR. En el pie figuran un teléfono «+202-555-0156», una dirección en «23 Miller Court, Hagerstown» —Maryland, Estados Unidos— y un correo «acenews@support.com». Los tres vienen de serie con el tema y no son suyos. El medio no ha llegado a poner sus propios datos de contacto.',
+            'ESO NO PONE EN DUDA SU CONTENIDO, y conviene separarlo: sus piezas son de Nariño, verificables y con hechos locales concretos. Lo que dice el dato es otra cosa —qué infraestructura de rendición de cuentas tiene el medio—, y es información relevante para el lector: hoy no hay ninguna dirección real a la que escribirle ni nadie a quien pedirle una rectificación.',
+            'NO PUBLICA NI UN NOMBRE PROPIO más allá de la firma «ABRA NOTICIAS» en sus piezas. Sin razón social, sin NIT, sin director.',
+            'SE ELIGIÓ FRENTE A `narinoahora.com`, que cubre el mismo departamento y también publica, solo por frescura —2 h contra 31 h en la comprobación del 2026-08-13—. El otro NO queda descartado, y si esta ficha no se puede cerrar conviene reconsiderarlo.',
+        ],
+        sources: [
+            'https://abranoticias.com/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Pie y cabecera de su portada',
+                resultado: 'Los datos de contacto son los de demostración del tema «MoreNews»: teléfono +202-555-0156, dirección en Hagerstown (Maryland, EE. UU.) y correo acenews@support.com. No hay ni un dato real del medio, ni razón social, ni NIT, ni nombres.',
+                url: 'https://abranoticias.com/',
+            },
+            {
+                fuente: 'Diez rutas institucionales habituales',
+                resultado: 'NINGUNA EXISTE. Probadas el 2026-08-14: no tiene página de «quiénes somos», ni de equipo, ni de contacto propia.',
+                url: 'https://abranoticias.com/quienes-somos/',
+            },
+        ],
+        falta: [
+            'Cualquier dato real de contacto. Es el único medio del catálogo del que no se conoce ni una dirección ni un correo verdaderos, y eso conviene revisarlo pronto.',
+            'La razón social, si existe, para la Cámara de Comercio de Pasto.',
+            'Quién lo dirige o lo escribe. Todas sus piezas van firmadas por la cabecera.',
+        ],
+    },
+
+    /**
      * PULZO — EL HILO LLEGA A UNA SOCIEDAD Y AHÍ SE PARA (2026-08-11).
      *
      * Es el cuarto medio más consumido del país y su propiedad última es la peor

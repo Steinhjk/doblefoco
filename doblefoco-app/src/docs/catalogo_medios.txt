@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-13
-Medios en el catálogo: 66
+Generado: 2026-08-14
+Medios en el catálogo: 72
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  42 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -242,6 +242,54 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  36 medios
     y el vínculo histórico con la familia Galvis se refiere a una
     sociedad hoy cancelada y no se da por vigente — ver
     fichas/el-nuevo-dia.md.
+
+  Periodismo Público  ·  sesgo +0.00  ·  factualidad sin medir
+    periodismopublico.com · Regional Cundinamarca · CO · RSS propio · PROVISIONAL
+    Portal de Soacha, primero de Cundinamarca en el catálogo, nacido
+    en 2009 de una corporación sin ánimo de lucro del municipio. Se
+    declara sobre denuncia ciudadana e investigación, que describe un
+    método y no un bando. Orientación mixta provisional por ausencia
+    de evidencia: su sociedad editora no publica socios y nada de lo
+    observable lo sitúa en el eje — ver fichas/periodismo-publico.md.
+
+  Seguimiento.co  ·  sesgo +0.00  ·  factualidad sin medir
+    seguimiento.co · Regional Magdalena · CO · RSS propio · PROVISIONAL
+    Digital de Santa Marta, primero del Magdalena en el catálogo,
+    publicando desde 2010. Se declara vigilante de la gestión de los
+    servidores públicos del departamento, que es oficio y no
+    orientación. Orientación mixta provisional por ausencia de
+    evidencia: no publica ni un nombre propio ni su sociedad editora —
+    ver fichas/seguimiento.md.
+
+  Prensa Libre Casanare  ·  sesgo +0.00  ·  factualidad sin medir
+    prensalibrecasanare.com · Regional Casanare · CO · RSS propio · PROVISIONAL
+    Digital de Yopal, primero del Casanare en el catálogo. Publica a
+    su editor con teléfono y ninguna sociedad ni socio. Orientación
+    mixta provisional por ausencia de evidencia: nada de lo observable
+    lo sitúa en el eje — ver fichas/prensa-libre-casanare.md.
+
+  Quindío Noticias  ·  sesgo +0.00  ·  factualidad sin medir
+    quindionoticias.com · Regional Quindío · CO · RSS propio · PROVISIONAL
+    Digital de Armenia, primero del Quindío en el catálogo y activo
+    desde 2011. No publica absolutamente nada sobre sí mismo: ni
+    sociedad, ni nombres, ni cargos. Orientación mixta provisional por
+    ausencia de evidencia — ver fichas/quindio-noticias.md.
+
+  The Archipielago Press  ·  sesgo +0.00  ·  factualidad sin medir
+    thearchipielagopress.co · Regional Archipiélago · CO · RSS propio · PROVISIONAL
+    Diario digital del Archipiélago de San Andrés y Providencia,
+    primero del departamento en el catálogo. Es la ficha más vacía del
+    catálogo: no publica ni un nombre, ni cargo, ni sociedad.
+    Orientación mixta provisional por ausencia de evidencia — ver
+    fichas/archipielago-press.md.
+
+  Abra Noticias  ·  sesgo +0.00  ·  factualidad sin medir
+    abranoticias.com · Regional Nariño · CO · RSS propio · PROVISIONAL
+    Digital de Nariño, primero del departamento en el catálogo, con
+    cobertura de Pasto e Ipiales. Su página de contacto sigue siendo
+    la de la plantilla sin editar, así que no hay ni un dato propio de
+    la casa. Orientación mixta provisional por ausencia de evidencia —
+    ver fichas/abra-noticias.md.
 
   Pulzo  ·  sesgo +0.00  ·  factualidad sin medir
     pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL

@@ -965,6 +965,155 @@ export const MEDIA_REGISTRY = [
         feed: { url: 'https://www.elnuevodia.com.co/rss.xml', via: 'direct', category: 'Política' },
         imageHosts: ['elnuevodia.com.co'],
     },
+
+    /**
+     * ── SEIS DEPARTAMENTOS QUE DEJAN DE ESTAR EN BLANCO (alta del 2026-08-14) ─
+     *
+     * Salen todos de la misma fuente: `prensaescrita.com/america/colombia.php`,
+     * el listado que se descartó el 2026-08-09 por un bloqueo que no existía.
+     * Cuatro días sin usarlo costaron estos seis departamentos. Ver
+     * `BARRIDO_2026-08-13.md`.
+     *
+     * LOS SEIS ENTRAN EN 0,00 Y CON `ownerType: null`, y conviene no leer eso
+     * como un rasgo del lote sino como lo que es: **de ninguno se ha podido
+     * establecer quién lo controla**. Es la Regla 2 —ausencia de evidencia, no
+     * evidencia de equilibrio— aplicada seis veces, y el mismo criterio de La
+     * Razón.co, EL DIARIO, Vive el Meta, Lente Regional y El Nuevo Día.
+     *
+     * NO SE DESCARTÓ NINGUNO POR SER OPACO, y hay que decir por qué: si la
+     * opacidad excluyera, el mapa se quedaría con los departamentos donde hay
+     * prensa grande y bien registrada, que son justo los que ya tenían voz. La
+     * regla del 2026-08-11 existe para esto. Lo que sí se exige es el trabajo
+     * documental: dónde se buscó, cuándo, y qué papel cerraría el hueco.
+     *
+     * EL MÁS DOCUMENTADO ES PERIODISMO PÚBLICO y el menos The Archipielago
+     * Press, que no publica ni un nombre. Están ordenados aquí de más a menos
+     * documentado, no por departamento, para que se vea el gradiente.
+     */
+    {
+        /**
+         * PERIODISMO PÚBLICO (Soacha) — PRIMER MEDIO DE CUNDINAMARCA.
+         *
+         * El único de los seis con sociedad localizable: PERIODISMO PUBLICO SAS,
+         * en Soacha, con actividad de «portales web». Y el único con un origen
+         * declarado que importa para la orientación: nació en 2009 dentro de la
+         * Corporación Humanista, una entidad sin ánimo de lucro del municipio.
+         *
+         * SU PROPIA DEFINICIÓN ES UNA PISTA QUE NO SE CONVIERTE EN NÚMERO. Se
+         * declara sobre tres pilares —«Denuncia Ciudadana, Investigación
+         * Periodística y Opinión Pública»— y eso describe un método, no un
+         * bando. Fiscalizar al poder local no sitúa a nadie en el eje: es el
+         * mismo criterio con que Chocó 7 Días quedó en la mixta.
+         */
+        id: 'periodismo-publico', name: 'Periodismo Público', shortName: 'P. Público',
+        domain: 'periodismopublico.com', departamento: 'Cundinamarca', country: 'CO', group: 'Regional Cundinamarca',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Portal de Soacha, primero de Cundinamarca en el catálogo, nacido en 2009 de una corporación sin ánimo de lucro del municipio. Se declara sobre denuncia ciudadana e investigación, que describe un método y no un bando. Orientación mixta provisional por ausencia de evidencia: su sociedad editora no publica socios y nada de lo observable lo sitúa en el eje — ver fichas/periodismo-publico.md.',
+        feed: { url: 'https://periodismopublico.com/feed', via: 'direct', category: 'Política' },
+        imageHosts: ['periodismopublico.com'],
+    },
+    {
+        /**
+         * SEGUIMIENTO.CO (Santa Marta) — PRIMER MEDIO DEL MAGDALENA.
+         *
+         * Cuenta su historia con fechas —proyecto en 2009, primera pieza el 2 de
+         * abril de 2010— y da dirección física en el Centro Histórico, pero **no
+         * publica ni un nombre propio**: ni director, ni editor, ni socios. Se
+         * describe como «un grupo de periodistas profesionales».
+         *
+         * SE DECLARA VIGILANTE DE LOS SERVIDORES PÚBLICOS de Santa Marta y el
+         * Magdalena. Misma lectura que en Periodismo Público: es oficio, no eje.
+         */
+        id: 'seguimiento', name: 'Seguimiento.co', shortName: 'Seguimiento',
+        domain: 'seguimiento.co', departamento: 'Magdalena', country: 'CO', group: 'Regional Magdalena',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Digital de Santa Marta, primero del Magdalena en el catálogo, publicando desde 2010. Se declara vigilante de la gestión de los servidores públicos del departamento, que es oficio y no orientación. Orientación mixta provisional por ausencia de evidencia: no publica ni un nombre propio ni su sociedad editora — ver fichas/seguimiento.md.',
+        feed: { url: 'https://seguimiento.co/rss.xml', via: 'direct', category: 'Política' },
+        imageHosts: ['seguimiento.co'],
+    },
+    {
+        /**
+         * PRENSA LIBRE CASANARE (Yopal) — PRIMER MEDIO DEL CASANARE.
+         *
+         * Publica UN nombre y es el del editor: Miguel Ángel Cristancho, con
+         * móvil de contacto. Ni razón social ni NIT. Es el patrón del digital
+         * regional pequeño donde la persona y el medio son difíciles de separar,
+         * y eso se anota como observación, no como reproche.
+         */
+        id: 'prensa-libre-casanare', name: 'Prensa Libre Casanare', shortName: 'P. Libre Casanare',
+        domain: 'prensalibrecasanare.com', departamento: 'Casanare', country: 'CO', group: 'Regional Casanare',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Digital de Yopal, primero del Casanare en el catálogo. Publica a su editor con teléfono y ninguna sociedad ni socio. Orientación mixta provisional por ausencia de evidencia: nada de lo observable lo sitúa en el eje — ver fichas/prensa-libre-casanare.md.',
+        feed: { url: 'https://prensalibrecasanare.com/rss.xml', via: 'direct', category: 'Política' },
+        imageHosts: ['prensalibrecasanare.com'],
+    },
+    {
+        /**
+         * QUINDÍO NOTICIAS (Armenia) — PRIMER MEDIO DEL QUINDÍO.
+         *
+         * El informe del 2026-08-09 dejó escrito que «Quindío sigue sin medio
+         * suyo» tras corregir el error de atribuirle Telecafé, que emite desde
+         * Manizales. Este lo cierra.
+         *
+         * OJO AL COMPROBARLO: su servidor responde 200 A CUALQUIER RUTA
+         * devolviendo la portada. `/about/`, `/aviso-legal/` y `/equipo/` dan
+         * 106 kB idénticos y no existen. Quien busque ahí su ficha creerá haber
+         * mirado, y no habrá mirado nada.
+         */
+        id: 'quindio-noticias', name: 'Quindío Noticias', shortName: 'Quindío Noticias',
+        domain: 'quindionoticias.com', departamento: 'Quindío', country: 'CO', group: 'Regional Quindío',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Digital de Armenia, primero del Quindío en el catálogo y activo desde 2011. No publica absolutamente nada sobre sí mismo: ni sociedad, ni nombres, ni cargos. Orientación mixta provisional por ausencia de evidencia — ver fichas/quindio-noticias.md.',
+        feed: { url: 'https://quindionoticias.com/feed', via: 'direct', category: 'Política' },
+        // Sirve las fotos por la CDN de Jetpack, no desde su dominio.
+        imageHosts: ['i0.wp.com'],
+    },
+    {
+        /**
+         * THE ARCHIPIELAGO PRESS (San Andrés) — PRIMER MEDIO DEL ARCHIPIÉLAGO.
+         *
+         * ES EL MENOS DOCUMENTADO DE TODO EL CATÁLOGO: no publica un solo nombre
+         * propio, ni cargo, ni sociedad, ni dirección. Lo único que lo enlaza con
+         * algo es que comparte casa con `radioarchipielago.com`.
+         *
+         * Y AUN ASÍ ENTRA, porque la alternativa es dejar el Archipiélago en
+         * blanco. Un departamento insular de 60 000 habitantes con una sola voz
+         * web es exactamente donde el mapa no debe callar por no saber de quién
+         * es. La ausencia va declarada y con lo que la cerraría.
+         */
+        id: 'archipielago-press', name: 'The Archipielago Press', shortName: 'Archipielago Press',
+        domain: 'thearchipielagopress.co', departamento: 'Archipiélago de San Andrés', country: 'CO', group: 'Regional Archipiélago',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario digital del Archipiélago de San Andrés y Providencia, primero del departamento en el catálogo. Es la ficha más vacía del catálogo: no publica ni un nombre, ni cargo, ni sociedad. Orientación mixta provisional por ausencia de evidencia — ver fichas/archipielago-press.md.',
+        feed: { url: 'https://www.thearchipielagopress.co/feed/', via: 'direct', category: 'Política' },
+        imageHosts: ['thearchipielagopress.co'],
+    },
+    {
+        /**
+         * ABRA NOTICIAS (Nariño) — PRIMER MEDIO DE NARIÑO, Y CON UN AVISO.
+         *
+         * Nariño llevaba bloqueado desde el principio: Diario del Sur tiene la
+         * editora en liquidación y entrega el feed sin fechas legibles. Este
+         * publica cada pocas horas desde Ipiales y Pasto.
+         *
+         * SU PÁGINA DE CONTACTO ES LA DE LA PLANTILLA, SIN EDITAR: un teléfono
+         * «+202-555-0156» y una dirección en Hagerstown, Maryland, que vienen de
+         * serie con el tema «MoreNews». No es una acusación de nada —su contenido
+         * es local, verificable y real— pero sí es un dato sobre cuánta
+         * infraestructura de rendición de cuentas tiene el medio, y por eso se
+         * escribe en vez de pasarse por alto.
+         *
+         * ALTERNATIVA ANOTADA: `narinoahora.com` cubre el mismo departamento y
+         * también publica. Se eligió este por frescura —2 h contra 31 h— y no
+         * porque el otro esté descartado.
+         */
+        id: 'abra-noticias', name: 'Abra Noticias', shortName: 'Abra Noticias',
+        domain: 'abranoticias.com', departamento: 'Nariño', country: 'CO', group: 'Regional Nariño',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Digital de Nariño, primero del departamento en el catálogo, con cobertura de Pasto e Ipiales. Su página de contacto sigue siendo la de la plantilla sin editar, así que no hay ni un dato propio de la casa. Orientación mixta provisional por ausencia de evidencia — ver fichas/abra-noticias.md.',
+        feed: { url: 'https://abranoticias.com/feed/', via: 'direct', category: 'Política' },
+        imageHosts: ['abranoticias.com'],
+    },
     {
         /**
          * PULZO — alta del 2026-08-11, a petición de Jose.

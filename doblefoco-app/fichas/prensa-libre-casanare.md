@@ -2,76 +2,92 @@
 
 | | |
 |---|---|
-| **Valor propuesto** | **ninguno** — falta el nivel 1 |
-| **Firma** | ☐ no procede todavía |
-| **Fecha** | 2026-08-09 (candidatura) |
+| **Valor propuesto** | **0,00** — orientación mixta por Regla 2 |
+| **Firma** | ☐ sin firmar |
+| **Fecha** | 2026-08-14 (alta) |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
-| **Departamento** | Casanare |
+| **Departamento** | Casanare — **es el primero del departamento en el catálogo** |
+
+> **Lee «0,00» como «no sabemos», no como «equilibrado».** Es la Regla 2: no hay
+> nada que sitúe a este medio en el eje, y la banda más cercana a la mixta es lo
+> que el protocolo manda entonces. No es un elogio ni una absolución.
+
+**Publica un nombre —el del editor, con móvil— y ninguna sociedad.** Es el patrón
+del digital regional donde la persona y el medio cuesta separarlos.
 
 ---
 
 ## EVIDENCIA ADMISIBLE
 
-### Nivel 1 — Una persona, ningún registro
+### Nivel 1 — Quién lo edita, hoy
 
-| Dato | Valor |
-|---|---|
-| Editor | **Miguel Ángel Cristancho** — [pie de su web](https://prensalibrecasanare.com/) |
-| Sociedad | **no consta** |
-| NIT | no consta |
+| Dato | Valor | Fuente |
+|---|---|---|
+| Editor | **Miguel Ángel Cristancho**, con móvil (310 216 5320) y correo | pie de su portada |
+| **Sociedad** | **no publicada** | — |
+| **NIT** | **no publicado** | — |
+| **Propietario** | **no publicado** | — |
 
-**Hay un nombre, que es más de lo que dieron Sucre Noticias o Quindío
-Noticias.** Pero un editor no es un propietario, y no hay sociedad que
-consultar: el pie de página solo dice «Copyright © 2011-2019 Prensa Libre
-Casanare».
+### El único nombre es el del editor, y no dice que sea el dueño
 
-**Dos detalles de escala que conviene anotar sin juzgarlos.** El contacto del
-editor es una cuenta de Gmail personal, y el aviso de copyright se quedó en
-2019. Ninguna de las dos cosas descalifica a nadie —la prensa regional
-colombiana funciona así— pero sitúan lo que es: **una operación pequeña, no una
-casa editorial**. Y en una operación pequeña, de quién viene el dinero pesa más,
-no menos.
+En un digital regional pequeño lo habitual es que coincidan. **Suponerlo sería
+inventarlo:** puede haber una sociedad detrás o puede explotarlo una persona
+natural, y no consta ninguna de las dos.
 
-### Nivel 4 — Lo que declara
+Es la primera bifurcación que hay que resolver, y hoy no se sabe cuál de las dos es.
 
-Cubrir Casanare y también Arauca, con secciones de judicial, salud y medio
-ambiente. No declara línea, ni financiación, ni propiedad.
+### No tiene ninguna página institucional
 
-### Nivel 2 — Conducta medida: NO EXISTE
-
-No está ingerido. Su feed —`prensalibrecasanare.com/rss.xml`— devolvió artículos
-de hace 19 horas: es el más activo de los tres candidatos de Casanare, por
-delante de Diario de Casanare (51 h) y Qué Pasa Yopal (80 h).
+Diez rutas convencionales probadas el 2026-08-14 —«quiénes somos», «nosotros»,
+«contacto», «equipo», avisos legales— y **ninguna existe**. Todo lo que el medio
+declara de sí mismo cabe en una línea del pie.
 
 ---
 
-## POR QUÉ NO SE PROPONE NÚMERO
+## POR QUÉ 0,00
 
-Regla 3: no hay sociedad, ni propietario, ni registro. Un cargo en un pie de
-página es el medio hablando de sí mismo — nivel 4, no nivel 1.
+Nada de lo observable lo sitúa en el eje. Cubre Yopal y el Casanare con secciones
+propias de salud, medio ambiente y judicial.
 
-**Y hay un contexto que hace la propiedad especialmente relevante aquí.**
-Casanare es departamento petrolero, con regalías y contratación pública que son
-el asunto político dominante. Un medio local sin propiedad documentada en ese
-entorno es exactamente el caso que este proyecto viene a mirar.
+**Mantiene una sección declarada de «información comercial»**, y que el contenido
+pagado esté señalado como tal se anota a su favor: es más de lo que hacen medios
+mucho mayores. Qué anunciantes hay detrás no consta — y en un departamento
+petrolero que vive de regalías, esa es exactamente la pregunta que importa.
 
----
-
-## LO QUE HAY QUE HACER
-
-Escribir al editor. **A diferencia de los otros tres de esta tanda, aquí hay a
-quién escribirle**: nombre y correo públicos. Preguntar qué sociedad edita el
-medio y de qué se financia es más rápido que buscar un registro que quizá no
-exista, y su respuesta —o su silencio— también es información.
+**Se descartó la analogía regional**, por lo mismo que en EL DIARIO de Boyacá y El
+Nuevo Día.
 
 ---
 
-## REFUTACIÓN — qué reabriría el expediente
+## EL FEED
 
-1. **Que respondan con razón social y NIT**, y de ahí al certificado de Cámara
-   de Comercio de Casanare.
-2. **Si la financiación resulta ser pauta de la Gobernación o de alcaldías del
-   departamento**, se declara: en un medio de este tamaño es determinante.
-3. **A los 90 días de ingerido**, si llega a ingerirse: la conducta puede
-   sostener un valor aunque la propiedad siga sin documentar, pero la ficha
-   tendrá que decir que el número descansa en nivel 2.
+```
+https://prensalibrecasanare.com/rss.xml
+HTTP 200 · 10 ítems · 10 de 10 dentro de la ventana de 72 h
+más reciente 15,1 h · mediana 15,1 h
+```
+
+Es el segundo más lento de los seis del lote, y entra holgado en la ventana.
+Comprobado el 2026-08-14.
+
+---
+
+## LO QUE FALTA
+
+1. **Si existe sociedad editora o si lo explota una persona natural.** Es la primera
+   bifurcación y de ella depende todo lo demás.
+2. **El certificado de la Cámara de Comercio del Casanare**, buscando por nombre
+   comercial y por el nombre del editor.
+3. **Peso de la pauta oficial** de la Gobernación del Casanare y de la Alcaldía de
+   Yopal, y qué anunciantes hay tras su sección de información comercial.
+
+---
+
+## REFUTACIÓN — qué movería este número
+
+1. **Que se establezca quién lo posee**, o que se confirme que el editor es también
+   el dueño: en un medio de una sola persona, su trayectoria pública pasa a ser
+   evidencia de nivel 2 sobre la orientación de la casa.
+2. **Que se conozcan sus anunciantes**, dada la sección comercial declarada y el
+   dinero de regalías del departamento.
+3. **Corpus propio.** Entra hoy; ver `revision-externa/CONDUCTA-MEDIDA.md`.

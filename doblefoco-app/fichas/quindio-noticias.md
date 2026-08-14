@@ -2,63 +2,99 @@
 
 | | |
 |---|---|
-| **Valor propuesto** | **ninguno** — falta el nivel 1 |
-| **Firma** | ☐ no procede todavía |
-| **Fecha** | 2026-08-09 (candidatura) |
+| **Valor propuesto** | **0,00** — orientación mixta por Regla 2 |
+| **Firma** | ☐ sin firmar |
+| **Fecha** | 2026-08-14 (alta) |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
-| **Departamento** | Quindío |
+| **Departamento** | Quindío — **es el primero del departamento en el catálogo** |
+
+> **Lee «0,00» como «no sabemos», no como «equilibrado».** Es la Regla 2: no hay
+> nada que sitúe a este medio en el eje, y la banda más cercana a la mixta es lo
+> que el protocolo manda entonces. No es un elogio ni una absolución.
+
+**No publica absolutamente nada sobre sí mismo**, y su servidor tiende una trampa a
+quien intente comprobarlo.
 
 ---
 
 ## EVIDENCIA ADMISIBLE
 
-### Nivel 1 — Nada
+### Nivel 1 — Quién lo edita, hoy
 
-Ni sociedad, ni NIT, ni propietario, ni director. Su web no tiene página de
-equipo ni de «quiénes somos», y las búsquedas por nombre no devuelven a ninguna
-persona vinculada al medio.
+| Dato | Valor | Fuente |
+|---|---|---|
+| **Sociedad** | **no publicada** | — |
+| **NIT** | **no publicado** | — |
+| **Director / editor** | **no publicado** | — |
+| Marca | «Quindío Noticias® — 2011-2025», con símbolo de marca registrada | pie de su portada |
 
-### Nivel 2 — Conducta medida: NO EXISTE
+### Cierra el hueco que el informe del 9 de agosto dejó anotado
 
-No está ingerido. Su feed —`quindionoticias.com/feed`, hallado por ruta
-convencional y no declarado en el HTML— devolvió artículos de hace menos de una
-hora: **de los más activos de toda la investigación**.
+Aquel informe corrigió el error de dar el Quindío por cubierto con Telecafé, que
+emite desde Manizales —o sea Caldas—, y dejó escrito que **«Quindío sigue sin medio
+suyo»**. Este lo cierra.
 
-Y tiene **más de 527 000 seguidores en Facebook**, que no es evidencia de nada
-para este protocolo —el volumen de audiencia no dice quién manda ni hacia dónde
-tira— pero sí explica por qué no se puede ignorar: es un medio con alcance real
-en el departamento.
+### AVISO DE COMPROBACIÓN: su servidor responde 200 a cualquier ruta
 
----
+`/quienes-somos/`, `/nosotros/`, `/about/`, `/equipo/` y `/aviso-legal/` devuelven
+**los mismos 106 kB de la portada**. Es un catch-all: ninguna de esas páginas
+existe.
 
-## POR QUÉ NO SE PROPONE NÚMERO
+**Quien las pruebe y vea «200» creerá haber mirado sus páginas institucionales.** La
+comprobación del 2026-08-14 tuvo que hacerse comparando tamaños de respuesta.
 
-Regla 3, sin matices: **no hay absolutamente nada de nivel 1.** Un medio con
-medio millón de seguidores del que no se puede saber quién es el dueño es
-justamente el perfil que más importa documentar, y el que menos se puede
-clasificar a ojo.
+Es la misma clase de falso positivo que el feed que responde con cien titulares
+rancios y pasa por bueno — el que obligó a añadir la comprobación de frescura a
+`check:feeds`.
 
----
+### El ® es la única puerta
 
-## EL QUINDÍO TIENE TRES CANDIDATOS Y NINGUNO RESUELTO
+El símbolo del pie **afirma** una marca registrada, lo que implicaría un titular
+identificable ante la Superintendencia de Industria y Comercio.
 
-| Medio | Estado |
-|---|---|
-| **Quindío Noticias** | feed muy activo · **propiedad desconocida** |
-| **La Crónica del Quindío** | WordPress **sin feed** en ninguna de las 23 rutas probadas |
-| **El Quindiano** | WordPress **sin feed** |
-
-**La Crónica del Quindío es el diario tradicional del departamento** y el que
-tendría más sentido catalogar. Que dos de los tres sean WordPress sin feed
-accesible sugiere que lo tienen desactivado a propósito, no que no exista: es
-el mismo caso que Telepacífico y Teleantioquia, y la vía es escribirles.
+No se afirma que el registro exista: se afirma que **el medio dice tenerlo**, y que
+es la vía más prometedora sin recorrer.
 
 ---
 
-## REFUTACIÓN — qué reabriría el expediente
+## POR QUÉ 0,00
 
-1. **Que Quindío Noticias publique su equipo y su sociedad.** Es lo mínimo para
-   que un medio de ese alcance pueda entrar.
-2. **Que La Crónica del Quindío active su feed.** Sería el candidato preferible
-   del departamento y evita depender de un medio anónimo.
-3. **El registro mercantil**, si aparece la razón social por cualquier vía.
+Nada. No hay declaración editorial, ni sección de opinión identificable, ni nombres
+a los que atribuir una línea. **La ausencia es total**, y por eso el número es 0,00
+por Regla 2.
+
+**Se descartó la analogía regional**, por lo mismo que en EL DIARIO de Boyacá y El
+Nuevo Día.
+
+---
+
+## EL FEED
+
+```
+https://quindionoticias.com/feed
+HTTP 200 · 10 ítems · 10 de 10 dentro de la ventana de 72 h
+más reciente 0,3 h · mediana 4,7 h
+```
+
+Sirve las fotos por la CDN de Jetpack (`i0.wp.com`), no desde su dominio: por eso
+lleva `imageHosts` explícito en el registro. Comprobado el 2026-08-14.
+
+---
+
+## LO QUE FALTA
+
+1. **El titular de la marca «Quindío Noticias»** en la Superintendencia de Industria
+   y Comercio. Es la única vía de entrada que su propio sitio sugiere.
+2. **Cualquier nombre propio.** Es, junto con The Archipielago Press, la ficha con
+   menos asideros del catálogo.
+3. **La razón social**, para poder pedir el certificado en la Cámara de Comercio de
+   Armenia.
+
+---
+
+## REFUTACIÓN — qué movería este número
+
+1. **Que el registro de marca dé un titular.** Es el hilo más corto y hoy sin tirar.
+2. **Que aparezca una sección de opinión** o una línea editorial declarada. Sería
+   nivel 3.
+3. **Corpus propio.** Entra hoy; ver `revision-externa/CONDUCTA-MEDIDA.md`.

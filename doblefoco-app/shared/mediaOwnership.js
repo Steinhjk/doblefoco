@@ -2372,6 +2372,76 @@ export const OWNERSHIP_PROFILES = {
     },
 
     /**
+     * AL AIRE NOTICIAS (Arauca) — Y LA CUARTA FICHA QUE CADUCA EN UNA SEMANA.
+     *
+     * La del 2026-08-09 afirmaba que «su web no tiene página de equipo ni de
+     * "quiénes somos"; solo un formulario de contacto», y que no constaba
+     * director ni propietario. Comprobado el 2026-08-14: tiene las dos páginas,
+     * nombra a cuatro personas empezando por su director, y declara de qué vive.
+     *
+     * Es la cuarta vez en seis días —EL DIARIO, Vive el Meta, El Nuevo Día y
+     * esta—. El patrón ya no admite otra lectura: **una ficha de propiedad de
+     * prensa digital regional caduca en días, no en meses.**
+     *
+     * LO QUE SIGUE SIN CONSTAR ES LA PROPIEDAD, y por eso `ownerType: null`.
+     * Miguel Matus figura como «CEO, Director», que es un cargo, no una escritura.
+     * En un medio pequeño lo más probable es que dirija y posea, y «lo más
+     * probable» no es lo que este campo publica.
+     */
+    'al-aire-noticias': {
+        ownerType: null,
+        holdings: [
+            'La sociedad que reserva los derechos es Al Aire Comunicar S.A.S., citada en el pie del sitio como «Al Aire Comunicar | Al Aire Noticias | Todos los derechos reservados».',
+            'Publica equipo con cargos: Miguel Matus (CEO y director), William Wielman (periodista), Andrés Rincón (webmaster y SEO) y Ray Cristancho («Master En Vivo»).',
+            'Cubre los siete municipios del departamento —Arauca, Saravena, Tame, Arauquita, Fortul, Cravo Norte y Puerto Rondón— y mantiene emisiones en vivo además del portal escrito. Tiene canal propio de YouTube.',
+            'DECLARA CÓMO SE FINANCIA, que es raro en el catálogo: pide donaciones directas a sus lectores por Nequi y Daviplata, y dice sostenerse «gracias al apoyo de personas comprometidas».',
+        ],
+        notes: [
+            'SE CONOCE AL DIRECTOR Y NO AL DUEÑO. «CEO» es un cargo que la propia casa se asigna, no un dato registral. En un digital regional pequeño lo habitual es que dirigir y poseer coincidan, y suponerlo sería inventarlo: no consta el accionariado de Al Aire Comunicar S.A.S. ni su NIT.',
+            'EL MODELO DE DONACIONES IMPORTA EN ARAUCA MÁS QUE EN OTROS SITIOS, y por eso se anota. Es departamento de frontera, con presencia de grupos armados y una historia larga de presión sobre periodistas locales. Un medio que no vive de la pauta de la gobernación tiene un perfil de presión distinto del que sí. No se premia ni se castiga con el número: se declara para que el lector lo pese.',
+            'Su declaración de independencia —«sin influencias ni intereses externos»— es evidencia de nivel 4, lo que el medio dice de sí mismo, y el protocolo prohíbe sostener una ficha solo en eso. Aquí no la sostiene: es contexto, no fundamento.',
+            'QUE PIDA DONACIONES NO DICE QUIÉN SE LAS DA, y esa es la pregunta abierta. Es el mismo hueco que en Lente Regional con su «apoyo sin restricciones», con la diferencia de que allí se pedía a empresas y aquí a personas.',
+        ],
+        sources: [
+            'https://alairenoticias.com/al-aire-noticias/',
+            'https://alairenoticias.com/donaciones/',
+            'https://alairenoticias.com/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Su página «¿Quiénes somos?»',
+                resultado: 'Existe —contra lo que decía la ficha del 9 de agosto— y nombra a cuatro personas con cargo, encabezadas por Miguel Matus como CEO y director. Se define como «epicentro del periodismo independiente en Arauca». NO publica razón social completa, NI NIT, NI socios, NI fecha de fundación.',
+                url: 'https://alairenoticias.com/al-aire-noticias/',
+            },
+            {
+                fuente: 'Su página de donaciones',
+                resultado: 'Declara el modelo de financiación: donaciones de lectores por Nequi y Daviplata, y afirma no tener influencias ni intereses externos. NO nombra ninguna entidad legal receptora, NI cuenta bancaria a nombre de nadie, NI donante o patrocinador alguno.',
+                url: 'https://alairenoticias.com/donaciones/',
+            },
+            {
+                fuente: 'Pie del sitio',
+                resultado: 'Cita «Al Aire Comunicar» como titular de los derechos. Es la única mención de la sociedad y va sin NIT y sin domicilio.',
+                url: 'https://alairenoticias.com/',
+            },
+            {
+                fuente: 'Espejos del RUES que sí respondieron con El Pilón, Aguasclaras y Diario del Sur',
+                resultado: 'Al Aire Comunicar S.A.S. no aparece en ninguno (consulta del 2026-08-09, repetida el 2026-08-14). Sin NIT no hay forma de consultar por programa.',
+                url: 'https://www.rues.org.co/',
+            },
+        ],
+        falta: [
+            'El certificado de existencia y representación de Al Aire Comunicar S.A.S. en la Cámara de Comercio de Arauca: NIT, socios, representante legal y estado de la matrícula. Es el décimo certificado pendiente del catálogo.',
+            'Confirmar que la matrícula está activa. Dos de las doce editoras examinadas el 2026-08-09 estaban en liquidación y sus feeds publicaban con normalidad.',
+            'Si Miguel Matus es además socio, y con qué porcentaje.',
+            'SI APARECE CAPITAL LIGADO A POLÍTICA O A CONTRATACIÓN DEPARTAMENTAL EN ARAUCA, se declara antes que cualquier número. Es la advertencia que dejó escrita la ficha del 9 de agosto y sigue vigente.',
+        ],
+    },
+
+    /**
      * PULZO — EL HILO LLEGA A UNA SOCIEDAD Y AHÍ SE PARA (2026-08-11).
      *
      * Es el cuarto medio más consumido del país y su propiedad última es la peor

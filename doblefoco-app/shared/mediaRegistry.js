@@ -1116,6 +1116,37 @@ export const MEDIA_REGISTRY = [
     },
     {
         /**
+         * AL AIRE NOTICIAS (Arauca) — alta del 2026-08-14. ABRE ARAUCA.
+         *
+         * Su ficha del 2026-08-09 lo dejó fuera por la regla vieja —«el nivel 1 es
+         * un nombre de empresa sacado de un pie de página»— y hoy entra por la
+         * regla del 11: la ausencia se declara, no excluye.
+         *
+         * Y LA FICHA HABÍA CADUCADO OTRA VEZ, en cinco días. Decía que «su web no
+         * tiene página de equipo ni de "quiénes somos"; solo un formulario de
+         * contacto». Hoy tiene las dos, con cuatro personas nombradas y un modelo
+         * de financiación declarado. Es el cuarto medio del catálogo cuya ficha se
+         * queda vieja antes de una semana —tras EL DIARIO, El Nuevo Día y Vive el
+         * Meta—: comprobar de campo antes de cada alta ya no es prudencia, es lo
+         * único que funciona.
+         *
+         * SE SOSTIENE CON DONACIONES DE LECTORES, por Nequi y Daviplata, y se
+         * declara «sin influencias ni intereses externos». Que lo diga es nivel 4
+         * y no prueba nada por sí solo, pero el modelo importa: en un departamento
+         * de frontera con presencia armada y contratación departamental, un medio
+         * que NO vive de pauta oficial tiene un perfil de presión distinto. Se
+         * anota como dato, sin premiarlo ni castigarlo con el número.
+         */
+        id: 'al-aire-noticias', name: 'Al Aire Noticias', shortName: 'Al Aire',
+        domain: 'alairenoticias.com', departamento: 'Arauca', country: 'CO', group: 'Regional Arauca',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Digital de Arauca, primero del departamento en el catálogo, con cobertura de los siete municipios. Publica director y equipo, y declara sostenerse con donaciones de lectores; no publica NIT ni socios de su sociedad editora. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio — ver fichas/al-aire-noticias.md.',
+        feed: { url: 'https://alairenoticias.com/feed/', via: 'direct', category: 'Política' },
+        // Sirve las fotos por la CDN de Jetpack, no desde su dominio.
+        imageHosts: ['i0.wp.com'],
+    },
+    {
+        /**
          * PULZO — alta del 2026-08-11, a petición de Jose.
          *
          * ES EL CUARTO MEDIO MÁS CONSUMIDO DEL PAÍS y llevaba ausente del

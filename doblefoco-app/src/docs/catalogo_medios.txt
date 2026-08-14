@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-14
-Medios en el catálogo: 72
+Medios en el catálogo: 73
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  42 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  43 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -290,6 +290,15 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  42 medios
     la de la plantilla sin editar, así que no hay ni un dato propio de
     la casa. Orientación mixta provisional por ausencia de evidencia —
     ver fichas/abra-noticias.md.
+
+  Al Aire Noticias  ·  sesgo +0.00  ·  factualidad sin medir
+    alairenoticias.com · Regional Arauca · CO · RSS propio · PROVISIONAL
+    Digital de Arauca, primero del departamento en el catálogo, con
+    cobertura de los siete municipios. Publica director y equipo, y
+    declara sostenerse con donaciones de lectores; no publica NIT ni
+    socios de su sociedad editora. Orientación mixta provisional por
+    ausencia de evidencia y no por evidencia de equilibrio — ver
+    fichas/al-aire-noticias.md.
 
   Pulzo  ·  sesgo +0.00  ·  factualidad sin medir
     pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL

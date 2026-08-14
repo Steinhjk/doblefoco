@@ -1,6 +1,48 @@
 # Por dónde seguir
 
-## Lo del 14 de agosto
+## Lo del 14 de agosto, por la tarde
+
+### Arauca entra, y Sucre queda cerrado con diagnóstico
+
+Rama **`alta-arauca`**. **28 departamentos con voz propia.** Catálogo **73 medios**.
+En blanco quedan cuatro: Amazonas, Guainía, Vaupés y Sucre.
+
+**Al Aire Noticias (Arauca)** entra en 0,00 con `ownerType: null`. Su ficha del 9 de
+agosto lo dejaba fuera por la regla vieja, y **volvía a estar caducada en cinco
+días**: decía que no tenía página de equipo ni de «quiénes somos», y tiene las dos,
+con cuatro personas y un modelo de financiación declarado —donaciones de lectores
+por Nequi y Daviplata—.
+
+**Es la cuarta ficha que caduca en menos de una semana**, tras EL DIARIO, Vive el
+Meta y El Nuevo Día. El patrón ya no admite otra lectura: **una ficha de propiedad
+de prensa digital regional caduca en días, no en meses.**
+
+Se anota en la ficha que Arauca es departamento de frontera con presencia armada, y
+que un medio sostenido por donaciones tiene un perfil de presión distinto del que
+vive de la pauta de la gobernación. **Se declara, no se premia con el número.**
+
+### Sucre no es un hueco de prensa, es un hueco de RSS
+
+Y esa distinción cambia lo que se puede decir en la vista departamental. **Amazonas,
+Guainía y Vaupés están en blanco porque allí la comunicación es radio.** Sucre está
+en blanco **teniendo al menos cinco medios web**, y ninguno sindica:
+
+- `korraleja.co` — WordPress **con el RSS desactivado** (404 real) y API en 403
+- `sucrenoticias.com` — tiene RSS y **el medio está dormido** desde el 26-07; su
+  API de WordPress lo confirma, así que no es un feed rancio sobre un sitio vivo
+- `marchadigital.com` y `sucrecomunicaciones.com` — sin feed por ninguna ruta
+- `lapiragua.co` — el dominio no resuelve
+- `elmeridiano.co` — responde 200 y no declara feed
+
+**Lo que lo abriría, de menor a mayor coste:** escribir a Korraleja (solo tiene que
+reactivar el RSS de su WordPress: es una casilla), escribir a El Meridiano —que
+desbloquearía Sucre *y* reforzaría Córdoba—, o entrar por `mapeomedios.com`, el
+mapeo de medios de Sucre de la UAJS de Sincelejo, que dice tener 20 medios digitales
+y no los enlaza desde su HTML.
+
+---
+
+## Lo del 14 de agosto, por la mañana
 
 ### Seis departamentos dejan de estar en blanco: de 21 a 27 con voz propia
 

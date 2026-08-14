@@ -100,16 +100,33 @@ vía independiente de la primera comprobación. Confirma el diagnóstico de
 
 ---
 
-## Una fuente que se decidió no usar
+## Una fuente que se decidió no usar — ~~y la razón era falsa~~
 
-**prensaescrita.com** tiene el mejor listado de prensa regional colombiana por
+> **CORREGIDO EL 2026-08-13. LO DE ABAJO ERA FALSO Y COSTÓ CUATRO DÍAS.**
+>
+> **prensaescrita.com nunca nos bloqueó.** El 403 lo causaba nuestro propio
+> User-Agent, que llevaba una tilde —«periodística»— cuando una cabecera HTTP
+> solo admite ASCII. Sin la tilde responde **200**, y su listado colombiano está
+> en `/america/colombia.php`: **145 medios, 109 candidatos nuevos, 73 con feed
+> fresco.** Es la fuente más productiva que ha tenido el proyecto, y se descartó
+> por un bloqueo que no existía.
+>
+> Se conserva el texto original tachado, y no por escrúpulo de archivo: **el
+> razonamiento de abajo sigue siendo correcto**. Lo que falló no fue el
+> principio —no evadir un bloqueo— sino la premisa de que hubiera uno. Borrarlo
+> escondería que el error estuvo en el diagnóstico y no en el criterio.
+>
+> Detalle en `BARRIDO_2026-08-13.md`. Lo mismo le pasó a **El Meridiano**, más
+> abajo en este mismo informe.
+
+~~**prensaescrita.com** tiene el mejor listado de prensa regional colombiana por
 ciudad que se encontró. Devuelve **403 a nuestro bot y 200 a un navegador**: es
-un bloqueo deliberado.
+un bloqueo deliberado.~~
 
-No se saltó. Cambiar el `User-Agent` para evadirlo contradiría lo que el propio
+~~No se saltó. Cambiar el `User-Agent` para evadirlo contradiría lo que el propio
 motor declara —«si nos bloquean, que sepan a quién»— y sería incoherente con lo
 que hacemos cuando nos bloquea un medio, que es escribirle. **Si ese listado
-hace falta, se pide permiso.**
+hace falta, se pide permiso.**~~
 
 ---
 
@@ -153,6 +170,15 @@ se desbloquean y tres se confirman como huecos reales.
 Los dos figuraban como imposibles: Córdoba porque El Meridiano devuelve 403 a
 los bots, y Nariño porque Diario del Sur tiene la editora en liquidación y el
 feed sin fechas. **Ninguno de los dos era el único medio de su departamento.**
+
+> **CORRECCIÓN DEL 2026-08-13: El Meridiano tampoco nos bloqueaba.** Con el
+> User-Agent sin tilde responde **200**. Sigue sin poder ingerirse porque **no
+> declara feed** y ninguna de las 23 rutas convencionales da uno — pero eso es
+> otro problema y tiene otra salida: a un medio sin RSS se le escribe o se le
+> busca otra vía; a uno que te bloquea, no. La frase de arriba hizo dar por
+> perdido lo que solo estaba mal diagnosticado, y de paso sostuvo durante días
+> que **Sucre** —que El Meridiano también cubre— era inalcanzable.
+> Ver `BARRIDO_2026-08-13.md`.
 
 | Departamento | Medio | Feed | Último |
 |---|---|---|---|

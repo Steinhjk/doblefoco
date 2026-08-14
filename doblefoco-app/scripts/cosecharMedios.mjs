@@ -34,6 +34,25 @@
  * existe para el hueco regional. Lo que queda es integrarlo: hay que leer su
  * estructura por ciudad y decidir cómo se cosecha. Es trabajo, no un veto.
  *
+ * CÓMO SE COSECHA, ya averiguado a mano el 2026-08-13:
+ *
+ *   · La ruta es **`/america/colombia.php`** (con `www.`, sin él redirige).
+ *   · Es HTML plano, no hay API. Los medios salen como enlaces absolutos, así
+ *     que basta extraer los `https?://dominio` del cuerpo y quitar el ruido.
+ *   · Rinde **145 dominios**, de los que 109 no estaban en el catálogo y **73
+ *     tienen feed fresco**. Compárese con Wikidata el día 12: 40 vivos de 103.
+ *     Es la fuente más productiva del proyecto y la única buena para lo regional.
+ *
+ * AVISO PARA QUIEN LO INTEGRE, porque ya mordió: al filtrar el ruido —prensa
+ * deportiva y extranjera— hay que **anclar los patrones al dominio completo**.
+ * Un filtro con `as.com` sin anclar se come `sucrenoticias.com`,
+ * `quindionoticias.com` y `araucanoticias.com.co` por la subcadena «as.com», y
+ * esos eran justo los candidatos de los departamentos que faltaban. Un filtro de
+ * ruido mal escrito no falla al azar: se lleva los nombres largos y
+ * descriptivos, que en Colombia son los regionales.
+ *
+ * Resultados completos en `BARRIDO_2026-08-13.md`.
+ *
  * Se conserva el párrafo del error a la vista, y no se borra, porque la lección
  * es la que importa: **cuando un servicio ajeno falla solo con nosotros, el
  * primer sospechoso somos nosotros.** La misma semana pasó con los 502 y 504 de

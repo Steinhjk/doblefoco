@@ -1,5 +1,60 @@
 # Por dónde seguir
 
+## El clasificador: 30 % → 28 % sin tema, y medir mató la solución obvia
+
+**En producción** (`4d2c201`, Vercel + Fly + recategorizado, 71 de 71 feeds OK).
+
+Dos herramientas nuevas de **solo lectura**, que son lo que queda para la próxima
+vez: **`npm run diag:sintema`** y **`npm run medir:termino -- "patron"`**.
+
+**LO PRIMERO QUE DIJO LA MEDIDA: NO HAY QUE BAJAR EL UMBRAL.** Artículos que se
+quedan entre 1 y 1,5 —rozando el rescate— son **cero**. Ni uno. La solución obvia
+no habría ganado un solo artículo. El **66 % puntúa cero absoluto**: falta
+vocabulario, no calibración.
+
+**Infobae era el 38 % de todo el «sin tema», y no por léxico.** Archiva como
+`/{país}/{sección}/{fecha}/{slug}` y `seccionDeLaUrl` devolvía el **primer**
+segmento, o sea el país: 1 460 de sus 2 041 artículos tenían por «sección» un país.
+Ahora se prefiere el primer segmento **que mapea a un tema** — sin listas de países
+y sin caso especial. Deportes de Infobae pasa de 53 a 161.
+
+**Dos términos, medidos antes de meterlos:** `incendio` (+85; solo estaba «incendio
+forestal» y el urbano es la misma categoría por IPTC) y `escombros`, que exige
+preposición — ver abajo.
+
+### El fallo que conviene leer, porque lo tapaba mi propia prueba
+
+`escombros` suelto rendía 70 y coincidía con Desastres en 99 de 123, así que entró
+como débil. Al **trazar qué hacía** apareció que rescataba como desastre «CAR
+impuso medidas preventivas por mala disposición de escombros», que es residuo de
+obra.
+
+**La prueba que lo cubría pasaba por el motivo equivocado:** se comprobaba con
+«Metro de Bogotá: la enorme cantidad de escombros…», y pasaba **no porque el
+término se portara bien, sino porque Infraestructura puntuaba 4,5 y ganaba**. Sin
+competidor fuerte, el falso positivo salía igual.
+
+Con la preposición —`bajo`, `entre`, `rescatado de`— deja de ser ambiguo y pasa a
+fuerte. **Se pierde alcance a propósito.** Una etiqueta falsa afirma algo; una
+ausente solo calla.
+
+### Resultado y lo que queda
+
+```
+sin tema     30,4 %  →  28,4 %
+rescatados   14,6 %  →  14,2 %     (se clasifica más y se fuerza menos)
+Desastres NO se infló: 36 %. Deportes 5 % → 6 %, que es Infobae.
+```
+
+**Lo que la medida deja pendiente y NO se tocó:** `eclipse` rinde **102 artículos**
+y **no hay tema de Ciencia**. Añadir un tema toca tres sitios —`TEMAS`,
+`categories.js` y `CategoryMark.jsx`— y es **decisión de taxonomía, no de léxico**.
+Otros medidos y descartados: `heridos` (+40, pero ya se reparte entre Desastres 45,
+Conflicto 30 y Justicia 21 — meterlo en Desastres archivaría la guerra como
+accidente), `pico y placa` (+19) y `sorteo|lotería` (+9, contenido de servicio).
+
+---
+
 ## Lo del 14 de agosto, por la tarde
 
 ### Arauca entra, y Sucre queda cerrado con diagnóstico

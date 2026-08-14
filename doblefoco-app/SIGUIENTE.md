@@ -1,5 +1,56 @@
 # Por dónde seguir
 
+## Lo del 14 de agosto
+
+### Seis departamentos dejan de estar en blanco: de 21 a 27 con voz propia
+
+Rama **`altas-seis-departamentos`**. Catálogo 66 → **72 medios**, 59 colombianos.
+
+| Departamento | Medio | Frescura |
+|---|---|---|
+| Cundinamarca | Periodismo Público (Soacha) | 0,6 h |
+| Magdalena | Seguimiento.co (Santa Marta) | 0,2 h |
+| Quindío | Quindío Noticias (Armenia) | 0,3 h |
+| Nariño | Abra Noticias | 1,9 h |
+| Casanare | Prensa Libre Casanare (Yopal) | 15,1 h |
+| San Andrés | The Archipielago Press | 30,7 h |
+
+Los seis con 200 y **10 de 10 ítems en ventana**, comprobados de campo sitio por
+sitio. Todos en **0,00 y `ownerType: null`**.
+
+**Que salgan los seis opacos no es que se buscara mal.** La prensa digital
+departamental colombiana no publica quién la posee, y el patrón se repitió idéntico
+en las altas del 9, del 11, del 12 y del 13. **Cuando una ausencia se repite en
+veinte de veinte, deja de ser un hueco de nuestra investigación y pasa a ser un
+hallazgo sobre el sector.**
+
+**Tres cosas que salieron al comprobar:**
+
+- **Quindío Noticias responde 200 a cualquier ruta** devolviendo la portada.
+  `/about/` y `/aviso-legal/` dan los mismos 106 kB y no existen. Quien las pruebe
+  creerá haber mirado sus páginas institucionales. Hubo que comparar tamaños.
+- **Abra Noticias tiene los datos de contacto de la plantilla sin editar** — un
+  teléfono `+202-555-0156` y una dirección en Hagerstown, Maryland. Su contenido es
+  local y real; lo que dice el dato es que **no hay a quién pedirle una
+  rectificación**. Declarado en su ficha.
+- **The Archipielago Press no publica un solo nombre** y entra igual, argumentado:
+  es la única voz web de un departamento insular de 60 000 habitantes. Su pista
+  buena es la **licencia de Radio Archipiélago**, que tiene titular público.
+
+**Quedan cinco departamentos en blanco** y tres son huecos reales —Amazonas, Guainía
+y Vaupés, donde la comunicación es radio—. **Los alcanzables son Sucre y Arauca**, y
+en Arauca el candidato ya existe con ficha: `fichas/al-aire-noticias.md`, pendiente
+de alta, no de búsqueda.
+
+### EL DIARIO de Boyacá volvió solo
+
+Sus servidores de nombres respondían de nuevo el 14 por la mañana. Feed con **10 de
+10 en ventana** y siguió publicando durante la caída, así que era solo el DNS. Fly
+pasó de 62 a **64 feeds OK, cero fallidos**. No hizo falta tocar el catálogo, y
+**Boyacá 7 Días baja de prioridad** porque Boyacá recupera sus dos voces.
+
+---
+
 ## Lo del 13 de agosto, por la tarde
 
 ### El Meridiano nunca nos bloqueó, y prensaescrita da 73 feeds regionales vivos

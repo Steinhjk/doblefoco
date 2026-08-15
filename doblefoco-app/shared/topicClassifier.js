@@ -131,7 +131,13 @@ export const UMBRAL_RESCATE = 1.5;
  * `fuertes`: si aparecen, la pieza trata de esto. Se eligen términos que en
  * español colombiano no significan otra cosa.
  *
- * `debiles`: apuntan al tema pero son ambiguos o genéricos. Suman, no deciden.
+ * `debiles`: apuntan al tema pero son ambiguos o genéricos. Suman, no deciden
+ * —PERO SOLO CUANDO HAY CON QUIÉN COMPETIR, y esa mitad de la frase faltaba
+ * aquí—. Un débil en el titular vale 1,5 y `UMBRAL_RESCATE` es exactamente 1,5,
+ * así que un débil suelto, sin ningún otro tema puntuando, se rescata y decide.
+ * Es por diseño: el rescate existe para eso. Pero al elegir un término débil hay
+ * que leerlo dos veces —¿qué archiva cuando es la ÚNICA señal del titular?—, que
+ * es donde se cayeron `nasa` y `ciencia` en la tanda de 2026-08-14.
  *
  * SOBRE LA AMBIGÜEDAD, que es donde estos ficheros se rompen. El precedente
  * está escrito en contentQuality: un patrón de lotería descartó «obras de
@@ -139,6 +145,20 @@ export const UMBRAL_RESCATE = 1.5;
  * equivalente es «partido» (político o de fútbol), «nacional» (el club o el
  * ámbito), «corte» (el tribunal o el recorte) y «reforma» (la ley o la obra).
  * Todos ellos van como débiles o exigen contexto en el mismo patrón.
+ *
+ * TRES QUE SE MIDIERON PARA CIENCIA Y SE DEJARON FUERA, con el número al lado
+ * para que nadie los vuelva a proponer de memoria:
+ *
+ *   · `cometa` — 0 aciertos y 7 falsos. En Colombia agosto es la temporada de
+ *     volar cometas: festivales en Floridablanca, avisos de riesgo eléctrico de
+ *     CENS, y un ciclista apodado «El Cometa». Es «Huracán» otra vez.
+ *   · `marte` sin frontera se come «mar-tes», que es el 100 % de lo que pillaba:
+ *     sorteos de la Kábala, el S&P 500 y la vuelta a clases.
+ *   · `eclipse` — el que motivaba todo esto, y el que más claro queda fuera. Son
+ *     142 artículos, y **no son de ciencia**: una mujer que se ahoga en un
+ *     embalse tras verlo, las gafas que acaban en vertederos, Björk y los
+ *     skaters, el tráfico de vuelta que preocupa a la DGT, partidos aplazados.
+ *     El eclipse es un SUCESO, como el terremoto, y un suceso no es un tema.
  */
 export const TEMAS = [
     {
@@ -400,9 +420,31 @@ export const TEMAS = [
             /\b(redes? sociales?|tiktok|instagram|whatsapp|facebook|youtube)\b/,
             /\b(datos personales|habeas data|proteccion de datos)\b/,
             /\bred(es)? 5g\b/,
+
+            // CIENCIA. No es un tema aparte: los dos mapas de sección de aquí
+            // abajo archivan `ciencia` en Tecnología desde que existen. Lo que
+            // faltaba era el léxico, y se notaba: la ciencia solo entraba si el
+            // medio había etiquetado la sección, y entraba rescatada con 2,5.
+            // Sin sección se caía entera — «Un telescopio detecta dos agujeros
+            // negros a punto de fusionarse» no tenía una sola señal propia.
+            /\b(astronomi(a|c[oa]s?)|astronaut(a|as)|telescopio)\b/,
+            /\bobservatorio astronomico\b/,
+            /\b(asteroide|meteorito|agujeros? negros?|via lactea|galaxias?)\b/,
+            /\b(estacion|caminata|carrera|sonda) espacial\b/,
         ],
         debiles: [
             /\b(tecnologia|tecnologic[oa]s?|digitalizacion)\b/,
+            // `ciencia`, `cientificos` y `nasa` SE MIDIERON Y NO ENTRAN, ni
+            // siquiera de débiles. Ver la nota sobre el rescate en la cabecera
+            // de `debiles`: aquí un débil solo tampoco es inofensivo.
+            //   · `ciencia` es muletilla de periodismo de servicio —«según la
+            //     ciencia, las vacaciones mejor largas y cortas»—, y de débil se
+            //     rescataba a Tecnología. Sus aciertos ya los recoge Desastres.
+            //   · `nasa` ES TAMBIÉN EL PUEBLO INDÍGENA NASA DEL CAUCA. Hoy no
+            //     aparece ni una vez en el corpus, pero de débil mandaba
+            //     «Comunidad Nasa bloquea la vía Panamericana» a Tecnología, y
+            //     el Cauca entra en portada cuando hay conflicto. Aportaba dos
+            //     artículos exclusivos, los dos del eclipse. No compensa.
             /\b(internet|conectividad|banda ancha|fibra optica)\b/,
             /\b(celular|celulares|smartphone|dispositivo)\b/,
             /\b(startup|plataforma digital|comercio electronico)\b/,

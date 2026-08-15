@@ -209,6 +209,95 @@ describe('términos ambiguos — regresiones de falsos positivos reales', () => 
         expect(temas('Metro de Bogotá: la enorme cantidad de escombros que deja la obra'))
             .not.toContain('desastres');
     });
+
+    /**
+     * UNA COMETA ES UN JUGUETE. Se midió como candidata a ciencia junto a
+     * «asteroide» y «meteorito», y dio CERO aciertos con siete falsos: agosto es
+     * la temporada de volar cometas, con festivales en Floridablanca, avisos de
+     * riesgo eléctrico de CENS y un ciclista apodado «El Cometa». Está fuera de
+     * las dos listas por la misma razón que «Huracán».
+     */
+    it('«cometa» es el juguete de agosto, no el cuerpo celeste', () => {
+        expect(temas('¡Prográmese! Este fin de semana es el festival de cometas en Floridablanca'))
+            .not.toContain('tecnologia');
+        expect(temas('CENS alerta por riesgo eléctrico en uso de cometas'))
+            .not.toContain('tecnologia');
+    });
+
+    /** Y los que no son ambiguos sí entran, que es lo que la cometa costaba. */
+    it('el resto del cielo sí se reconoce', () => {
+        expect(temas('Un telescopio detecta dos agujeros negros a punto de fusionarse'))
+            .toContain('tecnologia');
+        expect(temas('La NASA descubrió un asteroide que se acerca a la Tierra'))
+            .toContain('tecnologia');
+    });
+
+    /**
+     * «MARTE» SIN FRONTERA SE COME «MAR-TES», y eso era el 100 % de lo que
+     * pillaba al medirlo: sorteos de la Kábala, la entrada de Reddit al S&P 500
+     * y la vuelta a clases. El planeta está fuera de la lista; esta prueba fija
+     * que no vuelva sin anclar. Es el mismo fallo que el `as.com` del barrido.
+     */
+    it('el martes no es el planeta', () => {
+        expect(temas('Kábala del martes 11 de agosto: ganadores del último sorteo'))
+            .not.toContain('tecnologia');
+        expect(temas('Próximo martes 18 de agosto reanudan clases en colegios públicos'))
+            .not.toContain('tecnologia');
+    });
+
+    /**
+     * NASA ES TAMBIÉN EL PUEBLO INDÍGENA NASA DEL CAUCA. Hoy no aparece ni una
+     * vez en el corpus —tres semanas, y la medida dio cero—, así que la trampa
+     * no ha mordido todavía: esta prueba existe para el día que muerda.
+     *
+     * Y LA PRIMERA VERSIÓN DE ESTA PRUEBA PASABA POR EL MOTIVO EQUIVOCADO, que
+     * es el mismo fallo que el «escombros» de arriba. Se comprobaba con «Guardia
+     * indígena del pueblo Nasa denunció hostigamiento de disidencias», y pasaba
+     * porque Conflicto puntuaba 6 y ganaba —no porque `nasa` se portara bien—.
+     * El titular de abajo NO TIENE COMPETIDOR: con `nasa` de débil se rescataba
+     * a Tecnología con 1,5, que es justo el umbral. Por eso el término no entró
+     * ni de débil.
+     */
+    it('el pueblo Nasa no es la agencia espacial, ni aunque nada compita', () => {
+        expect(temas('Comunidad Nasa bloquea la vía Panamericana en el norte del Cauca'))
+            .not.toContain('tecnologia');
+        expect(principal('Guardia indígena del pueblo Nasa denunció hostigamiento de disidencias en Cauca'))
+            .toBe('conflicto');
+    });
+
+    /**
+     * Y la muletilla de servicio, por lo mismo: «según la ciencia» encabeza
+     * consejos de salud y de vida cotidiana, y sin competidor se rescataba.
+     */
+    it('«según la ciencia» no es un artículo de ciencia', () => {
+        expect(temas('La ciencia reveló por qué algunas superficies del hogar acumulan polvo más rápido'))
+            .not.toContain('tecnologia');
+    });
+
+    /**
+     * EL ECLIPSE ES UN SUCESO, NO UN TEMA. Es el término que motivó todo este
+     * trabajo —«rinde 102 artículos»— y el que más claro se quedó fuera al
+     * medirlo: de sus 142 artículos, los que no tienen tema no son de ciencia.
+     * Si «eclipse» fuera término, estos tres entrarían en Tecnología.
+     */
+    it('el eclipse no arrastra a Tecnología lo que no es ciencia', () => {
+        expect(temas('Muere una mujer en un embalse de Asturias al darse un baño tras ver el eclipse'))
+            .not.toContain('tecnologia');
+        expect(temas('Millones de gafas para eclipse solar pueden acabar en vertederos'))
+            .not.toContain('tecnologia');
+        expect(temas('De Björk a skaters: los fenómenos virales tras el eclipse total de Sol'))
+            .not.toContain('tecnologia');
+    });
+
+    /** Y donde sí caen es donde el hecho los pone, que ya funcionaba. */
+    it('cada pieza del eclipse cae en lo suyo', () => {
+        expect(principal('Cómo saber si el eclipse ha dañado sus ojos: síntomas de alerta'))
+            .toBe('salud');
+        expect(principal('Un equipo de fútbol de Inglaterra se queda sin partido por el eclipse solar'))
+            .toBe('deportes');
+        expect(principal('La Aemet alerta del riesgo de incendios durante el eclipse'))
+            .toBe('desastres');
+    });
 });
 
 describe('la entradilla suma pero no decide sola', () => {

@@ -2442,6 +2442,84 @@ export const OWNERSHIP_PROFILES = {
     },
 
     /**
+     * CABLENOTICIAS — TODO ESTÁ DOCUMENTADO, Y TODO ES VIEJO (2026-08-14).
+     *
+     * Es el caso contrario al del resto de altas recientes. En los regionales no
+     * hay ni un nombre; aquí hay estructura societaria completa, con accionistas,
+     * junta directiva y parentescos — y la fuente que la trae declara su última
+     * actualización en **marzo de 2018**, ocho años atrás. La compra que la
+     * origina es de **2011**.
+     *
+     * LA REGLA DEL PRESENTE MANDA, POR CUARTA VEZ EN EL CATÁLOGO. Tras Semana, EL
+     * DIARIO y El Nuevo Día, este es otro medio cuya propiedad «se sabe» por
+     * documentos que nadie ha renovado. Con `ownerType` asignado, la interfaz
+     * afirmaría al lector que hoy lo controlan dos empresarios venezolanos, y eso
+     * no consta: consta que lo controlaban. Va como ausencia declarada.
+     *
+     * Y NINGÚN `ownerType` LE SERVÍA IGUAL. `internacional` es «con sede fuera de
+     * Colombia, que cubre el país desde una agenda editorial extranjera», y este
+     * canal tiene redacción en Bogotá, firmas colombianas y agenda colombiana:
+     * los extranjeros son sus dueños, no el medio. Etiquetarlo así lo habría
+     * mandado al mismo saco que el cable extranjero, que es justo lo que este
+     * producto trabaja para no confundir.
+     */
+    cablenoticias: {
+        ownerType: null,
+        holdings: [
+            'La sociedad colombiana es CABLE NOTICIAS TV S.A.S., con sede en Bogotá (Avenida Carrera 28 n.º 36-41) y operación también en Medellín.',
+            'El Media Ownership Monitor de Colombia registra que el canal «pertenece por 100 % a la empresa Cable Noticias TV S.A.S., que está subdividido entre los empresarios venezolanos Alberto Federico Ravell y Tobías Carrero Nácar», y que LA EMPRESA SE ENCUENTRA REGISTRADA EN PANAMÁ.',
+            'Junta directiva según esa misma fuente: Tobías Carrero Nácar (presidente del directorio), Rafael Andrés Carrero (hijo de Carrero) y Jesús Ramírez (yerno de Ravell). Representante registrado: José Raúl Serna Quintero, vicepresidente de Global Media Telecomunicaciones S.A.',
+            'El canal lo fundó en septiembre de 2007 el periodista colombiano Juan Gonzalo Ángel Restrepo, que lo vendió en agosto de 2011 por US$ 17 millones.',
+            'Alberto Federico Ravell fue director de Globovisión (Venezuela) y fundador de La Patilla; su oposición al gobierno de Chávez está documentada en prensa. Tobías Carrero Nácar es empresario del sector asegurador venezolano.',
+        ],
+        notes: [
+            'TODA LA EVIDENCIA ES ANTERIOR A 2018 Y ESO ES LO DETERMINANTE. La ficha del Media Ownership Monitor declara «last change: 2018/03/14» y la operación que describe es de 2011. Ninguna fuente consultada acredita quién controla el canal HOY. Es la regla del presente por cuarta vez —tras Semana, EL DIARIO y El Nuevo Día—, y aquí sirve para NO afirmar una propiedad, igual que en El Nuevo Día sirvió para no afirmar un dueño compartido.',
+            'LA SOCIEDAD ÚLTIMA ESTÁ EN PANAMÁ, y eso cierra el hilo por diseño, no por falta de búsqueda: es una jurisdicción sin registro público de accionistas. Es el mismo muro que en Pulzo, con la diferencia de que allí las fuentes se contradecían y aquí coinciden pero están caducadas.',
+            'QUE SUS DUEÑOS DOCUMENTADOS SEAN EXTRANJEROS NO LO CONVIERTE EN MEDIO INTERNACIONAL, y la distinción importa para no clasificarlo mal: la redacción es colombiana, las firmas son colombianas y la agenda es colombiana. Lo que se declara es la propiedad, no la procedencia del contenido.',
+            'NO SE LE DEDUCE ORIENTACIÓN DE LA BIOGRAFÍA POLÍTICA VENEZOLANA DE SUS DUEÑOS. Ravell fue una figura de la oposición a Chávez; trasladar eso al eje colombiano sería la misma traslación sin justificar que el catálogo tiene pendiente con los trece medios internacionales. Y aun cuando se aceptara, la propiedad documentada tiene ocho años.',
+            'NO DUPLICA A NOTICIAS UNO, que emite en este canal. Comprobado en su RSS del 14-08-2026: agenda propia y firmas con correo corporativo del canal. Alquilar espacio de emisión no comparte redacción.',
+        ],
+        sources: [
+            'https://colombia.mom-gmr.org/es/media/detail/outlet/cable-noticias/',
+            'https://www.portafolio.co/negocios/empresas/canal-cablenoticias-pasa-manos-venezolano-137362',
+            'https://www.semana.com/negocios/articulo/venden-cablenoticias-venezolanos-us17-millones/132837/',
+            'https://www.cablenoticias.tv/rss',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-14',
+        buscadoEn: [
+            {
+                fuente: 'Su propio sitio',
+                resultado: 'NO ES AUDITABLE POR RUTAS: devuelve exactamente 220 175 bytes para cualquier URL, incluidas /politica-de-privacidad, /programacion y una inventada. Es una aplicación de página única que resuelve el contenido en el navegador. El único rastro societario en el bundle es «S.A.S.» suelto y «COPYRIGHT 2021».',
+                url: 'https://www.cablenoticias.tv/',
+            },
+            {
+                fuente: 'Media Ownership Monitor Colombia',
+                resultado: 'Da la estructura completa —accionistas, junta, parentescos, registro en Panamá— y declara su última actualización el 14-03-2018. Es la fuente más sólida y la que hace que esta ficha no pueda cerrarse: describe una situación de hace ocho años.',
+                url: 'https://colombia.mom-gmr.org/es/media/detail/outlet/cable-noticias/',
+            },
+            {
+                fuente: 'Prensa económica colombiana (Portafolio, Semana, El Colombiano, La República)',
+                resultado: 'Cubren la venta de 2011 y el nombramiento de un director del canal. NINGUNA publica cambio de propiedad posterior, y su silencio no es prueba de continuidad.',
+                url: 'https://www.portafolio.co/negocios/empresas/canal-cablenoticias-pasa-manos-venezolano-137362',
+            },
+            {
+                fuente: 'Búsqueda de operaciones societarias 2024-2026',
+                resultado: 'Sin resultados. No consta venta, fusión ni cambio de control en los últimos años; tampoco consta lo contrario.',
+                url: 'https://colombia.mom-gmr.org/es/media/detail/outlet/cable-noticias/',
+            },
+        ],
+        falta: [
+            'El certificado de existencia y representación de CABLE NOTICIAS TV S.A.S. en la Cámara de Comercio de Bogotá: NIT, composición accionaria actual, representante legal y estado de la matrícula. Es el undécimo certificado pendiente del catálogo, y aquí es el ÚNICO documento que puede cerrar la ficha, porque la vía societaria termina en Panamá.',
+            'Confirmar si la matrícula sigue activa. Dos de las doce editoras examinadas el 2026-08-09 estaban en liquidación y sus feeds publicaban con normalidad.',
+            'Si Ravell y Carrero Nácar siguen siendo los accionistas en 2026, y en qué proporción.',
+            'La ficha del canal ante el MinTIC como operador de televisión por suscripción, que sí tiene titular público. Es la pista que funcionó con The Archipielago Press y su licencia de Radio Archipiélago.',
+        ],
+    },
+
+    /**
      * PULZO — EL HILO LLEGA A UNA SOCIEDAD Y AHÍ SE PARA (2026-08-11).
      *
      * Es el cuarto medio más consumido del país y su propiedad última es la peor

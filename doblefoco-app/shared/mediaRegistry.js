@@ -1147,6 +1147,49 @@ export const MEDIA_REGISTRY = [
     },
     {
         /**
+         * CABLENOTICIAS — alta del 2026-08-14, autorizada por Jose.
+         *
+         * DOS TRAMPAS EN LA URL, Y LAS DOS CALLAN CUANDO FALLAN.
+         *
+         * 1. ES `/rss`, NO `/feed/`. Las dos responden 200 y `/feed/` devuelve
+         *    CERO ítems —sirve el bundle de la SPA, 220 175 bytes—. Quien
+         *    «corrija» esto a la forma habitual de WordPress deja al medio sin
+         *    entrar y sin error.
+         * 2. ES `.com`, NO `.tv`. El canal usa los dos dominios: `.tv` sirve el
+         *    feed igual, pero **los artículos y las imágenes viven todos en
+         *    `cablenoticias.com`**. Se dio de alta primero con `.tv` y
+         *    `check:feeds` lo cazó —«los enlaces apuntan a cablenoticias.com»—;
+         *    con el dominio cruzado, la resolución del medio y la CSP de
+         *    imágenes habrían fallado las dos.
+         *
+         * LO QUE DESBLOQUEÓ EL ALTA, porque llevaba anotado desde el barrido del
+         * 12 de agosto como «decisión de producto»: la duda era si duplicaba a
+         * Noticias Uno, que emite en este canal y aporta cero artículos. NO lo
+         * duplica. Tiene agenda propia —la mina de Cucunubá, los créditos exprés
+         * del Valle, el colegio de Cajicá— y firmas de casa con correo
+         * corporativo (`jeyson.calderon@`, `miguel.rodriguez@`). Que un noticiero
+         * alquile espacio de emisión no hace que los artículos sean los mismos.
+         * Y no arregla lo de Noticias Uno, que es otro problema: ese publica en
+         * ráfagas de fin de semana, y está explicado en su propia entrada.
+         *
+         * SU WEB NO SE PUEDE AUDITAR POR RUTAS. Devuelve exactamente 220 175
+         * bytes para cualquier ruta —`/politica-de-privacidad`, `/programacion` y
+         * una inventada dan el mismo tamaño—: es una aplicación de página única.
+         * Quien pruebe sus páginas institucionales con `curl` verá 200 en todas y
+         * creerá haberlas leído. Es el caso de Quindío Noticias, y aquí se detecta
+         * al instante porque los tamaños son idénticos.
+         *
+         * ENTRA EN 0,00 CON PROPIEDAD DECLARADA-AUSENTE, y no porque no se sepa
+         * nada: se sabe bastante, y todo es viejo. Ver `mediaOwnership.js`.
+         */
+        id: 'cablenoticias', name: 'Cablenoticias', shortName: 'Cablenoticias',
+        domain: 'cablenoticias.com', country: 'CO', group: 'Cable Noticias TV',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Canal de noticias por suscripción con redacción propia en Bogotá y agenda nacional. Su sociedad, Cable Noticias TV S.A.S., pertenece a una empresa registrada en Panamá, y los accionistas documentados —venezolanos— constan en una fuente cuya última actualización es de 2018; ninguna fuente acredita quién lo controla hoy. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio — ver fichas/cablenoticias.md.',
+        feed: { url: 'https://www.cablenoticias.com/rss', via: 'direct', category: 'Política' },
+    },
+    {
+        /**
          * PULZO — alta del 2026-08-11, a petición de Jose.
          *
          * ES EL CUARTO MEDIO MÁS CONSUMIDO DEL PAÍS y llevaba ausente del

@@ -4,9 +4,10 @@
 |---|---|
 | **Valor propuesto** | **0,00** — orientación mixta por Regla 2 |
 | **Firma** | ☐ sin firmar |
-| **Fecha** | 2026-08-14 (candidatura; **no es un alta**) |
+| **Fecha** | 2026-08-14 (**alta**, autorizada por Jose) |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Ámbito** | Nacional (canal de televisión por suscripción, Bogotá) |
+| **Feed** | `cablenoticias.com/rss` — 50 ítems, **15 de 15 en ventana**, 15 con imagen, mediana 7,9 h |
 
 ---
 
@@ -40,11 +41,51 @@ medios**, pendiente de que Jose la confirme.
 
 | Dato | Valor | Fuente |
 |---|---|---|
-| Sociedad editora | **no obtenible por HTTP** | consultado 2026-08-14 |
+| Sociedad | **CABLE NOTICIAS TV S.A.S.**, Bogotá (Av. Cra. 28 n.º 36-41) | MOM Colombia |
+| **Sociedad última** | **Registrada en PANAMÁ** | MOM Colombia |
+| Accionistas **documentados en 2018** | **Alberto Federico Ravell** y **Tobías Carrero Nácar**, venezolanos, al 100 % entre los dos | MOM Colombia |
+| Junta directiva (2018) | Tobías Carrero Nácar (presidente), Rafael Andrés Carrero (su hijo), Jesús Ramírez (yerno de Ravell) | ídem |
+| Representante registrado | José Raúl Serna Quintero, VP de Global Media Telecomunicaciones S.A. | ídem |
+| Fundación y venta | Fundado en 2007 por **Juan Gonzalo Ángel Restrepo**, vendido en **agosto de 2011** por **US$ 17 millones** | Portafolio, Semana |
 | **NIT** | **no publicado** | — |
-| **Socios** | **no publicados** | — |
-| Redacción | Al menos dos periodistas con correo corporativo nombrados en el feed | su RSS |
-| Único rastro societario | «S.A.S.» suelto y «COPYRIGHT 2021» en el bundle | portada |
+| **Quién lo controla HOY** | **no consta** | — |
+
+### Aquí todo está documentado, y todo es viejo
+
+Es el caso contrario al de las demás altas recientes. En los regionales no aparece
+ni un nombre; aquí hay estructura societaria completa —accionistas, junta,
+parentescos— y **la fuente que la trae declara su última actualización el
+14-03-2018**. La operación que la origina es de **2011**.
+
+**Por eso entra con `ownerType: null` y no con un tipo asignado.** Con un tipo, la
+interfaz le afirmaría al lector que hoy lo controlan dos empresarios venezolanos, y
+eso no consta: consta que lo controlaban. Es **la regla del presente por cuarta vez**
+—tras Semana, EL DIARIO y El Nuevo Día— y la segunda que sirve para *no* afirmar
+algo en vez de para quitarlo.
+
+**Y la sociedad última está en Panamá**, jurisdicción sin registro público de
+accionistas: el hilo se corta por diseño, no por falta de búsqueda. Es el muro de
+Pulzo, con la diferencia de que allí las fuentes se contradecían y aquí coinciden
+pero están caducadas.
+
+### Lo que NO se hace con esto, y conviene dejarlo escrito
+
+**No se le deduce orientación de la biografía política venezolana de sus dueños.**
+Ravell fue director de Globovisión y fundador de La Patilla, con oposición
+documentada a Chávez. Trasladar eso al eje colombiano sería la misma traslación sin
+justificar que el catálogo tiene pendiente con sus trece medios internacionales — y
+además sobre una propiedad de hace ocho años.
+
+**Y no es un «medio internacional».** Ese `ownerType` significa sede fuera de
+Colombia y agenda editorial extranjera; este canal tiene redacción en Bogotá, firmas
+colombianas y agenda colombiana. Los extranjeros son los dueños, no el medio.
+Etiquetarlo así lo habría echado al mismo saco que el cable extranjero.
+
+### Redacción propia
+
+Al menos dos periodistas con correo corporativo firman en el feed
+(`jeyson.calderon@cablenoticias.tv`, `miguel.rodriguez@cablenoticias.tv`), más
+colaboradores externos.
 
 ### Su web no se puede auditar por rutas, y hay que decirlo
 
@@ -60,12 +101,26 @@ páginas haría falta ejecutar JavaScript, que es fuera del alcance de este trab
 
 ---
 
-## LO QUE FALTA PARA QUE ESTO SEA UN ALTA
+## LAS DOS TRAMPAS DE LA URL, PORQUE LAS DOS CALLAN CUANDO FALLAN
 
-1. **Confirmación de Jose** de que Cablenoticias y Noticias Uno son dos medios.
-2. Propiedad: sin web auditable, la vía es el registro —**Cámara de Comercio de
-   Bogotá**— o la ficha del canal ante la ANTV/MinTIC, que en televisión por
-   suscripción sí tiene titular público (la pista que funcionó con The Archipielago
-   Press y su licencia de Radio Archipiélago).
-3. Decisión sobre el valor. Con cero corpus, **0,00 por Regla 2**.
-4. `feedUrl` (`/rss`, **no `/feed/`**, que devuelve 0 ítems), `mediaRegistry`, CSP.
+1. **Es `/rss`, no `/feed/`.** Las dos responden 200 y `/feed/` devuelve **cero
+   ítems**: sirve el bundle de la SPA. Quien lo «corrija» a la forma habitual de
+   WordPress deja al medio sin entrar y sin error.
+2. **Es `cablenoticias.com`, no `.tv`.** El canal usa los dos dominios y el `.tv`
+   sirve el feed igual, pero **los artículos y las 50 imágenes viven en el `.com`**.
+   Se dio de alta primero con `.tv` y **lo cazó `check:feeds`**: «los enlaces
+   apuntan a cablenoticias.com». Con el dominio cruzado habrían fallado a la vez la
+   resolución del medio y la CSP de imágenes.
+
+## LO QUE QUEDA ABIERTO
+
+1. **Certificado de la Cámara de Comercio de Bogotá** para CABLE NOTICIAS TV
+   S.A.S.: NIT, composición accionaria actual y estado de la matrícula. Es el
+   **undécimo certificado pendiente** del catálogo y aquí es el *único* documento
+   que puede cerrar la ficha, porque la vía societaria termina en Panamá.
+2. **La ficha del canal ante el MinTIC** como operador de televisión por
+   suscripción, que sí tiene titular público. Es la pista que funcionó con The
+   Archipielago Press y su licencia de Radio Archipiélago.
+3. **El valor de sesgo**, cuando haya corpus propio. Hoy entra en 0,00 por Regla 2.
+4. **Noticias Uno sigue aportando cero**, y esta alta no lo arregla: eran dos
+   problemas juntados en una frase del barrido.

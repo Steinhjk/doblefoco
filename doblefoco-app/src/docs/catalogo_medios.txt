@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-14
-Medios en el catálogo: 73
+Generado: 2026-08-15
+Medios en el catálogo: 74
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -93,7 +93,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  43 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  44 medios
 ----------------------------------------------------------------------
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
@@ -299,6 +299,16 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  43 medios
     socios de su sociedad editora. Orientación mixta provisional por
     ausencia de evidencia y no por evidencia de equilibrio — ver
     fichas/al-aire-noticias.md.
+
+  Cablenoticias  ·  sesgo +0.00  ·  factualidad sin medir
+    cablenoticias.com · Cable Noticias TV · CO · RSS propio · PROVISIONAL
+    Canal de noticias por suscripción con redacción propia en Bogotá y
+    agenda nacional. Su sociedad, Cable Noticias TV S.A.S., pertenece
+    a una empresa registrada en Panamá, y los accionistas documentados
+    —venezolanos— constan en una fuente cuya última actualización es
+    de 2018; ninguna fuente acredita quién lo controla hoy.
+    Orientación mixta provisional por ausencia de evidencia y no por
+    evidencia de equilibrio — ver fichas/cablenoticias.md.
 
   Pulzo  ·  sesgo +0.00  ·  factualidad sin medir
     pulzo.com · INQLAB S.A.S. · CO · RSS propio · PROVISIONAL

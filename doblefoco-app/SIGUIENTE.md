@@ -1,5 +1,95 @@
 # Por dónde seguir
 
+## Lo operativo del 14, por la noche: Sucre cerrado, W Radio sin vía, tres fichas
+
+Rama **`operativo-14-agosto`**. **Ningún alta**: las tres candidatas quedan con
+ficha escrita y comprobada de campo, que es lo que las bloqueaba.
+
+### Sucre se cierra, y la vía que esta nota proponía NO sirve
+
+Las cuatro vías, agotadas y comprobadas el 14 por la noche:
+
+| Vía | Resultado |
+|---|---|
+| `korraleja.co` | `/feed/` **404 real** siguiendo la redirección a `www` |
+| `sucrenoticias.com` | Feed sano con 10 ítems, pero **el medio sigue dormido**: última pieza del **26-07**, hace 19 días. El diagnóstico del 14 por la mañana se sostiene entero |
+| `elmeridiano.co` | 308 → **404**. Sigue sin declarar feed |
+| **`mapeomedios.com`** | **No sirve como fuente, y esto es lo nuevo** |
+
+**`mapeomedios.com` sí enlaza medios —en `/mapa`, no en la portada—**, así que la
+nota anterior se equivocaba al decir que «no los enlaza desde su HTML»: se miró el
+sitio equivocado. Lista **25 dominios de Sucre**. Pero los dominios **no están
+verificados**, y de los 16 no-radiales que probé:
+
+- **12 no resuelven** (`ovejasdigital`, `sampuesnoticias`, `majagualhoy`,
+  `lospalmitoshoy`… nombres construidos a partir del municipio).
+- **`buenavistanoticias.com` es una radio de San Luis Potosí, MÉXICO** —
+  «BuenaVista Radio XHSCBY»—, con titulares sobre la FENAPO, Matehuala y el
+  gobernador Gallardo. Buenavista también es municipio mexicano. **Casi lo doy por
+  voz de Sucre**: tiene feed y publicó ayer.
+- **`sucredigital.com` devuelve 43 815 bytes exactos para cualquier ruta**,
+  incluida una inventada, y sus fechas son de 2021-2022 (algunas ni válidas:
+  «2022-10-32»). Landing muerta.
+- `toludigital.com` y `costatv.com`: feed sin ítems.
+
+**Sucre solo se abre escribiendo a alguien** —Korraleja, que solo tiene que
+reactivar una casilla de WordPress, o El Meridiano—. No hay vía técnica.
+
+### W Radio: no hay salida técnica, y Google News no es la muleta que parecía
+
+**Ni por Arc ni por Google News.** Su RSS de Arc responde 200 con `lastBuildDate`
+de hoy y **cero `<item>`**; probadas `/category/actualidad/` y `news-sitemap`,
+las tres vacías. Por la ruta idéntica, **Caracol Radio funciona**.
+
+**Y Google News tampoco:** devuelve 100 ítems de los que **41 son de 2025, 14 de
+2021, 7 de 2019 y uno de 2012**. Solo 16 de 2026. Es archivo ordenado por
+relevancia, no un feed.
+
+> **EL HALLAZGO, Y REFINA LA REGLA QUE TENÍAMOS.** No es que Google News esté
+> roto: **La FM va por esa vía y está sana** —100 ítems, todos de 2026, 12 de 15 en
+> ventana—. La diferencia es el volumen del medio: con uno que publica mucho, las
+> 100 piezas «más relevantes» son todas recientes; con uno que publica poco, Google
+> rellena con archivo. **La muleta de Google News solo funciona para los medios que
+> menos la necesitan.** Antes de ponérsela a alguien, mirar el reparto por años.
+
+Queda escribirle. **No se mutea**: sigue en el catálogo aportando cero.
+
+### Tres fichas nuevas, y las tres con el feed comprobado hoy
+
+| Candidato | Feed | Propiedad |
+|---|---|---|
+| `fichas/la-nacion-neiva.md` | 10 ítems, 23:06 de hoy | **COMUNICACIONES OLAVE S.A.S.**, con tres cargos nombrados |
+| `fichas/diario-la-libertad.md` | **50 ítems**, 02:18 UTC | Nada. Ni una persona en todo el sitio |
+| `fichas/cablenoticias.md` | 50 ítems, 23:29 de hoy (por `/rss`, **no** `/feed/`) | Nada por HTTP: es una SPA |
+
+**La Nación (Neiva) es la única que declara editora**, y aun así no cierra: el
+apellido Olave está en la sociedad y en el presidente del consejo editorial, y eso
+**no es el accionariado**. Es el caso de Vive el Meta otra vez. Y **no se le pone
++0,20 por analogía con los otros diarios regionales**: eso sería el octavo caso del
+razonamiento circular que el catálogo tiene anotado desde el 12 y sin resolver.
+
+**Cablenoticias: la decisión de producto queda resuelta a falta de tu visto bueno.**
+No duplica a Noticias Uno — tiene agenda propia y firmas con correo corporativo
+(`jeyson.calderon@`, `miguel.rodriguez@`). Que Noticias Uno emita en ese canal no
+hace que los artículos sean los mismos. Lo que **no** arregla es que Noticias Uno
+siga aportando cero: eran dos problemas juntados en una frase.
+
+### Una trampa nueva, que afina la de Quindío Noticias
+
+En Diario La Libertad, `/nosotros`, `/equipo` y `/contacto` dan 200 con **tres
+tamaños distintos** —127 kB, 153 kB, 75 kB—, y los di por páginas institucionales
+reales. No lo son: `/nosotros` es un artículo de **2020 sobre un jugador del
+Junior** («*Nosotros* como cualquier trabajador colombiano…») y `/equipo` uno de
+**2023 sobre el equipo anticontrabando** del Magdalena. El slug coincide con una
+palabra del titular.
+
+**Quindío Noticias se detectó comparando tamaños. Aquí los tamaños son distintos y
+tampoco son las páginas que se piden.** La regla corregida: *tamaños distintos
+prueban que no es la misma página, no que sea la que pediste.* Hay que leer el
+contenido.
+
+---
+
 ## Ciencia: el léxico entró, el tema no, y el eclipse era un suceso
 
 **En producción** (`d70aefb`, Vercel + Fly + recategorizado). 503 pruebas, lint y

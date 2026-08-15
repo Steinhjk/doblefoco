@@ -1,5 +1,79 @@
 # Por dónde seguir
 
+## Ciencia: el léxico entró, el tema no, y el eclipse era un suceso
+
+**En producción** (`d70aefb`, Vercel + Fly + recategorizado). 503 pruebas, lint y
+typecheck limpios. Rama `tema-ciencia`, fusionada.
+
+**El número que motivaba la tarea no se sostuvo.** Esta nota decía que `eclipse`
+rinde 102 artículos y que faltaba un tema de Ciencia. La cuenta era cierta; el
+argumento, no. Trazados los **142 artículos** con eclipse en el titular, los que
+se quedan sin tema **no son de ciencia**: una mujer que se ahoga en un embalse
+tras verlo, las gafas que acaban en vertederos, Björk y los skaters, el tráfico
+de vuelta que preocupa a la DGT, partidos aplazados. **El eclipse es un suceso,
+como el terremoto.**
+
+**La ciencia real son ~12 artículos en 9 158**, y su destino ya estaba decidido
+en el código: los dos mapas de sección archivan `ciencia → tecnologia` desde que
+existen. Faltaba léxico, y se notaba —la ciencia solo entraba si el medio había
+etiquetado la sección, y entraba rescatada con 2,5—. **Decisión de Jose: no se
+crea el tema.** Ver `DECISIONES.md` del 2026-08-14.
+
+Entran de fuertes `astronomia`, `astronauta`, `telescopio`, `observatorio
+astronomico`, `asteroide`, `meteorito`, `agujero negro`, `via lactea`, `galaxia`
+y las cuatro formas de `espacial`. Descartados con prueba: **`cometa`** (0
+aciertos, 7 falsos: agosto es temporada de volar cometas, y hay un ciclista
+apodado El Cometa), **`marte`** sin frontera (se come «mar-**tes**») y `eclipse`.
+
+`sin tema 29,1 % → 29,0 %`. Minúsculo, y eso *es* el resultado.
+
+### Lo que hay que leer de aquí, porque vale para TODO el léxico
+
+**Un término débil suelto SÍ decide, y la doc de este fichero decía lo
+contrario.** Describía los débiles como «suman, no deciden». Falta media frase:
+un débil en titular vale **1,5** y `UMBRAL_RESCATE` es **1,5**, así que un débil
+sin competidor se rescata y decide solo.
+
+Costó dos términos. `nasa` y `ciencia` entraron primero como débiles fiándome de
+esa frase, y con ellos dentro «Comunidad Nasa bloquea la vía Panamericana» se
+clasificaba como Tecnología —**NASA es también el pueblo indígena Nasa del
+Cauca**— y «según la ciencia, las vacaciones mejor largas» también. Fuera los
+dos; la frase, corregida donde induce el error.
+
+**Y mi prueba del pueblo Nasa pasaba por el motivo equivocado**, igual que la de
+`escombros` la sesión anterior: la comprobaba con un titular que llevaba
+«disidencias» y «hostigamiento», así que ganaba Conflicto con 6 y el término
+nunca se examinaba. **Un término se prueba con un titular SIN competidor**, o la
+prueba no prueba nada.
+
+### Un falso positivo que se dejó a propósito
+
+«Así capturó un satélite el eclipse solar» cae en **Justicia**, porque
+`captur[aoó]` acierta 23 de 38 y los 4 que ganaría son capturas policiales
+reales. Complicar un término que funciona por 1 caso en 9 158 sale más caro que
+el caso. Anotado, no arreglado.
+
+### Estado de los feeds, y un diagnóstico falso que casi se escribe
+
+**67 de 71 feeds.** Cuatro son medios lentos que el propio script da por no-fallo
+—CasaMacondo, Noticias Uno, Telecafé y La Patria, todos «responden pero nada
+entra en la ventana»—.
+
+**Seguimiento.co dio 0 ítems en la primera pasada y está perfectamente.** A la
+segunda: 10 de 10 en ventana, mediana 6 h. El 0 era el **arranque en frío** del
+sitio, que tardó 4 s; en repeticiones responde en 0,13 s. Habría sido el quinto
+diagnóstico falso de la semana. **Un feed a cero se repite antes de anotarlo.**
+
+**W Radio sí está mudo, y es fallo suyo.** Su RSS de Arc responde 200 con
+`lastBuildDate` de hoy y **cero `<item>`** — 754 bytes de canal vacío. Probadas
+las variantes de Arc (`/category/actualidad/`, `news-sitemap`) y las rutas
+clásicas: las tres de Arc vacías, las otras 404. **Caracol Radio usa la ruta
+idéntica y funciona**, así que es la configuración de W Radio, no la nuestra.
+Pendiente de decidir: se le escribe, o se le pone Google News como a La FM
+—sabiendo que rinde 8 veces menos—. **No se mutea.**
+
+---
+
 ## El clasificador: 30 % → 28 % sin tema, y medir mató la solución obvia
 
 **En producción** (`4d2c201`, Vercel + Fly + recategorizado, 71 de 71 feeds OK).

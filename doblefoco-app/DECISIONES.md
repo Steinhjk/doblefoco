@@ -17,6 +17,62 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-14 · Ciencia no es un tema: es léxico dentro de Tecnología
+
+**No se crea un tema de Ciencia.** Decisión de Jose, con la medida delante.
+
+**Lo que motivaba crearlo era un número engañoso.** La sesión anterior dejó
+anotado que «`eclipse` rinde 102 artículos y no hay tema de Ciencia». La cuenta
+era cierta; el argumento, no. Trazados los **142 artículos** con eclipse en el
+titular, los que se quedan sin tema **no son de ciencia**: una mujer que se ahoga
+en un embalse tras verlo, las gafas que acaban en vertederos, Björk y los
+skaters, el tráfico de vuelta que preocupa a la DGT, partidos aplazados.
+**El eclipse es un suceso, como el terremoto, y un suceso no es un tema.**
+
+**La ciencia real son ~12 artículos en 9 158** (0,13 %). Con tema propio sería el
+más pequeño del catálogo por un orden de magnitud, y quedaría casi vacío en
+cuanto el eclipse envejeciera. Es el mismo criterio con el que no se separó la
+meteorología de Desastres: copiar una división sin el contenido que la justifica
+deja una sección vacía.
+
+**Y el destino ya estaba decidido en el código**: `SECCION_URL_A_TEMA` y
+`CATEGORIA_MEDIO_A_TEMA` archivan `ciencia → tecnologia` desde que existen. Lo
+que faltaba era léxico, y la falta se notaba: la ciencia solo entraba si el medio
+había etiquetado la sección, y entraba **rescatada** con 2,5. Sin sección se caía
+entera —«Un telescopio detecta dos agujeros negros» no tenía una sola señal
+propia—.
+
+**Qué se descartó, medido** (ver `shared/topicClassifier.js` y sus pruebas):
+`cometa` —0 aciertos y 7 falsos, porque agosto es temporada de volar cometas—,
+`marte` sin frontera —se come «mar-tes»— y `eclipse`.
+
+**Se reabre** si el corpus crece y la ciencia con él. La medida se rehace con
+`npm run medir:termino`; no hace falta discutirlo de memoria.
+
+---
+
+## 2026-08-14 · Un término débil suelto SÍ decide, y la doc decía lo contrario
+
+Hallazgo del trabajo anterior, anotado aparte porque **vale para todo el léxico**.
+
+La cabecera de `TEMAS` describía los débiles como «suman, no deciden». Le faltaba
+media frase: **un débil en el titular vale 1,5 y `UMBRAL_RESCATE` es exactamente
+1,5**, así que un débil suelto, cuando ningún otro tema puntúa, se rescata y
+decide solo. Es por diseño —el rescate existe para eso—, pero invalida el
+criterio con el que se venían eligiendo términos débiles.
+
+**Lo destapó costar dos términos.** `nasa` y `ciencia` entraron primero como
+débiles fiándose de esa frase. Con ellos dentro, «Comunidad Nasa bloquea la vía
+Panamericana en el norte del Cauca» se clasificaba como Tecnología —**NASA es
+también el pueblo indígena Nasa del Cauca**— y «según la ciencia, las vacaciones
+mejor largas y cortas» también. Los dos quedaron fuera.
+
+**Al elegir un término débil hay que preguntarse qué archiva cuando es la ÚNICA
+señal del titular**, no solo si es ambiguo. La frase está corregida en el
+fichero, donde induce el error.
+
+---
+
 ## 2026-08-13 · Un dueño histórico documentado no basta para marcar dueño compartido
 
 **Al dar de alta El Nuevo Día (Ibagué) NO se le asigna `controlGroup: 'galvis'`**,

@@ -1,5 +1,58 @@
 # Por dónde seguir
 
+## Alta de Cablenoticias — EN PRODUCCIÓN
+
+**Autorizada por Jose.** Catálogo **73 → 74 medios**. Investigación de campo del
+14-08; alta desplegada el 16-08 con el orden de siempre: `main` (Vercel) →
+`npm run deploy` (Fly) → recategorizar. **Comprobado en base: 31 artículos suyos
+ingeridos**, presente en `sources`, que ya va por 74.
+
+Feed: **50 ítems, 15 de 15 en ventana, 15 con imagen, mediana 7,9 h.** Es de los
+mejores del catálogo.
+
+**Lo que desbloqueó el alta** —anotado desde el barrido del 12 como «decisión de
+producto»— era si duplicaba a Noticias Uno, que emite en este canal y aporta cero.
+**No lo duplica**: agenda propia y firmas de casa con correo corporativo. Alquilar
+espacio de emisión no comparte redacción. Y **no arregla lo de Noticias Uno**, que
+publica en ráfagas de fin de semana: eran dos problemas juntados en una frase.
+
+### Entra con `ownerType: null`, y no porque no se sepa nada
+
+Es el caso **contrario** al de los regionales. Ahí no aparece ni un nombre; aquí hay
+estructura societaria completa —**CABLE NOTICIAS TV S.A.S.**, al 100 % entre
+**Alberto Federico Ravell** y **Tobías Carrero Nácar**, junta con el hijo de uno y
+el yerno del otro, **sociedad última registrada en PANAMÁ**— y **la fuente que la
+trae declara su última actualización el 14-03-2018**. La compra es de 2011.
+
+**Ninguna fuente acredita quién lo controla hoy.** Es la regla del presente por
+cuarta vez —tras Semana, EL DIARIO y El Nuevo Día— y la segunda que sirve para *no*
+afirmar algo. Con un `ownerType` asignado, la interfaz le diría al lector que hoy lo
+controlan dos venezolanos, y eso no consta: consta que lo controlaban.
+
+**Y ningún `ownerType` le servía.** `internacional` significa sede fuera de Colombia
+con agenda extranjera, y este canal tiene redacción en Bogotá, firmas colombianas y
+agenda colombiana: **los extranjeros son los dueños, no el medio**. Etiquetarlo así
+lo habría echado al saco del cable extranjero, que es justo lo que este producto
+trabaja para no confundir. Tampoco se le deduce orientación de la biografía política
+venezolana de sus dueños: sería la traslación sin justificar que el catálogo tiene
+pendiente con los trece internacionales, y encima sobre datos de hace ocho años.
+
+### Dos trampas en la URL, y las dos callan cuando fallan
+
+1. **Es `/rss`, no `/feed/`** — que responde 200 con **cero ítems**, sirviendo el
+   bundle de la SPA.
+2. **Es `cablenoticias.com`, no `.tv`.** Los artículos y las 50 imágenes viven en el
+   `.com`. **Lo di de alta con `.tv` y lo cazó `check:feeds`**: «los enlaces apuntan
+   a cablenoticias.com». Con el dominio cruzado habrían fallado a la vez la
+   resolución del medio y la CSP de imágenes.
+
+**Queda abierto:** el certificado de la Cámara de Comercio de Bogotá —**undécimo
+pendiente**, y aquí el *único* documento que cierra la ficha, porque la vía
+societaria termina en Panamá— y la ficha del canal ante el MinTIC, que en televisión
+por suscripción sí tiene titular público.
+
+---
+
 ## Lo operativo del 14, por la noche: Sucre cerrado, W Radio sin vía, tres fichas
 
 Rama **`operativo-14-agosto`**. **Ningún alta**: las tres candidatas quedan con

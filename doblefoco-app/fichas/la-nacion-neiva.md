@@ -4,9 +4,10 @@
 |---|---|
 | **Valor propuesto** | **0,00** — orientación mixta por Regla 2 |
 | **Firma** | ☐ sin firmar |
-| **Fecha** | 2026-08-14 (candidatura; **no es un alta**) |
+| **Fecha** | 2026-08-16 (**alta**, autorizada por Jose) · campo del 14 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Departamento** | Huila — donde ya está Diario del Huila, así que **no desbloquea departamento**: añade una segunda voz |
+| **Feed** | `lanacion.com.co/feed/` — 10 ítems, **10 de 10 en ventana**, 10 con imagen, mediana 16,2 h |
 
 > **Lee «0,00» como «no sabemos», no como «equilibrado».** Es la Regla 2.
 
@@ -38,6 +39,23 @@ solo el código 200 creerá haber leído la página de la casa. La propiedad est
 | Editor General | **Jesús Antonio Rojas Serrano** | ídem |
 | Sede | Neiva, Huila, Calle 11 # 5-82 | ídem |
 | Modelo | Suscripción de pago: digital $150 000/año, impresa $350 000/año | su página de suscripciones |
+
+### CAMBIÓ DE MANOS EN 2024, y lo cuenta sobre todo él mismo
+
+**El empresario huilense Felipe Olave Blackburn adquirió el diario en 2024**, y
+después compró las emisoras **Huila Stéreo**, presentadas por el propio medio como
+paso para consolidar su independencia editorial en la región.
+
+**La fuente de casi todo eso es el propio diario**, que además publica con
+regularidad piezas sobre Olave —su visión de la ciudad, su paso por un programa
+local, su encuentro con arquitectos jóvenes—. Que un medio cubra a su dueño no es
+en sí una irregularidad, pero convierte su palabra en **evidencia de nivel 4**, y el
+protocolo prohíbe sostener una ficha solo en eso.
+
+**Si se confirma que Olave controla el diario y Huila Stéreo, hay `controlGroup` que
+marcar** y concentración regional que declarar en el mapa. Hoy no se marca, por la
+misma razón por la que no se marcó «galvis» en El Nuevo Día: un vínculo que el mapa
+de concentración *afirma* necesita documento, no una nota del interesado.
 
 ### El apellido está en la sociedad y en la cabecera, y eso NO cierra la propiedad
 

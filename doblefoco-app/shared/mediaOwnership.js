@@ -2442,6 +2442,152 @@ export const OWNERSHIP_PROFILES = {
     },
 
     /**
+     * LA NACIÓN (Neiva) — CAMBIÓ DE MANOS EN 2024, Y LO CUENTA ÉL MISMO
+     * (2026-08-16).
+     *
+     * Su mancheta da editora y tres cargos, que es más de lo que da cualquier
+     * otro regional de esta semana. Lo que NO da es el accionariado, y la fuente
+     * de que Felipe Olave Blackburn compró el diario es en su mayor parte el
+     * propio diario — evidencia de nivel 4, que el protocolo prohíbe usar como
+     * único fundamento. Por eso va como ausencia declarada y no con tipo.
+     */
+    'la-nacion-neiva': {
+        ownerType: null,
+        holdings: [
+            'La mancheta del pie de la portada declara la editora COMUNICACIONES OLAVE S.A.S., con sede en Neiva, Huila, Calle 11 n.º 5-82.',
+            'Tres cargos nombrados: Felipe Olave Blackburn (presidente del Consejo Editorial), Claudia Marcela Medina García (presidenta) y Jesús Antonio Rojas Serrano (editor general).',
+            'El empresario huilense FELIPE OLAVE BLACKBURN consta como comprador del diario en 2024, según el propio medio, que describe la operación como el inicio de una nueva etapa.',
+            'DESPUÉS COMPRÓ LAS EMISORAS HUILA STÉREO, presentadas por el mismo medio como paso para consolidar su independencia editorial en la región. Es concentración regional en formación.',
+            'Modelo de pago: suscripción digital $150 000/año e impresa $350 000/año, más clasificados, tienda y revistas.',
+        ],
+        notes: [
+            'EL APELLIDO ESTÁ EN LA SOCIEDAD Y EN LA CABECERA, Y ESO NO ES EL ACCIONARIADO. «Olave» aparece a la vez en COMUNICACIONES OLAVE S.A.S. y en el presidente del consejo editorial. Es la señal habitual del diario regional de familia empresarial, y sigue sin constar quién posee la sociedad ni en qué proporción. Es el caso de Vive el Meta: editora declarada, control sin declarar.',
+            'CASI TODA LA EVIDENCIA DE LA COMPRA ES DEL PROPIO MEDIO, que además publica con regularidad piezas sobre Felipe Olave —su visión de la ciudad, su paso por un programa local, su encuentro con arquitectos jóvenes—. Que un diario cubra a su dueño no es en sí una irregularidad, pero convierte su palabra en nivel 4 y obliga a buscar la confirmación fuera.',
+            'SI SE CONFIRMA QUE OLAVE CONTROLA EL DIARIO Y HUILA STÉREO, HAY `controlGroup` QUE MARCAR. Hoy no se marca, por la misma razón que no se marcó «galvis» en El Nuevo Día: un vínculo afirmado por el mapa de concentración tiene que apoyarse en documento, no en una nota de prensa del interesado.',
+            'NO SE LE ASIGNA EL +0,20 DE LOS OTROS DIARIOS REGIONALES. Los siete del catálogo están entre +0,15 y +0,35 por una analogía que el propio catálogo tiene señalada como circular desde el 2026-08-12 y sin resolver. Sería el octavo caso.',
+        ],
+        sources: [
+            'https://www.lanacion.com.co/',
+            'https://www.lanacion.com.co/felipe-olave-el-empresario-que-le-apuesta-a-la-comunicacion/',
+            'https://www.lanacion.com.co/la-prensa-y-la-radio-regional-aliadas/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-16',
+        buscadoEn: [
+            {
+                fuente: 'Mancheta del pie de su portada',
+                resultado: 'Da editora (COMUNICACIONES OLAVE S.A.S.), tres cargos con nombre y la sede. NO da NIT, NI socios, NI porcentajes.',
+                url: 'https://www.lanacion.com.co/',
+            },
+            {
+                fuente: 'Su ruta /nosotros/',
+                resultado: 'NO ES UNA PÁGINA INSTITUCIONAL: devuelve un artículo de opinión titulado «Nosotros, los ahora huérfanos». El slug coincide con la primera palabra del titular. Quien mire solo el código 200 creerá haber leído la página de la casa.',
+                url: 'https://www.lanacion.com.co/nosotros/',
+            },
+            {
+                fuente: 'Prensa sobre el cambio de propiedad',
+                resultado: 'La compra de 2024 por Felipe Olave Blackburn y la posterior de Huila Stéreo aparecen contadas sobre todo por el propio medio. No se halló registro mercantil ni cobertura independiente que las documente.',
+                url: 'https://www.lanacion.com.co/felipe-olave-el-empresario-que-le-apuesta-a-la-comunicacion/',
+            },
+        ],
+        falta: [
+            'Certificado de existencia y representación de COMUNICACIONES OLAVE S.A.S. en la Cámara de Comercio de Neiva: NIT, socios, porcentajes y representante legal. Neiva ya estaba en la lista de certificados pendientes; esto le da destinatario concreto.',
+            'Confirmar con documento que Felipe Olave Blackburn controla la sociedad, y con qué participación.',
+            'Si controla también Huila Stéreo: entonces hay `controlGroup` que marcar y concentración regional que declarar en el mapa.',
+            'Si aparece capital ligado a contratación departamental o municipal del Huila, se declara antes que cualquier número.',
+        ],
+    },
+
+    /**
+     * DIARIO LA LIBERTAD — EL DUEÑO ANUNCIADO ASPIRA A LA ALCALDÍA QUE EL
+     * PERIÓDICO CUBRE (2026-08-16).
+     *
+     * Es la ficha más delicada de esta tanda y la que antes hay que cerrar.
+     * Fundado en 1979 por Roberto Esper Rebaje y dirigido por su hija Luz Marina
+     * Esper Fayad, el diario protagonizó una pelea de herederos por su control
+     * (2017) y su sociedad histórica consta EN LIQUIDACIÓN.
+     *
+     * EN ENERO DE 2025 SE ANUNCIÓ QUE SAMUEL TCHERASSI PASABA A SER EL SOCIO
+     * CONTROLANTE, y ahí está el problema: **Tcherassi es candidato anunciado a
+     * la Alcaldía de Barranquilla para 2027** y fue contratista de esa misma
+     * alcaldía —el Malecón del Río— bajo la administración de Álex Char, de quien
+     * hoy es crítico declarado.
+     *
+     * PERO LA OPERACIÓN NO CONSTA CERRADA. Las fuentes divergen en algo que
+     * importa: La Silla Vacía lo da como socio controlante confirmado por la
+     * propia directora, y Valora Analitik precisa que lo que se firmó fue un
+     * MEMORANDO DE ENTENDIMIENTO, con Luz Marina Esper continuando al frente. No
+     * hay una sola pieza posterior a mayo de 2025 sobre el asunto.
+     *
+     * POR ESO SE DECLARA Y NO SE ASIGNA. Con `ownerType` puesto, el catálogo
+     * afirmaría que un aspirante a alcalde es hoy dueño de este periódico. Con la
+     * ficha en blanco, callaría un conflicto de interés que el lector necesita
+     * para pesar lo que lee sobre Barranquilla. Se escribe lo que consta, con su
+     * fecha y su grado de certeza — que es exactamente para lo que existe este
+     * campo.
+     */
+    'diario-la-libertad': {
+        ownerType: null,
+        holdings: [
+            'Fundado en 1979 por ROBERTO ESPER REBAJE. Su hija, LUZ MARINA ESPER FAYAD, ha sido directora y CEO.',
+            'La sociedad histórica DIARIO LA LIBERTAD LIMITADA consta EN LIQUIDACIÓN en los directorios de empresas.',
+            'En enero de 2025 se anunció que el empresario SAMUEL TCHERASSI pasaba a ser socio controlante, en una operación que incluía las dos emisoras de radio La Libertad y la marca del periódico El Espacio (Bogotá), negociada con la familia Esper.',
+            'Samuel Tcherassi es empresario de Barranquilla con intereses en moda, construcción e infraestructura, y fue contratista de la Alcaldía de Barranquilla —Malecón del Río— durante la segunda administración de Álex Char.',
+            'TCHERASSI ES CANDIDATO ANUNCIADO A LA ALCALDÍA DE BARRANQUILLA PARA 2027, por firmas y como independiente, y hoy es crítico público de la gestión de Char.',
+            'Declaró que su plan era relanzar ambos medios «con nuevos espacios de noticias y opinión, junto con nuevos comités editoriales».',
+        ],
+        notes: [
+            'ESTE ES EL CONFLICTO DE INTERÉS MÁS DIRECTO DEL CATÁLOGO SI SE CONFIRMA: el dueño de un periódico aspirando a gobernar la ciudad que ese periódico cubre a diario, y habiendo sido contratista de la administración que critica. Se declara como desvelamiento, no como acusación, y con el grado de certeza que tiene: anunciado, no acreditado.',
+            'LAS FUENTES NO COINCIDEN EN SI LA OPERACIÓN SE CERRÓ. La Silla Vacía lo da como socio controlante, con la compra confirmada por la propia Luz Marina Esper; Valora Analitik precisa que se firmó un MEMORANDO DE ENTENDIMIENTO y que Esper seguía dirigiendo el diario con su equipo. Un memorando no es una compraventa.',
+            'Y NO HAY NADA POSTERIOR A MAYO DE 2025. Diecinueve meses de silencio no prueban que la operación siguiera adelante ni que se cayera. Es la regla del presente: lo que no consta hoy, no se afirma hoy.',
+            'EL PROPIO DIARIO PUBLICÓ EN MAYO DE 2025 UNA PIEZA TITULADA «Samuel Tcherassi: un nuevo liderazgo se asoma en Barranquilla». No se ha podido leer —el sitio devolvió 403 a la consulta—, así que NO se caracteriza su contenido ni se afirma que sea cobertura favorable: se anota que existe, con su título y su fecha, porque es justo el punto donde habría que mirar.',
+            'SI SE CONFIRMA, HAY `controlGroup` QUE MARCAR con El Espacio (Bogotá), que entró en la misma operación. Hoy no se marca.',
+            'NO SE LE DEDUCE ORIENTACIÓN DE LA POSICIÓN POLÍTICA DE SU COMPRADOR ANUNCIADO. Que Tcherassi se enfrente al clan Char no permite colocar al periódico en el eje: hace falta corpus propio, y hay una hipótesis falsable a mano —comparar cómo cubre a la Alcaldía frente a El Heraldo, que es del mismo mercado y ya está en el catálogo—.',
+        ],
+        sources: [
+            'https://www.lasillavacia.com/en-vivo/samuel-tcherassi-sera-socio-del-diario-la-libertad/',
+            'https://www.valoraanalitik.com/movidas-medios-comunicacion-colombia/',
+            'https://www.elheraldo.co/local/2017/05/01/division-familiar-por-control-del-diario-la-libertad/',
+            'https://diariolalibertad.com/',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-08-16',
+        buscadoEn: [
+            {
+                fuente: 'Su propio sitio: portada, /nosotros, /equipo y /contacto',
+                resultado: 'NO NOMBRA A UNA SOLA PERSONA. El único rastro institucional es «COPYRIGHT 2022 DIARIO LA LIBERTAD», congelado sobre un sitio que publica a diario. Y sus rutas engañan: /nosotros es un artículo de 2020 sobre un jugador del Junior y /equipo uno de 2023 sobre un operativo anticontrabando; el slug coincide con una palabra del titular. /contacto es real y no publica datos de contacto. Firma con cuentas numeradas: «Redacción3 La Libertad», «Redacción4 La Libertad».',
+                url: 'https://diariolalibertad.com/',
+            },
+            {
+                fuente: 'La Silla Vacía (enero 2025)',
+                resultado: 'Da a Samuel Tcherassi como socio controlante, con la compra confirmada por la directora Luz Marina Esper.',
+                url: 'https://www.lasillavacia.com/en-vivo/samuel-tcherassi-sera-socio-del-diario-la-libertad/',
+            },
+            {
+                fuente: 'Valora Analitik (19-01-2025)',
+                resultado: 'Precisa que lo firmado fue un memorando de entendimiento con la familia Esper, e indica que Luz Marina Esper continuaría dirigiendo el periódico con su equipo editorial. Contradice el cierre de la operación.',
+                url: 'https://www.valoraanalitik.com/movidas-medios-comunicacion-colombia/',
+            },
+            {
+                fuente: 'Búsqueda de cobertura 2026',
+                resultado: 'Sin resultados. Ninguna fuente posterior a mayo de 2025 confirma ni desmiente que la operación se completara.',
+                url: 'https://www.lasillavacia.com/en-vivo/samuel-tcherassi-sera-socio-del-diario-la-libertad/',
+            },
+        ],
+        falta: [
+            'PRIORITARIO: certificado de existencia y representación en la Cámara de Comercio de Barranquilla — qué sociedad edita hoy el periódico, quiénes son sus socios y si Samuel Tcherassi figura entre ellos. Es un certificado nuevo, no estaba entre los diez pendientes, y aquí no es un trámite de rutina: decide si hay que publicar un aviso de conflicto de interés.',
+            'Cuál es la sociedad activa, dado que DIARIO LA LIBERTAD LIMITADA consta en liquidación. Es el caso de El Nuevo Día: el impreso cerró su sociedad y otra distinta publica hoy.',
+            'Si Luz Marina Esper Fayad sigue siendo la directora en 2026.',
+            'Leer la pieza «Samuel Tcherassi: un nuevo liderazgo se asoma en Barranquilla» (10-05-2025), que hoy devuelve 403, y revisar cómo cubre el diario a Tcherassi y a la Alcaldía.',
+            'Si la operación se confirma: `controlGroup` con El Espacio (Bogotá) y aviso de conflicto de interés en la ficha pública.',
+        ],
+    },
+
+    /**
      * CABLENOTICIAS — TODO ESTÁ DOCUMENTADO, Y TODO ES VIEJO (2026-08-14).
      *
      * Es el caso contrario al del resto de altas recientes. En los regionales no

@@ -10,6 +10,25 @@ colombianos. Tu trabajo NO es dar tu opinión sobre dónde va el medio: es
    Un enlace, un documento, un registro. Si no puedes citarla, no la incluyas —
    escribe en su lugar «no encuentro fuente para esto» y sigue.
 3. **Marca la fecha de cada evidencia que aportes.**
+4. **Pregunta qué le pasó a este medio en los últimos doce meses**, antes de
+   discutir el número. Ventas, fusiones, cambio de director, muerte del titular
+   que la ficha nombra. En el ciclo anterior **todos** los errores duros estaban
+   ahí: cuatro fichas nombraban como dueño vigente a alguien fallecido en 2021,
+   una construía su argumento entero sobre una empresa vendida catorce meses
+   antes, y el catálogo clasificaba por separado dos emisoras fusionadas siete
+   meses antes.
+5. **Cuando la ficha declare una laguna, compruébala antes de creerla.** «No hay
+   una sola pieza que respalde esto» es una hipótesis sobre el archivo, no un
+   hecho. En el ciclo anterior, doce de veinte fichas declararon una ausencia de
+   evidencia que se caía yendo a la sección de editoriales del propio medio. **Ve
+   ahí primero.**
+6. **Registra también la evidencia que NO mueve el número.** Si solo se anota lo
+   que cambiaría el valor, la revisión queda sesgada por construcción. Que un
+   diario **no** endosara a nadie en una elección polarizada es conducta de la
+   casa, y vale escribirla aunque deje el número donde está.
+7. **Declara cómo buscaste.** «No encontré» solo sirve si dices dónde miraste: qué
+   secciones del sitio, qué registros, qué términos. Sin eso, tu ausencia no es
+   auditable y el próximo revisor tiene que rehacer tu barrido.
 
 ## Tres reglas que descalifican una respuesta
 
@@ -37,6 +56,16 @@ qué evidencia comprobable contradice —o no— lo que se propone.
 ## Formato de tu respuesta
 
 ```
+## NIVEL 1 — QUÉ CAMBIÓ ESTE AÑO
+Va primero porque es donde aparecen los errores que tumban una ficha entera.
+Contesta las cuatro, aunque la respuesta sea «sigue igual» o «no encontré»:
+- ¿Cambió de dueño, se vendió, se fusionó o se escindió en los últimos 12 meses?
+- La persona que la ficha nombra como titular o director, ¿sigue viva y en el
+  cargo? (fecha de la comprobación)
+- ¿Quién dirige hoy la redacción? Nómbralo, o declara que no encontraste nombre.
+- ¿Hay un registro mercantil o un reporte de emisor más reciente que la fuente
+  que la ficha cita?
+
 ## OBJECIONES
 Para cada una:
 - QUÉ afirma la ficha que crees incorrecto
@@ -46,10 +75,16 @@ Para cada una:
   declaración del propio medio / hecho editorial de los últimos 12 meses
 
 ## LO QUE NO PUDE VERIFICAR
-Afirmaciones de la ficha que no lograste comprobar ni refutar, y por qué.
+Afirmaciones de la ficha que no lograste comprobar ni refutar, y por qué. Di
+dónde buscaste: sin eso, la ausencia no es auditable.
 
 ## LO QUE FALTA
 Evidencia que crees que la ficha DEBERÍA tener y no tiene.
+
+## EVIDENCIA QUE NO MUEVE EL NÚMERO
+Lo que encontraste, es del presente y es citable, pero deja el valor donde está.
+No lo omitas: si solo se anota lo que movería el número, el expediente queda
+sesgado por construcción.
 
 ## SIN OBJECIÓN
 Solo si no encontraste ninguna. Di explícitamente que no encontraste evidencia

@@ -68,20 +68,40 @@ defecto sería determinismo. Lo que no se admite es callar de quién es.
 **Ante la duda entre dos bandas, se elige la más cercana a la mixta.** Clasificar
 de más acusa; clasificar de menos solo informa de menos.
 
-## Una tensión conocida del catálogo, por si te sirve
+## Un defecto conocido de las fuentes, para que no gastes objeciones en él
 
-Tres medios con el MISMO dueño (Valorem, familia Santo Domingo) tienen hoy tres
-valores muy distintos:
+**El Media Ownership Monitor carga hoy y documenta 2015.** Sus páginas responden,
+pero la cadena documental interna —actas, formularios RUES, certificados de
+Cámara de Comercio, tasas de cambio— termina entre 2013 y 2015 en todas las fichas
+donde lo usamos. Ya está detectado y no hace falta volver a descubrirlo: en el
+ciclo anterior un revisor lo señaló cinco veces, una por ficha.
 
-```
-El Espectador     −0,20
-Noticias Caracol  +0,10
-Blu Radio         +0,25
-```
+Lo que sí es útil aquí: **un primario del presente que lo sustituya** —extracto
+mercantil de este año, reporte de un emisor bursátil, composición accionaria
+publicada por la propia empresa—. Si lo encuentras y nosotros no lo citamos, esa
+sí es una objeción que cierra algo.
 
-Un recorrido de 0,45 dentro de la misma casa, sin explicación escrita. O la
-propiedad no determina la orientación —lo que la regla admite— o alguno está mal.
-**Si tu objeción toca esto, es especialmente útil.**
+## La tensión que hoy bloquea el catálogo, por si te sirve
+
+**«Fiscalizar al poder» se resuelve de tres formas incompatibles**, y de eso
+dependen varios números:
+
+- A *Chocó 7 Días* se le dejó en **0,00** con el argumento de que denunciar al
+  poder es el oficio y no una orientación.
+- A *Noticias Uno* se le puso **−0,40**, el valor más extremo del catálogo,
+  apoyado exactamente en el argumento contrario: que fiscalizar al establecimiento
+  lo sitúa a la izquierda.
+- A *La Silla Vacía* se le puso **−0,10** por una justificación que describe
+  método, no orientación.
+
+Las tres no pueden tener razón. Y el problema se agranda con la evidencia
+reciente: hay piezas fechadas de medios clasificados a la derecha que critican
+duramente al gobierno saliente — si esas piezas firman un valor de derecha, la
+misma lógica aplicada a los tres de arriba da resultados opuestos con la misma
+evidencia.
+
+**El eje, ¿mide la relación con el poder vigente, o con un poder fijo?** Si tu
+objeción toca esto, es especialmente útil.
 
 ## Qué pasa con lo que escribas
 

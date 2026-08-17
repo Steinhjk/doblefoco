@@ -53,7 +53,7 @@
  * es la parte barata.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { MEDIA_REGISTRY } from '../shared/mediaRegistry.js';
@@ -210,6 +210,25 @@ function bloqueDeConducta(id) {
     ].join('\n');
 }
 
+/**
+ * Qué revisiones externas tiene ya este medio.
+ *
+ * Importa para la cabecera del envío: hasta el ciclo 1, a un revisor se le
+ * advertía que atacaba «un expediente que no ha leído entero nadie». Después del
+ * ciclo 1 eso es falso para veinte medios, y seguir diciéndolo lo desorienta —
+ * peor: le esconde que hay objeciones ya formuladas que puede dar por hechas o
+ * contradecir. Se lee de `respuestas/`, que es lo que se versiona.
+ */
+function revisionesPrevias(id) {
+    try {
+        return readdirSync(ruta('revision-externa/respuestas'))
+            .filter((f) => f.endsWith(`-${id}.md`))
+            .map((f) => f.replace(`-${id}.md`, ''));
+    } catch {
+        return [];
+    }
+}
+
 /** «Valor actual» / «Propuesta» / «Valor propuesto» de la cabecera de la ficha. */
 function resumenDeFicha(texto) {
     const fila = (etiqueta) =>
@@ -244,6 +263,7 @@ for (const id of pedidos) {
 
     const rotas = resultados.filter((r) => !r.ok);
     const vigilado = Boolean(VIGILANCIA[id]);
+    const previas = revisionesPrevias(id);
 
     const cabecera = [
         `# ENVÍO A REVISIÓN EXTERNA — ${nombre}`,
@@ -267,10 +287,20 @@ for (const id of pedidos) {
             ? '> · El medio está en la vigilancia semanal del centinela, así que un cambio en lo que su ficha afirma tendría aviso propio.'
             : '> · **El medio NO está en la vigilancia semanal**: su sitio no se puede preguntar, o su ficha no se apoya en ningún nombre publicado.',
         '>',
-        '> · **Lo que NO se ha hecho es la comprobación de campo.** Que las fuentes sigan',
-        '>   sosteniendo lo que la ficha afirma solo lo ve una persona leyéndolas. En el',
-        '>   único caso en que se hizo —Diario La Libertad, el 2026-08-17— apareció un',
-        '>   conflicto de interés que la ficha no tenía. Tenlo en cuenta al objetar.',
+        previas.length
+            ? [
+                  `> · **Esta ficha ya pasó por revisión externa** (${previas.join(', ')}). La respuesta`,
+                  `>   literal está en \`respuestas/${previas[0]}-${id}.md\`. **No la repitas: contradícela`,
+                  '>   o constrúyele encima.** Y ojo, que una objeción registrada no es una objeción',
+                  '>   resuelta: mientras la tabla de resolución esté en blanco, sigue siendo la',
+                  '>   afirmación de otro modelo, no un hecho del expediente.',
+              ].join('\n')
+            : [
+                  '> · **Lo que NO se ha hecho es la comprobación de campo.** Que las fuentes sigan',
+                  '>   sosteniendo lo que la ficha afirma solo lo ve una persona leyéndolas. En el',
+                  '>   único caso en que se hizo —Diario La Libertad, el 2026-08-17— apareció un',
+                  '>   conflicto de interés que la ficha no tenía. Tenlo en cuenta al objetar.',
+              ].join('\n'),
         '',
         '---',
         '',
@@ -329,20 +359,24 @@ if (ciclo && armados) {
         '',
         '## Cinco preguntas que atraviesan varias fichas',
         '',
-        'Salieron al escribirlas y ninguna se resuelve ficha por ficha. Vale la pena',
-        'llevarlas aparte, como preguntas propias:',
+        'Salieron al escribir el ciclo 1 y ninguna se resuelve ficha por ficha. El estado',
+        'de cada una está en `../ciclo-1-conclusiones.md`; en corto:',
         '',
         '1. **Los tres de Valorem** —Noticias Caracol +0,10, Blu Radio +0,25, El Espectador',
-        '   −0,20—: 0,45 de recorrido en la misma casa, sin explicación escrita.',
+        '   −0,20—. **Con respuesta candidata**: la diferencia vive en la dirección, no en el',
+        '   dueño. Falta escribirla en las tres fichas.',
         '2. **«Fiscalizar al poder» se resuelve de tres formas distintas** en Chocó 7 Días,',
-        '   Noticias Uno y La Silla Vacía. Las tres no pueden tener razón.',
-        '3. **Los siete diarios regionales están todos a la derecha.** Si el criterio es',
-        '   «familia empresarial regional → derecha moderada», hay que escribirlo o',
-        '   sustituirlo.',
+        '   Noticias Uno y La Silla Vacía. **Sigue abierta, y es la que más bloquea**: con la',
+        '   evidencia del ciclo 1 ya no es teórica.',
+        '3. **Los siete diarios regionales están todos a la derecha.** **Respondida a favor',
+        '   del criterio**: los siete tienen hoy piezas propias fechadas, con gradación',
+        '   visible. Falta redactarlo como criterio.',
         '4. **Los medios internacionales están clasificados en el eje de su país**, no en el',
-        '   colombiano, y nadie ha justificado la traslación.',
-        '5. **La prensa económica no tiene ancla**: La República, Portafolio y Valora están',
-        '   calibrados unos con otros y ninguno tiene evidencia propia.',
+        '   colombiano. Sigue abierta, con un requisito nuevo: si se mide «cómo cubre a',
+        '   Colombia», hay que fijar un umbral mínimo de piezas.',
+        '5. **La prensa económica no tiene ancla.** **Con ancla propuesta**: asimetría de',
+        '   fuentes, asimetría de verbos en titulares macro y cobertura del propio',
+        '   accionista.',
         '',
         '## Índice',
         '',
@@ -373,10 +407,13 @@ if (ciclo && armados) {
         '## Lo que este material NO garantiza',
         '',
         'Que las fuentes sigan **sosteniendo** lo que la ficha afirma. Al armar cada envío se',
-        'comprueba que las URL respondan, que es la parte barata. La comprobación de campo —',
-        'leerlas — solo se ha hecho en un medio, Diario La Libertad, y allí apareció **un',
-        'conflicto de interés que la ficha no tenía**. Conviene que el revisor lo sepa: se le',
-        'está pidiendo que ataque un expediente que no ha sido leído entero por nadie.',
+        'comprueba que las URL respondan, que es la parte barata. Leerlas es otra cosa: en',
+        'Diario La Libertad apareció así **un conflicto de interés que la ficha no tenía**, y',
+        'el ciclo 1 de revisión externa encontró quince errores de hecho en veinte fichas —',
+        'cuatro titulares fallecidos citados como vivos, un medio vendido hace catorce meses',
+        'y otro fusionado hace siete. **Ninguno de esos quince está corregido todavía en las',
+        'fichas que van aquí dentro**, y los envíos de medios ya revisados lo dicen arriba,',
+        'en su cabecera.',
         '',
     );
 

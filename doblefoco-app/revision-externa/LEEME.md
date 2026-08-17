@@ -5,14 +5,20 @@ objeciones.
 
 ```
 revision-externa/
-├── LEEME.md              ← este archivo
-├── PROMPT.md             ← lo que se copia y pega al modelo. Empieza aquí
-├── CONTEXTO.md           ← se pega DESPUÉS del prompt: reglas y evidencia
-├── envios/               ← SE GENERA, no se versiona. Ver abajo
-├── respuestas/           ← una carpeta por modelo, con lo que devuelva
-│   └── PLANTILLA.md
-└── pendientes.md         ← qué medios faltan por revisar
+├── LEEME.md                  ← este archivo
+├── PROMPT.md                 ← lo que se copia y pega al modelo. Empieza aquí
+├── CONTEXTO.md               ← se pega DESPUÉS del prompt: reglas y evidencia
+├── envios/                   ← SE GENERA, no se versiona. Ver abajo
+├── respuestas/               ← lo que devolvieron, literal y versionado
+│   ├── PLANTILLA.md
+│   └── kimi-k3-*.md          ← ciclo 1: las 20 del tramo + la propuesta de algoritmo
+├── ciclo-1-conclusiones.md   ← qué salió del ciclo 1, y qué cambió por eso
+└── pendientes.md             ← qué medios faltan por revisar
 ```
+
+**Antes de armar un ciclo nuevo, léete `ciclo-1-conclusiones.md`.** Ahí está por
+qué el prompt pide hoy cosas que antes no pedía, y las quince correcciones de
+hecho que siguen sin aplicarse a las fichas.
 
 ## Cómo se usa
 

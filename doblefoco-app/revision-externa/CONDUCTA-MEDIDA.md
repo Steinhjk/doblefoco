@@ -1,5 +1,16 @@
 # La conducta medida, y por qué hoy casi no discrimina
 
+> **AVISO DEL 2026-08-18.** Lo que sigue describe la medición del **2026-08-12**,
+> con una ventana que estaba dominada por el terremoto. Los envíos del ciclo 1
+> llevan dentro una medición **nueva, del 2026-08-17**, con ventana del 14 al 17
+> — los días del hecho ya han salido de las 72 horas de retención—. Las cifras
+> que algunas fichas llevan copiadas en su texto son las viejas; **cuando no
+> coincidan, manda la que va en el envío**. Recalcular en cualquier momento:
+> `npm run conducta -- --todos --json=data/conducta.json`.
+>
+> Todo lo demás de este archivo —qué miden las tres cifras y por qué apenas
+> discriminan— sigue en pie, y es la parte que importa.
+
 Medición del **2026-08-12** sobre el corpus entero de la base: 6 900 artículos y
 5 592 historias, con ventana de retención de 72 h — o sea **del 2026-08-09 al
 2026-08-12**.

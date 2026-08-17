@@ -4,11 +4,27 @@
  * Ejecutar con: npm run envio -- diario-la-libertad
  *               npm run envio -- --tramo        (los 20 de mayor audiencia)
  *               npm run envio -- --todos        (todos los que tengan ficha)
+ *               npm run envio -- --todos --ciclo=1
  *
  * Qué produce
  * -----------
- * `revision-externa/envios/<fecha>-<medio>.md`, que es `PROMPT.md` + `CONTEXTO.md`
- * + la ficha del medio, en ese orden y sin editar. Se copia entero y se pega.
+ * Una carpeta `revision-externa/envios/ciclo-<n>-<fecha>/` con un archivo por
+ * medio: `PROMPT.md` + `CONTEXTO.md` + la conducta medida + la ficha, en ese
+ * orden y sin editar. Se copia entero y se pega.
+ *
+ * **LOS ARCHIVOS VAN NUMERADOS POR ALCANCE.** `01-` a `20-` son el tramo
+ * prioritario de `shared/audiencia.js`, ordenado por lectores y no por volumen
+ * de publicación: el volumen no mide a cuánta gente llega un error. Los demás van
+ * detrás, sin número. Así el orden de revisión está en el propio nombre del
+ * archivo y no depende de que nadie se acuerde de él.
+ *
+ * LA CONDUCTA MEDIDA VIAJA DENTRO
+ * -------------------------------
+ * Si existe `data/conducta.json` —lo escribe `npm run conducta -- --json=…`—, las
+ * cifras de nivel 2 de cada medio se copian al envío con su fecha, su ventana y
+ * su advertencia. El revisor externo no tiene acceso al repositorio ni a la base:
+ * toda la evidencia tiene que ir en el texto que se le pega, o no puede
+ * comprobarla ni objetarla.
  *
  * POR QUÉ UN SCRIPT Y NO UNIRLOS A MANO
  * -------------------------------------
@@ -66,13 +82,23 @@ const args = process.argv.slice(2);
 const nombrePorId = new Map(MEDIA_REGISTRY.map((m) => [m.id, m.shortName || m.name]));
 const tieneFicha = (id) => existsSync(ruta(`fichas/${id}.md`));
 
+/** Los 20 de mayor alcance, en orden de lectores. Define la numeración. */
+const tramo = tramoPrioritario(MEDIA_REGISTRY).map((m) => m.id);
+const puestoEnTramo = new Map(tramo.map((id, i) => [id, i + 1]));
+
 function mediosPedidos() {
-    if (args.includes('--tramo')) return tramoPrioritario(MEDIA_REGISTRY).map((m) => m.id);
-    if (args.includes('--todos')) return MEDIA_REGISTRY.map((m) => m.id).filter(tieneFicha);
+    if (args.includes('--tramo')) return tramo;
+    if (args.includes('--todos')) {
+        // Primero los del tramo, en su orden; después el resto, en orden de
+        // catálogo. El orden del listado es el orden de revisión.
+        const resto = MEDIA_REGISTRY.map((m) => m.id).filter((id) => tieneFicha(id) && !puestoEnTramo.has(id));
+        return [...tramo, ...resto];
+    }
     return args.filter((a) => !a.startsWith('--'));
 }
 
 const pedidos = mediosPedidos();
+const ciclo = args.find((a) => a.startsWith('--ciclo='))?.slice('--ciclo='.length);
 
 if (pedidos.length === 0) {
     console.error('\n  Uso: npm run envio -- <id-del-medio> | --tramo | --todos\n');
@@ -117,10 +143,89 @@ async function comprobar(url) {
 const prompt = readFileSync(ruta('revision-externa/PROMPT.md'), 'utf8').trimEnd();
 const contexto = readFileSync(ruta('revision-externa/CONTEXTO.md'), 'utf8').trimEnd();
 
-mkdirSync(ruta('revision-externa/envios'), { recursive: true });
+/** La conducta medida, si alguien la calculó. Sin ella el envío lo dice. */
+let conducta = null;
+try {
+    conducta = JSON.parse(readFileSync(ruta('data/conducta.json'), 'utf8'));
+} catch {
+    console.log('  ⚠ No hay data/conducta.json — los envíos irán sin las cifras de nivel 2.');
+    console.log('    Se generan con: npm run conducta -- --todos --json=data/conducta.json\n');
+}
+
+/**
+ * El bloque de nivel 2 que se le pega al revisor, con su advertencia.
+ *
+ * La advertencia no es un descargo: es lo que impide que el revisor use la
+ * compañía media para mover un número, que sería un error y aquí está escrito
+ * para que pueda objetarlo si lo intentamos nosotros.
+ */
+function bloqueDeConducta(id) {
+    const m = conducta?.medios?.[id];
+    if (!m) return '';
+
+    const sinCorpus = !m.historias;
+
+    return [
+        '<!-- ==================== CONDUCTA MEDIDA (nivel 2) ==================== -->',
+        '',
+        `## Conducta medida de ${m.nombre}`,
+        '',
+        `Medición del **${conducta.medidoEl}**, ventana **${conducta.ventana.desde} → ${conducta.ventana.hasta}**`,
+        `(retención de 72 h). Corpus completo: ${conducta.corpus.articulos} artículos, ${conducta.corpus.historias} historias.`,
+        '',
+        sinCorpus
+            ? `**NO TIENE CORPUS EN ESTA VENTANA: ${m.articulos} artículos, ${m.historias} historias.** No hay nivel 2 que aportar, y eso es en sí mismo una objeción disponible contra cualquier afirmación de conducta que haga la ficha.`
+            : [
+                  '| Artículos | Historias | Agenda propia | Compartidas | Compañía media | Coincide sobre todo con |',
+                  '|---|---|---|---|---|---|',
+                  `| ${m.articulos} | ${m.historias} | ${m.agendaPropia} | ${m.compartidas} | ${m.companiaMedia ?? '—'} | ${m.coincideCon ?? '—'} |`,
+              ].join('\n'),
+        '',
+        '**Qué significan.** *Agenda propia*: historias en las que es el único medio del',
+        'catálogo. *Compañía media*: sesgo medio de los otros medios con los que comparte',
+        'historia. Ninguna mide el contenido de lo que publica: miden **con quién coincide**,',
+        'que es observable.',
+        '',
+        '> **ADVERTENCIA QUE VA CON LAS CIFRAS, Y ES PARTE DE LA EVIDENCIA.**',
+        '>',
+        '> **Son tres días y el protocolo pide noventa.** La retención es de 72 horas',
+        '> rodantes, así que esto es una foto y las proporciones bailan con corpus pequeño.',
+        '>',
+        '> **La compañía media está saturada.** La izquierda es el 22,6 % de los medios del',
+        '> catálogo y el 3,3 % del volumen publicado, así que coincidir con el catálogo se',
+        '> parece a coincidir con la derecha para cualquiera. **Usar la compañía media para',
+        '> mover un valor de sesgo es un error**, y si esta ficha lo hace, es una objeción',
+        '> válida contra ella.',
+        '>',
+        '> **Qué cambió respecto a la medición anterior.** Las cifras que llevan escritas',
+        '> algunas fichas son del 2026-08-12, cuando el 37 % del corpus era el terremoto del',
+        '> 10 de agosto — y en un desastre todos los medios cubren lo mismo, así que la',
+        '> co-cobertura medía la catástrofe y no la línea editorial. Los días del hecho ya',
+        '> han salido de la ventana de 72 horas. **Si una cifra de la ficha no coincide con',
+        '> la de aquí arriba, la buena es la de aquí arriba**, y la discrepancia entre las',
+        '> dos es en sí misma un dato sobre lo poco que aguantan estas medidas.',
+        '',
+        '---',
+        '',
+    ].join('\n');
+}
+
+/** «Valor actual» / «Propuesta» / «Valor propuesto» de la cabecera de la ficha. */
+function resumenDeFicha(texto) {
+    const fila = (etiqueta) =>
+        texto.match(new RegExp(`\\|\\s*\\*\\*${etiqueta}\\*\\*\\s*\\|\\s*(.+?)\\s*\\|`))?.[1] ?? null;
+    return {
+        valor: fila('Valor actual') ?? fila('Valor propuesto'),
+        propuesta: fila('Propuesta'),
+    };
+}
+
+const carpeta = ciclo ? `revision-externa/envios/ciclo-${ciclo}-${hoy}` : 'revision-externa/envios';
+mkdirSync(ruta(carpeta), { recursive: true });
 
 let armados = 0;
 const saltados = [];
+const indice = [];
 
 for (const id of pedidos) {
     const nombre = nombrePorId.get(id) ?? id;
@@ -171,25 +276,116 @@ for (const id of pedidos) {
         '',
     ].join('\n');
 
+    const ficha = readFileSync(ruta(`fichas/${id}.md`), 'utf8').trimEnd();
+
     const cuerpo = [
         cabecera,
         '<!-- ==================== PROMPT ==================== -->\n\n',
         `${prompt}\n\n---\n\n`,
         '<!-- ==================== CONTEXTO ==================== -->\n\n',
         `${contexto}\n\n---\n\n`,
+        bloqueDeConducta(id),
         '<!-- ==================== FICHA DEL MEDIO ==================== -->\n\n',
-        `${readFileSync(ruta(`fichas/${id}.md`), 'utf8').trimEnd()}\n`,
+        `${ficha}\n`,
     ].join('');
 
-    writeFileSync(ruta(`revision-externa/envios/${hoy}-${id}.md`), cuerpo, 'utf8');
+    const puesto = puestoEnTramo.get(id);
+    const archivo = puesto ? `${String(puesto).padStart(2, '0')}-${id}.md` : `${id}.md`;
+
+    writeFileSync(ruta(`${carpeta}/${archivo}`), cuerpo, 'utf8');
     armados += 1;
 
+    const { valor, propuesta } = resumenDeFicha(ficha);
+    indice.push({ archivo, nombre, puesto, valor, propuesta, rotas: rotas.length, fuentes: fuentes.length });
+
     const marca = rotas.length ? `⚠ ${rotas.length} fuente(s) rota(s)` : `${fuentes.length} fuente(s) viva(s)`;
-    console.log(`  ✓ ${nombre.padEnd(22)} envios/${hoy}-${id}.md   ${marca}`);
+    console.log(`  ✓ ${nombre.padEnd(22)} ${archivo.padEnd(32)} ${marca}`);
+}
+
+// ── Índice del ciclo ─────────────────────────────────────────────────────────
+
+if (ciclo && armados) {
+    const conProblema = indice.filter((i) => i.rotas);
+    const lineas = [
+        `# Ciclo ${ciclo} de revisión externa de sesgo — armado el ${hoy}`,
+        '',
+        `**${armados} medios.** Cada archivo de esta carpeta se copia entero y se pega a un`,
+        'modelo. No hace falta darle nada más: lleva dentro el encargo, el contexto del',
+        'proyecto, la conducta medida y la ficha.',
+        '',
+        '## El orden importa, y está en el nombre del archivo',
+        '',
+        '`01-` a `20-` son los veinte medios de **mayor alcance real de audiencia**, en ese',
+        'orden. No es el orden de volumen de publicación: el volumen no mide a cuánta gente',
+        'llega un error. Los demás van detrás sin número.',
+        '',
+        '## Qué se hace con lo que devuelvan',
+        '',
+        'La respuesta se guarda **literal**, sin resumir ni recortar, en',
+        '`revision-externa/respuestas/<modelo>-<medio>.md`. Si se recorta se pierde justo lo',
+        'que pueda incomodar. Una objeción con fuente comprobable se verifica y cambia el',
+        'número o se declara la tensión; una sin fuente se anota como no admisible; un',
+        'acuerdo se anota como «no hubo objeción» y **no cuenta como aval**.',
+        '',
+        '## Cinco preguntas que atraviesan varias fichas',
+        '',
+        'Salieron al escribirlas y ninguna se resuelve ficha por ficha. Vale la pena',
+        'llevarlas aparte, como preguntas propias:',
+        '',
+        '1. **Los tres de Valorem** —Noticias Caracol +0,10, Blu Radio +0,25, El Espectador',
+        '   −0,20—: 0,45 de recorrido en la misma casa, sin explicación escrita.',
+        '2. **«Fiscalizar al poder» se resuelve de tres formas distintas** en Chocó 7 Días,',
+        '   Noticias Uno y La Silla Vacía. Las tres no pueden tener razón.',
+        '3. **Los siete diarios regionales están todos a la derecha.** Si el criterio es',
+        '   «familia empresarial regional → derecha moderada», hay que escribirlo o',
+        '   sustituirlo.',
+        '4. **Los medios internacionales están clasificados en el eje de su país**, no en el',
+        '   colombiano, y nadie ha justificado la traslación.',
+        '5. **La prensa económica no tiene ancla**: La República, Portafolio y Valora están',
+        '   calibrados unos con otros y ninguno tiene evidencia propia.',
+        '',
+        '## Índice',
+        '',
+        '| # | Medio | Valor actual | Lo que propone la ficha | Fuentes |',
+        '|---|---|---|---|---|',
+        ...indice.map(
+            (i) =>
+                `| ${i.puesto ? String(i.puesto).padStart(2, '0') : '—'} | [${i.nombre}](${i.archivo}) | ${
+                    i.valor ?? '—'
+                } | ${i.propuesta ?? '—'} | ${i.rotas ? `⚠ ${i.rotas} de ${i.fuentes} rota(s)` : `${i.fuentes} viva(s)`} |`,
+        ),
+    ];
+
+    if (conProblema.length) {
+        lineas.push(
+            '',
+            '## Fichas con alguna fuente que no resuelve hoy',
+            '',
+            'Se mandan igual, con el aviso dentro. Un hueco declarado se puede leer; uno',
+            'escondido vuelve como objeción:',
+            '',
+            ...conProblema.map((i) => `- **${i.nombre}** — ${i.rotas} de ${i.fuentes}`),
+        );
+    }
+
+    lineas.push(
+        '',
+        '## Lo que este material NO garantiza',
+        '',
+        'Que las fuentes sigan **sosteniendo** lo que la ficha afirma. Al armar cada envío se',
+        'comprueba que las URL respondan, que es la parte barata. La comprobación de campo —',
+        'leerlas — solo se ha hecho en un medio, Diario La Libertad, y allí apareció **un',
+        'conflicto de interés que la ficha no tenía**. Conviene que el revisor lo sepa: se le',
+        'está pidiendo que ataque un expediente que no ha sido leído entero por nadie.',
+        '',
+    );
+
+    writeFileSync(ruta(`${carpeta}/00-LEEME.md`), `${lineas.join('\n')}\n`, 'utf8');
+    console.log(`\n  ✓ Índice del ciclo en ${carpeta}/00-LEEME.md`);
 }
 
 console.log();
-console.log(`${armados} envío(s) armado(s) en revision-externa/envios/, con fecha ${hoy}.`);
+console.log(`${armados} envío(s) armado(s) en ${carpeta}/, con fecha ${hoy}.`);
 
 if (saltados.length) {
     console.log();

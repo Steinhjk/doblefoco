@@ -33,6 +33,7 @@
  * un error, y está escrito allí para que el revisor externo pueda objetarlo.
  */
 
+import { writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
@@ -104,6 +105,23 @@ async function main() {
     console.log('  medio                  art.  hist.  propia  multi  compañía  coincide con');
     console.log('  ' + '─'.repeat(96));
 
+    /**
+     * `--json=<ruta>` guarda lo mismo que se imprime, para que otro programa lo
+     * use sin volver a consultar la base.
+     *
+     * Lo pide `armarEnvio.mjs`: las fichas que se mandan a revisión externa
+     * llevan estas cifras dentro, y el revisor no tiene acceso al repositorio ni
+     * a la base — toda la evidencia tiene que ir en el texto que se le pega. Sin
+     * esto habría que copiarlas a mano, que es exactamente como se cuelan los
+     * números que ya no cuadran con nada.
+     */
+    const salida = {
+        medidoEl: new Date().toISOString().slice(0, 10),
+        corpus: { articulos, historias: porHistoria.size },
+        ventana: { desde: String(desde).slice(0, 10), hasta: String(hasta).slice(0, 10) },
+        medios: {},
+    };
+
     for (const id of objetivo) {
         let historias = 0;
         let solo = 0;
@@ -140,9 +158,25 @@ async function main() {
             `${String(historias - solo).padStart(7)}` +
             `${compania.padStart(10)}  ${top}`
         );
+
+        salida.medios[id] = {
+            nombre: nombre.get(id) ?? id,
+            articulos: porMedio.get(id) ?? 0,
+            historias,
+            agendaPropia: propia.trim(),
+            compartidas: historias - solo,
+            companiaMedia: apariciones ? Number((suma / apariciones).toFixed(3)) : null,
+            coincideCon: top || null,
+        };
     }
 
     console.log('');
+
+    const rutaJson = args.find((a) => a.startsWith('--json='))?.slice('--json='.length);
+    if (rutaJson) {
+        writeFileSync(rutaJson, `${JSON.stringify(salida, null, 4)}\n`, 'utf8');
+        console.log(`  Guardado en ${rutaJson}\n`);
+    }
 }
 
 try {

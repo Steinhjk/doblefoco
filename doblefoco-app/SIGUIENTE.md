@@ -1,5 +1,91 @@
 # Por dónde seguir
 
+## Altas de La Nación (Neiva) y Diario La Libertad — EN PRODUCCIÓN
+
+**Autorizadas por Jose.** Catálogo **74 → 76 medios**, verificado en `sources`.
+Ninguna desbloquea departamento: añaden **segunda voz** al Huila y al Atlántico,
+donde solo estaban Diario del Huila y El Heraldo.
+
+| Medio | Feed | Imágenes |
+|---|---|---|
+| La Nación (Neiva) | 10 ítems, **10/10 en ventana**, mediana 16,2 h | 10 |
+| Diario La Libertad | 50 ítems, **15/15 en ventana**, mediana 2,7 h | **0** — dependerá del enriquecedor por `og:image`, como El Tiempo y Cambio |
+
+### ⚠ LO QUE APARECIÓ AL INVESTIGAR LA PROPIEDAD, Y NO ESTABA EN LAS FICHAS DEL 14
+
+**Los dos diarios cambiaron de manos hace poco, y uno de los casos es serio.**
+
+**DIARIO LA LIBERTAD — el dueño anunciado aspira a la alcaldía que el periódico
+cubre.** En enero de 2025 se anunció que **Samuel Tcherassi** pasaba a ser socio
+controlante, junto con las dos emisoras La Libertad y la marca de **El Espacio**
+(Bogotá). **Tcherassi es candidato anunciado a la Alcaldía de Barranquilla para
+2027** y fue contratista de esa misma alcaldía —el Malecón del Río, bajo Álex Char,
+de quien hoy es crítico público—. Es el conflicto de interés más directo del
+catálogo **si se confirma**.
+
+**Y no consta que se confirmara.** Las fuentes divergen justo ahí: La Silla Vacía lo
+da como socio controlante confirmado por la propia directora; **Valora Analitik
+precisa que lo firmado fue un MEMORANDO DE ENTENDIMIENTO** y que Luz Marina Esper
+seguía dirigiendo. Un memorando no es una compraventa, y **no hay una sola pieza
+posterior a mayo de 2025**. Su sociedad histórica, además, consta **en liquidación**:
+es El Nuevo Día otra vez.
+
+Por eso se declara y no se asigna. Con `ownerType` puesto, el catálogo afirmaría que
+un aspirante a alcalde es hoy dueño del periódico; con la ficha en blanco, callaría
+un conflicto que el lector necesita para pesar lo que lee sobre Barranquilla.
+
+> **Es la ficha que antes hay que cerrar de todo el catálogo**, y el certificado de
+> la Cámara de Comercio de Barranquilla no es aquí un trámite de rutina: decide si
+> hay que publicar un aviso de conflicto de interés.
+
+**LA NACIÓN (Neiva).** Felipe Olave Blackburn la adquirió en **2024** y después
+compró las emisoras **Huila Stéreo**. Casi toda la evidencia es del propio diario,
+que además publica con regularidad piezas sobre él — nivel 4, y el protocolo prohíbe
+sostener una ficha solo en eso. Si se confirma, hay `controlGroup` que marcar y
+concentración regional que declarar; hoy no, por lo mismo que no se marcó «galvis»
+en El Nuevo Día.
+
+**A ninguna se le puso el +0,20 de los diarios regionales.** Serían el octavo y el
+noveno caso de la analogía que el catálogo tiene señalada como circular desde el 12
+de agosto y sin resolver. Las dos entran en **0,00 por Regla 2**, con cero corpus. Y
+para La Libertad queda **una hipótesis falsable a mano**: comparar cómo cubre a la
+Alcaldía frente a El Heraldo, mismo mercado y ya en el catálogo.
+
+### El hueco que destapó el alta, y por qué NO se tocó el léxico
+
+**La Nación entró con 80 % sin tema** (8 de 10 en su primera pasada), frente al 19 %
+de Cablenoticias. No es página social: son **sucesos locales del Huila** —«Menor fue
+hallado sin vida en Isnos», «Asesinado adulto mayor en La Argentina», «Sorprendido
+con un arma de fuego y dosis de base de coca»—.
+
+**La causa es estructural y vale para toda la prensa regional:** `seccionDeLaUrl`
+devuelve `null` en los diez, porque publica en la raíz del dominio
+(`lanacion.com.co/<slug>`). **Se queda sin los 2,5 puntos de sección que sostienen a
+Infobae**, así que depende enteramente del léxico — y el léxico está escrito sobre
+titulares nacionales.
+
+**Medido, y no se metió nada:**
+
+```
+asesinad[oa]s?        +7    ya cae en Justicia 10 · Conflicto 7 · Derechos 1
+hallad[oa] sin vida   +3    ya cae en Desastres 10 · Justicia 2
+hurto                 +3    ya cae en Conflicto 3 · Justicia 1 · Economía 1
+arma de fuego         +2    Justicia 1
+```
+
+**`asesinado` es `heridos` otra vez**: se reparte casi por mitades entre Justicia y
+Conflicto —un homicidio común y un soldado muerto en combate no son lo mismo—, y
+como fuerte en cualquiera de los dos archivaría mal la otra mitad. Los cuatro juntos
+suman ~15 artículos. **El 80 % es de una muestra de diez en la primera pasada: hay
+que volver a medirlo con corpus, no arreglarlo a ojo hoy.**
+
+> Nota sobre la cifra global: `sin tema` pasó de 29 % a 32 %, y **no es culpa de las
+> altas** —ninguna de las tres aparece en el top 15—. El corpus bajó de 9 158 a
+> 7 139 al rotar la ventana: salió el eclipse, que entraba clasificado por sección,
+> y quedó proporcionalmente más Infobae.
+
+---
+
 ## Alta de Cablenoticias — EN PRODUCCIÓN
 
 **Autorizada por Jose.** Catálogo **73 → 74 medios**. Investigación de campo del

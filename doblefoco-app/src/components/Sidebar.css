@@ -316,20 +316,16 @@
     margin-bottom: 8px;
 }
 
-.radar-pulse-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #ef4444;
-    box-shadow: 0 0 8px #ef4444;
-    animation: radarPulse 2s infinite ease-in-out;
-}
-
-@keyframes radarPulse {
-    0% { transform: scale(0.9); opacity: 0.7; }
-    50% { transform: scale(1.3); opacity: 1; }
-    100% { transform: scale(0.9); opacity: 0.7; }
-}
+/*
+ * Aquí vivía `.radar-pulse-dot`: un punto rojo #ef4444 con halo y latido
+ * infinito, del mismo lenguaje visual que la llama que se retiró el 2026-08-17.
+ * Ningún componente lo usaba —se buscó en todo `src/`—, así que además de
+ * desentonar viajaba en el CSS que descarga cada lector.
+ *
+ * Se retira con el mismo criterio: un adorno tiene que sobrevivir a la peor
+ * noticia del día, y un punto rojo que palpita junto al recuento de un desastre
+ * no lo hace. Si algún día hace falta señalar «en directo», que sea sin alarma.
+ */
 
 .blindspot-message {
     font-size: 0.82rem;

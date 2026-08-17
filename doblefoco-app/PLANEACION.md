@@ -110,6 +110,26 @@ la conversación empiece más adelante de donde empezó la vez pasada.
 
 ---
 
+## CERRADO EN MÉTODO · El punto final de cada prueba de sesgo son las fichas
+
+**Cerrado el 2026-08-17 por Jose:** *el punto final de cada prueba de sesgo será
+con las fichas para las IAs.*
+
+Deja de ser una tarea que va detrás del trabajo y pasa a ser **el último paso del
+trabajo**. Una ficha no está terminada cuando se escribe, sino cuando ha pasado por
+`revision-externa/` y sus objeciones están resueltas o declaradas. Las mediciones
+internas —`conducta`, `insistencia`, `analyze:cocoverage`— aportan evidencia a la
+ficha, **no cierran nada**. Y **cada alta nueva entra en la cola**.
+
+Sigue en pie: se pide **objeción y no opinión**, el **acuerdo no vale como aval**, y
+**firma Jose**. Detalle en `DECISIONES.md` del 2026-08-17.
+
+**Lo que queda es ejecución, y el estado es este:** 76 medios, 56 fichas escritas,
+**cero firmadas**, `respuestas/` vacía. La cola, con las tres altas nuevas y las
+siete preguntas transversales, en `revision-externa/pendientes.md`.
+
+---
+
 ## ABIERTO · Auditoría de sesgo con IAs externas
 
 **Planteado:** antes del 2026-08-08 (existe `revision-externa/` desde entonces).

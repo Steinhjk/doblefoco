@@ -1,10 +1,35 @@
 # Cola de revisión
 
-Estado al **2026-08-12**. **65 medios en el catálogo, 52 colombianos, CERO
-firmados.** La cifra de firmados no ha subido desde que existe este archivo; la
-del catálogo subió tres el día 12 —EL DIARIO de Boyacá, Vive el Meta y Lente
-Regional—, así que **la distancia entre lo que se publica y lo que se ha
-auditado vuelve a crecer**.
+> ## ESTA COLA ES AHORA EL ÚLTIMO PASO DEL TRABAJO, NO EL QUE VA DETRÁS
+>
+> **Decisión de Jose, 2026-08-17:** *el punto final de cada prueba de sesgo son las
+> fichas para las IAs.* Ninguna medición se cierra dentro de casa. Una ficha no está
+> terminada cuando se escribe, sino cuando ha pasado por aquí y sus objeciones están
+> resueltas o declaradas. Y **cada alta nueva entra en esta cola**: dar de alta un
+> medio ya no acaba en el registro.
+>
+> Sigue en pie lo de `LEEME.md`: **se pide objeción, no opinión**, el **acuerdo no
+> cuenta como aval**, y **la firma es de Jose**. Las IAs son el examen, no el
+> examinador. Ver `DECISIONES.md` del 2026-08-17.
+
+Estado al **2026-08-17**. **76 medios en el catálogo, 56 fichas escritas, CERO
+firmadas**, y `respuestas/` sigue vacía: **no se ha enviado nada todavía**.
+
+**La distancia entre lo publicado y lo auditado es hoy todo el catálogo, y creció
+once medios en cinco días.** Eran 65 el día 12. Entraron: Al Aire Noticias (Arauca),
+los seis departamentales del día 14, El Nuevo Día (Ibagué), y las tres del 14-16 —
+**Cablenoticias, La Nación (Neiva) y Diario La Libertad**.
+
+### Las tres últimas altas, y por qué una de ellas no puede esperar
+
+| Medio | Ficha | Qué hay que contrastar |
+|---|---|---|
+| **Diario La Libertad** | `fichas/diario-la-libertad.md` | **PRIMERO DE LA COLA.** Su comprador anunciado, Samuel Tcherassi, **es candidato a la Alcaldía de Barranquilla para 2027** y fue contratista de esa alcaldía. La operación consta como memorando de entendimiento de enero de 2025 y **no se sabe si se cerró**. Es el conflicto de interés más directo del catálogo si se confirma |
+| La Nación (Neiva) | `fichas/la-nacion-neiva.md` | Felipe Olave Blackburn la compró en 2024 y luego adquirió Huila Stéreo. Casi toda la evidencia es del propio diario — nivel 4 |
+| Cablenoticias | `fichas/cablenoticias.md` | Propiedad completa pero de 2018, con sociedad última en Panamá. Entró con ausencia declarada |
+
+**Las tres entraron en 0,00 por Regla 2 y con `ownerType: null`**, así que lo que
+hay que contrastar no es un número sino **si la ausencia está bien declarada**.
 
 ---
 
@@ -70,6 +95,26 @@ llevarlas a los modelos como preguntas propias:
 5. **La prensa económica no tiene ancla.** La República, Portafolio y Valora
    Analitik están calibrados unos con otros —Valora entró tomando «el de
    Portafolio»— y ninguno tiene evidencia propia.
+
+### Dos más, que salieron del trabajo del 12 al 17 de agosto
+
+6. **UN TERCIO DEL CATÁLOGO ESTÁ EN 0,00 Y OTRO CUARTO SIN DUEÑO DECLARADO.**
+   30 de 76 medios llevan sesgo 0,00 y **18 fichas de propiedad tienen
+   `ownerType: null`**. La regla dice que 0,00 se lee como «no sabemos» y no como
+   «equilibrado», y que la ausencia de dueño vale si está fechada y documentada.
+   **La pregunta para los modelos es si eso se sostiene a esta escala**: cuando el
+   «no sabemos» es un tercio del catálogo, ¿sigue siendo una declaración honesta o
+   se ha vuelto un lugar donde aparcar lo que no se investigó? Es la objeción más
+   fuerte que se le puede hacer hoy a este proyecto, y conviene provocarla.
+
+7. **DOS DIARIOS REGIONALES CAMBIARON DE DUEÑO Y EL COMPRADOR TIENE AGENDA
+   POLÍTICA PROPIA.** Diario La Libertad —Samuel Tcherassi, candidato a la Alcaldía
+   de Barranquilla 2027, y antes contratista de esa alcaldía— y La Nación de Neiva
+   —Felipe Olave Blackburn, 2024, que compró después Huila Stéreo—. En los dos
+   casos la evidencia es incompleta y en los dos se optó por **declarar y no
+   asignar**. La pregunta: **¿dónde está el umbral entre desvelar un conflicto de
+   interés y afirmar una propiedad que no consta?** Ninguna regla escrita lo fija
+   hoy, y la respuesta cambia las dos fichas.
 
 ### Lo que las fichas piden y NO es opinión de modelo
 

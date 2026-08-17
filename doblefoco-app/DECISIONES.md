@@ -17,6 +17,41 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-17 · El punto final de cada prueba de sesgo son las fichas para las IAs
+
+**Decisión de Jose.** Ninguna medición de sesgo se da por cerrada dentro de casa.
+**El cierre de cada prueba de sesgo es el paso por las IAs externas, con la ficha
+del medio delante.** El circuito de `revision-externa/` deja de ser un pendiente
+que va detrás del trabajo y pasa a ser **el último paso del trabajo**.
+
+**Qué cambia, en concreto:**
+
+- Una ficha **no está terminada cuando se escribe**, sino cuando ha pasado por el
+  circuito y sus objeciones están resueltas o declaradas. Hoy hay **56 fichas
+  escritas, cero firmadas y `respuestas/` vacía**: la distancia entre lo escrito y
+  lo auditado es todo el catálogo.
+- Las mediciones internas —`npm run conducta`, `npm run insistencia`,
+  `npm run analyze:cocoverage`— **no cierran nada por sí solas**. Aportan evidencia
+  que entra en la ficha; el veredicto viene después.
+- **Cada alta nueva entra en la cola.** Dar de alta un medio ya no termina en el
+  registro: termina cuando su ficha se ha contrastado.
+
+**Por qué, y por qué no se contradice con lo que ya estaba escrito.** El riesgo de
+un juicio editorial hecho en casa es que se valide solo. Esto no traslada el juicio
+a los modelos: sigue en pie que **se les pide objeción y no opinión**, y que **su
+acuerdo no cuenta como aval** —comparten datos de entrenamiento y se equivocan de
+forma correlacionada—. Lo que se publica es el desacuerdo. Y **la firma sigue siendo
+de Jose**: las IAs son el examen, no el examinador.
+
+**Consecuencia sobre F1-13** («revisión editorial firmada de los valores de sesgo»):
+esta decisión es su método. F1-13 no se cierra ficha a ficha en el repositorio, se
+cierra al otro lado del circuito.
+
+Ver `revision-externa/LEEME.md` para el procedimiento y `revision-externa/pendientes.md`
+para la cola.
+
+---
+
 ## 2026-08-14 · Ciencia no es un tema: es léxico dentro de Tecnología
 
 **No se crea un tema de Ciencia.** Decisión de Jose, con la medida delante.

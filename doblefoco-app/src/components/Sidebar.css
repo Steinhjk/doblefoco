@@ -44,16 +44,6 @@
     margin-bottom: 0;
 }
 
-.flame-pulse-icon {
-    color: var(--accent);
-    animation: flamePulse 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes flamePulse {
-    0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--accent)); }
-    100% { transform: scale(1.12); filter: drop-shadow(0 0 8px var(--accent)); }
-}
-
 .live-indicator {
     background: var(--bg-subtle);
     color: var(--text-main);

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PieChart, EyeOff, RotateCcw, Award, Flame, Mail, Info } from 'lucide-react';
+import { PieChart, EyeOff, RotateCcw, Award, Layers, Mail, Info } from 'lucide-react';
 import { topCoveredStories } from '../lib/story';
 import { useStories } from '../hooks/useStories';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
@@ -44,7 +44,19 @@ const Sidebar = () => {
         <aside className="sidebar">
             <div className="sidebar-section live-trends-card">
                 <div className="trends-card-header">
-                    <h3><Flame size={18} className="flame-pulse-icon" aria-hidden="true" /> Temas frecuentes</h3>
+                    {/*
+                      * La llama pulsante se retiró el 2026-08-17. No era solo
+                      * cuestión de tono: DECÍA OTRA COSA QUE LOS DATOS. Esta
+                      * lista se ordena por `coverage.total` —cuántos medios
+                      * cubren el mismo hecho—, y una llama que late afirma que
+                      * algo arde, que es la métrica de los productos que miden
+                      * atención. Aquí se mide coincidencia.
+                      *
+                      * `Layers` es el mismo icono que encabeza «Distribución de
+                      * cobertura» en la ficha de la noticia, y por el mismo
+                      * motivo: varios medios apilados sobre un solo hecho.
+                      */}
+                    <h3><Layers size={18} className="section-icon" aria-hidden="true" /> Temas frecuentes</h3>
                 </div>
                 <ul className="trending-list">
                     {trending.length === 0 && (

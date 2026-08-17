@@ -12,12 +12,39 @@ import {
 
 describe('gruposCompartidos', () => {
     it('detecta dos medios del mismo dueño entre los que cubren un hecho', () => {
-        // Semana y El País (Cali) son los dos del Grupo Gilinski. El lector ve
-        // «3 medios» y en realidad son dos dueños.
-        const grupos = gruposCompartidos(['semana', 'el-pais-cali', 'el-tiempo']);
+        // Noticias RCN y La FM son los dos de la Organización Ardila Lülle. El
+        // lector ve «3 medios» y en realidad son dos dueños.
+        //
+        // ESTE CASO SE ESCRIBÍA CON SEMANA Y EL PAÍS (CALI) hasta el 2026-08-17,
+        // y ahí está la lección: ver abajo.
+        const grupos = gruposCompartidos(['noticias-rcn', 'la-fm', 'el-tiempo']);
         expect(grupos).toHaveLength(1);
-        expect(grupos[0].groupId).toBe('gilinski');
-        expect(grupos[0].medios).toEqual(['semana', 'el-pais-cali']);
+        expect(grupos[0].groupId).toBe('ardila-lulle');
+        expect(grupos[0].medios).toEqual(['noticias-rcn', 'la-fm']);
+    });
+
+    it('Semana y El País (Cali) YA NO comparten dueño: se vendió en junio de 2025', () => {
+        /*
+         * ESTA PRUEBA NACIÓ DE UN FALLO DE ESTA MISMA SUITE, y por eso lleva
+         * explicación larga.
+         *
+         * Hasta el 2026-08-17, el primer caso de este archivo afirmaba que
+         * Semana y El País (Cali) eran «los dos del Grupo Gilinski». Dejó de ser
+         * cierto en junio de 2025, cuando Gilinski vendió el diario a un grupo
+         * encabezado por Eduardo Hernández Incháustegui — catorce meses antes de
+         * que un revisor externo lo detectara.
+         *
+         * Lo que hay que ver aquí no es el dato, sino el mecanismo: **la prueba
+         * estaba fijando el error**. Mientras la propiedad no cambiara, protegía;
+         * cuando cambió, se convirtió en el sitio donde la afirmación vencida
+         * quedaba escrita como invariante y verde en cada ejecución. Una suite no
+         * sabe distinguir «esto no debe romperse» de «esto era verdad en 2023».
+         *
+         * Por eso el caso se invierte: lo que se protege ahora es que el aviso de
+         * dueño compartido NO salga donde ya no corresponde, que es la dirección
+         * en la que el error hace daño al lector.
+         */
+        expect(gruposCompartidos(['semana', 'el-pais-cali'])).toEqual([]);
     });
 
     it('no dice nada cuando cada medio tiene un dueño distinto', () => {
@@ -53,15 +80,22 @@ describe('gruposCompartidos', () => {
     });
 
     it('NO agrupa El País de Cali con El País de España', () => {
-        // Mismo nombre, dueños sin relación: Gilinski uno, Prisa el otro. Es la
-        // segunda trampa de nombre del catálogo, después de los dos Caracol, y
-        // se dispararía justo en una noticia internacional.
+        // Mismo nombre, dueños sin relación: Hernández Incháustegui uno desde
+        // junio de 2025, Prisa el otro. Es la segunda trampa de nombre del
+        // catálogo, después de los dos Caracol, y se dispararía justo en una
+        // noticia internacional.
         expect(gruposCompartidos(['el-pais-cali', 'el-pais-es'])).toEqual([]);
     });
 
-    it('NO cuenta El Universal con Vanguardia: Galvis tiene el 50 %, no el control', () => {
-        // Coposesión al 50 % con la familia Araujo. El aviso afirma «pertenecen
-        // a», así que este caso se queda en la ficha y fuera del cálculo.
+    it('NO cuenta El Universal con Vanguardia, aunque el porcentaje no esté verificado', () => {
+        // El bloque Galvis y el bloque Araujo coposeen Editora del Mar. El
+        // reparto exacto NO está documentado en ninguna fuente del presente
+        // —la ficha decía 50/50 y al comprobarlo apareció una fuente que habla
+        // de mayoría Galvis—, así que la decisión de no agrupar ya no se apoya
+        // en un dato sino en la ausencia de uno: ante la duda, no sobreafirmar.
+        //
+        // Si algún día se compra el certificado mercantil y muestra mayoría
+        // Galvis, esta prueba es la que hay que venir a discutir.
         expect(gruposCompartidos(['vanguardia', 'el-universal'])).toEqual([]);
     });
 

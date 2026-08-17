@@ -302,6 +302,35 @@ const VERIFICADO = '2026-07-29';
 const VERIFICADO_AGO = '2026-08-02';
 
 /**
+ * Tercera tanda: las correcciones del ciclo 1 de revisión externa, 2026-08-17.
+ *
+ * Un revisor externo leyó las veinte fichas del tramo de mayor audiencia y
+ * encontró que **la propiedad se citaba de memoria o de registros de 2015**.
+ * El saldo, en un solo ciclo:
+ *
+ * · Cuatro personas fallecidas en 2021 citadas como dueños vigentes —Carlos
+ *   Ardila Lülle, Eugenia Gaviria de Ardila y Alejandro Galvis Ramírez—, que
+ *   entre las tres sostenían el nivel 1 de cuatro medios.
+ * · El País (Cali) descrito como «del mismo dueño que Semana» catorce meses
+ *   después de que Gilinski lo vendiera.
+ * · W Radio clasificada como medio aparte siete meses después de fusionarse
+ *   con Caracol Radio.
+ * · Una fusión societaria de 2022 (Carbe S.A.S., 86,28 % de RCN Televisión)
+ *   que nadie había registrado.
+ * · El Espectador convertido en entidad sin ánimo de lucro en 2025, sin nota.
+ *
+ * La raíz común es una sola y conviene dejarla escrita: **el Media Ownership
+ * Monitor carga hoy y documenta 2015.** Sus páginas responden —así que la
+ * comprobación automática de fuentes las da por vivas— pero su cadena
+ * documental interna termina en actas y formularios RUES de 2013–2015. «La
+ * fuente responde» no es «la fuente sostiene».
+ *
+ * Todo lo que lleva esta fecha se volvió a comprobar contra una fuente del
+ * presente antes de escribirse.
+ */
+const VERIFICADO_CICLO1 = '2026-08-17';
+
+/**
  * GRUPOS DE CONTROL — el dueño como dato, no como prosa.
  *
  * Las fichas describen en texto quién controla cada medio, y eso sirve para
@@ -404,12 +433,22 @@ export const CONTROL_GROUPS = {
             {
                 nombre: 'Joseph Oughourlian',
                 papel:
-                    'Banquero de inversión, fundador del fondo Amber Capital; controla el Grupo Prisa, ' +
-                    'que a su vez controla Caracol Radio y W Radio.',
-                desde: '2003',
-                // Ya constaba en la ficha de Caracol Radio; se sube aquí para que
-                // el hilo se lea desde el grupo y no solo desde un medio suelto.
-                fuentes: ['https://colombia.mom-gmr.org/es/proprietarios/companies-database/'],
+                    'Banquero de inversión, fundador del fondo Amber Capital, primer accionista del ' +
+                    'Grupo Prisa (~29,6 % de los derechos de voto), que a su vez controla Caracol Radio.',
+                /**
+                 * CORREGIDO EL 2026-08-17 (ciclo 1). Decía `2003`, que es el año
+                 * en que Prisa compró Caracol Radio — no el año en que
+                 * Oughourlian tomó Prisa. Entró al consejo en diciembre de 2015,
+                 * fue vicepresidente desde abril de 2019, asumió la presidencia
+                 * en funciones en diciembre de 2020 y fue ratificado presidente
+                 * en febrero de 2021. Dos hechos distintos fundidos en uno.
+                 */
+                desde: '2021-02',
+                fuentes: [
+                    'https://prnoticias.com/2021/02/24/prisa-joseph-oughourlian-presidente-nueva-era/',
+                    'https://www.prisa.com/gerentes/joseph-oughourlian/',
+                    'https://colombia.mom-gmr.org/es/proprietarios/companies-database/',
+                ],
             },
         ],
     },
@@ -520,13 +559,21 @@ export const CONTROL_GROUPS = {
         sectores: [],
         personas: [
             {
-                nombre: 'Descendientes de Alejandro Galvis Galvis',
+                nombre: 'Alejandro Galvis Blanco',
                 papel:
-                    'Fundó el diario en Bucaramanga en 1919 y sigue en manos de su familia, a través ' +
-                    'de Galvis Ramírez y Cía S.A. La misma familia entró en 1980 con el 50 % de ' +
-                    'Editora del Mar (El Universal) y adquirió El Nuevo Día de Ibagué.',
-                desde: '1919',
-                fuentes: ['https://en.wikipedia.org/wiki/Vanguardia_(Colombian_newspaper)'],
+                    'Gerente y representante legal de Galvis Ramírez y Cía S.A., que publica ' +
+                    'Vanguardia. Hijo de Alejandro Galvis Ramírez († 15-01-2021) y nieto del ' +
+                    'fundador. La misma familia entró en 1980 en Editora del Mar (El Universal) y ' +
+                    'adquirió El Nuevo Día de Ibagué; el porcentaje de ese bloque no está ' +
+                    'documentado en ninguna fuente del presente.',
+                // CORREGIDO EL 2026-08-17 (ciclo 1): decía «descendientes de
+                // Alejandro Galvis Galvis» sin nombrar a nadie, y atribuía a la
+                // familia un 50 % de Editora del Mar que ninguna fuente sostiene.
+                desde: '2021',
+                fuentes: [
+                    'https://portales.vanguardia.com/especiales-vanguardia/contenido/homenaje-a-alejandro-galvis-ramirez/',
+                    'https://en.wikipedia.org/wiki/Vanguardia_(Colombian_newspaper)',
+                ],
             },
             {
                 nombre: 'Alejandro Galvis Ramírez',
@@ -571,6 +618,31 @@ export const CONTROL_GROUPS = {
             },
         ],
     },
+    /**
+     * ALTA DEL 2026-08-17, ciclo 1 de revisión externa. El País (Cali) figuraba
+     * bajo `gilinski` y lleva desde junio de 2025 sin pertenecerle.
+     */
+    'el-pais-hernandez': {
+        label: 'Eduardo Hernández Incháustegui',
+        sectores: ['tecnología', 'datos de contratación pública'],
+        personas: [
+            {
+                nombre: 'Eduardo Hernández Incháustegui',
+                papel:
+                    'Empresario dominicano de tecnología. Encabeza el grupo internacional que compró ' +
+                    'El País (Cali) a GGKB Holdings, del Grupo Gilinski, en junio de 2025. Fundador de ' +
+                    'ibiDs.io Corp —plataforma de inteligencia comercial sobre licitaciones públicas— y ' +
+                    'de la Fundación VerDat de datos abiertos.',
+                desde: '2025-06',
+                fuentes: [
+                    'https://www.semana.com/economia/empresas/articulo/el-pais-de-cali-cambia-de-dueno-eduardo-hernandez-inchaustegui-adquirio-el-diario/202519/',
+                    'https://www.elcolombiano.com/negocios/gilinski-vendio-el-pais-de-cali-y-eduardo-hernandez-inchaustegui-nuevo-dueno-IK27879652',
+                    'https://www.diariolibre.com/usa/actualidad/2025/06/27/empresario-dominicano-asume-el-control-del-diario-colombiano-el-pais/3165389',
+                ],
+            },
+        ],
+    },
+
     catalitico: {
         label: 'Grupo Empresarial Catalítico',
         sectores: ['tecnología', 'mercadeo'],
@@ -1076,7 +1148,13 @@ export const OWNERSHIP_PROFILES = {
             'Se financia «con aportes voluntarios y dedicación solidaria». Se articula con la ALBA de los Movimientos Sociales, espacio continental de coordinación de movimientos populares.',
         ],
         notes: [
-            'Publica bajo autoría colectiva y no divulga quién la dirige. Es el único medio colombiano del catálogo cuyo hilo de propiedad no llega todavía a una persona natural.',
+            /**
+             * CORREGIDO EL 2026-08-17 (ciclo 1). Decía «es el único medio
+             * colombiano del catálogo cuyo hilo de propiedad no llega todavía a
+             * una persona natural», y la ficha de Pulzo afirmaba lo mismo de sí
+             * misma. Las dos no podían ser ciertas, y ninguna lo era.
+             */
+            'Publica bajo autoría colectiva y no divulga quién la dirige. NO es un caso único: al menos cinco medios del catálogo tienen el hilo parado antes de llegar a persona natural —aquí, en Pulzo (INQLAB S.A.S.), en los tres de la Organización Ardila Lülle (Parklake Investment Inc., Panamá) y en Cablenoticias—. Es un problema estructural del mapa, no una rareza de este medio.',
         ],
         sources: ['https://www.colombiainforma.info/somos/', 'https://www.colombiainforma.info/'],
         verifiedAt: '2026-08-08',
@@ -1089,17 +1167,33 @@ export const OWNERSHIP_PROFILES = {
             'Lo produce NTC Televisión. Emite desde 1992 y estuvo en Canal 1 —televisión abierta— hasta el 30 de noviembre de 2019.',
             'NTC formó parte de Plural Comunicaciones, la sociedad que operaba Canal 1 junto a RTI (Patricio Wills), CM& (Yamid Amat) y el grupo estadounidense Hemisphere Media Group.',
             'En septiembre de 2019 Hemisphere Media Group anunció que dejaba de financiar el noticiero. El 1 de diciembre pasó a Cablenoticias, televisión por suscripción, y recurrió a financiación colectiva para sostenerse.',
-            'Daniel Coronell lo dirigió entre 2002 y 2011; hoy es presidente de la revista Cambio, que aparece igualmente en este catálogo. Lo dirige Ignacio Gómez desde 2024.',
+            'Lo dirige Ignacio Gómez desde 2024, tras el retiro de Cecilia Orozco Tascón. Daniel Coronell lo dirigió entre 2002 y 2011 —eso es historia— y hoy preside la revista Cambio, que aparece igualmente en este catálogo: es un vínculo del presente entre dos medios del mapa a través de una persona, y hasta ahora no estaba declarado en ninguna de las dos fichas.',
         ],
         notes: [
             'LO QUE NO SE PUDO DOCUMENTAR: cómo quedó repartida la propiedad tras la salida de Hemisphere Media Group en 2019. Las fuentes consultables describen la etapa de Plural Comunicaciones y el paso a financiación colectiva, pero no la composición accionaria actual. Se deja el hueco a la vista en vez de deducirlo.',
+            /**
+             * MATIZADO EL 2026-08-17 (ciclo 1). «No consta en ninguna fuente
+             * consultable» era cierto solo para la web abierta. NTC Televisión
+             * S.A. es una sociedad colombiana registrada: el certificado existe y
+             * se puede comprar. Y hay un hecho societario intermedio de 2022 que
+             * la ficha se saltaba.
+             */
+            'EL HUECO ES DE LA WEB, NO DEL REGISTRO: NTC Televisión S.A. está inscrita en la Cámara de Comercio de Bogotá y su composición accionaria cuesta un certificado. Que el medio con el valor más extremo del catálogo lleve años con la propiedad abierta es una decisión de gasto, no un límite de la realidad.',
+            'HECHO SOCIETARIO INTERMEDIO NO REGISTRADO: en diciembre de 2022 Canal 1 fue absorbido por HMTV1, y NTC quedó como proveedor de contenido y no como socio-inversionista. La ficha saltaba de 2019 al presente.',
+            /**
+             * PREMISA FALSA CORREGIDA. La ficha del medio deducía de «noticiero
+             * semanal» que la ventana de 72 h lo excluía por construcción, y de
+             * ahí que su feed no estuviera roto. No es semanal.
+             */
+            'NO ES UN NOTICIERO SEMANAL, y de esa premisa colgaba el diagnóstico de su feed. Las fuentes disponibles se contradicen sobre la parrilla exacta —unas describen emisión de lunes a viernes, otras emisiones de fin de semana en Cablenoticias— pero ninguna sostiene «semanal». Un medio que emite varios días por semana y cuyo ítem más reciente tiene 80 horas tiene el feed roto, no una periodicidad incompatible con la ventana. La acción es arreglarlo, no diseñarle una excepción.',
         ],
         sources: [
+            'https://www.elespectador.com/entretenimiento/cine-y-tv/ignacio-gomez-gomez-sera-el-nuevo-director-de-noticias-uno-noticias-hoy/',
             'https://es.wikipedia.org/wiki/Noticias_Uno',
             'https://es.wikipedia.org/wiki/Canal_1_(Colombia)',
             'https://www.las2orillas.co/el-gringo-dueno-de-canal-1-que-le-dio-la-espalda-a-noticias-uno-de-daniel-coronell/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'voragine': {
@@ -1242,15 +1336,27 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'valorem',
         holdings: [
             'Lo publica Comunican S.A., del holding Valorem, controlado por la familia Santo Domingo.',
+            'EN 2025 SE TRANSFORMÓ EN ENTIDAD SIN ÁNIMO DE LUCRO, según declara hoy la propia página de Valorem. Su objeto declarado es «promover y fortalecer el acceso público a la información, la protección de las libertades fundamentales… la transparencia, el control social, la prevención y lucha contra la corrupción» y la construcción de paz.',
+            'Lo dirige Fidel Cano Correa, bisnieto del fundador, desde 2004. La familia Cano conserva una participación minoritaria en Comunican.',
             'Valorem está también detrás de Blu Radio y de Caracol Televisión —Noticias Caracol—, que aparecen igualmente en este catálogo: tres medios, un dueño.',
             'Fuera de los medios, Valorem opera en retail (almacenes D1, a través de Koba International), logística y transporte (Suppla, Ditransa), entretenimiento (Cine Colombia), industria (Biofilm, Gases del Caribe) e inmobiliario y turismo.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * AÑADIDO EL 2026-08-17, ciclo 1. La transformación en ESAL es de
+             * 2025 y ninguna fuente de la ficha la cubría: el nivel 1 se declaraba
+             * «vigente» con páginas del MOM cuya cadena documental termina en 2015.
+             */
+            'LA TRANSFORMACIÓN EN ESAL ABRE PREGUNTAS QUE NO ESTÁN CERRADAS: si Comunican S.A. sigue existiendo como editora, qué pasó con sus acciones y quién controla una entidad sin ánimo de lucro. No se encontró el acto registral.',
+            'ES LA PRIMERA EXPLICACIÓN ESCRITA DEL RECORRIDO DE VALOREM, y sale de la gobernanza, no de la propiedad: de los tres medios del holding, este es el único cuya dirección editorial la ejerce desde hace más de veinte años un miembro de la familia fundadora, con continuidad anterior y posterior a la compra del grupo. Noticias Caracol y Blu Radio tienen dirección nombrada por el grupo. No prueba nada por sí sola —la regla 5.1 sigue en pie— pero el catálogo decía que esa explicación no existía en ninguna parte, y existe.',
+        ],
         sources: [
+            'https://valorem.com.co/el-espectador/',
+            'https://www.elespectador.com/autores/fidel-cano/',
             'https://colombia.mom-gmr.org/es/media/detail/outlet/el-espectador/',
             'https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'la-silla-vacia': {
@@ -1259,10 +1365,23 @@ export const OWNERSHIP_PROFILES = {
         holdings: [
             'La dirige desde su fundación la periodista Juanita León, socia fundadora.',
             'Arrancó con una donación de Open Society Foundations, la embajada británica, varias ONG y donaciones de usuarios.',
-            'Hoy se sostiene con su comunidad de lectores —el programa de membresías SuperAmigos— y con aliados estratégicos. No tiene muro de pago ni publicidad en su sitio.',
+            'Se sostiene con su comunidad de lectores —el programa de membresías SuperAmigos—, con aliados estratégicos y con patrocinadores corporativos.',
         ],
         notes: [
-            'En abril de 2026 el medio y su directora fueron señalados públicamente por un supuesto conflicto de interés relacionado con inversiones en Ecopetrol, en un episodio en el que se pronunció hasta el presidente Petro. Se consigna el señalamiento y su fuente, no una conclusión sobre él.',
+            /**
+             * DOS CORRECCIONES DEL CICLO 1 (2026-08-17).
+             *
+             * 1. El episodio de abril estaba mal descrito. Decía «inversiones en
+             *    Ecopetrol», y no fueron inversiones: fue una relación comercial
+             *    de una empresa del entorno familiar de la directora con la
+             *    estatal, por $65.000 millones. La diferencia importa porque
+             *    cambia la naturaleza del señalamiento.
+             * 2. La página de financiación que se citaba como prueba del presente
+             *    describe el año 2019 y NIEGA lo que se le hacía decir.
+             */
+            'En abril de 2026 el medio y su directora fueron señalados públicamente por un conflicto de interés: Juanita León reconoció, en carta a Semana, que una empresa de su entorno familiar mantuvo una relación comercial con Ecopetrol entre 2018 y 2021 por unos $65.000 millones. El episodio escaló hasta un pronunciamiento del presidente Petro. Se consigna el señalamiento y su fuente, no una conclusión sobre él — y se declara también el interés de quienes lo levantaron.',
+            'LOS HECHOS DEL EPISODIO SON DE 2018-2021: bajo la regla del presente son historia para clasificar la orientación. Lo que sí es vigente es la pregunta de independencia, y por eso se registra aquí y no en el argumento de orientación.',
+            'SU TRANSPARENCIA ESTÁ SEIS AÑOS VENCIDA, y eso es en sí mismo un hecho sobre la casa. La página «La financiación de La Silla Vacía» que el catálogo citaba como descripción del presente está escrita en 2020 y describe 2019: allí las membresías son minoritarias y sí hay patrocinio corporativo, es decir, la fuente contradice las dos afirmaciones que se hacían con ella. Quiénes son hoy los aliados y en qué proporción no está documentado en ninguna parte.',
         ],
         sources: [
             'https://www.lasillavacia.com/que-es-la-silla-vacia/',
@@ -1277,63 +1396,127 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'sarmiento-aval',
         holdings: [
             'Luis Carlos Sarmiento Angulo compró Casa Editorial El Tiempo en 2012: adquirió el 88 % que tenía el grupo español Planeta y después el resto a los minoritarios.',
+            'La cadena societaria registrada de Casa Editorial El Tiempo S.A. son Adminegocios & Cía. S.C.A. (39,8 %), Actiunidos S.A. (19,8 %) e Inversiones Escorial S.A. (8,3 %), y el registro declara como matriz a Grupo Aval Acciones y Valores S.A.',
             'Es el mayor accionista y presidente del Grupo Aval, el mayor conglomerado financiero de Colombia, con intereses en banca, construcción e infraestructura.',
-            'La misma casa editorial publica Portafolio, que aparece igualmente en este catálogo.',
+            'La misma casa editorial publica Portafolio, que aparece igualmente en este catálogo, además de ADN, Citytv, Futbolred, Elempleo y Metrocuadrado.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * EL VÍNCULO CON AVAL YA ERA REGISTRO, NO HIPÓTESIS (ciclo 1,
+             * 2026-08-17). La ficha lo planteaba como «el cruce que esta ficha sí
+             * puede señalar», es decir, algo por medir. Estaba declarado en el
+             * mismo registro externo que la ficha ya usaba, en la página de
+             * empresa de CEET que no se citaba: un nivel de evidencia por encima
+             * de donde la ficha lo dejó.
+             */
+            'El vínculo con Grupo Aval no es una inferencia del catálogo: el propio registro externo declara a Aval como matriz de la casa editorial. La cobertura de banca y de regulación financiera es donde ese cruce se haría visible.',
+            'NIVEL 1 SOSTENIDO CON HISTORIA: las fuentes que acreditaban la propiedad eran una crónica de 2012 —escrita mientras la compra ocurría, y que describe la operación en futuro— y una página del MOM cuya cadena documental termina en 2015. La compra de 2012 es título vigente, pero un título vigente se acredita con un documento vigente: extracto mercantil de CEET de este año, o el reporte de emisor de Grupo Aval.',
+        ],
         sources: [
+            'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/casa-editorial-el-tiempo-sa/',
             'https://colombia.mom-gmr.org/es/proprietarios/propietarios-individuales/detail/owner/owner/show/luis-carlos-sarmiento-angulo/',
             'https://www.semana.com/negocios/articulo/luis-carlos-sarmiento-controla-el-tiempo/146788/',
             'https://www.eltiempo.com/archivo/documento/CMS-11610965',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'w-radio': {
+        /**
+         * DEJÓ DE SER UNA OPERACIÓN INFORMATIVA SEPARADA EL 13-01-2026, y el
+         * catálogo no se enteró hasta el ciclo 1 de revisión externa
+         * (2026-08-17). Prisa Media fusionó las redacciones y las frecuencias de
+         * W Radio y Caracol Radio bajo la marca Caracol Radio: siete meses
+         * clasificando por separado dos marcas que son una sola sala.
+         *
+         * NO SE DA DE BAJA AQUÍ, y es a propósito. La regla del catálogo —«no se
+         * silencia a ningún medio», decisión de Jose del 2026-07-30— y la
+         * decisión de fusionar dos entradas son cosas distintas, y la segunda no
+         * la toma un script ni un revisor externo. Lo que sí corresponde es que
+         * el hecho esté escrito y visible: mientras las dos entradas coexistan,
+         * cualquier conducta medida de «Caracol Radio» posterior a enero de 2026
+         * incluye la redacción de W, y las dos fichas describen el mismo sujeto.
+         *
+         * QUEDA PENDIENTE DE DECISIÓN: fusionar las dos entradas, dejar W Radio
+         * como marca histórica sin valor, o mantener las dos con la nota.
+         */
         ownerType: 'internacional',
         controlGroup: 'prisa',
         holdings: [
-            'La emite Caracol Primera Cadena Radial Colombiana S.A., controlada por el Grupo Prisa a través de la Sociedad Española de Radiodifusión, con el 77 % de las acciones.',
-            'El resto se reparte entre Inversiones Ferines S.A.S., de la familia Londoño (14,4 %), e Inversiones Valmiera, de Felipe López Caballero, fundador de Semana (8,6 %).',
+            'FUSIONADA CON CARACOL RADIO EL 13 DE ENERO DE 2026. Prisa Media integró las frecuencias y las redacciones de las dos cadenas bajo la marca Caracol Radio; el sistema 6AM/W quedó dirigido por Julio Sánchez Cristo y la dirección editorial en Roberto Pombo. Ya no es una operación informativa separada.',
+            'Antes de la fusión la emitía Caracol Primera Cadena Radial Colombiana S.A., controlada por el Grupo Prisa a través de la Sociedad Española de Radiodifusión, con el 77 % de las acciones; el resto entre Inversiones Ferines S.A.S., de la familia Londoño (14,4 %), e Inversiones Valmiera, de Felipe López Caballero (8,6 %).',
             'El mismo grupo controla Caracol Radio y El País de España, que aparecen igualmente en este catálogo.',
         ],
-        notes: [],
-        sources: [
-            'https://colombia.mom-gmr.org/es/media/detail/outlet/w-radio/',
-            'https://www.las2orillas.co/tres-millonarios-duenos-de-los-cinco-poderosos-noticieros-radiales/',
+        notes: [
+            'La fusión vino acompañada de despidos en las dos casas —los reportes hablan de al menos 40 periodistas— y de la salida de programas históricos. Es el mayor hecho editorial de la radio colombiana del período.',
+            'CONSECUENCIA PARA EL CATÁLOGO, dicha en voz alta: cualquier comparación entre «Caracol Radio» y «W Radio» posterior a enero de 2026 compara un medio consigo mismo.',
         ],
-        verifiedAt: VERIFICADO,
+        sources: [
+            'https://www.valoraanalitik.com/w-radio-caracol-radio-se-fusionan/',
+            'https://www.lasillavacia.com/en-vivo/fin-de-la-era-caracol-w-radio-hoy-arranca-la-fusion-de-las-emisoras/',
+            'https://latamjournalismreview.org/es/news/caracol-radio-y-w-radio-se-fusionan-en-medio-de-crisis-que-redefine-la-radio-en-colombia/',
+            'https://colombia.mom-gmr.org/es/media/detail/outlet/w-radio/',
+        ],
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'caracol-radio': {
+        /**
+         * DOS CORRECCIONES DEL CICLO 1 (2026-08-17).
+         *
+         * 1. Decía «controlado desde 2003 por Joseph Oughourlian». 2003 es el
+         *    año en que Prisa compró Caracol Radio; Oughourlian preside Prisa
+         *    desde febrero de 2021. Dos hechos fundidos en uno.
+         * 2. No registraba la fusión con W Radio del 13-01-2026 — el hecho
+         *    editorial más grande de la radio colombiana del período, y el que
+         *    convierte a este medio en otro del que la ficha describía.
+         */
         ownerType: 'internacional',
         controlGroup: 'prisa',
         holdings: [
-            'Pertenece al Grupo Prisa, de España, controlado desde 2003 por el banquero de inversión Joseph Oughourlian. El mismo grupo es dueño de W Radio y de El País de España.',
+            'Pertenece al Grupo Prisa, de España, cuyo primer accionista es el fondo Amber Capital, de Joseph Oughourlian, que preside el grupo desde febrero de 2021 con cerca del 29,6 % de los derechos de voto.',
+            'DESDE EL 13 DE ENERO DE 2026 INTEGRA A W RADIO: Prisa Media fusionó las dos cadenas bajo esta marca, con el sistema 6AM/W dirigido por Julio Sánchez Cristo, dirección editorial de Roberto Pombo y un nuevo director del servicio informativo, Orlando Villar. La emisora de hoy no es la que el catálogo clasificó.',
             'NO tiene relación de propiedad con Noticias Caracol, que es del grupo Santo Domingo. Comparten nombre y no dueño.',
         ],
-        notes: [],
+        notes: [
+            'El accionariado de Prisa no se agota en Oughourlian: hay accionistas de referencia con perfil propio —entre ellos Vivendi, del grupo Bolloré—, y el grupo es sociedad cotizada que remite su Informe Anual de Gobierno Corporativo a la CNMV española. Ese informe es el primario que cierra este nivel 1, y todavía no se ha citado.',
+            'CONTINGENCIA CON FECHA: en febrero de 2025 Prisa anunció su intención de escindir el negocio de medios latinoamericanos en una filial independiente, sin descartar su venta. La fusión de enero de 2026 empaqueta exactamente ese activo. «Vigente» es hoy cierto y puede dejar de serlo en meses.',
+        ],
         sources: [
+            'https://prnoticias.com/2021/02/24/prisa-joseph-oughourlian-presidente-nueva-era/',
+            'https://www.valoraanalitik.com/w-radio-caracol-radio-se-fusionan/',
+            'https://laboratoriodeperiodismo.org/prisa-media-caracol-radio-integra-w-radio-en-una-unica-cadena-informativa-y-redefine-su-parrilla-en-colombia/',
             'https://www.las2orillas.co/tres-millonarios-duenos-de-los-cinco-poderosos-noticieros-radiales/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'noticias-caracol': {
         ownerType: 'conglomerado',
         controlGroup: 'valorem',
         holdings: [
-            'Es la división de noticias de Caracol Televisión S.A., cuyo accionista mayoritario es Valorem S.A. con el 93,4 %, controlada por Alejandro Santo Domingo Dávila.',
-            'El 6,5 % restante está en Inversiones Valmiera, de Felipe López Caballero, fundador de Semana.',
-            'El mismo holding controla El Espectador y Blu Radio, que aparecen igualmente en este catálogo.',
+            'Es la división de noticias de Caracol Televisión S.A., cuyo accionista mayoritario es Valorem S.A. con el 93,49 %, controlada por Alejandro Santo Domingo Dávila.',
+            'El 6,50 % restante está en Inversiones Valmiera, de Felipe López Caballero, fundador de Semana.',
+            'El mismo holding controla El Espectador y Blu Radio, que aparecen igualmente en este catálogo. Blu Radio no solo comparte dueño: es una operación de esta misma sociedad.',
             'NO tiene relación de propiedad con Caracol Radio, que es del Grupo Prisa. Comparten nombre y no dueño.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * NIVEL 1 CERRADO CON PRIMARIOS EL 2026-08-17 (ciclo 1). Antes se
+             * declaraba «vigente y cerrada» apoyándose solo en dos páginas del
+             * MOM cuya cadena documental interna termina en 2015 — once años. Los
+             * dos documentos primarios que sí la cierran son públicos, gratuitos
+             * y estaban en el sitio corporativo del propio canal.
+             */
+            'La composición accionaria está documentada por la propia empresa (enero de 2020) y el estado societario por su informe trimestral a la Superintendencia Financiera (14-05-2025), que además confirma que la acción sigue inscrita en la BVC sin transacciones en cinco años y que la asamblea del 28-03-2025 nombró la junta directiva 2025-2027, con Alejandro Santo Domingo Dávila, Felipe Andrés Santo Domingo Dávila y Carlos Alejandro Pérez Dávila entre sus miembros.',
+        ],
         sources: [
+            'https://www.caracoltvcorporativo.com/sites/default/files/2020101-composicion_accionaria_de_caracol_television_s.a.-enero_2020.pdf',
+            'https://www.caracoltvcorporativo.com/sites/default/files/20250514_-informe_periodico_trimestral-sfc-_vf.pdf',
             'https://colombia.mom-gmr.org/es/media/detail/outlet/caracol-tv/',
             'https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'portafolio': {
@@ -1357,17 +1540,29 @@ export const OWNERSHIP_PROFILES = {
         ownerType: 'internacional',
         controlGroup: 'infobae-hadad',
         holdings: [
-            'Medio argentino fundado en 2002 por Daniel Hadad, que sigue siendo su dueño.',
+            'Medio argentino fundado en 2002 por Daniel Hadad, que conserva el control.',
+            'NO ES PROPIEDAD UNIPERSONAL: en 2018 Tomás Eurnekian —director de asuntos públicos de Corporación América, el grupo aeroportuario de su tío Eduardo Eurnekian— compró el 20 % de Infobae América, que es la unidad bajo la que opera la expansión latinoamericana, incluida la edición colombiana.',
             'Hadad fundó Radio 10 en Buenos Aires y adquirió Canal 9 en 2002.',
-            'Su redacción colombiana es una expansión posterior a la de México; la agenda editorial se decide fuera del país.',
+            'Su redacción colombiana es una expansión posterior a la de México.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * DOS CORRECCIONES DEL CICLO 1 (2026-08-17). La ficha describía una
+             * propiedad unipersonal que no lo es, en el medio que pesa un cuarto
+             * del corpus; y sostenía con una sola columna de opinión una
+             * afirmación fuerte sobre la estructura de mando.
+             */
+            'El accionista minoritario pertenece a un grupo con negocios en un sector regulado —aeropuertos—, aunque no se le encontraron intereses en Colombia. Se declara porque el protocolo pide nombrar a todos los accionistas conocidos, no porque mueva el análisis de conflicto local.',
+            'DEGRADADA UNA AFIRMACIÓN: aquí se decía que «la agenda editorial se decide fuera del país», y la única fuente era una columna de un medio de opinión. Es una afirmación sobre la estructura de mando y necesita más que eso: la edición colombiana opera desde 2020 con redacción en Bogotá, y nadie ha precisado qué se decide fuera —línea, presupuesto, nombramientos— y qué no.',
+            'RIESGO DE CADUCIDAD DECLARADO: circula desde agosto de 2026 la versión no confirmada de una venta del grupo. No entra al expediente como hecho; entra a la lista de vigilancia, porque un cambio de control en el medio que aporta más artículos del catálogo es el riesgo más caro que tiene el mapa.',
+        ],
         sources: [
+            'https://argentina.mom-gmr.org/en/owners/individual-owners/detail/owner/owner/show/tomas-eurnekian/',
             'https://en.wikipedia.org/wiki/Infobae',
             'https://en.wikipedia.org/wiki/Daniel_Hadad',
             'https://www.las2orillas.co/infobae-el-gigante-argentino-que-pisa-duro-en-colombia/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'la-republica': {
@@ -1380,13 +1575,21 @@ export const OWNERSHIP_PROFILES = {
             'Sus otros negocios están en bebidas (Postobón), azúcar, textiles y deporte.',
         ],
         notes: [
-            'Es un diario económico cuyo dueño es uno de los mayores conglomerados industriales del país. La cobertura de bebidas, azúcar o textiles es donde ese cruce se haría visible.',
+            /**
+             * DEJA DE SER HIPÓTESIS EL 2026-08-17 (ciclo 1). La nota decía «la
+             * cobertura de bebidas es donde ese cruce se haría visible» — en
+             * condicional, sin comprobarlo. Se comprobó: el cruce es visible.
+             */
+            'EL CRUCE ESTÁ COMPROBADO, NO SUPUESTO. La página de etiqueta de Postobón en larepublica.co muestra una serie de piezas favorables sobre el accionista —sostenibilidad, inversión social, reciclaje, reputación, declaraciones de su presidente— sin una sola pieza crítica en la misma ventana, y sin cobertura del impuesto saludable a bebidas azucaradas (IBUA), que golpea directamente a Postobón. Se consigna como desvelamiento, no como acusación: es el mismo tratamiento que el catálogo le dio a Valora Analitik.',
+            'Es un diario económico cuyo dueño es uno de los mayores conglomerados industriales del país. El sesgo aquí no es de encuadre sino DE OMISIÓN sobre el dueño, que es la clase de sesgo que ninguna medición de texto detecta.',
+            'Hereda el nivel 1 de la casa Ardila Lülle, con sus tres defectos: MOM con titulares fallecidos en 2021, 63,4 % en sociedad panameña y la sucesión sin documentar. Ver `noticias-rcn`. Un certificado de la Cámara de Comercio de Bogotá de Editorial La República S.A.S. lo cierra.',
         ],
         sources: [
+            'https://www.larepublica.co/postobon',
             'https://es.wikipedia.org/wiki/La_Rep%C3%BAblica_(Colombia)',
             'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'valora-analitik': {
@@ -1417,22 +1620,41 @@ export const OWNERSHIP_PROFILES = {
         holdings: [
             'Controlado por las familias Manotas, Pumarejo y Fernández, con un tercio de las acciones cada una. Lo fundaron en 1933 Alberto Pumarejo, Luis Eduardo Manotas y Juan B. Fernández Ortega.',
             'En junio de 2023 el Grupo Semana, de la familia Gilinski, firmó un memorando para comprar el 100 %. La operación se cayó en agosto de ese año y el diario siguió con sus dueños.',
+            'Lo dirige Erika Fontalvo desde el 1 de marzo de 2020.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * AVISO AÑADIDO EL 2026-08-17 (ciclo 1). La ficha del medio llamaba a
+             * esta sección «una de las mejores fichas de propiedad del catálogo».
+             * Lo era en forma —tres familias, tercios, fuentes citadas— pero su
+             * última verificación visible es de 2023. Estar bien escrita no es
+             * estar al día, y este ciclo demostró lo caro que sale confundirlas.
+             */
+            'LA ESTRUCTURA EN TERCIOS ES LA MEJOR HIPÓTESIS DISPONIBLE, NO UN HECHO VERIFICADO AL PRESENTE: todas las fuentes que la sostienen son de 2023 o anteriores, y no se encontró declaración societaria ni certificado mercantil de 2025-2026. Un certificado de la Cámara de Comercio de Barranquilla de El Heraldo S.A. lo cierra en un día.',
+            'CORRECCIÓN CRUZADA: cualquier razonamiento del catálogo que empareje a este diario con «la casa que ya tiene Semana y El País (Cali)» describe una estructura muerta. Gilinski vendió El País en junio de 2025.',
+        ],
         sources: [
             'https://www.pulzo.com/economia/duenos-heraldo-cuales-tres-familias-que-mandan-ese-periodico-PP2729022',
             'https://www.publimetro.co/barranquilla/2023/08/19/se-le-cayo-multimillonario-negocio-a-los-gilinski-y-a-semana-por-estas-razones/',
             'https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     /**
-     * Documentado pero SIN grupo de control, a propósito. Galvis Ramírez tiene
-     * el 50 % de Editora del Mar y la familia Araujo el resto: ninguna de las
-     * dos manda sola. El aviso de dueño compartido afirma «pertenecen a», y con
-     * una coposesión al 50 % eso sería sobreafirmar. El dato queda en la ficha,
-     * donde el lector lo ve con su matiz, y fuera del cálculo automático.
+     * Documentado pero SIN aviso de dueño compartido, y ahora por un motivo más
+     * débil que antes. El razonamiento era: Galvis Ramírez tiene el 50 % de
+     * Editora del Mar y la familia Araujo el resto, ninguna manda sola, y el
+     * aviso afirma «pertenecen a», que con una coposesión al 50 % sería
+     * sobreafirmar.
+     *
+     * EL 50 % NO ESTÁ VERIFICADO (ciclo 1, 2026-08-17). Al ir a comprobar la
+     * objeción sobre el titular fallecido apareció que ninguna fuente del
+     * presente desagrega los porcentajes, y al menos una atribuye al bloque
+     * Galvis una participación mayoritaria. La decisión de no marcar el aviso se
+     * mantiene —ante la duda, no sobreafirmar— pero ya no descansa en un dato:
+     * descansa en la ausencia de uno. Si el certificado mercantil muestra
+     * mayoría Galvis, hay que revisarla.
      */
     'el-universal': {
         ownerType: 'familiar',
@@ -1446,46 +1668,110 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'lopez-escauriaza-araujo',
         holdings: [
             'Lo publica Editora del Mar S.A. Lo fundaron en 1948 Domingo López Escauriaza y Eduardo Ferrer Ferrer, cuñados y socios.',
-            'Alejandro Galvis Ramírez —de la familia dueña de Vanguardia, en este mismo catálogo— entró en 1980 con el 50 % de Editora del Mar. El otro 50 % quedó en manos de socios locales, entre ellos la familia Araujo Perdomo, con intereses en hotelería y trayectoria política conservadora.',
-            'Ninguno de los dos bloques tiene mayoría por sí solo, así que este medio NO cuenta como dueño compartido con Vanguardia en los avisos del sitio.',
+            'La familia Galvis —la misma que es dueña de Vanguardia, en este catálogo— entró en 1980, a través de Alejandro Galvis Ramírez. Él murió el 15 de enero de 2021, así que ese bloque está hoy en manos de sus herederos.',
+            'El otro bloque está en manos de socios locales, entre ellos la familia Araujo Perdomo, con intereses en hotelería y trayectoria política. El gerente general del diario es Gerardo Araújo Perdomo: el socio local no es un accionista pasivo, administra el medio a diario.',
+            'La misma sociedad edita Q\'hubo Cartagena y El Teso. El diario es miembro fundador de Colprensa.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * DOS CORRECCIONES DEL CICLO 1 (2026-08-17), y la segunda no la trajo
+             * el revisor externo sino la comprobación de su objeción.
+             *
+             * 1. Aquí se citaba a Alejandro Galvis Ramírez como titular vigente
+             *    de un 50 %. Murió el 15-01-2021: cinco años y siete meses antes
+             *    de que se escribiera la ficha. Es el cuarto titular fallecido
+             *    citado como vivo en este mismo ciclo.
+             * 2. EL REPARTO 50/50 TAMPOCO ESTÁ DOCUMENTADO. Al ir a comprobarlo
+             *    apareció una fuente que habla del 61 % para el bloque Galvis, y
+             *    ninguna fuente del presente desagrega los porcentajes. Se quitan
+             *    las dos cifras en vez de elegir una: el argumento de gobernanza
+             *    de la ficha —«ninguno tiene mayoría, así que la línea no puede
+             *    dictarse»— dependía de un número que nadie ha verificado.
+             */
+            'NO CONSTA EL REPARTO ACCIONARIO. La ficha afirmaba un 50/50 y las fuentes disponibles no lo sostienen: hay al menos una que atribuye al bloque Galvis una participación mayoritaria, y ninguna del presente desagrega. Mientras no se compre el certificado de la Cámara de Comercio de Cartagena de Editora del Mar S.A., la afirmación «ninguno de los dos bloques tiene mayoría» NO está probada.',
+            'CONSECUENCIA PENDIENTE DE DECISIÓN: la marca de «dueño compartido» con Vanguardia se apoyaba en ese 50/50. Si el bloque Galvis resulta mayoritario, el vínculo entre los dos diarios es más fuerte de lo que el sitio muestra hoy, y el criterio hay que revisarlo.',
+            'Tampoco consta cómo quedó repartido el bloque Galvis entre los herederos tras 2021.',
+        ],
         sources: [
+            'https://es.wikipedia.org/wiki/El_Universal_(Colombia)',
+            'https://www.vanguardia.com/area-metropolitana/bucaramanga/2021/01/15/fallecio-alejandro-galvis-ramirez-presidente-corporativo-de-vanguardia/',
             'https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/',
             'https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/',
-            'https://es.wikipedia.org/wiki/El_Universal_(Colombia)',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'blu-radio': {
+        /**
+         * LA «LAGUNA DECLARADA» NO EXISTÍA (ciclo 1, 2026-08-17). La ficha decía
+         * que «no se ha documentado el porcentaje ni la sociedad concreta que la
+         * opera» y lo llamaba un hueco más grueso de lo que admite el protocolo.
+         * La respuesta estaba en la página vecina del mismo registro que la ficha
+         * ya citaba: el MOM tiene entrada propia de Blu Radio y dice que la
+         * emisora pertenece a Caracol Televisión S.A.
+         *
+         * Y la consecuencia es incómoda, así que se escribe: Blu Radio y Noticias
+         * Caracol no son «dos medios del mismo dueño». Son dos productos de la
+         * MISMA SOCIEDAD. Su diferencia de 0,15 exige más explicación, no menos.
+         */
         ownerType: 'conglomerado',
         controlGroup: 'valorem',
         holdings: [
-            'Pertenece a Valorem, el holding de la familia Santo Domingo.',
-            'El mismo holding está detrás de El Espectador y de Caracol Televisión —Noticias Caracol—, que aparecen igualmente en este catálogo: tres medios, un dueño.',
+            'Es una operación de Caracol Televisión S.A. —la misma sociedad que produce Noticias Caracol—, cuyo accionariado es Valorem S.A. con el 93,5 % e Inversiones Valmiera, de Felipe López Caballero, con el 6,5 %.',
+            'Dirige su franja insignia, Mañanas Blu, el periodista Néstor Morales, desde el lanzamiento de la cadena en 2012.',
+            'El mismo holding está detrás de El Espectador y de Noticias Caracol, que aparecen igualmente en este catálogo: tres medios, un dueño — y dos de ellos, una sola sociedad.',
         ],
-        notes: [],
+        notes: [
+            'Comparte con Noticias Caracol algo más que el dueño: las dos casas comisionan y publican conjuntamente las encuestas Invamer, que se difunden como «encuesta Invamer para Blu Radio y Noticias Caracol». La operación de opinión política de los dos medios es una sola.',
+            'HECHO DE GOBERNANZA DEL PERÍODO, con su estatus declarado: entre marzo y abril de 2026 el Ministerio del Trabajo intervino los sets de noticias de Caracol —que incluyen esta operación— por denuncias de acoso laboral y sexual, y según los reportes publicados parte de las quejas apuntaba al director de Mañanas Blu. Son denuncias no probadas; lo verificable es la intervención.',
+        ],
         sources: [
+            'https://colombia.mom-gmr.org/en/media/detail/outlet/bluradio/',
+            'https://www.caracoltvcorporativo.com/sites/default/files/2020101-composicion_accionaria_de_caracol_television_s.a.-enero_2020.pdf',
+            'https://www.publimetro.co/entretenimiento/2026/04/14/nestor-morales-de-blu-radio-en-la-mira-por-el-manejo-que-ha-tenido-con-las-victimas-de-acoso-laboral-en-caracol/',
             'https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/',
-            'https://www.las2orillas.co/tres-millonarios-duenos-de-los-cinco-poderosos-noticieros-radiales/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'noticias-rcn': {
+        /**
+         * EL CASO QUE MEJOR EXPLICA POR QUÉ EL MOM NO BASTA (ciclo 1, 2026-08-17).
+         *
+         * La ficha declaraba el nivel 1 «vigente y cerrado» citando la página del
+         * MOM de la Organización Ardila Lülle. Esa página lista hoy como dueños
+         * actuales a **dos personas muertas en 2021** —Carlos Ardila Lülle
+         * († 13-08-2021) y Eugenia Gaviria de Ardila († 30-05-2021)— y deja el
+         * 63,4 % del holding colgando de una sociedad panameña sin llegar a
+         * persona natural, que es justo lo que el protocolo exige.
+         *
+         * Y había un hecho societario registrado que nadie citó: la fusión de
+         * diciembre de 2022 que dejó a Carbe S.A.S. con el 86,28 % del canal.
+         *
+         * Lo desactivado no es la conclusión —la OAL controla el canal, y eso
+         * sigue en pie— sino la calidad del expediente que la sostenía.
+         */
         ownerType: 'conglomerado',
         controlGroup: 'ardila-lulle',
         holdings: [
             'Pertenece a la Organización Ardila Lülle, con intereses en bebidas (Postobón), azúcar, textiles y deporte.',
+            'Desde diciembre de 2022, tras la fusión por reorganización de Servinsa OAL, Heraga, Besmit, Proma e Inversiones Gamesa, la sociedad Carbe S.A.S. es el mayor accionista del canal con el 86,28 %. La operación se registró en la Cámara de Comercio de Bogotá el 05-12-2022 con autorización de la Superintendencia de Sociedades; la compañía declaró que no hubo cambio de control ni de beneficiario real.',
             'La misma organización controla RCN Radio y La FM, y el diario económico La República: tres medios de este catálogo, un dueño.',
         ],
-        notes: [],
-        sources: [
-            'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
-            'https://www.eltiempo.com/economia/empresas/carlos-ardila-luelle-de-que-empresas-era-dueno-610443',
+        notes: [
+            'LA CADENA NO LLEGA A PERSONA NATURAL. La página del MOM de la Organización Ardila Lülle sitúa el 63,4 % del holding en Parklake Investment Inc., sociedad panameña cuya titularidad tras la sucesión de 2021 no está documentada en ninguna fuente abierta. El protocolo pide llegar a persona; aquí el hilo se detiene en Panamá.',
+            'ADEMÁS, ESA PÁGINA ESTÁ VENCIDA: lista como titulares vigentes a Carlos Ardila Lülle, fallecido el 13-08-2021, y a Eugenia Gaviria de Ardila, fallecida el 30-05-2021. Es la misma fuente que sostenía el nivel 1 de tres medios de este catálogo.',
+            'HAY UN CIERRE BARATO Y NO SE HA COMPRADO: RCN Televisión S.A. es emisor bursátil, reporta a la Superintendencia Financiera y publica estados financieros auditados. Un extracto mercantil de 2026 de Carbe S.A.S. o de RCN Televisión S.A. cierra este nivel 1 con documento del presente.',
+            'Existe además una capa editorial común a los tres medios de la casa: desde 2021 la OAL tiene un Consejero General de Medios, Juan Lozano Ramírez, con jurisdicción declarada sobre RCN Televisión, RCN Radio y La República; desde octubre de 2024 dirige además La FM. No se encontró confirmación de 2025-2026 de que siga en la consejería.',
         ],
-        verifiedAt: VERIFICADO,
+        sources: [
+            'https://www.valoraanalitik.com/quien-es-el-mayor-accionista-de-rcn-television-en-colombia/',
+            'https://www.pulzo.com/economia/rcn-television-tiene-nuevo-accionista-mayor-luego-cambios-reorganizacion-PP2378854A',
+            'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
+            'https://enciclopedia.banrepcultural.org/Carlos_Ardila_Lulle',
+            'https://www.usergioarboleda.edu.co/noticias/juan-lozano-decano-sergista-nuevo-consejero-general-de-medios-de-comunicacion-de-la-organizacion-ardila-lulle/',
+        ],
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'la-patria': {
@@ -1508,16 +1794,33 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'galvis',
         holdings: [
             'Lo publica Galvis Ramírez y Cía S.A. Fundado en Bucaramanga en septiembre de 1919 por Alejandro Galvis Galvis, sigue en manos de sus descendientes.',
-            'Alejandro Galvis Ramírez fue su principal impulsor hasta su muerte en 2021.',
-            'La misma familia entró en 1980 con el 50 % de Editora del Mar, que publica El Universal de Cartagena, y adquirió El Nuevo Día de Ibagué.',
+            'Alejandro Galvis Ramírez lo dirigió desde 1967 y fue su principal impulsor hasta su muerte, el 15 de enero de 2021.',
+            'Hoy la gerencia y la representación legal de Galvis Ramírez y Cía S.A. las ejerce su hijo, Alejandro Galvis Blanco, que además es directivo de Colprensa y preside Andiarios. El relevo de gobierno ocurrió años antes de la muerte del patriarca, no después.',
+            'Su director es Juan Carlos Gutiérrez Tibamoso, en el cargo desde el 18 de diciembre de 2025 tras 28 años en la casa. Es el tercer director en tres años.',
+            'La misma familia entró en 1980 en Editora del Mar, que publica El Universal de Cartagena, y adquirió El Nuevo Día de Ibagué.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * LA LAGUNA DECLARADA ERA MENOR DE LO ESCRITO (ciclo 1, 2026-08-17).
+             * La ficha decía que «no consta quién controla hoy Galvis Ramírez y
+             * Cía S.A.» y construía sobre eso un argumento de riesgo: que la
+             * muerte del accionista de referencia sería el momento en que la
+             * propiedad se recompone. El control operativo sí consta, y la
+             * recomposición fue anterior a la muerte, por diseño del propio
+             * Galvis Ramírez. Lo que no consta es el reparto entre herederos.
+             */
+            'CONSTA EL CONTROL OPERATIVO, NO EL REPARTO. La gerencia y la representación legal están documentadas; la distribución accionaria entre los herederos, no. Un certificado de la Cámara de Comercio de Bucaramanga la cierra.',
+            'Tres directores en tres años con una línea editorial estable es, en sí mismo, un dato: apunta a que la orientación es de la casa y no del director de turno.',
+            'PRECISIÓN QUE IMPORTA PARA EL CRITERIO REGIONAL: la familia Galvis es históricamente liberal, no conservadora, y el diario suprimió formalmente la palabra «Liberal» de su nombre el 24-03-2019. Si alguna vez se escribe el criterio «familia empresarial regional → derecha moderada», este caso recuerda que el mecanismo no es partidismo heredado sino posición estructural.',
+        ],
         sources: [
+            'https://portales.vanguardia.com/especiales-vanguardia/contenido/homenaje-a-alejandro-galvis-ramirez/',
+            'https://www.vanguardia.com/area-metropolitana/bucaramanga/2025/12/18/vanguardia-reconoce-la-gestion-de-melissa-garcia-y-anuncia-nuevo-director/',
+            'https://www.valoraanalitik.com/nuevo-cambio-director-vanguardia/',
             'https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/',
-            'https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/',
             'https://en.wikipedia.org/wiki/Vanguardia_(Colombian_newspaper)',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'la-opinion': {
@@ -1533,10 +1836,21 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'catalitico',
         holdings: [
             'Fundado en 1958 en Cúcuta. Estuvo siempre en manos de la familia del periodista Eustorgio Colmenares, asesinado por el ELN en marzo de 1993 y sucedido por su hijo José Eustorgio Colmenares.',
-            'El Grupo Empresarial Catalítico, de Barranquilla, compró el 100 % de las acciones y cerró la operación el 1 de febrero de 2024. Lo dirige el comunicador Cristian Verbel.',
-            'Catalítico se dedica a recuperar empresas de tecnología y mercadeo; llegó al diario como asesor de la transformación digital de la familia Colmenares y acabó proponiendo comprarlo.',
+            'El Grupo Empresarial Catalítico, de Barranquilla, compró el 100 % de las acciones y cerró la operación el 1 de febrero de 2024. Su fundador y CEO es el comunicador Cristian Verbel.',
+            'Catalítico se dedica a recuperar empresas de tecnología y mercadeo; llegó al diario como asesor de la transformación digital de la familia Colmenares y acabó proponiendo comprarlo. El grupo opera además en software, seguros, exequias y salud.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * COMPLETADO EL 2026-08-17 (ciclo 1). La ficha preguntaba «quién está
+             * detrás de Catalítico» como laguna abierta y tenía respuesta pública
+             * parcial. Dos cosas cambian: hay perfil del comprador, y hay
+             * sectores regulados en su portafolio que el catálogo no registraba.
+             */
+            'HAY CONFLICTO POTENCIAL QUE VIGILAR: los negocios de salud y seguros del grupo son sectores regulados por el Estado. Mismo tratamiento que ibiDs en El País (Cali) y Postobón en La República — se documenta pieza por pieza, no se presume.',
+            'PROMESA EDITORIAL ARCHIVADA COMO VARA DE MEDIR: el editorial fundacional de la nueva era (01-02-2024) se comprometió a no dejarse llevar «por sesgos ideológicos, religiosos ni de ningún otro tipo». Sirve para medir al medio contra su propia declaración en los próximos ciclos.',
+            'CONTEXTO QUE NO ES ORIENTACIÓN PERO CONDICIONA LA LECTURA: en junio de 2026 fue asesinado en Cúcuta un exreportero judicial del diario, y el propio comprador declaró al comprarlo que el periódico seguía bajo amenaza de bandas criminales. En un departamento donde ELN y disidencias disputan territorio, la línea dura de seguridad es a la vez posición editorial y descripción del entorno vivido. Conviene registrarlo para no leer como sesgo lo que también es supervivencia — y, al revés, para vigilar los silencios que la amenaza produce.',
+            'No consta el accionariado interno de Grupo Empresarial Catalítico S.A.S. ni quién es el director editorial vigente: la anterior directora, Estefanía Colmenares, figura ya como exdirectora y no se encontró el nombramiento de su sucesor.',
+        ],
         sources: [
             'https://www.semana.com/nacion/articulo/grupo-empresarial-catalitico-nuevo-dueno-del-diario-la-opinion-de-cucuta/202443/',
             'https://www.larepublica.co/empresas/grupo-empresarial-catalitico-comprara-el-diario-la-opinion-de-cucuta-3789641',
@@ -1546,19 +1860,39 @@ export const OWNERSHIP_PROFILES = {
     },
 
     'el-pais-cali': {
+        /**
+         * REESCRITO ENTERO EL 2026-08-17, ciclo 1 de revisión externa.
+         *
+         * Decía «lo controla el Grupo Semana, de Gabriel Gilinski, desde enero
+         * de 2023» y sobre esa frase se sostenía además la ficha del medio —que
+         * concluía «no firmable por separado, comparte dueño con Semana»—.
+         * **Gilinski lo vendió en junio de 2025**, catorce meses antes de que se
+         * escribiera. No era un matiz: era el cimiento del veredicto.
+         *
+         * El error se propagaba a tres fichas más (Semana, El Heraldo y
+         * cualquier nota sobre «la expansión del modelo Semana»), y es el caso
+         * que mejor justifica la regla nueva: la propiedad se reverifica contra
+         * una fuente del año en curso, no contra la crónica de la compra.
+         */
         ownerType: 'conglomerado',
-        controlGroup: 'gilinski',
+        controlGroup: 'el-pais-hernandez',
         holdings: [
-            'Lo controla el Grupo Semana, de Gabriel Gilinski, desde enero de 2023. La familia Lloreda salió tras más de ochenta años al frente del diario.',
-            'Comparte propietario con Semana: dos medios de este catálogo responden ante el mismo dueño.',
+            'Lo controla, desde junio de 2025, un grupo internacional encabezado por el empresario dominicano Eduardo Hernández Incháustegui, que compró la totalidad de las acciones a GGKB Holdings, del Grupo Gilinski.',
+            'Su directora es Vicky Perea García, en el cargo desde julio de 2023.',
             'NO tiene ninguna relación con El País de España, que es del Grupo Prisa y aparece también en este catálogo. Mismo nombre, dueños distintos.',
         ],
-        notes: [],
-        sources: [
-            'https://www.larepublica.co/empresas/familia-lloreda-cerro-trato-con-gabriel-gilinski-por-adquiscion-de-el-pais-de-cali-3521173',
-            'https://lasillavacia.com/historias/silla-nacional/con-el-pais-de-cali-gilinski-arranca-la-expansion-del-modelo-semana',
+        notes: [
+            'HISTORIA, NO PRESENTE: el Grupo Semana, de Gabriel Gilinski, lo tuvo entre enero de 2023 y junio de 2025, tras rescatarlo de la liquidación y sacar a la familia Lloreda después de más de ochenta años. Ese período está cerrado y **ya no puede usarse para emparentarlo con Semana**.',
+            'El dueño actual tiene su negocio principal en ibiDs.io, una plataforma que monetiza datos de contratación pública (Secop), y declaró como prioridad editorial la «vigilancia permanente sobre la transparencia en el quehacer público y privado». La cobertura de contratación estatal es donde ese cruce se haría visible.',
+            'No consta públicamente el desglose del «grupo internacional»: si Hernández Incháustegui tiene el 100 %, la mayoría, o si hay socios no nombrados. Un certificado de la Cámara de Comercio de Cali de El País S.A. lo cerraría.',
         ],
-        verifiedAt: VERIFICADO,
+        sources: [
+            'https://www.semana.com/economia/empresas/articulo/el-pais-de-cali-cambia-de-dueno-eduardo-hernandez-inchaustegui-adquirio-el-diario/202519/',
+            'https://www.elcolombiano.com/negocios/gilinski-vendio-el-pais-de-cali-y-eduardo-hernandez-inchaustegui-nuevo-dueno-IK27879652',
+            'https://www.diariolibre.com/usa/actualidad/2025/06/27/empresario-dominicano-asume-el-control-del-diario-colombiano-el-pais/3165389',
+            'https://www.elpais.com.co/cali/la-periodista-vicky-perea-fue-designada-como-nueva-directora-de-el-pais-2715.html',
+        ],
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'kienyke': {
@@ -1600,38 +1934,71 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'ardila-lulle',
         holdings: [
             'Forma parte de RCN Radio, de la Organización Ardila Lülle, que cubre más del 80 % del territorio nacional con más de 160 emisoras.',
+            'La dirige desde el 4 de octubre de 2024 Juan Lozano Ramírez, exministro de Estado —fue ministro de Ambiente, Vivienda y Desarrollo Territorial— y, desde 2021, Consejero General de Medios de la propia Organización Ardila Lülle, con jurisdicción declarada sobre RCN Televisión, RCN Radio y La República.',
             'La misma organización controla Noticias RCN y el diario económico La República: tres medios de este catálogo, un dueño.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * AÑADIDO EL 2026-08-17, ciclo 1. La ficha no nombraba al director, y
+             * el director es la respuesta estructural a la pregunta que la propia
+             * ficha se hacía: por qué La FM y Noticias RCN, misma casa, se separan
+             * 0,10 sin explicación escrita.
+             */
+            'DOBLE SOMBRERO, Y ES EL DATO ESTRUCTURAL DE ESTA FICHA: la misma persona dirige esta emisora y supervisa, como consejero de medios del grupo, a los otros dos medios de la casa que están en este catálogo. La pregunta ya no es «¿por qué dos números distintos con el mismo dueño?» sino qué conducta medida separa a un noticiero de televisión de una emisora que publica a diario el editorial firmado de su director.',
+            'A diferencia de un noticiero, esta emisora SÍ produce texto citable de la casa: la sección «Carta del director» publica cada día el editorial matutino, fechado y archivable. Es la pieza que más puramente expresa la línea, y hoy no entra a la ingesta.',
+            'Hereda, sin nota propia, todos los vicios del nivel 1 de la casa Ardila Lülle: página del MOM con titulares fallecidos en 2021, 63,4 % en una sociedad panameña sin persona natural y la fusión Carbe de 2022. Ver `noticias-rcn`.',
+        ],
         sources: [
+            'https://www.noticiasrcn.com/colombia/juan-lozano-es-el-nuevo-director-de-la-fm-de-rcn-757157',
+            'https://www.usergioarboleda.edu.co/noticias/juan-lozano-decano-sergista-nuevo-consejero-general-de-medios-de-comunicacion-de-la-organizacion-ardila-lulle/',
             'https://colombia.mom-gmr.org/es/media/detail/outlet/la-fm/',
             'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'el-colombiano': {
         /**
          * `familiar` aquí NO significa «una familia»: significa control
          * económico de alcance regional, que es como lo muestra el distintivo
-         * («Grupo económico · regional»). Desde febrero de 2022 lo controlan 15
-         * empresarios antioqueños con el 51 %, y la familia Gómez Martínez
-         * quedó en minoría. Sus negocios están en construcción, comercio,
-         * textiles y agroindustria: ver `sectores` del grupo.
+         * («Grupo económico · regional»). Desde febrero de 2022 lo controla un
+         * bloque de empresarios antioqueños y la familia Gómez Martínez quedó en
+         * minoría. Sus negocios están en construcción, comercio, textiles y
+         * agroindustria: ver `sectores` del grupo.
+         *
+         * PORCENTAJE CORREGIDO EL 2026-08-17 (ciclo 1): decía 51 %. La fuente
+         * más reciente y detallada —una investigación de Vorágine de marzo de
+         * 2026 basada en registros del CNE y actas de asamblea— sitúa el bloque
+         * en el 57 %, y además nombra el vehículo, que la ficha declaraba
+         * desconocido.
          */
         ownerType: 'familiar',
         controlGroup: 'el-colombiano-accionistas',
         holdings: [
             'La familia Gómez Martínez quedó como única dueña en 2019, al comprar a la familia Hernández la mitad que tenía desde 1930.',
-            'En febrero de 2022 un grupo de empresarios antioqueños adquirió el 51 % de las acciones. Sus protagonistas describieron la operación como una respuesta al interés del Grupo Gilinski por el diario.',
-            'Entre los compradores está Manuel Santiago Mejía, cabeza del grupo Corbeta.',
+            'En febrero de 2022 un grupo de empresarios antioqueños adquirió el control. El vehículo es Alianza San Felipe S.A.S., con el 57 % de las acciones del diario.',
+            'Dentro de Alianza San Felipe está documentada Soluciones y Desarrollos Empresariales —asociada a Manuel Santiago Mejía, cabeza del grupo Corbeta— con el 5,56 %. Conconcreto reporta también inversión en Alianza San Felipe en sus estados financieros, y su presidente, Juan Luis Aristizábal, es miembro de la junta directiva del diario.',
+            'Su directora es Luz María Sierra, desde agosto de 2021. Fue la primera directora que no pertenece al bloque de propietarios.',
         ],
-        notes: [],
+        notes: [
+            'LA LAGUNA SE REDUJO, NO SE CERRÓ: el vehículo y dos inversores están documentados con montos, pero la composición total de Alianza San Felipe S.A.S. no es pública. Un certificado de la Cámara de Comercio de Medellín la cierra.',
+            'Manuel Santiago Mejía es aportante documentado de campañas de la derecha antioqueña y nacional según registros del CNE. La regla 5.1 prohíbe usarlo como argumento de orientación —y no se usa—: se registra porque cierra el nivel 1 y porque habilita la prueba de conflicto de interés pieza por pieza.',
+            /**
+             * INSTRUCCIÓN DE MONITOREO CORREGIDA (ciclo 1). La ficha mandaba
+             * vigilar «la cobertura del Grupo Empresarial Antioqueño», y el GEA
+             * dejó de existir: el enroque accionario Sura–Argos que lo sostenía
+             * durante 46 años se deshizo en 2024. Una instrucción apuntada a una
+             * entidad disuelta no se puede ejecutar.
+             */
+            'DÓNDE MIRAR EL CONFLICTO DE INTERÉS, con sujetos que existen hoy: Corbeta/Alkosto/Ktronix (Mejía), Conconcreto (Aristizábal), Grupo Sura y Bancolombia, y la Alcaldía de Medellín y la Gobernación de Antioquia. El Grupo Empresarial Antioqueño ya NO es un sujeto comprobable.',
+        ],
         sources: [
+            'https://voragine.co/historias/investigacion/la-chequera-uribista-que-ha-impulsado-el-proyecto-politico-de-oviedo/',
+            'https://www.elcolombiano.com/antioquia/luz-maria-sierra-es-la-nueva-directora-de-el-colombiano-FD15344753',
             'https://www.elcolombiano.com/antioquia/venta-de-acciones-de-el-colombiano-asi-fue-el-negocio-MI16691915',
             'https://www.las2orillas.co/quienes-son-los-empresarios-antioquenos-que-se-quedaron-con-el-colombiano/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
     // ── Regionales departamentales (alta del 2026-08-09) ────────────────────
     //
@@ -2748,12 +3115,24 @@ export const OWNERSHIP_PROFILES = {
         holdings: [
             'El 100 % de las acciones figura a nombre de INQLAB S.A.S., según la ficha del Media Ownership Monitor de Colombia, que es el único registro público abierto con su estructura societaria.',
             'La misma sociedad participa en otras tres empresas de tecnología y comercio electrónico: Quantum (49 %), Chicplace (43 %) y Appto (15 %). Son participaciones minoritarias, no control.',
-            'Quién controla INQLAB S.A.S. NO CONSTA en ninguna fuente que se haya podido abrir. El hilo llega a la sociedad y ahí se detiene, a diferencia del resto de medios colombianos del catálogo, donde termina en personas.',
+            'Quién controla INQLAB S.A.S. NO CONSTA en ninguna fuente que se haya podido abrir. El hilo llega a la sociedad y ahí se detiene.',
+            'Su CEO es Andrés Murcia, en el cargo desde diciembre de 2023, según el propio medio. Antes fue Chief Digital Officer de Prisa Media.',
         ],
         notes: [
             'SUS TRES FUENTES PÚBLICAS SE CONTRADICEN, y se deja constancia en vez de elegir una: el Media Ownership Monitor da a Guillermo Eduardo Franco Morales como fundador y CEO y a Julio Mario Camacho como representante legal; Wikipedia afirma que INQLAB está registrada en Panamá y pertenece al grupo Santo Domingo; y la ficha de SembraMedia que Wikipedia cita como única prueba de eso no menciona ni a Santo Domingo ni a INQLAB, sino a otro fundador (Andrés Murcia) y otro año de fundación (2012).',
             'La República tituló «Guillermo Franco se retira de Pulzo, un portal web del Grupo Santo Domingo», pero el cuerpo de esa nota no afirma nada sobre la propiedad. NO se le atribuye por eso ningún grupo de control: hacerlo pondría a cuatro medios de este catálogo bajo el mismo dueño a partir de un titular que su propio texto no respalda.',
-            'Los datos de personas del Media Ownership Monitor están caducados en al menos un punto: la propia La República informó de la salida de Franco del medio. La sociedad se mantiene; los cargos, no necesariamente.',
+            'Los datos de personas del Media Ownership Monitor están caducados en al menos un punto: la propia La República informó de la salida de Franco del medio, en junio de 2018. La sociedad se mantiene; los cargos, no necesariamente.',
+            /**
+             * AFIRMACIÓN DE SINGULARIDAD RETIRADA EL 2026-08-17 (ciclo 1). Aquí
+             * se decía que el hilo se detiene «a diferencia del resto de medios
+             * colombianos del catálogo, donde termina en personas». Es falso: el
+             * 63,4 % de la Organización Ardila Lülle cuelga de Parklake
+             * Investment Inc., sociedad panameña sin titularidad documentada, y
+             * eso afecta a otros tres medios del catálogo. Cablenoticias tiene
+             * también sociedad última en Panamá.
+             */
+            'NO ES UNA ANOMALÍA, ES UN PATRÓN: al menos cinco medios del catálogo tienen el hilo de propiedad parado en una sociedad que no llega a persona natural. Presentarlo como rareza de este medio describía mal el mapa. Lo que falta no es una excepción para Pulzo sino una regla escrita sobre qué dice el aviso de propiedad cuando el hilo termina en una sociedad offshore.',
+            'CONTRA-INDICIOS DE LA HIPÓTESIS SANTO DOMINGO, anotados para que el próximo revisor no rehaga el barrido: el cofundador Luis Fernando Santos es expresidente de Casa Editorial El Tiempo —órbita Sarmiento, no Santo Domingo—; universidades que describen a InQlab la presentan como vehículo de inversión en empresas disruptivas sin mencionar al grupo; y el MOM documenta a INQLAB S.A.S. como sociedad colombiana con registros RUES y Cámara de Comercio de Bogotá, lo que deja el «registrada en Panamá» de Wikipedia sin respaldo ni siquiera en las fuentes disponibles.',
         ],
         sources: [
             'https://colombia.mom-gmr.org/en/media/detail/outlet/pulzocom/',
@@ -2769,19 +3148,28 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'gilinski',
         holdings: [
             'El Grupo Gilinski compró el 50 % en 2019 y ejerció la opción sobre el resto en noviembre de 2020: desde entonces controla el 100 %.',
-            'El mismo grupo controla El País (Cali) desde enero de 2023, así que dos medios de este catálogo responden ante el mismo dueño.',
             'Su activo principal en Colombia es el Banco GNB Sudameris, entre los diez mayores del país, y también está detrás del banco digital Lulo Bank. Tras el pulso con el Grupo Empresarial Antioqueño, la familia quedó con el control de Nutresa, en alimentos.',
+            'Desde el 8 de julio de 2026 preside su junta directiva Vicky Dávila, cargo que según los estatutos de la casa tiene la máxima autoridad editorial. Dirigió la revista entre 2020 y noviembre de 2024, cuando salió a buscar la candidatura presidencial de 2026. Yesid Lancheros sigue como director.',
         ],
         notes: [
             'Su dueño es a la vez banquero y dueño de una de las mayores empresas de alimentos del país. La cobertura del sector financiero y de la industria alimentaria es donde ese cruce se haría visible.',
+            /**
+             * CORREGIDO EL 2026-08-17, ciclo 1. Aquí decía «el mismo grupo
+             * controla El País (Cali) desde enero de 2023, así que dos medios de
+             * este catálogo responden ante el mismo dueño». Es falso desde junio
+             * de 2025 y arrastraba a la ficha 16 entera. Ver `el-pais-cali`.
+             */
+            'YA NO comparte dueño con El País (Cali): el Grupo Gilinski lo vendió en junio de 2025. Cualquier nota del catálogo que los empareje describe una estructura cerrada.',
+            'La máxima autoridad editorial estatutaria la ejerce hoy una excandidata presidencial, y eso es estructura vigente, no historia: se declara aquí porque el protocolo exige decir a quién responde el medio, no porque determine su línea.',
         ],
         sources: [
             'https://www.larepublica.co/empresas/el-grupo-gilinski-compro-50-de-la-revista-semana-2822114',
             'https://www.larepublica.co/empresas/gilinski-ejerce-opcion-de-compra-a-minoritarios-de-semana-y-se-queda-con-100-del-grupo-3087653',
             'https://www.elcolombiano.com/negocios/estos-son-los-negocios-de-los-gilinski-LH16110139',
             'https://www.eltiempo.com/economia/empresas/jaime-gilinski-quien-es-el-magnate-detras-de-sura-y-nutresa-655482',
+            'https://www.semana.com/nacion/articulo/vicky-davila-asume-la-presidencia-de-la-junta-directiva-de-semana/202630/',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'el-nuevo-siglo': {
@@ -2924,16 +3312,26 @@ export const OWNERSHIP_PROFILES = {
         controlGroup: 'warner-bros-discovery',
         holdings: [
             'CNN pertenece a Warner Bros. Discovery, que en 2025 anunció su división en dos compañías, con CNN en la rama de canales de televisión.',
-            'Warner Bros. Discovery aceptó además ser adquirida por Paramount Skydance por unos 110 000 millones de dólares. A julio de 2026 la operación NO se ha consumado: está aplazada por demandas de fiscales generales estatales y del Writers Guild of America, y podría irse a 2027.',
+            'Warner Bros. Discovery aceptó además ser adquirida por Paramount Skydance por unos 110 000 millones de dólares. La operación NO se ha consumado y ya no es una contingencia abierta sino un calendario judicial: la jueza federal Araceli Martínez-Olguín fijó el juicio antimonopolio para el 2 de marzo de 2027, y el cierre quedó congelado hasta junio de 2027.',
             'Se consigna el dueño de hoy, no el anunciado. Una compra firmada y no cerrada no es un cambio de propiedad.',
         ],
-        notes: [],
+        notes: [
+            /**
+             * PRECISADO EL 2026-08-17 (ciclo 1). Decía «podría irse a 2027», en
+             * condicional. Ya hay fechas judiciales fijadas, y una vigilancia que
+             * no dice QUÉ vigila no es una vigilancia: es un recordatorio vacío.
+             */
+            'QUÉ SE VIGILA, CON NOMBRE: el comprador anunciado es la compañía de David Ellison, hijo de Larry Ellison, aliado declarado del presidente Trump. El precedente operativo existe —tras la compra de Paramount por Skydance, CBS News quedó bajo nueva dirección editorial—, así que el riesgo concreto es un desplazamiento de línea de CNN, y con ella de CNN en Español, con fecha de efecto en 2027. Nada de esto cambia al dueño de hoy.',
+            'SIN DIRECCIÓN NOMBRADA. Cynthia Hudson, vicepresidenta sénior y directora general de la cadena durante casi quince años, salió en febrero de 2025 dentro del despido del 6 % de la plantilla de CNN. No se encontró quién la sucedió: para un medio cuya clasificación depende de cómo se decide su línea, el expediente tiene hoy ese campo vacío, y se declara en vez de callarlo.',
+        ],
         sources: [
+            'https://eldiariony.com/2026/08/05/juicio-contra-la-fusion-de-paramount-y-warner-bros-discovery-comenzara-en-marzo-del-2027/',
+            'https://www.todotvnews.com/cynthia-hudson-vicepresidenta-de-cnn-en-espanol-deja-la-cadena-en-febrero/',
             'https://www.axios.com/local/atlanta/2025/06/10/cnn-warner-bros-discovery-two-companies-atlanta-restructuring',
             'https://www.cnn.com/2026/07/24/media/paramount-warner-bros-discovery-merger-delay',
             'https://www.npr.org/2026/02/27/nx-s1-5728914/what-happens-to-cnn-if-paramount-buys-warner-bros-discovery',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'nyt': {

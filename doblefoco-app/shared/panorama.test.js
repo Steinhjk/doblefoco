@@ -25,26 +25,40 @@ const REGISTRO = [
     { id: 'medio-sin-ficha', name: 'Medio sin ficha', shortName: 'Sin ficha', bias: 0 },
 ];
 
+/*
+ * EL PAR DE EJEMPLO CAMBIÓ EL 2026-08-17, y conviene saber por qué.
+ *
+ * Estas pruebas usaban a Semana y El País (Cali) como «los dos del mismo dueño».
+ * Gilinski vendió El País en junio de 2025 y el catálogo tardó catorce meses en
+ * enterarse; mientras tanto, tres pruebas de esta carpeta afirmaban la relación
+ * como si fuera un invariante del sistema. No lo era: era un hecho del mundo,
+ * y los hechos del mundo caducan.
+ *
+ * El par pasa a ser El Tiempo y Portafolio, que comparten casa editorial —no
+ * solo dueño— y por tanto es una relación mucho más difícil de que venza sin
+ * que nos enteremos. Cuando haya que elegir un ejemplo para una prueba,
+ * conviene el vínculo más estructural disponible.
+ */
 describe('repartoPorDueno', () => {
     it('agrupa los medios por su dueño y los pesa por lo que publican', () => {
         const r = repartoPorDueno(
             [
-                { sourceId: 'semana', articulos: 400 },
-                { sourceId: 'el-pais-cali', articulos: 200 },
-                { sourceId: 'el-tiempo', articulos: 300 },
-                { sourceId: 'portafolio', articulos: 100 },
+                { sourceId: 'el-tiempo', articulos: 400 },
+                { sourceId: 'portafolio', articulos: 200 },
+                { sourceId: 'semana', articulos: 300 },
+                { sourceId: 'el-pais-cali', articulos: 100 },
             ],
             REGISTRO
         );
 
         expect(r.total).toBe(1000);
-        expect(r.grupos[0].grupoId).toBe('gilinski');
+        expect(r.grupos[0].grupoId).toBe('sarmiento-aval');
         expect(r.grupos[0].articulos).toBe(600);
         expect(r.grupos[0].porcentaje).toBe(60);
-        expect(r.grupos[0].medios.map((m) => m.id)).toEqual(['semana', 'el-pais-cali']);
+        expect(r.grupos[0].medios.map((m) => m.id)).toEqual(['el-tiempo', 'portafolio']);
 
-        expect(r.grupos[1].grupoId).toBe('sarmiento-aval');
-        expect(r.grupos[1].articulos).toBe(400);
+        expect(r.grupos[1].grupoId).toBe('gilinski');
+        expect(r.grupos[1].articulos).toBe(300);
     });
 
     it('NO reparte ni esconde los medios sin propiedad documentada', () => {
@@ -76,12 +90,12 @@ describe('repartoPorDueno', () => {
     it('ordena los medios dentro del grupo por peso', () => {
         const r = repartoPorDueno(
             [
-                { sourceId: 'semana', articulos: 10 },
-                { sourceId: 'el-pais-cali', articulos: 90 },
+                { sourceId: 'el-tiempo', articulos: 10 },
+                { sourceId: 'portafolio', articulos: 90 },
             ],
             REGISTRO
         );
-        expect(r.grupos[0].medios.map((m) => m.id)).toEqual(['el-pais-cali', 'semana']);
+        expect(r.grupos[0].medios.map((m) => m.id)).toEqual(['portafolio', 'el-tiempo']);
     });
 
     it('aguanta entradas vacías', () => {

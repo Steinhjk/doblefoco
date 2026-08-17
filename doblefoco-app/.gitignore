@@ -41,3 +41,12 @@ dist-ssr
 # `npm run build` y se compila dentro de la imagen: no se versiona.
 dist-server
 /backup/
+
+# Envíos a revisión externa. SE GENERAN con `npm run envio`, no se versionan.
+#
+# Un envío es una foto con fecha: su cabecera afirma «armado el día X y estas
+# fuentes respondían ese día». Guardarlo en el repositorio lo convierte en un
+# archivo que seguirá afirmándolo dentro de seis meses, cuando ya no sea cierto
+# — exactamente la caducidad silenciosa contra la que existe `revision-externa/`.
+# Lo que sí se versiona es la ficha y la respuesta del modelo.
+/revision-externa/envios/

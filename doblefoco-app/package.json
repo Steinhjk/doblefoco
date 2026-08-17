@@ -42,7 +42,8 @@
         "medios:cosechar": "node scripts/cosecharMedios.mjs",
         "diag:sintema": "node scripts/diagnosticarSinTema.mjs",
         "medir:termino": "node scripts/medirTermino.mjs",
-        "centinela": "node scripts/centinela.mjs"
+        "centinela": "node scripts/centinela.mjs",
+        "envio": "node scripts/armarEnvio.mjs"
     },
     "dependencies": {
         "cors": "^2.8.6",

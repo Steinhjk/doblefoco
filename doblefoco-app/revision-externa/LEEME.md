@@ -8,7 +8,7 @@ revision-externa/
 ├── LEEME.md              ← este archivo
 ├── PROMPT.md             ← lo que se copia y pega al modelo. Empieza aquí
 ├── CONTEXTO.md           ← se pega DESPUÉS del prompt: reglas y evidencia
-├── envios/               ← los tres anteriores YA UNIDOS, uno por medio y fecha
+├── envios/               ← SE GENERA, no se versiona. Ver abajo
 ├── respuestas/           ← una carpeta por modelo, con lo que devuelva
 │   └── PLANTILLA.md
 └── pendientes.md         ← qué medios faltan por revisar
@@ -16,10 +16,31 @@ revision-externa/
 
 ## Cómo se usa
 
-**La vía corta:** si el medio tiene archivo en `envios/`, se copia ese archivo
-entero y se pega. Ya trae el prompt, el contexto y la ficha en orden.
+**La vía corta, y la normal:**
 
-**La vía larga**, y la que hay que seguir para armar un envío nuevo:
+```
+npm run envio -- diario-la-libertad     # uno
+npm run envio -- --tramo                # los 20 de mayor audiencia
+npm run envio -- --todos                # todos los que tengan ficha
+```
+
+Deja en `envios/<fecha>-<medio>.md` el prompt, el contexto y la ficha ya unidos.
+Se copia entero y se pega.
+
+**`envios/` NO SE VERSIONA, y es a propósito.** Un envío es una foto con fecha:
+dice «armado el día X, y estas fuentes respondían ese día». Guardarlo en el
+repositorio lo convierte en un archivo que seguirá afirmándolo dentro de seis
+meses, cuando ya no sea verdad — la misma caducidad silenciosa contra la que
+existe todo lo demás de esta carpeta. Se genera cuando se va a usar, que cuesta
+un comando. Lo que sí se versiona es la ficha y **la respuesta del modelo**.
+
+**El armador comprueba las fuentes al armar.** Pide todas las URL de la ficha de
+propiedad y estampa el resultado en la cabecera del archivo. Si alguna no
+resuelve, el envío se arma igual pero lo dice arriba: mandar a un revisor un
+expediente con enlaces muertos es hacerle perder el tiempo, y el error vuelve
+como objeción.
+
+**La vía larga**, por si hace falta armarlo a mano:
 
 1. Abrir `PROMPT.md`, copiarlo entero.
 2. Pegar debajo el contenido de `CONTEXTO.md`.

@@ -68,6 +68,29 @@ hay que contrastar no es un número sino **si la ausencia está bien declarada**
 
 ---
 
+## LOS ENVÍOS SE ARMAN CON UN COMANDO (2026-08-18)
+
+```
+npm run envio -- --tramo     # los 20 de abajo, cada uno en su archivo
+npm run envio -- --todos     # los 56 que tienen ficha
+```
+
+Deja en `envios/<fecha>-<medio>.md` el prompt, el contexto y la ficha ya unidos,
+listos para copiar y pegar. **Comprueba las fuentes de cada ficha al armar** y
+estampa el resultado en la cabecera: si alguna no resuelve, lo dice arriba en vez
+de mandar un expediente con enlaces muertos.
+
+Comprobado el 2026-08-17: **los 20 del tramo tienen todas sus fuentes vivas.** En
+el catálogo entero fallan cinco —RTVC, El Pilón, Chocó 7 Días, Boyacá Digital y
+DW—, ninguna del tramo.
+
+Lo que el armador **no** hace es la comprobación de campo, y va dicho en la
+cabecera de cada envío: que las fuentes sigan sosteniendo lo que la ficha afirma
+solo lo ve una persona leyéndolas. En el único caso en que se hizo —La Libertad—
+apareció un conflicto de interés que la ficha no tenía.
+
+---
+
 ## EL TRAMO PRIORITARIO YA ESTÁ LISTO PARA ENVIAR (2026-08-12)
 
 **Jose hace la comprobación hoy con Kimi K3 y Fable 5.** Lo que faltaba eran las

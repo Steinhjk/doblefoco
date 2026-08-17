@@ -37,7 +37,8 @@
         "eval:clustering": "node scripts/evalClustering.mjs",
         "eval:sucesos": "node scripts/evalSucesos.mjs",
         "muestra:programas": "node scripts/muestrearProgramasAnclados.mjs",
-        "conducta": "node scripts/conductaPorMedio.mjs",
+        "insistencia": "node scripts/insistencia.mjs",
+    "conducta": "node scripts/conductaPorMedio.mjs",
         "medios:cosechar": "node scripts/cosecharMedios.mjs",
         "diag:sintema": "node scripts/diagnosticarSinTema.mjs",
         "medir:termino": "node scripts/medirTermino.mjs"

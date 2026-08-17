@@ -1,5 +1,51 @@
 # Por dónde seguir
 
+## F1-17 insistencia: medida, y el bloqueo no era el que decía el plan
+
+Rama **`f1-17-insistencia`**. Nuevo **`npm run insistencia`**, de solo lectura.
+Nada desplegado: esto es medición, no producto.
+
+**La dependencia que bloqueaba la tarea ya no existía.** El ROADMAP la archivó el
+30-07 por faltar «detección de tema a partir del titular»; eso se construyó el
+03-08 y vive en `articles.topics`. El script la usa y **no toca
+`articles.category`**, así que la circularidad que se temía —medir nuestra propia
+configuración de feeds y presentarla como hallazgo sobre el medio— queda evitada.
+
+### El bloqueo real es la RETENCIÓN, y no estaba anotado
+
+La ingesta borra a las **72 h** (`RETENTION_MS`). El corpus cubre **4 días y nunca
+cubrirá más**. *Una agenda no se mide en tres días.* Sobre `articles` esta tarea no
+se puede cerrar por mucho que se afine el índice.
+
+### Lo que da la medida hoy, y por qué no se publica
+
+```
+Izquierda  · Cultura              ×1,72    26 piezas   2 de 3 días
+Izquierda  · Derechos y sociedad  ×1,58    14 piezas   2 de 3 días
+Derecha    · Entretenimiento      ×1,64    60 piezas   3 de 4 días
+Derecha    · Desastres            ×1,28   891 piezas   (el de más masa)
+```
+
+**La señal discrimina poco.** El índice más alto es ×1,72; no hay ningún «×2,0» que
+titular. Las tres bandas cubren aproximadamente lo mismo en proporciones parecidas,
+y los tres hallazgos están en **temas de poca masa** — justo donde el propio ROADMAP
+avisaba de que el índice se dispara. Publicar «la izquierda insiste en Cultura» con
+26 piezas de cuatro días sería vender ruido. Es el caso de `npm run conducta` otra
+vez: se mide, y la medida dice que todavía no.
+
+> **Un dato que cambió y conviene rehacer:** la izquierda pesa hoy el **8,0 %** del
+> volumen con tema, no el 3,3 % que cita F3-16. Antes de seguir usando esa cifra en
+> ningún argumento, volver a calcularla.
+
+### Lo que lo desbloquea, y es barato
+
+**Un agregado diario persistente**: día, banda, tema, piezas, total de la banda.
+Son unas pocas filas al día, sobreviven a la poda, y con semanas de serie
+«insiste» pasa de ser una foto a ser una afirmación. **Es decisión de producto**:
+tabla nueva y escritura en cada ciclo de ingesta.
+
+---
+
 ## Altas de La Nación (Neiva) y Diario La Libertad — EN PRODUCCIÓN
 
 **Autorizadas por Jose.** Catálogo **74 → 76 medios**, verificado en `sources`.

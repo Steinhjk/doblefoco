@@ -26,10 +26,27 @@
  *
  * POR QUÉ SON POCOS MEDIOS
  * ------------------------
- * Arranca con los tres de la cola de revisión, que además son los tres casos de
- * conexión distintos que existen —API abierta, buscador HTML y sitio que no se
- * puede preguntar—. Se extiende medio a medio, cuando su ficha esté escrita:
- * vigilar una afirmación que nadie ha escrito todavía no significa nada.
+ * Arrancó con los tres de la cola de revisión y se amplió el 2026-08-18 a todos
+ * los que tienen ficha escrita **y sitio consultable**. Las dos condiciones
+ * importan, y la segunda dejó fuera a mucha gente:
+ *
+ * **LOS VEINTE MEDIOS DE MAYOR AUDIENCIA NO SE PUEDEN VIGILAR POR AQUÍ.** Se
+ * probaron uno por uno y **los veinte devuelven la misma página con cualquier
+ * consulta**: El Tiempo daba 159 enlaces para «Sarmiento Angulo» y los mismos
+ * 159 para una palabra inventada. Sus buscadores se pintan con JavaScript o
+ * ignoran el parámetro. No es que no hayan publicado nada — es que no hay por
+ * dónde preguntarles.
+ *
+ * Es una limitación incómoda, porque son justo los medios que más gente lee. Se
+ * escribe aquí para que nadie la descubra dos veces, y `scripts/centinela.mjs`
+ * lleva ahora la comprobación incorporada: un buscador que no filtra sale como
+ * `buscador-falso` en vez de fingir que vigila.
+ *
+ * TAMPOCO ENTRAN LOS MEDIOS SIN UN NOMBRE AL QUE AGARRARSE. La Razón.co, Quindío
+ * Noticias, Abra Noticias, EL DIARIO de Boyacá y Archipiélago Press tienen la
+ * propiedad sin comprobar y **ningún nombre publicado**: no hay término que
+ * vigile nada. Lo que les falta es un certificado de cámara de comercio, no una
+ * consulta semanal.
  */
 
 /**
@@ -96,6 +113,207 @@ export const VIGILANCIA = {
                 consulta: 'Cable Noticias TV',
                 vigila:
                     'Cualquier señal de quién lo controla hoy. La estructura societaria conocida —accionistas venezolanos, sociedad última en Panamá— viene de una fuente cuya última actualización es de marzo de 2018.',
+            },
+        ],
+    },
+
+    // ── Regionales con dueño o director con nombre ──────────────────────────
+    //
+    // El término es, en casi todos, EL NOMBRE SOBRE EL QUE SE APOYA LA FICHA. Si
+    // ese nombre aparece en las páginas del propio medio, o cambió algo o el
+    // medio está cubriendo a su dueño — y las dos cosas se quieren leer.
+
+    telecafe: {
+        consultas: [
+            {
+                consulta: 'Amanda Jaimes',
+                vigila:
+                    'Que siga gerenciando el canal. Es un canal público de tres gobernaciones, así que su gerencia cambia con los gobiernos: es el mismo caso de RTVC, cuya ficha ya prevé que gire con el poder de turno.',
+            },
+        ],
+    },
+
+    'diario-del-huila': {
+        consultas: [
+            {
+                consulta: 'Duque Rengifo',
+                vigila:
+                    'Que María Pia Duque Rengifo siga dirigiéndolo. La ficha sostiene el control en la continuidad de la familia fundadora, no en un accionariado documentado: si ella sale, la afirmación se queda sin pie.',
+            },
+        ],
+    },
+
+    'diario-del-norte': {
+        consultas: [
+            {
+                consulta: 'Demis Pacheco',
+                vigila:
+                    'Que siga con el 80 % de Sistema Cardenal. Es el único regional del catálogo que publica su propio accionariado, así que su ficha es tan buena —o tan caduca— como ese dato.',
+            },
+        ],
+    },
+
+    'el-diario-pereira': {
+        consultas: [
+            {
+                consulta: 'Ramírez Múnera',
+                vigila:
+                    'Que los hermanos Luis Carlos y Javier Ignacio sigan siendo los dueños, y Luis Carlos el director. El diario nació de fusionar a los dos rivales de Pereira: una recomposición societaria aquí cambia el mapa del Risaralda entero.',
+            },
+        ],
+    },
+
+    'proclama-del-pacifico': {
+        consultas: [
+            {
+                consulta: 'Luna Geller',
+                vigila:
+                    'Que Alfonso José Luna Geller siga dirigiéndolo. Propiedad y dirección son la misma persona, así que cualquier cosa que le pase a él le pasa a la ficha.',
+            },
+        ],
+    },
+
+    'choco-7-dias': {
+        consultas: [
+            {
+                consulta: 'Cañadas',
+                vigila:
+                    'Que Iván Cañadas Garrido siga siendo propietario y editor. Además su ficha es la que resuelve «fiscalizar al poder» como oficio y no como orientación — una de las cinco preguntas abiertas de la revisión externa.',
+            },
+        ],
+    },
+
+    'el-manduco': {
+        consultas: [
+            {
+                consulta: 'Díaz',
+                vigila:
+                    'Que los cuatro cargos de la cabecera sigan en la misma familia. Es el caso más nítido de medio familiar del catálogo, y toda la ficha descansa en esa coincidencia de apellido.',
+            },
+        ],
+    },
+
+    miputumayo: {
+        consultas: [
+            {
+                consulta: 'Chamorro Burbano',
+                vigila:
+                    'Que Luis Carlos Chamorro Burbano siga al frente. Propiedad y dirección son la misma persona natural desde 2004.',
+            },
+        ],
+    },
+
+    'el-morichal': {
+        consultas: [
+            {
+                consulta: 'Corporación El Morichal',
+                vigila:
+                    'Qué pasa con la corporación sin ánimo de lucro constituida en agosto de 2025. Es la tercera figura jurídica del medio en nueve años —dos anteriores liquidadas—, así que la actual no se da por estable.',
+            },
+            {
+                consulta: 'Edwin Suárez',
+                vigila: 'Que su director y cofundador siga siéndolo.',
+            },
+        ],
+    },
+
+    'vive-el-meta': {
+        consultas: [
+            {
+                consulta: 'Grupo La Independencia',
+                vigila:
+                    'Su sociedad editora, declarada con NIT en tres páginas del propio sitio. Es lo único que se sabe de su propiedad: entró con `ownerType: null` a la espera del certificado de Villavicencio.',
+            },
+        ],
+    },
+
+    'lente-regional': {
+        consultas: [
+            {
+                consulta: 'Sánchez Cardozo',
+                vigila:
+                    'Que Juan Pablo Sánchez Cardozo siga de director. Publica equipo con nombres y biografías pero no razón social ni NIT, así que las personas son toda la evidencia que hay.',
+            },
+        ],
+    },
+
+    'periodismo-publico': {
+        consultas: [
+            {
+                consulta: 'Corporación Humanista',
+                vigila:
+                    'El vínculo con la entidad sin ánimo de lucro de Soacha en la que nació en 2009. Hay además una sociedad localizable, PERIODISMO PUBLICO SAS, y no consta cuál de las dos lo edita hoy.',
+            },
+        ],
+    },
+
+    'archipielago-press': {
+        consultas: [
+            {
+                consulta: 'Radio Archipiélago',
+                vigila:
+                    'Su único vínculo institucional expuesto. La vía para cerrar su propiedad es la licencia de radiodifusión ante el MinTIC, porque una concesión sí tiene titular público.',
+            },
+        ],
+    },
+
+    'al-aire-noticias': {
+        consultas: [
+            {
+                consulta: 'Al Aire Comunicar',
+                vigila:
+                    'La sociedad que reserva los derechos en su pie. Entró con `ownerType: null` esperando el certificado de la Cámara de Comercio de Arauca.',
+            },
+            {
+                consulta: 'Miguel Matus',
+                vigila: 'Que su CEO y director siga siéndolo. Es el único cargo con nombre que publica.',
+            },
+        ],
+    },
+
+    // ── Nacionales que sí se pueden preguntar ───────────────────────────────
+
+    'noticias-uno': {
+        consultas: [
+            {
+                consulta: 'Coronell',
+                vigila:
+                    'EL CONFLICTO ANOTADO EN SU PROPIA FICHA: Daniel Coronell tiene el 60,5 % de NTC Televisión y además preside la revista Cambio, que también está en el catálogo. Su ficha es de las que la revisión externa tiene que resolver —«no firmar»: mitad histórica, propiedad sin cerrar, cero corpus—.',
+            },
+        ],
+    },
+
+    'valora-analitik': {
+        consultas: [
+            {
+                consulta: 'Valora Inversiones',
+                vigila:
+                    'Su sociedad editora, con NIT y domicilio en Medellín. La ficha afirma que no pertenece a ningún grupo: una entrada de capital se vería aquí.',
+            },
+            {
+                consulta: 'Camilo Silva',
+                vigila:
+                    'Que uno de sus dos dueños fundadores siga de gerente. Y hay una tensión escrita: su valor de sesgo se calibró tomando «el de Portafolio», sin evidencia propia.',
+            },
+        ],
+    },
+
+    'casa-macondo': {
+        consultas: [
+            {
+                consulta: 'Barrientos',
+                vigila:
+                    'Juan Pablo Barrientos dirige aquí la unidad investigativa y cofundó la Fundación Vorágine, que también está en el catálogo. Es un vínculo entre dos medios que hoy no está marcado como grupo.',
+            },
+        ],
+    },
+
+    volcanicas: {
+        consultas: [
+            {
+                consulta: 'Hoja Blanca',
+                vigila:
+                    'La fundación que lo sostiene. Es de los poquísimos medios que declara su financiación con porcentajes, y ese detalle es el que sostiene su −0,50: si la composición cambia, el número se queda sin fundamento.',
             },
         ],
     },

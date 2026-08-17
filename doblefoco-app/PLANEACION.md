@@ -162,15 +162,41 @@ ahora separa «el sitio no tiene buscador» —Cablenoticias, un hecho estable�
 «me rechazó (403/429)» o «no contestó», y en los dos últimos dice que se pruebe
 en local antes de dar el medio por perdido.
 
+### AMPLIADO el 2026-08-18 · De 3 a 21 medios, y un hallazgo incómodo
+
+**LOS VEINTE MEDIOS DE MAYOR AUDIENCIA NO SE PUEDEN VIGILAR POR ESTA VÍA.** Se
+probaron uno por uno y **los veinte devuelven la misma página con cualquier
+consulta**: El Tiempo daba 159 enlaces para «Sarmiento Angulo» y los mismos 159
+para una palabra inventada. Lo mismo Noticias Caracol, Semana, El Espectador, El
+Colombiano, La República, El Heraldo, Vanguardia… Sus buscadores se pintan con
+JavaScript o ignoran el parámetro.
+
+Es la trampa de Quindío Noticias otra vez y a escala nacional, así que **ahora la
+comprobación va dentro del centinela**: antes de fiarse de un buscador HTML le
+pide una palabra inventada, y si devuelve lo mismo lo marca `buscador-falso` en
+vez de fingir que vigila. Sin eso se habrían dado de alta veinte vigilantes que
+no vigilaban nada, y el panel habría dicho «20 de 76 medios vigilados», que es
+peor que decir tres.
+
+**Lo que sí entró: 21 medios y 27 consultas.** Diecisiete por API REST de
+WordPress, tres por buscador HTML comprobado, uno declarado no comprobable
+—Cablenoticias—. El término es, en casi todos, **el nombre sobre el que se apoya
+la ficha**: si aparece en las páginas del propio medio, o cambió algo o el medio
+está cubriendo a su dueño.
+
+**Tampoco entran los medios sin un nombre al que agarrarse** —La Razón.co,
+Quindío Noticias, Abra Noticias, EL DIARIO de Boyacá, Archipiélago Press—: su
+propiedad está sin comprobar y **no publican ningún nombre**. Lo que les falta es
+un certificado de cámara de comercio, no una consulta semanal.
+
 ### Lo que sigue faltando (de Jose)
 
 - Si el resultado **alimenta `pendientes.md`** automáticamente o se queda en el
   issue.
-- **Qué medios se añaden**, y con qué términos. Hoy son tres: los de la cola.
-  Cada alta nueva debería entrar aquí igual que entra en la cola de revisión.
-- **Cablenoticias no se puede preguntar por este canal.** Si su ficha importa —y
-  es de las que más, porque toda su documentación es de 2018—, hace falta otra
-  vía: su sitemap, o su canal de YouTube.
+- **Cablenoticias y los veinte grandes necesitan otra vía.** Sitemap, canal de
+  YouTube o buscador externo. Es trabajo aparte y no trivial.
+- Cada alta nueva debería entrar en la vigilancia igual que entra en la cola de
+  revisión.
 
 ---
 

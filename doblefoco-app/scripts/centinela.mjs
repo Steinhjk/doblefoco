@@ -195,6 +195,22 @@ async function porRest(origen, consulta) {
 const NO_ES_PIEZA =
     /\/(wp-content|wp-json|wp-admin|category|categoria|tag|author|autor|page|feed|comment)[/-]|\.(jpg|jpeg|png|webp|gif|svg|pdf|mp3|mp4)($|\?)/i;
 
+/**
+ * UNA CONSULTA QUE NO EXISTE. Si devuelve lo mismo que la de verdad, el
+ * buscador no busca.
+ *
+ * Esto no es paranoia: el 2026-08-18 se probaron los veinte medios de mayor
+ * audiencia del catálogo y **los veinte devolvían la misma página con cualquier
+ * consulta**. El Tiempo daba 159 enlaces para «Sarmiento Angulo» y los mismos
+ * 159 para una palabra inventada. Sin esta comprobación se habrían dado de alta
+ * veinte vigilantes que no vigilaban nada, y —peor— el panel habría dicho
+ * «20 de 76 medios vigilados».
+ *
+ * Es la trampa de Quindío Noticias otra vez, y la lección ya estaba escrita en
+ * su ficha: hay que mirar el CONTENIDO, no que la petición responda 200.
+ */
+const CONSULTA_DE_CONTROL = 'zqxwvk';
+
 async function porHtml(origen, consulta) {
     const res = await pedir(`${origen}/?s=${encodeURIComponent(consulta)}`);
     if (!res.ok) return { piezas: null, estado: res.status };
@@ -216,7 +232,25 @@ async function porHtml(origen, consulta) {
         encontrados.set(url, { url, titulo, fecha: fechaDelEnlace(url) });
     }
 
-    return { piezas: encontrados.size ? [...encontrados.values()] : null, estado: res.status };
+    if (!encontrados.size) return { piezas: null, estado: res.status };
+
+    // El control solo se paga cuando hay algo que validar, y una vez por medio:
+    // quien llama guarda el veredicto en el estado.
+    return { piezas: [...encontrados.values()], estado: res.status, urls: new Set(encontrados.keys()) };
+}
+
+/**
+ * ¿Este buscador busca, o devuelve siempre lo mismo?
+ *
+ * Se le pide una palabra que no puede existir y se compara. Si el resultado es
+ * idéntico al de la consulta real, no hay buscador: hay una plantilla.
+ */
+async function buscadorDeVerdad(origen, urlsReales) {
+    const { urls } = await porHtml(origen, CONSULTA_DE_CONTROL);
+    if (!urls) return true; // La basura no devuelve nada: señal de que sí filtra.
+    if (urls.size !== urlsReales.size) return true;
+    for (const u of urlsReales) if (!urls.has(u)) return true;
+    return false;
 }
 
 // ── Una consulta, por el canal que haya ──────────────────────────────────────
@@ -228,6 +262,8 @@ async function porHtml(origen, consulta) {
  *
  *   · `sin-buscador`  — el sitio no ofrece por dónde preguntar. Es Cablenoticias,
  *                       y es un hecho estable: mañana tampoco se podrá.
+ *   · `buscador-falso` — responde 200 y devuelve SIEMPRE LO MISMO. Es el peor de
+ *                       los cuatro, porque desde fuera parece que funciona.
  *   · `bloqueado`     — 403 o 429. Puede ser el sitio, o puede ser DESDE DÓNDE
  *                       preguntamos.
  *   · `sin-respuesta` — se cayó la petición o expiró el plazo.
@@ -238,16 +274,31 @@ async function porHtml(origen, consulta) {
  * que Cablenoticias hace que se den por perdidos medios que están perfectamente
  * vivos. Por eso el informe dice cuál de las tres es, y sugiere probar en local.
  */
-async function preguntar(origen, consulta, canalConocido) {
+async function preguntar(origen, consulta, canalConocido, htmlYaValidado) {
     const orden = canalConocido === 'html' ? ['html', 'rest'] : ['rest', 'html'];
     let peorEstado = 0;
     let fallo = null;
+    let falso = false;
 
     for (const canal of orden) {
         try {
-            const { piezas, estado } =
+            const { piezas, estado, urls } =
                 canal === 'rest' ? await porRest(origen, consulta) : await porHtml(origen, consulta);
-            if (piezas) return { canal, piezas };
+
+            if (piezas && canal === 'rest') return { canal, piezas };
+
+            if (piezas && canal === 'html') {
+                // La API REST no necesita control: si responde JSON con `search`,
+                // filtra por definición. El buscador HTML sí, y una sola vez por
+                // medio — el veredicto viaja en el estado.
+                if (htmlYaValidado) return { canal, piezas };
+
+                await dormir(PAUSA_MS);
+                if (await buscadorDeVerdad(origen, urls)) return { canal, piezas, validado: true };
+
+                falso = true;
+            }
+
             if (estado) peorEstado = estado;
         } catch (error) {
             // Un canal que revienta no descarta el otro.
@@ -256,12 +307,13 @@ async function preguntar(origen, consulta, canalConocido) {
         await dormir(PAUSA_MS);
     }
 
-    const motivo =
-        peorEstado === 403 || peorEstado === 429
-            ? 'bloqueado'
-            : fallo
-              ? 'sin-respuesta'
-              : 'sin-buscador';
+    const motivo = falso
+        ? 'buscador-falso'
+        : peorEstado === 403 || peorEstado === 429
+          ? 'bloqueado'
+          : fallo
+            ? 'sin-respuesta'
+            : 'sin-buscador';
 
     return { canal: 'no-comprobable', piezas: [], motivo, estado: peorEstado, error: fallo };
 }
@@ -305,17 +357,35 @@ for (const id of ids) {
     const origen = `https://${medio?.domain ?? id}`;
 
     const previo = estado.medios[id] ?? { consultas: {} };
-    const registro = { ultimaComprobacion: hoy, canal: previo.canal ?? null, consultas: {} };
+    const registro = {
+        ultimaComprobacion: hoy,
+        canal: previo.canal ?? null,
+        // Que su buscador HTML demostró filtrar. Se recuerda para no pedirle una
+        // consulta de control cada semana a un sitio ajeno que ya la pasó.
+        htmlValidado: previo.htmlValidado ?? false,
+        consultas: {},
+    };
 
     console.log(`── ${nombre}`);
 
     for (const { consulta, vigila, enTitular = true } of VIGILANCIA[id].consultas) {
-        const { canal, piezas, motivo, estado: httpEstado, error } = await preguntar(origen, consulta, previo.canal);
+        const {
+            canal,
+            piezas,
+            motivo,
+            estado: httpEstado,
+            error,
+            validado,
+        } = await preguntar(origen, consulta, previo.canal, registro.htmlValidado);
+
         registro.canal = canal === 'no-comprobable' ? registro.canal : canal;
+        if (validado) registro.htmlValidado = true;
 
         if (canal === 'no-comprobable') {
             const explicacion = {
                 'sin-buscador': 'el sitio no ofrece buscador consultable',
+                'buscador-falso':
+                    'SU BUSCADOR NO BUSCA: devuelve lo mismo con cualquier consulta, incluida una palabra inventada',
                 bloqueado: `rechazó la consulta (HTTP ${httpEstado}) — PUEDE SER LA IP: probar en local`,
                 'sin-respuesta': `no respondió (${error}) — PUEDE SER LA IP: probar en local`,
             }[motivo];
@@ -335,10 +405,21 @@ for (const id of ids) {
         const nuevas = relevantes.filter((p) => !vistos.has(p.url));
 
         if (esLineaBase && relevantes.length === 0) {
-            // Cero no es tranquilidad: puede ser que el medio no haya publicado
-            // nada, o que el término esté mal escrito y esta consulta no vaya a
-            // encontrar nunca nada. Se distingue a la vista.
-            console.log(`   ? «${consulta}» [${canal}]: SIN RESULTADOS — comprobar que el término sea el correcto`);
+            /*
+             * Cero tiene dos lecturas opuestas y hay que mirarlo una vez:
+             *
+             *  · El término está mal escrito, y entonces esta consulta no va a
+             *    encontrar nada nunca — un vigilante muerto que parece vivo.
+             *  · O el medio NUNCA ha nombrado eso, y entonces es el mejor
+             *    vigilante posible: cualquier aparición futura será noticia.
+             *
+             * Lo segundo es lo normal en los términos de propiedad: la mayoría
+             * de los medios no se nombran a sí mismos ni a sus dueños.
+             */
+            console.log(
+                `   ? «${consulta}» [${canal}]: SIN RESULTADOS — o el término está mal, ` +
+                    'o el medio no lo ha nombrado nunca (que es justo lo que se vigila)',
+            );
         } else if (esLineaBase) {
             console.log(
                 `   · «${consulta}» [${canal}]: línea base con ${relevantes.length} pieza(s). ` +

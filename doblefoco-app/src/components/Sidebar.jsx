@@ -45,12 +45,19 @@ const Sidebar = () => {
             <div className="sidebar-section live-trends-card">
                 <div className="trends-card-header">
                     {/*
-                      * La llama pulsante se retiró el 2026-08-17. No era solo
-                      * cuestión de tono: DECÍA OTRA COSA QUE LOS DATOS. Esta
-                      * lista se ordena por `coverage.total` —cuántos medios
-                      * cubren el mismo hecho—, y una llama que late afirma que
-                      * algo arde, que es la métrica de los productos que miden
-                      * atención. Aquí se mide coincidencia.
+                      * La llama pulsante se retiró el 2026-08-17, y la razón de
+                      * Jose es la que manda: UN ADORNO TIENE QUE SOBREVIVIR A LA
+                      * PEOR NOTICIA DEL DÍA. Este panel no elige qué encabeza:
+                      * lo que va debajo es lo que más medios cubren a la vez, y
+                      * esa misma semana era un terremoto con 289 muertos y
+                      * 186.000 damnificados. Una llama que late y suelta un halo
+                      * junto a eso no es un problema de estilo.
+                      *
+                      * Y además decía otra cosa que los datos. La lista se ordena
+                      * por `coverage.total` —cuántos medios cubren el mismo
+                      * hecho—; una llama afirma que algo ARDE, que es la métrica
+                      * de los productos que miden atención. Aquí se mide
+                      * coincidencia entre medios.
                       *
                       * `Layers` es el mismo icono que encabeza «Distribución de
                       * cobertura» en la ficha de la noticia, y por el mismo

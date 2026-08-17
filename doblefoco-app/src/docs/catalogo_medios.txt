@@ -312,12 +312,14 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
   Diario La Libertad  ·  sesgo +0.00  ·  factualidad sin medir
     diariolalibertad.com · Regional Caribe · CO · RSS propio · PROVISIONAL
     Diario de Barranquilla fundado en 1979, segunda voz del Atlántico
-    en el catálogo. Su sitio no nombra propietario ni redacción; la
+    en el catálogo. No publica mancheta ni sociedad editora; la
     sociedad histórica consta en liquidación y la entrada anunciada de
-    un socio controlante en 2025 no consta cerrada. Orientación mixta
-    provisional por ausencia de evidencia y no por evidencia de
-    equilibrio — ver fichas/diario-la-libertad.md, que declara el
-    conflicto de interés pendiente de confirmar.
+    un socio controlante en 2025 no consta cerrada — el propio medio
+    seguía describiéndose como propiedad de la familia Esper a finales
+    de 2025 y mantiene a la misma directora en 2026. Su cobertura de
+    la Alcaldía de Barranquilla ha cambiado de signo en el periodo
+    observado, así que la orientación mixta es provisional y está
+    pendiente de revisión externa — ver fichas/diario-la-libertad.md.
 
   Cablenoticias  ·  sesgo +0.00  ·  factualidad sin medir
     cablenoticias.com · Cable Noticias TV · CO · RSS propio · PROVISIONAL

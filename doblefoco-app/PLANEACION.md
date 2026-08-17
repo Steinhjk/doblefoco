@@ -24,6 +24,96 @@ idea completa olvidada. Si falta detalle, se escribe qué falta y quién lo sabe
 
 ---
 
+## ABIERTO · Automatizar el trabajo de comprobar el catálogo — «el centinela»
+
+**Planteado por Jose el 2026-08-17**, justo después de comprobar a mano la ficha
+de Diario La Libertad: *«¿se podrá hacer un programa agregado nuestro que permita
+hacer todo este heavy lifting, o que mantenga actualizados los feeds? Automatizar
+chequeos que hacemos a diario, y tener más bien paneles con la info actualizada y
+los chequeos totales cada cierto tiempo.»*
+
+### Lo que YA existe, y conviene no volver a construirlo
+
+| Pieza | Qué cubre hoy |
+|---|---|
+| `.github/workflows/ingest.yml` + `npm run worker` (Fly) | Los feeds SE MANTIENEN SOLOS. El motor tiene su propio reloj; Actions es la red de seguridad cada 2 h |
+| `vigilancia.yml` + `comprobarMedios.mjs` | Sitio y API en pie; medios que llevan **14 días** sin aportar. **Abre issue y lo cierra solo** |
+| `desfase.yml` | Si Fly corre algo distinto de `main` |
+| `backup.yml` | Copia diaria de la base |
+| `check:feeds` (`verifyFeeds.mjs`) | Pide cada feed y cuenta lo que devuelve. **A mano** |
+| `check:sources` (`verifySources.mjs`) | Que las URL de las fichas de propiedad respondan. **A mano** |
+| `check:registry` | Integridad del registro. **A mano** |
+| `AdminDashboard.jsx` | Panel, pero de **moderación**: cola de historias, errores, waitlist |
+
+**Es decir: la vigilancia de que algo esté CAÍDO ya está montada y avisa sola. Lo
+que no existe es la vigilancia de que algo esté DESACTUALIZADO.** Y ese es el
+fallo que se lleva por delante las fichas.
+
+### Lo que se hizo a mano el 17 de agosto, y cuánto de ello es mecanizable
+
+De los siete chequeos de la comprobación de La Libertad, **cinco son código**:
+
+1. **Vitales del feed, con la ventana real.** No «50 ítems» sino «50 ítems que
+   cubren 9,8 h → ~122 piezas/día, y por tanto el barrido diario PIERDE
+   contenido». Más: % con imagen, categorías, mediana entre piezas. Extiende
+   `verifyFeeds.mjs`, que ya pide el feed.
+2. **La trampa de las rutas institucionales.** `/nosotros`, `/equipo`, `/contacto`
+   que devuelven 200 y son artículos viejos. Se detecta comparando el `<title>`
+   con la ruta pedida. **Ya nos ha mordido dos veces** —Quindío Noticias y La
+   Libertad— y la segunda afinó la lección: *tamaños distintos prueban que no es
+   la misma página, no que sea la que pediste.*
+3. **Reintento con User-Agent limpio antes de declarar bloqueo.** Hoy es una regla
+   que vive en la cabeza. La pieza de Tcherassi estuvo tres días dada por
+   inaccesible por un 403 que no era un bloqueo.
+4. **Caducidad de fichas.** Días desde `consultadoEl` / `verifiedAt`, ordenados.
+   Es la cola de `revision-externa/pendientes.md`, pero calculada y no escrita a
+   mano.
+5. **EL CENTINELA POR MEDIO, que es lo que de verdad valdría.** Buscar
+   periódicamente en el sitio de cada medio los términos que sostienen su ficha
+   —el nombre del dueño, «director», «propiedad de», «candidat…»— y avisar de
+   piezas nuevas. **Es exactamente lo que destapó que la directora de La Libertad
+   había anunciado su candidatura**, y salió de dos búsquedas en su propio
+   buscador. Eso se automatiza.
+
+**Y dos NO son código, y conviene decirlo antes de empezar:** leer una pieza y
+concluir que es propaganda sin contradictorio, y decidir si un conflicto se le
+publica al lector. Lo primero puede prepararlo una IA con la pieza delante; lo
+segundo **lo firma Jose** y no se delega.
+
+### La forma que tendría
+
+No un programa nuevo aparte, sino **una capa de auditoría sobre lo que ya hay**:
+
+- `npm run auditoria` — corre los chequeos por medio y **escribe el resultado**
+  (hoy los `check:*` solo imprimen). Guardar en Postgres, no en `data/`, que está
+  en `.gitignore` y los contenedores de Actions se destruyen.
+- `centinela.yml` — semanal, no diario, y con issue como `vigilancia.yml`.
+  **Semanal por respeto al tráfico ajeno**: son 76 sitios y el proyecto se
+  presenta ante ellos con User-Agent propio y una URL para pedirnos que paremos.
+- **Panel «Estado del catálogo»** en el admin, leyendo un `/api/auditoria`.
+  Semáforo por medio: feed, rutas, fuentes vivas, días desde la última
+  comprobación, alertas del centinela.
+
+### Los tres riesgos conocidos
+
+1. **Actions falla por IP, no por feed.** Vorágine y Razón Pública responden en
+   local y caen desde Actions. Un centinela que corra allí producirá falsos
+   positivos; hay que distinguir «no responde» de «no responde **desde aquí**».
+2. **Tocar la API obliga a `npm run deploy`.** Empujar a `main` publica Vercel y
+   no Fly — es justo lo que vigila `desfase.yml`.
+3. **Un aviso que grita cuando no pasa nada enseña a ignorarlo.** Es la lección
+   escrita en `comprobarMedios.mjs` con el umbral de 14 días, y aplica igual aquí.
+
+### Lo que falta decidir (de Jose)
+
+- **Por dónde se empieza**: ¿los vitales del feed, el centinela por medio, o el
+  panel?
+- **Con qué cadencia** se acepta molestar a los sitios ajenos.
+- Si el resultado del centinela **alimenta `pendientes.md`** automáticamente o se
+  queda en el panel.
+
+---
+
 ## ABIERTO · Medios alternativos — la categoría de canales de YouTube
 
 **Planteado:** en una sesión anterior (fecha sin registrar — se perdió).

@@ -1,3 +1,182 @@
+# ENVÍO A REVISIÓN EXTERNA — Diario La Libertad (Barranquilla)
+
+> **Armado el 2026-08-17.** Este archivo es `PROMPT.md` + `CONTEXTO.md` + la ficha
+> del medio, en ese orden y sin editar. **Se copia entero y se pega al modelo, de
+> una sola vez.** La respuesta se guarda literal en
+> `respuestas/<modelo>-diario-la-libertad.md`, con `respuestas/PLANTILLA.md`.
+>
+> La ficha se comprobó de campo **el mismo día del envío**, como manda la regla
+> que dejó EL DIARIO de Boyacá. Todos los enlaces del sitio del medio respondían
+> 200 el 2026-08-17 con un User-Agent de navegador.
+
+---
+
+<!-- ==================== PROMPT ==================== -->
+
+Eres revisor externo de una clasificación de orientación editorial de medios
+colombianos. Tu trabajo NO es dar tu opinión sobre dónde va el medio: es
+**intentar refutar** la clasificación que se te presenta.
+
+## Qué se te pide, exactamente
+
+1. **Ataca la clasificación propuesta.** Busca la evidencia más fuerte que la
+   contradiga. Si crees que el medio está mal ubicado, dilo y demuéstralo.
+2. **Toda afirmación tuya tiene que venir con una fuente citable y verificable.**
+   Un enlace, un documento, un registro. Si no puedes citarla, no la incluyas —
+   escribe en su lugar «no encuentro fuente para esto» y sigue.
+3. **Marca la fecha de cada evidencia que aportes.**
+
+## Tres reglas que descalifican una respuesta
+
+**REGLA DEL PRESENTE.** Solo vale evidencia sobre la situación ACTUAL del medio.
+No cuentan fundaciones, efemérides, «tradiciones», premios antiguos, atentados
+sufridos, directores anteriores ni la línea que tuvo en otra época.
+
+El caso que zanja esto: *Semana* destapó las chuzadas del DAS durante el gobierno
+de Uribe, y hoy su línea es de derecha bajo otra propiedad. Si el pasado contara,
+Semana tendría que clasificarse a la izquierda. **No cuenta.**
+
+La prueba para decidir si algo es evidencia o es historia: *si ese hecho dejara de
+ser cierto mañana, ¿cambiaría la clasificación?* Si la respuesta es no, es
+historia. «Fundado en 1957» no vale. «Hoy lo posee el Partido Comunista» sí,
+porque la propiedad es comprobable hoy y podría cambiar.
+
+**NO INVENTES FUENTES.** Si no encuentras respaldo documental para algo que
+sospechas, dilo tal cual. Una cita falsa o un enlace que no existe hace más daño
+que el silencio, porque contamina un expediente que otras personas van a auditar.
+Preferimos un hueco declarado a un dato verosímil.
+
+**NO ES UNA PREGUNTA DE OPINIÓN.** No respondas «yo lo pondría en −0,3». Responde
+qué evidencia comprobable contradice —o no— lo que se propone.
+
+## Formato de tu respuesta
+
+```
+## OBJECIONES
+Para cada una:
+- QUÉ afirma la ficha que crees incorrecto
+- POR QUÉ, con evidencia
+- FUENTE (enlace) y FECHA de esa evidencia
+- QUÉ NIVEL de evidencia es: propiedad / conducta observable / registro externo /
+  declaración del propio medio / hecho editorial de los últimos 12 meses
+
+## LO QUE NO PUDE VERIFICAR
+Afirmaciones de la ficha que no lograste comprobar ni refutar, y por qué.
+
+## LO QUE FALTA
+Evidencia que crees que la ficha DEBERÍA tener y no tiene.
+
+## SIN OBJECIÓN
+Solo si no encontraste ninguna. Di explícitamente que no encontraste evidencia
+en contra, y no lo presentes como un aval: no haberla encontrado no significa
+que no exista.
+```
+
+## Contexto que necesitas
+
+A continuación va el contexto del proyecto y después la ficha del medio.
+
+---
+
+<!-- ==================== CONTEXTO ==================== -->
+
+# Contexto del proyecto — para el revisor externo
+
+## Qué es DobleFoco
+
+Un sitio colombiano que agrupa la misma noticia contada por distintos medios y
+muestra quién la cubre y quién no. Para eso clasifica a cada medio en una escala,
+y **esa clasificación es la afirmación más fuerte que hace el sitio**: decir que
+un medio es de derecha es decir algo sobre organizaciones reales e
+identificables.
+
+No está en producción todavía. Se está construyendo la clasificación antes de
+publicar.
+
+## Qué se está clasificando
+
+**ORIENTACIÓN del medio**: estructural, de la casa, permanente. De dónde viene, a
+quién responde, qué considera noticia.
+
+**NO es sesgo de una pieza concreta.** Eso es otra cosa —qué palabras elige un
+artículo, a quién cita— y no se mide todavía.
+
+## La escala
+
+```
+−1,0 ────────── −0,2 ──── 0 ──── +0,2 ────────── +1,0
+ Izquierda    Izq.mod.  Orientación  Der.mod.   Derecha
+                         mixta
+```
+
+**«Orientación mixta» NO significa neutral, imparcial ni «sin línea».** Todos los
+medios tienen línea. Significa que la suya no se sitúa en el eje
+izquierda-derecha: la de un diario económico es el capital, y es clarísima.
+
+De los siete medios colombianos que hoy caen en esa banda, seis pertenecen a
+grandes grupos económicos.
+
+## Jerarquía de evidencia admisible
+
+De más fuerte a menos. **Una clasificación no puede apoyarse solo en los niveles
+4 y 5.**
+
+1. **Propiedad documentada** — quién controla la empresa, con fuente citable, y a
+   qué persona natural llega
+2. **Conducta medida** — qué cubre el medio, con quién coincide, qué omite,
+   cuánto publica (nuestro corpus)
+3. **Registros externos** — Media Ownership Monitor de RSF, Observatorio de
+   Medios de la MOE, ColombiaCheck, sentencias
+4. **Lo que el medio declara HOY** de sí mismo
+5. **Hechos editoriales de los últimos 12 meses** con consecuencia verificable
+
+## Lo que NO cuenta como evidencia
+
+- **Tu juicio como modelo** sobre dónde va el medio. No es un registro externo:
+  es una compresión de texto de internet que probablemente incluye especulación
+  sobre esta misma pregunta.
+- **Que otro modelo coincida contigo.** Mide fiabilidad, no validez.
+- **La reputación** («todo el mundo sabe que…»). Si no consta en algún sitio, no
+  entra.
+- **Cualquier hecho anterior a los últimos 12 meses** que no sea además una
+  estructura vigente (ver la regla del presente).
+
+## Dos reglas de decisión que conviene que conozcas
+
+**El dueño no determina la orientación**, pero se declara siempre. Un medio puede
+tener línea distinta de los intereses de su propietario; afirmar lo contrario por
+defecto sería determinismo. Lo que no se admite es callar de quién es.
+
+**Ante la duda entre dos bandas, se elige la más cercana a la mixta.** Clasificar
+de más acusa; clasificar de menos solo informa de menos.
+
+## Una tensión conocida del catálogo, por si te sirve
+
+Tres medios con el MISMO dueño (Valorem, familia Santo Domingo) tienen hoy tres
+valores muy distintos:
+
+```
+El Espectador     −0,20
+Noticias Caracol  +0,10
+Blu Radio         +0,25
+```
+
+Un recorrido de 0,45 dentro de la misma casa, sin explicación escrita. O la
+propiedad no determina la orientación —lo que la regla admite— o alguno está mal.
+**Si tu objeción toca esto, es especialmente útil.**
+
+## Qué pasa con lo que escribas
+
+Se guarda literal, con tu nombre de modelo, versión y fecha, y se publica junto a
+la ficha. Si tu objeción se sostiene, cambia el número o se declara la tensión.
+Si se ignora sin motivo escrito, la ficha queda sin firmar.
+
+**Tu desacuerdo se publica. Tu acuerdo no se usa como aval.**
+
+---
+
+<!-- ==================== FICHA DEL MEDIO ==================== -->
+
 # Diario La Libertad (Barranquilla) — ficha de orientación
 
 | | |
@@ -280,3 +459,6 @@ responderse sola:
 3. **Refuta el hallazgo si puedes.** Si existe fuente posterior a mayo de 2025 que
    acredite el cierre de la compra por Tcherassi, o que muestre que Esper ya no
    dirige, **tres de las conclusiones de esta ficha se caen**. Búscala.
+
+---
+

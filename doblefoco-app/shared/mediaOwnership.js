@@ -2527,11 +2527,32 @@ export const OWNERSHIP_PROFILES = {
      * para pesar lo que lee sobre Barranquilla. Se escribe lo que consta, con su
      * fecha y su grado de certeza — que es exactamente para lo que existe este
      * campo.
+     *
+     * ── RECOMPROBADO EL 2026-08-17, EL DÍA DEL ENVÍO A REVISIÓN EXTERNA ──
+     *
+     * TRES INDICIOS DEL PRESENTE APUNTAN A QUE LA OPERACIÓN NO SE CERRÓ, y los
+     * tres salen del propio medio: se describe a sí mismo como «el diario La
+     * Libertad, PROPIEDAD DE SU FAMILIA» hablando de una Esper (30-11-2025), sigue
+     * llamando a Luz Marina Esper «directora de Diario La Libertad y de la Cadena
+     * Radial La Libertad» (29-07-2026) y la pone al aire cubriendo las
+     * presidenciales (31-05-2026). Coincide con la versión de Valora —memorando,
+     * Esper sigue al frente— y no con la de La Silla Vacía. `ownerType` sigue en
+     * null: esto no acredita al dueño registral, pero la ausencia ya no es un
+     * vacío.
+     *
+     * Y APARECE UN SEGUNDO CONFLICTO DE INTERÉS, MEJOR ACREDITADO QUE EL PRIMERO:
+     * LA DIRECTORA ANUNCIÓ SU CANDIDATURA EN SU PROPIO PERIÓDICO. «No lo pongas en
+     * duda, voy para la contienda electoral» (12-10-2025), y el 30-11-2025 el
+     * diario promocionó a Daniela Esper Socarrás, nieta del fundador, como
+     * aspirante a la Cámara. El de Tcherassi es anunciado y no acreditado; este es
+     * de quien efectivamente dirige la casa, en primera persona y sin declarar el
+     * conflicto en ninguna parte del periódico. Todo el detalle en la ficha.
      */
     'diario-la-libertad': {
         ownerType: null,
         holdings: [
-            'Fundado en 1979 por ROBERTO ESPER REBAJE. Su hija, LUZ MARINA ESPER FAYAD, ha sido directora y CEO.',
+            'Fundado el 7 de abril de 1979 por ROBERTO ESPER REBAJE. Su hija, LUZ MARINA ESPER FAYAD, ES LA DIRECTORA HOY: el propio medio la presenta como «directora de Diario La Libertad y de la Cadena Radial La Libertad» el 29-07-2026, y la pone al aire cubriendo las elecciones presidenciales el 31-05-2026.',
+            'EL PROPIO MEDIO SE DESCRIBE COMO PROPIEDAD DE LA FAMILIA ESPER diez meses después del anuncio de la operación: «el diario La Libertad, propiedad de su familia», en una pieza sobre Daniela Esper Socarrás del 30-11-2025.',
             'La sociedad histórica DIARIO LA LIBERTAD LIMITADA consta EN LIQUIDACIÓN en los directorios de empresas.',
             'En enero de 2025 se anunció que el empresario SAMUEL TCHERASSI pasaba a ser socio controlante, en una operación que incluía las dos emisoras de radio La Libertad y la marca del periódico El Espacio (Bogotá), negociada con la familia Esper.',
             'Samuel Tcherassi es empresario de Barranquilla con intereses en moda, construcción e infraestructura, y fue contratista de la Alcaldía de Barranquilla —Malecón del Río— durante la segunda administración de Álex Char.',
@@ -2542,7 +2563,9 @@ export const OWNERSHIP_PROFILES = {
             'ESTE ES EL CONFLICTO DE INTERÉS MÁS DIRECTO DEL CATÁLOGO SI SE CONFIRMA: el dueño de un periódico aspirando a gobernar la ciudad que ese periódico cubre a diario, y habiendo sido contratista de la administración que critica. Se declara como desvelamiento, no como acusación, y con el grado de certeza que tiene: anunciado, no acreditado.',
             'LAS FUENTES NO COINCIDEN EN SI LA OPERACIÓN SE CERRÓ. La Silla Vacía lo da como socio controlante, con la compra confirmada por la propia Luz Marina Esper; Valora Analitik precisa que se firmó un MEMORANDO DE ENTENDIMIENTO y que Esper seguía dirigiendo el diario con su equipo. Un memorando no es una compraventa.',
             'Y NO HAY NADA POSTERIOR A MAYO DE 2025. Diecinueve meses de silencio no prueban que la operación siguiera adelante ni que se cayera. Es la regla del presente: lo que no consta hoy, no se afirma hoy.',
-            'EL PROPIO DIARIO PUBLICÓ EN MAYO DE 2025 UNA PIEZA TITULADA «Samuel Tcherassi: un nuevo liderazgo se asoma en Barranquilla». No se ha podido leer —el sitio devolvió 403 a la consulta—, así que NO se caracteriza su contenido ni se afirma que sea cobertura favorable: se anota que existe, con su título y su fecha, porque es justo el punto donde habría que mirar.',
+            'LEÍDA EL 2026-08-17: la pieza «Samuel Tcherassi: un nuevo liderazgo se asoma en Barranquilla» (10-05-2025) devolvía 403 el día del alta y hoy responde 200 con un User-Agent limpio; no había bloqueo. Es un perfil de promoción política sin firma, sin fuente distinta del propio Tcherassi y sin contradictorio: «una posible y anhelada alternativa para dirigir los destinos de la ciudad». Es conducta observable, no una anotación pendiente.',
+            'PERO ESA CONDUCTA TIENE PRINCIPIO Y FINAL. Doce titulares políticos con Tcherassi entre el 19-12-2024 y el 10-05-2025, casi todos contra Álex Char; CERO desde entonces. Y el 21-04-2026 el diario publica un EDITORIAL —la voz de la casa— titulado «Solidaridad con el alcalde Alejandro Char», además de «Char arrasa en aprobación» (25-01-2026). La ventana pro-Tcherassi coincide con la ventana de la operación anunciada y se cerró con ella.',
+            'SEGUNDO CONFLICTO DE INTERÉS, ESTE SÍ ACREDITADO: LA DIRECTORA ANUNCIÓ SU CANDIDATURA EN SU PROPIO PERIÓDICO. «No lo pongas en duda, voy para la contienda electoral», Luz Marina Esper, en pieza del 12-10-2025 del propio diario. Y el 30-11-2025 el medio publicó una pieza sin contradictorio promocionando a Daniela Esper Socarrás, nieta del fundador, como aspirante a la Cámara. El periódico no declara este conflicto en ninguna parte. No se le deduce orientación por ello: el dueño se declara siempre y no determina nunca.',
             'SI SE CONFIRMA, HAY `controlGroup` QUE MARCAR con El Espacio (Bogotá), que entró en la misma operación. Hoy no se marca.',
             'NO SE LE DEDUCE ORIENTACIÓN DE LA POSICIÓN POLÍTICA DE SU COMPRADOR ANUNCIADO. Que Tcherassi se enfrente al clan Char no permite colocar al periódico en el eje: hace falta corpus propio, y hay una hipótesis falsable a mano —comparar cómo cubre a la Alcaldía frente a El Heraldo, que es del mismo mercado y ya está en el catálogo—.',
         ],
@@ -2551,16 +2574,26 @@ export const OWNERSHIP_PROFILES = {
             'https://www.valoraanalitik.com/movidas-medios-comunicacion-colombia/',
             'https://www.elheraldo.co/local/2017/05/01/division-familiar-por-control-del-diario-la-libertad/',
             'https://diariolalibertad.com/',
+            'https://diariolalibertad.com/2025/11/30/daniela-esper-socarras-a-la-politica/',
+            'https://diariolalibertad.com/2026/07/29/reconocimiento-luz-marina-esper-recibe-el-galardon-hijos-ilustres-de-santa-marta-y-magdalena-501-anos/',
+            'https://diariolalibertad.com/2025/10/12/luz-marina-esper-estaria-en-la-contienda-electoral-esta-escuchando-y-abierta-al-dialogo-en-libertad/',
+            'https://diariolalibertad.com/2025/05/10/samuel-tcherassi-un-nuevo-liderazgo-se-asoma-en-barranquilla/',
+            'https://diariolalibertad.com/2026/04/21/editorial-solidaridad-con-el-alcalde-alejandro-char/',
         ],
         verifiedAt: null,
 
         // ── Ausencia declarada ──────────────────────────────────────────────
-        consultadoEl: '2026-08-16',
+        consultadoEl: '2026-08-17',
         buscadoEn: [
             {
                 fuente: 'Su propio sitio: portada, /nosotros, /equipo y /contacto',
-                resultado: 'NO NOMBRA A UNA SOLA PERSONA. El único rastro institucional es «COPYRIGHT 2022 DIARIO LA LIBERTAD», congelado sobre un sitio que publica a diario. Y sus rutas engañan: /nosotros es un artículo de 2020 sobre un jugador del Junior y /equipo uno de 2023 sobre un operativo anticontrabando; el slug coincide con una palabra del titular. /contacto es real y no publica datos de contacto. Firma con cuentas numeradas: «Redacción3 La Libertad», «Redacción4 La Libertad».',
+                resultado: 'NO HAY MANCHETA: ni sociedad editora, ni NIT, ni equipo, ni datos de contacto. El único rastro institucional es «COPYRIGHT 2022 DIARIO LA LIBERTAD», congelado sobre un sitio que publica a diario. Y sus rutas engañan: /nosotros es un artículo de 2020 sobre un jugador del Junior y /equipo uno de 2023 sobre un operativo anticontrabando; el slug coincide con una palabra del titular. Verificado de nuevo el 2026-08-17: sigue igual. LO QUE SÍ HAY SON NOMBRES EN EL CONTENIDO —«cesar Botero» firma 18 de las 50 piezas del feed de hoy, y aparecen «David Awad V.» y «Roberto Tico Rosania»—, junto a las cuentas numeradas «Redacción1/2/3/4 La Libertad». La API REST de WordPress está cerrada (401), así que no hay lista de autores por esa vía.',
                 url: 'https://diariolalibertad.com/',
+            },
+            {
+                fuente: 'El propio medio, buscador del sitio (2026-08-17)',
+                resultado: 'Se describe como propiedad de la familia Esper el 30-11-2025 y llama directora a Luz Marina Esper el 29-07-2026 y el 31-05-2026. Es lo más cercano a una declaración de propiedad que publica la casa, y contradice que la operación con Tcherassi se cerrara.',
+                url: 'https://diariolalibertad.com/2025/11/30/daniela-esper-socarras-a-la-politica/',
             },
             {
                 fuente: 'La Silla Vacía (enero 2025)',
@@ -2573,16 +2606,21 @@ export const OWNERSHIP_PROFILES = {
                 url: 'https://www.valoraanalitik.com/movidas-medios-comunicacion-colombia/',
             },
             {
-                fuente: 'Búsqueda de cobertura 2026',
-                resultado: 'Sin resultados. Ninguna fuente posterior a mayo de 2025 confirma ni desmiente que la operación se completara.',
+                fuente: 'Búsqueda de cobertura, repetida el 2026-08-17',
+                resultado: 'Ninguna fuente de prensa posterior a mayo de 2025 confirma ni desmiente que la operación se completara. Lo único posterior son los indicios del propio medio, arriba.',
                 url: 'https://www.lasillavacia.com/en-vivo/samuel-tcherassi-sera-socio-del-diario-la-libertad/',
+            },
+            {
+                fuente: 'Congreso Visible (Universidad de los Andes)',
+                resultado: 'Existe una ficha «Luz Marina Esper Fayad | Candidato a la Cámara», pero la URL devuelve HTTP 500 y no se ha podido fechar. NO SE USA: sin saber a qué elección corresponde, podría ser historia y no presente.',
+                url: 'https://congresovisible.uniandes.edu.co/congresistas/perfil/luz-marina-esper-fayad/7623/',
             },
         ],
         falta: [
             'PRIORITARIO: certificado de existencia y representación en la Cámara de Comercio de Barranquilla — qué sociedad edita hoy el periódico, quiénes son sus socios y si Samuel Tcherassi figura entre ellos. Es un certificado nuevo, no estaba entre los diez pendientes, y aquí no es un trámite de rutina: decide si hay que publicar un aviso de conflicto de interés.',
             'Cuál es la sociedad activa, dado que DIARIO LA LIBERTAD LIMITADA consta en liquidación. Es el caso de El Nuevo Día: el impreso cerró su sociedad y otra distinta publica hoy.',
-            'Si Luz Marina Esper Fayad sigue siendo la directora en 2026.',
-            'Leer la pieza «Samuel Tcherassi: un nuevo liderazgo se asoma en Barranquilla» (10-05-2025), que hoy devuelve 403, y revisar cómo cubre el diario a Tcherassi y a la Alcaldía.',
+            'EN QUÉ QUEDÓ LA CANDIDATURA DE LA DIRECTORA: por qué partido, a qué corporación y si llegó a inscribirse para las legislativas de marzo de 2026. Su ficha en Congreso Visible existe y devuelve 500, y su propio medio no lo cuenta.',
+            'Contar el corpus completo —no solo titulares— de cobertura de la Alcaldía de Barranquilla, y compararlo con El Heraldo, que es del mismo mercado y ya está en el catálogo.',
             'Si la operación se confirma: `controlGroup` con El Espacio (Bogotá) y aviso de conflicto de interés en la ficha pública.',
         ],
     },

@@ -1217,7 +1217,9 @@ export const MEDIA_REGISTRY = [
          * por Jose. Segunda voz del Atlántico, junto a El Heraldo.
          *
          * ES EL MÁS PRODUCTIVO DE LAS TRES ALTAS DE ESTA TANDA: 50 ítems por
-         * pasada y publicación continua.
+         * pasada y publicación continua. OJO AL VOLUMEN REAL, corregido el
+         * 2026-08-17: esos 50 ítems cubren 9,8 horas, o sea ~122 piezas al día y
+         * no «unas 50». Si el barrido pasa una vez al día, PIERDE CONTENIDO.
          *
          * LO QUE HAY QUE LEER ANTES DE TOCAR SU VALOR DE SESGO. En enero de 2025
          * se anunció que el empresario Samuel Tcherassi pasaba a ser el socio
@@ -1229,8 +1231,18 @@ export const MEDIA_REGISTRY = [
          * cerrada, y no hay nada posterior a mayo de 2025. Todo el detalle y lo
          * que lo cerraría, en `mediaOwnership.js`.
          *
-         * NO NOMBRA A UNA SOLA PERSONA EN SU SITIO y firma con cuentas numeradas
-         * —«Redacción3 La Libertad», «Redacción4»—. Y cuidado con sus rutas:
+         * RECOMPROBADO EL 2026-08-17, ANTES DE MANDARLO A REVISIÓN EXTERNA, Y
+         * CAMBIAN DOS COSAS. La primera: el propio medio sigue llamándose
+         * propiedad de la familia Esper (30-11-2025) y sigue llamando directora a
+         * Luz Marina Esper (29-07-2026), lo que apunta a que la operación con
+         * Tcherassi NO se cerró. La segunda, y es el hallazgo: LA DIRECTORA
+         * ANUNCIÓ SU PROPIA CANDIDATURA EN ESTE PERIÓDICO —«no lo pongas en duda,
+         * voy para la contienda electoral», 12-10-2025—. Ese conflicto de interés
+         * está mejor acreditado que el de Tcherassi y el periódico no lo declara.
+         *
+         * NO TIENE MANCHETA —ni sociedad editora, ni NIT, ni equipo— y firma casi
+         * todo con cuentas numeradas —«Redacción1/2/3/4 La Libertad»—, aunque sí
+         * hay nombres sueltos en el contenido. Y cuidado con sus rutas:
          * `/nosotros` es un artículo de 2020 sobre un jugador del Junior y
          * `/equipo` uno de 2023 sobre un operativo anticontrabando. Dan 200 con
          * tamaños DISTINTOS y aun así ninguna es la página que se pide.
@@ -1238,7 +1250,7 @@ export const MEDIA_REGISTRY = [
         id: 'diario-la-libertad', name: 'Diario La Libertad', shortName: 'La Libertad',
         domain: 'diariolalibertad.com', departamento: 'Atlántico', country: 'CO', group: 'Regional Caribe',
         bias: 0.0, factuality: null, reviewedAt: null,
-        biasRationale: 'Diario de Barranquilla fundado en 1979, segunda voz del Atlántico en el catálogo. Su sitio no nombra propietario ni redacción; la sociedad histórica consta en liquidación y la entrada anunciada de un socio controlante en 2025 no consta cerrada. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio — ver fichas/diario-la-libertad.md, que declara el conflicto de interés pendiente de confirmar.',
+        biasRationale: 'Diario de Barranquilla fundado en 1979, segunda voz del Atlántico en el catálogo. No publica mancheta ni sociedad editora; la sociedad histórica consta en liquidación y la entrada anunciada de un socio controlante en 2025 no consta cerrada — el propio medio seguía describiéndose como propiedad de la familia Esper a finales de 2025 y mantiene a la misma directora en 2026. Su cobertura de la Alcaldía de Barranquilla ha cambiado de signo en el periodo observado, así que la orientación mixta es provisional y está pendiente de revisión externa — ver fichas/diario-la-libertad.md.',
         feed: { url: 'https://diariolalibertad.com/feed/', via: 'direct', category: 'Política' },
     },
     {

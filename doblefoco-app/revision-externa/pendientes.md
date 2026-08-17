@@ -13,18 +13,53 @@
 > examinador. Ver `DECISIONES.md` del 2026-08-17.
 
 Estado al **2026-08-17**. **76 medios en el catálogo, 56 fichas escritas, CERO
-firmadas**, y `respuestas/` sigue vacía: **no se ha enviado nada todavía**.
+firmadas**, y `respuestas/` sigue vacía: **no se ha enviado nada todavía**. Lo que
+sí hay ya es **el primer envío armado y comprobado**: Diario La Libertad, abajo.
 
 **La distancia entre lo publicado y lo auditado es hoy todo el catálogo, y creció
 once medios en cinco días.** Eran 65 el día 12. Entraron: Al Aire Noticias (Arauca),
 los seis departamentales del día 14, El Nuevo Día (Ibagué), y las tres del 14-16 —
 **Cablenoticias, La Nación (Neiva) y Diario La Libertad**.
 
-### Las tres últimas altas, y por qué una de ellas no puede esperar
+### ✅ DIARIO LA LIBERTAD: COMPROBADO Y LISTO PARA ENVIAR (2026-08-17)
+
+**Es el primer envío armado del proyecto.** Está en
+**`envios/2026-08-17-diario-la-libertad.md`** — prompt, contexto y ficha unidos.
+Se copia entero y se pega. La respuesta va literal a
+`respuestas/<modelo>-diario-la-libertad.md`.
+
+**La comprobación del día del envío cambió la ficha, y esto es lo que hay que
+saber antes de leerla:**
+
+1. **La pieza que devolvía 403 se pudo leer.** No había bloqueo, era el
+   User-Agent otra vez. Es un perfil de **promoción política de Tcherassi sin
+   firma ni contradictorio** (10-05-2025). Pasa de anotación pendiente a conducta
+   observable.
+2. **Pero esa conducta se acabó.** Doce titulares políticos con Tcherassi entre
+   dic-2024 y may-2025, **cero** desde entonces — y el **21-04-2026 el diario
+   publica un editorial de solidaridad con el alcalde Char**. La ventana
+   pro-Tcherassi coincide con la operación anunciada y se cerró con ella.
+3. **Tres indicios de que la compra no se cerró**, todos del propio medio y del
+   presente: se llama a sí mismo «propiedad de la familia Esper» (30-11-2025) y
+   sigue llamando directora a Luz Marina Esper (29-07-2026, 31-05-2026).
+4. **EL HALLAZGO: la directora anunció su candidatura en su propio periódico.**
+   «No lo pongas en duda, voy para la contienda electoral» (12-10-2025). Y el
+   30-11-2025 el diario promociona a otra Esper como aspirante a la Cámara.
+   **Ese conflicto está mejor acreditado que el de Tcherassi**, y el periódico no
+   lo declara en ninguna parte.
+5. **Queda una decisión para Jose, sin tomar:** si eso se publica en el texto que
+   ve el lector. Hoy está solo en la ficha y en `mediaOwnership.js`. Publicarlo
+   obliga a escribir una regla que no existe — cuándo la política de **quien
+   dirige** es materia de aviso.
+
+`ownerType` sigue en `null` y el sesgo en 0,00, **pero ya no por Regla 2**: ahora
+hay conducta observable y apunta en dos direcciones. Esa es la primera pregunta
+que se le hace al revisor.
+
+### Las otras dos altas de la tanda
 
 | Medio | Ficha | Qué hay que contrastar |
 |---|---|---|
-| **Diario La Libertad** | `fichas/diario-la-libertad.md` | **PRIMERO DE LA COLA.** Su comprador anunciado, Samuel Tcherassi, **es candidato a la Alcaldía de Barranquilla para 2027** y fue contratista de esa alcaldía. La operación consta como memorando de entendimiento de enero de 2025 y **no se sabe si se cerró**. Es el conflicto de interés más directo del catálogo si se confirma |
 | La Nación (Neiva) | `fichas/la-nacion-neiva.md` | Felipe Olave Blackburn la compró en 2024 y luego adquirió Huila Stéreo. Casi toda la evidencia es del propio diario — nivel 4 |
 | Cablenoticias | `fichas/cablenoticias.md` | Propiedad completa pero de 2018, con sociedad última en Panamá. Entró con ausencia declarada |
 

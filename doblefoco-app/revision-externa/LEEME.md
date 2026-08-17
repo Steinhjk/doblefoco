@@ -8,12 +8,18 @@ revision-externa/
 ├── LEEME.md              ← este archivo
 ├── PROMPT.md             ← lo que se copia y pega al modelo. Empieza aquí
 ├── CONTEXTO.md           ← se pega DESPUÉS del prompt: reglas y evidencia
+├── envios/               ← los tres anteriores YA UNIDOS, uno por medio y fecha
 ├── respuestas/           ← una carpeta por modelo, con lo que devuelva
 │   └── PLANTILLA.md
 └── pendientes.md         ← qué medios faltan por revisar
 ```
 
 ## Cómo se usa
+
+**La vía corta:** si el medio tiene archivo en `envios/`, se copia ese archivo
+entero y se pega. Ya trae el prompt, el contexto y la ficha en orden.
+
+**La vía larga**, y la que hay que seguir para armar un envío nuevo:
 
 1. Abrir `PROMPT.md`, copiarlo entero.
 2. Pegar debajo el contenido de `CONTEXTO.md`.
@@ -22,6 +28,12 @@ revision-externa/
 5. Guardar la respuesta literal en `respuestas/<modelo>-<medio>.md`, usando
    `respuestas/PLANTILLA.md`. **Sin editarla ni resumirla**: si se recorta, se
    pierde justo lo que pueda incomodar.
+
+**Antes de armar el envío, la ficha se comprueba de campo ESE MISMO DÍA.** No es
+formalismo: la ficha de EL DIARIO de Boyacá caducó en tres días, y la de Diario La
+Libertad cambió en tres —se pudo leer una pieza que antes daba 403 y apareció un
+conflicto de interés que la ficha no tenía—. Por eso los archivos de `envios/`
+llevan fecha en el nombre: **un envío es válido para el día en que se armó.**
 
 ## Las dos reglas que hacen que esto sirva
 

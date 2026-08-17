@@ -1361,17 +1361,28 @@ export const MEDIA_REGISTRY = [
          * dueño (Prisa), con corresponsalía propia en Bogotá. Su sesgo y su ficha
          * de propiedad son los de El País, y heredarlos es la respuesta exacta.
          *
-         * LO QUE HAY QUE VIGILAR, y se deja escrito porque no se ha medido: el
-         * clasificador de ámbito desempata por `country`, y este medio es 'ES'.
-         * Una pieza de la edición Colombia sin marca geográfica en el titular
-         * puede acabar en Internacional en vez de en Nacional. La sección de la
-         * que se descuelga este feed es toda de Colombia, así que el desempate
-         * está apuntando al revés precisamente aquí.
+         * LO QUE HABÍA QUE VIGILAR YA ESTÁ MEDIDO, Y PASABA (2026-08-18). El
+         * clasificador de ámbito desempata por `country`, y este medio es 'ES':
+         * una pieza de la edición Colombia sin marca geográfica en el titular
+         * acababa en Internacional. De 19 piezas de esta sección en la base,
+         * **8 estaban en Internacional** — el incendio de Andrés Carne de Res y
+         * los afectados del terremoto entre ellas. Noticias de Bogotá
+         * catalogadas como extranjeras.
+         *
+         * ARREGLADO DONDE TOCABA: el feed declara su propio país. No se cambia
+         * el del medio —El País sigue siendo español y su portada sigue siendo
+         * internacional—; lo que se corrige es que **esta sección concreta es
+         * toda colombiana**, y el desempate tiene que mirar el feed del que sale
+         * la pieza, no la nacionalidad de la casa.
+         *
+         * Las piezas ya guardadas con el ámbito viejo no se tocan: salen solas
+         * de la ventana de retención de 72 h.
          */
         extraFeeds: [
             {
                 url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america-colombia/portada',
                 category: 'Política',
+                country: 'CO',
             },
         ],
     },
@@ -1560,7 +1571,23 @@ export function getIngestFeeds() {
                 mediaId: media.id,
                 name: media.name,
                 domain: media.domain,
-                country: media.country,
+                /**
+                 * UN FEED PUEDE SER DE OTRO PAÍS QUE SU MEDIO, y aquí manda el
+                 * feed.
+                 *
+                 * El clasificador de ámbito desempata por país cuando el titular
+                 * no trae marca geográfica: sin marca y medio extranjero, la
+                 * pieza va a Internacional. Eso es correcto para la portada de El
+                 * País y **falso para su edición Colombia**, que es toda
+                 * colombiana.
+                 *
+                 * Medido el 2026-08-18: 8 de 19 piezas de `america-colombia`
+                 * estaban en Internacional, entre ellas el incendio de Andrés
+                 * Carne de Res y los afectados del terremoto. Noticias de Bogotá
+                 * catalogadas como extranjeras, que es justo lo contrario de lo
+                 * que este sitio existe para hacer.
+                 */
+                country: extra.country ?? media.country,
                 bias: media.bias,
                 factuality: media.factuality,
                 url: extra.url,

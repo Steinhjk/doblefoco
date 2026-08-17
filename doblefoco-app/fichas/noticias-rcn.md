@@ -15,17 +15,66 @@
 
 ## EVIDENCIA ADMISIBLE
 
-### Nivel 1 — Propiedad, vigente y cerrada
+### Nivel 1 — Propiedad, corregida el 2026-08-17 y **todavía sin cerrar**
 
 Pertenece a la **Organización Ardila Lülle**, con intereses en **bebidas
-(Postobón), azúcar, textiles y deporte**. La preside **Carlos Julio Ardila
-Gaviria** tras la muerte de su padre.
+(Postobón), azúcar, textiles y deporte**. La misma organización controla **RCN
+Radio y La FM**, y el diario económico **La República**: tres medios de este
+catálogo, un dueño.
 
-La misma organización controla **RCN Radio y La FM**, y el diario económico **La
-República**: tres medios de este catálogo, un dueño.
+**Desde diciembre de 2022, el mayor accionista del canal es Carbe S.A.S., con el
+86,28 %**, tras la fusión por reorganización de Servinsa OAL, Heraga, Besmit, Proma
+e Inversiones Gamesa. Se registró en la Cámara de Comercio de Bogotá el
+**05-12-2022** con autorización de la Superintendencia de Sociedades, y la compañía
+declaró que no hubo cambio de control ni de beneficiario real. **Esta ficha no lo
+registraba**, y es el hecho societario más reciente del medio.
 
-- [MOM/RSF — Organización Ardila Lülle](https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/)
-- [El Tiempo — las empresas de Carlos Ardila Lülle](https://www.eltiempo.com/economia/empresas/carlos-ardila-luelle-de-que-empresas-era-dueno-610443)
+> **ESTA SECCIÓN SE DECLARABA «VIGENTE Y CERRADA» CITANDO A DOS PERSONAS MUERTAS.**
+> La página del MOM que la sostenía lista todavía como estructura de propiedad de la
+> OAL a Carlos Ardila Lülle (**† 13-08-2021**) con el 18,2 % y a Eugenia Gaviria de
+> Ardila (**† 30-05-2021**) con el 16,8 %. La otra fuente era el obituario de 2021.
+> Es decir: **la afirmación del presente que hacía la ficha —«la preside el hijo»—
+> no estaba en ninguna de sus dos fuentes.**
+>
+> **Y la cadena no llega a persona natural.** El 63,4 % del holding cuelga de
+> **Parklake Investment Inc.**, sociedad panameña cuya titularidad tras la sucesión
+> no consta en ninguna fuente abierta. El protocolo exige llegar a persona; aquí el
+> hilo se detiene en Panamá, y lo mismo vale para La FM y La República.
+
+**Hay un cierre barato y no se ha comprado:** RCN Televisión S.A. es emisor
+bursátil, reporta a la Superintendencia Financiera y publica estados financieros
+auditados. Un extracto mercantil de 2026 de Carbe S.A.S. o del canal cierra este
+nivel 1 con documento del presente.
+
+**Capa editorial común a los tres medios de la casa:** desde 2021 la OAL tiene un
+**Consejero General de Medios, Juan Lozano Ramírez**, exministro de Estado, con
+jurisdicción declarada sobre RCN Televisión, RCN Radio y La República. Desde
+octubre de 2024 dirige además La FM. No se encontró confirmación de 2025–2026 de
+que siga en la consejería, y se declara así.
+
+- [Valora Analitik — Carbe se convierte en el mayor accionista de RCN Televisión](https://www.valoraanalitik.com/quien-es-el-mayor-accionista-de-rcn-television-en-colombia/) · 07-12-2022
+- [Pulzo — RCN Televisión tiene nuevo accionista mayor](https://www.pulzo.com/economia/rcn-television-tiene-nuevo-accionista-mayor-luego-cambios-reorganizacion-PP2378854A) · 07-12-2022
+- [Universidad Sergio Arboleda — Juan Lozano, Consejero General de Medios de la OAL](https://www.usergioarboleda.edu.co/noticias/juan-lozano-decano-sergista-nuevo-consejero-general-de-medios-de-comunicacion-de-la-organizacion-ardila-lulle/) · 2021
+- [MOM/RSF — Organización Ardila Lülle](https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/) · **lista como dueños vigentes a personas fallecidas en 2021**
+- [Banrepcultural — Carlos Ardila Lülle](https://enciclopedia.banrepcultural.org/Carlos_Ardila_Lulle) · fallecimiento 13-08-2021
+
+### Nivel 5 — Piezas del presente, las que la ficha declaraba inexistentes
+
+| Fecha | Pieza | Formato |
+|---|---|---|
+| 27-07-2026 | «Ni los nadies se salvaron: el balance de corrupción que deja el Gobierno de Gustavo Petro» | **Opinión** en el portal del noticiero — la más fuerte |
+| 25-07-2026 | «Contrato adjudicado a Alejandro Carranza enciende la polémica a pocos días del cambio de gobierno» | Encuadre informativo |
+| 05-07-2026 | «Polémica por decisión del Gobierno Petro: comprometió $13 billones para Defensa a semanas de su salida» | Encuadre informativo |
+| 01-01-2026 | «El rifirrafe entre la exdirectora de la URF y el presidente Petro por los fondos de pensiones» | Encuadre informativo |
+| 10-07-2025 | «Crece controversia por trino de Petro que pone en duda la transparencia del sistema electoral» | Encuadre informativo |
+
+> **LA ADVERTENCIA VA CON LAS PIEZAS Y ES PARTE DE LA EVIDENCIA.** Cinco piezas
+> críticas con un gobierno **saliente** no prueban orientación de derecha: prueban
+> fiscalización. Y este proyecto tiene abierta la pregunta de si fiscalizar al
+> poder es orientación —la resuelve de tres formas distintas en Chocó 7 Días,
+> Noticias Uno y La Silla Vacía—. **Si estas piezas firman el +0,25, la misma
+> lógica aplicada a Noticias Uno da el resultado contrario con la misma clase de
+> evidencia.** Solo la primera, de opinión, escapa parcialmente al problema.
 
 ### Nivel 2 — Conducta medida, 2026-08-09 a 2026-08-12
 
@@ -61,11 +110,21 @@ enlazada que la respalde. Es una hipótesis razonable con formato de conclusión
 Lo que la haría evidencia es exactamente lo que falta: **piezas fechadas de los
 últimos doce meses** donde ese encuadre crítico se vea.
 
-**El paralelo con La FM importa.** El otro medio informativo del mismo dueño está
-en +0,35 con una justificación casi idéntica —«línea editorial crítica con
-gobiernos progresistas»—. Dos medios, un dueño, la misma frase y diez centésimas
-de diferencia sin explicación escrita. **Es la misma clase de incoherencia que
-los 0,45 de Valorem, en pequeño.**
+**El paralelo con La FM importa, y está peor de lo que la ficha creía.** No son dos
+medios con la misma frase: son **tres medios bajo una sola autoridad editorial de
+la casa**. Desde 2021 hay un Consejero General de Medios de la OAL con jurisdicción
+declarada sobre este canal, RCN Radio y La República, y desde octubre de 2024 esa
+misma persona dirige directamente La FM.
+
+Así que la pregunta deja de ser «¿por qué dos números distintos con el mismo
+dueño?» y pasa a ser: **¿qué conducta medida distingue a un noticiero de televisión
+en +0,25 de una emisora en +0,35 que dirige la misma persona?**
+
+**Y hay respuesta candidata, y es de formato.** La FM publica a diario el editorial
+firmado de su director, en texto y fechado; un noticiero no tiene ese producto. El
+formato más puro de línea editorial existe en un medio y no en el otro. Eso explica
+la brecha sin mover ningún número — y sin apelar a que sean «dos redacciones
+distintas», que era la salida cómoda.
 
 ---
 
@@ -84,15 +143,25 @@ por evidencia. Pero la objeción es legítima y hay que decidirla al firmar.
 
 ## REFUTACIÓN — qué cerraría esta ficha
 
-1. **Tres a cinco piezas fechadas de los últimos 12 meses** donde el encuadre
-   crítico al gobierno sea visible en el titular o en el enfoque. Con eso, la
-   justificación pasa de frase a evidencia y el +0,25 se puede firmar.
-2. **Arreglar su ingesta.** 25 artículos en tres días hacen imposible cualquier
+1. ~~Tres a cinco piezas fechadas~~ **Hechas** (nivel 5). Pero **no cierran la
+   ficha por sí solas**: ver el punto 2.
+2. **Decidir la pregunta transversal 2 —«fiscalizar al poder»— ANTES de usar esas
+   piezas para firmar.** Es hoy el bloqueo real de esta ficha: sin esa regla
+   escrita, firmar el +0,25 con cinco piezas críticas de un gobierno saliente es
+   aplicar el criterio que hunde a Chocó 7 Días.
+3. **Un extracto mercantil de 2026** de Carbe S.A.S. o de RCN Televisión S.A. La
+   empresa es emisor bursátil: cuesta una consulta, no una investigación.
+4. **Documentar la titularidad de Parklake Investment Inc.** tras la sucesión, o
+   declarar que el hilo se detiene ahí — que es lo que hoy ocurre en los tres
+   medios de la casa.
+5. **Escribir la regla sobre medios bajo autoridad editorial común.** La consejería
+   de medios de la OAL hace con RCN/La FM/La República lo mismo que la sociedad
+   única hace con Caracol/Blu: sin esa regla, no se pueden firmar por separado.
+6. **Arreglar su ingesta.** 25 artículos en tres días hacen imposible cualquier
    nivel 2. Va por Google News y hay que intentar su RSS propio otra vez.
-3. **Resolver los tres de Ardila Lülle juntos** —este, La FM y La República—, por
-   el mismo motivo por el que los de Valorem van juntos.
-4. **La cobertura de Postobón y del azúcar.** Es donde el conflicto de interés
-   del dueño se vería, y es comprobable.
+7. **La cobertura de Postobón y del azúcar.** Es donde el conflicto de interés
+   del dueño se vería, y es comprobable — en La República ya se comprobó y el
+   patrón apareció.
 
 ---
 
@@ -103,13 +172,18 @@ Se pide **argumentar en contra**. El acuerdo no se registra como validación.
 | Modelo | Versión | Fecha | Objeción | Resolución |
 |---|---|---|---|---|
 | Claude Opus 5 | claude-opus-5 | 2026-08-12 | Redactor de esta ficha | — |
-| Kimi K3 | | | | |
+| Kimi K3 | — | 2026-08-18 | **El nivel 1 «cerrado» cita como propietarios actuales a dos personas fallecidas en 2021**, y deja el 63,4 % en una sociedad panameña sin llegar a persona natural | **Aceptada.** Verificadas las dos muertes. Nivel 1 reescrito con el aviso a la vista |
+| Kimi K3 | — | 2026-08-18 | Omite la reorganización accionaria de diciembre de 2022 (Carbe S.A.S., 86,28 %) | **Aceptada.** Verificada. Registrada en el nivel 1 |
+| Kimi K3 | — | 2026-08-18 | El paralelo con La FM está subdocumentado: son tres medios bajo una sola consejería de medios de la casa | **Aceptada.** Verificada. Escrita en el ARGUMENTO, con la explicación de formato |
+| Kimi K3 | — | 2026-08-18 | **Las piezas existen: la ficha declaró la ausencia sin buscarlas** | **Aceptada.** Cinco piezas al nivel 5, con la advertencia sobre la pregunta 2 que el propio revisor adjuntó |
 | Fable 5 | | | | |
 
 ---
 
 ## ESTADO
 
-**Sin firmar.** Sigue en +0,25 con `reviewedAt: null`. Es la ficha del tramo alto
-que está **más cerca de poder firmarse**, porque su justificación ya afirma sobre
-el presente: solo le faltan las piezas que la respalden.
+**Sin firmar, y más cerca que antes — pero bloqueada por otra cosa.** Sigue en
++0,25 con `reviewedAt: null`. Ya no le faltan las piezas: le falta que el proyecto
+decida si fiscalizar al poder es orientación. Y su nivel 1, que se llamaba
+«cerrado», resultó ser el peor documentado del tramo: nombraba dueños muertos y no
+llega a persona natural.

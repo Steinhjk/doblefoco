@@ -40,6 +40,57 @@ informa. **Es el mismo patrón que se declaró en Valora Analitik** —que vende
 plataforma de pago sobre las emisoras que cubre— y merece el mismo trato: aviso como
 desvelamiento, no como acusación.
 
+> **AVISO DE NIVEL 1, del 2026-08-17.** La página del MOM que sostiene esta sección
+> lista como titular de la Organización Ardila Lülle a Carlos Ardila Lülle,
+> **fallecido el 13-08-2021**, y a Eugenia Gaviria de Ardila, **fallecida el
+> 30-05-2021**. La propiedad de este diario por Editorial La República S.A.S. no
+> está en duda; lo que no está verificado al presente es **la estructura de control
+> de la OAL misma**, que es donde vive el dato. Ver `noticias-rcn.md`: el 63,4 % del
+> holding cuelga de una sociedad panameña sin titularidad documentada.
+>
+> Cierre: certificado de la Cámara de Comercio de Bogotá de Editorial La República
+> S.A.S. Es común a las tres fichas de la casa; se resuelve una vez para las tres.
+
+### Nivel 2 bis — El patrón Postobón, comprobado el 2026-08-17
+
+La refutación 1 de esta ficha ordenaba comprobar la cobertura del accionista pieza
+por pieza y **la propia ficha no la ejecutó**. Se ejecutó en la revisión externa. La
+página de etiqueta de Postobón en `larepublica.co` muestra el rastro:
+
+| Fecha | Pieza |
+|---|---|
+| 30-05-2026 | «Desde 2013, Postobón ha reducido 48 % el consumo de agua por litro de bebida» — informe de sostenibilidad, sin contraste |
+| 20-05-2026 | «Postobón invirtió $60.460 millones y benefició a más de 187.000 personas en 2025» |
+| 18-03-2026 | «Postobón fortalece el reciclaje inclusivo con formación y empleo para los jóvenes» |
+| 12-02-2026 | «Durante la emergencia por las lluvias, Postobón ha entregado 82.701 litros de agua» |
+| 20-01-2026 | «"Los empresarios han sido la columna vertebral para que el país se mantenga estable", Miguel Escobar, presidente de Postobón» |
+| 16-10-2025 | «Postobón entró al top 10 de las empresas con la mejor reputación según Merco» |
+
+**Todas favorables. Todas con fuente única empresarial. Ninguna crítica.** Y en la
+misma ventana no aparece una sola pieza sobre el **impuesto saludable a bebidas
+azucaradas (IBUA)**, que golpea directamente al accionista. Agravante de
+actualidad: el 22-06-2026 el diario publicó el despiece del programa económico del
+presidente electo, que **incluye la eliminación de ese impuesto** —propuesta de
+interés directo para su dueño—, en tono neutro-descriptivo y sin nota de conflicto.
+
+Esto convierte el conflicto de interés de esta ficha, hoy formulado como riesgo
+abstracto, en **patrón documentado con fechas**. Se consigna como desvelamiento, no
+como acusación — igual que en Valora Analitik, pero con la tabla adjunta.
+
+**Y es el tipo de sesgo que ninguna medición de texto detecta**: no está en el
+encuadre de lo que publica, está en lo que no publica sobre su dueño.
+
+### Nivel 5 — Hechos editoriales, los que faltaban
+
+| Fecha | Editorial | Qué muestra |
+|---|---|---|
+| 17-12-2025 | «Un gobierno en crisis de sus reformas» | Duro con la gestión legislativa —«torpeza política sin precedentes»— **pero reconoce aciertos económicos explícitos**: manejo del FEPC y «una reducción notable del déficit» |
+| 29-12-2025 | Especial salario mínimo: «El presidente Gustavo Petro dispara los costos fijos con el salario vital de $2 millones» | Encuadre de costo empresarial, **con fuentes exclusivamente del lado empresarial-jurídico** |
+
+Es el perfil que el +0,15 debería describir: **oposición técnica de centro-derecha
+económica con concesiones puntuales al balance** — ni la militancia de Semana ni la
+neutralidad de una agencia.
+
 ### Nivel 2 — Conducta medida, 2026-08-09 a 2026-08-12
 
 ```
@@ -95,16 +146,24 @@ no vale aquí.**
 
 ## REFUTACIÓN — qué cerraría esta ficha
 
-1. **La cobertura de Postobón y del azúcar.** Es el conflicto de interés más nítido
-   del catálogo y es comprobable pieza por pieza. Un diario económico que informa
-   sobre su propio dueño deja rastro: silencios, encuadres, ausencia de firmas
-   críticas.
+1. ~~La cobertura de Postobón y del azúcar~~ **Comprobada** (nivel 2 bis): seis
+   piezas favorables, cero críticas, silencio sobre el impuesto saludable. La tabla
+   se adjunta a la ficha como anexo de conflicto de interés.
 2. **Decidir cómo se sitúa la prensa económica en el eje**, y aplicarlo a los tres:
-   este, Portafolio y Valora Analitik. Hoy están calibrados unos con otros sin ancla.
+   este, Portafolio y Valora Analitik. Hoy están calibrados unos con otros sin
+   ancla. **Ancla propuesta y aplicable a los tres**, sin juicio subjetivo:
+   (a) selección de fuentes en noticias de datos —¿sindicatos y academia, o solo
+   gremios y firmas de abogados?—; (b) asimetría de verbos en titulares macro
+   idénticos («dispara costos» frente a «aumenta ingresos»); (c) cobertura del
+   propio accionista. Las tres producen un número por medio, con su `n`.
 3. **Reescribir la justificación** para que diga algo sobre la línea y no sobre el
-   público objetivo.
-4. **Resolver los tres de Ardila Lülle juntos** —con Noticias RCN y La FM—, por el
-   mismo motivo que los de Valorem.
+   público objetivo. Texto de partida, con la evidencia de esta ficha: «línea de
+   centro-derecha económica documentada en editoriales del 17-12-2025 y 29-12-2025;
+   patrón documentado de cobertura exclusivamente favorable del accionista Postobón
+   (seis piezas 2025–2026, cero críticas), con omisión del conflicto en la
+   cobertura del impuesto saludable».
+4. **Actualizar la capa OAL del nivel 1** —sucesión Ardila Lülle—, común a las
+   fichas de Noticias RCN, La FM y esta. Se resuelve una vez para las tres.
 
 ---
 
@@ -115,13 +174,19 @@ Se pide **argumentar en contra**. El acuerdo no se registra como validación.
 | Modelo | Versión | Fecha | Objeción | Resolución |
 |---|---|---|---|---|
 | Claude Opus 5 | claude-opus-5 | 2026-08-12 | Redactor de esta ficha | — |
-| Kimi K3 | | | | |
+| Kimi K3 | — | 2026-08-18 | **La refutación 1 pedía comprobar la cobertura de Postobón y la ficha no la comprobó.** Está comprobada y el patrón es el previsto | **Aceptada.** Es el hallazgo más valioso del ciclo sobre esta ficha. Tabla al nivel 2 bis |
+| Kimi K3 | — | 2026-08-18 | La línea editorial sí está fechada y es más informativa que la justificación actual | **Aceptada.** Dos editoriales al nivel 5 |
+| Kimi K3 | — | 2026-08-18 | La cadena de propiedad tiene el mismo problema MOM que las fichas 03 y 12: el titular está muerto desde 2021 | **Aceptada.** Verificada. Aviso en el nivel 1 |
+| Kimi K3 | — | 2026-08-18 | La ficha nombra el problema del subsistema económico pero no propone el ancla | **Aceptada.** Ancla escrita en la refutación 2 |
 | Fable 5 | | | | |
 
 ---
 
 ## ESTADO
 
-**Sin firmar.** Sigue en +0,15 con `reviewedAt: null`. Tiene el conflicto de interés
-más nítido del catálogo —diario económico propiedad de un conglomerado industrial— y
-una justificación que no lo menciona.
+**Sin firmar, y con el mejor material del ciclo.** Sigue en +0,15 con
+`reviewedAt: null`. Su conflicto de interés dejó de ser «la definición del problema»
+—una formulación elegante que nadie había comprobado— y pasó a ser un **patrón
+documentado con seis fechas**. El valor no se mueve: si el ancla de medición
+económica se implementa y arroja asimetría sistemática de fuentes, el debate sería
+entre +0,15 y +0,20, nunca un cambio de signo.

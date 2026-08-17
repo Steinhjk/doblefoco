@@ -1967,6 +1967,43 @@
             CRITERIO: una insistencia solo se publica si el bloque aporta al
             menos N artículos del tema y el índice se sostiene en varios días.
 
+            ── MEDIDO EL 2026-08-17: `npm run insistencia` ──────────────────
+
+            LA DEPENDENCIA QUE BLOQUEABA ESTA TAREA YA NO EXISTE. «Detección de
+            tema a partir del titular» se construyó el 2026-08-03 y se persiste
+            en `articles.topics`. El script la usa y no toca `articles.category`,
+            así que la circularidad que se temía queda evitada.
+
+            EL BLOQUEO REAL ERA OTRO, Y NO ESTABA ANOTADO: LA RETENCIÓN. La
+            ingesta borra a las 72 h (`RETENTION_MS`), así que el corpus vivo
+            cubre 4 días y NUNCA cubrirá más. Una agenda no se mide en tres días.
+            Sobre `articles` esta tarea no se puede cerrar por mucho que se
+            afine el índice.
+
+            LO QUE DA LA MEDIDA HOY, con mínimo de 10 piezas por banda y tema:
+
+              Izquierda  · Cultura              ×1,72   26 piezas   2 de 3 días
+              Izquierda  · Derechos y sociedad  ×1,58   14 piezas   2 de 3 días
+              Derecha    · Entretenimiento      ×1,64   60 piezas   3 de 4 días
+              Derecha    · Desastres            ×1,28  891 piezas   (el de más masa)
+
+            LA SEÑAL DISCRIMINA POCO, Y CONVIENE DECIRLO. El índice más alto es
+            ×1,72; no hay ningún «×2,0» que titular. Las tres bandas cubren
+            aproximadamente lo mismo en proporciones parecidas, y los tres
+            hallazgos están en temas de poca masa —justo donde el propio ROADMAP
+            avisaba de que el índice se dispara—. Publicar «la izquierda insiste
+            en Cultura» con 26 piezas de cuatro días sería vender ruido.
+
+            Y OJO CON UN DATO QUE CAMBIÓ: la izquierda pesa hoy el 8,0 % del
+            volumen con tema, no el 3,3 % de F3-16. Conviene rehacer esa cifra
+            antes de seguir citándola.
+
+            LO QUE LO DESBLOQUEA, Y ES BARATO: un agregado diario persistente
+            —día, banda, tema, piezas, total de la banda—. Son unas pocas filas
+            al día, sobreviven a la poda, y con semanas de serie «insiste» pasa
+            de ser una foto a ser una afirmación. Decisión de producto pendiente:
+            es tabla nueva y hay que escribirla en cada ciclo de ingesta.
+
  [ ] F1-16  Filtrar noticia internacional relevante sin filtrar por tema
             PEDIDO POR JOSE (2026-07-29). El enfoque del producto es nacional,
             pero hay noticia internacional que sí vale la pena: Israel-Palestina,

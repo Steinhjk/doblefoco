@@ -33,17 +33,30 @@ repartida la propiedad tras la salida de Hemisphere Media Group en 2019 no const
 en ninguna fuente consultable.* Las fuentes describen la etapa de Plural y el paso
 a financiación colectiva, **no la composición accionaria actual**.
 
+> **EL HUECO ES DE LA WEB, NO DEL REGISTRO** (corregido el 2026-08-17). «No consta
+> en ninguna fuente consultable» es cierto solo para internet abierto: **NTC
+> Televisión S.A. es una sociedad colombiana inscrita en la Cámara de Comercio de
+> Bogotá**, y su composición accionaria cuesta un certificado. Que el medio con el
+> valor más extremo del catálogo lleve años con la propiedad abierta **es una
+> decisión de gasto, no un límite de la realidad.**
+>
+> **Y hay un hecho societario intermedio que la ficha se saltaba:** en diciembre de
+> 2022 Canal 1 fue absorbido por HMTV1, y NTC quedó como **proveedor de contenido**
+> y no como socio-inversionista. La ficha salta de 2019 al presente.
+
 - [Noticias Uno (Wikipedia)](https://es.wikipedia.org/wiki/Noticias_Uno)
 - [Canal 1 (Wikipedia)](https://es.wikipedia.org/wiki/Canal_1_(Colombia))
+- [El Espectador — Ignacio Gómez, nuevo director de Noticias Uno](https://www.elespectador.com/entretenimiento/cine-y-tv/ignacio-gomez-gomez-sera-el-nuevo-director-de-noticias-uno-noticias-hoy/)
 - [Las2Orillas — el gringo dueño de Canal 1 que le dio la espalda a Noticias Uno](https://www.las2orillas.co/el-gringo-dueno-de-canal-1-que-le-dio-la-espalda-a-noticias-uno-de-daniel-coronell/)
 
 **Dato con doble filo:** Daniel Coronell lo dirigió entre 2002 y 2011 y **hoy es
 presidente de la revista Cambio**, que está en este catálogo. La parte de 2002-2011
 es historia y no cuenta; la de hoy es un vínculo entre dos medios del catálogo a
 través de una persona, y **eso sí es del presente** y no está declarado en ninguna
-de las dos fichas de propiedad.
+de las dos fichas de propiedad. **Ojo: ese «hoy» tampoco está verificado con fuente
+de 2026** — hay que comprobarlo antes de escribirlo en las dos fichas.
 
-### Nivel 2 — Conducta medida: NO EXISTE
+### Nivel 2 — Conducta medida: NO EXISTE, y el diagnóstico era falso
 
 ```
 artículos ............................ 0
@@ -53,6 +66,20 @@ historias ............................ 0
 Su feed devuelve diez ítems y **ninguno entra en la ventana**: el más reciente
 tiene 80 horas (medido el 2026-08-12). Figura en el catálogo, se le cita, y no
 aporta corpus.
+
+> **NO ES UN NOTICIERO SEMANAL, y de esa premisa colgaba todo el diagnóstico.** La
+> refutación 5 de esta ficha decía que «con periodicidad semanal, la ventana de 72 h
+> lo excluye estructuralmente» y concluía que **su feed no está roto**.
+>
+> Las fuentes disponibles se contradicen sobre la parrilla exacta —unas describen
+> emisión de lunes a viernes, otras emisiones de fin de semana en Cablenoticias—
+> pero **ninguna sostiene «semanal»**. Un medio que emite varios días por semana y
+> cuyo ítem más reciente tiene 80 horas **tiene el feed roto**, no una periodicidad
+> incompatible con la ventana.
+>
+> La distinción decide la acción: **hay que arreglar el feed**, como se hizo con El
+> Espectador el 2026-08-08, no diseñar una excepción para medios semanales que este
+> medio no necesita.
 
 ---
 
@@ -110,10 +137,28 @@ de derecha, la ausencia de conglomerado no prueba que sea de izquierda.
    es defendible ante un revisor externo**, y es el que más va a atacarse.
 4. **Declarar el vínculo con Cambio a través de Daniel Coronell**, en las dos
    fichas de propiedad. Es del presente y hoy no está en ninguna.
-5. **Darle feed o aceptar que no tendrá nivel 2.** Su feed responde pero publica
-   fuera de la ventana; con periodicidad semanal, la ventana de 72 h lo excluye
-   estructuralmente. **Eso merece decidirse aparte**: un noticiero semanal no es un
-   feed roto.
+5. **ARREGLAR EL FEED.** No es una decisión de protocolo: es un feed roto. La
+   premisa de «noticiero semanal» era falsa, y con ella cae la excepción que esta
+   ficha proponía diseñar.
+6. **Comprar el certificado mercantil de NTC Televisión S.A.** El hueco de propiedad
+   del medio más extremo del catálogo no puede depender de lo que recuerde la web.
+7. **Verificar el estatus de Coronell** —¿sigue siendo accionista?, ¿sigue
+   presidiendo Cambio?— antes de escribir el vínculo en las dos fichas.
+
+---
+
+## CONDUCTA VIGENTE ENCONTRADA, y refuerza el argumento de la ficha
+
+El noticiero siguió publicando investigaciones sobre el gobierno **saliente** hasta
+diciembre de 2025. Si el patrón real es «investiga al poder de turno» —y no «vigila
+al establecimiento desde la izquierda»—, entonces **la clasificación correcta bajo
+la regla del propio proyecto es la de Chocó 7 Días: la mixta**, no −0,40.
+
+Es decir: la conducta del presente que faltaba **apunta en la misma dirección que el
+argumento de esta ficha**, y con más fuerza. Se anotó también un supuesto choque con
+el gobierno entrante en 2026, y **se descarta**: la única fuente es un canal
+partidista sin corroboración en prensa. Un hueco declarado antes que un dato
+verosímil.
 
 ---
 
@@ -124,18 +169,32 @@ Se pide **argumentar en contra**. El acuerdo no se registra como validación.
 | Modelo | Versión | Fecha | Objeción | Resolución |
 |---|---|---|---|---|
 | Claude Opus 5 | claude-opus-5 | 2026-08-12 | Redactor de esta ficha | — |
-| Kimi K3 | | | | |
+| Kimi K3 | — | 2026-08-18 | El hueco de propiedad está menos cerrado de lo que la ficha declara: hay un evento societario de 2022 sin registrar y el certificado mercantil existe | **Aceptada** en cuanto al camino de cierre y al hecho de 2022. **La parte sobre Coronell como accionista queda sin verificar y no se escribe** |
+| Kimi K3 | — | 2026-08-18 | **Error de hecho: no es un noticiero semanal.** Si su feed tiene 80 horas de atraso, está roto | **Aceptada.** Verificada: ninguna fuente sostiene «semanal». La refutación 5 se reescribe: arreglar el feed |
+| Kimi K3 | — | 2026-08-18 | El «hoy es presidente de Cambio» puede estar caduco y no se pudo confirmar con fuente de 2026 | **Aceptada** como advertencia: hay que verificarlo antes de escribirlo en las dos fichas |
+| Kimi K3 | — | 2026-08-18 | La conducta vigente apunta a «fiscaliza a quien esté en el poder», lo que **refuerza** el argumento de la ficha y debilita el −0,40 | **Aceptada.** Sección propia arriba. El presunto choque con el gobierno entrante se descarta por fuente inadmisible |
 | Fable 5 | | | | |
 
-**Aviso al revisor:** esta ficha es el espejo de la de El Espectador. Allí la regla
-del presente tumbó un −0,20; aquí el mismo defecto está en un −0,40 y el catálogo
-todavía lo sostiene. Si un revisor externo defiende el −0,40 con los treinta años
-de investigación, está usando el argumento que las reglas descartan.
+**Aviso al revisor siguiente:** esta ficha es el espejo de la de El Espectador. Allí
+la regla del presente tumbó un −0,20; aquí el mismo defecto está en un −0,40. Si
+alguien defiende el −0,40 con los treinta años de investigación, está usando el
+argumento que las reglas descartan.
 
 ---
 
 ## ESTADO
 
-**Sin firmar.** Sigue en −0,40 con `reviewedAt: null`, siendo el extremo izquierdo
-del catálogo colombiano, con la propiedad sin documentar, sin corpus y con una
-justificación cuya mitad es histórica.
+**Sin firmar, y es el peor expediente del catálogo.** Sigue en −0,40 con
+`reviewedAt: null`: el valor más extremo del catálogo colombiano, sostenido sobre
+una **premisa falsa** (no es semanal), un **feed roto**, una propiedad sin
+documentar y una justificación cuya mitad es histórica.
+
+**La evidencia disponible apunta a 0,00**, y no por prudencia: es lo que exige la
+regla de «fiscalizar al poder» una vez se decida la pregunta transversal 2. **Esa
+decisión es de protocolo y es de Jose**; mientras no se tome, este número no se
+puede mover ni defender.
+
+> **Y es el caso que mejor justifica la compuerta de evidencia** que el revisor
+> propuso para el catálogo: con `n = 0` y feed roto, un medio no debería llevar un
+> valor heredado en silencio, sino un estado **SUSPENDIDO POR MEDICIÓN**, visible y
+> con fecha. Aquí el −0,40 lleva años pudriéndose sin que nada lo delate.

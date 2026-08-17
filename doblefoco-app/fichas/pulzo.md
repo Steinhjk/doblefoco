@@ -45,12 +45,41 @@ Fuente: `shared/audiencia.js`.
 | Sociedad editora | **INQLAB S.A.S.**, con el 100 % de las acciones |
 | Otras participaciones de INQLAB | Quantum (49 %), Chicplace (43 %), Appto (15 %) |
 | Quién controla INQLAB | **no consta en ninguna fuente abierta** |
+| Quién dirige hoy | **Andrés Murcia, CEO desde diciembre de 2023** |
 
 Fuente: ficha de Pulzo.com en el **Media Ownership Monitor** de Colombia.
 
-**Es el único medio colombiano del catálogo cuyo hilo no termina en personas**,
-junto con Colombia Informa. Y a diferencia de aquel, aquí sí hay nombres
-circulando: lo que pasa es que no se sostienen.
+> **DOS CORRECCIONES DEL 2026-08-17.**
+>
+> **1. La afirmación de singularidad era falsa.** Aquí se decía que es «el único
+> medio colombiano del catálogo cuyo hilo no termina en personas, junto con Colombia
+> Informa» — y la ficha de Colombia Informa decía lo mismo de sí misma. Ninguna de
+> las dos era cierta: los tres medios de la Organización Ardila Lülle cuelgan de
+> **Parklake Investment Inc.**, sociedad panameña con el 63,4 % del holding y sin
+> titularidad documentada tras la sucesión de 2021, y Cablenoticias tiene también
+> sociedad última en Panamá. **Son al menos cinco.**
+>
+> La frase importaba porque presentaba la opacidad de Pulzo como anomalía cuando es
+> **un patrón estructural del mapa**. Lo que falta no es una excepción para este
+> medio sino una regla escrita: qué dice el aviso de propiedad cuando el hilo se
+> para en una sociedad offshore.
+>
+> **2. La ficha criticaba al MOM por viejo y dejaba vacío el campo rellenable.**
+> Guillermo Franco anunció su retiro en **junio de 2018** —es el artículo de La
+> República que esta ficha analiza por su titular—. El CEO actual es **Andrés
+> Murcia, desde diciembre de 2023**, según el propio medio; antes fue Chief Digital
+> Officer de Prisa Media.
+
+**Contra-indicios de la hipótesis Santo Domingo**, anotados para que el próximo
+revisor no rehaga el barrido:
+
+- El cofundador **Luis Fernando Santos es expresidente de Casa Editorial El
+  Tiempo** — órbita Sarmiento, no Santo Domingo.
+- Universidades que describen a InQlab la presentan como vehículo de inversión en
+  empresas disruptivas, **sin mencionar al grupo**.
+- El MOM documenta a **INQLAB S.A.S. como sociedad colombiana**, con registros RUES
+  y Cámara de Comercio de Bogotá y dirección en Bogotá: el «registrada en Panamá» de
+  Wikipedia **no tiene respaldo ni siquiera en las fuentes disponibles**.
 
 ### Nivel 2 — Conducta medida: NO EXISTE
 
@@ -128,12 +157,42 @@ tuvo en cuenta.
 
 1. **Certificado de Cámara de Comercio de INQLAB S.A.S.**: accionistas y
    representante legal actuales. Es lo único que zanja el asunto Santo Domingo en
-   una dirección o en la otra.
+   una dirección o en la otra. **Es, de lejos, la acción de mayor valor pendiente en
+   esta ficha**: cuesta unos miles de pesos y un día, y el cuarto medio más leído
+   del país lleva años con esta pregunta abierta.
 2. **Si se confirma el control de Santo Domingo**, hay que añadir `controlGroup:
    'valorem'` y revisar el aviso de dueño compartido: pasaría de tres medios a
    cuatro y sería el mayor del mapa.
 3. **Medir su encuadre** cuando haya corpus. Es un medio de mucho volumen y
    titular rápido: es de los que más se puede medir y de los que menos se sabe.
-4. **Comprobar si la ficha del Media Ownership Monitor se ha actualizado.** La
-   suya es vieja —Franco ya se retiró— y este proyecto ya se quemó una vez
-   citando fichas de ese monitor sin mirar su fecha.
+4. ~~Comprobar si la ficha del MOM se ha actualizado~~ **Comprobado, y es peor de lo
+   escrito**: no es «vieja» en abstracto — su cadena documental termina en actas y
+   formularios RUES de **2014–2015**, con cuota de audiencia por Alexa Rank de 2015
+   y tasa de cambio de la época. **Once años.**
+   Y no es un problema de esta ficha: es **la cuarta del ciclo** cuyo nivel 1 se
+   apoya en el MOM con fuentes internas de hace más de una década. Eso ya no es una
+   observación por ficha, es **una pregunta de política del proyecto**: o se acepta
+   el MOM como vigente con su edad estampada, o se exige primario mercantil
+   reciente — pero no se puede seguir usando «las URL responden» como sinónimo de
+   «la propiedad está documentada hoy».
+5. **Escribir la regla del hilo offshore.** Al menos cinco medios del catálogo se
+   paran antes de llegar a persona natural. Qué dice el aviso de propiedad en ese
+   caso no está decidido.
+
+---
+
+## REVISIÓN POR MODELOS
+
+Se pide **argumentar en contra**. El acuerdo no se registra como validación.
+
+| Modelo | Versión | Fecha | Objeción | Resolución |
+|---|---|---|---|---|
+| Claude Opus 5 | claude-opus-5 | 2026-08-11 | Redactor de esta ficha | — |
+| Kimi K3 | — | 2026-08-18 | **La afirmación de singularidad es falsa**: al menos cinco medios del catálogo tienen el hilo parado en una sociedad | **Aceptada.** Corregida aquí y en la ficha de Colombia Informa, que afirmaba lo mismo |
+| Kimi K3 | — | 2026-08-18 | La ficha declara «Franco ya se retiró» sin fecha ni sucesor, cuando la dirección vigente es documentable | **Aceptada.** Verificada: retiro en junio de 2018, CEO Andrés Murcia desde diciembre de 2023 |
+| Kimi K3 | — | 2026-08-18 | Faltan los contra-indicios de la hipótesis Santo Domingo, no solo la debilidad de las fuentes que la afirman | **Aceptada.** Tres contra-indicios anotados en el nivel 1 |
+| Kimi K3 | — | 2026-08-18 | El MOM no es «viejo» en abstracto: su cadena termina en 2014–2015, y es la cuarta ficha del ciclo con el mismo vicio | **Aceptada.** Elevada a pregunta de política del proyecto |
+
+**Ninguna objeción contradice el 0,00 ni la decisión sobre `controlGroup`** — al
+contrario, las refuerzan con evidencia que la ficha no había registrado. Eso **no es
+un aval**: atacan la exhaustividad del expediente, no el número.

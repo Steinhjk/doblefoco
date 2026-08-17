@@ -1182,6 +1182,66 @@ export const MEDIA_REGISTRY = [
          * ENTRA EN 0,00 CON PROPIEDAD DECLARADA-AUSENTE, y no porque no se sepa
          * nada: se sabe bastante, y todo es viejo. Ver `mediaOwnership.js`.
          */
+        /**
+         * LA NACIÓN (Neiva) — alta del 2026-08-16, autorizada por Jose.
+         *
+         * Segunda voz del Huila, junto a Diario del Huila. No desbloquea
+         * departamento: añade contraste donde había una sola casa.
+         *
+         * OJO CON `/nosotros/`: NO es su página institucional. Devuelve un
+         * artículo de opinión titulado «Nosotros, los ahora huérfanos» —el slug
+         * coincide con la primera palabra del titular—. Quien pruebe esa ruta y
+         * mire solo el 200 creerá haber leído la página de la casa. La mancheta
+         * está en el PIE DE LA PORTADA.
+         *
+         * CAMBIÓ DE MANOS EN 2024 y eso es lo que hay que vigilar aquí: el
+         * empresario huilense Felipe Olave Blackburn adquirió el diario y después
+         * las emisoras Huila Stéreo. Si esa concentración se confirma con
+         * registro, es `controlGroup` y hay que marcarlo. Ver `mediaOwnership.js`.
+         *
+         * NO SE LE PONE +0,20 «como a los otros diarios regionales», que es lo que
+         * pedía el cuerpo. Los siete del catálogo están todos entre +0,15 y +0,35
+         * por una analogía que nadie ha sustituido por evidencia —anotado el
+         * 2026-08-12 y sin resolver—, y este sería el octavo caso del mismo
+         * razonamiento circular. Entra en 0,00 por Regla 2, con cero corpus.
+         */
+        id: 'la-nacion-neiva', name: 'La Nación (Neiva)', shortName: 'La Nación',
+        domain: 'lanacion.com.co', departamento: 'Huila', country: 'CO', group: 'Comunicaciones Olave',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Neiva, segunda voz del Huila en el catálogo. Su mancheta declara la editora COMUNICACIONES OLAVE S.A.S. y tres cargos, y el empresario Felipe Olave Blackburn consta como comprador del diario en 2024; el accionariado no está documentado en registro. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio — ver fichas/la-nacion-neiva.md.',
+        feed: { url: 'https://www.lanacion.com.co/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        /**
+         * DIARIO LA LIBERTAD (Barranquilla) — alta del 2026-08-16, autorizada
+         * por Jose. Segunda voz del Atlántico, junto a El Heraldo.
+         *
+         * ES EL MÁS PRODUCTIVO DE LAS TRES ALTAS DE ESTA TANDA: 50 ítems por
+         * pasada y publicación continua.
+         *
+         * LO QUE HAY QUE LEER ANTES DE TOCAR SU VALOR DE SESGO. En enero de 2025
+         * se anunció que el empresario Samuel Tcherassi pasaba a ser el socio
+         * controlante, y **Tcherassi es candidato anunciado a la Alcaldía de
+         * Barranquilla para 2027**, además de haber sido contratista de esa misma
+         * alcaldía. Un medio cuyo dueño aspira a gobernar la ciudad que el medio
+         * cubre es un conflicto de interés que se DECLARA, no se supone: la
+         * operación consta como memorando de entendimiento y no como compraventa
+         * cerrada, y no hay nada posterior a mayo de 2025. Todo el detalle y lo
+         * que lo cerraría, en `mediaOwnership.js`.
+         *
+         * NO NOMBRA A UNA SOLA PERSONA EN SU SITIO y firma con cuentas numeradas
+         * —«Redacción3 La Libertad», «Redacción4»—. Y cuidado con sus rutas:
+         * `/nosotros` es un artículo de 2020 sobre un jugador del Junior y
+         * `/equipo` uno de 2023 sobre un operativo anticontrabando. Dan 200 con
+         * tamaños DISTINTOS y aun así ninguna es la página que se pide.
+         */
+        id: 'diario-la-libertad', name: 'Diario La Libertad', shortName: 'La Libertad',
+        domain: 'diariolalibertad.com', departamento: 'Atlántico', country: 'CO', group: 'Regional Caribe',
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Diario de Barranquilla fundado en 1979, segunda voz del Atlántico en el catálogo. Su sitio no nombra propietario ni redacción; la sociedad histórica consta en liquidación y la entrada anunciada de un socio controlante en 2025 no consta cerrada. Orientación mixta provisional por ausencia de evidencia y no por evidencia de equilibrio — ver fichas/diario-la-libertad.md, que declara el conflicto de interés pendiente de confirmar.',
+        feed: { url: 'https://diariolalibertad.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
         id: 'cablenoticias', name: 'Cablenoticias', shortName: 'Cablenoticias',
         domain: 'cablenoticias.com', country: 'CO', group: 'Cable Noticias TV',
         bias: 0.0, factuality: null, reviewedAt: null,

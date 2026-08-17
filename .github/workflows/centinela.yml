@@ -1,0 +1,208 @@
+# =============================================================================
+#  El centinela — ¿publicaron los medios algo que toque lo que su ficha afirma?
+# =============================================================================
+#  QUÉ PROBLEMA RESUELVE. `vigilancia.yml` avisa de lo que está CAÍDO. Nada
+#  avisaba de lo que está DESACTUALIZADO, y eso es lo que se lleva por delante
+#  las fichas: la de EL DIARIO de Boyacá caducó en tres días, y la de Diario La
+#  Libertad cambió entera en otros tres — apareció un conflicto de interés que
+#  el propio medio llevaba publicado once meses, y que salió de escribir dos
+#  palabras en su buscador.
+#
+#  Eso es lo que corre aquí. No lee ni juzga: pregunta y compara con la semana
+#  anterior. Los términos y su porqué están en `doblefoco-app/shared/centinela.js`.
+#
+#  ── TRES DECISIONES QUE NO SON OBVIAS ──────────────────────────────────────
+#
+#  1. SEMANAL, Y NO DIARIO. Son 76 sitios ajenos. Este proyecto se presenta ante
+#     ellos con un User-Agent propio y una URL para pedirnos que paremos;
+#     consultarles a diario lo que cambia cada meses contradice esa postura. Lo
+#     que se vigila —quién dirige, quién compra, quién se lanza a un cargo— no
+#     se mueve en 24 horas.
+#
+#  2. ENCONTRAR ALGO NO ES UN FALLO, ASÍ QUE EL JOB NO SE PONE EN ROJO POR ELLO.
+#     Es la diferencia con `vigilancia.yml`, donde el aspa roja es correcta
+#     porque algo está averiado. Aquí el hallazgo es el producto: si publicar una
+#     noticia pintara el flujo de rojo, el rojo dejaría de significar avería y se
+#     aprendería a ignorarlo — que es exactamente lo que este proyecto lleva
+#     escrito en el umbral de 14 días de `comprobarMedios.mjs`.
+#
+#     El rojo se reserva para lo que sí es avería: que el centinela no llegue al
+#     final. Por eso no se mira el código de salida —`--strict` sale 1 con
+#     novedades y un programa roto también sale 1—, sino un resumen en JSON que
+#     solo existe si el recorrido terminó.
+#
+#  3. EL ESTADO VUELVE COMMITEADO. Sin memoria entre pasadas, cada semana
+#     avisaría de lo mismo. Y `centinela/estado.json` no puede vivir en el
+#     contenedor, que se destruye, ni en `/data/`, que está en .gitignore. El
+#     commit lleva `[skip ci]` para no disparar `ci.yml` por un archivo de datos,
+#     y además deja en el historial la prueba de que esto corrió: un flujo que
+#     no deja rastro no se puede auditar.
+#
+#  ── LO QUE ESTO NO PUEDE HACER SOLO ────────────────────────────────────────
+#
+#  Dos medios del catálogo —Vorágine y Razón Pública— responden desde una
+#  máquina de casa y fallan desde Actions, por la IP y no por el feed. El
+#  centinela lo tiene en cuenta y separa «el sitio no tiene buscador» de «me
+#  rechazó o no contestó», y en el segundo caso dice que se pruebe en local. No
+#  lo resuelve: lo declara. Dar por perdido un medio que está vivo sería un error
+#  nuestro leído como un defecto suyo.
+# =============================================================================
+
+name: Centinela
+
+on:
+  schedule:
+    # Lunes 12:00 UTC ≈ 07:00 en Colombia. El aviso llega al empezar la semana,
+    # no de madrugada, porque lo que pide es que una persona lea y decida.
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+# `contents: write` es para devolver el estado; `issues: write`, para el aviso.
+permissions:
+  contents: write
+  issues: write
+
+# Dos pasadas a la vez se pisarían el estado y se duplicarían las peticiones a
+# sitios ajenos, que es lo único que aquí no se puede deshacer.
+concurrency:
+  group: centinela
+  cancel-in-progress: false
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+        working-directory: doblefoco-app
+
+      # `continue-on-error` porque `--strict` sale 1 cuando HAY novedades, que
+      # es el caso bueno. Lo que decide si algo se rompió es el resumen.
+      - name: Preguntar a los medios
+        id: centinela
+        continue-on-error: true
+        run: |
+          node scripts/centinela.mjs --strict --resumen="$RUNNER_TEMP/resumen.json" \
+            2>&1 | tee "$RUNNER_TEMP/centinela.txt"
+        working-directory: doblefoco-app
+
+      - name: Leer el resumen
+        id: resumen
+        run: |
+          if [ ! -f "$RUNNER_TEMP/resumen.json" ]; then
+            echo "termino=no" >> "$GITHUB_OUTPUT"
+            echo "El centinela no llegó al final: no escribió resumen." >&2
+            exit 0
+          fi
+          echo "termino=si" >> "$GITHUB_OUTPUT"
+          for k in novedades piezasNuevas noComprobables sospechaDeIp; do
+            echo "$k=$(jq -r ".$k" "$RUNNER_TEMP/resumen.json")" >> "$GITHUB_OUTPUT"
+          done
+
+      # ── Devolver la memoria ────────────────────────────────────────────────
+      - name: Guardar el estado en el repositorio
+        if: steps.resumen.outputs.termino == 'si'
+        run: |
+          if git diff --quiet -- doblefoco-app/centinela/estado.json; then
+            echo "El estado no cambió."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add doblefoco-app/centinela/estado.json
+          git commit -m "Centinela: estado de la pasada del $(date -u '+%Y-%m-%d') [skip ci]"
+          git push
+
+      # ── Aviso ──────────────────────────────────────────────────────────────
+      # Igual que en vigilancia.yml, se busca por etiqueta y no por título: el
+      # título lleva la fecha, así que buscarlo abriría uno nuevo cada semana del
+      # mismo asunto sin leer.
+      # `gh issue create --label` falla si la etiqueta no existe, y ese fallo
+      # llegaría justo el día en que hay algo que avisar. Se crea aquí, que es
+      # idempotente, en vez de depender de que alguien la haya creado a mano.
+      - name: Asegurar la etiqueta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create centinela \
+            --color 0E8A16 \
+            --description "Hallazgos del centinela: hay piezas que leer" \
+            --force
+
+      - name: Buscar el aviso abierto
+        id: abierto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          numero=$(gh issue list --label centinela --state open \
+                     --limit 1 --json number --jq '.[0].number // empty')
+          echo "numero=$numero" >> "$GITHUB_OUTPUT"
+
+      - name: Abrir o ampliar el aviso
+        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.novedades != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          NUEVAS: ${{ steps.resumen.outputs.piezasNuevas }}
+        run: |
+          {
+            echo "**$NUEVAS pieza(s) nueva(s)** en lo que vigilan las fichas."
+            echo
+            echo "Cada bloque dice **qué afirmación de la ficha queda en duda**. Esto no"
+            echo "es una lectura ni un juicio: es el aviso de que hay algo que leer."
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/centinela.txt"
+            echo '```'
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/cuerpo.md"
+
+          if [ -n "$NUMERO" ]; then
+            gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
+          else
+            gh issue create \
+              --title "Centinela — $(date -u '+%Y-%m-%d'): hay algo que leer" \
+              --label centinela \
+              --body-file "$RUNNER_TEMP/cuerpo.md"
+          fi
+
+      # El issue del centinela NO se cierra solo. El de vigilancia sí, porque
+      # «se recuperó» es un hecho comprobable; aquí lo que hay pendiente es que
+      # alguien lea unas piezas y decida, y eso no lo sabe el flujo. Cerrarlo por
+      # el paso del tiempo enterraría la tarea, que es lo contrario de avisar.
+
+      # ── Avería de verdad ───────────────────────────────────────────────────
+      - name: Avisar si el centinela no llegó al final
+        if: steps.resumen.outputs.termino == 'no'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "**El centinela no terminó**, así que esta semana NO se ha comprobado nada."
+            echo "No es que no haya novedades: es que no se miró."
+            echo
+            echo '```'
+            tail -c 8000 "$RUNNER_TEMP/centinela.txt" || echo "(sin salida)"
+            echo '```'
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/averia.md"
+
+          gh issue create \
+            --title "Centinela roto — $(date -u '+%Y-%m-%d')" \
+            --label centinela \
+            --body-file "$RUNNER_TEMP/averia.md"
+
+          exit 1

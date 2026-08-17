@@ -65,6 +65,16 @@ import { MEDIA_REGISTRY } from '../shared/mediaRegistry.js';
 const STRICT = process.argv.includes('--strict');
 const SOLO_MEDIO = process.argv.find((a) => a.startsWith('--medio='))?.slice('--medio='.length);
 
+/**
+ * `--resumen=<ruta>` escribe un JSON con el recuento, para quien automatice esto.
+ *
+ * Existe porque el código de salida no basta: `--strict` sale 1 cuando hay
+ * novedades, pero un fallo del programa también sale 1, y un flujo que los
+ * confunda avisaría de «hay noticias» cuando lo que pasó es que se rompió. Si
+ * este archivo no aparece, es que el centinela no llegó al final.
+ */
+const RUTA_RESUMEN = process.argv.find((a) => a.startsWith('--resumen='))?.slice('--resumen='.length);
+
 const TIMEOUT_MS = 25_000;
 const PAUSA_MS = 1_500;
 const MAX_RESULTADOS = 60;
@@ -154,7 +164,7 @@ async function porRest(origen, consulta) {
         `&per_page=${MAX_RESULTADOS}&_fields=date,link,title`;
 
     const res = await pedir(url);
-    if (!res.ok) return null;
+    if (!res.ok) return { piezas: null, estado: res.status };
 
     const cuerpo = await res.text();
     let datos;
@@ -163,17 +173,20 @@ async function porRest(origen, consulta) {
     } catch {
         // Un sitio que no es WordPress devuelve su portada con 200. No es un
         // fallo, es que este canal no aplica.
-        return null;
+        return { piezas: null, estado: res.status };
     }
-    if (!Array.isArray(datos)) return null;
+    if (!Array.isArray(datos)) return { piezas: null, estado: res.status };
 
-    return datos
-        .filter((p) => p?.link)
-        .map((p) => ({
-            url: p.link,
-            titulo: limpiarTitulo(p.title?.rendered ?? ''),
-            fecha: typeof p.date === 'string' ? p.date.slice(0, 10) : null,
-        }));
+    return {
+        estado: res.status,
+        piezas: datos
+            .filter((p) => p?.link)
+            .map((p) => ({
+                url: p.link,
+                titulo: limpiarTitulo(p.title?.rendered ?? ''),
+                fecha: typeof p.date === 'string' ? p.date.slice(0, 10) : null,
+            })),
+    };
 }
 
 // ── Canal 2: el buscador HTML ────────────────────────────────────────────────
@@ -184,7 +197,7 @@ const NO_ES_PIEZA =
 
 async function porHtml(origen, consulta) {
     const res = await pedir(`${origen}/?s=${encodeURIComponent(consulta)}`);
-    if (!res.ok) return null;
+    if (!res.ok) return { piezas: null, estado: res.status };
 
     const html = await res.text();
     const host = new URL(origen).host.replace(/^www\./, '');
@@ -203,27 +216,54 @@ async function porHtml(origen, consulta) {
         encontrados.set(url, { url, titulo, fecha: fechaDelEnlace(url) });
     }
 
-    return encontrados.size ? [...encontrados.values()] : null;
+    return { piezas: encontrados.size ? [...encontrados.values()] : null, estado: res.status };
 }
 
 // ── Una consulta, por el canal que haya ──────────────────────────────────────
 
+/**
+ * POR QUÉ IMPORTA DISTINGUIR POR QUÉ NO SE PUDO PREGUNTAR.
+ *
+ * «No comprobable» tiene tres causas y solo una es del medio:
+ *
+ *   · `sin-buscador`  — el sitio no ofrece por dónde preguntar. Es Cablenoticias,
+ *                       y es un hecho estable: mañana tampoco se podrá.
+ *   · `bloqueado`     — 403 o 429. Puede ser el sitio, o puede ser DESDE DÓNDE
+ *                       preguntamos.
+ *   · `sin-respuesta` — se cayó la petición o expiró el plazo.
+ *
+ * Los dos últimos son los que engañan cuando esto corre en la nube: Vorágine y
+ * Razón Pública responden desde una máquina de casa y fallan desde GitHub
+ * Actions, por la IP y no por el feed. Un informe que los meta en el mismo saco
+ * que Cablenoticias hace que se den por perdidos medios que están perfectamente
+ * vivos. Por eso el informe dice cuál de las tres es, y sugiere probar en local.
+ */
 async function preguntar(origen, consulta, canalConocido) {
     const orden = canalConocido === 'html' ? ['html', 'rest'] : ['rest', 'html'];
+    let peorEstado = 0;
+    let fallo = null;
 
     for (const canal of orden) {
         try {
-            const piezas = canal === 'rest' ? await porRest(origen, consulta) : await porHtml(origen, consulta);
+            const { piezas, estado } =
+                canal === 'rest' ? await porRest(origen, consulta) : await porHtml(origen, consulta);
             if (piezas) return { canal, piezas };
+            if (estado) peorEstado = estado;
         } catch (error) {
-            // Un canal que revienta no descarta el otro. Si revientan los dos,
-            // sale como no comprobable, que es lo honesto.
-            if (canal === orden[1]) return { canal: 'no-comprobable', piezas: [], error: error?.message };
+            // Un canal que revienta no descarta el otro.
+            fallo = error?.name === 'AbortError' ? `sin respuesta en ${TIMEOUT_MS} ms` : error?.message;
         }
         await dormir(PAUSA_MS);
     }
 
-    return { canal: 'no-comprobable', piezas: [] };
+    const motivo =
+        peorEstado === 403 || peorEstado === 429
+            ? 'bloqueado'
+            : fallo
+              ? 'sin-respuesta'
+              : 'sin-buscador';
+
+    return { canal: 'no-comprobable', piezas: [], motivo, estado: peorEstado, error: fallo };
 }
 
 // ── Estado entre pasadas ─────────────────────────────────────────────────────
@@ -270,12 +310,18 @@ for (const id of ids) {
     console.log(`── ${nombre}`);
 
     for (const { consulta, vigila, enTitular = true } of VIGILANCIA[id].consultas) {
-        const { canal, piezas, error } = await preguntar(origen, consulta, previo.canal);
+        const { canal, piezas, motivo, estado: httpEstado, error } = await preguntar(origen, consulta, previo.canal);
         registro.canal = canal === 'no-comprobable' ? registro.canal : canal;
 
         if (canal === 'no-comprobable') {
-            console.log(`   ⚠ «${consulta}»: NO COMPROBABLE — no hay buscador consultable${error ? ` (${error})` : ''}`);
-            noComprobables.push({ nombre, consulta, vigila });
+            const explicacion = {
+                'sin-buscador': 'el sitio no ofrece buscador consultable',
+                bloqueado: `rechazó la consulta (HTTP ${httpEstado}) — PUEDE SER LA IP: probar en local`,
+                'sin-respuesta': `no respondió (${error}) — PUEDE SER LA IP: probar en local`,
+            }[motivo];
+
+            console.log(`   ⚠ «${consulta}»: NO COMPROBABLE — ${explicacion}`);
+            noComprobables.push({ nombre, consulta, vigila, motivo, explicacion });
             registro.consultas[consulta] = previo.consultas?.[consulta] ?? { vistos: [] };
             continue;
         }
@@ -340,10 +386,38 @@ if (novedades.length) {
 if (noComprobables.length) {
     console.log();
     console.log('NO COMPROBABLES HOY (no es un aprobado, es un hueco declarado):');
-    for (const n of noComprobables) console.log(`  ⚠ ${n.nombre} · «${n.consulta}»`);
+    for (const n of noComprobables) console.log(`  ⚠ ${n.nombre} · «${n.consulta}» — ${n.explicacion}`);
+
+    // El aviso importa cuando esto corre en la nube: dos de los medios del
+    // catálogo responden en local y fallan desde Actions por la IP, y darlos por
+    // mudos sería un error nuestro leído como un defecto suyo.
+    if (noComprobables.some((n) => n.motivo !== 'sin-buscador')) {
+        console.log();
+        console.log('  Alguno falló por bloqueo o silencio, no por falta de buscador.');
+        console.log('  Antes de darlo por perdido: npm run centinela -- --medio=<id> desde una máquina de casa.');
+    }
 }
 
 console.log();
 console.log(`Estado guardado en centinela/estado.json (${hoy}).`);
+
+if (RUTA_RESUMEN) {
+    writeFileSync(
+        RUTA_RESUMEN,
+        `${JSON.stringify(
+            {
+                fecha: hoy,
+                mediosVigilados: ids.length,
+                novedades: novedades.length,
+                piezasNuevas: novedades.reduce((n, x) => n + x.piezas.length, 0),
+                noComprobables: noComprobables.length,
+                sospechaDeIp: noComprobables.filter((n) => n.motivo !== 'sin-buscador').length,
+            },
+            null,
+            4,
+        )}\n`,
+        'utf8',
+    );
+}
 
 if (STRICT && novedades.length) process.exit(1);

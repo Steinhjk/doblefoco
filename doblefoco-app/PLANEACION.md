@@ -135,15 +135,42 @@ todo enseña a ignorarlo**, y la diferencia entre 43 y 1 es exactamente eso.
 directora, la pasada siguiente la marca como nueva y dice qué afirmación deja en
 duda.
 
+### DECIDIDO el 2026-08-17 · Semanal y en la nube
+
+Jose: *«cadencia semanal y que corra desde la nube, para que no dependa de
+absolutamente nada; que todo el proyecto sea automatizado en la nube».*
+
+**`.github/workflows/centinela.yml`**, lunes 12:00 UTC ≈ 07:00 en Colombia. Tres
+decisiones que no son obvias y quedan escritas en el propio flujo:
+
+- **Encontrar algo NO pinta el job de rojo.** Es la diferencia con
+  `vigilancia.yml`, donde el aspa es correcta porque algo está averiado. Aquí el
+  hallazgo es el producto: si publicar una noticia pusiera el flujo en rojo, el
+  rojo dejaría de significar avería. El rojo se reserva para que el centinela no
+  llegue al final — y eso **no se mide por el código de salida**, porque
+  `--strict` sale 1 con novedades y un programa roto también; se mide con un
+  `--resumen=<ruta>` en JSON que solo existe si el recorrido terminó.
+- **El estado vuelve commiteado**, con `[skip ci]`. Sin memoria entre pasadas
+  avisaría de lo mismo cada semana, y el contenedor se destruye. De paso deja en
+  el historial la prueba de que corrió.
+- **El issue del centinela no se cierra solo.** El de vigilancia sí, porque «se
+  recuperó» es comprobable; aquí lo pendiente es que una persona lea y decida.
+
+**Lo que la nube no arregla, y se declara en vez de esconderse:** Vorágine y
+Razón Pública responden en local y fallan desde Actions, por la IP. El centinela
+ahora separa «el sitio no tiene buscador» —Cablenoticias, un hecho estable— de
+«me rechazó (403/429)» o «no contestó», y en los dos últimos dice que se pruebe
+en local antes de dar el medio por perdido.
+
 ### Lo que sigue faltando (de Jose)
 
-- **Cadencia**: la propuesta es semanal, por respeto al tráfico ajeno. Sin
-  decidir, y hasta que se decida esto se ejecuta a mano.
-- **Dónde corre**: en local funciona. En Actions hay que contar con que algunos
-  sitios fallan por IP, y con que el estado tendría que volver commiteado.
 - Si el resultado **alimenta `pendientes.md`** automáticamente o se queda en el
-  informe.
+  issue.
 - **Qué medios se añaden**, y con qué términos. Hoy son tres: los de la cola.
+  Cada alta nueva debería entrar aquí igual que entra en la cola de revisión.
+- **Cablenoticias no se puede preguntar por este canal.** Si su ficha importa —y
+  es de las que más, porque toda su documentación es de 2018—, hace falta otra
+  vía: su sitemap, o su canal de YouTube.
 
 ---
 

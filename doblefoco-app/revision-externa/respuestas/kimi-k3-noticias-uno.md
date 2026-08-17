@@ -68,20 +68,33 @@ No aplica: hay objeciones. Dirección de mi revisión: la tesis de la ficha es c
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — El hueco de propiedad está menos cerrado de lo que la ficha declara, en dos direcciones: hay un accionista persona natural documentado y hay una re… | sí | pendiente | pendiente |
-| 2 — Error de hecho en la refutación 5: Noticias Uno no es «un noticiero semanal»; emite de lunes a viernes. Si su feed tiene 80 horas de atraso, el fee… | sí | pendiente | pendiente |
-| 3 — El «dato con doble filo» sobre Coronell puede estar caduco en su mitad del presente: hay que verificar si sigue siendo presidente de Cambio. | sí | pendiente | pendiente |
-| 4 — La conducta vigente que sí encontré apunta al patrón «fiscaliza a quien esté en el poder», incluido el poder nuevo — lo que refuerza el argumento d… | sí | pendiente | pendiente |
+| El hueco de propiedad está menos cerrado de lo que la ficha declara: hay un evento societario de 2022 sin registrar y el certificado mercantil existe | sí | **no** — ver el motivo | **Aceptada** en cuanto al camino de cierre y al hecho de 2022. **La parte sobre Coronell como accionista queda sin verificar y no se escribe** |
+| **Error de hecho: no es un noticiero semanal.** Si su feed tiene 80 horas de atraso, está roto | sí | sí | **Aceptada.** Verificada: ninguna fuente sostiene «semanal». La refutación 5 se reescribe: arreglar el feed |
+| El «hoy es presidente de Cambio» puede estar caduco y no se pudo confirmar con fuente de 2026 | sí | sí | **Aceptada** como advertencia: hay que verificarlo antes de escribirlo en las dos fichas |
+| La conducta vigente apunta a «fiscaliza a quien esté en el poder», lo que **refuerza** el argumento de la ficha y debilita el −0,40 | sí | sí | **Aceptada.** Sección propia arriba. El presunto choque con el gobierno entrante se descarta por fuente inadmisible |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Lo que el revisor afirmó y NO se escribió**, por no haberse podido verificar
+de forma independiente, va marcado en la tabla. Un hueco declarado antes que un
+dato verosímil.
+
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

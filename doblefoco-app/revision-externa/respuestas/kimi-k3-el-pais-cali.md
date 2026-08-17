@@ -78,20 +78,29 @@ Firma: Kimi K3 — revisión externa DobleFoco — protocolo de objeción, no op
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — ERROR DE HECHO ESTRUCTURAL: Gilinski vendió El País en junio de 2025 | sí | pendiente | pendiente |
-| 2 — Con la premisa corregida, la pregunta de los 0,15 se disuelve y el +0,30 se sostiene con piezas del presente | sí | pendiente | pendiente |
-| 3 — La coincidencia de agenda con Semana del corpus medido ya no puede leerse como efecto de propiedad | sí | pendiente | pendiente |
-| 4 — El perfil del nuevo propietario introduce una variable de orientación distinta que la ficha ignora | sí | pendiente | pendiente |
+| **La premisa central está vencida: Gilinski vendió en junio de 2025** | sí | sí | **Aceptada.** Verificada contra cinco fuentes. Nivel 1 rehecho entero |
+| Con la premisa corregida, los 0,15 se disuelven y el +0,30 se sostiene con piezas | sí | sí | **Aceptada.** Las cuatro piezas quedan en el nivel 5; dos comprobadas directamente |
+| La coincidencia con Semana ya no puede leerse como efecto de propiedad | sí | sí | **Aceptada.** Reinterpretada en el nivel 2 |
+| El perfil del nuevo dueño introduce un conflicto de interés que la ficha ignora | sí | sí | **Aceptada** como vigilancia, no como argumento de orientación (regla 5.1) |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

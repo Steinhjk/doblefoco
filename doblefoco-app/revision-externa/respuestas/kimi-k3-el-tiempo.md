@@ -61,19 +61,28 @@ No aplica: hay objeciones. Declaro, eso sí, que ninguna evidencia encontrada co
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — «Propiedad vigente y cerrada» descansa en un artículo de 2012 y un registro cuyas fuentes internas son de 2013–2015. Ninguna fuente citada es del p… | sí | pendiente | pendiente |
-| 2 — La ficha dice «Sarmiento compró El Tiempo» y se salta la estructura real, que está documentada y es más informativa que la simplificación. | sí | pendiente | pendiente |
-| 3 — La ficha no registra el hecho editorial electoral más relevante de los últimos 12 meses: El Tiempo NO respaldó a nadie en 2026, en una campaña dond… | sí | pendiente | pendiente |
+| «Propiedad vigente y cerrada» descansa en un artículo de 2012 —que narra la compra en futuro— y en un registro con fuentes internas de 2013–2015 | sí | sí | **Aceptada.** Aviso en el nivel 1 y refutación 1 |
+| La ficha se salta la estructura societaria real, que está documentada y declara a Grupo Aval como matriz | sí | sí | **Aceptada.** Verificada directamente en el MOM. Al nivel 1: el cruce con Aval sube de hipótesis a registro |
+| **No registra el hecho editorial electoral más relevante del período: no endosó a nadie en 2026** | sí | sí | **Aceptada, y es la más interesante como método.** Al nivel 5, con la nota de que no mueve el número |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

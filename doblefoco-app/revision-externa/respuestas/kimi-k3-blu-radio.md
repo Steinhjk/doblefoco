@@ -68,20 +68,33 @@ No aplica: hay objeciones. Dirección de mi revisión: el +0,25 tiene hoy más m
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — La «laguna declarada» del nivel 1 no existe: la sociedad operadora y su reparto accionario están documentados en el mismo registro que la ficha ya … | sí | pendiente | pendiente |
-| 2 — La ficha no registra el vínculo político estructural vigente de su director: Néstor Morales, director de Mañanas Blu desde 2012 y hoy, es cuñado de… | sí | pendiente | pendiente |
-| 3 — Las «piezas fechadas de los últimos 12 meses» que pide la refutación 3 existen; una es de cinco días antes de esta revisión. | sí | pendiente | pendiente |
-| 4 — La ficha ignora la crisis de gobernanza del medio en el período: la intervención del Ministerio del Trabajo por denuncias de acoso, con quejas apun… | sí | pendiente | pendiente |
+| **La laguna de nivel 1 no existe**: el MOM tiene página propia y dice que pertenece a Caracol Televisión S.A. | sí | sí | **Aceptada.** Verificada directamente en el MOM. Nivel 1 reescrito |
+| No registra el vínculo político del director de su franja insignia | sí | **no** — ver el motivo | **Parcialmente aceptada.** Se registra que dirige Mañanas Blu desde 2012. **El vínculo familiar alegado NO se pudo verificar de forma independiente y por eso no se escribe** |
+| Las piezas fechadas que pedía la refutación existen | sí | sí | **Aceptada.** Van al nivel 5 |
+| Ignora la crisis de gobernanza del período: la intervención del MinTrabajo por denuncias de acoso | sí | sí | **Aceptada**, con el estatus declarado: denuncias no probadas, intervención verificable |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde figura **parcialmente aceptada**, el motivo va escrito en la propia celda: la parte no aceptada es la que no se pudo comprobar de forma independiente, y por eso no se escribe en la ficha.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Lo que el revisor afirmó y NO se escribió**, por no haberse podido verificar
+de forma independiente, va marcado en la tabla. Un hueco declarado antes que un
+dato verosímil.
+
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

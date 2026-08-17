@@ -67,20 +67,29 @@ No aplica: hay objeciones. Ninguna contradice el 0,00 ni la decisión sobre cont
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — La afirmación de singularidad es falsa: Pulzo no es «el único medio colombiano del catálogo cuyo hilo no termina en personas, junto con Colombia In… | sí | pendiente | pendiente |
-| 2 — La ficha declara «Franco ya se retiró» sin fecha ni sucesor, cuando la estructura directiva vigente es documentable con fuentes del propio medio y … | sí | pendiente | pendiente |
-| 3 — La pista «Grupo Santo Domingo» tiene un contra-indicio documentado que la ficha no registra, y la geografía societaria de Wikipedia es aún más ende… | sí | pendiente | pendiente |
-| 4 — El MOM de Pulzo tiene el mismo vicio de fecha que el resto del ciclo, y la ficha lo señala sin medirlo. | sí | pendiente | pendiente |
+| **La afirmación de singularidad es falsa**: al menos cinco medios del catálogo tienen el hilo parado en una sociedad | sí | sí | **Aceptada.** Corregida aquí y en la ficha de Colombia Informa, que afirmaba lo mismo |
+| La ficha declara «Franco ya se retiró» sin fecha ni sucesor, cuando la dirección vigente es documentable | sí | sí | **Aceptada.** Verificada: retiro en junio de 2018, CEO Andrés Murcia desde diciembre de 2023 |
+| Faltan los contra-indicios de la hipótesis Santo Domingo, no solo la debilidad de las fuentes que la afirman | sí | sí | **Aceptada.** Tres contra-indicios anotados en el nivel 1 |
+| El MOM no es «viejo» en abstracto: su cadena termina en 2014–2015, y es la cuarta ficha del ciclo con el mismo vicio | sí | sí | **Aceptada.** Elevada a pregunta de política del proyecto |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

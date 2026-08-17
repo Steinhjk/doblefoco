@@ -74,20 +74,29 @@ Firma: Kimi K3 — revisión externa DobleFoco — protocolo de objeción, no op
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — ERROR DE HECHO en nivel 1: Alejandro Galvis Ramírez falleció el 15-01-2021 | sí | pendiente | pendiente |
-| 2 — La evidencia de línea que la ficha pedía existe y es notable: la serie “Lo bueno / Lo malo / Lo feo” de agosto 2026 | sí | pendiente | pendiente |
-| 3 — La trayectoria política de los Araujo Perdomo está documentada en fuente pública y la ficha no la explotó; además, un Araujo Perdomo gerencia el di… | sí | pendiente | pendiente |
-| 4 — Dato de estructura del grupo que la ficha omite: Editora del Mar edita también Q’hubo Cartagena y El Teso | sí | pendiente | pendiente |
+| **Error de hecho: Alejandro Galvis Ramírez falleció el 15-01-2021** y la ficha lo cita como titular vigente | sí | sí | **Aceptada.** Verificada. **Y al comprobarla apareció más: el 50/50 tampoco está documentado** — se retiran las dos cifras |
+| La evidencia de línea que la ficha pedía existe: la serie «Lo bueno / Lo malo / Lo feo» de agosto de 2026 | sí | sí | **Aceptada.** «Lo bueno» comprobado directamente, con la cifra de pobreza que cita. Al nivel 5 |
+| La trayectoria política de los Araujo Perdomo está documentada y **un Araujo Perdomo gerencia el diario** | sí | sí | **Aceptada.** Verificado el cargo. Al nivel 1 como hecho de gobernanza |
+| Editora del Mar edita también Q'hubo Cartagena y El Teso, y el diario es miembro fundador de Colprensa | sí | sí | **Aceptada.** Explica parte de la coincidencia regional del nivel 2 |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

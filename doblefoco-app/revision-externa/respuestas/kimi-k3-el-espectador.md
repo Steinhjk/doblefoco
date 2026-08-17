@@ -67,20 +67,29 @@ No aplica: hay objeciones. Dirección de mi revisión: la evidencia que encontr�
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — La ficha omite el hecho societario más importante del medio en el período: en 2025 El Espectador se transformó en entidad sin ánimo de lucro. | sí | pendiente | pendiente |
-| 2 — «Sin base admisible para ningún número» es una afirmación de expediente falsa: hay editoriales fechados de los últimos 12 meses, y ninguno sostiene… | sí | pendiente | pendiente |
-| 3 — La ficha no registra la diferencia estructural que sí podría explicar los 0,45 de Valorem: la familia fundadora retiene una minoría y la dirección. | sí | pendiente | pendiente |
-| 4 — El nivel 1 se apoya, otra vez, en el MOM con fuentes internas de 2013–2015. | sí | pendiente | pendiente |
+| **Omite que en 2025 el medio se transformó en ESAL**, declarado por el propio dueño | sí | sí | **Aceptada.** Verificada en valorem.com.co. Nivel 1 rehecho |
+| «Sin base admisible para ningún número» es falso: hay editoriales fechados, y ninguno sostiene el −0,20 | sí | sí | **Aceptada, y es la objeción más fuerte del ciclo contra esta ficha.** Los cuatro hechos van al nivel 5 |
+| No registra la diferencia estructural que sí explicaría los 0,45 de Valorem: la familia fundadora retiene la dirección | sí | sí | **Aceptada.** Escrita en el ARGUMENTO como primera candidata con fuente |
+| El nivel 1 se apoya, otra vez, en el MOM con fuentes internas de 2013–2015 | sí | sí | **Aceptada.** Declarado en el aviso bajo las fuentes |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

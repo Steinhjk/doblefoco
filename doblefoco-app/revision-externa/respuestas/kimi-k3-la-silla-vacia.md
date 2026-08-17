@@ -61,19 +61,28 @@ No aplica: hay objeciones. Dirección de mi revisión: el argumento central de l
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — La ficha describe mal el episodio de abril de 2026: no fueron «inversiones en Ecopetrol» sino ventas DE la empresa familiar A Ecopetrol por $65.000… | sí | pendiente | pendiente |
-| 2 — La fuente de financiación que la ficha cita es de ~2020 y contradice las afirmaciones del presente que la ficha hace con ella. | sí | pendiente | pendiente |
-| 3 — Hay conducta electoral del período que la ficha no registra, y es consistente con su propio argumento hacia 0,00. | sí | pendiente | pendiente |
+| **La ficha describe mal el episodio de abril**: no fueron «inversiones en Ecopetrol» sino una relación comercial de una empresa familiar, por $65.000 millones | sí | sí | **Aceptada.** Verificada contra Semana, Pulzo y El País. **Con una salvedad**: el propio texto del revisor se contradice sobre la dirección del flujo, así que se escribe solo hasta donde la fuente aguanta — «relación comercial», sin afirmar quién vendió a quién |
+| **La fuente de financiación que la ficha cita es de 2020 y contradice las afirmaciones del presente que se hacen con ella** | sí | sí | **Aceptada.** Es la objeción más útil sobre esta ficha |
+| Hay conducta electoral del período que la ficha no registra, consistente con 0,00 | sí | sí | **Aceptada.** Dos piezas al nivel 5 |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

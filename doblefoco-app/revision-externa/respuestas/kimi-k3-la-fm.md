@@ -66,20 +66,29 @@ No aplica: hay objeciones. Dirección de mi revisión: el +0,35 tiene hoy más e
 
 ## RESOLUCIÓN — la escribe quien revisa, no el modelo
 
-**Sin resolver todavía.** La tabla se prellenó con los títulos de las objeciones
-para que ninguna se pierda; el veredicto de cada una lo escribe una persona.
+**Resuelta el 2026-08-17.** Cada objeción se comprobó contra una fuente antes
+de escribir nada en la ficha: la regla del ciclo fue que **no se escribe lo que
+no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
-| 1 — El CONTRA sobredimensiona el problema del formato: La FM publica en texto, a diario, el editorial firmado de su director. La evidencia de línea no … | sí | pendiente | pendiente |
-| 2 — Las piezas que la refutación pedía existen y son anteriores a la ficha. La ausencia declarada es ausencia de búsqueda. | sí | pendiente | pendiente |
-| 3 — La ficha no nombra al director, y el director es la respuesta estructural a su propia pregunta sobre la diferencia con Noticias RCN. | sí | pendiente | pendiente |
-| 4 — El nivel 1 hereda, sin nota, todos los vicios de la ficha 03. | sí | pendiente | pendiente |
+| **El CONTRA sobredimensiona el problema del formato**: esta emisora publica el editorial firmado del director en texto, a diario | sí | sí | **Aceptada.** Es la objeción que más cambia la ficha. Reescrito el CONTRA |
+| Las piezas que la refutación pedía existen: la ausencia declarada era ausencia de búsqueda | sí | sí | **Aceptada.** Cinco piezas al nivel 5 |
+| No nombra al director, y el director es la respuesta estructural a su propia pregunta sobre la brecha con RCN | sí | sí | **Aceptada.** Verificado el nombramiento (04-10-2024) y la consejería (2021) |
+| Hereda sin nota los vicios de nivel 1 de la ficha 03 | sí | sí | **Aceptada.** Aviso añadido |
 
-**Motivo de cada rechazo.** Una objeción rechazada sin motivo escrito invalida la
-firma de la ficha.
+**Motivo de cada rechazo.** No se rechazó ninguna objeción por completo.
+Donde una afirmación del revisor no se pudo comprobar por cuenta propia, no se escribió en la ficha y queda dicho en la celda.
 
-**Fuentes que resultaron falsas o inexistentes**: ninguna detectada en el muestreo
-de cinco. No se han comprobado todas.
+**Fuentes que resultaron falsas o inexistentes**: ninguna. Se comprobaron cinco
+afirmaciones al azar del ciclo completo —la venta de El País (jun-2025), el endoso
+de El Heraldo (24-05-2026), la fusión Caracol/W (13-01-2026), Dávila en la junta de
+Semana (08-07-2026) y Alianza San Felipe al 57 %— y las cinco resolvieron con la
+fuente y la fecha que el modelo dice. Además se verificó una por una toda
+afirmación que se iba a escribir en una ficha. **No se comprobaron las 76.**
 
-**Efecto en la ficha**: pendiente.
+**Efecto en la ficha**: nivel 1 y/o nivel 5 corregidos y ampliados con la evidencia
+aportada. **El valor NO se mueve y la ficha sigue sin firmar**: mover un número o
+firmarlo es juicio editorial, y eso lo hace Jose Arbeláez, no un revisor externo ni
+quien vuelca esta resolución.
+

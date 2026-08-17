@@ -22,6 +22,7 @@ import {
     fetchReports,
 } from '../services/moderationClient';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
+import EstadoDelCatalogo from '../components/EstadoDelCatalogo';
 import './AdminDashboard.css';
 
 /**
@@ -295,6 +296,15 @@ const AdminDashboard = () => {
                 ahora mismo. Las garantías del producto —titular literal, enlace verificable,
                 ausencia declarada— las da el motor, no una persona pulsando un botón.
             </p>
+
+            {/*
+              * El estado del catálogo va aquí arriba, y no al final, por lo que
+              * mide: cuánto lleva sin mirarse cada ficha. Enterrado bajo la cola
+              * de moderación tendría el mismo problema que tenían las
+              * comprobaciones sueltas —que solo lo ve quien va a buscarlo—, que
+              * es justamente lo que este panel viene a arreglar.
+              */}
+            <EstadoDelCatalogo />
 
             <div className="google-scraper-box">
                 <div className="scraper-box-header">

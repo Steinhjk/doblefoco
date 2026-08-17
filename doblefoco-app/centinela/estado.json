@@ -1,0 +1,115 @@
+{
+    "version": 1,
+    "medios": {
+        "diario-la-libertad": {
+            "ultimaComprobacion": "2026-08-17",
+            "canal": "html",
+            "consultas": {
+                "Tcherassi": {
+                    "vistos": [
+                        "https://diariolalibertad.com/2026/07/17/silvia-tcherassi-es-designada-embajadora-ad-honorem-de-la-moda-la-creatividad-y-la-identidad-de-colombia/",
+                        "https://diariolalibertad.com/2025/11/14/tcherassi-exige-frenar-proyecto-luna-de-barranquilla-por-presunta-usurpacion-de-obra-y-marca/",
+                        "https://diariolalibertad.com/2025/11/13/samuel-tcherassi-habria-activado-acciones-legales-que-buscan-la-suspension-de-luna-del-rio/",
+                        "https://diariolalibertad.com/2025/08/06/barranquilla-rinde-homenaje-fotografico-al-maestro-samuel-tcherassi-y-a-los-guardianes-del-lente-del-carnaval/",
+                        "https://diariolalibertad.com/2025/05/10/samuel-tcherassi-un-nuevo-liderazgo-se-asoma-en-barranquilla/",
+                        "https://diariolalibertad.com/2025/04/12/samuel-tcherassi-cuestiona-propuesta-de-ampliacion-del-estadio-metropolitano-anunciada-por-el-alcalde-de-barranquilla/",
+                        "https://diariolalibertad.com/2025/02/21/barranquilla-se-desmorona-samuel-tcherassi-lanza-fuerte-critica-a-la-gestion-de-alejandro-char/",
+                        "https://diariolalibertad.com/2025/02/14/samuel-tcherassi-denuncia-indagaciones-ilegales-por-parte-de-funcionarios-de-barranquilla/",
+                        "https://diariolalibertad.com/2025/02/12/samuel-tcherassi-habla-del-anuncio-de-hector-amaris-y-lanza-fuertes-criticas-contra-alejandro-char/",
+                        "https://diariolalibertad.com/2025/01/30/confusion-en-el-pacto-historico-por-posible-apoyo-a-samuel-tcherassi/",
+                        "https://diariolalibertad.com/2025/01/28/samuel-tcherassi-pide-la-renuncia-del-alcalde-alejandro-char-ante-la-creciente-inseguridad-en-barranquilla/",
+                        "https://diariolalibertad.com/2025/01/18/samuel-tcherassi-arranca-su-campana-para-la-alcaldia-de-barranquilla-con-propuestas-de-cambio-y-mejora-social/",
+                        "https://diariolalibertad.com/2025/01/06/alejandro-char-decora-el-crimen-y-le-sube-el-volumen-al-show-tcherassi/",
+                        "https://diariolalibertad.com/2024/12/19/si-no-puede-lo-mas-digno-es-dar-un-paso-al-costado-samuel-tcherassi-propone-renuncia-de-char-ante-crisis-de-seguridad-en-barranquilla/",
+                        "https://diariolalibertad.com/2024/01/22/akmios-s-a-s-de-samuel-tcherassi-absuelta-por-la-superintendencia-de-industria-y-comercio-en-un-historico-fallo/",
+                        "https://diariolalibertad.com/2023/11/21/un-paso-valiente-hacia-la-unidad-empresario-samuel-tcherassi-aplaudio-encuentro-de-petro-con-lideres-economicos-del-pais/",
+                        "https://diariolalibertad.com/2022/09/15/victoria-juridica-para-samuel-tcherassi-la-sic-resuelve-disputa-por-la-marca-epk-a-su-favor/",
+                        "https://diariolalibertad.com/2022/02/12/samuel-tcherassi-salpicado-en-las-declaraciones-de-aida-merlano/",
+                        "https://diariolalibertad.com/2020/11/03/los-problemas-de-samuel-tcherassi-no-son-responsabilidad-de-la-marca-epk-bridgewood/",
+                        "https://diariolalibertad.com/2019/06/11/silvia-tcherassi-y-lina-cantillo-preparadas-para-mobaq/",
+                        "https://diariolalibertad.com/2019/04/05/barranquilla-tendra-pasarela-de-impacto-con-silvia-tcherassi-y-lina-cantillo-en-la-ventana-al-mundo/",
+                        "https://diariolalibertad.com/2026/07/17/silvia-tcherassi-es-designada-embajadora-ad-honorem-de-la-moda-la-creatividad-y-la-identidad-de-colombia/",
+                        "https://diariolalibertad.com/2025/11/14/tcherassi-exige-frenar-proyecto-luna-de-barranquilla-por-presunta-usurpacion-de-obra-y-marca/",
+                        "https://diariolalibertad.com/2025/11/13/samuel-tcherassi-habria-activado-acciones-legales-que-buscan-la-suspension-de-luna-del-rio/",
+                        "https://diariolalibertad.com/2025/08/06/barranquilla-rinde-homenaje-fotografico-al-maestro-samuel-tcherassi-y-a-los-guardianes-del-lente-del-carnaval/",
+                        "https://diariolalibertad.com/2025/05/10/samuel-tcherassi-un-nuevo-liderazgo-se-asoma-en-barranquilla/",
+                        "https://diariolalibertad.com/2025/04/12/samuel-tcherassi-cuestiona-propuesta-de-ampliacion-del-estadio-metropolitano-anunciada-por-el-alcalde-de-barranquilla/",
+                        "https://diariolalibertad.com/2025/02/21/barranquilla-se-desmorona-samuel-tcherassi-lanza-fuerte-critica-a-la-gestion-de-alejandro-char/",
+                        "https://diariolalibertad.com/2025/02/14/samuel-tcherassi-denuncia-indagaciones-ilegales-por-parte-de-funcionarios-de-barranquilla/",
+                        "https://diariolalibertad.com/2025/02/12/samuel-tcherassi-habla-del-anuncio-de-hector-amaris-y-lanza-fuertes-criticas-contra-alejandro-char/",
+                        "https://diariolalibertad.com/2025/01/30/confusion-en-el-pacto-historico-por-posible-apoyo-a-samuel-tcherassi/",
+                        "https://diariolalibertad.com/2025/01/28/samuel-tcherassi-pide-la-renuncia-del-alcalde-alejandro-char-ante-la-creciente-inseguridad-en-barranquilla/",
+                        "https://diariolalibertad.com/2025/01/18/samuel-tcherassi-arranca-su-campana-para-la-alcaldia-de-barranquilla-con-propuestas-de-cambio-y-mejora-social/",
+                        "https://diariolalibertad.com/2025/01/06/alejandro-char-decora-el-crimen-y-le-sube-el-volumen-al-show-tcherassi/",
+                        "https://diariolalibertad.com/2024/12/19/si-no-puede-lo-mas-digno-es-dar-un-paso-al-costado-samuel-tcherassi-propone-renuncia-de-char-ante-crisis-de-seguridad-en-barranquilla/",
+                        "https://diariolalibertad.com/2024/01/22/akmios-s-a-s-de-samuel-tcherassi-absuelta-por-la-superintendencia-de-industria-y-comercio-en-un-historico-fallo/",
+                        "https://diariolalibertad.com/2023/11/21/un-paso-valiente-hacia-la-unidad-empresario-samuel-tcherassi-aplaudio-encuentro-de-petro-con-lideres-economicos-del-pais/",
+                        "https://diariolalibertad.com/2022/09/15/victoria-juridica-para-samuel-tcherassi-la-sic-resuelve-disputa-por-la-marca-epk-a-su-favor/",
+                        "https://diariolalibertad.com/2022/02/12/samuel-tcherassi-salpicado-en-las-declaraciones-de-aida-merlano/",
+                        "https://diariolalibertad.com/2020/11/03/los-problemas-de-samuel-tcherassi-no-son-responsabilidad-de-la-marca-epk-bridgewood/",
+                        "https://diariolalibertad.com/2019/06/11/silvia-tcherassi-y-lina-cantillo-preparadas-para-mobaq/",
+                        "https://diariolalibertad.com/2019/04/05/barranquilla-tendra-pasarela-de-impacto-con-silvia-tcherassi-y-lina-cantillo-en-la-ventana-al-mundo/"
+                    ]
+                },
+                "Esper": {
+                    "vistos": [
+                        "https://diariolalibertad.com/2026/07/29/reconocimiento-luz-marina-esper-recibe-el-galardon-hijos-ilustres-de-santa-marta-y-magdalena-501-anos/",
+                        "https://diariolalibertad.com/2026/07/29/reconocimiento-luz-marina-esper-recibe-el-galardon-hijos-ilustres-de-santa-marta-y-magdalena-501-anos/"
+                    ]
+                },
+                "contienda electoral": {
+                    "vistos": [
+                        "https://diariolalibertad.com/2025/10/12/luz-marina-esper-estaria-en-la-contienda-electoral-esta-escuchando-y-abierta-al-dialogo-en-libertad/",
+                        "https://diariolalibertad.com/2024/07/06/biden-abandonara-la-contienda-electoral-si-se-lo-pide-el-todopoderoso/",
+                        "https://diariolalibertad.com/2023/01/04/gerente-de-campana-de-petro-nego-uso-de-plataformas-rusas-en-contienda-electoral/",
+                        "https://diariolalibertad.com/2022/05/19/esta-contienda-electoral-entre-petro-y-fico-gutierrez-solo-podra-definirse-en-la-2da-vuelta/",
+                        "https://diariolalibertad.com/2022/05/06/cec-pide-fortalecer-un-ambiente-democratico-en-la-actual-contienda-electoral/",
+                        "https://diariolalibertad.com/2022/05/02/editorial-en-medio-de-la-contienda-electoral/",
+                        "https://diariolalibertad.com/2022/03/01/presidente-duque-metio-las-manos-para-sacarme-de-la-contienda-electoral-maria-fernanda-cabal/",
+                        "https://diariolalibertad.com/2022/01/13/acusaciones-solo-quieren-incidir-negativamente-en-la-contienda-electoral-piedad-cordoba-tras-senalamientos-de-supuesta-cercania-con-alex-saab/",
+                        "https://diariolalibertad.com/2022/01/09/como-comienza-la-contienda-electoral-con-miras-a-las-elecciones-2022-y-la-favorabilidad-de-los-candidatos-encuesta-invamer/",
+                        "https://diariolalibertad.com/2025/10/12/luz-marina-esper-estaria-en-la-contienda-electoral-esta-escuchando-y-abierta-al-dialogo-en-libertad/",
+                        "https://diariolalibertad.com/2024/07/06/biden-abandonara-la-contienda-electoral-si-se-lo-pide-el-todopoderoso/",
+                        "https://diariolalibertad.com/2023/01/04/gerente-de-campana-de-petro-nego-uso-de-plataformas-rusas-en-contienda-electoral/",
+                        "https://diariolalibertad.com/2022/05/19/esta-contienda-electoral-entre-petro-y-fico-gutierrez-solo-podra-definirse-en-la-2da-vuelta/",
+                        "https://diariolalibertad.com/2022/05/06/cec-pide-fortalecer-un-ambiente-democratico-en-la-actual-contienda-electoral/",
+                        "https://diariolalibertad.com/2022/05/02/editorial-en-medio-de-la-contienda-electoral/",
+                        "https://diariolalibertad.com/2022/03/01/presidente-duque-metio-las-manos-para-sacarme-de-la-contienda-electoral-maria-fernanda-cabal/",
+                        "https://diariolalibertad.com/2022/01/13/acusaciones-solo-quieren-incidir-negativamente-en-la-contienda-electoral-piedad-cordoba-tras-senalamientos-de-supuesta-cercania-con-alex-saab/",
+                        "https://diariolalibertad.com/2022/01/09/como-comienza-la-contienda-electoral-con-miras-a-las-elecciones-2022-y-la-favorabilidad-de-los-candidatos-encuesta-invamer/"
+                    ]
+                }
+            }
+        },
+        "la-nacion-neiva": {
+            "ultimaComprobacion": "2026-08-17",
+            "canal": "rest",
+            "consultas": {
+                "Olave": {
+                    "vistos": [
+                        "https://www.lanacion.com.co/olave-y-el-concejo-en-el-divan/",
+                        "https://www.lanacion.com.co/me-tope-con-la-politiqueria-empresario-olave/",
+                        "https://www.lanacion.com.co/empresario-olave-recibe-apoyo-de-inversionistas-nacionales-e-internacionales/",
+                        "https://www.lanacion.com.co/el-empresario-felipe-olave-plantea-seis-acciones-para-recuperar-el-rio-del-oro/",
+                        "https://www.lanacion.com.co/oficial-sic-otorgo-marcas-del-atletico-huila-al-empresario-felipe-olave/",
+                        "https://www.lanacion.com.co/definida-ruta-de-navegacion-para-viabilidad-del-estadio-del-empresario-felipe-olave/",
+                        "https://www.lanacion.com.co/celebrando-los-cumpleanos-de-claudia-olave/",
+                        "https://www.lanacion.com.co/el-empresario-felipe-olave-llevo-la-vision-del-mirador-del-magdalena-a-bogota/"
+                    ]
+                },
+                "Huila Stéreo": {
+                    "vistos": []
+                }
+            }
+        },
+        "cablenoticias": {
+            "ultimaComprobacion": "2026-08-17",
+            "canal": null,
+            "consultas": {
+                "Cable Noticias TV": {
+                    "vistos": []
+                }
+            }
+        }
+    }
+}

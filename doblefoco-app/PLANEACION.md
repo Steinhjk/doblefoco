@@ -104,13 +104,46 @@ No un programa nuevo aparte, sino **una capa de auditoría sobre lo que ya hay**
 3. **Un aviso que grita cuando no pasa nada enseña a ignorarlo.** Es la lección
    escrita en `comprobarMedios.mjs` con el umbral de 14 días, y aplica igual aquí.
 
-### Lo que falta decidir (de Jose)
+### HECHO el 2026-08-17 · El centinela por medio (primer corte)
 
-- **Por dónde se empieza**: ¿los vitales del feed, el centinela por medio, o el
-  panel?
-- **Con qué cadencia** se acepta molestar a los sitios ajenos.
-- Si el resultado del centinela **alimenta `pendientes.md`** automáticamente o se
-  queda en el panel.
+Jose eligió empezar por aquí, por ser lo único que produce hallazgos y no solo
+semáforos. Escrito y ejecutado:
+
+- **`shared/centinela.js`** — qué se vigila en cada medio. La regla del archivo:
+  **cada término declara qué afirmación de la ficha queda en duda si aparece
+  algo.** Sin ese campo el término sobra, y hay una prueba que lo exige.
+- **`scripts/centinela.mjs`** (`npm run centinela`) — pregunta, compara con la
+  pasada anterior y avisa **solo de lo nuevo**. `--strict` sale 1 si hay
+  novedades, que es lo que un workflow necesita para abrir issue.
+- **`centinela/estado.json`** — la memoria entre pasadas. Va versionada a
+  propósito: los contenedores de Actions se destruyen y `/data/` está ignorado.
+
+**Tres canales, y el tercero es decir que no se puede.** Los tres medios de la
+cola resultaron ser los tres casos: La Nación tiene la API REST de WordPress
+abierta; La Libertad la tiene cerrada (401) y el buscador HTML abierto;
+**Cablenoticias no es WordPress y no hay por dónde preguntarle** — sale «NO
+COMPROBABLE» en cada pasada, que es lo honesto y además es la ficha que más
+vigilancia necesita.
+
+**Lo que enseñó la primera pasada, y ya está corregido:** buscar «Esper» por
+subcadena devolvía 43 piezas —«avenida La ESPERanza», «los que ESPERan»—. Con
+coincidencia por palabra completa quedan **1**. Y «contienda electoral» pasó de
+56 a 9, con la pieza que importa en primer lugar. **Un vigilante que avisa de
+todo enseña a ignorarlo**, y la diferencia entre 43 y 1 es exactamente eso.
+
+**Comprobado que detecta**: borrando del estado la pieza de la candidatura de la
+directora, la pasada siguiente la marca como nueva y dice qué afirmación deja en
+duda.
+
+### Lo que sigue faltando (de Jose)
+
+- **Cadencia**: la propuesta es semanal, por respeto al tráfico ajeno. Sin
+  decidir, y hasta que se decida esto se ejecuta a mano.
+- **Dónde corre**: en local funciona. En Actions hay que contar con que algunos
+  sitios fallan por IP, y con que el estado tendría que volver commiteado.
+- Si el resultado **alimenta `pendientes.md`** automáticamente o se queda en el
+  informe.
+- **Qué medios se añaden**, y con qué términos. Hoy son tres: los de la cola.
 
 ---
 

@@ -41,7 +41,8 @@
     "conducta": "node scripts/conductaPorMedio.mjs",
         "medios:cosechar": "node scripts/cosecharMedios.mjs",
         "diag:sintema": "node scripts/diagnosticarSinTema.mjs",
-        "medir:termino": "node scripts/medirTermino.mjs"
+        "medir:termino": "node scripts/medirTermino.mjs",
+        "centinela": "node scripts/centinela.mjs"
     },
     "dependencies": {
         "cors": "^2.8.6",

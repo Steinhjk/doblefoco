@@ -133,7 +133,7 @@ prioritario de `shared/audiencia.js` tienen ficha.** Eran 2 de 20 esta mañana.
 | 13 | Noticias Uno | −0,40 | `fichas/noticias-uno.md` | **No firmar**: mitad histórica, propiedad sin cerrar, cero corpus |
 | 14 | El Heraldo | +0,20 | `fichas/el-heraldo.md` | No firmar: mejor ficha de propiedad, justificación más vacía |
 | 15 | El Colombiano | +0,35 | `fichas/el-colombiano.md` | No firmar: «tradición conservadora» es histórico |
-| 16 | El País (Cali) | +0,30 | `fichas/el-pais-cali.md` | No firmable por separado: mismo dueño que Semana |
+| 16 | El País (Cali) | +0,30 | `fichas/el-pais-cali.md` | **PREMISA MUERTA** (ciclo 1): no comparte dueño con Semana desde jun-2025. Ya firmable |
 | 17 | La República | +0,15 | `fichas/la-republica.md` | No firmar: el conflicto de interés más nítido del catálogo, sin mencionar |
 | 18 | El Universal | +0,20 | `fichas/el-universal.md` | No firmar: vínculo político de los dueños documentado y no citado |
 | 19 | La Opinión | +0,30 | `fichas/la-opinion.md` | No firmar: cambió de dueño en 2024 y la justificación es anterior |

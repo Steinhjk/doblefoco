@@ -477,7 +477,7 @@ export const CONTROL_GROUPS = {
         label: 'Quince empresarios antioqueños y la familia Gómez Martínez',
         // Los sectores salen de las empresas que los propios accionistas
         // dirigen, nombradas en las crónicas de la operación. Es el caso más
-        // claro de por qué «familiar regional» escondía información: el 51 % lo
+        // claro de por qué «familiar regional» escondía información: el bloque de control lo
         // tienen constructoras, comercio y textiles.
         sectores: ['construcción', 'comercio', 'textiles', 'agroindustria', 'inmobiliario'],
         personas: [
@@ -503,7 +503,8 @@ export const CONTROL_GROUPS = {
                     '(Premex), Juan Carlos González Jaramillo (Acierto), Juan Manuel del Corral ' +
                     '(Cadena), Josefina Trujillo de Agudelo (TTC) y Londoño Gómez',
                 papel:
-                    'Resto del grupo de quince que tomó el 51 % en febrero de 2022. Sus empresas están ' +
+                    'Resto del grupo de quince que tomó el control en febrero de 2022, a través del vehículo ' +
+                    'Alianza San Felipe S.A.S. (57 %). Sus empresas están ' +
                     'en construcción, comercio, textiles, agroindustria e inmobiliario.',
                 desde: '2022-02',
                 fuentes: [

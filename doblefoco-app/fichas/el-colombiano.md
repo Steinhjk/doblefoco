@@ -118,7 +118,7 @@ empresa privada» no es «es hoy órgano del Partido Comunista» ni «declara ho
 conservadora». Es más flojo.
 
 **Lo que esta ficha aporta y no estaba escrito en ninguna parte:** hay un hecho del
-presente, documentado y fuerte —el 51 % en manos de empresarios antioqueños que
+presente, documentado y fuerte —el control en manos de empresarios antioqueños que
 compraron para impedir una compra externa— que **podría** sostener el +0,35 sin
 apelar a ninguna tradición. Pero eso sería otra vez propiedad, y la regla 5.1 la
 prohíbe como argumento de orientación. **Hay que ir a las piezas.**

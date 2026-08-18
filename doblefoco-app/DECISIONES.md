@@ -17,6 +17,72 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-08-18 · El eje mide la relación con un polo fijo, no con quien gobierne
+
+**Decisión de Jose.** Izquierda y derecha son posiciones ideológicas, no posturas
+frente al gobierno de turno. **Fiscalizar al poder deja de contar como evidencia
+de orientación**, en cualquiera de las dos direcciones. La regla queda escrita en
+`PROTOCOLO_JUICIO_EDITORIAL.md` §1, como «regla del polo fijo».
+
+**Qué la forzó.** Es la pregunta transversal 2 del ciclo 1 de revisión externa, y
+era la única de las cinco que seguía abierta. El catálogo la respondía de tres
+formas incompatibles a la vez:
+
+| Medio | Valor | Razonamiento escrito |
+|---|---|---|
+| Chocó 7 Días | 0,00 | «denunciar al poder es el oficio y no una orientación» |
+| Noticias Uno | −0,40 | «su vigilancia al establecimiento lo sitúa a la izquierda» — el contrario |
+| La Silla Vacía | −0,10 | el mismo que Noticias Uno, sin escribir |
+
+Y el ciclo 1 lo empeoró en vez de aclararlo: el revisor externo aportó cinco
+piezas fechadas de Noticias RCN críticas con el gobierno saliente. Si esas piezas
+firman su +0,25, **la misma lógica aplicada a Noticias Uno da el signo contrario
+con la misma clase de evidencia**. Sin decidir esto, cuatro fichas quedaban
+bloqueadas y las tres primeras se contradecían en público.
+
+**Por qué polo fijo y no poder vigente.** Con la otra respuesta, un medio cambiaría
+de signo cada cuatro años sin haber cambiado de línea, y el eje mediría al gobierno
+en vez de al medio. Un lector que consulta el mapa quiere saber de qué lado está un
+medio, no a quién le tocó gobernar cuando se hizo la ficha.
+
+**Lo que NO se descarta, y es la parte fina.** La regla no deja sin clasificar a
+los medios beligerantes: descarta la crítica al gobierno de turno y admite **la
+asimetría sostenida a través de un cambio de gobierno**. Quien fiscaliza duro a
+unos y a otros hace periodismo; quien fiscalizaba y pasa a celebrar cuando llega su
+lado ha revelado una posición. Tampoco toca los endosos editoriales, el encuadre
+asimétrico entre candidatos ni la cobertura del propio accionista, que siguen
+siendo evidencia de primer orden.
+
+**La transición de agosto de 2026 es la ocasión de comprobarlo**, y por eso la
+regla llega ahora y no en enero: cualquier medio clasificado por su dureza con el
+gobierno saliente queda sujeto a la única prueba que vale, que es cómo trata al
+entrante.
+
+**Consecuencias, ninguna aplicada todavía** —mover un valor sigue siendo un acto de
+firma, y va aparte:
+
+- **Noticias Uno (−0,40)** — su justificación es enteramente «vigilancia al
+  establecimiento». Bajo la regla no queda nada que sostenga el valor más extremo
+  del catálogo colombiano. Apunta a **0,00**.
+- **La Silla Vacía (−0,10)** — mismo caso, y su propia justificación ya decía
+  «analítico más que militante». Apunta a **0,00**.
+- **Chocó 7 Días (0,00)** — confirmado, y por primera vez con el motivo escrito en
+  el protocolo en vez de en el criterio de quien redactó la ficha.
+- **Noticias RCN (+0,25)** — las cinco piezas del ciclo 1 son crítica al gobierno
+  saliente: **ya no bastan solas** para firmar el valor. Necesita evidencia de
+  asimetría, que la transición permite buscar.
+- **El Espectador (−0,20)** — sus editoriales critican al gobierno por vía
+  institucional; bajo esta regla no lo desplazan ni a un lado ni al otro. Refuerza
+  lo que el ciclo 1 ya encontró: ese número no tiene base.
+- **El Heraldo (+0,20)** — **no le afecta**. Un endoso editorial no es
+  fiscalización: es tomar partido.
+
+**Qué queda por hacer con esto.** Reescribir la justificación de las cuatro fichas
+afectadas y llevar la regla a `revision-externa/CONTEXTO.md`, que hoy ofrece esta
+tensión como cebo al revisor externo. Ambas cosas después de aprobar el texto.
+
+---
+
 ## 2026-08-17 · El punto final de cada prueba de sesgo son las fichas para las IAs
 
 **Decisión de Jose.** Ninguna medición de sesgo se da por cerrada dentro de casa.

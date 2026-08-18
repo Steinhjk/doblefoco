@@ -37,6 +37,50 @@ Escala existente, sin cambios: **−1,0 a +1,0**, con las cinco bandas de
 `SPECTRUM_BANDS`. El 0,0 es **orientación mixta**: la del medio no se sitúa en el
 eje izquierda-derecha, no que no tenga.
 
+### REGLA DEL POLO FIJO (añadida el 2026-08-18 por Jose, tras el ciclo 1 de revisión externa)
+
+**El eje mide la posición del medio respecto de un polo fijo, no su postura
+frente a quien gobierne.**
+
+Izquierda y derecha son posiciones ideológicas. No son «a favor del gobierno» y
+«en contra del gobierno»: si lo fueran, el mismo medio cambiaría de signo cada
+cuatro años sin haber cambiado de línea, y el eje mediría al gobierno de turno en
+vez de al medio.
+
+**Consecuencia directa: fiscalizar al poder NO es evidencia de orientación**, ni
+en un sentido ni en el otro. Denunciar la corrupción de quien manda es el oficio.
+Un medio no se desplaza a la izquierda por investigar a un gobierno de derecha,
+ni a la derecha por investigar a uno de izquierda.
+
+**La prueba, y es la misma forma que la regla del presente.** Si el gobierno
+cambiara mañana y el medio mantuviera exactamente la misma conducta, ¿cambiaría
+su clasificación? Si la respuesta es sí, no se está midiendo al medio: se está
+midiendo contra quién le tocó ejercer.
+
+#### Lo que sí sigue siendo evidencia, y es la parte que hay que saber leer
+
+La regla **no** deja sin clasificar a los medios beligerantes. Lo que descarta es
+la crítica al gobierno de turno; lo que admite es **la asimetría sostenida a
+través de un cambio de gobierno**:
+
+- Un medio que fiscaliza con dureza a quien manda, y sigue haciéndolo cuando
+  manda el otro lado, está haciendo periodismo. Eso es **mixta**.
+- Un medio que fiscalizaba con dureza y pasa a celebrar cuando llega su lado
+  —o al revés— ha revelado una posición. **Eso sí es orientación, y se mide.**
+
+Por eso el criterio no puede aplicarse sobre una foto de un solo gobierno. Y por
+eso mismo **la transición de agosto de 2026 es la ocasión más limpia que va a
+tener este catálogo en años**: cualquier medio clasificado por su dureza con el
+gobierno saliente queda ahora sujeto a la única comprobación que vale, que es
+cómo trata al entrante. Está calendarizado en las fichas afectadas.
+
+#### Qué NO toca esta regla
+
+Un **endoso editorial** no es fiscalización: es tomar partido, y sigue siendo
+evidencia de primer orden. Lo mismo vale para el encuadre asimétrico entre
+candidatos, la cobertura del propio accionista y la línea declarada por la casa.
+Esta regla acota una sola cosa —la crítica al poder vigente— y no las demás.
+
 ---
 
 ## 2. Jerarquía de la evidencia

@@ -97,6 +97,16 @@ regionales de departamentos distintos y sin relación de propiedad.
 > **Hay que filtrar el contenido atribuido a Colprensa y EFE antes de computar
 > coincidencias**, o la métrica seguirá generando rarezas ficticias en todo el
 > tramo regional.
+>
+> **PERO ESTE PAR CONCRETO NO SE ARREGLA ASÍ** (comprobado el 2026-08-18). El
+> filtro necesita saber quién firma cada pieza, y de los dos feeds implicados
+> **ninguno lo dice**: el de este diario no publica firma, y el de La Opinión
+> publica alias de usuario. El Universal y El Heraldo sí nombran a la agencia en
+> su `dc:creator`, así que allí el filtro funcionaría.
+>
+> Conclusión incómoda: **la hipótesis sigue siendo la más probable y hoy no se
+> puede probar con lo que llega por RSS.** Comprobarla en este par exige leer la
+> página del artículo, no configurar una métrica.
 
 ---
 

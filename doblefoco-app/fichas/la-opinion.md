@@ -103,6 +103,12 @@ El Colombiano registra la misma anomalía desde el otro lado.
 > coincidencia está midiendo la dieta de agencia**. Hay que filtrar el contenido
 > atribuido a Colprensa y EFE antes de computar coincidencias, o seguirá generando
 > rarezas ficticias en todo el tramo.
+>
+> **Con una salvedad medida el 2026-08-18: en este medio el filtro no se puede
+> aplicar con lo que llega por RSS.** Su feed publica como firma alias de usuario
+> —«dsifontes», «practicanteweb»—, no el nombre de la agencia. El de El Colombiano
+> no publica firma en absoluto. Justo el par de la anomalía es el que no se puede
+> filtrar; El Universal y El Heraldo sí nombran a EFE en su `dc:creator`.
 
 ---
 

@@ -155,8 +155,23 @@ excelentes; la fórmula está a años del corpus que tenemos.**
    con cero artículos. Es la mejor idea del documento y es gratis.
 2. **Filtro de agencia** (Colprensa, EFE) antes de computar cualquier coincidencia.
    Cuatro fichas regionales generaron anomalías ficticias porque la métrica estaba
-   midiendo la dieta de agencia compartida. Es un arreglo de `coCoverage.mjs`, no
-   una investigación.
+   midiendo la dieta de agencia compartida.
+
+   > **CORREGIDO EL 2026-08-18: NO es «un arreglo de `coCoverage.mjs`», como se
+   > escribió aquí.** Se fue a mirar antes de tocarlo y **no hay nada que filtrar**:
+   > el esquema no tiene columna de autor y la ingesta no captura la firma. Hace
+   > falta columna nueva, captura de `dc:creator` en la ingesta y un backfill.
+   >
+   > **Y hay algo peor, que decide el orden de trabajo.** Se midió qué publican los
+   > feeds: El Universal y El Heraldo traen la firma y nombran a la agencia
+   > («EFE», «Agencia EFE»); Vanguardia trae firma de redacción; **La Opinión trae
+   > alias de usuario inservibles y El Colombiano no trae firma ninguna**.
+   >
+   > Es decir: **el filtro no puede resolver la anomalía para la que se propuso.**
+   > La coincidencia El Colombiano–La Opinión es justo el par donde ninguno de los
+   > dos feeds lleva firma usable. Para ese caso haría falta leer la página del
+   > artículo, que es otro coste. Capturar `dc:creator` sigue valiendo la pena —
+   > sirve para parte del catálogo y es barato— pero **no cierra el hallazgo**.
 3. **Descomposición por formato y por programa** en radio y televisión. Los 0,10
    que separan a La FM de Noticias RCN —misma casa, mismo consejero de medios— son
    un efecto de formato: una transcribe el editorial firmado del director a diario

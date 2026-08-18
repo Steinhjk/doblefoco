@@ -75,7 +75,7 @@ no se ha verificado**, ni siquiera cuando el revisor trae enlace.
 | Objeción | ¿Trae fuente? | ¿Se verificó? | Resultado |
 |---|---|---|---|
 | El hueco de propiedad está menos cerrado de lo que la ficha declara: hay un evento societario de 2022 sin registrar y el certificado mercantil existe | sí | **no** — ver el motivo | **Aceptada** en cuanto al camino de cierre y al hecho de 2022. **La parte sobre Coronell como accionista queda sin verificar y no se escribe** |
-| **Error de hecho: no es un noticiero semanal.** Si su feed tiene 80 horas de atraso, está roto | sí | sí | **Aceptada.** Verificada: ninguna fuente sostiene «semanal». La refutación 5 se reescribe: arreglar el feed |
+| «Error de hecho: no es un noticiero semanal. Si su feed tiene 80 horas de atraso, está roto» | sí | sí | **RECHAZADA el 2026-08-18, y aceptada por error antes.** Se midió el feed: responde, y sus diez ítems son de una sola ráfaga del domingo, el más reciente a 35 h — **dentro de la ventana**. La premisa original de la ficha era la correcta: noticiero de fin de semana, no feed roto. **Motivo del rechazo: la objeción se aceptó sin medir, y la medición la contradice** |
 | El «hoy es presidente de Cambio» puede estar caduco y no se pudo confirmar con fuente de 2026 | sí | sí | **Aceptada** como advertencia: hay que verificarlo antes de escribirlo en las dos fichas |
 | La conducta vigente apunta a «fiscaliza a quien esté en el poder», lo que **refuerza** el argumento de la ficha y debilita el −0,40 | sí | sí | **Aceptada.** Sección propia arriba. El presunto choque con el gobierno entrante se descarta por fuente inadmisible |
 

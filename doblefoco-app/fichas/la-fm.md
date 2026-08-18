@@ -121,9 +121,17 @@ esta emisora, basta con ingerir una sección.
 
 1. ~~Tres a cinco piezas o programas fechados~~ **Hechas** (nivel 5), con un
    editorial firmado entre ellas.
-2. **Ingerir `lafm.com.co/carta-del-director`.** Es texto diario del director:
-   resuelve a la vez la evidencia de línea y buena parte del problema de nivel 2.
-   Es la acción de mayor retorno de esta ficha y cuesta una tarde.
+2. **Ingerir `lafm.com.co/carta-del-director` — y NO cuesta una tarde, como se
+   escribió aquí el 2026-08-17.** Se comprobó el 2026-08-18: el sitio **no expone
+   ningún RSS**. Las rutas de Arc, las de WordPress y las de sección devuelven 404,
+   el HTML no declara ningún feed, y `/rss/politica` es la página de categoría en
+   HTML, no un feed. Ingerir esa sección exige **raspar el sitio**, que es otra
+   decisión y otro coste.
+
+   **Lo que sí se sostiene de la objeción es lo que importaba**: el editorial
+   firmado del director existe en texto, fechado y citable, así que la evidencia de
+   línea (refutación 1) está disponible **a mano**, sin tocar el audio. Lo que no se
+   sigue es que el nivel 2 se arregle solo configurando un feed.
 3. ~~Explicar la diferencia con Noticias RCN~~ **Explicada, y sin mover números**:
    es de formato. Esta emisora publica editorial firmado a diario; un noticiero no
    lo tiene. Mismo dueño, mismo consejero de medios, distinto producto editorial.

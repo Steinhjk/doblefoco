@@ -1195,11 +1195,20 @@ export const OWNERSHIP_PROFILES = {
             'EL HUECO ES DE LA WEB, NO DEL REGISTRO: NTC Televisión S.A. está inscrita en la Cámara de Comercio de Bogotá y su composición accionaria cuesta un certificado. Que el medio con el valor más extremo del catálogo lleve años con la propiedad abierta es una decisión de gasto, no un límite de la realidad.',
             'HECHO SOCIETARIO INTERMEDIO NO REGISTRADO: en diciembre de 2022 Canal 1 fue absorbido por HMTV1, y NTC quedó como proveedor de contenido y no como socio-inversionista. La ficha saltaba de 2019 al presente.',
             /**
-             * PREMISA FALSA CORREGIDA. La ficha del medio deducía de «noticiero
-             * semanal» que la ventana de 72 h lo excluía por construcción, y de
-             * ahí que su feed no estuviera roto. No es semanal.
+             * AQUÍ SE ESCRIBIÓ UN ERROR Y SE CORRIGE (2026-08-18).
+             *
+             * El ciclo 1 aceptó la objeción de que este medio «emite de lunes a
+             * viernes» y que su feed, por tanto, estaba roto. Se aceptó sin
+             * medirla. Al medirla: el feed responde y trae diez piezas de una
+             * sola ráfaga del domingo, la más reciente a 35 horas — dentro de la
+             * ventana de 72. Es un noticiero de fin de semana, como decía la
+             * ficha original.
+             *
+             * La lección no es sobre este medio: es que **una objeción con
+             * fuente también puede estar equivocada**, y que cuando se puede
+             * medir en vez de citar, hay que medir.
              */
-            'NO ES UN NOTICIERO SEMANAL, y de esa premisa colgaba el diagnóstico de su feed. Las fuentes disponibles se contradicen sobre la parrilla exacta —unas describen emisión de lunes a viernes, otras emisiones de fin de semana en Cablenoticias— pero ninguna sostiene «semanal». Un medio que emite varios días por semana y cuyo ítem más reciente tiene 80 horas tiene el feed roto, no una periodicidad incompatible con la ventana. La acción es arreglarlo, no diseñarle una excepción.',
+            'PUBLICA EN RÁFAGA DE FIN DE SEMANA, y su feed funciona. Medido el 2026-08-18: responde, con diez piezas publicadas el domingo entre las 04:40 y las 04:59. La ventana rodante de 72 h lo ve de domingo a miércoles y no lo ve el resto de la semana, así que aporta cero tres días de cada siete sin que eso sea una avería. El catálogo todavía no distingue ese cero del cero de un feed caído.',
         ],
         sources: [
             'https://www.elespectador.com/entretenimiento/cine-y-tv/ignacio-gomez-gomez-sera-el-nuevo-director-de-noticias-uno-noticias-hoy/',

@@ -67,19 +67,29 @@ Su feed devuelve diez ítems y **ninguno entra en la ventana**: el más reciente
 tiene 80 horas (medido el 2026-08-12). Figura en el catálogo, se le cita, y no
 aporta corpus.
 
-> **NO ES UN NOTICIERO SEMANAL, y de esa premisa colgaba todo el diagnóstico.** La
-> refutación 5 de esta ficha decía que «con periodicidad semanal, la ventana de 72 h
-> lo excluye estructuralmente» y concluía que **su feed no está roto**.
+> **EL FEED NO ESTÁ ROTO, Y ESTA FICHA LLEGÓ A DECIR QUE SÍ. SE MIDIÓ, Y SE
+> CORRIGE** (2026-08-18).
 >
-> Las fuentes disponibles se contradicen sobre la parrilla exacta —unas describen
-> emisión de lunes a viernes, otras emisiones de fin de semana en Cablenoticias—
-> pero **ninguna sostiene «semanal»**. Un medio que emite varios días por semana y
-> cuyo ítem más reciente tiene 80 horas **tiene el feed roto**, no una periodicidad
-> incompatible con la ventana.
+> El revisor externo objetó que este medio «emite de lunes a viernes» y que, por
+> tanto, un feed con 80 horas de atraso está roto. Se aceptó esa objeción sin
+> medirla, y **estaba mal**.
 >
-> La distinción decide la acción: **hay que arreglar el feed**, como se hizo con El
-> Espectador el 2026-08-08, no diseñar una excepción para medios semanales que este
-> medio no necesita.
+> Al pedir el feed el 2026-08-18: responde `200`, trae **10 ítems y todos son del
+> domingo 17 de agosto, publicados entre las 04:40 y las 04:59** — una sola ráfaga
+> de diecinueve minutos. El más reciente tenía **35 horas: dentro de la ventana de
+> 72**.
+>
+> O sea: **la premisa original de la ficha era la correcta.** Es un noticiero de
+> fin de semana que vuelca los segmentos de su emisión de golpe, y la ventana
+> rodante de 72 h lo ve de domingo a miércoles y no lo ve el resto de la semana.
+> Medido un miércoles, aporta cero y parece muerto; medido un lunes, aporta diez.
+>
+> **Lo que hay que arreglar no es el feed: es la lectura de «cero artículos».** Un
+> medio que publica en ráfaga no tiene el mismo cero que un medio con el feed
+> caído, y hoy el catálogo no los distingue. Ese es el caso real que justifica la
+> compuerta de evidencia — y también su matiz: `n = 0` puede significar «feed
+> roto» o «hoy no toca», y suspender por medición sin separar las dos cosas
+> castigaría a los medios que no son de noticia diaria.
 
 ---
 
@@ -137,9 +147,12 @@ de derecha, la ausencia de conglomerado no prueba que sea de izquierda.
    es defendible ante un revisor externo**, y es el que más va a atacarse.
 4. **Declarar el vínculo con Cambio a través de Daniel Coronell**, en las dos
    fichas de propiedad. Es del presente y hoy no está en ninguna.
-5. **ARREGLAR EL FEED.** No es una decisión de protocolo: es un feed roto. La
-   premisa de «noticiero semanal» era falsa, y con ella cae la excepción que esta
-   ficha proponía diseñar.
+5. **DISTINGUIR «FEED ROTO» DE «HOY NO TOCA», que hoy el catálogo confunde.** El
+   feed funciona: medido el 2026-08-18 traía diez piezas del domingo anterior,
+   dentro de la ventana. Lo que falta no es arreglarlo sino que el sistema sepa
+   que un noticiero de fin de semana aporta cero tres días de cada siete **sin que
+   eso sea una avería**. Es la decisión de protocolo que esta ficha ya pedía, y la
+   medición le da la razón.
 6. **Comprar el certificado mercantil de NTC Televisión S.A.** El hueco de propiedad
    del medio más extremo del catálogo no puede depender de lo que recuerde la web.
 7. **Verificar el estatus de Coronell** —¿sigue siendo accionista?, ¿sigue
@@ -170,7 +183,7 @@ Se pide **argumentar en contra**. El acuerdo no se registra como validación.
 |---|---|---|---|---|
 | Claude Opus 5 | claude-opus-5 | 2026-08-12 | Redactor de esta ficha | — |
 | Kimi K3 | — | 2026-08-18 | El hueco de propiedad está menos cerrado de lo que la ficha declara: hay un evento societario de 2022 sin registrar y el certificado mercantil existe | **Aceptada** en cuanto al camino de cierre y al hecho de 2022. **La parte sobre Coronell como accionista queda sin verificar y no se escribe** |
-| Kimi K3 | — | 2026-08-18 | **Error de hecho: no es un noticiero semanal.** Si su feed tiene 80 horas de atraso, está roto | **Aceptada.** Verificada: ninguna fuente sostiene «semanal». La refutación 5 se reescribe: arreglar el feed |
+| Kimi K3 | — | 2026-08-18 | «Error de hecho: no es un noticiero semanal. Si su feed tiene 80 horas de atraso, está roto» | **RECHAZADA el 2026-08-18, y aceptada por error antes.** Se midió el feed: responde, y sus diez ítems son de una sola ráfaga del domingo, el más reciente a 35 h — **dentro de la ventana**. La premisa original de la ficha era la correcta: noticiero de fin de semana, no feed roto. **Motivo del rechazo: la objeción se aceptó sin medir, y la medición la contradice** |
 | Kimi K3 | — | 2026-08-18 | El «hoy es presidente de Cambio» puede estar caduco y no se pudo confirmar con fuente de 2026 | **Aceptada** como advertencia: hay que verificarlo antes de escribirlo en las dos fichas |
 | Kimi K3 | — | 2026-08-18 | La conducta vigente apunta a «fiscaliza a quien esté en el poder», lo que **refuerza** el argumento de la ficha y debilita el −0,40 | **Aceptada.** Sección propia arriba. El presunto choque con el gobierno entrante se descarta por fuente inadmisible |
 | Fable 5 | | | | |
@@ -184,17 +197,25 @@ argumento que las reglas descartan.
 
 ## ESTADO
 
-**Sin firmar, y es el peor expediente del catálogo.** Sigue en −0,40 con
-`reviewedAt: null`: el valor más extremo del catálogo colombiano, sostenido sobre
-una **premisa falsa** (no es semanal), un **feed roto**, una propiedad sin
-documentar y una justificación cuya mitad es histórica.
+**Sin firmar, y sigue siendo el peor expediente del catálogo** — aunque por un
+motivo menos que ayer. Sigue en −0,40 con `reviewedAt: null`: el valor más extremo
+del catálogo colombiano, con la propiedad sin documentar y una justificación cuya
+mitad es histórica.
+
+**Lo que ya NO se le puede reprochar es el feed**, y conviene decirlo con la misma
+claridad con que se le reprochó: funciona, publica en ráfaga de fin de semana, y la
+premisa que la ficha traía de origen era la correcta. Ese punto se dio por perdido
+durante un día por aceptar una objeción sin medirla.
 
 **La evidencia disponible apunta a 0,00**, y no por prudencia: es lo que exige la
 regla de «fiscalizar al poder» una vez se decida la pregunta transversal 2. **Esa
 decisión es de protocolo y es de Jose**; mientras no se tome, este número no se
 puede mover ni defender.
 
-> **Y es el caso que mejor justifica la compuerta de evidencia** que el revisor
-> propuso para el catálogo: con `n = 0` y feed roto, un medio no debería llevar un
-> valor heredado en silencio, sino un estado **SUSPENDIDO POR MEDICIÓN**, visible y
-> con fecha. Aquí el −0,40 lleva años pudriéndose sin que nada lo delate.
+> **Sigue siendo el caso que mejor justifica la compuerta de evidencia**, y ahora
+> además le pone el matiz que le faltaba. Un valor no debería heredarse en silencio
+> con `n = 0` — pero **`n = 0` no significa lo mismo en un medio de noticia diaria
+> que en uno de fin de semana**. Suspender por medición sin separar «feed caído» de
+> «hoy no toca» castigaría precisamente a los medios que no siguen el ritmo diario,
+> que en este catálogo son casi todos los de izquierda. La compuerta necesita esa
+> distinción antes de implementarse.

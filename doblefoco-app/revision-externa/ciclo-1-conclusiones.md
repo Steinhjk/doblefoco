@@ -65,7 +65,7 @@ No matices: hechos comprobables que la ficha afirmaba y son falsos hoy.
 | 3 | Carlos Ardila Lülle († 13-08-2021) y Eugenia Gaviria († 30-05-2021) citados como titulares vigentes | 03, 12, 17 |
 | 4 | Alejandro Galvis Ramírez († 15-01-2021) citado como titular vigente | 18 |
 | 5 | «Oughourlian controla Prisa desde 2003» — es desde feb-2021; 2003 es la compra de Caracol Radio | 04 |
-| 6 | Noticias Uno **no es semanal**: emite de lunes a viernes. Su feed está roto, no «estructuralmente excluido» | 13 |
+| 6 | ~~Noticias Uno no es semanal y su feed está roto~~ **ESTA "CORRECCIÓN" ERA FALSA y se retira el 2026-08-18**: al medir el feed, responde y trae diez piezas de una ráfaga del domingo, la más reciente a 35 h. Es un noticiero de fin de semana, como decía la ficha original | 13 |
 | 7 | El Espectador se transformó en **ESAL en 2025** y la ficha no lo registra | 07 |
 | 8 | El Colombiano: el vehículo es Alianza San Felipe con el **57 %**, no el 51 % | 15 |
 | 9 | La «laguna» de Blu Radio no existe: **es Caracol Televisión S.A.**, mismo accionariado que Noticias Caracol | 08 |
@@ -102,7 +102,7 @@ Las cinco iban en el índice del ciclo, sin respuesta. Hoy:
 
 | # | Pregunta | Estado tras el ciclo |
 |---|---|---|
-| 1 | **Los tres de Valorem** (0,45 de recorrido) | **Con respuesta candidata, y escrita**: opera a nivel de dirección, no de dueño. Fidel Cano, bisnieto del fundador, dirige El Espectador desde 2004; Juan Roberto Vargas dirige Noticias Caracol por nombramiento del grupo; Néstor Morales dirige Mañanas Blu y es cuñado de Iván Duque. Y el caso duro no era «mismo dueño»: Blu Radio **es** Caracol Televisión S.A., y las dos comisionan juntas la misma encuestadora |
+| 1 | **Los tres de Valorem** (0,45 de recorrido) | **Con respuesta candidata, y escrita**: opera a nivel de dirección, no de dueño. Fidel Cano, bisnieto del fundador, dirige El Espectador desde 2004; Juan Roberto Vargas dirige Noticias Caracol por nombramiento del grupo; Néstor Morales dirige Mañanas Blu desde 2012. (El revisor añadía un vínculo familiar de Morales con un expresidente: **no se pudo verificar de forma independiente y no se escribió en la ficha**.) Y el caso duro no era «mismo dueño»: Blu Radio **es** Caracol Televisión S.A., y las dos comisionan juntas la misma encuestadora |
 | 2 | **«Fiscalizar al poder»** en Chocó 7 Días / Noticias Uno / La Silla | **Sigue abierta, y ahora bloquea más que antes.** Con la evidencia nueva, RCN (+0,25) se firmaría con el mismo criterio que hunde a Chocó 7 Días. Es el único punto donde el ciclo empeoró la situación, porque la inconsistencia ya no es teórica |
 | 3 | **Los siete regionales, todos a la derecha** | **Respondida, y a favor del criterio**: los siete tienen hoy piezas propias fechadas, con gradación visible — endoso (El Heraldo) > encuadre asimétrico (El País, El Colombiano) > crítica con balance (El Universal, Vanguardia) > neutralidad cívica (La Opinión). El patrón era el hallazgo, no el error. Falta escribirlo como criterio |
 | 4 | **Los internacionales en el eje de su país** | **Parcialmente**: para Infobae la pregunta se agudiza (92 % de agenda propia: ¿qué significa el eje colombiano ahí?). Para CNN hay un requisito nuevo — si se mide «cómo cubre a Colombia», hay que fijar un umbral mínimo de piezas o el número lo deciden tres notas |
@@ -112,8 +112,8 @@ Las cinco iban en el índice del ciclo, sin respuesta. Hoy:
 
 ## Lo que le pasó a cada ficha
 
-Ningún valor cambia todavía: la resolución de cada objeción la escribe una persona,
-y las tablas de `respuestas/` están sin llenar a propósito.
+Ningún valor cambia: mover un número es juicio de firma. Las resoluciones sí están
+escritas, objeción por objeción, en la tabla de cada ficha y en `respuestas/`.
 
 | # | Medio | Valor | Qué le hizo el ciclo |
 |---|---|---|---|
@@ -128,8 +128,8 @@ y las tablas de `respuestas/` están sin llenar a propósito.
 | 09 | Infobae | +0,15 | El mecanismo de rescate del CONTRA queda refutado con los datos de la propia ficha |
 | 10 | CNN en Español | −0,15 | Contradicción interna que solo la casa puede resolver: **¿aparece o no aparece en pantalla?** Decide toda la ficha |
 | 11 | La Silla Vacía | −0,10 | Dos errores de hecho; la financiación citada es de 2020; conducta electoral apunta a 0,00 |
-| 12 | La FM | +0,35 | **Firmable tras una tarde documental**: `/carta-del-director` es texto diario, fechado e ingerible |
-| 13 | Noticias Uno | −0,40 | Premisa falsa, feed roto, valor heredado. El peor expediente del catálogo |
+| 12 | La FM | +0,35 | **Firmable tras una tarde documental**: `/carta-del-director` es texto diario y fechado. Citable a mano — **no ingerible**: el sitio no expone RSS (comprobado 2026-08-18) |
+| 13 | Noticias Uno | −0,40 | Valor heredado sobre propiedad sin documentar y justificación mitad histórica. **Su feed sí funciona**: publica en ráfaga de fin de semana |
 | 14 | El Heraldo | +0,20 | **Endoso editorial del 24-05-2026.** Piso defendible; techo abierto si no fiscaliza al gobierno entrante |
 | 15 | El Colombiano | +0,35 | Cuatro editoriales; nivel 1 corregido; instrucción de monitoreo apuntando a una entidad disuelta |
 | 16 | El País (Cali) | +0,30 | **La premisa central estaba muerta.** Corregida, el +0,30 se sostiene por piezas y la pregunta de los 0,15 se disuelve |
@@ -286,9 +286,9 @@ tienen precio y son de un día:
 | Composición accionaria de Caracol TV (ene-2020) + informe SFC (14-05-2025) | gratis | Nivel 1 de las fichas 01 y 08 |
 | IAGC de Prisa ante la CNMV | gratis | Nivel 1 de la ficha 04 |
 | Estados financieros de RCN Televisión (emisor bursátil) | gratis | Nivel 1 de las fichas 03, 12, 17 |
-| Ingerir `lafm.com.co/carta-del-director` | una tarde | Nivel 2 de la ficha 12, y el editorial firmado a diario |
+| Citar a mano los editoriales de `lafm.com.co/carta-del-director` | una tarde | Evidencia de línea de la ficha 12. **Ingerirlos NO es barato**: el sitio no tiene RSS y exigiría raspado |
 | Dar de baja W Radio del catálogo | minutos | Un medio fantasma |
-| Arreglar el feed de Noticias Uno | una tarde | Nivel 2 del valor más extremo del catálogo |
+| ~~Arreglar el feed de Noticias Uno~~ **no hace falta** | — | Funciona. Lo que falta es que el sistema distinga «feed caído» de «hoy no toca» |
 
 ---
 
@@ -301,7 +301,7 @@ objeciones. Son decisiones de firma, de criterio o de producto.
 
 | Medio | Valor hoy | Qué encontró el ciclo | Decisión pendiente |
 |---|---|---|---|
-| **Noticias Uno** | −0,40 | Premisa falsa (no es semanal), feed roto, propiedad sin documentar, justificación mitad histórica. La conducta vigente apunta a «fiscaliza al poder de turno» | Depende de la **pregunta 2**. Si se decide que fiscalizar no es orientación, el valor es 0,00 |
+| **Noticias Uno** | −0,40 | Propiedad sin documentar y justificación mitad histórica. La conducta vigente apunta a «fiscaliza al poder de turno». Su feed **sí** funciona | Depende de la **pregunta 2**. Si se decide que fiscalizar no es orientación, el valor es 0,00 |
 | **El Espectador** | −0,20 | Cuatro hechos editoriales fechados que **no** lo sostienen; apuntan al centro institucional | Mover, o marcar «orientación en revisión». Dejarlo quieto ya no es abstenerse |
 | **La Opinión** | +0,30 | Serie post-venta con línea dura de seguridad **pero neutralidad cívica electoral** | Opción argumentada de bajar a **+0,25**. La única bajada que sugiere el ciclo |
 

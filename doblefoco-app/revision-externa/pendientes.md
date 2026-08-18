@@ -12,9 +12,26 @@
 > cuenta como aval**, y **la firma es de Jose**. Las IAs son el examen, no el
 > examinador. Ver `DECISIONES.md` del 2026-08-17.
 
+> ## EL CICLO 1 YA VOLVIÓ, Y ESTÁ INTEGRADO (2026-08-17)
+>
+> Las veinte fichas del tramo de mayor audiencia pasaron por Kimi K3 y sus
+> **76 objeciones están resueltas por escrito** en `respuestas/kimi-k3-<medio>.md`.
+> **Léete `ciclo-1-conclusiones.md` antes de tocar nada de esta cola**: buena parte
+> de lo que sigue escrito abajo se resolvió o cambió de forma.
+>
+> El saldo corto: **quince errores de hecho** —cuatro dueños fallecidos citados como
+> vivos, El País vendido catorce meses antes, W Radio fusionada y aún clasificada
+> aparte— y **doce de veinte fichas que declaraban una laguna que no existía**.
+> Ningún valor se movió y ninguna ficha se firmó.
+>
+> **Lo que queda en manos de Jose** está en la última sección de ese documento: tres
+> valores que la evidencia mueve (Noticias Uno, El Espectador, La Opinión), la
+> pregunta 2, qué hacer con W Radio, y si CNN aparece en pantalla.
+
 Estado al **2026-08-17**. **76 medios en el catálogo, 56 fichas escritas, CERO
-firmadas**, y `respuestas/` sigue vacía: **no se ha enviado nada todavía**. Lo que
-sí hay ya es **el primer envío armado y comprobado**: Diario La Libertad, abajo.
+firmadas.** `respuestas/` ya **no** está vacía: tiene el ciclo 1 completo — las
+veinte del tramo más la propuesta de algoritmo. Y hay **un envío armado y
+comprobado** aparte: Diario La Libertad, abajo.
 
 **La distancia entre lo publicado y lo auditado es hoy todo el catálogo, y creció
 once medios en cinco días.** Eran 65 el día 12. Entraron: Al Aire Noticias (Arauca),

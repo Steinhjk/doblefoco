@@ -4,9 +4,19 @@
 2026-08-18. **Alcance:** las 20 fichas del tramo prioritario, una por una, más un
 documento 21 con una propuesta de algoritmo.
 
-Las respuestas literales están en `respuestas/kimi-k3-<medio>.md`. La propuesta, en
-`respuestas/kimi-k3-PROPUESTA-ALGORITMO.md`. Lo que sigue es la lectura, y es
-nuestra: **el revisor no firma nada aquí**.
+Las respuestas literales están en `respuestas/kimi-k3-<medio>.md`, cada una con su
+resolución escrita. La propuesta, en `respuestas/kimi-k3-PROPUESTA-ALGORITMO.md`. Lo
+que sigue es la lectura, y es nuestra: **el revisor no firma nada aquí**.
+
+> **ESTADO AL CIERRE (2026-08-17).** El ciclo está integrado: las **76 objeciones
+> resueltas** una por una con motivo escrito, los **15 errores de hecho corregidos**
+> en `shared/mediaOwnership.js` y en las 20 fichas, y las fichas reescritas con la
+> evidencia aportada. **Ningún valor se movió y ninguna ficha se firmó**, porque eso
+> es juicio editorial y lo hace Jose.
+>
+> La regla que se siguió, y conviene que quede: **no se escribió en ninguna ficha
+> nada que no se hubiera verificado por cuenta propia**, ni siquiera cuando el
+> revisor traía enlace. Dos afirmaciones suyas se quedaron fuera por eso.
 
 ---
 
@@ -253,12 +263,12 @@ Y dos correcciones al contexto que se le pega:
 
 **Sí, pero no igual, y no antes de cobrar lo de este ciclo.**
 
-**Primero cerrar el ciclo 1.** Hay 76 objeciones sin resolver y quince errores de
-hecho sin corregir. Mandar 29 fichas más antes de haber resuelto estas es acumular
-deuda de revisión: el valor de la revisión externa está en la resolución escrita,
-no en el volumen de respuestas guardadas. Además, varias correcciones son
-transversales —la venta de El País toca tres fichas, la sucesión Ardila Lülle toca
-otras tres— y hacerlas una vez ahorra hacerlas treinta.
+**El ciclo 1 ya está cerrado**: las 76 objeciones resueltas y los quince errores
+corregidos. Se hizo antes de mandar nada más, y por un motivo que conviene dejar
+escrito: el valor de una revisión externa está en la resolución, no en el volumen de
+respuestas guardadas. Además varias correcciones eran transversales —la venta de El
+País tocaba tres fichas, la sucesión Ardila Lülle otras tres, la falsa singularidad
+del hilo offshore otras dos— y hacerlas una vez ahorró hacerlas treinta.
 
 **Después, el tramo de abajo con tarjeta distinta.** Las 29 restantes son medios
 regionales y digitales pequeños, casi todos en 0,00 «por Regla 2» o «provisional de
@@ -282,12 +292,42 @@ tienen precio y son de un día:
 
 ---
 
-## Lo que este ciclo no resolvió, y hay que decirlo
+## Lo que este ciclo no resolvió, y queda en manos de Jose
 
-- **La pregunta 2 sigue abierta y ahora bloquea tres fichas en vez de una.**
-- **Ningún valor está firmado.** Veinte fichas siguen con `reviewedAt: null`.
-- **71 de 76 objeciones están sin comprobar.** El muestreo de cinco dice que el
-  revisor no inventa; no dice que las 71 restantes sean correctas.
+Nada de lo que sigue lo puede cerrar un revisor externo ni quien integra sus
+objeciones. Son decisiones de firma, de criterio o de producto.
+
+### Tres valores que la evidencia mueve, y que nadie ha movido
+
+| Medio | Valor hoy | Qué encontró el ciclo | Decisión pendiente |
+|---|---|---|---|
+| **Noticias Uno** | −0,40 | Premisa falsa (no es semanal), feed roto, propiedad sin documentar, justificación mitad histórica. La conducta vigente apunta a «fiscaliza al poder de turno» | Depende de la **pregunta 2**. Si se decide que fiscalizar no es orientación, el valor es 0,00 |
+| **El Espectador** | −0,20 | Cuatro hechos editoriales fechados que **no** lo sostienen; apuntan al centro institucional | Mover, o marcar «orientación en revisión». Dejarlo quieto ya no es abstenerse |
+| **La Opinión** | +0,30 | Serie post-venta con línea dura de seguridad **pero neutralidad cívica electoral** | Opción argumentada de bajar a **+0,25**. La única bajada que sugiere el ciclo |
+
+### Cuatro decisiones de criterio o de producto
+
+1. **La pregunta 2 —«fiscalizar al poder»— sigue abierta y ahora bloquea más que
+   antes.** Con la evidencia nueva, Noticias RCN se firmaría con el mismo criterio
+   que hunde a Chocó 7 Días. Es el único punto donde el ciclo empeoró la situación,
+   porque la inconsistencia dejó de ser teórica.
+2. **Qué hace el catálogo con W Radio**, fusionada con Caracol Radio desde el
+   13-01-2026. Fusionar las dos entradas, dejarla como marca histórica sin valor, o
+   mantener las dos con la nota. **No se tocó** porque «no se silencia a ningún
+   medio» es decisión tuya, del 2026-07-30.
+3. **Si CNN en Español aparece o no en la pantalla del lector.** Su expediente se
+   contradice, y la respuesta decide toda la ficha. Se responde mirando una línea de
+   código.
+4. **Redactar el criterio regional.** Tras el ciclo ya se puede escribir con
+   evidencia y gradación; el borrador está en la ficha de Vanguardia.
+
+### Y lo que sigue siendo verdad sobre el alcance de todo esto
+
+- **Ninguna ficha está firmada.** Las veinte siguen con `reviewedAt: null`.
+- **No se comprobaron las 76 objeciones.** Se verificó una por una toda afirmación
+  que se iba a escribir en una ficha, más cinco al azar del ciclo completo. Eso
+  descarta que el revisor invente fuentes; **no convierte en cierto lo que no se
+  miró**.
 - **El acuerdo sigue sin contar como aval.** En varias fichas Kimi escribe «el valor
-  es defendible, no propongo moverlo». Eso **no** firma la ficha: solo dice que no
+  es defendible, no propongo moverlo». Eso **no** firma nada: solo dice que no
   encontró evidencia en contra, y así está anotado en cada respuesta.

@@ -1,0 +1,77 @@
+# =============================================================================
+#  Archivo de conducta — lo único del corpus que no se reconstruye después
+# =============================================================================
+#  QUÉ PROBLEMA RESUELVE. Los artículos se borran a las 72 horas, y esa purga se
+#  llevaba por delante algo que nadie había declarado: la conducta medida, o sea
+#  con quién coincide cada medio.
+#
+#  Cuarenta fichas de orientación prometen «la medición a los 90 días
+#  (2026-11-10)». Comprobado el 2026-08-18: no podía ocurrir. Ninguna tabla
+#  acumulaba coincidencias, así que el 10 de noviembre habría exactamente lo de
+#  hoy —un corpus de tres días— y los noventa días de espera no habrían
+#  producido nada.
+#
+#  Este cron es lo que convierte esa promesa en algo real. Y a diferencia de casi
+#  todo lo demás del repositorio, NO se puede recuperar más tarde: un día que no
+#  se archiva es un día que no se vuelve a observar.
+#
+#  POR QUÉ DIARIO Y NO CADA DOS HORAS. La retención es de 72 h, así que una
+#  historia está viva tres días y una ejecución diaria la ve tres veces. Correr
+#  más a menudo no añade ni un par; correr cada tres días dejaría de verlas por
+#  los pelos. Diario tiene dos días enteros de margen para un fallo del cron.
+#
+#  QUÉ NO GUARDA. Ni un titular, ni un enlace, ni un fragmento. Solo el par
+#  (historia, medio) y una fecha: la retención de 72 h sigue rigiendo el
+#  contenido igual que antes.
+#
+#  SI ESTO FALLA, FALLA EN VERDE MAÑANA. Por eso la ejecución sale con error si
+#  no pudo escribir: un archivador que se cae en silencio deja un agujero que
+#  solo se descubre al ir a analizar la serie, cuando ya no se puede rellenar.
+# =============================================================================
+
+name: Archivo de conducta
+
+on:
+  schedule:
+    # 09:00 UTC ≈ 04:00 en Colombia. Después del ciclo de ingesta de las 08:00
+    # UTC, y a una hora en la que el corpus del día anterior ya está completo.
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+# Dos archivadores a la vez insertarían los mismos pares: la clave primaria lo
+# aguanta, pero se estorbarían en la transacción sin ganar nada.
+concurrency:
+  group: archivo-conducta
+  cancel-in-progress: false
+
+jobs:
+  archivar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: doblefoco-app
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+
+      # Idempotente y cuesta segundos. Se ejecuta aquí para que las tablas del
+      # archivo existan aunque nadie se haya acordado de migrar tras añadirlas.
+      - name: Aplicar migraciones
+        run: npm run db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Archivar la ventana viva
+        run: npm run archivo:conducta
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

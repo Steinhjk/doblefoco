@@ -605,7 +605,64 @@ CREATE INDEX IF NOT EXISTS errores_recientes_idx
     ON errores (ultima_vez DESC) WHERE resuelto_en IS NULL;
 
 
--- ── 12. Cerrar la API pública de Supabase ────────────────────────────────────
+-- ── 12. Archivo de conducta ──────────────────────────────────────────────────
+--
+-- POR QUÉ EXISTE, Y ES EL MISMO MOTIVO QUE `ingest_runs`. Los artículos se
+-- descartan a las 72 horas y un día ya ocurrido no se vuelve a observar. Eso
+-- estaba asumido para el contenido —es una decisión tomada y no se toca— pero
+-- se llevó por delante algo que nadie declaró: **la conducta medida**.
+--
+-- Cuarenta fichas de orientación prometen «la medición a los 90 días
+-- (2026-11-10)». Comprobado el 2026-08-18: no puede ocurrir. No hay ninguna
+-- tabla que acumule con quién coincide cada medio, así que el 10 de noviembre
+-- habrá exactamente lo que hay hoy — un corpus de 72 horas — y los noventa días
+-- de espera no habrán producido nada. Cada día sin esta tabla es corpus que se
+-- pierde para siempre, incluido el de la campaña y el cambio de gobierno.
+--
+-- QUÉ GUARDA, Y SOBRE TODO QUÉ NO. Solo el par (historia, medio): dos
+-- identificadores y una fecha. **Ni un titular, ni un enlace, ni un fragmento.**
+-- La retención de 72 h sigue rigiendo el contenido igual que antes; esto archiva
+-- la coincidencia, que es lo único que el nivel 2 mide y lo único que no se
+-- puede reconstruir después.
+--
+-- POR QUÉ EL PAR Y NO EL AGREGADO YA CALCULADO. Un agregado diario obliga a
+-- decidir hoy qué métricas importarán dentro de un año, y suma mal: una historia
+-- viva tres días se contaría tres veces. Con el par en bruto, cualquier métrica
+-- —agenda propia, compañía media, coincidencias, y las que aún no existen— se
+-- recalcula sobre cualquier ventana, y la clave primaria desduplica sola la
+-- historia que sobrevive varios días.
+CREATE TABLE IF NOT EXISTS conducta_archivo (
+    story_id    TEXT NOT NULL,
+    source_id   TEXT NOT NULL,
+    -- Día de la historia, no del archivado: es lo que permite reconstruir una
+    -- ventana de 90 días aunque el archivador se haya ejecutado a deshora.
+    dia         DATE NOT NULL,
+    -- Cuándo se vio por primera vez. Sirve para distinguir un hueco de datos de
+    -- un medio que efectivamente no publicó.
+    visto_el    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (story_id, source_id)
+);
+
+CREATE INDEX IF NOT EXISTS conducta_archivo_dia_idx ON conducta_archivo (dia);
+CREATE INDEX IF NOT EXISTS conducta_archivo_medio_idx ON conducta_archivo (source_id, dia);
+
+-- LOS HUECOS SE DECLARAN, NO SE DEDUCEN. Sin esta tabla, un archivador que no
+-- corrió tres días sería indistinguible de tres días sin noticias, y la ventana
+-- de 90 días mediría un agujero como si fuera silencio editorial. Es la misma
+-- regla que el resto del proyecto aplica a las fichas: un hueco declarado se
+-- puede leer; uno escondido vuelve como objeción.
+CREATE TABLE IF NOT EXISTS conducta_archivo_runs (
+    at             TIMESTAMPTZ NOT NULL UNIQUE,
+    pares_vistos   INTEGER NOT NULL,
+    pares_nuevos   INTEGER NOT NULL,
+    historias      INTEGER NOT NULL,
+    medios         INTEGER NOT NULL,
+    ventana_desde  DATE,
+    ventana_hasta  DATE
+);
+
+
+-- ── 13. Cerrar la API pública de Supabase ────────────────────────────────────
 --
 -- QUÉ PASABA. Supabase publica una API REST sobre el esquema `public` y le da
 -- permisos al rol `anon`, que es el que corresponde a su clave pública — la que

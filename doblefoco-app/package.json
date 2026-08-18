@@ -39,6 +39,7 @@
         "muestra:programas": "node scripts/muestrearProgramasAnclados.mjs",
         "insistencia": "node scripts/insistencia.mjs",
     "conducta": "node scripts/conductaPorMedio.mjs",
+        "archivo:conducta": "node scripts/archivarConducta.mjs",
         "medios:cosechar": "node scripts/cosecharMedios.mjs",
         "diag:sintema": "node scripts/diagnosticarSinTema.mjs",
         "medir:termino": "node scripts/medirTermino.mjs",

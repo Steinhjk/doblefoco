@@ -108,10 +108,13 @@ Tres problemas, en orden de gravedad:
    clasificación?—, no: haber fiscalizado a Uribe hace veinte años no puede
    cambiar. **Es el mismo defecto que tumbó la ficha de El Espectador**, y aquí
    ocupa la mitad de la frase. Nótese que **el gobierno actual no aparece**.
-2. **«La vigilancia al establecimiento lo sitúa a la izquierda» es el razonamiento
-   que el propio proyecto rechazó** al clasificar a Chocó 7 Días en la mixta,
-   porque «denunciar al poder es el oficio y no una orientación». Aquí ese mismo
-   razonamiento no solo se acepta: **es lo único que sostiene el −0,40**, el valor
+2. **«La vigilancia al establecimiento lo sitúa a la izquierda» es hoy un
+   razonamiento prohibido por el protocolo.** Cuando se escribió esta ficha solo
+   estaba rechazado de hecho —al clasificar a Chocó 7 Días en la mixta, porque
+   «denunciar al poder es el oficio y no una orientación»—. Desde el **2026-08-18**
+   está rechazado de derecho: la **regla del polo fijo** (§1) establece que el eje
+   mide la posición respecto de un polo fijo y no la postura frente a quien
+   gobierne. Aquí ese razonamiento **es lo único que sostiene el −0,40**, el valor
    más extremo del catálogo.
 3. **La propiedad no está cerrada.** El único medio del tramo alto cuya estructura
    accionaria se desconoce lleva a la vez el valor más extremo.
@@ -142,9 +145,11 @@ de derecha, la ausencia de conglomerado no prueba que sea de izquierda.
 2. **Reescribir la justificación sin «treinta años», sin «Uribe, Santos, Duque» y
    con el gobierno actual dentro.** Cómo cubre al gobierno de hoy es la pregunta,
    y no está contestada en ninguna parte.
-3. **Resolver la regla de «fiscalizar al poder»**, que hoy se aplica de tres formas
-   distintas —aquí, en Chocó 7 Días y en La Silla Vacía—. **Sin eso, este número no
-   es defendible ante un revisor externo**, y es el que más va a atacarse.
+3. ~~Resolver la regla de «fiscalizar al poder»~~ **RESUELTA el 2026-08-18**: es
+   la **regla del polo fijo** (`PROTOCOLO_JUICIO_EDITORIAL.md` §1). El eje mide la
+   posición respecto de un polo fijo, no la postura frente a quien gobierne, así
+   que **fiscalizar al poder no es evidencia de orientación en ninguna dirección**.
+   Con eso, lo único que sostenía el −0,40 deja de ser admisible.
 4. **Declarar el vínculo con Cambio a través de Daniel Coronell**, en las dos
    fichas de propiedad. Es del presente y hoy no está en ninguna.
 5. **DISTINGUIR «FEED ROTO» DE «HOY NO TOCA», que hoy el catálogo confunde.** El
@@ -207,10 +212,21 @@ claridad con que se le reprochó: funciona, publica en ráfaga de fin de semana,
 premisa que la ficha traía de origen era la correcta. Ese punto se dio por perdido
 durante un día por aceptar una objeción sin medirla.
 
-**La evidencia disponible apunta a 0,00**, y no por prudencia: es lo que exige la
-regla de «fiscalizar al poder» una vez se decida la pregunta transversal 2. **Esa
-decisión es de protocolo y es de Jose**; mientras no se tome, este número no se
-puede mover ni defender.
+**La evidencia disponible apunta a 0,00**, y desde el 2026-08-18 ya no por
+prudencia sino por regla escrita. La **regla del polo fijo** cierra la pregunta que
+bloqueaba esta ficha: fiscalizar al poder no desplaza a nadie en el eje, ni a la
+izquierda ni a la derecha. Su justificación —«su vigilancia al establecimiento lo
+sitúa a la izquierda»— **queda fuera del protocolo**, y con ella se va lo único que
+sostenía el valor más extremo del catálogo colombiano.
+
+**Lo que la regla admite y aquí habría que buscar** es la asimetría a través del
+cambio de gobierno: no cómo trató al saliente, sino si trata igual al entrante. La
+conducta registrada hasta diciembre de 2025 es fiscalización del gobierno saliente
+y no prueba nada por sí sola; la transición de agosto de 2026 es la ocasión de
+comprobarlo, y está sin comprobar.
+
+**Mover el número sigue siendo un acto de firma, y es de Jose.** Lo que cambió es
+que ya no hay nada que esperar para tomarlo: la regla está escrita.
 
 > **Sigue siendo el caso que mejor justifica la compuerta de evidencia**, y ahora
 > además le pone el matiz que le faltaba. Un valor no debería heredarse en silencio

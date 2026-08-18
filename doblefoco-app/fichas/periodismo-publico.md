@@ -56,11 +56,13 @@ Opinión Pública»— y sobre contar «la verdad».
 fiscalizar a la administración local no queda por ello a la izquierda ni a la
 derecha. Es el criterio con que Chocó 7 Días quedó en la mixta.
 
-> **Objeción viva contra esta ficha:** «fiscalizar al poder» se resuelve hoy de
-> **tres formas distintas** en el catálogo —Chocó 7 Días en la mixta, Noticias Uno
-> en −0,40 y La Silla Vacía en −0,10 por lo mismo—. Las tres no pueden tener razón.
-> Está en `revision-externa/pendientes.md` como pregunta abierta, y lo que se
-> decida allí afecta a esta ficha.
+> **OBJECIÓN RESUELTA EL 2026-08-18, y a favor de esta ficha.** «Fiscalizar al
+> poder» se resolvía de tres formas distintas en el catálogo —Chocó 7 Días en la
+> mixta, Noticias Uno en −0,40 y La Silla Vacía en −0,10 por lo mismo—. La **regla
+> del polo fijo** (`PROTOCOLO_JUICIO_EDITORIAL.md` §1) zanja cuál era la buena: el
+> eje mide la posición respecto de un polo fijo, no la postura frente a quien
+> gobierne, así que **fiscalizar no orienta**. El criterio que esta ficha aplicaba
+> es ahora el del protocolo.
 
 **Se descartó la analogía regional**, igual que en EL DIARIO de Boyacá y El Nuevo
 Día: los siete diarios regionales del catálogo están entre +0,15 y +0,35, y aquellos

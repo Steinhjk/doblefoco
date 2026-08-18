@@ -108,17 +108,22 @@ Las tres cosas que afirma son:
 **Ninguna de las tres sostiene el −0,10.** Y la segunda lo contradice: si el
 encuadre es analítico y no militante, la banda que corresponde es la mixta.
 
-**Lo que probablemente explica el −0,10 no está escrito**, y hay que decirlo en voz
-alta porque es el punto que un revisor externo va a atacar: fiscalizar al poder
-desplaza a un medio a la izquierda **del eje colombiano** tal como está calibrado
-este catálogo. Pero el propio proyecto ya rechazó ese razonamiento en otro sitio:
-Chocó 7 Días se clasificó en la mixta **porque «denunciar al poder es el oficio y
-no una orientación»**. Si esa regla vale allí, aquí lleva a 0,00.
+**Lo que explicaba el −0,10 no estaba escrito, y ahora está prohibido.** El
+razonamiento tácito era que fiscalizar al poder desplaza a un medio a la izquierda
+del eje colombiano tal como está calibrado este catálogo. El proyecto ya lo había
+rechazado de hecho al clasificar a Chocó 7 Días en la mixta —«denunciar al poder es
+el oficio y no una orientación»—, y desde el **2026-08-18** lo rechaza de derecho:
+la **regla del polo fijo** (`PROTOCOLO_JUICIO_EDITORIAL.md` §1) dice que el eje
+mide la posición respecto de un polo fijo, no la postura frente a quien gobierne.
 
-**Y el mismo razonamiento pone en cuestión el −0,40 de Noticias Uno**, cuya
-justificación es explícitamente esa: que su vigilancia al establecimiento lo sitúa
-a la izquierda. Las tres fichas —Chocó 7 Días, La Silla Vacía y Noticias Uno— no
-pueden sostener criterios distintos sobre la misma pregunta.
+**Aplicada aquí, lleva a 0,00**, y coincide con lo que la propia justificación del
+medio ya afirmaba: «analítico más que militante».
+
+**Y la misma regla tumba el −0,40 de Noticias Uno**, cuya justificación es
+explícitamente esa: que su vigilancia al establecimiento lo sitúa a la izquierda.
+Las tres fichas —Chocó 7 Días, esta y Noticias Uno— sostenían criterios distintos
+sobre la misma pregunta. **Desde el 2026-08-18 sostienen el mismo**, y las tres
+convergen en la mixta.
 
 ---
 
@@ -142,13 +147,13 @@ dirección.
 1. **Exigir la transparencia de financiación al presente.** No es «leer con detalle
    la página»: la página es de 2020. Si la mejor práctica del medio lleva seis años
    sin actualizarse, **eso se dice, con fecha**, y se pide la memoria vigente.
-2. **Resolver la regla de «fiscalizar al poder».** Las tres fichas afectadas
-   —Chocó 7 Días, esta y Noticias Uno— hoy la resuelven distinto. Es decisión de
-   protocolo, no de ficha. **Esta es el caso testigo**: tiene el argumento más
-   limpio para 0,00 —su propia justificación dice «no militante»— y a la vez el
-   expediente más sucio en independencia. **Las dos cosas pueden ser ciertas a la
-   vez, y el protocolo debería poder escribirlas juntas**: orientación 0,00 con
-   nota de independencia comprometida.
+2. ~~Resolver la regla de «fiscalizar al poder»~~ **RESUELTA el 2026-08-18**:
+   regla del polo fijo (§1). Queda en pie la parte que era propia de esta ficha y
+   que la regla no resuelve: **tiene el argumento más limpio para 0,00 —su propia
+   justificación dice «no militante»— y a la vez el expediente más sucio en
+   independencia**. Las dos cosas pueden ser ciertas a la vez, y el protocolo
+   debería poder escribirlas juntas: **orientación 0,00 con nota de independencia
+   comprometida**. Eso sigue sin existir como forma de ficha.
 3. **Separar el argumento de factualidad del de orientación**, como en Infobae.
 4. **Seguir el asunto de Ecopetrol** con los hechos correctos: monto, naturaleza de
    la relación comercial, y el interés de quienes lo levantaron. No se encontró

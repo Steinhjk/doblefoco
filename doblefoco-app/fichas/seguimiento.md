@@ -58,8 +58,11 @@ lector por redes y memoria histórica. Ninguno sitúa al medio en el eje.
 Fiscalizar a la alcaldía y a la gobernación es su oficio declarado, y vale lo mismo
 que en Periodismo Público: **oficio no es orientación.**
 
-> **Objeción viva:** «fiscalizar al poder» se resuelve hoy de tres formas distintas
-> en el catálogo. Ver `revision-externa/pendientes.md`.
+> **OBJECIÓN RESUELTA EL 2026-08-18, y a favor de esta ficha.** «Fiscalizar al
+> poder» se resolvía de tres formas distintas en el catálogo. La **regla del polo
+> fijo** (`PROTOCOLO_JUICIO_EDITORIAL.md` §1) fija una sola: fiscalizar no orienta,
+> porque el eje mide la posición respecto de un polo fijo y no la postura frente a
+> quien gobierne.
 
 **Se descartó la analogía regional**, por lo mismo que en EL DIARIO de Boyacá y El
 Nuevo Día.

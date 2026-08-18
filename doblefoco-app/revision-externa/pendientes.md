@@ -26,7 +26,8 @@
 >
 > **Lo que queda en manos de Jose** está en la última sección de ese documento: tres
 > valores que la evidencia mueve (Noticias Uno, El Espectador, La Opinión), la
-> pregunta 2, qué hacer con W Radio, y si CNN aparece en pantalla.
+> qué hacer con W Radio, y si CNN aparece en pantalla. La pregunta 2 ya está
+> decidida: **regla del polo fijo**, en el protocolo desde el 2026-08-18.
 
 Estado al **2026-08-17**. **76 medios en el catálogo, 56 fichas escritas, CERO
 firmadas.** `respuestas/` ya **no** está vacía: tiene el ciclo 1 completo — las

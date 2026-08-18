@@ -81,27 +81,35 @@ mercantil de este año, reporte de un emisor bursátil, composición accionaria
 publicada por la propia empresa—. Si lo encuentras y nosotros no lo citamos, esa
 sí es una objeción que cierra algo.
 
-## La tensión que hoy bloquea el catálogo, por si te sirve
+## Una regla del protocolo que conviene que conozcas antes de objetar
 
-**«Fiscalizar al poder» se resuelve de tres formas incompatibles**, y de eso
-dependen varios números:
+**REGLA DEL POLO FIJO** (decidida el 2026-08-18, tras el ciclo 1 de revisión
+externa). El eje mide la posición del medio respecto de **un polo fijo**, no su
+postura frente a quien gobierne. Izquierda y derecha son posiciones ideológicas,
+no son «a favor» y «en contra» del gobierno de turno: si lo fueran, un medio
+cambiaría de signo cada cuatro años sin haber cambiado de línea.
 
-- A *Chocó 7 Días* se le dejó en **0,00** con el argumento de que denunciar al
-  poder es el oficio y no una orientación.
-- A *Noticias Uno* se le puso **−0,40**, el valor más extremo del catálogo,
-  apoyado exactamente en el argumento contrario: que fiscalizar al establecimiento
-  lo sitúa a la izquierda.
-- A *La Silla Vacía* se le puso **−0,10** por una justificación que describe
-  método, no orientación.
+**Consecuencia, y afecta a lo que puedes aportar: fiscalizar al poder NO es
+evidencia de orientación**, en ninguna dirección. Traernos cinco piezas donde un
+medio critica duramente al gobierno **no** demuestra que sea de derecha ni de
+izquierda: demuestra que hace su oficio. Es un error que el ciclo anterior cometió.
 
-Las tres no pueden tener razón. Y el problema se agranda con la evidencia
-reciente: hay piezas fechadas de medios clasificados a la derecha que critican
-duramente al gobierno saliente — si esas piezas firman un valor de derecha, la
-misma lógica aplicada a los tres de arriba da resultados opuestos con la misma
-evidencia.
+**Lo que sí es evidencia, y es lo más valioso que puedes buscar hoy:** la
+**asimetría a través del cambio de gobierno**. Colombia cambió de gobierno en
+agosto de 2026, así que por primera vez se puede comprobar de verdad:
 
-**El eje, ¿mide la relación con el poder vigente, o con un poder fijo?** Si tu
-objeción toca esto, es especialmente útil.
+- Un medio que fiscalizaba con dureza al gobierno saliente **y sigue haciéndolo con
+  el entrante** está haciendo periodismo. Eso es orientación mixta.
+- Un medio que fiscalizaba y **pasa a celebrar** cuando llega su lado ha revelado
+  una posición. Eso sí se mide.
+
+Si tu objeción trae piezas fechadas de **después de agosto de 2026** que muestren
+esa continuidad o ese giro, es la evidencia más útil que puedes aportar. Casi
+ninguna ficha la tiene todavía.
+
+**Lo que la regla NO toca**, y sigue siendo evidencia de primer orden: un endoso
+editorial —tomar partido no es fiscalizar—, el encuadre asimétrico entre
+candidatos, y la cobertura del propio accionista.
 
 ## Qué pasa con lo que escribas
 

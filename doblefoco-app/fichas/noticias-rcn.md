@@ -68,13 +68,18 @@ que siga en la consejería, y se declara así.
 | 01-01-2026 | «El rifirrafe entre la exdirectora de la URF y el presidente Petro por los fondos de pensiones» | Encuadre informativo |
 | 10-07-2025 | «Crece controversia por trino de Petro que pone en duda la transparencia del sistema electoral» | Encuadre informativo |
 
-> **LA ADVERTENCIA VA CON LAS PIEZAS Y ES PARTE DE LA EVIDENCIA.** Cinco piezas
-> críticas con un gobierno **saliente** no prueban orientación de derecha: prueban
-> fiscalización. Y este proyecto tiene abierta la pregunta de si fiscalizar al
-> poder es orientación —la resuelve de tres formas distintas en Chocó 7 Días,
-> Noticias Uno y La Silla Vacía—. **Si estas piezas firman el +0,25, la misma
-> lógica aplicada a Noticias Uno da el resultado contrario con la misma clase de
-> evidencia.** Solo la primera, de opinión, escapa parcialmente al problema.
+> **LA ADVERTENCIA VA CON LAS PIEZAS Y ES PARTE DE LA EVIDENCIA — y desde el
+> 2026-08-18 ya no es una cautela, es la regla.** Cinco piezas críticas con un
+> gobierno **saliente** no prueban orientación de derecha: prueban fiscalización.
+> La **regla del polo fijo** (§1) lo dice sin rodeos: fiscalizar al poder no es
+> evidencia de orientación en ninguna dirección.
+>
+> Así que **estas cinco piezas no firman el +0,25 por sí solas.** Lo que sí lo
+> firmaría es lo que la regla admite: **asimetría a través del cambio de
+> gobierno**. Si el mismo encuadre crítico se mantiene con el gobierno entrante,
+> esto es fiscalización y no orienta; si se convierte en celebración, hay
+> posición y se mide. Es comprobable desde agosto de 2026 y nadie lo ha
+> comprobado.
 
 ### Nivel 2 — Conducta medida, 2026-08-09 a 2026-08-12
 
@@ -145,10 +150,16 @@ por evidencia. Pero la objeción es legítima y hay que decidirla al firmar.
 
 1. ~~Tres a cinco piezas fechadas~~ **Hechas** (nivel 5). Pero **no cierran la
    ficha por sí solas**: ver el punto 2.
-2. **Decidir la pregunta transversal 2 —«fiscalizar al poder»— ANTES de usar esas
-   piezas para firmar.** Es hoy el bloqueo real de esta ficha: sin esa regla
-   escrita, firmar el +0,25 con cinco piezas críticas de un gobierno saliente es
-   aplicar el criterio que hunde a Chocó 7 Días.
+2. ~~Decidir la pregunta transversal 2~~ **DECIDIDA el 2026-08-18**, y **contra el
+   uso que esta ficha quería darle a las piezas**. La regla del polo fijo (§1) dice
+   que fiscalizar al poder no es evidencia de orientación: las cinco piezas del
+   nivel 5 son crítica al gobierno **saliente**, así que **ya no bastan solas** para
+   firmar el +0,25.
+
+   Lo que la regla sí admite es la **asimetría a través del cambio de gobierno**.
+   La pregunta pasa a ser: ¿trata igual al gobierno entrante? Es comprobable desde
+   agosto de 2026 y está sin comprobar. **Esa es ahora la evidencia que cierra esta
+   ficha**, y es de buscar, no de esperar.
 3. **Un extracto mercantil de 2026** de Carbe S.A.S. o de RCN Televisión S.A. La
    empresa es emisor bursátil: cuesta una consulta, no una investigación.
 4. **Documentar la titularidad de Parklake Investment Inc.** tras la sucesión, o
@@ -182,8 +193,9 @@ Se pide **argumentar en contra**. El acuerdo no se registra como validación.
 
 ## ESTADO
 
-**Sin firmar, y más cerca que antes — pero bloqueada por otra cosa.** Sigue en
-+0,25 con `reviewedAt: null`. Ya no le faltan las piezas: le falta que el proyecto
-decida si fiscalizar al poder es orientación. Y su nivel 1, que se llamaba
-«cerrado», resultó ser el peor documentado del tramo: nombraba dueños muertos y no
-llega a persona natural.
+**Sin firmar, y con las piezas que trajo el ciclo 1 devaluadas por la regla del
+polo fijo.** Sigue en +0,25 con `reviewedAt: null`. El bloqueo dejó de ser una
+pregunta abierta —se decidió el 2026-08-18— y pasó a ser una tarea concreta:
+**medir cómo trata al gobierno entrante**, porque criticar al saliente ya no
+prueba orientación. Y su nivel 1, que se llamaba «cerrado», resultó ser el peor
+documentado del tramo: nombraba dueños muertos y no llega a persona natural.

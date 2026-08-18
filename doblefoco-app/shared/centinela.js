@@ -178,7 +178,7 @@ export const VIGILANCIA = {
             {
                 consulta: 'Cañadas',
                 vigila:
-                    'Que Iván Cañadas Garrido siga siendo propietario y editor. Además su ficha es la que resuelve «fiscalizar al poder» como oficio y no como orientación — una de las cinco preguntas abiertas de la revisión externa.',
+                    'Que Iván Cañadas Garrido siga siendo propietario y editor. Además su ficha fue la que resolvió «fiscalizar al poder» como oficio y no como orientación, y ese criterio pasó al protocolo el 2026-08-18 como regla del polo fijo: era una de las cinco preguntas abiertas de la revisión externa y hoy es la norma del catálogo.',
             },
         ],
     },

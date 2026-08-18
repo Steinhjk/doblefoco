@@ -103,7 +103,7 @@ Las cinco iban en el índice del ciclo, sin respuesta. Hoy:
 | # | Pregunta | Estado tras el ciclo |
 |---|---|---|
 | 1 | **Los tres de Valorem** (0,45 de recorrido) | **Con respuesta candidata, y escrita**: opera a nivel de dirección, no de dueño. Fidel Cano, bisnieto del fundador, dirige El Espectador desde 2004; Juan Roberto Vargas dirige Noticias Caracol por nombramiento del grupo; Néstor Morales dirige Mañanas Blu desde 2012. (El revisor añadía un vínculo familiar de Morales con un expresidente: **no se pudo verificar de forma independiente y no se escribió en la ficha**.) Y el caso duro no era «mismo dueño»: Blu Radio **es** Caracol Televisión S.A., y las dos comisionan juntas la misma encuestadora |
-| 2 | **«Fiscalizar al poder»** en Chocó 7 Días / Noticias Uno / La Silla | **Sigue abierta, y ahora bloquea más que antes.** Con la evidencia nueva, RCN (+0,25) se firmaría con el mismo criterio que hunde a Chocó 7 Días. Es el único punto donde el ciclo empeoró la situación, porque la inconsistencia ya no es teórica |
+| 2 | **«Fiscalizar al poder»** en Chocó 7 Días / Noticias Uno / La Silla | **RESUELTA el 2026-08-18**, y era la única que seguía abierta. Es la **regla del polo fijo** del protocolo: el eje mide la posición respecto de un polo fijo, no la postura frente a quien gobierne, así que fiscalizar no orienta. Las tres fichas convergen en la mixta y las cinco piezas de RCN dejan de bastar solas |
 | 3 | **Los siete regionales, todos a la derecha** | **Respondida, y a favor del criterio**: los siete tienen hoy piezas propias fechadas, con gradación visible — endoso (El Heraldo) > encuadre asimétrico (El País, El Colombiano) > crítica con balance (El Universal, Vanguardia) > neutralidad cívica (La Opinión). El patrón era el hallazgo, no el error. Falta escribirlo como criterio |
 | 4 | **Los internacionales en el eje de su país** | **Parcialmente**: para Infobae la pregunta se agudiza (92 % de agenda propia: ¿qué significa el eje colombiano ahí?). Para CNN hay un requisito nuevo — si se mide «cómo cubre a Colombia», hay que fijar un umbral mínimo de piezas o el número lo deciden tres notas |
 | 5 | **La prensa económica sin ancla** | **Con ancla propuesta**: asimetría de fuentes en noticias de datos, asimetría de verbos en titulares macro idénticos, y cobertura del propio accionista. Las tres son medibles. Y la tercera ya dio resultado: seis piezas favorables sobre Postobón y cero críticas en La República |
@@ -119,7 +119,7 @@ escritas, objeción por objeción, en la tabla de cada ficha y en `respuestas/`.
 |---|---|---|---|
 | 01 | Noticias Caracol | +0,10 | NO FIRMAR reforzado, por vía contraria a la escrita. Nivel 1 cerrable hoy con dos primarios (composición accionaria ene-2020, informe SFC 14-05-2025) |
 | 02 | El Tiempo | +0,05 | Nivel 1 sostenido con una crónica de 2012. Hecho nuevo: **no endosó** en 2026, y eso es evidencia aunque no mueva el número |
-| 03 | Noticias RCN | +0,25 | Cinco piezas encontradas. Más cerca de firmable de lo que creía — **pero bloqueada por la pregunta 2** |
+| 03 | Noticias RCN | +0,25 | Cinco piezas encontradas — **y devaluadas por la regla del polo fijo**: son crítica al gobierno saliente. Lo que ahora cierra la ficha es medir cómo trata al entrante |
 | 04 | Caracol Radio | +0,05 | **La ficha hay que rehacerla**: mide un medio que cambió de estructura el 13-01-2026 |
 | 05 | Semana | +0,45 | Sostenido y reforzado por el hecho que la ficha no vio: Dávila en la junta, cinco semanas antes de escribirla |
 | 06 | Pulzo | 0,00 | Confirmado por construcción. Falta el certificado de INQLAB |
@@ -269,8 +269,9 @@ Y dos correcciones al contexto que se le pega:
   2013–2015 en todas las fichas donde se usa. Se descubrió cinco veces en un mismo
   ciclo; que el próximo revisor no gaste cuatro objeciones en redescubrirlo.
 - **Cambia la tensión que se ofrece como cebo.** La de Valorem ya tiene respuesta
-  candidata escrita. La que hoy bloquea de verdad es la pregunta 2 —«fiscalizar al
-  poder»— y es la que conviene poner delante del próximo revisor.
+  candidata escrita. Y la pregunta 2 —«fiscalizar al poder»— dejó de bloquear el
+  2026-08-18: es hoy la **regla del polo fijo**, y va en el contexto como regla que
+  el revisor debe conocer antes de objetar, no como tensión que deba resolver.
 
 ---
 
@@ -316,16 +317,18 @@ objeciones. Son decisiones de firma, de criterio o de producto.
 
 | Medio | Valor hoy | Qué encontró el ciclo | Decisión pendiente |
 |---|---|---|---|
-| **Noticias Uno** | −0,40 | Propiedad sin documentar y justificación mitad histórica. La conducta vigente apunta a «fiscaliza al poder de turno». Su feed **sí** funciona | Depende de la **pregunta 2**. Si se decide que fiscalizar no es orientación, el valor es 0,00 |
+| **Noticias Uno** | −0,40 | Propiedad sin documentar y justificación mitad histórica. Su feed **sí** funciona | **Desbloqueado el 2026-08-18**: la regla del polo fijo deja su justificación fuera del protocolo. El valor apunta a **0,00** y mover el número es un acto de firma |
 | **El Espectador** | −0,20 | Cuatro hechos editoriales fechados que **no** lo sostienen; apuntan al centro institucional | Mover, o marcar «orientación en revisión». Dejarlo quieto ya no es abstenerse |
 | **La Opinión** | +0,30 | Serie post-venta con línea dura de seguridad **pero neutralidad cívica electoral** | Opción argumentada de bajar a **+0,25**. La única bajada que sugiere el ciclo |
 
 ### Cuatro decisiones de criterio o de producto
 
-1. **La pregunta 2 —«fiscalizar al poder»— sigue abierta y ahora bloquea más que
-   antes.** Con la evidencia nueva, Noticias RCN se firmaría con el mismo criterio
-   que hunde a Chocó 7 Días. Es el único punto donde el ciclo empeoró la situación,
-   porque la inconsistencia dejó de ser teórica.
+1. ~~La pregunta 2 sigue abierta~~ **DECIDIDA el 2026-08-18: regla del polo fijo.**
+   El eje mide la posición respecto de un polo fijo y fiscalizar al poder no es
+   evidencia de orientación. Queda escrita en `PROTOCOLO_JUICIO_EDITORIAL.md` §1 y
+   registrada en `DECISIONES.md`. Lo que sigue pendiente no es la regla sino
+   aplicarla a los valores: Noticias Uno y La Silla apuntan a 0,00, y las cinco
+   piezas de Noticias RCN dejan de bastar solas.
 2. **Qué hace el catálogo con W Radio**, fusionada con Caracol Radio desde el
    13-01-2026. Fusionar las dos entradas, dejarla como marca histórica sin valor, o
    mantener las dos con la nota. **No se tocó** porque «no se silencia a ningún

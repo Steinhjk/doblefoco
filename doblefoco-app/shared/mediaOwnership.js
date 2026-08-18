@@ -104,9 +104,22 @@ export const OWNER_TYPES = {
             'interés, cuando existe, viene de quién financia, no de quién posee.',
     },
     internacional: {
+        /**
+         * PRECISADO EL 2026-08-17. Decía «con sede fuera de Colombia», y eso
+         * describía mal lo que el catálogo lleva haciendo desde el principio:
+         * Caracol Radio y W Radio tienen la redacción en Bogotá y van aquí,
+         * porque las controla Prisa desde España. Lo que marca este cajón es
+         * **dónde está el dueño**, igual que dice OWNER_BADGES.
+         *
+         * La imprecisión no molestaba mientras todos los casos coincidían en las
+         * dos lecturas. El País (Cali) las separó: redacción en Cali, dueño
+         * dominicano desde junio de 2025.
+         */
         label: 'Medio internacional',
         description:
-            'Con sede fuera de Colombia. Cubre el país desde una agenda editorial extranjera.',
+            'Controlado desde fuera de Colombia. La redacción puede estar en el país —Caracol ' +
+            'Radio la tiene en Bogotá— o fuera, y entonces además cubre a Colombia desde una ' +
+            'agenda editorial extranjera.',
     },
 };
 
@@ -1875,7 +1888,19 @@ export const OWNERSHIP_PROFILES = {
          * que mejor justifica la regla nueva: la propiedad se reverifica contra
          * una fuente del año en curso, no contra la crónica de la compra.
          */
-        ownerType: 'conglomerado',
+        /**
+         * `internacional` DESDE EL 2026-08-17, y no es un cambio cosmético: el
+         * distintivo que veía el lector decía «Grupo económico · **nacional**»,
+         * o sea que el dueño es colombiano. Dejó de serlo en junio de 2025.
+         *
+         * La regla del catálogo la fija OWNER_BADGES: «internacional» dice DÓNDE
+         * ESTÁ EL DUEÑO, no dónde está la redacción. El precedente está dentro de
+         * casa — Caracol Radio y W Radio tienen sede en Bogotá y van marcadas
+         * `internacional` porque las controla Prisa desde España.
+         *
+         * Este diario es el mismo caso: redacción en Cali, dueño dominicano.
+         */
+        ownerType: 'internacional',
         controlGroup: 'el-pais-hernandez',
         holdings: [
             'Lo controla, desde junio de 2025, un grupo internacional encabezado por el empresario dominicano Eduardo Hernández Incháustegui, que compró la totalidad de las acciones a GGKB Holdings, del Grupo Gilinski.',

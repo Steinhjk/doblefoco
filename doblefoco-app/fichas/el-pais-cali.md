@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Valor actual** | **+0,30** · `reviewedAt: null` |
-| **Propuesta** | **FIRMABLE.** La premisa que impedía firmarla era falsa: no comparte dueño con Semana desde junio de 2025. Corregido el nivel 1, el +0,30 se sostiene con editoriales fechados |
-| **Firma** | ☐ pendiente — Jose Arbeláez |
+| **Valor actual** | **+0,30** · `reviewedAt: 2026-08-18` — **firmado** |
+| **Propuesta** | **FIRMADA.** La premisa que lo impedía era falsa: no comparte dueño con Semana desde junio de 2025 |
+| **Firma** | ☑ **FIRMADA el 2026-08-18 — Jose Arbeláez** |
 | **Fecha** | 2026-08-12 · **nivel 1 rehecho el 2026-08-17** tras la revisión externa |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Audiencia** | **16.º del tramo prioritario** — estimado por volumen propio, **no medido** |
@@ -153,7 +153,9 @@ firmar una línea de casa.
 
 ## ESTADO
 
-**Sin firmar, pero ya firmable.** Sigue en +0,30 con `reviewedAt: null`. Dejó de ser
+**FIRMADA EL 2026-08-18**, en +0,30. Hizo falta rehacerle el nivel 1 entero: su
+veredicto de «no firmable por separado» colgaba de una propiedad que había dejado
+de existir catorce meses antes. Dejó de ser
 «el segundo caso de dueño compartido del catálogo»: esa condición terminó en junio
 de 2025 y el catálogo tardó catorce meses en enterarse. La firma queda pendiente de
 Jose; la evidencia, escrita.

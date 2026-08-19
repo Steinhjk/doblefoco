@@ -7,7 +7,7 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-17
+Generado: 2026-08-19
 Medios en el catálogo: 76
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
@@ -98,8 +98,12 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
 
   El Espectador  ·  sesgo −0.20  ·  factualidad 88%
     elespectador.com · Grupo Valorem · CO · RSS propio · PROVISIONAL
-    Diario nacional con tradición liberal; énfasis en derechos humanos
-    y proceso de paz.
+    Clasificación en revisión. Su justificación anterior apelaba a la
+    tradición liberal del diario, y la regla del presente no admite el
+    pasado como evidencia. Los editoriales de 2026 muestran un diario
+    crítico del Gobierno por vía institucional y sin respaldo a ningún
+    candidato en la elección; no sostienen el valor actual — ver
+    fichas/el-espectador.md.
 
   El País (España)  ·  sesgo −0.20  ·  factualidad 88%
     elpais.com · Grupo PRISA · ES · RSS propio · PROVISIONAL
@@ -396,8 +400,13 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
     verificación que la prensa tradicional.
 
   La República  ·  sesgo +0.15  ·  factualidad 88%
-    larepublica.co · Editorial La República · CO · RSS propio · PROVISIONAL
-    Diario económico orientado al sector financiero y empresarial.
+    larepublica.co · Editorial La República · CO · RSS propio · revisado 2026-08-18
+    Centro-derecha económica documentada en su editorial del
+    17-12-2025: crítica dura de la gestión de reformas del gobierno
+    saliente con reconocimiento explícito de sus aciertos fiscales.
+    Con un patrón documentado de cobertura exclusivamente favorable de
+    su accionista Postobón —seis piezas entre 2025 y 2026, ninguna
+    crítica— y silencio sobre el impuesto saludable que le afecta.
 
   Financial Times  ·  sesgo +0.15  ·  factualidad 91%
     ft.com · Nikkei · GB · sin feed (solo referencia) · PROVISIONAL
@@ -409,9 +418,12 @@ DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
 ----------------------------------------------------------------------
 
   El Heraldo  ·  sesgo +0.20  ·  factualidad 84%
-    elheraldo.co · Regional Caribe · CO · RSS propio · PROVISIONAL
-    Diario regional del Caribe; agenda local con encuadre
-    institucional.
+    elheraldo.co · Regional Caribe · CO · RSS propio · revisado 2026-08-18
+    Respaldó por editorial firmado la candidatura presidencial de
+    Abelardo De la Espriella (24-05-2026), una semana antes de la
+    primera vuelta, y celebró su triunfo en editoriales del 01-06 y el
+    22-06-2026. Es el único medio del catálogo con un endoso
+    presidencial documentado.
 
   El Universal  ·  sesgo +0.20  ·  factualidad 86%
     eluniversal.com.co · Regional Cartagena · CO · RSS propio · PROVISIONAL
@@ -470,9 +482,12 @@ DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
     migración.
 
   El País (Cali)  ·  sesgo +0.30  ·  factualidad 85%
-    elpais.com.co · Regional Valle · CO · RSS propio · PROVISIONAL
-    Diario del Valle del Cauca; línea editorial conservadora con
-    agenda empresarial regional.
+    elpais.com.co · Regional Valle · CO · RSS propio · revisado 2026-08-18
+    Línea regional-conservadora documentada en editoriales de casa
+    bajo la propiedad actual: encuadre electoral asimétrico a favor de
+    De la Espriella en la víspera de la segunda vuelta (20-06-2026),
+    sin endoso formal, y balance del gobierno saliente que reconoce
+    sus logros sociales antes de listar sus fracasos (01-08-2026).
 
   KienyKe  ·  sesgo +0.30  ·  factualidad 75%
     kienyke.com · Digital · CO · RSS propio · PROVISIONAL
@@ -490,9 +505,11 @@ DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
     gobiernos progresistas.
 
   El Colombiano  ·  sesgo +0.35  ·  factualidad 86%
-    elcolombiano.com · Regional Antioquia · CO · RSS propio · PROVISIONAL
-    Diario antioqueño de tradición conservadora; énfasis en empresa
-    privada y orden institucional.
+    elcolombiano.com · Regional Antioquia · CO · RSS propio · revisado 2026-08-18
+    Línea editorial documentada en editoriales de casa del 05-08-2025,
+    30-12-2025, 13-01-2026 y 07-08-2026: favorable al Centro
+    Democrático y al gobierno entrante, adversa al saliente en lo
+    económico y lo judicial-político.
 
   Semana  ·  sesgo +0.45  ·  factualidad 78%
     semana.com · Grupo Gilinski · CO · RSS propio · PROVISIONAL

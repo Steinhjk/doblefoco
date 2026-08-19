@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Valor actual** | **+0,35** · `reviewedAt: null` |
-| **Propuesta** | **NO FIRMAR todavía.** La justificación es histórica en la palabra que decide |
-| **Firma** | ☐ pendiente — Jose Arbeláez |
+| **Valor actual** | **+0,35** · `reviewedAt: 2026-08-18` — **firmado** |
+| **Propuesta** | **FIRMADA.** Reescrita sin «tradición» y con cuatro editoriales fechados |
+| **Firma** | ☑ **FIRMADA el 2026-08-18 — Jose Arbeláez** |
 | **Fecha** | 2026-08-12 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` §2, regla del presente |
 | **Audiencia** | **15.º del tramo prioritario** — estimado por volumen propio, **no medido** |
@@ -193,7 +193,8 @@ de que no encontró evidencia en contra.
 
 ## ESTADO
 
-**Sin firmar, y firmable tras la reescritura.** Sigue en +0,35 con
-`reviewedAt: null`. Dejó de ser «el que peor sale» de los cuatro con justificación
+**FIRMADA EL 2026-08-18**, tras la reescritura que su propio CONTRA anticipaba:
+era «un problema de redacción antes que de clasificación», y al reescribirla con
+piezas **el número no se movió ni una centésima**. Sigue en +0,35. Dejó de ser «el que peor sale» de los cuatro con justificación
 histórica: su cláusula del presente ya no está huérfana, tiene cuatro editoriales
 fechados detrás y un nivel 1 con el vehículo accionario identificado.

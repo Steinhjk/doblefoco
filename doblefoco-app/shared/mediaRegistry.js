@@ -611,8 +611,30 @@ export const MEDIA_REGISTRY = [
     {
         id: 'la-republica', name: 'La República', shortName: 'La República',
         domain: 'larepublica.co', country: 'CO', group: 'Editorial La República',
-        bias: 0.15, factuality: 0.88, reviewedAt: null,
-        biasRationale: 'Diario económico orientado al sector financiero y empresarial.',
+        bias: 0.15, factuality: 0.88,
+        /**
+         * FIRMADO EL 2026-08-18 por Jose Arbeláez. La justificación anterior
+         * describía el PÚBLICO del diario —«orientado al sector financiero y
+         * empresarial»— y no decía nada de su línea: valía igual para un medio
+         * en +0,40 que para uno en −0,40.
+         *
+         * LA REGLA DEL POLO FIJO NO LO TOCA, y es el caso más limpio de todos:
+         * lo que sostiene el valor no es crítica a ningún gobierno sino el
+         * patrón de cobertura de su propio accionista —seis piezas favorables y
+         * cero críticas sobre Postobón, con silencio sobre el impuesto que le
+         * afecta—. La regla acota la fiscalización al poder; esto es otra cosa.
+         */
+        reviewedAt: '2026-08-18',
+        biasSources: [
+            'https://www.larepublica.co/opinion/editorial/un-gobierno-en-crisis-de-sus-reformas-4291233',
+            'https://www.larepublica.co/postobon',
+        ],
+        biasRationale:
+            'Centro-derecha económica documentada en su editorial del 17-12-2025: crítica dura de la '
+            + 'gestión de reformas del gobierno saliente con reconocimiento explícito de sus aciertos '
+            + 'fiscales. Con un patrón documentado de cobertura exclusivamente favorable de su '
+            + 'accionista Postobón —seis piezas entre 2025 y 2026, ninguna crítica— y silencio sobre '
+            + 'el impuesto saludable que le afecta.',
         feed: { url: 'https://www.larepublica.co/rss', via: 'direct', category: 'Economía' },
         // Sirve sus fotos desde img.lalr.co (LR = La República). Apareció al
         // medir og:image: su RSS no trae imagen, su página sí.
@@ -623,8 +645,31 @@ export const MEDIA_REGISTRY = [
     {
         id: 'el-heraldo', name: 'El Heraldo', shortName: 'El Heraldo',
         domain: 'elheraldo.co', departamento: 'Atlántico', country: 'CO', group: 'Regional Caribe',
-        bias: 0.20, factuality: 0.84, reviewedAt: null,
-        biasRationale: 'Diario regional del Caribe; agenda local con encuadre institucional.',
+        bias: 0.20, factuality: 0.84,
+        /**
+         * FIRMADO EL 2026-08-18 por Jose Arbeláez. Es la primera firma del
+         * catálogo, y le tocó por ser el caso con la evidencia más nítida: un
+         * endoso editorial presidencial firmado por la casa.
+         *
+         * «Encuadre institucional» era la caracterización más repetida del
+         * catálogo y la menos informativa —aparecía en tres fichas con tres
+         * números distintos—. La sustituye lo que el ciclo 1 encontró y esta
+         * casa hizo por escrito.
+         *
+         * LA REGLA DEL POLO FIJO NO LO TOCA, y por eso se puede firmar: un
+         * endoso no es fiscalizar al poder, es tomar partido entre candidatos.
+         */
+        reviewedAt: '2026-08-18',
+        biasSources: [
+            'https://www.elheraldo.co/editoriales/2026/05/24/abelardo-de-la-espriella-el-candidato-del-caribe-es-la-mejor-opcion-a-la-presidencia-de-colombia/',
+            'https://www.elheraldo.co/editoriales/2026/06/22/abelardo-de-la-espriella-el-presidente-caribe/',
+            'https://www.lasillavacia.com/en-vivo/el-heraldo-dijo-en-editorial-que-apoya-a-abelardo-de-la-espriella/',
+        ],
+        biasRationale:
+            'Respaldó por editorial firmado la candidatura presidencial de Abelardo De la Espriella '
+            + '(24-05-2026), una semana antes de la primera vuelta, y celebró su triunfo en editoriales '
+            + 'del 01-06 y el 22-06-2026. Es el único medio del catálogo con un endoso presidencial '
+            + 'documentado.',
         feed: { url: 'https://www.elheraldo.co/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
     },
     {
@@ -709,8 +754,29 @@ export const MEDIA_REGISTRY = [
     {
         id: 'el-pais-cali', name: 'El País (Cali)', shortName: 'El País Cali',
         domain: 'elpais.com.co', departamento: 'Valle del Cauca', country: 'CO', group: 'Regional Valle',
-        bias: 0.30, factuality: 0.85, reviewedAt: null,
-        biasRationale: 'Diario del Valle del Cauca; línea editorial conservadora con agenda empresarial regional.',
+        bias: 0.30, factuality: 0.85,
+        /**
+         * FIRMADO EL 2026-08-18 por Jose Arbeláez, después de rehacerle el nivel
+         * 1 entero: su ficha era «no firmable por separado» porque se creía que
+         * compartía dueño con Semana, y eso dejó de ser cierto en junio de 2025.
+         *
+         * LA PIEZA QUE LO SOSTIENE BAJO LA REGLA DEL POLO FIJO es la del
+         * 20-06-2026: encuadre asimétrico entre los dos candidatos en la víspera
+         * de la segunda vuelta. Tomar partido entre candidatos no es fiscalizar
+         * al poder. Las otras tres —crítica al gobierno saliente— quedan
+         * devaluadas por la regla y se citan como contexto, no como prueba.
+         */
+        reviewedAt: '2026-08-18',
+        biasSources: [
+            'https://www.elpais.com.co/opinion/editorial/colombia-elige-su-futuro-2030.html',
+            'https://www.elpais.com.co/opinion/editorial/el-cambio-que-no-llego-0140.html',
+            'https://www.elpais.com.co/opinion/editorial/petro-le-fallo-al-valle-0929.html',
+        ],
+        biasRationale:
+            'Línea regional-conservadora documentada en editoriales de casa bajo la propiedad '
+            + 'actual: encuadre electoral asimétrico a favor de De la Espriella en la víspera de la '
+            + 'segunda vuelta (20-06-2026), sin endoso formal, y balance del gobierno saliente que '
+            + 'reconoce sus logros sociales antes de listar sus fracasos (01-08-2026).',
         feed: { url: 'https://www.elpais.com.co/arc/outboundfeeds/rss/', via: 'direct', category: 'Política' },
         // Sirve sus fotos desde la CDN de Arc Publishing, su gestor de contenidos.
         imageHosts: ['semana-el-pais-prod.web.arc-cdn.net'],
@@ -732,7 +798,7 @@ export const MEDIA_REGISTRY = [
     {
         id: 'el-colombiano', name: 'El Colombiano', shortName: 'El Colombiano',
         domain: 'elcolombiano.com', departamento: 'Antioquia', country: 'CO', group: 'Regional Antioquia',
-        bias: 0.35, factuality: 0.86, reviewedAt: null,
+        bias: 0.35, factuality: 0.86,
         /**
          * REESCRITA EL 2026-08-18. Decía «de tradición conservadora», y su ficha
          * ya había señalado que esa era «la parte que decide, y es histórica» —
@@ -743,6 +809,24 @@ export const MEDIA_REGISTRY = [
          * número no se movió al reescribirla. Es el texto que la propia ficha
          * dejó sugerido.
          */
+        /**
+         * FIRMADO EL 2026-08-18 por Jose Arbeláez, con las cuatro piezas que el
+         * ciclo 1 trajo y que su ficha ya proponía como texto.
+         *
+         * LA REGLA DEL POLO FIJO LO SOBREVIVE, y hay que decir por qué: de las
+         * cuatro, la del 05-08-2025 toma posición sobre un partido y la del
+         * 07-08-2026 sobre un gobierno entrante — eso es posición, no
+         * fiscalización. La del salario mínimo es posición económica. Solo la de
+         * Miguel Uribe es crítica al gobierno saliente, y no sostiene sola el
+         * valor ni hace falta que lo haga.
+         */
+        reviewedAt: '2026-08-18',
+        biasSources: [
+            'https://www.elcolombiano.com/opinion/editoriales/a-siete-meses-de-elecciones-al-congreso-PJ28472728',
+            'https://www.elcolombiano.com/opinion/editoriales/lios-maximos-por-alza-del-minimo-DB32446041',
+            'https://www.elcolombiano.com/opinion/editoriales/la-llegada-del-nuevo-presidente-MN39703492',
+            'https://voragine.co/historias/investigacion/la-chequera-uribista-que-ha-impulsado-el-proyecto-politico-de-oviedo/',
+        ],
         biasRationale:
             'Línea editorial documentada en editoriales de casa del 05-08-2025, 30-12-2025, '
             + '13-01-2026 y 07-08-2026: favorable al Centro Democrático y al gobierno entrante, '

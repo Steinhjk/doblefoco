@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Valor actual** | **+0,15** · `reviewedAt: null` |
-| **Propuesta** | **NO FIRMAR todavía.** La justificación describe el temario, no la línea |
-| **Firma** | ☐ pendiente — Jose Arbeláez |
+| **Valor actual** | **+0,15** · `reviewedAt: 2026-08-18` — **firmado** |
+| **Propuesta** | **FIRMADA.** El patrón Postobón dejó de ser hipótesis y pasó a ser tabla con fechas |
+| **Firma** | ☑ **FIRMADA el 2026-08-18 — Jose Arbeláez** |
 | **Fecha** | 2026-08-12 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Audiencia** | **17.º del tramo prioritario** — estimado por volumen propio, **no medido** |
@@ -184,8 +184,10 @@ Se pide **argumentar en contra**. El acuerdo no se registra como validación.
 
 ## ESTADO
 
-**Sin firmar, y con el mejor material del ciclo.** Sigue en +0,15 con
-`reviewedAt: null`. Su conflicto de interés dejó de ser «la definición del problema»
+**FIRMADA EL 2026-08-18**, en +0,15. Es la firma que menos depende de la
+coyuntura política: lo que la sostiene no es crítica a ningún gobierno —que la
+regla del polo fijo descartaría— sino **el patrón de cobertura de su propio
+accionista**, que ninguna regla de eje toca. Su conflicto de interés dejó de ser «la definición del problema»
 —una formulación elegante que nadie había comprobado— y pasó a ser un **patrón
 documentado con seis fechas**. El valor no se mueve: si el ancla de medición
 económica se implementa y arroja asimetría sistemática de fuentes, el debate sería

@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Valor actual** | **+0,20** · `reviewedAt: null` |
-| **Propuesta** | **NO FIRMAR todavía.** Propiedad ejemplarmente documentada; orientación sin evidencia |
-| **Firma** | ☐ pendiente — Jose Arbeláez |
+| **Valor actual** | **+0,20** · `reviewedAt: 2026-08-18` — **firmado** |
+| **Propuesta** | **FIRMADA.** El endoso editorial del 24-05-2026 sostiene el +0,20 sin esfuerzo |
+| **Firma** | ☑ **FIRMADA el 2026-08-18 — Jose Arbeláez** |
 | **Fecha** | 2026-08-12 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Audiencia** | **14.º del tramo prioritario** — por volumen propio, **no medido** por el Reuters Institute |
@@ -183,7 +183,11 @@ cero — **y exige explicación escrita si el valor no se mueve**. Va al protoco
 
 ## ESTADO
 
-**Sin firmar, y con el piso ya defendible.** Sigue en +0,20 con `reviewedAt: null`.
+**FIRMADA EL 2026-08-18.** Es **la primera firma del catálogo**, y le tocó por
+tener la evidencia más nítida de las setenta y seis: un endoso editorial
+presidencial firmado por la casa, verificado enlace por enlace.
+
+El +0,20 queda como **piso**, no como techo.
 Dejó de tener «una de las justificaciones de sesgo más vacías»: tiene el hecho
 editorial más nítido de todo el tramo. Lo que le queda abierto no es si +0,20 se
 sostiene —se sostiene sin esfuerzo— sino si el techo es más alto.

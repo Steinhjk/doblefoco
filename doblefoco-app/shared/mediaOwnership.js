@@ -3295,19 +3295,41 @@ export const OWNERSHIP_PROFILES = {
     'el-pais-es': {
         ownerType: 'internacional',
         controlGroup: 'prisa',
+        /**
+         * TRES CORRECCIONES AL DAR DE ALTA SU FICHA (2026-08-18), y las tres son
+         * del mismo tipo que el ciclo 1 encontró quince veces en el tramo:
+         *
+         * 1. Decía que Oughourlian mantiene su participación «desde hace más de
+         *    quince años». Amber ha ido CONSTRUYENDO la posición y sigue
+         *    comprando —ronda hoy el 29,8 %, a las puertas del umbral de OPA—.
+         *    Lo verificable es que preside desde febrero de 2021.
+         * 2. Decía «Caracol Radio y W Radio… tres medios, un dueño». W Radio se
+         *    fusionó con Caracol Radio el 13-01-2026: son dos.
+         * 3. Decía que El País de Cali «es del Grupo Gilinski». Dejó de serlo en
+         *    junio de 2025. **Era el último sitio del repositorio donde
+         *    sobrevivía ese dato**, después de corregirlo en las tres fichas del
+         *    tramo que lo repetían.
+         */
         holdings: [
-            'Lo edita el Grupo Prisa. Su primer accionista es Amber Capital, el vehículo de Joseph Oughourlian, que preside el grupo y mantiene una participación cercana al 30 % desde hace más de quince años.',
-            'Detrás vienen la familia Polanco a través de Rucandio (7,6 %), Global Alconaba (7,1 %) y la empresa familiar de Carlos Slim, Control Empresarial de Capitales (7,0 %).',
-            'El mismo grupo controla Caracol Radio y W Radio en Colombia, que aparecen igualmente en este catálogo: tres medios, un dueño. Fuera de la prensa, Prisa es dueña de la editorial educativa Santillana.',
-            'NO tiene ninguna relación con El País de Cali, que es del Grupo Gilinski y aparece también en este catálogo. Mismo nombre, dueños distintos.',
+            'Lo edita el Grupo Prisa, sociedad cotizada española. Su primer accionista es Amber Capital, el vehículo de Joseph Oughourlian, que preside el grupo desde febrero de 2021 y ronda el 29,8 % del capital: a las puertas del 30 %, el umbral que obligaría a lanzar una OPA por el 100 %.',
+            'Detrás vienen Vivendi (11,8 %), del grupo Bolloré; la familia Polanco a través de Rucandio (7,6 %); Global Alconaba (7,1 %); y la empresa familiar de Carlos Slim, Control Empresarial de Capitales (7,0 %).',
+            'El mismo grupo controla Caracol Radio en Colombia, que aparece igualmente en este catálogo. Fuera de la prensa, Prisa es dueña de la editorial educativa Santillana.',
+            'Mantiene una edición Colombia con redacción propia en Bogotá, cuyo feed entra a este catálogo como contenido colombiano y no internacional.',
+            'NO tiene ninguna relación con El País de Cali, que desde junio de 2025 pertenece a un grupo encabezado por el empresario dominicano Eduardo Hernández Incháustegui y aparece también en este catálogo. Mismo nombre, dueños distintos.',
         ],
-        notes: [],
+        notes: [
+            'HECHO DE GOBERNANZA VIGENTE: hay un pulso abierto en el accionariado. Accionistas próximos al Gobierno español han buscado aumentar su posición para contrarrestar a Oughourlian, y en 2025 llegaron a demandarlo. No se usa como argumento de orientación —la regla 5.1 lo prohíbe—, se declara porque la línea de este diario es materia de disputa societaria abierta.',
+            'Sigue en pie la contingencia anunciada en febrero de 2025: Prisa estudia escindir su negocio de medios latinoamericanos en una filial independiente, sin descartar su venta. Afectaría a la vez a este medio y a Caracol Radio.',
+        ],
         sources: [
-            'https://es.wikipedia.org/wiki/Grupo_PRISA',
             'https://prisa.labolsavirtual.com/accionistas-prisa.html',
+            'https://www.reddeperiodistas.com/asi-queda-el-accionariado-del-grupo-prisa-no-solo-joseph-oughourlian/',
+            'https://www.bolsamania.com/noticias/insiders/amber-capital-compra-300000-acciones-prisa-alcanza-2984-capital--7231734.html',
+            'https://theobjective.com/medios/2025-01-29/accionistas-moncloa-prisa-arrinconar-oughourlian/',
+            'https://es.wikipedia.org/wiki/Grupo_PRISA',
             'https://cronicaglobal.elespanol.com/business/20260324/dueno-pais-establece-barcelona-sede-fondo-espana/1003742744702_0.html',
         ],
-        verifiedAt: VERIFICADO,
+        verifiedAt: VERIFICADO_CICLO1,
     },
 
     'efe': {

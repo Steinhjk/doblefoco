@@ -154,23 +154,22 @@ const CompactHeroGrid = () => {
 
                     <div className="spotlight-body">
                         <div className="spotlight-meta">
-                            {!tieneImagen(main) && main.category && (
-                                <span className="spotlight-category-inline">{seccionDe(main)}</span>
-                            )}
-                            <span className="meta-time">{storyTimeLabel(main)}</span>
-                            <span className="meta-sources-count">
-                                <Layers size={12} aria-hidden="true" /> {medios} medios
-                            </span>
-                            {/*
-                              * De cuántas piezas distintas hace falta para contar
-                              * el hecho. Es el dato que distingue un desastre
-                              * nacional de un nombramiento, no un adorno.
-                              */}
-                            {suceso && suceso.angulos > 1 && (
-                                <span className="meta-angulos">
-                                    {suceso.articulos} artículos · {suceso.angulos} ángulos
+                            <div className="spotlight-meta-left">
+                                {!tieneImagen(main) && main.category && (
+                                    <span className="spotlight-category-inline">{seccionDe(main)}</span>
+                                )}
+                                <span className="meta-time">{storyTimeLabel(main)}</span>
+                            </div>
+                            <div className="spotlight-meta-right">
+                                <span className="meta-sources-count">
+                                    <Layers size={13} aria-hidden="true" /> {medios} medios
                                 </span>
-                            )}
+                                {suceso && suceso.angulos > 1 && (
+                                    <span className="meta-angulos-badge">
+                                        {suceso.angulos} ángulos
+                                    </span>
+                                )}
+                            </div>
                         </div>
 
                         <h3 className="spotlight-title">

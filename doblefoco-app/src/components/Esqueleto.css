@@ -59,8 +59,14 @@
 .esqueleto-imagen,
 .esqueleto-linea,
 .esqueleto-barra {
-    background: var(--bg-subtle);
-    animation: esqueleto-pulso 1.6s ease-in-out infinite;
+    background: linear-gradient(
+        90deg,
+        var(--shimmer-base) 0%,
+        var(--shimmer-highlight) 50%,
+        var(--shimmer-base) 100%
+    );
+    background-size: 200% 100%;
+    animation: esqueleto-shimmer 2s ease-in-out infinite;
 }
 
 .esqueleto-imagen { width: 100%; height: 100%; min-height: 160px; }
@@ -89,9 +95,13 @@
     margin-top: auto;
 }
 
-@keyframes esqueleto-pulso {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.45; }
+@keyframes esqueleto-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -99,6 +109,7 @@
     .esqueleto-linea,
     .esqueleto-barra {
         animation: none;
+        background: var(--shimmer-base);
     }
 }
 

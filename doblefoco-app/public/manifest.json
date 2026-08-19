@@ -1,0 +1,17 @@
+{
+  "short_name": "DobleFoco",
+  "name": "DobleFoco.co - Perspectivas Múltiples para Colombia",
+  "description": "Explora todas las perspectivas del periodismo colombiano. Análisis instantáneo de polarización de fuentes nacionales.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,3 +1,20 @@
+/*
+ * LOS COMENTARIOS DE ESTE ARCHIVO NO SON DECORACIÓN (restaurados el 2026-08-18).
+ *
+ * Una reescritura del sistema de diseño los sustituyó por etiquetas genéricas:
+ * «Degradado del sufijo .co de la marca» en lugar del párrafo que explicaba por
+ * qué son tres paradas explícitas y no un color-mix(). Los valores sobrevivieron
+ * intactos; lo que se perdió fue la memoria de qué bug arregló cada uno.
+ *
+ * Eso importa porque un token sin su porqué es una invitación a «simplificarlo»:
+ * quien lea «degradado de la marca» y lo cambie a color-mix() reintroduce, sin
+ * enterarse, el fallo de que el «.co» se vuelva invisible en los navegadores que
+ * no entienden la función.
+ *
+ * Regla, entonces: al tocar este archivo se pueden cambiar los valores —con su
+ * motivo— pero no se borra el porqué. Si un comentario ya no describe la
+ * realidad, se corrige; no se acorta.
+ */
 :root {
   /* Paleta Sobria Neutral de Alta Fidelidad (Gris Pizarra Mate & Blanco Puro) */
   --primary: #ffffff;
@@ -30,23 +47,33 @@
   --bias-objective: #cbd5e1;
   --bias-right: #3b82f6;
 
-  /* Fondos tenues del espectro para pastillas y realces de texto */
+  /* Fondos tenues del espectro, para pastillas y realces de texto.
+     Existen como token porque estaban escritos a mano en cada sitio, y así fue
+     como la cronología acabó pintando la derecha de ámbar mientras la tarjeta
+     de al lado la pintaba de azul. */
   --bias-left-soft: rgba(239, 68, 68, 0.16);
   --bias-objective-soft: rgba(203, 213, 225, 0.14);
   --bias-right-soft: rgba(59, 130, 246, 0.16);
 
-  /* Aviso / énfasis (lenguaje sensacionalista) */
+  /* Aviso / énfasis. NO es un color del espectro: marca lenguaje
+     sensacionalista, que puede venir de cualquier lado. */
   --warn: #f59e0b;
   --warn-soft: rgba(245, 158, 11, 0.18);
 
-  /* Texto sobre --accent */
+  /* Texto que va ENCIMA de --accent. Estaba escrito como `#000` en seis sitios,
+     y en tema claro --accent es casi negro: negro sobre negro. */
   --on-accent: #18191c;
 
-  /* Campos de formulario */
+  /* Campos de formulario. El fondo estaba fijo en rgba(0,0,0,.2), que en tema
+     claro deja una caja gris sucia dentro de una barra clara. */
   --input-bg: rgba(0, 0, 0, 0.25);
   --input-bg-focus: rgba(0, 0, 0, 0.45);
 
-  /* Degradado del sufijo «.co» de la marca */
+  /* Degradado del sufijo «.co» de la marca. Tres paradas explícitas y no un
+     color-mix() a mitad de camino: el texto va con background-clip y color
+     transparente, así que si el navegador no entiende la función descarta el
+     degradado entero y el «.co» se vuelve invisible. Un token de más sale más
+     barato que esa forma de fallar. */
   --brand-suffix-from: #ffffff;
   --brand-suffix-mid: #cbd5e1;
   --brand-suffix-to: #94a3b8;

@@ -56,6 +56,51 @@
 
 .map-warning svg { flex-shrink: 0; margin-top: 0.15rem; }
 
+/* ── «Cómo se lee este mapa» ───────────────────────────────────────────────
+ *
+ * Recoge las notas que explican el MÉTODO —qué mide una columna, qué significa
+ * un símbolo—, que antes iban desplegadas y sumaban nueve recuadros seguidos
+ * entre la cabecera y el gráfico.
+ *
+ * Los avisos que dicen que algo FALTA no viven aquí: siguen visibles arriba.
+ * La diferencia no es de importancia sino de momento — el hueco hay que verlo
+ * sin buscarlo; el método se busca cuando surge la duda.
+ */
+
+.map-como-se-lee {
+    margin-top: 1rem;
+    max-width: 68ch;
+    border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.25));
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+}
+
+.map-como-se-lee > summary {
+    cursor: pointer;
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    /* Sin `list-style: none`: el triangulito nativo es la única señal de que
+     * esto se abre, y quitarlo por estética dejaría el contenido enterrado de
+     * verdad, que es justo lo que este cambio evita. */
+}
+
+.map-como-se-lee > summary:hover {
+    color: var(--map-center);
+}
+
+.map-como-se-lee > p {
+    margin: 0;
+    padding: 0 1rem 0.9rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+.map-como-se-lee > p:first-of-type {
+    padding-top: 0.2rem;
+    border-top: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.18));
+}
+
 /* ── Controles ─────────────────────────────────────────────────────────── */
 
 .map-controls {

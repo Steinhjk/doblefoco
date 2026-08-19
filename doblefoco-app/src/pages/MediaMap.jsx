@@ -326,6 +326,16 @@ const MediaMap = () => {
     /** Los que se están viendo y no tienen audiencia medida por nadie. */
     const sinMedicion = useMemo(() => sinAudienciaMedida(media), [media]);
 
+    /**
+     * Cuántas de las que se ven llevan firma.
+     *
+     * Se cuenta en vivo y no se escribe en la frase: el aviso de la cabecera
+     * decía «ninguna ha pasado por revisión formal» y dejó de ser cierto el
+     * 2026-08-18 sin que nada lo delatara. Un dato viejo dentro de una promesa
+     * de verificabilidad es el peor sitio donde puede envejecer un número.
+     */
+    const firmadas = useMemo(() => media.filter((m) => m.reviewedAt).length, [media]);
+
     /** Encender o apagar un alcance. Nunca se pueden apagar los tres. */
     const alternarAlcance = (clave) => {
         setAlcances((previos) => {
@@ -354,11 +364,31 @@ const MediaMap = () => {
                     Ninguna de las dos evalúa la noticia que usted esté leyendo: describen a la
                     organización que la publica.
                 </p>
+                {/*
+                  * ESTE AVISO DECÍA «NINGUNA HA PASADO POR REVISIÓN FORMAL» Y
+                  * DEJÓ DE SER CIERTO EL 2026-08-18, cuando se firmaron las
+                  * cinco primeras. Se pasa a contarlas en vivo por el mismo
+                  * motivo por el que el aviso de la portada calcula sus cifras:
+                  * un número escrito a mano en una frase sobre verificabilidad
+                  * es el peor sitio del sitio para tener un dato viejo.
+                  */}
                 <p className="map-warning">
                     <Info size={15} aria-hidden="true" />
                     <span>
-                        Las {media.length} clasificaciones que se ven son juicios editoriales
-                        argumentados y <strong>ninguna ha pasado por revisión formal todavía</strong>.
+                        {firmadas === 0 ? (
+                            <>
+                                Las {media.length} clasificaciones que se ven son juicios
+                                editoriales argumentados y <strong>ninguna está firmada
+                                todavía</strong>.
+                            </>
+                        ) : (
+                            <>
+                                De las {media.length} clasificaciones que se ven,{' '}
+                                <strong>{firmadas} están firmadas</strong> —con las fuentes
+                                que las sostienen— y el resto son juicios argumentados
+                                todavía sin firmar.
+                            </>
+                        )}{' '}
                         Cada una lleva su justificación al lado, para que se pueda discutir.
                     </span>
                 </p>
@@ -404,97 +434,36 @@ const MediaMap = () => {
             </div>
 
             {/*
-              * Se dice en voz alta lo que falta cuando falta, y no solo en el
-              * texto de ayuda de una casilla. Un mapa que oculta a un tercio del
-              * catálogo sin avisar es un mapa que miente por omisión.
+              * POR QUÉ ESTO NO ES UNA PILA DE NUEVE AVISOS (2026-08-18).
+              *
+              * Lo era. Entre la cabecera y el gráfico había nueve recuadros
+              * seguidos, y el efecto es el contrario del buscado: un lector que
+              * se encuentra nueve advertencias no lee ninguna, y las que de
+              * verdad importan —las que dicen que algo falta— quedan enterradas
+              * entre las que explican cómo funciona una columna.
+              *
+              * EL CRITERIO QUE LOS SEPARA, y conviene respetarlo al añadir uno
+              * nuevo:
+              *
+              *   · Un aviso que informa de UN HUECO O DE UN ESTADO —algo falta,
+              *     algo no cuadra, esta cifra no existe— se queda VISIBLE. Es el
+              *     que el lector necesita justo cuando cuenta los puntos y no le
+              *     salen las cuentas.
+              *   · Un aviso que EXPLICA EL MÉTODO —qué mide una columna, qué
+              *     significa un símbolo— se pliega en «Cómo se lee este mapa».
+              *
+              * NO SE BORRA NADA. Plegar no es esconder: el texto sigue entero, a
+              * un clic, y en el sitio donde uno lo busca, que es cuando le surge
+              * la duda y no antes. Borrarlo sí habría sido esconderlo.
               */}
             {!alcances.includes('regional') && (
                 <p className="map-nota-alcance">
                     <Info size={15} aria-hidden="true" />
                     <span>
-                        Faltan aquí <strong>{CUANTOS_POR_ALCANCE.regional ?? 0} medios regionales</strong>,
-                        y no porque cuenten menos: esta página mide la concentración de la
-                        propiedad en el espacio nacional, y un diario de provincia no compite
-                        en ese espacio. Sus fichas están completas y se ven marcando
-                        «Regionales».
-                    </span>
-                </p>
-            )}
-
-            {/*
-              * EL HUECO SE CUENTA EN VOZ ALTA, no medio por medio.
-              *
-              * Un lector que abre siete fichas y encuentra «no consta» en dos no
-              * sabe si dio con la excepción o con la norma. La cifra agregada lo
-              * responde de una vez, y de paso pone el pedido de documentos donde
-              * se ve —que es lo que puede convertir a un lector de provincia en
-              * la fuente que a nosotros nos falta—.
-              */}
-            {/*
-              * DÓNDE SE ACABA LA MEDICIÓN DE AUDIENCIA.
-              *
-              * La tabla dice «sin medir» en la mayoría de las filas, y sin esta
-              * nota eso se lee como una tarea pendiente nuestra. No lo es: en
-              * Colombia no hay medición pública de audiencia por debajo de la
-              * quincena de marcas que encuesta el Reuters Institute, y la que
-              * usa el sector es de pago y no republicable.
-              *
-              * El dato que lo explica mejor está en la propia encuesta: TODA la
-              * prensa regional junta cabe en una sola fila agregada.
-              */}
-            {/*
-              * LAS VEINTE FICHAS, Y POR QUÉ SIETE VALEN MENOS QUE TRECE.
-              *
-              * Esta nota existe porque la marca numerada de la tabla, sola,
-              * mentiría por omisión: un «14» al lado de El Heraldo y un «2» al
-              * lado de El Tiempo parecen la misma clase de dato y no lo son.
-              * Uno sale de preguntarle a la gente qué lee; el otro, de contar
-              * cuánto publica un RSS.
-              */}
-            <p className="map-nota-prioridad">
-                <Info size={15} aria-hidden="true" />
-                <span>
-                    Los números al lado de {TAMANO_TRAMO} medios marcan las{' '}
-                    <strong>fichas de propiedad prioritarias</strong>: las que más
-                    gente lee, y por tanto donde un error nuestro haría más daño.
-                    Se ordenan con <strong>dos grados de certeza distintos</strong>,
-                    y la diferencia importa:{' '}
-                    <span className="prioridad-marca prioridad-medida">1</span>{' '}
-                    los <strong>trece con audiencia medida</strong> por la encuesta
-                    del Reuters Institute, en personas;{' '}
-                    <span className="prioridad-marca prioridad-estimada">14</span>{' '}
-                    los <strong>siete añadidos por volumen</strong> —piezas que
-                    ingerimos, contadas por nosotros el{' '}
-                    {AMPLIACION_POR_VOLUMEN.medidoEl}—, que{' '}
-                    <strong>no es audiencia</strong>. Son diarios grandes que casi
-                    seguro tienen muchos lectores, pero nadie lo ha medido en
-                    público y nosotros tampoco. Ningún estimado adelanta a un
-                    medido: mezclarlos exigiría convertir piezas en lectores, y eso
-                    no se puede hacer.
-                </span>
-            </p>
-
-            {sinMedicion.length > 0 && (
-                <p className="map-nota-audiencia">
-                    <Info size={15} aria-hidden="true" />
-                    <span>
-                        El <strong>alcance semanal</strong> es el porcentaje de
-                        colombianos que dice haber usado cada marca en la última
-                        semana, según el{' '}
-                        <a href={FUENTE_AUDIENCIA.url} target="_blank" rel="noopener noreferrer">
-                            {FUENTE_AUDIENCIA.nombre}
-                        </a>. Mide <strong>personas, no visitas</strong>, e incluye
-                        televisión y radio.{' '}
-                        <strong>
-                            {sinMedicion.length} de los {media.length} medios que se ven
-                            aparecen como «sin medir»
-                        </strong>
-                        , y no es un pendiente nuestro: la encuesta llega a dieciséis
-                        marcas y por debajo de ahí no existe medición pública de
-                        audiencia en Colombia. La prensa regional entera cabe en una
-                        sola fila agregada de esa encuesta, así que ni El Colombiano ni
-                        El Heraldo ni El País de Cali tienen cifra propia pese a estar
-                        entre los que más publican.
+                        Faltan aquí <strong>{CUANTOS_POR_ALCANCE.regional ?? 0} medios
+                        regionales</strong>: esta vista mide la concentración de la propiedad
+                        en el espacio nacional, y un diario de provincia no compite ahí. Sus
+                        fichas están completas y se ven marcando «Regionales».
                     </span>
                 </p>
             )}
@@ -503,16 +472,14 @@ const MediaMap = () => {
                 <p className="map-nota-ausencia">
                     <FileSearch size={15} aria-hidden="true" />
                     <span>
-                        De los {media.length} medios que se están viendo,{' '}
                         <strong>
                             {sinPropiedad.length === 1
-                                ? 'de uno no sabemos quién lo controla'
-                                : `de ${sinPropiedad.length} no sabemos quién los controla`}
+                                ? 'De uno de estos medios no sabemos quién lo controla'
+                                : `De ${sinPropiedad.length} de estos medios no sabemos quién los controla`}
                         </strong>{' '}
-                        ({sinPropiedad.map((m) => m.name).join(', ')}). Su ficha dice
-                        en qué fecha se buscó y en qué registros, en vez de rellenar
-                        el hueco con una suposición. Si tiene documentos sobre la
-                        propiedad de alguno, escríbanos a{' '}
+                        ({sinPropiedad.map((m) => m.name).join(', ')}). Su ficha dice en qué
+                        fecha se buscó y en qué registros, en vez de rellenar el hueco con una
+                        suposición. Si tiene documentos, escríbanos a{' '}
                         <a href={`${CONTACT_MAILTO}?subject=${encodeURIComponent('Propiedad de un medio del catálogo')}`}>
                             {CONTACT_EMAIL}
                         </a>.
@@ -520,43 +487,87 @@ const MediaMap = () => {
                 </p>
             )}
 
-            <p className="map-warning">
-                <Info size={15} aria-hidden="true" />
-                <span>
-                    La columna <strong>«Responde a»</strong> dice a quién debe cuentas
-                    cada redacción, y lo que manda es la naturaleza del interés:{' '}
+            <details className="map-como-se-lee">
+                <summary>Cómo se lee este mapa</summary>
+
+                {/*
+                  * LAS VEINTE FICHAS, Y POR QUÉ SIETE VALEN MENOS QUE TRECE.
+                  *
+                  * Esta nota existe porque la marca numerada de la tabla, sola,
+                  * mentiría por omisión: un «14» al lado de El Heraldo y un «2»
+                  * al lado de El Tiempo parecen la misma clase de dato y no lo
+                  * son. Uno sale de preguntarle a la gente qué lee; el otro, de
+                  * contar cuánto publica un RSS.
+                  */}
+                <p>
+                    <strong>Los números al lado de {TAMANO_TRAMO} medios</strong> marcan las
+                    fichas de propiedad prioritarias: las que más gente lee, y por tanto donde
+                    un error nuestro haría más daño. Se ordenan con{' '}
+                    <strong>dos grados de certeza distintos</strong>:{' '}
+                    <span className="prioridad-marca prioridad-medida">1</span>{' '}
+                    los <strong>trece con audiencia medida</strong> por la encuesta del Reuters
+                    Institute, en personas;{' '}
+                    <span className="prioridad-marca prioridad-estimada">14</span>{' '}
+                    los <strong>siete añadidos por volumen</strong> —piezas que ingerimos,
+                    contadas por nosotros el {AMPLIACION_POR_VOLUMEN.medidoEl}—, que{' '}
+                    <strong>no es audiencia</strong>. Ningún estimado adelanta a un medido:
+                    mezclarlos exigiría convertir piezas en lectores, y eso no se puede hacer.
+                </p>
+
+                {/*
+                  * DÓNDE SE ACABA LA MEDICIÓN DE AUDIENCIA.
+                  *
+                  * La tabla dice «sin medir» en la mayoría de las filas, y sin
+                  * esta nota eso se lee como una tarea pendiente nuestra. No lo
+                  * es: en Colombia no hay medición pública de audiencia por
+                  * debajo de la quincena de marcas que encuesta el Reuters
+                  * Institute, y la que usa el sector es de pago y no
+                  * republicable. El dato que lo explica mejor está en la propia
+                  * encuesta: TODA la prensa regional junta cabe en una sola fila.
+                  */}
+                {sinMedicion.length > 0 && (
+                    <p>
+                        El <strong>alcance semanal</strong> es el porcentaje de colombianos que
+                        dice haber usado cada marca en la última semana, según el{' '}
+                        <a href={FUENTE_AUDIENCIA.url} target="_blank" rel="noopener noreferrer">
+                            {FUENTE_AUDIENCIA.nombre}
+                        </a>. Mide <strong>personas, no visitas</strong>, e incluye televisión y
+                        radio. <strong>{sinMedicion.length} de los {media.length} medios que se
+                        ven aparecen como «sin medir»</strong>, y no es un pendiente nuestro: la
+                        encuesta llega a dieciséis marcas y por debajo de ahí no existe medición
+                        pública en Colombia. La prensa regional entera cabe en una sola fila
+                        agregada, así que ni El Colombiano ni El Heraldo ni El País de Cali
+                        tienen cifra propia pese a estar entre los que más publican.
+                    </p>
+                )}
+
+                <p>
+                    La columna <strong>«Responde a»</strong> dice a quién debe cuentas cada
+                    redacción, y lo que manda es la naturaleza del interés:{' '}
                     <span className="duenio-badge duenio-conglomerado duenio-enfasis">
                         <Building2 size={13} aria-hidden="true" />Grupo económico
                     </span>{' '}
                     frente a{' '}
                     <span className="duenio-badge duenio-independiente duenio-enfasis">
                         <Sprout size={13} aria-hidden="true" />Independiente
-                    </span>. El apellido —nacional, regional o internacional— dice el
-                    alcance del dueño, no cambia la respuesta: una familia que controla
-                    la empresa que publica un diario lo posee como activo igual que un
-                    conglomerado, y «internacional» dice dónde está el dueño, no qué es
-                    —al Grupo Prisa lo controla un banquero de inversión—.
-                    <br />
-                    Esto <strong>no afirma</strong> que esos dueños tengan negocios en
-                    otros sectores: donde los hay, constan con su fuente en la ficha del
-                    medio. Y donde la propiedad no está verificada dice «sin documentar»
-                    en vez de suponer.
-                </span>
-            </p>
-
-            {aportePorMedio && (
-                <p className="map-warning">
-                    <Info size={15} aria-hidden="true" />
-                    <span>
-                        Los círculos <strong>huecos</strong> son medios del catálogo que no
-                        han publicado nada en las últimas {ventanaHoras} horas. Siguen aquí
-                        porque su ficha de propiedad es parte del mapa, pero{' '}
-                        <strong>no están entrando en ninguna comparación de cobertura</strong>.
-                        Algunos publican poco por oficio —investigación, periodicidad
-                        semanal—, no por avería.
-                    </span>
+                    </span>. El apellido —nacional, regional o internacional— dice el alcance
+                    del dueño, no cambia la respuesta: «internacional» dice dónde está el dueño,
+                    no qué es —al Grupo Prisa lo controla un banquero de inversión—. Esto{' '}
+                    <strong>no afirma</strong> que esos dueños tengan negocios en otros
+                    sectores: donde los hay, constan con su fuente en la ficha del medio.
                 </p>
-            )}
+
+                {aportePorMedio && (
+                    <p>
+                        Los círculos <strong>huecos</strong> son medios que no han publicado
+                        nada en las últimas {ventanaHoras} horas. Siguen aquí porque su ficha de
+                        propiedad es parte del mapa, pero{' '}
+                        <strong>no entran en ninguna comparación de cobertura</strong>. Algunos
+                        publican poco por oficio —investigación, periodicidad de fin de
+                        semana—, no por avería.
+                    </p>
+                )}
+            </details>
 
             <div className="map-legend" aria-hidden="true">
                 {['left', 'center', 'right'].map((key) => (
@@ -579,10 +590,9 @@ const MediaMap = () => {
                     <span>
                         <strong>{sinFactualidad}</strong>{' '}
                         {sinFactualidad === 1 ? 'medio no aparece' : 'medios no aparecen'} en el
-                        gráfico: no {sinFactualidad === 1 ? 'tiene' : 'tienen'} historial de rigor
-                        factual medido, así que no {sinFactualidad === 1 ? 'tiene' : 'tienen'}{' '}
-                        altura en el eje vertical. Colocar{sinFactualidad === 1 ? 'lo' : 'los'} en
-                        la media o en el suelo afirmaría algo que no sabemos.{' '}
+                        gráfico: sin historial de rigor factual medido no hay altura que darle
+                        en el eje vertical, y colocar{sinFactualidad === 1 ? 'lo' : 'los'} en la
+                        media afirmaría algo que no sabemos.{' '}
                         <strong>Están todos en la tabla</strong>, con «sin medir» en esa columna.
                     </span>
                 </p>

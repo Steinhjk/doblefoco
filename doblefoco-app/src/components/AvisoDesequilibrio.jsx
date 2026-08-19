@@ -28,6 +28,17 @@ import './AvisoDesequilibrio.css';
  * NO SE PUEDE CERRAR. Un aviso descartable se convierte en decoración: se cierra
  * una vez y no se vuelve a ver, justo cuando explica cómo hay que leer todo lo
  * que hay debajo.
+ *
+ * Y POR ESO MISMO ES CORTO (2026-08-18). Tenía cuatro párrafos y un cierre que
+ * decía «nada de esto es un defecto de este sitio… mostrarlo es justamente a lo
+ * que venimos». Un aviso que no se puede cerrar y además se defiende convierte
+ * lo primero que ve el lector en una incomodidad, y el dato —uno por cada
+ * treinta y cinco— se pierde entre la explicación.
+ *
+ * Se queda la cifra y su consecuencia para leer. Se van: la definición de
+ * «orientación mixta», que vive en el mapa y aquí solo hace falta como
+ * advertencia de una línea; y el cierre defensivo, que sobraba — un dato bien
+ * puesto no necesita pedir permiso.
  */
 const AvisoDesequilibrio = () => {
     const [conteos, setConteos] = useState(null);
@@ -46,7 +57,6 @@ const AvisoDesequilibrio = () => {
 
         const bandas = repartoPorEspectro(conteos, MEDIA_REGISTRY);
         const izquierda = bandas.find((b) => b.id === 'left');
-        const sinLinea = bandas.find((b) => b.id === 'center');
 
         if (!izquierda?.articulos) return null;
 
@@ -55,7 +65,6 @@ const AvisoDesequilibrio = () => {
 
         return {
             izquierda,
-            sinLinea,
             medios,
             // «Uno por cada N del resto» se entiende sin pensar; un porcentaje
             // con un decimal, no. La proporción es la misma.
@@ -68,7 +77,7 @@ const AvisoDesequilibrio = () => {
     // que este recuadro viene a hacer.
     if (!datos) return null;
 
-    const { izquierda, sinLinea, medios, porCada } = datos;
+    const { izquierda, medios, porCada } = datos;
 
     return (
         <aside className="aviso-desequilibrio" aria-label="Advertencia sobre el catálogo de medios">
@@ -77,8 +86,7 @@ const AvisoDesequilibrio = () => {
             </h2>
 
             <p>
-                El espectro mediático colombiano no está repartido, y eso cambia cómo hay que
-                leer este sitio. De los {medios} medios que seguimos,{' '}
+                De los {medios} medios que seguimos,{' '}
                 <strong>{izquierda.medios} son de izquierda</strong> —el{' '}
                 {izquierda.pctMedios.toFixed(0)} % del catálogo— pero publican el{' '}
                 <strong>{izquierda.pctVolumen.toFixed(1)} % de los artículos</strong>: por cada
@@ -86,26 +94,11 @@ const AvisoDesequilibrio = () => {
             </p>
 
             <p>
-                Por eso la mayoría de los hechos le llegarán contados por medios de derecha o
-                de orientación mixta. Y por eso muchos de los «puntos ciegos de la izquierda»
-                que verá <strong>no son un silencio deliberado</strong>: son un lado que casi
-                no publica.
-            </p>
-
-            <p>
-                Conviene además no leer «orientación mixta» como neutral. <strong>Mixta no
-                significa que no tengan línea</strong>, sino que la suya no se sitúa en el eje
-                izquierda-derecha: la de un diario económico es el capital, y es clarísima. Es
-                el bloque más grande por volumen —{sinLinea.pctVolumen.toFixed(1)} %— y lo
-                componen en buena parte medios de los mayores grupos económicos del país. Quién
-                es dueño de cada uno está documentado, con su fuente, en el{' '}
+                Así que casi todo le llegará contado desde la derecha o desde medios de
+                orientación mixta —que <strong>no quiere decir sin línea</strong>—. Y muchos
+                «puntos ciegos de la izquierda» no son un silencio deliberado: son un lado que
+                casi no publica. Quién es dueño de cada medio está en el{' '}
                 <Link to="/mapa-medios">mapa mediático</Link>.
-            </p>
-
-            <p className="aviso-desequilibrio-cierre">
-                Nada de esto es un defecto de este sitio: es el retrato del ecosistema que
-                cubre. Taparlo sería peor que mostrarlo, y mostrarlo es justamente a lo que
-                venimos.
             </p>
         </aside>
     );

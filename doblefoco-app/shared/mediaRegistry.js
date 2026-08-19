@@ -390,7 +390,32 @@ export const MEDIA_REGISTRY = [
         id: 'el-espectador', name: 'El Espectador', shortName: 'El Espectador',
         domain: 'elespectador.com', country: 'CO', group: 'Grupo Valorem',
         bias: -0.20, factuality: 0.88, reviewedAt: null,
-        biasRationale: 'Diario nacional con tradición liberal; énfasis en derechos humanos y proceso de paz.',
+        /**
+         * REESCRITA EL 2026-08-18, y con diez días de retraso sobre su propia
+         * ficha. Decía: «Diario nacional con tradición liberal; énfasis en
+         * derechos humanos y proceso de paz.» Las dos mitades estaban muertas:
+         *
+         * · «Tradición liberal» es una construcción histórica, y **la ficha de
+         *   este medio la retiró el 2026-08-08** en su tabla de evidencia
+         *   retirada, donde además la nombra como «justificación actual del
+         *   registro». Se retiró del expediente y siguió publicándose al
+         *   lector, que es donde importaba.
+         * · «Énfasis en derechos humanos y proceso de paz» describe una era
+         *   que terminó: la paz total era política del gobierno que salió el
+         *   07-08-2026. Y los editoriales que el ciclo 1 encontró van de
+         *   garantías electorales, de la Corte y del Banco de la República —
+         *   institucionales, no de proceso de paz.
+         *
+         * La nueva NO afirma una orientación, porque la evidencia disponible no
+         * la sostiene: dice en qué estado está el expediente. Es lo único
+         * honesto mientras el valor siga sin firmar.
+         */
+        biasRationale:
+            'Clasificación en revisión. Su justificación anterior apelaba a la tradición liberal del '
+            + 'diario, y la regla del presente no admite el pasado como evidencia. Los editoriales de '
+            + '2026 muestran un diario crítico del Gobierno por vía institucional y sin respaldo a '
+            + 'ningún candidato en la elección; no sostienen el valor actual — ver '
+            + 'fichas/el-espectador.md.',
         /**
          * PASA DE GOOGLE NEWS A FEED PROPIO (2026-08-08).
          *
@@ -708,7 +733,20 @@ export const MEDIA_REGISTRY = [
         id: 'el-colombiano', name: 'El Colombiano', shortName: 'El Colombiano',
         domain: 'elcolombiano.com', departamento: 'Antioquia', country: 'CO', group: 'Regional Antioquia',
         bias: 0.35, factuality: 0.86, reviewedAt: null,
-        biasRationale: 'Diario antioqueño de tradición conservadora; énfasis en empresa privada y orden institucional.',
+        /**
+         * REESCRITA EL 2026-08-18. Decía «de tradición conservadora», y su ficha
+         * ya había señalado que esa era «la parte que decide, y es histórica» —
+         * la misma construcción que invalidó la de El Espectador.
+         *
+         * A diferencia de aquel, aquí sí había con qué sustituirla: el ciclo 1
+         * de revisión externa trajo cuatro editoriales de casa fechados, y el
+         * número no se movió al reescribirla. Es el texto que la propia ficha
+         * dejó sugerido.
+         */
+        biasRationale:
+            'Línea editorial documentada en editoriales de casa del 05-08-2025, 30-12-2025, '
+            + '13-01-2026 y 07-08-2026: favorable al Centro Democrático y al gobierno entrante, '
+            + 'adversa al saliente en lo económico y lo judicial-político.',
         feed: { url: 'https://www.elcolombiano.com/rss/portada.xml', via: 'direct', category: 'Política' },
     },
 

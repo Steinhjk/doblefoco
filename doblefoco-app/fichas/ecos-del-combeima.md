@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Valor propuesto** | **+0,20** · Derecha moderada — **provisional de alta** |
-| **Firma** | ☐ pendiente — Jose Arbeláez |
-| **Fecha** | 2026-08-09 (candidatura, medio aún no ingerido) |
+| **Valor propuesto** | **NINGUNO. No se recomienda el alta** — es afiliada de Blu Radio, no una voz local independiente |
+| **Firma** | ☐ no procede: no hay número que firmar |
+| **Fecha** | 2026-08-09 (candidatura) · **resuelta el 2026-08-18** |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Departamento** | Tolima — sustituye a El Nuevo Día, ver `fichas/el-nuevo-dia.md` |
 
@@ -25,7 +25,33 @@
 regional es lo normal— pero sí es un dato de gobernanza: no hay separación entre
 quien decide la línea y quien pone el dinero.
 
-### LA PREGUNTA QUE HAY QUE RESOLVER ANTES DEL ALTA
+### LA PREGUNTA QUE BLOQUEABA EL ALTA — RESUELTA EL 2026-08-18
+
+> **SÍ ES AFILIADA DE BLU RADIO**, y por tanto **no se da de alta**.
+>
+> La ficha se negaba a darlo por bueno con una sola fuente secundaria, y hacía
+> bien. Se volvió a buscar y ahora **convergen varias fuentes independientes**:
+> describen a esta emisora como parte de la red de Blu Radio desde 2013 y la
+> listan junto a un conjunto coherente de afiliadas con sus frecuencias —La
+> Caliente de San Gil (1330 AM), Radio Magdalena de Santa Marta (1420 AM),
+> Frecuencia F de Cúcuta (1370 AM), Radio Catatumbo de Ocaña (1150 AM), Radio
+> Panamericana de Girardot (1140 AM), Radio Mira de Tumaco (1190 AM)—.
+>
+> **El nivel de evidencia se declara: sigue siendo secundario.** Ni la página
+> «Nosotros» de la emisora ni una lista oficial de afiliadas de Blu Radio lo
+> dicen. Lo que cambió no es la calidad de una fuente sino que hay varias
+> independientes que coinciden y encajan en un patrón verificable. El primario
+> que lo cerraría del todo sigue siendo el mismo: el certificado de Cámara de
+> Comercio de Ibagué de Inversiones Combeima, o la parrilla de la emisora.
+>
+> **La consecuencia la fijó esta misma ficha antes de conocer la respuesta**, y
+> por eso vale: «una afiliada de red no es una voz local independiente, y
+> presentarla como tal en la vista departamental sería exactamente lo contrario
+> de lo que esa vista busca». Con Blu Radio ya en el catálogo en +0,25 y bajo
+> Valorem, admitir esta emisora como voz propia del Tolima habría contado dos
+> veces al mismo grupo.
+
+### El razonamiento original, que se mantiene como está escrito
 
 **Habría entrado en la red de Blu Radio en 2013.** Si es cierto, cambia la
 naturaleza del medio: **Blu Radio ya está en nuestro catálogo, con +0,25 y bajo
@@ -78,10 +104,11 @@ firma.
 
 ## REFUTACIÓN — qué cambiaría el número
 
-1. **Comprobar la afiliación a Blu Radio**, por el certificado de Cámara de
-   Comercio de Ibagué de Inversiones Combeima o por la parrilla de la emisora.
-   Si es afiliada, se declara el vínculo con Valorem en `mediaOwnership.js` y
-   deja de contar como voz independiente del departamento.
+1. ~~Comprobar la afiliación a Blu Radio~~ **COMPROBADA el 2026-08-18: sí lo es**,
+   con fuentes secundarias convergentes. El primario que lo cerraría —certificado
+   de Cámara de Comercio de Ibagué de Inversiones Combeima, o la parrilla de la
+   emisora— **solo hace falta si se quiere revertir esta decisión**, no para
+   sostenerla: no dar de alta es la opción prudente y no exige probar nada.
 2. **A los 90 días con más de 60 historias suyas**: si su cobertura reproduce la
    de Blu Radio en los temas nacionales, la afiliación queda demostrada por
    conducta aunque no aparezca en ningún registro.
@@ -93,6 +120,15 @@ firma.
 
 ## ESTADO
 
-**Alta condicionada a resolver la afiliación.** Es el punto 1 y es barato de
-comprobar. Mientras no se resuelva, el Tolima se queda sin medio propio —lo cual
-es mejor que darle uno mal etiquetado.
+**NO SE DA DE ALTA.** Resuelto el 2026-08-18: es afiliada de Blu Radio, que ya
+está en el catálogo bajo Valorem. Admitirla como voz propia del Tolima habría
+contado dos veces al mismo grupo en la vista departamental.
+
+**El Tolima se queda sin medio propio, y es la conclusión correcta** — la misma
+que esta ficha ya anticipaba: mejor un departamento vacío que uno con un medio
+mal etiquetado. El otro candidato del departamento, El Nuevo Día, sí está en el
+catálogo (`fichas/el-nuevo-dia.md`), así que el Tolima no queda mudo.
+
+**Qué reabriría esto:** un primario que desmienta la afiliación, o que muestre que
+terminó. Las fuentes disponibles la sitúan desde 2013 y ninguna la da por
+cerrada.

@@ -17,55 +17,50 @@
   --text-muted: #94a3b8; /* Slate 400 */
 
   /* Bordes & Separadores */
-  --border-color: rgba(255, 255, 255, 0.12);
-  --border-light: rgba(255, 255, 255, 0.06);
+  --border-color: rgba(255, 255, 255, 0.14);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.24);
 
   /* Glassmorphism */
   --glass-bg: rgba(24, 25, 28, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.14);
 
   /* Colores de Espectro */
   --bias-left: #ef4444;
   --bias-objective: #cbd5e1;
   --bias-right: #3b82f6;
 
-  /* Fondos tenues del espectro, para pastillas y realces de texto.
-     Existen como token porque estaban escritos a mano en cada sitio, y así fue
-     como la cronología acabó pintando la derecha de ámbar mientras la tarjeta
-     de al lado la pintaba de azul. */
-  --bias-left-soft: rgba(239, 68, 68, 0.15);
-  --bias-objective-soft: rgba(203, 213, 225, 0.15);
-  --bias-right-soft: rgba(59, 130, 246, 0.15);
+  /* Fondos tenues del espectro para pastillas y realces de texto */
+  --bias-left-soft: rgba(239, 68, 68, 0.16);
+  --bias-objective-soft: rgba(203, 213, 225, 0.14);
+  --bias-right-soft: rgba(59, 130, 246, 0.16);
 
-  /* Aviso / énfasis. NO es un color del espectro: marca lenguaje
-     sensacionalista, que puede venir de cualquier lado. */
+  /* Aviso / énfasis (lenguaje sensacionalista) */
   --warn: #f59e0b;
   --warn-soft: rgba(245, 158, 11, 0.18);
 
-  /* Texto que va ENCIMA de --accent. Estaba escrito como `#000` en seis sitios,
-     y en tema claro --accent es casi negro: negro sobre negro. */
+  /* Texto sobre --accent */
   --on-accent: #18191c;
 
-  /* Campos de formulario. El fondo estaba fijo en rgba(0,0,0,.2), que en tema
-     claro deja una caja gris sucia dentro de una barra clara. */
-  --input-bg: rgba(0, 0, 0, 0.2);
-  --input-bg-focus: rgba(0, 0, 0, 0.4);
+  /* Campos de formulario */
+  --input-bg: rgba(0, 0, 0, 0.25);
+  --input-bg-focus: rgba(0, 0, 0, 0.45);
 
-  /* Degradado del sufijo «.co» de la marca. Tres paradas explícitas y no un
-     color-mix() a mitad de camino: el texto va con background-clip y color
-     transparente, así que si el navegador no entiende la función descarta el
-     degradado entero y el «.co» se vuelve invisible. Un token de más sale más
-     barato que esa forma de fallar. */
+  /* Degradado del sufijo «.co» de la marca */
   --brand-suffix-from: #ffffff;
   --brand-suffix-mid: #cbd5e1;
   --brand-suffix-to: #94a3b8;
 
-  /* Fuentes - Periodismo Moderno de Alta Personalidad */
+  /* Shimmer / Skeleton */
+  --shimmer-base: #292c33;
+  --shimmer-highlight: rgba(255, 255, 255, 0.09);
+
+  /* Fuentes */
   --font-main: 'Outfit', 'Inter', -apple-system, sans-serif;
   --font-heading: 'Plus Jakarta Sans', 'Playfair Display', Georgia, serif;
   --font-serif: 'Playfair Display', Georgia, serif;
 
-  /* Radios Sobrios */
+  /* Radios */
   --radius-sm: 3px;
   --radius-md: 4px;
   --radius-lg: 6px;
@@ -75,8 +70,14 @@
   --shadow-md: 0 10px 28px -4px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 20px 50px -8px rgba(0, 0, 0, 0.6);
   --shadow-glow: 0 0 20px rgba(255, 255, 255, 0.15);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
 
-  --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2);
+
+  /* Scrollbar */
+  --scrollbar-track: #18191c;
+  --scrollbar-thumb: #3f3f46;
+  --scrollbar-thumb-hover: #52525b;
 
   /* Hero Gradients */
   --hero-from: #18191c;
@@ -87,7 +88,7 @@
   /* Paleta Light de Alta Fidelidad (Crema Suave & Tinta Slate) */
   --primary: #0f172a;
   --secondary: #475569;
-  --accent: #0f172a; /* Blanco / Negro Puro */
+  --accent: #0f172a;
   --accent-hover: #334155;
   --accent-2: #dc2626;
   --accent-3: #2563eb;
@@ -96,31 +97,36 @@
   --bg-subtle: #f1f5f9;
   --text-main: #0f172a;
   --text-muted: #64748b;
-  --border-color: rgba(15, 23, 42, 0.12);
-  --border-light: rgba(15, 23, 42, 0.05);
-  --glass-bg: rgba(248, 250, 252, 0.88);
-  --glass-border: rgba(15, 23, 42, 0.12);
+  --border-color: rgba(15, 23, 42, 0.16);
+  --border-light: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(15, 23, 42, 0.28);
+  --glass-bg: rgba(248, 250, 252, 0.92);
+  --glass-border: rgba(15, 23, 42, 0.14);
   --bias-left: #dc2626;
   --bias-objective: #0f172a;
   --bias-right: #2563eb;
   --bias-left-soft: rgba(220, 38, 38, 0.12);
-  --bias-objective-soft: rgba(15, 23, 42, 0.1);
+  --bias-objective-soft: rgba(15, 23, 42, 0.08);
   --bias-right-soft: rgba(37, 99, 235, 0.12);
   --warn: #b45309;
-  --warn-soft: rgba(180, 83, 9, 0.15);
+  --warn-soft: rgba(180, 83, 9, 0.14);
   --on-accent: #f8fafc;
   --input-bg: rgba(15, 23, 42, 0.04);
   --input-bg-focus: #ffffff;
-  /* En claro el degradado va de tinta a slate: el mismo gesto, pero visible.
-     Iba de #ffffff a #94a3b8 sin variante clara, así que el «.co» quedaba
-     blanco sobre una barra blanca — es decir, invisible. */
   --brand-suffix-from: #334155;
   --brand-suffix-mid: #64748b;
   --brand-suffix-to: #94a3b8;
+  --shimmer-base: #e2e8f0;
+  --shimmer-highlight: rgba(255, 255, 255, 0.9);
   --shadow-sm: 0 4px 14px -2px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 10px 28px -4px rgba(15, 23, 42, 0.1);
   --shadow-lg: 0 20px 50px -8px rgba(15, 23, 42, 0.15);
   --shadow-glow: 0 0 20px rgba(15, 23, 42, 0.1);
+  --shadow-card: 0 2px 12px -1px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.45), 0 0 0 1px rgba(15, 23, 42, 0.15);
+  --scrollbar-track: #f8fafc;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
   --hero-from: #f8fafc;
   --hero-to: #f1f5f9;
 }
@@ -268,20 +274,24 @@ button:focus-visible {
   animation-delay: 0.45s;
 }
 
-/* Custom Scrollbar for premium vibe */
+/* Custom Scrollbar */
+html {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-main);
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: var(--scrollbar-thumb);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+  background: var(--scrollbar-thumb-hover);
 }

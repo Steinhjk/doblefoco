@@ -3,6 +3,7 @@ import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import {
     ExternalLink, Table2, ScatterChart, Info,
     Building2, Sprout, Users, Landmark, Globe, Bot, FileSearch, Mail,
+    Search, X,
 } from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand, REDACCIONES, esRedaccionAutomatizada } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
@@ -251,13 +252,35 @@ const CUANTOS_POR_ALCANCE = MEDIOS_COLOMBIANOS.reduce((cuenta, medio) => {
  */
 const ALCANCES_POR_OMISION = ['nacional', 'independiente'];
 
+/**
+ * Minúsculas y sin acentos, para buscar. Vive fuera del componente porque es
+ * pura: dentro se recreaba en cada render y arrastraba consigo la memoización
+ * de la tabla.
+ */
+const normalizarTexto = (s) =>
+    (s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
 const MediaMap = () => {
     const [view, setView] = useState('mapa');
     const [alcances, setAlcances] = useState(ALCANCES_POR_OMISION);
     const [selectedId, setSelectedId] = useState(null);
     const [conteos, setConteos] = useState(null);
     const [ventanaHoras, setVentanaHoras] = useState(72);
+    const [busqueda, setBusqueda] = useState('');
     const titleId = useId();
+
+    const busquedaNorm = normalizarTexto(busqueda.trim());
+
+    /**
+     * Coincidencia por nombre, grupo o dominio. Se busca sobre el texto
+     * normalizado para que «voragine» encuentre a Vorágine: quien busca un medio
+     * rara vez escribe los acentos.
+     */
+    const coincideMedio = (m) =>
+        !busquedaNorm ||
+        normalizarTexto(m.name).includes(busquedaNorm) ||
+        normalizarTexto(m.group || '').includes(busquedaNorm) ||
+        normalizarTexto(m.domain || '').includes(busquedaNorm);
 
     /**
      * ESTAR EN EL CATÁLOGO NO ES LO MISMO QUE APORTAR COBERTURA.
@@ -308,6 +331,21 @@ const MediaMap = () => {
                 .sort((a, b) => a.bias - b.bias),
         [alcances]
     );
+
+    /**
+     * SIN SILENCIAR AL LINTER, y sin memoizar tampoco.
+     *
+     * Esto venía envuelto en `useMemo` con la comprobación de dependencias
+     * apagada por una directiva. Funcionaba, pero al fusionarlo con el resto de
+     * la página el compilador de React dejó de aceptarlo: la función de
+     * coincidencia es un cierre nuevo en cada render y la memoización no se
+     * podía preservar.
+     *
+     * Filtrar setenta y seis elementos no cuesta nada, así que la memoización
+     * manual no compraba nada y sí costaba una directiva puesta para siempre.
+     * Se quita: el compilador memoiza solo si le compensa.
+     */
+    const mediosTabla = media.filter(coincideMedio);
 
     /**
      * Los que SE PUEDEN DIBUJAR. Un medio sin factualidad medida no tiene
@@ -410,6 +448,28 @@ const MediaMap = () => {
                     >
                         <Table2 size={15} aria-hidden="true" /> Tabla
                     </button>
+                </div>
+
+                <div className="map-search-wrapper" role="search">
+                    <Search size={14} className="map-search-icon" aria-hidden="true" />
+                    <input
+                        type="search"
+                        placeholder="Buscar medio (ej. Semana, Vorágine, RCN)..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                        className="map-search-input"
+                        aria-label="Buscar medio en el mapa o tabla"
+                    />
+                    {busqueda && (
+                        <button
+                            type="button"
+                            className="map-search-clear"
+                            onClick={() => setBusqueda('')}
+                            aria-label="Limpiar búsqueda"
+                        >
+                            <X size={14} aria-hidden="true" />
+                        </button>
+                    )}
                 </div>
 
                 {/*
@@ -674,6 +734,8 @@ const MediaMap = () => {
                         {puntos.map((item) => {
                             const spectrum = classifySpectrum(item.bias);
                             const isSelected = item.id === selectedId;
+                            const isMatched = busquedaNorm ? coincideMedio(item) : false;
+                            const isDimmed = busquedaNorm ? !isMatched : false;
 
                             return (
                                 <g key={item.id} className="map-point-group">
@@ -687,14 +749,14 @@ const MediaMap = () => {
                                     <circle
                                         cx={item.x}
                                         cy={item.y}
-                                        r={isSelected ? 9 : 6}
+                                        r={isSelected ? 10 : isMatched ? 8 : 6}
                                         // Hueco cuando el medio no aporta nada a
                                         // la ventana: sigue en el mapa, pero se
                                         // ve que no está en la comparación.
                                         fill={aporta(item.id) === false ? 'transparent' : SPECTRUM_FILL[spectrum]}
-                                        stroke={SPECTRUM_FILL[spectrum]}
-                                        strokeWidth={aporta(item.id) === false ? 2 : 0}
-                                        className={`map-point ${isSelected ? 'selected' : ''}`}
+                                        stroke={isMatched ? 'var(--text-main)' : SPECTRUM_FILL[spectrum]}
+                                        strokeWidth={isMatched ? 2.5 : aporta(item.id) === false ? 2 : 0}
+                                        className={`map-point ${isSelected ? 'selected' : ''} ${isMatched ? 'matched' : ''} ${isDimmed ? 'dimmed' : ''}`}
                                         tabIndex={0}
                                         role="button"
                                         aria-label={
@@ -704,10 +766,10 @@ const MediaMap = () => {
                                         }
                                         onClick={() => setSelectedId(isSelected ? null : item.id)}
                                         onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                setSelectedId(isSelected ? null : item.id);
-                                            }
+                                             if (e.key === 'Enter' || e.key === ' ') {
+                                                 e.preventDefault();
+                                                 setSelectedId(isSelected ? null : item.id);
+                                             }
                                         }}
                                     />
                                     {/*
@@ -759,36 +821,44 @@ const MediaMap = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {media.map((item) => (
-                                <tr key={item.id}>
-                                    <th scope="row">
-                                        <MarcaPrioritaria mediaId={item.id} />
-                                        <button
-                                            className="map-table-link"
-                                            onClick={() => setSelectedId(item.id)}
-                                        >
-                                            {item.name}
-                                        </button>
-                                    </th>
-                                    <td className="num">
-                                        {alcanceMaximo(item.id) === null
-                                            ? <span className="sin-medir">sin medir</span>
-                                            : `${alcanceMaximo(item.id)}%`}
-                                    </td>
-                                    <td className="num">{fmtBias(item.bias)}</td>
-                                    <td>{getBand(item.bias).label}</td>
-                                    <td className="num">{fmtPct(item.factuality)}</td>
-                                    <td>{item.group}</td>
-                                    <td><Distintivo mediaId={item.id} /> <DistintivoRedaccion medio={item} /></td>
-                                    <td>
-                                        {aporta(item.id) === null
-                                            ? '—'
-                                            : aporta(item.id)
-                                                ? `${aportePorMedio.get(item.id)}`
-                                                : 'sin piezas'}
+                            {mediosTabla.length > 0 ? (
+                                mediosTabla.map((item) => (
+                                    <tr key={item.id}>
+                                        <th scope="row">
+                                            <MarcaPrioritaria mediaId={item.id} />
+                                            <button
+                                                className="map-table-link"
+                                                onClick={() => setSelectedId(item.id)}
+                                            >
+                                                {item.name}
+                                            </button>
+                                        </th>
+                                        <td className="num">
+                                            {alcanceMaximo(item.id) === null
+                                                ? <span className="sin-medir">sin medir</span>
+                                                : `${alcanceMaximo(item.id)}%`}
+                                        </td>
+                                        <td className="num">{fmtBias(item.bias)}</td>
+                                        <td>{getBand(item.bias).label}</td>
+                                        <td className="num">{fmtPct(item.factuality)}</td>
+                                        <td>{item.group}</td>
+                                        <td><Distintivo mediaId={item.id} /> <DistintivoRedaccion medio={item} /></td>
+                                        <td>
+                                            {aporta(item.id) === null
+                                                ? '—'
+                                                : aporta(item.id)
+                                                    ? `${aportePorMedio.get(item.id)}`
+                                                    : 'sin piezas'}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={8} style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)' }}>
+                                        No se encontraron medios que coincidan con «{busqueda}».
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

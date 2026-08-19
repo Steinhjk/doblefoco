@@ -75,26 +75,26 @@ const NewsCard = ({ story: rawStory }) => {
 
                 <div className="news-card-info">
                     <div className="news-card-top-meta">
-                        {/* El distintivo de categoría vivía sobre la imagen. Sin
-                            imagen desaparecía, así que aquí va cuando hace falta. */}
-                        {!muestraImagen && story.category && (
-                            <span className="news-card-category-inline">{seccionDe(story)}</span>
-                        )}
-                        {timeLabel && (
-                            <time
-                                className="news-card-time"
-                                dateTime={story.publishedAt ?? undefined}
-                                title={absoluteTime ?? undefined}
-                            >
-                                {timeLabel}
-                            </time>
-                        )}
+                        <div className="news-card-meta-left">
+                            {story.category && (
+                                <span className="news-card-category-inline">{seccionDe(story)}</span>
+                            )}
+                            {timeLabel && (
+                                <time
+                                    className="news-card-time"
+                                    dateTime={story.publishedAt ?? undefined}
+                                    title={absoluteTime ?? undefined}
+                                >
+                                    {timeLabel}
+                                </time>
+                            )}
+                        </div>
                         {typeof story.factuality === 'number' && (
                             <span
                                 className="news-card-factuality"
-                                title="Promedio de la factualidad histórica de los medios que cubren el hecho. No es una evaluación de esta noticia en particular."
+                                title="Promedio de la factualidad histórica de los medios que cubren el hecho."
                             >
-                                Factualidad media de fuentes: {Math.round(story.factuality * 100)}%
+                                Factualidad {Math.round(story.factuality * 100)}%
                             </span>
                         )}
                     </div>

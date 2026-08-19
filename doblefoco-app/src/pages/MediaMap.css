@@ -222,6 +222,60 @@
 
 .map-tick-x { text-anchor: middle; }
 
+/* ── Buscador de medios en mapa ───────────────────────────────────────── */
+
+.map-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 260px;
+    flex: 1;
+    max-width: 380px;
+}
+
+.map-search-icon {
+    position: absolute;
+    left: 10px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.map-search-input {
+    width: 100%;
+    padding: 0.45rem 2rem 0.45rem 2rem;
+    font-size: 0.84rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.map-search-input:focus {
+    outline: none;
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+.map-search-clear {
+    position: absolute;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 50%;
+}
+
+.map-search-clear:hover {
+    color: var(--text-main);
+}
+
 .map-axis-label {
     fill: var(--text-muted);
     font-size: 10.5px;
@@ -235,7 +289,7 @@
     stroke: var(--bg-card);
     stroke-width: 2;
     cursor: pointer;
-    transition: r 120ms ease;
+    transition: r 180ms ease, opacity 180ms ease, stroke 180ms ease;
 }
 
 .map-point:hover,
@@ -244,7 +298,28 @@
     outline: none;
 }
 
-.map-point.selected { stroke: var(--text-main); }
+.map-point.selected {
+    stroke: var(--text-main);
+}
+
+.map-point.dimmed {
+    opacity: 0.2;
+}
+
+.map-point.matched {
+    opacity: 1;
+    animation: map-point-pulse 1.6s infinite alternate ease-in-out;
+}
+
+@keyframes map-point-pulse {
+    0% {
+        stroke-width: 2px;
+    }
+    100% {
+        stroke-width: 4px;
+        stroke: var(--text-main);
+    }
+}
 
 .map-nudge-line {
     stroke: var(--border-color);

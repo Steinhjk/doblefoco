@@ -1,17 +1,18 @@
 .news-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
     display: flex;
     flex-direction: column;
 }
 
 .news-card:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-color: var(--text-muted);
+    border-color: var(--border-hover);
 }
 
 /* Blindspot Banner */
@@ -19,20 +20,23 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 14px;
-    font-size: 0.75rem;
+    padding: 7px 14px;
+    font-size: 0.74rem;
     font-weight: 600;
     border-bottom: 1px solid var(--border-color);
+    border-left: 3px solid transparent;
 }
 
 .card-blindspot-alert.left {
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--bias-left-soft);
     color: var(--bias-left);
+    border-left-color: var(--bias-left);
 }
 
 .card-blindspot-alert.right {
-    background: rgba(59, 130, 246, 0.1);
+    background: var(--bias-right-soft);
     color: var(--bias-right);
+    border-left-color: var(--bias-right);
 }
 
 /* Inner Grid Layout */
@@ -43,31 +47,23 @@
     min-height: 160px;
 }
 
-/**
- * La mayoría de los medios no publican imagen en su RSS, así que esta es la
- * tarjeta NORMAL, no un caso borde. Sin imagen no se deja la columna vacía: el
- * texto ocupa el ancho entero y la altura mínima cae, porque 160 px reservados
- * para una foto que no existe son un hueco que parece una carga fallida.
- */
 .news-card-inner-grid.sin-imagen {
     grid-template-columns: 1fr;
     min-height: 0;
 }
 
-/* Misma categoría, en la fila de metadatos, para las tarjetas sin imagen. */
 .news-card-category-inline {
     background: var(--bg-subtle);
     color: var(--text-main);
     border: 1px solid var(--border-color);
-    font-size: 0.62rem;
+    font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
     padding: 3px 8px;
-    border-radius: 2px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.3px;
 }
 
-/* Crédito de la foto. La imagen es del medio y se dice, porque mostrarla sin
-   atribuir es usar material ajeno como si fuera nuestro. */
 .news-card-image-credit {
     position: absolute;
     bottom: 0;
@@ -94,8 +90,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* El tercio superior, no el centro: es donde está la cara en una foto de
-       prensa, y con recorte al centro salía partida. */
     object-position: center 30%;
     display: block;
     transition: transform 0.4s ease;
@@ -109,20 +103,21 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background: var(--bg-subtle);
+    background: var(--glass-bg);
     color: var(--text-main);
     border: 1px solid var(--border-color);
     font-size: 0.62rem;
     font-weight: 800;
     text-transform: uppercase;
     padding: 3px 8px;
-    border-radius: 2px;
+    border-radius: var(--radius-sm);
     backdrop-filter: blur(8px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Right Info Container */
 .news-card-info {
-    padding: 16px 18px;
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -135,29 +130,39 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.75rem;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.news-card-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .news-card-time {
     color: var(--text-muted);
+    font-size: 0.75rem;
     font-weight: 500;
 }
 
 .news-card-factuality {
     background: var(--bg-subtle);
-    color: var(--text-main);
+    color: var(--text-muted);
     border: 1px solid var(--border-color);
     font-size: 0.65rem;
     font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 2px;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
 }
 
 .news-card-title {
     font-family: var(--font-heading);
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 800;
-    line-height: 1.3;
+    line-height: 1.35;
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .news-card-title a {
@@ -171,9 +176,9 @@
 }
 
 .news-card-summary {
-    font-size: 0.84rem;
+    font-size: 0.86rem;
     color: var(--text-muted);
-    line-height: 1.45;
+    line-height: 1.48;
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -186,7 +191,7 @@
     margin-top: auto;
     background: var(--bg-subtle);
     padding: 6px 10px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
 }
 
@@ -239,32 +244,35 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    align-items: center;
 }
 
 .interactive-source-chip {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-top: 2px solid;
-    padding: 3px 6px;
-    border-radius: 2px;
-    font-size: 0.68rem;
+    border-top: 2px solid var(--border-color);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-main);
     text-decoration: none;
-    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .interactive-source-chip:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1.5px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border-hover);
 }
 
 .source-chip-logo {
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     border-radius: 2px;
     object-fit: contain;
     background: #ffffff;
@@ -273,7 +281,12 @@
 
 .badge-ext-icon {
     color: var(--text-muted);
-    opacity: 0.7;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.interactive-source-chip:hover .badge-ext-icon {
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -282,8 +295,19 @@
     }
 
     .news-card-image-wrapper {
-        height: 180px;
+        height: 190px;
         min-height: auto;
+    }
+
+    .sources-chips-grid {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .sources-chips-grid::-webkit-scrollbar {
+        display: none;
     }
 }
 /**

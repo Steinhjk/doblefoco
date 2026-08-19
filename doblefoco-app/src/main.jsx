@@ -55,3 +55,12 @@ if (container.hasChildNodes()) {
 } else {
     createRoot(container).render(appJsx);
 }
+
+// Registro de Service Worker para caché offline y rendimiento
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator && (/** @type {any} */ (import.meta)).env?.PROD) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.debug('[SW] Error al registrar service worker:', err);
+        });
+    });
+}

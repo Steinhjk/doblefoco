@@ -42,10 +42,10 @@ const seccionDe = (story) => nombreDeSeccion(story, categories);
  * ("— Enfoque en garantías sociales e impacto comunitario"), describiéndola
  * como "titular auténtico reportado por la redacción".
  */
-const PerspectiveCard = ({ spectrum, perspective }) => {
+const PerspectiveCard = ({ spectrum, perspective, className = '' }) => {
     if (!perspective) {
         return (
-            <div className={`stacked-perspective-card ${spectrum} is-empty`}>
+            <div className={`stacked-perspective-card ${spectrum} is-empty ${className}`}>
                 <div className="perspective-card-header">
                     <span className={`card-spectrum-badge ${spectrum}`}>
                         {SPECTRUM_LABEL[spectrum]}
@@ -74,7 +74,7 @@ const PerspectiveCard = ({ spectrum, perspective }) => {
     const media = getMediaByName(perspective.outlet);
 
     return (
-        <div className={`stacked-perspective-card ${spectrum}`}>
+        <div className={`stacked-perspective-card ${spectrum} ${className}`}>
             <div className="perspective-card-header">
                 <span className={`card-spectrum-badge ${spectrum}`}>
                     {SPECTRUM_LABEL[spectrum]}
@@ -143,6 +143,7 @@ const NewsDetail = () => {
     const { id: parametro } = useParams();
     const id = idDesdeRuta(parametro);
     const [isShareOpen, setIsShareOpen] = useState(false);
+    const [mobileSpectrum, setMobileSpectrum] = useState('all');
 
     /**
      * La historia que el SERVIDOR ya cargó, si esta página vino renderizada
@@ -283,14 +284,47 @@ const NewsDetail = () => {
                             cobertura, lo decimos.
                         </p>
 
+                        <div className="perspectives-mobile-switcher" role="tablist" aria-label="Filtrar espectro en móvil">
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected={mobileSpectrum === 'all'}
+                                className={`mobile-switcher-tab ${mobileSpectrum === 'all' ? 'active' : ''}`}
+                                onClick={() => setMobileSpectrum('all')}
+                            >
+                                Todos (3)
+                            </button>
+                            {spectrums.map((s) => {
+                                const p = story.perspectives[s];
+                                const count = p ? 1 + (p.otherOutletsInSpectrum || 0) : 0;
+                                return (
+                                    <button
+                                        key={s}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={mobileSpectrum === s}
+                                        className={`mobile-switcher-tab ${s} ${mobileSpectrum === s ? 'active' : ''}`}
+                                        onClick={() => setMobileSpectrum(s)}
+                                    >
+                                        <span className={`tab-dot ${s}`} />
+                                        {SPECTRUM_LABEL[s]} {count > 0 ? `(${count})` : ''}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
                         <div className="stacked-perspectives-list">
-                            {spectrums.map((spectrum) => (
-                                <PerspectiveCard
-                                    key={spectrum}
-                                    spectrum={spectrum}
-                                    perspective={story.perspectives[spectrum]}
-                                />
-                            ))}
+                            {spectrums.map((spectrum) => {
+                                const isVisible = mobileSpectrum === 'all' || mobileSpectrum === spectrum;
+                                return (
+                                    <PerspectiveCard
+                                        key={spectrum}
+                                        spectrum={spectrum}
+                                        perspective={story.perspectives[spectrum]}
+                                        className={isVisible ? 'is-visible' : 'is-hidden-mobile'}
+                                    />
+                                );
+                            })}
                         </div>
                     </div>
 

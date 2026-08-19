@@ -478,6 +478,68 @@
  * Cada tarjeta emite SIEMPRE tres bandas, incluso la de "sin cobertura", que
  * lleva una vacía al final para que la retícula cuadre.
  */
+/* ── Selector de espectros en móvil ── */
+.perspectives-mobile-switcher {
+    display: none;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+}
+
+.perspectives-mobile-switcher::-webkit-scrollbar {
+    display: none;
+}
+
+.mobile-switcher-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.mobile-switcher-tab:hover {
+    color: var(--text-main);
+    border-color: var(--border-hover);
+}
+
+.mobile-switcher-tab.active {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.tab-dot.left { background-color: var(--bias-left); }
+.tab-dot.center { background-color: var(--text-muted); }
+.tab-dot.right { background-color: var(--bias-right); }
+
+@container columna-principal (max-width: 619px) {
+    .perspectives-mobile-switcher {
+        display: flex;
+    }
+
+    .stacked-perspective-card.is-hidden-mobile {
+        display: none !important;
+    }
+}
+
 .stacked-perspectives-list {
     display: flex;
     flex-direction: column;
@@ -499,6 +561,14 @@
  * queda en pila vertical, que es el respaldo correcto.
  */
 @container columna-principal (min-width: 620px) {
+    .perspectives-mobile-switcher {
+        display: none;
+    }
+
+    .stacked-perspective-card.is-hidden-mobile {
+        display: grid !important;
+    }
+
     .stacked-perspectives-list {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));

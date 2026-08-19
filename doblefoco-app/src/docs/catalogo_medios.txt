@@ -96,15 +96,6 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  10 medios
 ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
 ----------------------------------------------------------------------
 
-  El Espectador  ·  sesgo −0.20  ·  factualidad 88%
-    elespectador.com · Grupo Valorem · CO · RSS propio · PROVISIONAL
-    Clasificación en revisión. Su justificación anterior apelaba a la
-    tradición liberal del diario, y la regla del presente no admite el
-    pasado como evidencia. Los editoriales de 2026 muestran un diario
-    crítico del Gobierno por vía institucional y sin respaldo a ningún
-    candidato en la elección; no sostienen el valor actual — ver
-    fichas/el-espectador.md.
-
   El País (España)  ·  sesgo −0.20  ·  factualidad 88%
     elpais.com · Grupo PRISA · ES · RSS propio · PROVISIONAL
     Diario español de referencia con línea editorial socialdemócrata.
@@ -153,6 +144,17 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
     gobernaciones de Caldas, Risaralda y Quindío. Su dirección la
     designa el poder político de turno, así que su línea sigue a quien
     gobierna — ver fichas/telecafe.md.
+
+  El Espectador  ·  sesgo +0.00  ·  factualidad 88%
+    elespectador.com · Grupo Valorem · CO · RSS propio · revisado 2026-08-18
+    Orientación mixta: su línea es institucionalista y no se ordena en
+    el eje izquierda-derecha. Sus editoriales de 2026 critican al
+    gobierno de turno por vía institucional —defensa de la Corte y del
+    Banco de la República (01-02-2026), garantías electorales
+    (14-03-2026)— y fiscalizar al poder no es evidencia de
+    orientación. No respaldó a ningún candidato en la segunda vuelta.
+    En 2025 se transformó en entidad sin ánimo de lucro con objeto
+    declarado de acceso a la información y lucha contra la corrupción.
 
   W Radio  ·  sesgo +0.00  ·  factualidad 87%
     wradio.com.co · Grupo PRISA · CO · RSS propio · PROVISIONAL

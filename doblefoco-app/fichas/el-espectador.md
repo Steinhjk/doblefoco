@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Valor actual** | −0,20 · `reviewedAt: null` |
-| **Propuesta** | **NO FIRMAR, y ya no por falta de evidencia: por evidencia en contra.** Los editoriales del presente no sostienen el −0,20 |
-| **Firma** | ☐ pendiente — Jose Arbeláez |
+| **Valor actual** | **0,00** · `reviewedAt: 2026-08-18` — **firmado** · *movido desde −0,20* |
+| **Propuesta** | **FIRMADA en 0,00.** Retirado todo lo que sostenía el −0,20, nada lo sitúa en el eje |
+| **Firma** | ☑ **FIRMADA el 2026-08-18 — Jose Arbeláez** |
 | **Fecha** | 2026-08-08 (v2, rehecha tras la regla del presente) · **nivel 1 y 5 rehechos el 2026-08-17** |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` §2, regla del presente |
 
@@ -147,9 +147,22 @@ cambió.** Ya no es ausencia de evidencia: es evidencia que va contra el número
 publicado. Mantener −0,20 en pantalla dejó de ser «esperar la medición» y pasó a
 ser sostener una afirmación que el archivo editorial del propio medio contradice.
 
-Aun así **esta ficha no propone un número**, y el motivo es de competencia, no de
-prudencia: mover el valor más a la izquierda del catálogo después del de Noticias
-Uno es una decisión de firma, y la firma es de Jose.
+**Y el 2026-08-18 se movió a 0,00.** No porque apareciera evidencia nueva a favor
+de la mixta, sino porque se retiró, una tras otra, toda la que sostenía el −0,20:
+
+1. **«Tradición liberal»** cayó con la regla del presente (2026-08-08). Era la
+   justificación entera.
+2. **Los cuatro hechos del nivel 5** son crítica al gobierno de turno por vía
+   institucional — y la **regla del polo fijo** (2026-08-18) establece que
+   fiscalizar al poder no desplaza a nadie en el eje, ni a un lado ni al otro.
+3. **No respaldó a ningún candidato** en la segunda vuelta, que es la conducta de
+   la casa en el momento de máxima presión polarizante del período.
+
+Retirado todo eso no queda nada que lo sitúe en el eje izquierda-derecha, y la
+regla 5.2 manda la banda más cercana a la mixta. **El 0,00 no significa neutral**:
+significa que su línea —institucionalista, de acceso a la información y control
+del poder, que es además el objeto declarado de la ESAL en que se convirtió— no se
+ordena en ese eje.
 
 ---
 
@@ -165,15 +178,15 @@ en revisión» en la interfaz** hasta tener corpus. Tiene un coste: si se aplica
 mismo criterio a los otros 42 medios con `reviewedAt: null`, habría que marcar el
 catálogo entero, y un aviso que aparece en todos no informa de nada.
 
-**Y tras el ciclo 1 esa marca deja de ser opcional para este caso concreto.** El
+**Y tras el ciclo 1 esa marca dejó de ser opcional para este caso concreto.** El
 argumento de arriba valía cuando el problema era ausencia de evidencia: entonces
-«esperar» era razonable. Con editoriales fechados que contradicen el número, no
-marcarlo es publicar una afirmación que sabemos que el archivo del medio desmiente.
-La objeción de «no se puede marcar a todos» sigue en pie para el catálogo; **no
-sirve para este medio**, donde el problema no es que falte evidencia sino que la
-que hay va en contra.
+«esperar» era razonable. Con editoriales fechados que contradecían el número, no
+marcarlo era publicar una afirmación que el archivo del propio medio desmiente.
 
-**No está resuelto.** Es la decisión que Jose tiene que tomar al firmar.
+> **RESUELTO EL 2026-08-18, y por la vía buena: no marcando el número sino
+> corrigiéndolo.** La marca de «orientación en revisión» era el remedio para no
+> poder decidir; se pudo decidir. La objeción de «no se puede marcar a todos»
+> sigue en pie para el resto del catálogo y ya no aplica aquí.
 
 ---
 
@@ -204,7 +217,12 @@ que hay va en contra.
 En **−0,20 exacto** `classifySpectrum` devuelve `left` y `getBand` devuelve
 «Orientación mixta»: el mapa lo muestra como mixto mientras el análisis de
 cobertura lo cuenta como izquierda. **Es un fallo real y se arregla por separado**
-— no se usa como argumento para mover ningún número.
+— no se usó como argumento para mover ningún número.
+
+> **AL MOVER ESTE MEDIO A 0,00, EL FALLO PIERDE A UNA DE SUS DOS VÍCTIMAS Y SIGUE
+> VIVO** (2026-08-18). Los únicos medios que estaban exactamente en −0,20 eran este
+> y El País (España). Queda el segundo, así que el fallo sigue teniendo a quien
+> afectar y **no se puede dar por cerrado de rebote**.
 
 ---
 
@@ -227,9 +245,25 @@ registra como validación.
 
 ## ESTADO
 
-**Sin firmar, y sin propuesta de número.** El registro sigue en −0,20 con
-`reviewedAt: null`. Lo que cambió el 2026-08-17 es el motivo: ya no es que el valor
-carezca de base admisible, es que **la evidencia disponible del presente lo
-contradice**. La primera medición que puede cerrarla sigue siendo del
-**2026-11-06**; la decisión sobre qué ve el lector mientras tanto no puede esperar
-tanto.
+**FIRMADA EL 2026-08-18 en 0,00**, movida desde −0,20. Es **el primer valor que
+este catálogo mueve**, y el camino hasta aquí es el argumento: la v1 lo justificaba
+con la tradición liberal del diario; la regla del presente tumbó eso en agosto; el
+ciclo 1 demostró que la ficha declaraba un vacío que no existía; y la regla del
+polo fijo retiró lo último que quedaba, que era leer su fiscalización al gobierno
+como posición de izquierda.
+
+**Lo que sigue abierto, y no impide la firma:**
+
+- **La transformación en ESAL de 2025** sigue sin acto registral localizado: no
+  consta si Comunican S.A. sigue siendo la editora ni quién controla una entidad
+  sin ánimo de lucro. Es nivel 1 y hay que cerrarlo.
+- **La medición de conducta** del 2026-11-06 puede reabrir el número, y para eso
+  ahora sí hay archivo: el archivador de conducta corre a diario desde el
+  2026-08-18.
+
+**Y una consecuencia de producto que hay que mirar, no esconder:** este medio
+aportaba el **57,7 %** de las apariciones de la izquierda en el corpus. Al salir de
+esa banda, la tasa base del espectro se desploma y el **punto ciego de izquierda
+vuelve a ser casi indeclarable**. El número se corrige porque es lo que la
+evidencia manda; que la función insignia dependa de él es un problema de la
+métrica, y está anotado como tal.

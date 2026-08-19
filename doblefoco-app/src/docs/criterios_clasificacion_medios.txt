@@ -17,7 +17,7 @@ ninguno de ellos:
     Colombia Informa         -0.70               -0.65
     CuestiÃ³n PÃºblica         -0.50               -0.45
     El Colombiano            +0.40               +0.35
-    El Espectador            -0.15               -0.20
+    El Espectador            -0.15               -0.20   (hoy 0.00, firmado 2026-08-18)
 
 Un agregador cuya afirmaciÃ³n central es "clasificamos medios con mÃ©todo" no
 puede tener cuatro clasificaciones del mismo medio. Y el problema no era solo

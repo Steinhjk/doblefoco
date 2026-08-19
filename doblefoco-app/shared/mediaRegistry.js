@@ -389,7 +389,47 @@ export const MEDIA_REGISTRY = [
     {
         id: 'el-espectador', name: 'El Espectador', shortName: 'El Espectador',
         domain: 'elespectador.com', country: 'CO', group: 'Grupo Valorem',
-        bias: -0.20, factuality: 0.88, reviewedAt: null,
+        /**
+         * MOVIDO DE −0,20 A 0,00 Y FIRMADO EL 2026-08-18 por Jose Arbeláez.
+         *
+         * Es el primer valor que este catálogo mueve, y conviene decir por qué se
+         * pudo: no porque apareciera evidencia nueva a favor de la mixta, sino
+         * porque el ciclo 1 y la regla del polo fijo retiraron, uno tras otro,
+         * todo lo que sostenía el −0,20.
+         *
+         *   · «Tradición liberal» — retirada el 2026-08-08 por la regla del
+         *     presente. Era la justificación entera.
+         *   · Los editoriales de 2026 que el ciclo 1 encontró son crítica al
+         *     gobierno de turno por vía institucional, y **la regla del polo
+         *     fijo (§1) dice que fiscalizar al poder no desplaza a nadie en el
+         *     eje**, ni a un lado ni al otro.
+         *   · No respaldó a ningún candidato en la segunda vuelta del
+         *     21-06-2026, que es la conducta de la casa en el momento de máxima
+         *     presión polarizante del período.
+         *
+         * Retirado todo eso, no queda nada que lo sitúe en el eje
+         * izquierda-derecha, y la regla 5.2 del protocolo manda la banda más
+         * cercana a la mixta. El 0,00 NO significa neutral: significa que su
+         * línea —institucionalista, de acceso a la información y control del
+         * poder— no se ordena en ese eje.
+         *
+         * CONSECUENCIA QUE HAY QUE MIRAR, y no es motivo para no hacerlo: este
+         * medio aportaba el 57,7 % de las apariciones de la izquierda en el
+         * corpus. Al salir, la tasa base de ese espectro se desploma y el punto
+         * ciego de izquierda vuelve a ser casi indeclarable. El número se corrige
+         * porque es lo que la evidencia manda; que una métrica dependa de él es
+         * un problema de la métrica.
+         */
+        bias: 0.00,
+        factuality: 0.88,
+        reviewedAt: '2026-08-18',
+        biasSources: [
+            'https://valorem.com.co/el-espectador/',
+            'https://www.elespectador.com/opinion/editorial/editorial-el-gobierno-burla-las-normas-y-las-garantias-electorales/',
+            'https://www.elespectador.com/opinion/editorial/gustavo-petro-critica-al-gobierno-petro/',
+            'https://www.elespectador.com/opinion/columnistas/el-espectador/editorial-en-video-en-la-recta-final-del-gobierno-petro-conviene-la-concertacion/',
+            'https://www.elespectador.com/autores/fidel-cano/',
+        ],
         /**
          * REESCRITA EL 2026-08-18, y con diez días de retraso sobre su propia
          * ficha. Decía: «Diario nacional con tradición liberal; énfasis en
@@ -411,11 +451,13 @@ export const MEDIA_REGISTRY = [
          * honesto mientras el valor siga sin firmar.
          */
         biasRationale:
-            'Clasificación en revisión. Su justificación anterior apelaba a la tradición liberal del '
-            + 'diario, y la regla del presente no admite el pasado como evidencia. Los editoriales de '
-            + '2026 muestran un diario crítico del Gobierno por vía institucional y sin respaldo a '
-            + 'ningún candidato en la elección; no sostienen el valor actual — ver '
-            + 'fichas/el-espectador.md.',
+            'Orientación mixta: su línea es institucionalista y no se ordena en el eje '
+            + 'izquierda-derecha. Sus editoriales de 2026 critican al gobierno de turno por vía '
+            + 'institucional —defensa de la Corte y del Banco de la República (01-02-2026), garantías '
+            + 'electorales (14-03-2026)— y fiscalizar al poder no es evidencia de orientación. No '
+            + 'respaldó a ningún candidato en la segunda vuelta. En 2025 se transformó en entidad sin '
+            + 'ánimo de lucro con objeto declarado de acceso a la información y lucha contra la '
+            + 'corrupción.',
         /**
          * PASA DE GOOGLE NEWS A FEED PROPIO (2026-08-08).
          *

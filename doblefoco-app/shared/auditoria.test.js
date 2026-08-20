@@ -95,9 +95,51 @@ describe('clasificarFeed', () => {
         cronologico: true,
     };
 
-    it('lo que no responde está roto, y dice por qué', () => {
-        const r = clasificarFeed({ ...sano, respondio: false, error: 'ETIMEDOUT' });
-        expect(r).toEqual({ estado: 'roto', motivo: 'ETIMEDOUT' });
+    describe('lo que no contesta, que no siempre es culpa del catálogo', () => {
+        /*
+         * La primera pasada del libro de hallazgos destapó esto: Razón Pública
+         * salió fichada como defecto del catálogo por un tropiezo de TLS, y es
+         * literalmente el medio que este proyecto tiene documentado como «falla
+         * por la red, no por el feed». Con un libro que guarda antigüedades, esa
+         * confusión no es un aviso de más: es ruido con memoria.
+         */
+        it('un tropiezo de red NO es un defecto: es que no se pudo saber', () => {
+            const r = clasificarFeed({
+                ...sano,
+                respondio: false,
+                error: 'Client network socket disconnected before secure TLS connection was established',
+            });
+            expect(r.estado).toBe('no-comprobable');
+            expect(r.motivo).toContain('local');
+        });
+
+        it('un timeout tampoco', () => {
+            expect(clasificarFeed({ ...sano, respondio: false, error: 'ETIMEDOUT' }).estado).toBe(
+                'no-comprobable',
+            );
+        });
+
+        it('un 403 o un 429 son el servidor hablando de nosotros, no de la URL', () => {
+            for (const e of ['Status code 403', 'Status code 429', 'Status code 500']) {
+                expect(clasificarFeed({ ...sano, respondio: false, error: e }).estado).toBe(
+                    'no-comprobable',
+                );
+            }
+        });
+
+        it('un 404 SÍ es nuestro: la URL del catálogo está mal', () => {
+            const r = clasificarFeed({ ...sano, respondio: false, error: 'Status code 404' });
+            expect(r).toEqual({ estado: 'roto', motivo: 'Status code 404' });
+        });
+
+        it('y responder algo que no es un feed también es nuestro', () => {
+            const r = clasificarFeed({
+                ...sano,
+                respondio: false,
+                error: 'Feed not recognized as RSS 1 or 2.',
+            });
+            expect(r.estado).toBe('roto');
+        });
     });
 
     /*

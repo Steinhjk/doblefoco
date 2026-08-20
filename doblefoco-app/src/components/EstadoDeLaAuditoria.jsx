@@ -1,6 +1,6 @@
 // @ts-check
 import { useMemo } from 'react';
-import { ClipboardCheck, Rss, Link2, SearchX, AlertTriangle } from 'lucide-react';
+import { ClipboardCheck, Rss, Link2, SearchX, AlertTriangle, History } from 'lucide-react';
 import {
     RED_HORAS,
     VERSION_AUDITORIA,
@@ -9,7 +9,9 @@ import {
     porGravedad,
     resumirAuditoria,
 } from '../../shared/auditoria.js';
+import { pendientes as pendientesDelLibro, resumirHallazgos } from '../../shared/hallazgos.js';
 import estadoAuditoria from '../../auditoria/estado.json';
+import libroHallazgos from '../../auditoria/hallazgos.json';
 import './EstadoDeLaAuditoria.css';
 
 /**
@@ -104,9 +106,23 @@ const EstadoDeLaAuditoria = () => {
             .filter((f) => f.feed?.margenRed !== null && f.feed?.margenRed < 1)
             .sort((a, b) => a.feed.margenRed - b.feed.margenRed);
 
+        /*
+         * EL LIBRO, QUE ES LO QUE LA FOTO NO PODÍA DECIR.
+         *
+         * `estado.json` responde «qué pasa hoy». Esto responde «qué llevamos sin
+         * arreglar», que es otra pregunta y la que de verdad obliga a alguien a
+         * hacer algo. Un defecto de hace dos meses y uno de esta mañana se veían
+         * exactamente igual hasta que existió este archivo.
+         */
+        const libro = resumirHallazgos(libroHallazgos);
+        const sinCerrar = pendientesDelLibro(libroHallazgos, AHORA).slice(0, 10);
+
         return {
             compatible: true,
             resumen,
+            libro,
+            sinCerrar,
+            totalSinCerrar: pendientesDelLibro(libroHallazgos, AHORA).length,
             pendientes,
             enRiesgoSiCaeElMotor,
             ultimaPasada: estadoAuditoria.ultimaPasada ?? null,
@@ -196,6 +212,17 @@ const EstadoDeLaAuditoria = () => {
                     <span className="cifra-num">{resumen.noComprobables}</span>
                     <span className="cifra-lbl">No comprobables desde aquí</span>
                 </div>
+                <div className="auditoria-cifra">
+                    <span className="cifra-num">{datos.libro.abiertos}</span>
+                    <span className="cifra-lbl">Pendientes sin cerrar</span>
+                </div>
+                <div className="auditoria-cifra">
+                    <span className="cifra-num">
+                        {datos.libro.diasDelMasViejo}
+                        <span className="cifra-de">d</span>
+                    </span>
+                    <span className="cifra-lbl">Lleva el más viejo</span>
+                </div>
             </div>
 
             {resumen.rescatadosPorUa > 0 && (
@@ -205,6 +232,50 @@ const EstadoDeLaAuditoria = () => {
                     reintentar con el User-Agent limpio. Un puñado es normal; si un día son muchos,
                     lo que hay que revisar es nuestra cabecera y no sus servidores.
                 </p>
+            )}
+
+            {datos.sinCerrar.length > 0 && (
+                <div className="auditoria-bloque">
+                    <h3>
+                        <History size={16} aria-hidden="true" /> Lo que llevamos sin arreglar
+                    </h3>
+                    <p className="auditoria-nota">
+                        Ordenado por <strong>antigüedad</strong>, no por gravedad — y es
+                        deliberado: la tabla de abajo retrata el catálogo, y esta responde qué
+                        llevamos más tiempo sin hacer. Un aviso menor de hace dos meses dice más
+                        sobre nosotros que uno grave de ayer. El hilo de lo que se decide sobre
+                        cada uno se lleva en <code>MINUTA.md</code>.
+                    </p>
+
+                    <ul className="auditoria-libro">
+                        {datos.sinCerrar.map((h) => (
+                            <li key={h.id}>
+                                <span className="libro-edad">
+                                    {h.dias === null ? '—' : `${h.dias}d`}
+                                </span>
+                                <span className="libro-cuerpo">
+                                    <span className="libro-medio">
+                                        {h.nombre}
+                                        {h.reincidencias > 0 && (
+                                            <span className="libro-cronico">
+                                                ha vuelto {h.reincidencias}×
+                                            </span>
+                                        )}
+                                    </span>
+                                    <span className="libro-resumen">{h.resumen}</span>
+                                    <span className="libro-id">{h.id}</span>
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {datos.totalSinCerrar > datos.sinCerrar.length && (
+                        <p className="auditoria-nota auditoria-nota-final">
+                            Y {datos.totalSinCerrar - datos.sinCerrar.length} más, todos más
+                            recientes que estos.
+                        </p>
+                    )}
+                </div>
             )}
 
             <div className="auditoria-bloque">

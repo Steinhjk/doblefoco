@@ -284,3 +284,83 @@
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
 }
+
+/* ── El libro: lo que llevamos sin arreglar ─────────────────────────────── */
+
+.auditoria-libro {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auditoria-libro li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.auditoria-libro li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* La edad va primero y en cifra tabular: esta lista se lee en vertical, por la
+   columna de días, y no leyendo cada línea entera. */
+.libro-edad {
+    flex: 0 0 3.2rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 0.86rem;
+    color: var(--text-main);
+}
+
+.libro-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.libro-medio {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-weight: 700;
+    font-size: 0.86rem;
+    color: var(--text-main);
+}
+
+/* Reincidente. Va con palabra —«ha vuelto 3×»— y no solo con un color: es el
+   dato que distingue un problema crónico de uno nuevo, y perderlo por daltonismo
+   sería perder justo la parte que cambia la decisión. */
+.libro-cronico {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--warn);
+    background: var(--warn-soft);
+    padding: 1px 6px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.libro-resumen {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+}
+
+.libro-id {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+    overflow-wrap: anywhere;
+}

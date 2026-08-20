@@ -33,12 +33,24 @@
 #     comprobaciones que miente sobre su frescura es peor que no tenerlo. El
 #     precio es una ejecución de CI y un despliegue por semana; se paga.
 #
-#  4. EL AVISO SE ABRE POR DEFECTOS, NO POR «NO COMPROBABLES». Que un sitio nos
+#  4. EL AVISO SE ABRE POR LO NUEVO, NO POR LO DE SIEMPRE. Es la corrección más
+#     importante que trajo el libro de hallazgos. Antes bastaba con que HUBIERA
+#     defectos, y casi siempre los hay: eso son cincuenta y dos avisos idénticos
+#     al año con los mismos catorce nombres, que es la receta exacta para que
+#     nadie los abra. Ahora se abre cuando aparece algo NUEVO o algo VUELVE, y el
+#     cuerpo dice además cuántos quedan sin cerrar y cuánto lleva el más viejo.
+#     Lo que no cambia, no interrumpe.
+#
+#     Y sigue sin abrirse por «no comprobables». Que un sitio nos
 #     cierre la puerta desde la nube no es un defecto del catálogo: Vorágine y
 #     Razón Pública responden desde una máquina de casa y fallan desde Actions
 #     por la IP. Eso sale en el informe y en el panel, con la instrucción de
 #     repetirlo en local, pero no abre un issue. Avisar de lo que no es culpa de
 #     nadie es la forma más rápida de que dejen de leerse los avisos.
+#
+#  5. EL LIBRO VUELVE COMMITEADO, igual que el estado. `auditoria/hallazgos.json`
+#     es la memoria entre pasadas: sin él, cada semana todo volvería a ser nuevo
+#     y la antigüedad —el único dato que de verdad presiona— no existiría.
 # =============================================================================
 
 name: Auditoría
@@ -98,7 +110,7 @@ jobs:
           fi
           echo "termino=si" >> "$GITHUB_OUTPUT"
           for k in medios feedsRotos feedsARevisar fuentesRotas rutasTrampa \
-                   rescatadosPorUa noComprobables conDefecto; do
+                   rescatadosPorUa noComprobables conDefecto                    nuevos reaparecidos resueltosHoy pendientes diasDelMasViejo; do
             echo "$k=$(jq -r ".$k" "$RUNNER_TEMP/resumen.json")" >> "$GITHUB_OUTPUT"
           done
 
@@ -106,14 +118,14 @@ jobs:
       - name: Guardar el estado en el repositorio
         if: steps.resumen.outputs.termino == 'si'
         run: |
-          if git diff --quiet -- doblefoco-app/auditoria/estado.json; then
+          if git diff --quiet -- doblefoco-app/auditoria/; then
             echo "La auditoría no cambió nada."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add doblefoco-app/auditoria/estado.json
-          git commit -m "Auditoría del $(date -u '+%Y-%m-%d'): $(jq -r '.conDefecto' "$RUNNER_TEMP/resumen.json") medio(s) piden una mirada"
+          git add doblefoco-app/auditoria/estado.json doblefoco-app/auditoria/hallazgos.json
+          git commit -m "Auditoría del $(date -u '+%Y-%m-%d'): $(jq -r '.nuevos' "$RUNNER_TEMP/resumen.json") nuevo(s), $(jq -r '.pendientes' "$RUNNER_TEMP/resumen.json") sin cerrar"
           git push
 
       # ── Aviso ──────────────────────────────────────────────────────────────
@@ -121,7 +133,7 @@ jobs:
       # lleva la fecha, así que buscarlo abriría uno nuevo cada semana del mismo
       # asunto sin leer.
       - name: Asegurar la etiqueta
-        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.conDefecto != '0'
+        if: steps.resumen.outputs.termino == 'si' && (steps.resumen.outputs.nuevos != '0' || steps.resumen.outputs.reaparecidos != '0')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -132,7 +144,7 @@ jobs:
 
       - name: Buscar el aviso abierto
         id: abierto
-        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.conDefecto != '0'
+        if: steps.resumen.outputs.termino == 'si' && (steps.resumen.outputs.nuevos != '0' || steps.resumen.outputs.reaparecidos != '0')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -141,16 +153,30 @@ jobs:
           echo "numero=$numero" >> "$GITHUB_OUTPUT"
 
       - name: Abrir o ampliar el aviso
-        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.conDefecto != '0'
+        if: steps.resumen.outputs.termino == 'si' && (steps.resumen.outputs.nuevos != '0' || steps.resumen.outputs.reaparecidos != '0')
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
           ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          CON_DEFECTO: ${{ steps.resumen.outputs.conDefecto }}
+          NUEVOS: ${{ steps.resumen.outputs.nuevos }}
+          REAPARECIDOS: ${{ steps.resumen.outputs.reaparecidos }}
+          RESUELTOS: ${{ steps.resumen.outputs.resueltosHoy }}
+          SIN_CERRAR: ${{ steps.resumen.outputs.pendientes }}
+          MAS_VIEJO: ${{ steps.resumen.outputs.diasDelMasViejo }}
           NO_COMPROBABLES: ${{ steps.resumen.outputs.noComprobables }}
         run: |
           {
-            echo "**$CON_DEFECTO medio(s) piden una mirada.**"
+            echo "**$NUEVOS hallazgo(s) nuevo(s) y $REAPARECIDOS que vuelven.**"
+            echo
+            echo "Este aviso NO se abre por los defectos de siempre: se abre por lo que cambió."
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Nuevos | $NUEVOS |"
+            echo "| Vuelven | $REAPARECIDOS |"
+            echo "| Se resolvieron solos | $RESUELTOS |"
+            echo "| **Sin cerrar en total** | **$SIN_CERRAR** |"
+            echo "| El más viejo lleva | $MAS_VIEJO día(s) |"
             echo
             echo "Un feed que responde pero no alimenta, una fuente que ya no resuelve o un"
             echo "sitio que contesta 200 a cualquier ruta. Esto no es un juicio sobre ningún"
@@ -166,7 +192,10 @@ jobs:
             tail -c 30000 "$RUNNER_TEMP/auditoria.txt"
             echo '```'
             echo
-            echo "El detalle, con su fecha, en el panel de administración."
+            echo "El detalle, con su antigüedad, en el panel de administración."
+            echo "**Lo que se decida sobre cada uno se anota en \`MINUTA.md\`.** Un hallazgo que"
+            echo "no esté en esa lista no está pendiente: está olvidado, y las dos cosas se ven"
+            echo "igual dentro de tres meses."
             echo
             echo "[Ver la ejecución completa]($ENLACE)"
           } > "$RUNNER_TEMP/cuerpo.md"
@@ -175,7 +204,7 @@ jobs:
             gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
           else
             gh issue create \
-              --title "Auditoría — $(date -u '+%Y-%m-%d'): $CON_DEFECTO medio(s) piden una mirada" \
+              --title "Auditoría — $(date -u '+%Y-%m-%d'): $NUEVOS nuevo(s), $SIN_CERRAR sin cerrar" \
               --label auditoria \
               --body-file "$RUNNER_TEMP/cuerpo.md"
           fi

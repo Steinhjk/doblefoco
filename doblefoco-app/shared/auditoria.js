@@ -158,6 +158,48 @@ export function margenDeSondeo(piezasPorDia, cicloHoras = CICLO_HORAS, itemsPorC
 const HUECOS_ANTES_DE_PARADO = 3;
 
 /**
+ * QUE UN FEED NO CONTESTE NO ES SIEMPRE UN DEFECTO DEL CATÁLOGO.
+ *
+ * Esta distinción ya gobernaba las FUENTES desde el primer día —un 403 sale «no
+ * comprobable» y no «roto», porque la URL puede estar viva para un lector—, y yo
+ * no se la había aplicado a los feeds. La primera pasada del libro de hallazgos
+ * lo puso delante: fichó a **Razón Pública** como defecto del catálogo por un
+ * «Client network socket disconnected before secure TLS connection», que es
+ * literalmente el caso que este proyecto tiene documentado como *falla por la
+ * red, no por el feed*.
+ *
+ * Y con el libro la confusión se paga más cara que antes: un tropiezo de red se
+ * convertía en una entrada con antigüedad, que la semana siguiente se marcaba
+ * resuelta y a la otra reaparecía como crónica. Ruido con memoria.
+ *
+ *   NO COMPROBABLE   no llegamos: TLS, DNS, timeout, socket, o su servidor
+ *                    devolvió 5xx o nos rechazó. Se dice y se pide repetir en
+ *                    local, igual que con las fuentes.
+ *   ROTO             llegamos y lo que hay no sirve: 404, o responde algo que no
+ *                    es un feed. Eso sí es nuestro, y hay que cambiar la URL.
+ */
+function noRespondio(v) {
+    const error = v.error ?? 'no respondió';
+    const texto = String(error).toLowerCase();
+
+    /*
+     * Solo dos códigos significan «esto no existe», y son los únicos que se
+     * cobran como defecto nuestro. Un 403, un 429 o un 500 son el servidor del
+     * medio diciendo algo sobre sí mismo o sobre nosotros, no sobre la URL.
+     */
+    if (/status code (404|410)/.test(texto)) return { estado: 'roto', motivo: error };
+
+    // Llegamos y lo que sirve no es un feed.
+    if (/not recognized|invalid|unexpected (close tag|end)|non-whitespace/.test(texto))
+        return { estado: 'roto', motivo: `no devuelve un feed válido: ${error}` };
+
+    return {
+        estado: 'no-comprobable',
+        motivo: `no se pudo llegar (${error}). Repetir en local antes de darlo por roto`,
+    };
+}
+
+/**
  * CERO PIEZAS FRESCAS SON DOS COSAS DISTINTAS, Y CONFUNDIRLAS ACUSA AL INOCENTE.
  *
  * Este es el fallo que los datos reales destaparon en la primera pasada. La
@@ -219,7 +261,7 @@ function sinNadaFresco(v) {
  * }} v
  */
 export function clasificarFeed(v) {
-    if (!v.respondio) return { estado: 'roto', motivo: v.error ?? 'no respondió' };
+    if (!v.respondio) return noRespondio(v);
     if (v.items === 0) return { estado: 'roto', motivo: 'respondió sin artículos' };
     if (v.frescos === 0) return sinNadaFresco(v);
 

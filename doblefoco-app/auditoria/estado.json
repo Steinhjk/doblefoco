@@ -12,11 +12,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 9.7,
-                "piezasPorDia": 121.7,
-                "edadMasNuevoHoras": 0,
-                "margen": 5.92,
-                "margenRed": 1.48,
+                "ventanaHoras": 10.2,
+                "piezasPorDia": 115.3,
+                "edadMasNuevoHoras": 2,
+                "margen": 6.24,
+                "margenRed": 1.56,
                 "vias": [
                     {
                         "url": "https://diariolalibertad.com/feed/",
@@ -129,11 +129,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 51,
-                "piezasPorDia": 4.2,
-                "edadMasNuevoHoras": 3.9,
-                "margen": 170,
-                "margenRed": 42.5,
+                "ventanaHoras": 38,
+                "piezasPorDia": 5.7,
+                "edadMasNuevoHoras": 2.9,
+                "margen": 126.66,
+                "margenRed": 31.67,
                 "vias": [
                     {
                         "url": "https://semanariovoz.com/feed/",
@@ -198,14 +198,14 @@
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 3,
+                "frescos": 4,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 220.4,
+                "ventanaHoras": 216.8,
                 "piezasPorDia": 1,
-                "edadMasNuevoHoras": 21.8,
-                "margen": 734.53,
-                "margenRed": 183.63,
+                "edadMasNuevoHoras": 2.3,
+                "margen": 722.66,
+                "margenRed": 180.67,
                 "vias": [
                     {
                         "url": "https://www.colombiainforma.info/feed/",
@@ -257,7 +257,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 370.3,
                 "piezasPorDia": 0.6,
-                "edadMasNuevoHoras": 84.8,
+                "edadMasNuevoHoras": 87.7,
                 "margen": 1234.25,
                 "margenRed": 308.56,
                 "vias": [
@@ -302,7 +302,7 @@
                 "conImagen": 15,
                 "ventanaHoras": 1084,
                 "piezasPorDia": 0.9,
-                "edadMasNuevoHoras": 0.4,
+                "edadMasNuevoHoras": 3.3,
                 "margen": 833.82,
                 "margenRed": 208.45,
                 "vias": [
@@ -356,7 +356,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 35164.8,
                 "piezasPorDia": 0.1,
-                "edadMasNuevoHoras": 13.1,
+                "edadMasNuevoHoras": 16.1,
                 "margen": 10656,
                 "margenRed": 2664,
                 "vias": [
@@ -407,11 +407,11 @@
                 {
                     "url": "https://flip.org.co/pronunciamientos/orden-emitida-por-la-fiscalia-constrine-el-ejercicio-periodistico-de-la-revista-raya",
                     "institucional": false,
-                    "status": 200,
+                    "status": 0,
                     "uaLimpio": false,
                     "titulo": null,
-                    "estado": "sano",
-                    "motivo": null
+                    "estado": "no-comprobable",
+                    "motivo": "sin respuesta en 20000 ms"
                 }
             ],
             "reintentoUaLimpio": false
@@ -428,7 +428,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 731.9,
                 "piezasPorDia": 0.3,
-                "edadMasNuevoHoras": 86.4,
+                "edadMasNuevoHoras": 89.4,
                 "margen": 2439.69,
                 "margenRed": 609.92,
                 "vias": [
@@ -491,7 +491,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 150.8,
                 "piezasPorDia": 1.4,
-                "edadMasNuevoHoras": 4,
+                "edadMasNuevoHoras": 6.9,
                 "margen": 502.65,
                 "margenRed": 125.66,
                 "vias": [
@@ -537,23 +537,23 @@
             "nombre": "R. Pública",
             "comprobadoEl": "2026-08-20",
             "feed": {
-                "estado": "sano",
-                "motivo": null,
+                "estado": "roto",
+                "motivo": "el feed está parado: publica una pieza cada 4.1 h y lo más nuevo es de hace 74 h",
                 "items": 10,
-                "frescos": 8,
+                "frescos": 0,
                 "tomados": 10,
                 "conImagen": 10,
                 "ventanaHoras": 36.6,
                 "piezasPorDia": 5.9,
-                "edadMasNuevoHoras": 70.7,
+                "edadMasNuevoHoras": 73.7,
                 "margen": 122.15,
                 "margenRed": 30.54,
                 "vias": [
                     {
                         "url": "https://razonpublica.com/feed/",
                         "via": "direct",
-                        "estado": "sano",
-                        "motivo": null
+                        "estado": "roto",
+                        "motivo": "el feed está parado: publica una pieza cada 4.1 h y lo más nuevo es de hace 74 h"
                     }
                 ]
             },
@@ -569,20 +569,20 @@
                 {
                     "url": "https://razonpublica.com/quienes-somos/",
                     "institucional": true,
-                    "status": 200,
+                    "status": 0,
                     "uaLimpio": false,
-                    "titulo": "Quiénes somos - Razón Pública",
-                    "estado": "sano",
-                    "motivo": null
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "fetch failed"
                 },
                 {
                     "url": "https://razonpublica.com/que-es-razon-publica/",
                     "institucional": false,
-                    "status": 200,
+                    "status": 0,
                     "uaLimpio": false,
                     "titulo": null,
-                    "estado": "sano",
-                    "motivo": null
+                    "estado": "no-comprobable",
+                    "motivo": "fetch failed"
                 }
             ],
             "reintentoUaLimpio": false
@@ -597,11 +597,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 18.2,
-                "piezasPorDia": 25.1,
-                "edadMasNuevoHoras": -10.3,
-                "margen": 28.74,
-                "margenRed": 7.18,
+                "ventanaHoras": 31.5,
+                "piezasPorDia": 14.5,
+                "edadMasNuevoHoras": -21.5,
+                "margen": 49.7,
+                "margenRed": 12.42,
                 "vias": [
                     {
                         "url": "https://cambiocolombia.com/feeds/articulos/",
@@ -662,7 +662,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 0.3,
                 "piezasPorDia": 682.1,
-                "edadMasNuevoHoras": 67.9,
+                "edadMasNuevoHoras": 70.9,
                 "margen": 1.06,
                 "margenRed": 0.26,
                 "vias": [
@@ -727,14 +727,14 @@
             "comprobadoEl": "2026-08-20",
             "feed": {
                 "estado": "roto",
-                "motivo": "el feed está parado: publica una pieza cada 0.5 h y lo más nuevo es de hace 143 h",
+                "motivo": "el feed está parado: publica una pieza cada 0.5 h y lo más nuevo es de hace 146 h",
                 "items": 10,
                 "frescos": 0,
                 "tomados": 10,
                 "conImagen": 10,
                 "ventanaHoras": 4.2,
                 "piezasPorDia": 51.1,
-                "edadMasNuevoHoras": 143.1,
+                "edadMasNuevoHoras": 146,
                 "margen": 14.08,
                 "margenRed": 3.52,
                 "vias": [
@@ -742,7 +742,7 @@
                         "url": "https://www.telemedellin.tv/feed/",
                         "via": "direct",
                         "estado": "roto",
-                        "motivo": "el feed está parado: publica una pieza cada 0.5 h y lo más nuevo es de hace 143 h"
+                        "motivo": "el feed está parado: publica una pieza cada 0.5 h y lo más nuevo es de hace 146 h"
                     }
                 ]
             },
@@ -777,11 +777,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 25.1,
-                "piezasPorDia": 8.6,
-                "edadMasNuevoHoras": 1.9,
-                "margen": 83.73,
-                "margenRed": 20.93,
+                "ventanaHoras": 26.6,
+                "piezasPorDia": 8.1,
+                "edadMasNuevoHoras": 2.9,
+                "margen": 88.69,
+                "margenRed": 22.17,
                 "vias": [
                     {
                         "url": "https://www.canalcapital.gov.co/feed/",
@@ -824,7 +824,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 1489.6,
                 "piezasPorDia": 0.1,
-                "edadMasNuevoHoras": 154.3,
+                "edadMasNuevoHoras": 157.3,
                 "margen": 4965.39,
                 "margenRed": 1241.35,
                 "vias": [
@@ -916,14 +916,14 @@
             "comprobadoEl": "2026-08-20",
             "feed": {
                 "estado": "revisar",
-                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "motivo": "publica despacio —una pieza cada 481.1 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
                 "items": 100,
-                "frescos": 1,
+                "frescos": 0,
                 "tomados": 15,
                 "conImagen": 0,
                 "ventanaHoras": 47625.5,
                 "piezasPorDia": 0,
-                "edadMasNuevoHoras": 71.8,
+                "edadMasNuevoHoras": 74.8,
                 "margen": 14431.96,
                 "margenRed": 3607.99,
                 "vias": [
@@ -931,7 +931,7 @@
                         "url": "https://news.google.com/rss/search?q=site%3Artvcnoticias.com&hl=es-419&gl=CO&ceid=CO:es-419",
                         "via": "gnews",
                         "estado": "revisar",
-                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                        "motivo": "publica despacio —una pieza cada 481.1 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto"
                     }
                 ]
             },
@@ -978,23 +978,23 @@
             "nombre": "El Espectador",
             "comprobadoEl": "2026-08-20",
             "feed": {
-                "estado": "sano",
-                "motivo": null,
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 20,
                 "frescos": 14,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 2383.3,
+                "ventanaHoras": 2385.3,
                 "piezasPorDia": 0.2,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 3763.11,
-                "margenRed": 940.78,
+                "edadMasNuevoHoras": 1,
+                "margen": 3766.33,
+                "margenRed": 941.58,
                 "vias": [
                     {
                         "url": "https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml",
                         "via": "direct",
-                        "estado": "sano",
-                        "motivo": null
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
                     }
                 ]
             },
@@ -1058,7 +1058,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 2.9,
                 "piezasPorDia": 74.7,
-                "edadMasNuevoHoras": 0.2,
+                "edadMasNuevoHoras": 3.1,
                 "margen": 9.64,
                 "margenRed": 2.41,
                 "vias": [
@@ -1119,11 +1119,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 3.7,
-                "piezasPorDia": 57.7,
-                "edadMasNuevoHoras": 0.6,
-                "margen": 12.48,
-                "margenRed": 3.12,
+                "ventanaHoras": 3.9,
+                "piezasPorDia": 54.8,
+                "edadMasNuevoHoras": 0.9,
+                "margen": 13.15,
+                "margenRed": 3.29,
                 "vias": [
                     {
                         "url": "https://www.eltiempo.com/rss/colombia.xml",
@@ -1204,14 +1204,14 @@
             "comprobadoEl": "2026-08-20",
             "feed": {
                 "estado": "roto",
-                "motivo": "el feed está parado: publica una pieza cada 1679.7 h y lo más nuevo es de hace 7562 h",
+                "motivo": "el feed está parado: publica una pieza cada 1679.7 h y lo más nuevo es de hace 7565 h",
                 "items": 13,
                 "frescos": 0,
                 "tomados": 13,
                 "conImagen": 13,
                 "ventanaHoras": 20156.9,
                 "piezasPorDia": 0,
-                "edadMasNuevoHoras": 7561.6,
+                "edadMasNuevoHoras": 7564.5,
                 "margen": 50392.25,
                 "margenRed": 12598.06,
                 "vias": [
@@ -1219,7 +1219,7 @@
                         "url": "https://www.wradio.com.co/arc/outboundfeeds/rss/?outputType=xml",
                         "via": "direct",
                         "estado": "roto",
-                        "motivo": "el feed está parado: publica una pieza cada 1679.7 h y lo más nuevo es de hace 7562 h"
+                        "motivo": "el feed está parado: publica una pieza cada 1679.7 h y lo más nuevo es de hace 7565 h"
                     }
                 ]
             },
@@ -1281,11 +1281,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 36.2,
-                "piezasPorDia": 65.7,
-                "edadMasNuevoHoras": 0,
-                "margen": 10.96,
-                "margenRed": 2.74,
+                "ventanaHoras": 39,
+                "piezasPorDia": 60.9,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 11.82,
+                "margenRed": 2.95,
                 "vias": [
                     {
                         "url": "https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml",
@@ -1350,14 +1350,14 @@
                 "estado": "revisar",
                 "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 7,
+                "frescos": 8,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 112569,
+                "ventanaHoras": 112569.7,
                 "piezasPorDia": 0,
-                "edadMasNuevoHoras": 2.2,
-                "margen": 34111.8,
-                "margenRed": 8527.95,
+                "edadMasNuevoHoras": 4.3,
+                "margen": 34112.05,
+                "margenRed": 8528.01,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Anoticiascaracol.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -1425,11 +1425,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 2.8,
-                "piezasPorDia": 76.9,
-                "edadMasNuevoHoras": 1.4,
-                "margen": 9.36,
-                "margenRed": 2.34,
+                "ventanaHoras": 5.4,
+                "piezasPorDia": 39.6,
+                "edadMasNuevoHoras": 1.7,
+                "margen": 18.16,
+                "margenRed": 4.54,
                 "vias": [
                     {
                         "url": "https://www.portafolio.co/rss/economia.xml",
@@ -1488,11 +1488,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 24.6,
-                "piezasPorDia": 47.8,
-                "edadMasNuevoHoras": -3.7,
-                "margen": 15.07,
-                "margenRed": 3.77,
+                "ventanaHoras": 25.4,
+                "piezasPorDia": 46.3,
+                "edadMasNuevoHoras": -2.7,
+                "margen": 15.56,
+                "margenRed": 3.89,
                 "vias": [
                     {
                         "url": "https://www.valoraanalitik.com/feed/",
@@ -1555,22 +1555,22 @@
             "comprobadoEl": "2026-08-20",
             "feed": {
                 "estado": "revisar",
-                "motivo": "publica más de lo que cabe en un sondeo (margen 0.37×): se pierden piezas",
+                "motivo": "publica más de lo que cabe en un sondeo (margen 0.26×): se pierden piezas",
                 "items": 100,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 1.2,
-                "piezasPorDia": 1936.1,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 0.37,
-                "margenRed": 0.09,
+                "ventanaHoras": 0.9,
+                "piezasPorDia": 2794.4,
+                "edadMasNuevoHoras": 0,
+                "margen": 0.26,
+                "margenRed": 0.06,
                 "vias": [
                     {
                         "url": "https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml",
                         "via": "direct",
                         "estado": "revisar",
-                        "motivo": "publica más de lo que cabe en un sondeo (margen 0.37×): se pierden piezas"
+                        "motivo": "publica más de lo que cabe en un sondeo (margen 0.26×): se pierden piezas"
                     }
                 ]
             },
@@ -1632,11 +1632,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 15.1,
-                "piezasPorDia": 94.1,
-                "edadMasNuevoHoras": 0.4,
-                "margen": 7.65,
-                "margenRed": 1.91,
+                "ventanaHoras": 14.4,
+                "piezasPorDia": 98.3,
+                "edadMasNuevoHoras": 1.8,
+                "margen": 7.32,
+                "margenRed": 1.83,
                 "vias": [
                     {
                         "url": "https://www.larepublica.co/rss",
@@ -1695,11 +1695,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 386.4,
+                "ventanaHoras": 389.3,
                 "piezasPorDia": 6.1,
                 "edadMasNuevoHoras": 0.1,
-                "margen": 117.08,
-                "margenRed": 29.27,
+                "margen": 117.98,
+                "margenRed": 29.49,
                 "vias": [
                     {
                         "url": "https://www.elheraldo.co/arc/outboundfeeds/rss/",
@@ -1715,7 +1715,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "ELHERALDO.CO",
-                "bytes": 1421566
+                "bytes": 1420152
             },
             "fuentes": [
                 {
@@ -1760,7 +1760,7 @@
                 "conImagen": 15,
                 "ventanaHoras": 111.6,
                 "piezasPorDia": 21.3,
-                "edadMasNuevoHoras": 58.1,
+                "edadMasNuevoHoras": 61,
                 "margen": 33.82,
                 "margenRed": 8.46,
                 "vias": [
@@ -1830,11 +1830,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 80484.2,
+                "ventanaHoras": 80486.6,
                 "piezasPorDia": 0,
-                "edadMasNuevoHoras": 0.3,
-                "margen": 24389.14,
-                "margenRed": 6097.29,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 24389.88,
+                "margenRed": 6097.47,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Abluradio.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -1899,14 +1899,14 @@
                 "estado": "revisar",
                 "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 99,
-                "frescos": 11,
+                "frescos": 12,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 99454.8,
+                "ventanaHoras": 99457.4,
                 "piezasPorDia": 0,
-                "edadMasNuevoHoras": 2.4,
-                "margen": 30445.35,
-                "margenRed": 7611.34,
+                "edadMasNuevoHoras": 2.8,
+                "margen": 30446.14,
+                "margenRed": 7611.53,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Anoticiasrcn.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -1980,14 +1980,14 @@
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 9,
+                "frescos": 4,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 2856.4,
+                "ventanaHoras": 2829.7,
                 "piezasPorDia": 0.1,
-                "edadMasNuevoHoras": 11.1,
-                "margen": 9521.38,
-                "margenRed": 2380.34,
+                "edadMasNuevoHoras": 40.7,
+                "margen": 9432.36,
+                "margenRed": 2358.09,
                 "vias": [
                     {
                         "url": "https://www.lapatria.com/rss.xml",
@@ -2037,11 +2037,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 13.2,
-                "piezasPorDia": 179.3,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 4.02,
-                "margenRed": 1,
+                "ventanaHoras": 13,
+                "piezasPorDia": 183,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 3.93,
+                "margenRed": 0.98,
                 "vias": [
                     {
                         "url": "https://www.vanguardia.com/arc/outboundfeeds/rss/",
@@ -2118,11 +2118,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 3.4,
-                "piezasPorDia": 62.6,
-                "edadMasNuevoHoras": 2.1,
-                "margen": 11.5,
-                "margenRed": 2.87,
+                "ventanaHoras": 6.3,
+                "piezasPorDia": 34.1,
+                "edadMasNuevoHoras": 1.1,
+                "margen": 21.12,
+                "margenRed": 5.28,
                 "vias": [
                     {
                         "url": "https://www.laopinion.com.co/rss.xml",
@@ -2181,11 +2181,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 23.8,
-                "piezasPorDia": 100,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 7.2,
-                "margenRed": 1.8,
+                "ventanaHoras": 23.9,
+                "piezasPorDia": 99.2,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 7.26,
+                "margenRed": 1.81,
                 "vias": [
                     {
                         "url": "https://www.elpais.com.co/arc/outboundfeeds/rss/",
@@ -2216,11 +2216,11 @@
                 {
                     "url": "https://www.elcolombiano.com/negocios/gilinski-vendio-el-pais-de-cali-y-eduardo-hernandez-inchaustegui-nuevo-dueno-IK27879652",
                     "institucional": false,
-                    "status": 200,
+                    "status": 0,
                     "uaLimpio": false,
                     "titulo": null,
-                    "estado": "sano",
-                    "motivo": null
+                    "estado": "no-comprobable",
+                    "motivo": "sin respuesta en 20000 ms"
                 },
                 {
                     "url": "https://www.diariolibre.com/usa/actualidad/2025/06/27/empresario-dominicano-asume-el-control-del-diario-colombiano-el-pais/3165389",
@@ -2253,11 +2253,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 3,
-                "piezasPorDia": 72.5,
-                "edadMasNuevoHoras": 1.8,
-                "margen": 9.93,
-                "margenRed": 2.48,
+                "ventanaHoras": 6.5,
+                "piezasPorDia": 33.3,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 21.64,
+                "margenRed": 5.41,
                 "vias": [
                     {
                         "url": "https://www.kienyke.com/feed",
@@ -2316,11 +2316,11 @@
                 "frescos": 5,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 161.7,
-                "piezasPorDia": 14.7,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 49.01,
-                "margenRed": 12.25,
+                "ventanaHoras": 162.7,
+                "piezasPorDia": 14.6,
+                "edadMasNuevoHoras": 2.1,
+                "margen": 49.31,
+                "margenRed": 12.33,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Alafm.com.co&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -2388,11 +2388,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 9.6,
-                "piezasPorDia": 247.7,
-                "edadMasNuevoHoras": 0.7,
-                "margen": 2.91,
-                "margenRed": 0.73,
+                "ventanaHoras": 11,
+                "piezasPorDia": 216.2,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 3.33,
+                "margenRed": 0.83,
                 "vias": [
                     {
                         "url": "https://www.elcolombiano.com/rss/portada.xml",
@@ -2423,11 +2423,11 @@
                 {
                     "url": "https://www.elcolombiano.com/antioquia/luz-maria-sierra-es-la-nueva-directora-de-el-colombiano-FD15344753",
                     "institucional": false,
-                    "status": 200,
+                    "status": 0,
                     "uaLimpio": false,
                     "titulo": null,
-                    "estado": "sano",
-                    "motivo": null
+                    "estado": "no-comprobable",
+                    "motivo": "sin respuesta en 20000 ms"
                 },
                 {
                     "url": "https://www.elcolombiano.com/antioquia/venta-de-acciones-de-el-colombiano-asi-fue-el-negocio-MI16691915",
@@ -2460,11 +2460,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 9.8,
-                "piezasPorDia": 46.4,
-                "edadMasNuevoHoras": 5,
-                "margen": 15.53,
-                "margenRed": 3.88,
+                "ventanaHoras": 9,
+                "piezasPorDia": 50.6,
+                "edadMasNuevoHoras": 6.4,
+                "margen": 14.23,
+                "margenRed": 3.56,
                 "vias": [
                     {
                         "url": "https://elpilon.com.co/api/rss",
@@ -2516,7 +2516,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 6.3,
                 "piezasPorDia": 34.3,
-                "edadMasNuevoHoras": 1.3,
+                "edadMasNuevoHoras": 4.3,
                 "margen": 20.98,
                 "margenRed": 5.25,
                 "vias": [
@@ -2570,7 +2570,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 103.7,
                 "piezasPorDia": 22.9,
-                "edadMasNuevoHoras": 1.2,
+                "edadMasNuevoHoras": 4.2,
                 "margen": 31.41,
                 "margenRed": 7.85,
                 "vias": [
@@ -2615,7 +2615,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 96.2,
                 "piezasPorDia": 24.4,
-                "edadMasNuevoHoras": 2.8,
+                "edadMasNuevoHoras": 5.7,
                 "margen": 29.46,
                 "margenRed": 7.37,
                 "vias": [
@@ -2669,7 +2669,7 @@
                 "conImagen": 15,
                 "ventanaHoras": 28.4,
                 "piezasPorDia": 16.1,
-                "edadMasNuevoHoras": 1.5,
+                "edadMasNuevoHoras": 4.4,
                 "margen": 44.8,
                 "margenRed": 11.2,
                 "vias": [
@@ -2721,11 +2721,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 52.7,
-                "piezasPorDia": 4.1,
-                "edadMasNuevoHoras": 2,
-                "margen": 175.74,
-                "margenRed": 43.93,
+                "ventanaHoras": 51.8,
+                "piezasPorDia": 4.2,
+                "edadMasNuevoHoras": 2.6,
+                "margen": 172.75,
+                "margenRed": 43.19,
                 "vias": [
                     {
                         "url": "https://choco7dias.com/feed/",
@@ -2768,7 +2768,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 311.5,
                 "piezasPorDia": 0.7,
-                "edadMasNuevoHoras": 50.6,
+                "edadMasNuevoHoras": 53.5,
                 "margen": 1038.43,
                 "margenRed": 259.61,
                 "vias": [
@@ -2811,11 +2811,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 18.9,
-                "piezasPorDia": 11.4,
-                "edadMasNuevoHoras": 2.4,
-                "margen": 63.1,
-                "margenRed": 15.78,
+                "ventanaHoras": 21.3,
+                "piezasPorDia": 10.1,
+                "edadMasNuevoHoras": 2.8,
+                "margen": 71.11,
+                "margenRed": 17.78,
                 "vias": [
                     {
                         "url": "https://miputumayo.com.co/feed/",
@@ -2858,7 +2858,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 297.8,
                 "piezasPorDia": 0.7,
-                "edadMasNuevoHoras": 3.3,
+                "edadMasNuevoHoras": 6.3,
                 "margen": 992.59,
                 "margenRed": 248.15,
                 "vias": [
@@ -2901,11 +2901,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 9.5,
-                "piezasPorDia": 47.8,
-                "edadMasNuevoHoras": 0.8,
-                "margen": 15.05,
-                "margenRed": 3.76,
+                "ventanaHoras": 10.5,
+                "piezasPorDia": 43.5,
+                "edadMasNuevoHoras": 1.8,
+                "margen": 16.54,
+                "margenRed": 4.14,
                 "vias": [
                     {
                         "url": "https://www.boyacadigital.com/rss.xml",
@@ -2973,11 +2973,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 2.1,
-                "piezasPorDia": 100.7,
-                "edadMasNuevoHoras": 0.4,
-                "margen": 7.15,
-                "margenRed": 1.79,
+                "ventanaHoras": 3.1,
+                "piezasPorDia": 70.6,
+                "edadMasNuevoHoras": 2,
+                "margen": 10.2,
+                "margenRed": 2.55,
                 "vias": [
                     {
                         "url": "https://larazon.co/feed/",
@@ -3029,7 +3029,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 27.7,
                 "piezasPorDia": 7.8,
-                "edadMasNuevoHoras": 4.8,
+                "edadMasNuevoHoras": 7.7,
                 "margen": 92.41,
                 "margenRed": 23.1,
                 "vias": [
@@ -3083,7 +3083,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 44.6,
                 "piezasPorDia": 4.8,
-                "edadMasNuevoHoras": 4.1,
+                "edadMasNuevoHoras": 7.1,
                 "margen": 148.69,
                 "margenRed": 37.17,
                 "vias": [
@@ -3146,7 +3146,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 6.8,
                 "piezasPorDia": 31.7,
-                "edadMasNuevoHoras": 25.8,
+                "edadMasNuevoHoras": 28.7,
                 "margen": 22.7,
                 "margenRed": 5.67,
                 "vias": [
@@ -3200,7 +3200,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 3.6,
                 "piezasPorDia": 59.7,
-                "edadMasNuevoHoras": 3.7,
+                "edadMasNuevoHoras": 6.7,
                 "margen": 12.06,
                 "margenRed": 3.02,
                 "vias": [
@@ -3288,11 +3288,11 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 28.7,
-                "piezasPorDia": 7.5,
-                "edadMasNuevoHoras": 0.8,
-                "margen": 95.83,
-                "margenRed": 23.96,
+                "ventanaHoras": 24,
+                "piezasPorDia": 9,
+                "edadMasNuevoHoras": 0.5,
+                "margen": 80,
+                "margenRed": 20,
                 "vias": [
                     {
                         "url": "https://periodismopublico.com/feed",
@@ -3353,7 +3353,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 1.1,
                 "piezasPorDia": 200.8,
-                "edadMasNuevoHoras": 2.2,
+                "edadMasNuevoHoras": 5.1,
                 "margen": 3.59,
                 "margenRed": 0.9,
                 "vias": [
@@ -3407,7 +3407,7 @@
                 "conImagen": 0,
                 "ventanaHoras": 11.5,
                 "piezasPorDia": 18.8,
-                "edadMasNuevoHoras": 5.4,
+                "edadMasNuevoHoras": 8.4,
                 "margen": 38.32,
                 "margenRed": 9.58,
                 "vias": [
@@ -3451,10 +3451,10 @@
                 "tomados": 10,
                 "conImagen": 10,
                 "ventanaHoras": 8.9,
-                "piezasPorDia": 24.2,
-                "edadMasNuevoHoras": 0,
-                "margen": 29.77,
-                "margenRed": 7.44,
+                "piezasPorDia": 24.3,
+                "edadMasNuevoHoras": 2.7,
+                "margen": 29.57,
+                "margenRed": 7.39,
                 "vias": [
                     {
                         "url": "https://quindionoticias.com/feed",
@@ -3470,7 +3470,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "Inicio | Quindío Noticias",
-                "bytes": 107366
+                "bytes": 117482
             },
             "fuentes": [
                 {
@@ -3497,7 +3497,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 147.7,
                 "piezasPorDia": 1.5,
-                "edadMasNuevoHoras": 27.2,
+                "edadMasNuevoHoras": 30.2,
                 "margen": 492.44,
                 "margenRed": 123.11,
                 "vias": [
@@ -3551,7 +3551,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 79.4,
                 "piezasPorDia": 2.7,
-                "edadMasNuevoHoras": 1.6,
+                "edadMasNuevoHoras": 4.5,
                 "margen": 264.68,
                 "margenRed": 66.17,
                 "vias": [
@@ -3591,14 +3591,14 @@
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 7,
+                "frescos": 8,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 137.8,
-                "piezasPorDia": 1.6,
-                "edadMasNuevoHoras": 2.8,
-                "margen": 459.24,
-                "margenRed": 114.81,
+                "ventanaHoras": 127.2,
+                "piezasPorDia": 1.7,
+                "edadMasNuevoHoras": 2.2,
+                "margen": 423.93,
+                "margenRed": 105.98,
                 "vias": [
                     {
                         "url": "https://alairenoticias.com/feed/",
@@ -3659,7 +3659,7 @@
                 "conImagen": 10,
                 "ventanaHoras": 8.3,
                 "piezasPorDia": 25.9,
-                "edadMasNuevoHoras": 10.2,
+                "edadMasNuevoHoras": 13.1,
                 "margen": 27.76,
                 "margenRed": 6.94,
                 "vias": [
@@ -3720,11 +3720,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 53,
-                "piezasPorDia": 22.2,
-                "edadMasNuevoHoras": 1.7,
-                "margen": 32.45,
-                "margenRed": 8.11,
+                "ventanaHoras": 53.5,
+                "piezasPorDia": 22,
+                "edadMasNuevoHoras": 1.6,
+                "margen": 32.77,
+                "margenRed": 8.19,
                 "vias": [
                     {
                         "url": "https://www.cablenoticias.com/rss",
@@ -3740,7 +3740,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "Home — CABLENOTICIAS",
-                "bytes": 222211
+                "bytes": 222487
             },
             "fuentes": [
                 {
@@ -3792,11 +3792,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 312,
-                "piezasPorDia": 46.1,
-                "edadMasNuevoHoras": 5.1,
-                "margen": 15.62,
-                "margenRed": 3.91,
+                "ventanaHoras": 315,
+                "piezasPorDia": 45.6,
+                "edadMasNuevoHoras": 5,
+                "margen": 15.78,
+                "margenRed": 3.94,
                 "vias": [
                     {
                         "url": "https://www.pulzo.com/rss/nacion",
@@ -3864,11 +3864,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 7,
-                "piezasPorDia": 338.6,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 2.13,
-                "margenRed": 0.53,
+                "ventanaHoras": 7.2,
+                "piezasPorDia": 328.4,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 2.19,
+                "margenRed": 0.55,
                 "vias": [
                     {
                         "url": "https://www.semana.com/arc/outboundfeeds/rss/",
@@ -3945,11 +3945,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 25.4,
-                "piezasPorDia": 46.3,
-                "edadMasNuevoHoras": 0.9,
-                "margen": 15.53,
-                "margenRed": 3.88,
+                "ventanaHoras": 27.4,
+                "piezasPorDia": 43,
+                "edadMasNuevoHoras": 1,
+                "margen": 16.75,
+                "margenRed": 4.19,
                 "vias": [
                     {
                         "url": "https://www.elnuevosiglo.com.co/rss.xml",
@@ -3995,15 +3995,15 @@
             "feed": {
                 "estado": "sano",
                 "motivo": null,
-                "items": 34,
+                "items": 35,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 155.5,
+                "ventanaHoras": 159.6,
                 "piezasPorDia": 5.1,
-                "edadMasNuevoHoras": 2.1,
-                "margen": 141.39,
-                "margenRed": 35.35,
+                "edadMasNuevoHoras": 1,
+                "margen": 140.79,
+                "margenRed": 35.2,
                 "vias": [
                     {
                         "url": "https://feeds.bbci.co.uk/mundo/rss.xml",
@@ -4058,15 +4058,15 @@
             "feed": {
                 "estado": "sano",
                 "motivo": null,
-                "items": 23,
+                "items": 24,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 36.1,
-                "piezasPorDia": 14.6,
-                "edadMasNuevoHoras": 0.8,
-                "margen": 49.25,
-                "margenRed": 12.31,
+                "ventanaHoras": 38.5,
+                "piezasPorDia": 14.3,
+                "edadMasNuevoHoras": 1.3,
+                "margen": 50.22,
+                "margenRed": 12.55,
                 "vias": [
                     {
                         "url": "https://rss.dw.com/rdf/rss-sp-all",
@@ -4125,11 +4125,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 7.1,
-                "piezasPorDia": 77.4,
-                "edadMasNuevoHoras": 1.7,
-                "margen": 9.3,
-                "margenRed": 2.33,
+                "ventanaHoras": 10,
+                "piezasPorDia": 55.2,
+                "edadMasNuevoHoras": 1.5,
+                "margen": 13.04,
+                "margenRed": 3.26,
                 "vias": [
                     {
                         "url": "https://www.france24.com/es/rss",
@@ -4188,11 +4188,11 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 10.8,
-                "piezasPorDia": 109.4,
-                "edadMasNuevoHoras": 4.4,
-                "margen": 6.58,
-                "margenRed": 1.65,
+                "ventanaHoras": 18,
+                "piezasPorDia": 65.4,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 11.01,
+                "margenRed": 2.75,
                 "vias": [
                     {
                         "url": "https://es.euronews.com/rss",
@@ -4247,15 +4247,15 @@
             "feed": {
                 "estado": "sano",
                 "motivo": null,
-                "items": 151,
+                "items": 148,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 901.6,
-                "piezasPorDia": 4,
-                "edadMasNuevoHoras": 3,
-                "margen": 180.32,
-                "margenRed": 45.08,
+                "ventanaHoras": 907.1,
+                "piezasPorDia": 3.9,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 185.12,
+                "margenRed": 46.28,
                 "vias": [
                     {
                         "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada",
@@ -4341,23 +4341,23 @@
             "nombre": "EFE",
             "comprobadoEl": "2026-08-20",
             "feed": {
-                "estado": "revisar",
-                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "estado": "sano",
+                "motivo": null,
                 "items": 100,
-                "frescos": 14,
+                "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 34336.5,
+                "ventanaHoras": 34338.6,
                 "piezasPorDia": 0.1,
-                "edadMasNuevoHoras": 1.3,
-                "margen": 10405,
-                "margenRed": 2601.25,
+                "edadMasNuevoHoras": 2.2,
+                "margen": 10405.64,
+                "margenRed": 2601.41,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Aefe.com&hl=es-419&gl=CO&ceid=CO:es-419",
                         "via": "gnews",
-                        "estado": "revisar",
-                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                        "estado": "sano",
+                        "motivo": null
                     }
                 ]
             },
@@ -4367,7 +4367,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "EFE Noticias",
-                "bytes": 181029
+                "bytes": 180441
             },
             "fuentes": [
                 {

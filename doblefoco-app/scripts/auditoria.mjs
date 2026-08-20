@@ -79,6 +79,14 @@ import {
     resumirAuditoria,
     ventanaYRitmo,
 } from '../shared/auditoria.js';
+import {
+    aceptadosSinNota,
+    conciliarHallazgos,
+    hallazgosDeLaPasada,
+    pendientes,
+    resumirHallazgos,
+    VERSION_HALLAZGOS,
+} from '../shared/hallazgos.js';
 
 // ── Argumentos ───────────────────────────────────────────────────────────────
 
@@ -97,6 +105,16 @@ const MEDIOS_A_LA_VEZ = 4;
 const PAUSA_MS = 700;
 
 const RUTA_ESTADO = fileURLToPath(new URL('../auditoria/estado.json', import.meta.url));
+
+/*
+ * EL LIBRO, QUE ES OTRA COSA QUE LA FOTO.
+ *
+ * `estado.json` se sobrescribe en cada pasada: es lo que pasa HOY. `hallazgos.json`
+ * no se sobrescribe nunca — se concilia—, y es lo que llevamos sin arreglar. Sin
+ * el segundo, un defecto de hace dos meses y uno de esta manana se ven iguales, y
+ * lo que se decidio sobre cualquiera de los dos no se ve en ninguna parte.
+ */
+const RUTA_LIBRO = fileURLToPath(new URL('../auditoria/hallazgos.json', import.meta.url));
 
 const dormir = (ms) => new Promise((r) => setTimeout(r, ms));
 const hoy = new Date().toISOString().slice(0, 10);
@@ -495,6 +513,14 @@ function leerEstado() {
     }
 }
 
+function leerLibro() {
+    try {
+        return JSON.parse(readFileSync(RUTA_LIBRO, 'utf8'));
+    } catch {
+        return { version: VERSION_HALLAZGOS, ultimaPasada: null, hallazgos: {} };
+    }
+}
+
 const feedsPorMedio = new Map();
 for (const feed of getIngestFeeds()) {
     const lista = feedsPorMedio.get(feed.mediaId) ?? [];
@@ -510,6 +536,10 @@ if (SOLO_MEDIO && !medios.length) {
 }
 
 const estado = leerEstado();
+
+/** El libro y lo que se movio en esta pasada. Con `--solo-informe` no se mueve nada. */
+let libro = leerLibro();
+let movimientos = { nuevos: [], reaparecidos: [], resueltos: [] };
 
 if (!SOLO_INFORME) {
     console.log(`Auditando ${medios.length} medio(s)…`);
@@ -552,6 +582,23 @@ if (!SOLO_INFORME) {
 
     mkdirSync(dirname(RUTA_ESTADO), { recursive: true });
     writeFileSync(RUTA_ESTADO, `${JSON.stringify(estado, null, 4)}\n`, 'utf8');
+
+    /*
+     * Y AHORA EL LIBRO. Se concilia contra lo que ya se sabia: lo que aparece
+     * por primera vez nace con fecha, lo que sigue solo mueve `ultimaVez`, lo
+     * que dejo de aparecer se marca resuelto sin borrarse, y lo que vuelve
+     * cuenta como reincidencia conservando su fecha original.
+     *
+     * `parcial` viaja hasta aqui porque importa: una pasada de un solo medio no
+     * puede dar por arreglado lo que no miro.
+     */
+    const conciliado = conciliarHallazgos(leerLibro(), hallazgosDeLaPasada(estado), hoy, {
+        parcial: Boolean(SOLO_MEDIO),
+    });
+    libro = conciliado.libro;
+    movimientos = conciliado;
+
+    writeFileSync(RUTA_LIBRO, `${JSON.stringify(libro, null, 4)}\n`, 'utf8');
 }
 
 // ── El informe ───────────────────────────────────────────────────────────────
@@ -579,6 +626,54 @@ if (conAlgo.length) {
     console.log();
 }
 
+/*
+ * LO QUE CAMBIÓ DESDE LA ÚLTIMA PASADA, Y VA ANTES QUE EL RESTO.
+ *
+ * Es la única parte del informe que no se podía escribir con la foto. Quien lee
+ * esto cada semana no necesita volver a ver los catorce defectos de siempre:
+ * necesita saber qué apareció, qué se arregló y qué volvió.
+ */
+const hubo = movimientos.nuevos.length + movimientos.reaparecidos.length + movimientos.resueltos.length;
+
+if (hubo) {
+    console.log('QUÉ CAMBIÓ');
+    console.log('─'.repeat(78));
+    for (const h of movimientos.nuevos) console.log(`  NUEVO       ${h.nombre} · ${h.resumen}`);
+    for (const h of movimientos.reaparecidos)
+        console.log(`  VUELVE      ${h.nombre} · ${h.resumen} (reincidencia ${h.reincidencias})`);
+    for (const h of movimientos.resueltos) console.log(`  RESUELTO    ${h.nombre} · ${h.resumen}`);
+    console.log();
+} else if (!SOLO_INFORME) {
+    console.log('Sin novedades respecto a la pasada anterior.');
+    console.log();
+}
+
+// ── El libro: lo que llevamos sin arreglar, de lo más viejo a lo más nuevo ──
+
+const libroResumen = resumirHallazgos(libro);
+const abiertos = pendientes(libro);
+
+if (abiertos.length) {
+    console.log('PENDIENTE, POR ANTIGÜEDAD');
+    console.log('─'.repeat(78));
+    for (const h of abiertos) {
+        const edad = h.dias === null ? '  — ' : `${String(h.dias).padStart(4)}d`;
+        const cronico = h.reincidencias ? ` · ha vuelto ${h.reincidencias} vez(ces)` : '';
+        console.log(`  ${edad}  ${h.nombre}${cronico}`);
+        console.log(`        ${h.resumen}`);
+        console.log(`        ${h.id}`);
+    }
+    console.log();
+}
+
+const sinNota = aceptadosSinNota(libro);
+if (sinNota.length) {
+    console.log(`  ${sinNota.length} hallazgo(s) están en «aceptado» SIN motivo escrito.`);
+    console.log('  Aceptar sin decir por qué no es aceptar: es esconder, y dentro de tres');
+    console.log('  meses nadie sabrá cuál de las dos cosas fue. Ponles `nota` en el libro.');
+    console.log();
+}
+
 console.log('RESUMEN');
 console.log('─'.repeat(78));
 console.log(`  medios auditados          ${resumen.medios}`);
@@ -588,6 +683,12 @@ console.log(`  fuentes rotas             ${resumen.fuentesRotas}`);
 console.log(`  sitios que responden 200 a todo   ${resumen.rutasTrampa}`);
 console.log(`  rescatados por el UA limpio       ${resumen.rescatadosPorUa}`);
 console.log(`  no comprobables desde aquí        ${resumen.noComprobables}`);
+console.log();
+console.log(`  PENDIENTES en el libro    ${libroResumen.abiertos}`);
+console.log(`  aceptados con motivo      ${libroResumen.aceptados}`);
+console.log(`  resueltos históricos      ${libroResumen.resueltos}`);
+console.log(`  crónicos (han vuelto)     ${libroResumen.cronicos}`);
+console.log(`  el más viejo lleva        ${libroResumen.diasDelMasViejo} día(s)`);
 console.log();
 
 if (resumen.rescatadosPorUa > 3) {
@@ -604,7 +705,10 @@ if (resumen.noComprobables) {
     console.log();
 }
 
-if (!SOLO_INFORME) console.log(`Estado guardado en auditoria/estado.json (${hoy}).`);
+if (!SOLO_INFORME) {
+    console.log(`Estado guardado en auditoria/estado.json y libro en auditoria/hallazgos.json (${hoy}).`);
+    console.log('El hilo de lo que se decide sobre cada uno se lleva en MINUTA.md.');
+}
 
 /*
  * El resumen en JSON, y por qué el flujo mira ESTO y no el código de salida.
@@ -617,7 +721,23 @@ if (!SOLO_INFORME) console.log(`Estado guardado en auditoria/estado.json (${hoy}
 if (RUTA_RESUMEN) {
     writeFileSync(
         RUTA_RESUMEN,
-        `${JSON.stringify({ fecha: hoy, parcial: Boolean(SOLO_MEDIO), ...resumen }, null, 4)}\n`,
+        `${JSON.stringify(
+            {
+                fecha: hoy,
+                parcial: Boolean(SOLO_MEDIO),
+                ...resumen,
+                // Lo que el flujo necesita para decidir si abre aviso: no basta
+                // con que HAYA defectos —casi siempre los hay—, tiene que haber
+                // algo NUEVO o algo que vuelve.
+                nuevos: movimientos.nuevos.length,
+                reaparecidos: movimientos.reaparecidos.length,
+                resueltosHoy: movimientos.resueltos.length,
+                pendientes: libroResumen.abiertos,
+                diasDelMasViejo: libroResumen.diasDelMasViejo,
+            },
+            null,
+            4,
+        )}\n`,
         'utf8',
     );
 }

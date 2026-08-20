@@ -44,6 +44,7 @@
         "diag:sintema": "node scripts/diagnosticarSinTema.mjs",
         "medir:termino": "node scripts/medirTermino.mjs",
         "centinela": "node scripts/centinela.mjs",
+        "auditoria": "node scripts/auditoria.mjs",
         "envio": "node scripts/armarEnvio.mjs"
     },
     "dependencies": {

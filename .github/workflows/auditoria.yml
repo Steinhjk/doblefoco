@@ -1,0 +1,215 @@
+# =============================================================================
+#  La auditoría — correr los chequeos que se hacían a mano, y dejarlos escritos
+# =============================================================================
+#  QUÉ PROBLEMA RESUELVE. `check:feeds`, `check:sources` y `check:registry`
+#  dicen la verdad, pero solo cuando alguien se acuerda de ejecutarlas, y cada
+#  una escupe su informe en una terminal que nadie vuelve a mirar. El panel
+#  «Estado del catálogo» arregló media cosa —enseña lo que el repositorio ya
+#  afirma— y dejó intacta la otra media: nadie estaba CORRIENDO los chequeos.
+#
+#  Esto los corre cada semana y escribe `doblefoco-app/auditoria/estado.json`,
+#  que es lo que el panel de administración pinta.
+#
+#  ── CUATRO DECISIONES QUE NO SON OBVIAS ────────────────────────────────────
+#
+#  1. SEMANAL, Y EN JUEVES. Semanal por lo mismo que el centinela: son 76 sitios
+#     ajenos y este proyecto se presenta ante ellos con nombre y una URL para
+#     pedirnos que paremos. En jueves, y no en lunes, para no sumarse a la
+#     pasada del centinela: dos recorridos del catálogo el mismo día son el
+#     doble de peticiones al mismo servidor en la misma hora.
+#
+#  2. ENCONTRAR DEFECTOS NO PINTA EL JOB DE ROJO. Es la misma regla del
+#     centinela y por el mismo motivo: si un feed roto pusiera el flujo en rojo,
+#     el rojo dejaría de significar «el auditor se rompió» y se aprendería a
+#     ignorarlo. Lo que decide si esto funcionó no es el código de salida, sino
+#     el `--resumen=` en JSON, que solo existe si el recorrido llegó al final.
+#
+#  3. EL COMMIT NO LLEVA `[skip ci]`, Y AQUÍ ESTÁ LA DIFERENCIA CON EL
+#     CENTINELA. El del centinela sí lo lleva, y hace bien: su `estado.json` es
+#     la memoria del bot, y que llegue a la pantalla es secundario. Aquí es al
+#     revés — el archivo ES el producto, y Vercel omite el despliegue de los
+#     commits marcados con `[skip ci]`. Con la marca, el panel enseñaría
+#     eternamente la pasada del día en que se desplegó otra cosa, y un panel de
+#     comprobaciones que miente sobre su frescura es peor que no tenerlo. El
+#     precio es una ejecución de CI y un despliegue por semana; se paga.
+#
+#  4. EL AVISO SE ABRE POR DEFECTOS, NO POR «NO COMPROBABLES». Que un sitio nos
+#     cierre la puerta desde la nube no es un defecto del catálogo: Vorágine y
+#     Razón Pública responden desde una máquina de casa y fallan desde Actions
+#     por la IP. Eso sale en el informe y en el panel, con la instrucción de
+#     repetirlo en local, pero no abre un issue. Avisar de lo que no es culpa de
+#     nadie es la forma más rápida de que dejen de leerse los avisos.
+# =============================================================================
+
+name: Auditoría
+
+on:
+  schedule:
+    # Jueves 12:00 UTC ≈ 07:00 en Colombia. Ni de madrugada ni el mismo día que
+    # el centinela.
+    - cron: '0 12 * * 4'
+  workflow_dispatch:
+
+# `contents: write` para devolver el estado; `issues: write` para el aviso.
+permissions:
+  contents: write
+  issues: write
+
+# Dos pasadas a la vez se pisarían el archivo y duplicarían las peticiones a
+# sitios ajenos, que es lo único de aquí que no se puede deshacer.
+concurrency:
+  group: auditoria
+  cancel-in-progress: false
+
+jobs:
+  auditar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: doblefoco-app/package-lock.json
+
+      - run: npm ci
+        working-directory: doblefoco-app
+
+      # `continue-on-error` porque lo que decide si esto funcionó es el resumen,
+      # no el código de salida. Ver la decisión 2 de la cabecera.
+      - name: Correr la auditoría
+        id: auditoria
+        continue-on-error: true
+        run: |
+          node scripts/auditoria.mjs --resumen="$RUNNER_TEMP/resumen.json" \
+            2>&1 | tee "$RUNNER_TEMP/auditoria.txt"
+        working-directory: doblefoco-app
+
+      - name: Leer el resumen
+        id: resumen
+        run: |
+          if [ ! -f "$RUNNER_TEMP/resumen.json" ]; then
+            echo "termino=no" >> "$GITHUB_OUTPUT"
+            echo "La auditoría no llegó al final: no escribió resumen." >&2
+            exit 0
+          fi
+          echo "termino=si" >> "$GITHUB_OUTPUT"
+          for k in medios feedsRotos feedsARevisar fuentesRotas rutasTrampa \
+                   rescatadosPorUa noComprobables conDefecto; do
+            echo "$k=$(jq -r ".$k" "$RUNNER_TEMP/resumen.json")" >> "$GITHUB_OUTPUT"
+          done
+
+      # ── Devolver el resultado, que es lo que el panel lee ──────────────────
+      - name: Guardar el estado en el repositorio
+        if: steps.resumen.outputs.termino == 'si'
+        run: |
+          if git diff --quiet -- doblefoco-app/auditoria/estado.json; then
+            echo "La auditoría no cambió nada."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add doblefoco-app/auditoria/estado.json
+          git commit -m "Auditoría del $(date -u '+%Y-%m-%d'): $(jq -r '.conDefecto' "$RUNNER_TEMP/resumen.json") medio(s) piden una mirada"
+          git push
+
+      # ── Aviso ──────────────────────────────────────────────────────────────
+      # Se busca por etiqueta y no por título, como en vigilancia.yml: el título
+      # lleva la fecha, así que buscarlo abriría uno nuevo cada semana del mismo
+      # asunto sin leer.
+      - name: Asegurar la etiqueta
+        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.conDefecto != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create auditoria \
+            --color D93F0B \
+            --description "Defectos que encontró la auditoría semanal" \
+            --force
+
+      - name: Buscar el aviso abierto
+        id: abierto
+        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.conDefecto != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          numero=$(gh issue list --label auditoria --state open \
+                     --limit 1 --json number --jq '.[0].number // empty')
+          echo "numero=$numero" >> "$GITHUB_OUTPUT"
+
+      - name: Abrir o ampliar el aviso
+        if: steps.resumen.outputs.termino == 'si' && steps.resumen.outputs.conDefecto != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          CON_DEFECTO: ${{ steps.resumen.outputs.conDefecto }}
+          NO_COMPROBABLES: ${{ steps.resumen.outputs.noComprobables }}
+        run: |
+          {
+            echo "**$CON_DEFECTO medio(s) piden una mirada.**"
+            echo
+            echo "Un feed que responde pero no alimenta, una fuente que ya no resuelve o un"
+            echo "sitio que contesta 200 a cualquier ruta. Esto no es un juicio sobre ningún"
+            echo "medio: es el aviso de que algo que dábamos por comprobado dejó de estarlo."
+            echo
+            if [ "$NO_COMPROBABLES" != "0" ]; then
+              echo "> Además hay **$NO_COMPROBABLES no comprobable(s) desde la nube**, que NO cuentan"
+              echo "> como defecto. Antes de dar ninguno por perdido, repetirlo en local:"
+              echo "> \`npm run auditoria -- --medio=<id>\`"
+              echo
+            fi
+            echo '```'
+            tail -c 30000 "$RUNNER_TEMP/auditoria.txt"
+            echo '```'
+            echo
+            echo "El detalle, con su fecha, en el panel de administración."
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/cuerpo.md"
+
+          if [ -n "$NUMERO" ]; then
+            gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
+          else
+            gh issue create \
+              --title "Auditoría — $(date -u '+%Y-%m-%d'): $CON_DEFECTO medio(s) piden una mirada" \
+              --label auditoria \
+              --body-file "$RUNNER_TEMP/cuerpo.md"
+          fi
+
+      # El issue NO se cierra solo, igual que el del centinela. El de
+      # vigilancia sí puede, porque «el sitio volvió» es un hecho comprobable;
+      # aquí lo pendiente es que una persona decida si una ficha se corrige, se
+      # rehace o se retira, y eso el flujo no lo sabe. Cerrarlo por el paso del
+      # tiempo enterraría la tarea, que es lo contrario de avisar.
+
+      # ── Avería de verdad ───────────────────────────────────────────────────
+      - name: Avisar si la auditoría no llegó al final
+        if: steps.resumen.outputs.termino == 'no'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "**La auditoría no terminó**, así que esta semana NO se ha comprobado nada."
+            echo "No es que no haya defectos: es que no se miró. El panel sigue enseñando la"
+            echo "pasada anterior, con su fecha, que es lo correcto — pero esa fecha ya se"
+            echo "está quedando vieja."
+            echo
+            echo '```'
+            tail -c 8000 "$RUNNER_TEMP/auditoria.txt" || echo "(sin salida)"
+            echo '```'
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/averia.md"
+
+          gh label create auditoria --color D93F0B --force
+          gh issue create \
+            --title "Auditoría rota — $(date -u '+%Y-%m-%d')" \
+            --label auditoria \
+            --body-file "$RUNNER_TEMP/averia.md"
+
+          exit 1

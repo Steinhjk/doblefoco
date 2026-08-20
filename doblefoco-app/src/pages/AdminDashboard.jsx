@@ -23,6 +23,7 @@ import {
 } from '../services/moderationClient';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
 import EstadoDelCatalogo from '../components/EstadoDelCatalogo';
+import EstadoDeLaAuditoria from '../components/EstadoDeLaAuditoria';
 import './AdminDashboard.css';
 
 /**
@@ -305,6 +306,14 @@ const AdminDashboard = () => {
               * es justamente lo que este panel viene a arreglar.
               */}
             <EstadoDelCatalogo />
+
+            {/*
+              * Y justo debajo, lo que salió de COMPROBARLO. El de arriba cuenta lo
+              * que el repositorio afirma —cuándo dice cada ficha que se miró— y este
+              * lo que dijo la red al preguntarle. Van juntos y en este orden a
+              * propósito: cuando los dos discrepan, la discrepancia es el hallazgo.
+              */}
+            <EstadoDeLaAuditoria />
 
             <div className="google-scraper-box">
                 <div className="scraper-box-header">

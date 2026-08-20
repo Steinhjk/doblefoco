@@ -1,0 +1,4714 @@
+{
+    "version": 1,
+    "ultimaPasada": "2026-08-20",
+    "medios": {
+        "diario-la-libertad": {
+            "nombre": "La Libertad",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 50,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 9.7,
+                "piezasPorDia": 121.7,
+                "edadMasNuevoHoras": 0,
+                "margen": 5.92,
+                "margenRed": 1.48,
+                "vias": [
+                    {
+                        "url": "https://diariolalibertad.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.lasillavacia.com/en-vivo/samuel-tcherassi-sera-socio-del-diario-la-libertad/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.valoraanalitik.com/movidas-medios-comunicacion-colombia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elheraldo.co/local/2017/05/01/division-familiar-por-control-del-diario-la-libertad/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://diariolalibertad.com/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://diariolalibertad.com/2025/11/30/daniela-esper-socarras-a-la-politica/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://diariolalibertad.com/2026/07/29/reconocimiento-luz-marina-esper-recibe-el-galardon-hijos-ilustres-de-santa-marta-y-magdalena-501-anos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://diariolalibertad.com/2025/10/12/luz-marina-esper-estaria-en-la-contienda-electoral-esta-escuchando-y-abierta-al-dialogo-en-libertad/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://diariolalibertad.com/2025/05/10/samuel-tcherassi-un-nuevo-liderazgo-se-asoma-en-barranquilla/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://diariolalibertad.com/2026/04/21/editorial-solidaridad-con-el-alcalde-alejandro-char/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "semanario-voz": {
+            "nombre": "Semanario VOZ",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 51,
+                "piezasPorDia": 4.2,
+                "edadMasNuevoHoras": 3.9,
+                "margen": 170,
+                "margenRed": 42.5,
+                "vias": [
+                    {
+                        "url": "https://semanariovoz.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://es.wikipedia.org/wiki/Semanario_Voz",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://centrodememoriahistorica.gov.co/las-tres-estaciones-del-semanario-voz/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://semanariovoz.com/66-anos-del-semanario-voz/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://cejil.org/comunicado-de-prensa/corte-interamericana-condena-a-colombia-por-la-ejecucion-del-senador-manuel-cepeda/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "colombia-informa": {
+            "nombre": "Col. Informa",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 3,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 220.4,
+                "piezasPorDia": 1,
+                "edadMasNuevoHoras": 21.8,
+                "margen": 734.53,
+                "margenRed": 183.63,
+                "vias": [
+                    {
+                        "url": "https://www.colombiainforma.info/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.colombiainforma.info/somos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.colombiainforma.info/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "casa-macondo": {
+            "nombre": "CasaMacondo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "publica despacio —una pieza cada 41.1 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
+                "items": 10,
+                "frescos": 0,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 370.3,
+                "piezasPorDia": 0.6,
+                "edadMasNuevoHoras": 84.8,
+                "margen": 1234.25,
+                "margenRed": 308.56,
+                "vias": [
+                    {
+                        "url": "https://casamacondo.co/feed/",
+                        "via": "direct",
+                        "estado": "revisar",
+                        "motivo": "publica despacio —una pieza cada 41.1 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://casamacondo.co/somos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "volcanicas": {
+            "nombre": "Volcánicas",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 40,
+                "frescos": 4,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 1084,
+                "piezasPorDia": 0.9,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 833.82,
+                "margenRed": 208.45,
+                "vias": [
+                    {
+                        "url": "https://volcanicas.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://volcanicas.com/nosotras/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://volcanicas.com/nuestra-historia/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Nuestra Historia - Volcánicas",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "revista-raya": {
+            "nombre": "Revista RAYA",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "items": 100,
+                "frescos": 1,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 35164.8,
+                "piezasPorDia": 0.1,
+                "edadMasNuevoHoras": 13.1,
+                "margen": 10656,
+                "margenRed": 2664,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Arevistaraya.com&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "no-comprobable",
+                "respondeATodo": null,
+                "motivo": "429: nos cierra la puerta. Repetir en local",
+                "status": 429,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://revistaraya.com/staff.html",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Equipo Raya - Revista RAYA",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://directorio.sembramedia.org/revista-raya/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lasillavacia.com/en-vivo/presentan-la-revista-raya-nuevo-medio-de-investigacion-periodistica/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://flip.org.co/pronunciamientos/orden-emitida-por-la-fiscalia-constrine-el-ejercicio-periodistico-de-la-revista-raya",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "voragine": {
+            "nombre": "Vorágine",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "publica despacio —una pieza cada 81.3 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
+                "items": 10,
+                "frescos": 0,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 731.9,
+                "piezasPorDia": 0.3,
+                "edadMasNuevoHoras": 86.4,
+                "margen": 2439.69,
+                "margenRed": 609.92,
+                "vias": [
+                    {
+                        "url": "https://voragine.co/feed/",
+                        "via": "direct",
+                        "estado": "revisar",
+                        "motivo": "publica despacio —una pieza cada 81.3 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://voragine.co/nosotros/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Nosotros - Vorágine",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://sembramedia.org/voragine-el-valiente-medio-colombiano/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://gfmd.info/members/fundacion-voragine-periodismo-contracorriente/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "cuestion-publica": {
+            "nombre": "C. Pública",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 3,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 150.8,
+                "piezasPorDia": 1.4,
+                "edadMasNuevoHoras": 4,
+                "margen": 502.65,
+                "margenRed": 125.66,
+                "vias": [
+                    {
+                        "url": "https://cuestionpublica.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://cuestionpublica.com/nosotros/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Nosotros - Cuestión Pública",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.sembramedia.org/medio/cuestion-publica/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "razon-publica": {
+            "nombre": "R. Pública",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 8,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 36.6,
+                "piezasPorDia": 5.9,
+                "edadMasNuevoHoras": 70.7,
+                "margen": 122.15,
+                "margenRed": 30.54,
+                "vias": [
+                    {
+                        "url": "https://razonpublica.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://razonpublica.com/quienes-somos/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Quiénes somos - Razón Pública",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://razonpublica.com/que-es-razon-publica/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "cambio": {
+            "nombre": "Cambio",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 20,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 18.2,
+                "piezasPorDia": 25.1,
+                "edadMasNuevoHoras": -10.3,
+                "margen": 28.74,
+                "margenRed": 7.18,
+                "vias": [
+                    {
+                        "url": "https://cambiocolombia.com/feeds/articulos/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "no-comprobable",
+                "respondeATodo": null,
+                "motivo": "403: nos cierra la puerta. Repetir en local",
+                "status": 403,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://es.wikipedia.org/wiki/Cambio_(revista)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://latamjournalismreview.org/es/articles/los-accionistas-no-son-los-duenos-de-la-informacion-dice-daniel-coronell-presidente-de-la-resucitada-revista-colombiana-cambio/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lasillavacia.com/historias/silla-nacional/asi-resucita-la-revista-cambio-en-la-era-digital/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Así resucita la revista Cambio en la era digital - La Silla Vacía",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "noticias-uno": {
+            "nombre": "Noticias Uno",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "margen estrecho (1.1×): un día movido desborda el sondeo",
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 0.3,
+                "piezasPorDia": 682.1,
+                "edadMasNuevoHoras": 67.9,
+                "margen": 1.06,
+                "margenRed": 0.26,
+                "vias": [
+                    {
+                        "url": "https://www.noticiasuno.com/feed/",
+                        "via": "direct",
+                        "estado": "revisar",
+                        "motivo": "margen estrecho (1.1×): un día movido desborda el sondeo"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.elespectador.com/entretenimiento/cine-y-tv/ignacio-gomez-gomez-sera-el-nuevo-director-de-noticias-uno-noticias-hoy/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/Noticias_Uno",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/Canal_1_(Colombia)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/el-gringo-dueno-de-canal-1-que-le-dio-la-espalda-a-noticias-uno-de-daniel-coronell/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "telemedellin": {
+            "nombre": "Telemedellín",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "roto",
+                "motivo": "el feed está parado: publica una pieza cada 0.5 h y lo más nuevo es de hace 143 h",
+                "items": 10,
+                "frescos": 0,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 4.2,
+                "piezasPorDia": 51.1,
+                "edadMasNuevoHoras": 143.1,
+                "margen": 14.08,
+                "margenRed": 3.52,
+                "vias": [
+                    {
+                        "url": "https://www.telemedellin.tv/feed/",
+                        "via": "direct",
+                        "estado": "roto",
+                        "motivo": "el feed está parado: publica una pieza cada 0.5 h y lo más nuevo es de hace 143 h"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.telemedellin.tv/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "canal-capital": {
+            "nombre": "Canal Capital",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 25.1,
+                "piezasPorDia": 8.6,
+                "edadMasNuevoHoras": 1.9,
+                "margen": 83.73,
+                "margenRed": 20.93,
+                "vias": [
+                    {
+                        "url": "https://www.canalcapital.gov.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "revisar",
+                "respondeATodo": true,
+                "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
+                "status": 200,
+                "titulo": "Advertencia Páginas Online Ilegales",
+                "bytes": 68273
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.canalcapital.gov.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "telecaribe": {
+            "nombre": "Telecaribe",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "publica despacio —una pieza cada 165.5 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
+                "items": 10,
+                "frescos": 0,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 1489.6,
+                "piezasPorDia": 0.1,
+                "edadMasNuevoHoras": 154.3,
+                "margen": 4965.39,
+                "margenRed": 1241.35,
+                "vias": [
+                    {
+                        "url": "https://www.telecaribe.co/feed/",
+                        "via": "direct",
+                        "estado": "revisar",
+                        "motivo": "publica despacio —una pieza cada 165.5 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.telecaribe.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "telecafe": {
+            "nombre": "Telecafé",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "roto",
+                "motivo": "responde, pero ninguna pieza trae fecha: no se puede saber",
+                "items": 10,
+                "frescos": 0,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": [
+                    {
+                        "url": "https://telecafe.gov.co/feed/",
+                        "via": "direct",
+                        "estado": "roto",
+                        "motivo": "responde, pero ninguna pieza trae fecha: no se puede saber"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://telecafe.gov.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lapatria.com/eje-cafetero/amanda-jaimes-cambia-de-canal-nueva-gerente-de-telecafe",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "rtvc": {
+            "nombre": "RTVC",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "items": 100,
+                "frescos": 1,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 47625.5,
+                "piezasPorDia": 0,
+                "edadMasNuevoHoras": 71.8,
+                "margen": 14431.96,
+                "margenRed": 3607.99,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Artvcnoticias.com&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=82339",
+                    "institucional": false,
+                    "status": 0,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "fetch failed"
+                },
+                {
+                    "url": "https://normograma.mintic.gov.co/mintic/compilacion/docs/resolucion_rtvc_0461_2016.htm",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://statemediamonitor.com/2025/03/radio-y-television-nacional-de-colombia-rtvc-sistema-de-medios-publicos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-espectador": {
+            "nombre": "El Espectador",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 20,
+                "frescos": 14,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 2383.3,
+                "piezasPorDia": 0.2,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 3763.11,
+                "margenRed": 940.78,
+                "vias": [
+                    {
+                        "url": "https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://valorem.com.co/el-espectador/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elespectador.com/autores/fidel-cano/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/media/detail/outlet/el-espectador/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-silla-vacia": {
+            "nombre": "La Silla",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 2.9,
+                "piezasPorDia": 74.7,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 9.64,
+                "margenRed": 2.41,
+                "vias": [
+                    {
+                        "url": "https://www.lasillavacia.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.lasillavacia.com/que-es-la-silla-vacia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lasillavacia.com/opinion/de-la-direccion/la-financiacion-de-la-silla-vacia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.infobae.com/colombia/2026/04/21/la-silla-vacia-y-juanita-leon-estan-bajo-presion-por-acusaciones-de-conflicto-de-interes-por-inversiones-en-ecopetrol-hasta-petro-se-pronuncio/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-tiempo": {
+            "nombre": "El Tiempo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 3.7,
+                "piezasPorDia": 57.7,
+                "edadMasNuevoHoras": 0.6,
+                "margen": 12.48,
+                "margenRed": 3.12,
+                "vias": [
+                    {
+                        "url": "https://www.eltiempo.com/rss/colombia.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    },
+                    {
+                        "url": "https://www.eltiempo.com/rss/economia.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    },
+                    {
+                        "url": "https://www.eltiempo.com/rss/justicia.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    },
+                    {
+                        "url": "https://www.eltiempo.com/rss/mundo.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/casa-editorial-el-tiempo-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/proprietarios/propietarios-individuales/detail/owner/owner/show/luis-carlos-sarmiento-angulo/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.semana.com/negocios/articulo/luis-carlos-sarmiento-controla-el-tiempo/146788/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.eltiempo.com/archivo/documento/CMS-11610965",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "w-radio": {
+            "nombre": "W Radio",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "roto",
+                "motivo": "el feed está parado: publica una pieza cada 1679.7 h y lo más nuevo es de hace 7562 h",
+                "items": 13,
+                "frescos": 0,
+                "tomados": 13,
+                "conImagen": 13,
+                "ventanaHoras": 20156.9,
+                "piezasPorDia": 0,
+                "edadMasNuevoHoras": 7561.6,
+                "margen": 50392.25,
+                "margenRed": 12598.06,
+                "vias": [
+                    {
+                        "url": "https://www.wradio.com.co/arc/outboundfeeds/rss/?outputType=xml",
+                        "via": "direct",
+                        "estado": "roto",
+                        "motivo": "el feed está parado: publica una pieza cada 1679.7 h y lo más nuevo es de hace 7562 h"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.valoraanalitik.com/w-radio-caracol-radio-se-fusionan/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lasillavacia.com/en-vivo/fin-de-la-era-caracol-w-radio-hoy-arranca-la-fusion-de-las-emisoras/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://latamjournalismreview.org/es/news/caracol-radio-y-w-radio-se-fusionan-en-medio-de-crisis-que-redefine-la-radio-en-colombia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/media/detail/outlet/w-radio/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "caracol-radio": {
+            "nombre": "Caracol Radio",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 36.2,
+                "piezasPorDia": 65.7,
+                "edadMasNuevoHoras": 0,
+                "margen": 10.96,
+                "margenRed": 2.74,
+                "vias": [
+                    {
+                        "url": "https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://prnoticias.com/2021/02/24/prisa-joseph-oughourlian-presidente-nueva-era/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.valoraanalitik.com/w-radio-caracol-radio-se-fusionan/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://laboratoriodeperiodismo.org/prisa-media-caracol-radio-integra-w-radio-en-una-unica-cadena-informativa-y-redefine-su-parrilla-en-colombia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/tres-millonarios-duenos-de-los-cinco-poderosos-noticieros-radiales/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "noticias-caracol": {
+            "nombre": "Not. Caracol",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "items": 100,
+                "frescos": 7,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 112569,
+                "piezasPorDia": 0,
+                "edadMasNuevoHoras": 2.2,
+                "margen": 34111.8,
+                "margenRed": 8527.95,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Anoticiascaracol.com&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.caracoltvcorporativo.com/sites/default/files/2020101-composicion_accionaria_de_caracol_television_s.a.-enero_2020.pdf",
+                    "institucional": false,
+                    "status": 403,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
+                },
+                {
+                    "url": "https://www.caracoltvcorporativo.com/sites/default/files/20250514_-informe_periodico_trimestral-sfc-_vf.pdf",
+                    "institucional": false,
+                    "status": 403,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/media/detail/outlet/caracol-tv/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "portafolio": {
+            "nombre": "Portafolio",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 2.8,
+                "piezasPorDia": 76.9,
+                "edadMasNuevoHoras": 1.4,
+                "margen": 9.36,
+                "margenRed": 2.34,
+                "vias": [
+                    {
+                        "url": "https://www.portafolio.co/rss/economia.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://es.wikipedia.org/wiki/Portafolio_(peri%C3%B3dico)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.eltiempo.com/archivo/documento/CMS-11610965",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/proprietarios/propietarios-individuales/detail/owner/owner/show/luis-carlos-sarmiento-angulo/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "valora-analitik": {
+            "nombre": "Valora",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 50,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 24.6,
+                "piezasPorDia": 47.8,
+                "edadMasNuevoHoras": -3.7,
+                "margen": 15.07,
+                "margenRed": 3.77,
+                "vias": [
+                    {
+                        "url": "https://www.valoraanalitik.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.valoraanalitik.com/Terminos_Condiciones_Valora_Inversiones.pdf",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.datacreditoempresas.com.co/directorio/valora-inversiones-sas.html",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "VALORA INVERSIONES S.A.S - Datos de empresas",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/Valora_Analitik",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://plataforma.valoraanalitik.com/plataforma/index.php",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "infobae-co": {
+            "nombre": "Infobae",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "publica más de lo que cabe en un sondeo (margen 0.37×): se pierden piezas",
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 1.2,
+                "piezasPorDia": 1936.1,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 0.37,
+                "margenRed": 0.09,
+                "vias": [
+                    {
+                        "url": "https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml",
+                        "via": "direct",
+                        "estado": "revisar",
+                        "motivo": "publica más de lo que cabe en un sondeo (margen 0.37×): se pierden piezas"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://argentina.mom-gmr.org/en/owners/individual-owners/detail/owner/owner/show/tomas-eurnekian/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://en.wikipedia.org/wiki/Infobae",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://en.wikipedia.org/wiki/Daniel_Hadad",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/infobae-el-gigante-argentino-que-pisa-duro-en-colombia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-republica": {
+            "nombre": "La República",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 60,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 15.1,
+                "piezasPorDia": 94.1,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 7.65,
+                "margenRed": 1.91,
+                "vias": [
+                    {
+                        "url": "https://www.larepublica.co/rss",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.larepublica.co/postobon",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/La_Rep%C3%BAblica_(Colombia)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-heraldo": {
+            "nombre": "El Heraldo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 386.4,
+                "piezasPorDia": 6.1,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 117.08,
+                "margenRed": 29.27,
+                "vias": [
+                    {
+                        "url": "https://www.elheraldo.co/arc/outboundfeeds/rss/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "revisar",
+                "respondeATodo": true,
+                "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
+                "status": 200,
+                "titulo": "ELHERALDO.CO",
+                "bytes": 1421566
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.pulzo.com/economia/duenos-heraldo-cuales-tres-familias-que-mandan-ese-periodico-PP2729022",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.publimetro.co/barranquilla/2023/08/19/se-le-cayo-multimillonario-negocio-a-los-gilinski-y-a-semana-por-estas-razones/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-universal": {
+            "nombre": "El Universal",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 111.6,
+                "piezasPorDia": 21.3,
+                "edadMasNuevoHoras": 58.1,
+                "margen": 33.82,
+                "margenRed": 8.46,
+                "vias": [
+                    {
+                        "url": "https://www.eluniversal.com.co/arc/outboundfeeds/rss/?outputType=xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://es.wikipedia.org/wiki/El_Universal_(Colombia)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.vanguardia.com/area-metropolitana/bucaramanga/2021/01/15/fallecio-alejandro-galvis-ramirez-presidente-corporativo-de-vanguardia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "blu-radio": {
+            "nombre": "Blu Radio",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 80484.2,
+                "piezasPorDia": 0,
+                "edadMasNuevoHoras": 0.3,
+                "margen": 24389.14,
+                "margenRed": 6097.29,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Abluradio.com&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://colombia.mom-gmr.org/en/media/detail/outlet/bluradio/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.caracoltvcorporativo.com/sites/default/files/2020101-composicion_accionaria_de_caracol_television_s.a.-enero_2020.pdf",
+                    "institucional": false,
+                    "status": 403,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
+                },
+                {
+                    "url": "https://www.publimetro.co/entretenimiento/2026/04/14/nestor-morales-de-blu-radio-en-la-mira-por-el-manejo-que-ha-tenido-con-las-victimas-de-acoso-laboral-en-caracol/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "noticias-rcn": {
+            "nombre": "RCN",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "items": 99,
+                "frescos": 11,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 99454.8,
+                "piezasPorDia": 0,
+                "edadMasNuevoHoras": 2.4,
+                "margen": 30445.35,
+                "margenRed": 7611.34,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Anoticiasrcn.com&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.valoraanalitik.com/quien-es-el-mayor-accionista-de-rcn-television-en-colombia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.pulzo.com/economia/rcn-television-tiene-nuevo-accionista-mayor-luego-cambios-reorganizacion-PP2378854A",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://enciclopedia.banrepcultural.org/Carlos_Ardila_Lulle",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.usergioarboleda.edu.co/noticias/juan-lozano-decano-sergista-nuevo-consejero-general-de-medios-de-comunicacion-de-la-organizacion-ardila-lulle/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-patria": {
+            "nombre": "La Patria",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 9,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 2856.4,
+                "piezasPorDia": 0.1,
+                "edadMasNuevoHoras": 11.1,
+                "margen": 9521.38,
+                "margenRed": 2380.34,
+                "vias": [
+                    {
+                        "url": "https://www.lapatria.com/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "vanguardia": {
+            "nombre": "Vanguardia",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 13.2,
+                "piezasPorDia": 179.3,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 4.02,
+                "margenRed": 1,
+                "vias": [
+                    {
+                        "url": "https://www.vanguardia.com/arc/outboundfeeds/rss/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://portales.vanguardia.com/especiales-vanguardia/contenido/homenaje-a-alejandro-galvis-ramirez/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.vanguardia.com/area-metropolitana/bucaramanga/2025/12/18/vanguardia-reconoce-la-gestion-de-melissa-garcia-y-anuncia-nuevo-director/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.valoraanalitik.com/nuevo-cambio-director-vanguardia/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://en.wikipedia.org/wiki/Vanguardia_(Colombian_newspaper)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-opinion": {
+            "nombre": "La Opinión",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 3.4,
+                "piezasPorDia": 62.6,
+                "edadMasNuevoHoras": 2.1,
+                "margen": 11.5,
+                "margenRed": 2.87,
+                "vias": [
+                    {
+                        "url": "https://www.laopinion.com.co/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.semana.com/nacion/articulo/grupo-empresarial-catalitico-nuevo-dueno-del-diario-la-opinion-de-cucuta/202443/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Grupo empresarial Catalítico, nuevo dueño del diario La Opinión de Cúcuta - Semana",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.larepublica.co/empresas/grupo-empresarial-catalitico-comprara-el-diario-la-opinion-de-cucuta-3789641",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Catal&#xED;tico lleg&#xF3; a un acuerdo de intenci&#xF3;n de compra del diario La Opini&#xF3;n de C&#xFA;cuta",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.vanguardia.com/colombia/2024/01/27/periodico-la-opinion-cambia-de-duenos-grupo-empresarial-catalitico-adquirio-el-diario-de-cucuta/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Periódico La Opinión cambia de dueños: Grupo Empresarial Catalítico adquirió el diario de Cúcuta",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-pais-cali": {
+            "nombre": "El País Cali",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 23.8,
+                "piezasPorDia": 100,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 7.2,
+                "margenRed": 1.8,
+                "vias": [
+                    {
+                        "url": "https://www.elpais.com.co/arc/outboundfeeds/rss/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.semana.com/economia/empresas/articulo/el-pais-de-cali-cambia-de-dueno-eduardo-hernandez-inchaustegui-adquirio-el-diario/202519/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "&#x27;El País&#x27;, de Cali, cambia de dueño: Eduardo Hernández Incháustegui adquirió el diario - Semana",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elcolombiano.com/negocios/gilinski-vendio-el-pais-de-cali-y-eduardo-hernandez-inchaustegui-nuevo-dueno-IK27879652",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.diariolibre.com/usa/actualidad/2025/06/27/empresario-dominicano-asume-el-control-del-diario-colombiano-el-pais/3165389",
+                    "institucional": true,
+                    "status": 202,
+                    "uaLimpio": false,
+                    "titulo": "",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elpais.com.co/cali/la-periodista-vicky-perea-fue-designada-como-nueva-directora-de-el-pais-2715.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "kienyke": {
+            "nombre": "KienyKe",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 3,
+                "piezasPorDia": 72.5,
+                "edadMasNuevoHoras": 1.8,
+                "margen": 9.93,
+                "margenRed": 2.48,
+                "vias": [
+                    {
+                        "url": "https://www.kienyke.com/feed",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "http://colombia.mom-gmr.org/es/media/detail/outlet/kienykecom/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lasillavacia.com/silla-nacional/el-quien-y-que-detras-de-kienykecom/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/KienyKe.com",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-fm": {
+            "nombre": "La FM",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "items": 100,
+                "frescos": 5,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 161.7,
+                "piezasPorDia": 14.7,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 49.01,
+                "margenRed": 12.25,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Alafm.com.co&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.noticiasrcn.com/colombia/juan-lozano-es-el-nuevo-director-de-la-fm-de-rcn-757157",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.usergioarboleda.edu.co/noticias/juan-lozano-decano-sergista-nuevo-consejero-general-de-medios-de-comunicacion-de-la-organizacion-ardila-lulle/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/es/media/detail/outlet/la-fm/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-colombiano": {
+            "nombre": "El Colombiano",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 9.6,
+                "piezasPorDia": 247.7,
+                "edadMasNuevoHoras": 0.7,
+                "margen": 2.91,
+                "margenRed": 0.73,
+                "vias": [
+                    {
+                        "url": "https://www.elcolombiano.com/rss/portada.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "no-comprobable",
+                "respondeATodo": null,
+                "motivo": "sin respuesta en 20000 ms",
+                "status": null,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://voragine.co/historias/investigacion/la-chequera-uribista-que-ha-impulsado-el-proyecto-politico-de-oviedo/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "La chequera uribista que ha impulsado el proyecto político de Oviedo",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elcolombiano.com/antioquia/luz-maria-sierra-es-la-nueva-directora-de-el-colombiano-FD15344753",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elcolombiano.com/antioquia/venta-de-acciones-de-el-colombiano-asi-fue-el-negocio-MI16691915",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/quienes-son-los-empresarios-antioquenos-que-se-quedaron-con-el-colombiano/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "¿Quiénes son los empresarios antioqueños que se quedaron con El Colombiano?",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-pilon": {
+            "nombre": "El Pilón",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 20,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 9.8,
+                "piezasPorDia": 46.4,
+                "edadMasNuevoHoras": 5,
+                "margen": 15.53,
+                "margenRed": 3.88,
+                "vias": [
+                    {
+                        "url": "https://elpilon.com.co/api/rss",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://elpilon.com.co/el-pilon-30-anos/amp/",
+                    "institucional": false,
+                    "status": 404,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "roto",
+                    "motivo": "404"
+                },
+                {
+                    "url": "https://www.datacreditoempresas.com.co/directorio/el-pilon-sa.html",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "EL PILON S.A. - Datos de empresas",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "diario-del-huila": {
+            "nombre": "Diario del Huila",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 6.3,
+                "piezasPorDia": 34.3,
+                "edadMasNuevoHoras": 1.3,
+                "margen": 20.98,
+                "margenRed": 5.25,
+                "vias": [
+                    {
+                        "url": "https://diariodelhuila.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://diariodelhuila.com/directorio/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Directorio",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.datacreditoempresas.com.co/directorio/diario-del-huila-digital-sas.html",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "DIARIO DEL HUILA DIGITAL S.A.S. - Datos de empresas",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "diario-del-norte": {
+            "nombre": "Diario del Norte",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 103.7,
+                "piezasPorDia": 22.9,
+                "edadMasNuevoHoras": 1.2,
+                "margen": 31.41,
+                "margenRed": 7.85,
+                "vias": [
+                    {
+                        "url": "https://diariodelnorte.net/feed",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://diariodelnorte.net/directrices-editoriales/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-diario-pereira": {
+            "nombre": "El Diario",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 99,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 96.2,
+                "piezasPorDia": 24.4,
+                "edadMasNuevoHoras": 2.8,
+                "margen": 29.46,
+                "margenRed": 7.37,
+                "vias": [
+                    {
+                        "url": "https://www.eldiario.com.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://es.wikipedia.org/wiki/El_Diario_(Colombia)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elcolombiano.com/colombia/el-diario-el-nuevo-periodico-de-los-pereiranos-IB5425875",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "proclama-del-pacifico": {
+            "nombre": "Proclama",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 20,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 28.4,
+                "piezasPorDia": 16.1,
+                "edadMasNuevoHoras": 1.5,
+                "margen": 44.8,
+                "margenRed": 11.2,
+                "vias": [
+                    {
+                        "url": "https://proclamadelpacifico.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.proclamadelpacifico.com/nosotros/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Nosotros &#8211; Proclama del Pacifico",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://directorio.sembramedia.org/proclama-cauca-y-valle/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "choco-7-dias": {
+            "nombre": "Chocó 7 Días",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 52.7,
+                "piezasPorDia": 4.1,
+                "edadMasNuevoHoras": 2,
+                "margen": 175.74,
+                "margenRed": 43.93,
+                "vias": [
+                    {
+                        "url": "https://choco7dias.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://hemeroteca.utch.edu.co/choco-7-dias-1995-2025/",
+                    "institucional": false,
+                    "status": 0,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "fetch failed"
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-manduco": {
+            "nombre": "El Manduco",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 1,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 311.5,
+                "piezasPorDia": 0.7,
+                "edadMasNuevoHoras": 50.6,
+                "margen": 1038.43,
+                "margenRed": 259.61,
+                "vias": [
+                    {
+                        "url": "https://elmanduco.com.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://elmanduco.com.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "miputumayo": {
+            "nombre": "MiPutumayo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 18.9,
+                "piezasPorDia": 11.4,
+                "edadMasNuevoHoras": 2.4,
+                "margen": 63.1,
+                "margenRed": 15.78,
+                "vias": [
+                    {
+                        "url": "https://miputumayo.com.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://miputumayo.com.co/quienes-somos/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Quienes Somos - MiPutumayo Noticias",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-morichal": {
+            "nombre": "El Morichal",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 3,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 297.8,
+                "piezasPorDia": 0.7,
+                "edadMasNuevoHoras": 3.3,
+                "margen": 992.59,
+                "margenRed": 248.15,
+                "vias": [
+                    {
+                        "url": "https://elmorichal.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://elmorichal.com/nosotros/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Nosotros - El Morichal",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "boyaca-digital": {
+            "nombre": "Boyacá Digital",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 20,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 9.5,
+                "piezasPorDia": 47.8,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 15.05,
+                "margenRed": 3.76,
+                "vias": [
+                    {
+                        "url": "https://www.boyacadigital.com/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.boyacadigital.com/politica-editorial",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.boyacadigital.com/equipo",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "La Redacción — Boyacá Digital · Boyacá Digital",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.holdingconsultants.org/nuestra-organizacion/",
+                    "institucional": false,
+                    "status": 404,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "roto",
+                    "motivo": "404"
+                },
+                {
+                    "url": "https://www.boyacadigital.com/politica-de-privacidad",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-razon-cordoba": {
+            "nombre": "La Razón.co",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 2.1,
+                "piezasPorDia": 100.7,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 7.15,
+                "margenRed": 1.79,
+                "vias": [
+                    {
+                        "url": "https://larazon.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://larazon.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://larazon.co/feed/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-diario-boyaca": {
+            "nombre": "EL DIARIO",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 27.7,
+                "piezasPorDia": 7.8,
+                "edadMasNuevoHoras": 4.8,
+                "margen": 92.41,
+                "margenRed": 23.1,
+                "vias": [
+                    {
+                        "url": "https://eldiarioboyaca.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://eldiarioboyaca.com/quienes-somos/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "¿Quiénes somos?",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.orfetv.com/2026/06/17/el-periodico-el-diario-inicia-una-nueva-etapa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "vive-el-meta": {
+            "nombre": "Vive el Meta",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 44.6,
+                "piezasPorDia": 4.8,
+                "edadMasNuevoHoras": 4.1,
+                "margen": 148.69,
+                "margenRed": 37.17,
+                "vias": [
+                    {
+                        "url": "https://viveelmeta.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://viveelmeta.com/contacto/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Contáctenos - viveelmeta.com",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://viveelmeta.com/politica-de-etica/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.viveelmeta.com/equipo-editorial/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "¿Quiénes somos? - viveelmeta.com",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "lente-regional": {
+            "nombre": "Lente Regional",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 6.8,
+                "piezasPorDia": 31.7,
+                "edadMasNuevoHoras": 25.8,
+                "margen": 22.7,
+                "margenRed": 5.67,
+                "vias": [
+                    {
+                        "url": "https://lenteregional.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://lenteregional.com/quienes-somos/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Quiénes somos - Lente Regional",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://lenteregional.com/equipo/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Equipo - Lente Regional",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-nuevo-dia": {
+            "nombre": "El Nuevo Día",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 3.6,
+                "piezasPorDia": 59.7,
+                "edadMasNuevoHoras": 3.7,
+                "margen": 12.06,
+                "margenRed": 3.02,
+                "vias": [
+                    {
+                        "url": "https://www.elnuevodia.com.co/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.elnuevodia.com.co/terminos-y-condiciones",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elnuevodia.com.co/politica-de-privacidad-de-datos",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elnuevodia.com.co/ibague/el-nuevo-dia-inicia-una-nueva-era-con-la-inauguracion-de-su-sede-propia-537295",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://empresas.larepublica.co/colombia/tolima/ibague/editorial-aguasclaras-s-a-800052169",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://elcronista.co/actualidad/el-nuevo-dia-otro-medio-impreso-que-pasa-a-la-era-digital",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.ecosdelcombeima.com/ibague/nota-235510-se-acabo-el-impreso-de-el-nuevo-dia",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "periodismo-publico": {
+            "nombre": "P. Público",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 28.7,
+                "piezasPorDia": 7.5,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 95.83,
+                "margenRed": 23.96,
+                "vias": [
+                    {
+                        "url": "https://periodismopublico.com/feed",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://periodismopublico.com/quienes-somos/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "¿Quiénes somos? | Periodismo Público",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://periodismopublico.com/ariel-gonzalez-director-de-periodismo-publico",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.informacolombia.com/directorio-empresas/informacion-empresa/periodismo-publico-sas",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Periodismo Publico Sas: NIT, teléfono y contacto",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "seguimiento": {
+            "nombre": "Seguimiento",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 1.1,
+                "piezasPorDia": 200.8,
+                "edadMasNuevoHoras": 2.2,
+                "margen": 3.59,
+                "margenRed": 0.9,
+                "vias": [
+                    {
+                        "url": "https://seguimiento.co/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://seguimiento.co/quienes-somos/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Historia de Seguimiento.co, primer medio digital de Santa Marta",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://seguimiento.co/contacto/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "contacto | Seguimiento.co",
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "prensa-libre-casanare": {
+            "nombre": "P. Libre Casanare",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 11.5,
+                "piezasPorDia": 18.8,
+                "edadMasNuevoHoras": 5.4,
+                "margen": 38.32,
+                "margenRed": 9.58,
+                "vias": [
+                    {
+                        "url": "https://prensalibrecasanare.com/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://prensalibrecasanare.com/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "quindio-noticias": {
+            "nombre": "Quindío Noticias",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 8.9,
+                "piezasPorDia": 24.2,
+                "edadMasNuevoHoras": 0,
+                "margen": 29.77,
+                "margenRed": 7.44,
+                "vias": [
+                    {
+                        "url": "https://quindionoticias.com/feed",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "revisar",
+                "respondeATodo": true,
+                "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
+                "status": 200,
+                "titulo": "Inicio | Quindío Noticias",
+                "bytes": 107366
+            },
+            "fuentes": [
+                {
+                    "url": "https://quindionoticias.com/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "archipielago-press": {
+            "nombre": "Archipielago Press",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 9,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 147.7,
+                "piezasPorDia": 1.5,
+                "edadMasNuevoHoras": 27.2,
+                "margen": 492.44,
+                "margenRed": 123.11,
+                "vias": [
+                    {
+                        "url": "https://www.thearchipielagopress.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.thearchipielagopress.co/nosotros/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Nosotros creemos en el campo y vamos a acompañar al campesino: Char &#8211; The Archipielago Press",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.thearchipielagopress.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "abra-noticias": {
+            "nombre": "Abra Noticias",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 6,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 79.4,
+                "piezasPorDia": 2.7,
+                "edadMasNuevoHoras": 1.6,
+                "margen": 264.68,
+                "margenRed": 66.17,
+                "vias": [
+                    {
+                        "url": "https://abranoticias.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://abranoticias.com/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "al-aire-noticias": {
+            "nombre": "Al Aire",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 7,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 137.8,
+                "piezasPorDia": 1.6,
+                "edadMasNuevoHoras": 2.8,
+                "margen": 459.24,
+                "margenRed": 114.81,
+                "vias": [
+                    {
+                        "url": "https://alairenoticias.com/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://alairenoticias.com/al-aire-noticias/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://alairenoticias.com/donaciones/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://alairenoticias.com/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-nacion-neiva": {
+            "nombre": "La Nación",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 10,
+                "tomados": 10,
+                "conImagen": 10,
+                "ventanaHoras": 8.3,
+                "piezasPorDia": 25.9,
+                "edadMasNuevoHoras": 10.2,
+                "margen": 27.76,
+                "margenRed": 6.94,
+                "vias": [
+                    {
+                        "url": "https://www.lanacion.com.co/feed/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.lanacion.com.co/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lanacion.com.co/felipe-olave-el-empresario-que-le-apuesta-a-la-comunicacion/",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Felipe Olave, el empresario que le apuesta a la comunicación - lanacion",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.lanacion.com.co/la-prensa-y-la-radio-regional-aliadas/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "cablenoticias": {
+            "nombre": "Cablenoticias",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 50,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 53,
+                "piezasPorDia": 22.2,
+                "edadMasNuevoHoras": 1.7,
+                "margen": 32.45,
+                "margenRed": 8.11,
+                "vias": [
+                    {
+                        "url": "https://www.cablenoticias.com/rss",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "revisar",
+                "respondeATodo": true,
+                "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
+                "status": 200,
+                "titulo": "Home — CABLENOTICIAS",
+                "bytes": 222211
+            },
+            "fuentes": [
+                {
+                    "url": "https://colombia.mom-gmr.org/es/media/detail/outlet/cable-noticias/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.portafolio.co/negocios/empresas/canal-cablenoticias-pasa-manos-venezolano-137362",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Canal Cablenoticias pasa a manos de un venezolano",
+                    "estado": "no-comprobable",
+                    "motivo": "responde 200, pero este sitio responde 200 a todo: no prueba nada"
+                },
+                {
+                    "url": "https://www.semana.com/negocios/articulo/venden-cablenoticias-venezolanos-us17-millones/132837/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.cablenoticias.tv/rss",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "pulzo": {
+            "nombre": "Pulzo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 600,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 312,
+                "piezasPorDia": 46.1,
+                "edadMasNuevoHoras": 5.1,
+                "margen": 15.62,
+                "margenRed": 3.91,
+                "vias": [
+                    {
+                        "url": "https://www.pulzo.com/rss/nacion",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://colombia.mom-gmr.org/en/media/detail/outlet/pulzocom/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://directorio.sembramedia.org/pulzo/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/Pulzo_(medio_digital)",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.larepublica.co/internet-economy/guillermo-franco-se-retira-de-pulzo-un-portal-web-del-grupo-santo-domingo-2741710",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "semana": {
+            "nombre": "Semana",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 100,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 7,
+                "piezasPorDia": 338.6,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 2.13,
+                "margenRed": 0.53,
+                "vias": [
+                    {
+                        "url": "https://www.semana.com/arc/outboundfeeds/rss/",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.larepublica.co/empresas/el-grupo-gilinski-compro-50-de-la-revista-semana-2822114",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "El Grupo Gilinski compr&#xF3; 50% de la participaci&#xF3;n accionaria de Semana",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.larepublica.co/empresas/gilinski-ejerce-opcion-de-compra-a-minoritarios-de-semana-y-se-queda-con-100-del-grupo-3087653",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Gilinski ejerce opci&#xF3;n de compra a minoritarios de Semana y se queda con 100% del Grupo",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.elcolombiano.com/negocios/estos-son-los-negocios-de-los-gilinski-LH16110139",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.eltiempo.com/economia/empresas/jaime-gilinski-quien-es-el-magnate-detras-de-sura-y-nutresa-655482",
+                    "institucional": true,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": "Jaime Gilinski: quién es el magnate detrás de Sura y Nutresa",
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.semana.com/nacion/articulo/vicky-davila-asume-la-presidencia-de-la-junta-directiva-de-semana/202630/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-nuevo-siglo": {
+            "nombre": "N. Siglo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 50,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 25.4,
+                "piezasPorDia": 46.3,
+                "edadMasNuevoHoras": 0.9,
+                "margen": 15.53,
+                "margenRed": 3.88,
+                "vias": [
+                    {
+                        "url": "https://www.elnuevosiglo.com.co/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.las2orillas.co/la-batalla-de-diez-familias-por-no-dejar-morir-sus-periodicos-impresos/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.las2orillas.co/quienes-son-los-duenos-de-periodicos-regionales-que-no-dan-plata-pero-si-poder/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "bbc-mundo": {
+            "nombre": "BBC Mundo",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 34,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 155.5,
+                "piezasPorDia": 5.1,
+                "edadMasNuevoHoras": 2.1,
+                "margen": 141.39,
+                "margenRed": 35.35,
+                "vias": [
+                    {
+                        "url": "https://feeds.bbci.co.uk/mundo/rss.xml",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://commonslibrary.parliament.uk/research-briefings/cdp-2025-0132/",
+                    "institucional": false,
+                    "status": 403,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
+                },
+                {
+                    "url": "https://publications.parliament.uk/pa/cm5901/cmselect/cmpubacc/1299/report.html",
+                    "institucional": false,
+                    "status": 403,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
+                },
+                {
+                    "url": "https://www.nao.org.uk/reports/the-bbc-world-services-savings-programme/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "dw-es": {
+            "nombre": "DW",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 23,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 36.1,
+                "piezasPorDia": 14.6,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 49.25,
+                "margenRed": 12.31,
+                "vias": [
+                    {
+                        "url": "https://rss.dw.com/rdf/rss-sp-all",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://en.wikipedia.org/wiki/Deutsche_Welle",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.eurotopics.net/en/148493/deutsche-welle",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://international.bonn.de/international-profile/international-location/germaninternationalbroadcasting-deutschewelle.php",
+                    "institucional": false,
+                    "status": 503,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "roto",
+                    "motivo": "503"
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "france24-es": {
+            "nombre": "France 24",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 24,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 7.1,
+                "piezasPorDia": 77.4,
+                "edadMasNuevoHoras": 1.7,
+                "margen": 9.3,
+                "margenRed": 2.33,
+                "vias": [
+                    {
+                        "url": "https://www.france24.com/es/rss",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://en.wikipedia.org/wiki/France_M%C3%A9dias_Monde",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://en.wikipedia.org/wiki/France_24",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://statemediamonitor.com/2025/08/france-medias-monde-fmm/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "euronews-es": {
+            "nombre": "Euronews",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 50,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 10.8,
+                "piezasPorDia": 109.4,
+                "edadMasNuevoHoras": 4.4,
+                "margen": 6.58,
+                "margenRed": 1.65,
+                "vias": [
+                    {
+                        "url": "https://es.euronews.com/rss",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.advanced-television.com/2021/12/20/alpac-capital-takes-majority-stake-in-euronews/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.rferl.org/a/hungary-euronews-orban-david/31619957.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://en.wikipedia.org/wiki/Alpac_Capital",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "el-pais-es": {
+            "nombre": "El País",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 151,
+                "frescos": 15,
+                "tomados": 15,
+                "conImagen": 15,
+                "ventanaHoras": 901.6,
+                "piezasPorDia": 4,
+                "edadMasNuevoHoras": 3,
+                "margen": 180.32,
+                "margenRed": 45.08,
+                "vias": [
+                    {
+                        "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    },
+                    {
+                        "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america-colombia/portada",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://prisa.labolsavirtual.com/accionistas-prisa.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.reddeperiodistas.com/asi-queda-el-accionariado-del-grupo-prisa-no-solo-joseph-oughourlian/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.bolsamania.com/noticias/insiders/amber-capital-compra-300000-acciones-prisa-alcanza-2984-capital--7231734.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://theobjective.com/medios/2025-01-29/accionistas-moncloa-prisa-arrinconar-oughourlian/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://es.wikipedia.org/wiki/Grupo_PRISA",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://cronicaglobal.elespanol.com/business/20260324/dueno-pais-establece-barcelona-sede-fondo-espana/1003742744702_0.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "efe": {
+            "nombre": "EFE",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "items": 100,
+                "frescos": 14,
+                "tomados": 15,
+                "conImagen": 0,
+                "ventanaHoras": 34336.5,
+                "piezasPorDia": 0.1,
+                "edadMasNuevoHoras": 1.3,
+                "margen": 10405,
+                "margenRed": 2601.25,
+                "vias": [
+                    {
+                        "url": "https://news.google.com/rss/search?q=site%3Aefe.com&hl=es-419&gl=CO&ceid=CO:es-419",
+                        "via": "gnews",
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "revisar",
+                "respondeATodo": true,
+                "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
+                "status": 200,
+                "titulo": "EFE Noticias",
+                "bytes": 181029
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.sepi.es/en/sectores/agencia-efe",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://en.wikipedia.org/wiki/EFE",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://statemediamonitor.com/2025/08/efe/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "reuters": {
+            "nombre": "Reuters",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "no-comprobable",
+                "motivo": "el medio no tiene feed",
+                "items": 0,
+                "frescos": 0,
+                "tomados": 0,
+                "conImagen": 0,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": []
+            },
+            "rutas": {
+                "estado": "no-comprobable",
+                "respondeATodo": null,
+                "motivo": "401: nos cierra la puerta. Repetir en local",
+                "status": 401,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.thomsonreuters.com/content/dam/ewp-m/documents/thomsonreuters/en/pdf/corporate-responsibility/thomson-reuters-founders-share-company-limited.pdf",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.stocktitan.net/sec-filings/TRI/schedule-13d-a-thomson-reuters-corp-can-amended-major-shareholder-rep-9ade70af18cf.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "cnn-es": {
+            "nombre": "CNN",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "no-comprobable",
+                "motivo": "el medio no tiene feed",
+                "items": 0,
+                "frescos": 0,
+                "tomados": 0,
+                "conImagen": 0,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": []
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://eldiariony.com/2026/08/05/juicio-contra-la-fusion-de-paramount-y-warner-bros-discovery-comenzara-en-marzo-del-2027/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.todotvnews.com/cynthia-hudson-vicepresidenta-de-cnn-en-espanol-deja-la-cadena-en-febrero/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.axios.com/local/atlanta/2025/06/10/cnn-warner-bros-discovery-two-companies-atlanta-restructuring",
+                    "institucional": false,
+                    "status": 403,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
+                },
+                {
+                    "url": "https://www.cnn.com/2026/07/24/media/paramount-warner-bros-discovery-merger-delay",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.npr.org/2026/02/27/nx-s1-5728914/what-happens-to-cnn-if-paramount-buys-warner-bros-discovery",
+                    "institucional": false,
+                    "status": 0,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "no-comprobable",
+                    "motivo": "sin respuesta en 20000 ms"
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "nyt": {
+            "nombre": "NYT",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "no-comprobable",
+                "motivo": "el medio no tiene feed",
+                "items": 0,
+                "frescos": 0,
+                "tomados": 0,
+                "conImagen": 0,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": []
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://en.wikipedia.org/wiki/The_New_York_Times_Company",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://richardpollock.substack.com/p/the-tight-family-trust-that-reigns",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "wsj": {
+            "nombre": "WSJ",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "no-comprobable",
+                "motivo": "el medio no tiene feed",
+                "items": 0,
+                "frescos": 0,
+                "tomados": 0,
+                "conImagen": 0,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": []
+            },
+            "rutas": {
+                "estado": "no-comprobable",
+                "respondeATodo": null,
+                "motivo": "403: nos cierra la puerta. Repetir en local",
+                "status": 403,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.cnbc.com/2025/09/08/lachlan-murdoch-cements-control-of-fox-wsj-media-empire-in-new-family-deal.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.aljazeera.com/news/2007/7/23/dow-jones-board-okays-news-corp-bid",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "financial-times": {
+            "nombre": "FT",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "no-comprobable",
+                "motivo": "el medio no tiene feed",
+                "items": 0,
+                "frescos": 0,
+                "tomados": 0,
+                "conImagen": 0,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": []
+            },
+            "rutas": {
+                "estado": "no-comprobable",
+                "respondeATodo": null,
+                "motivo": "403: nos cierra la puerta. Repetir en local",
+                "status": 403,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.nikkei.co.jp/nikkeiinfo/en/news/release_en_20150725_01.pdf",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://asia.nikkei.com/business/nikkei-completes-acquisition-of-financial-times",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "la-vanguardia-es": {
+            "nombre": "La Vanguardia",
+            "comprobadoEl": "2026-08-20",
+            "feed": {
+                "estado": "no-comprobable",
+                "motivo": "el medio no tiene feed",
+                "items": 0,
+                "frescos": 0,
+                "tomados": 0,
+                "conImagen": 0,
+                "ventanaHoras": null,
+                "piezasPorDia": null,
+                "edadMasNuevoHoras": null,
+                "margen": null,
+                "margenRed": null,
+                "vias": []
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://en.wikipedia.org/wiki/Grupo_God%C3%B3",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.diario-red.com/articulo/medios/grupo-godo-propietario-vanguardia-lleva-cabo-transicion-hereditaria-cupula/20250708072903050664.html",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        }
+    },
+    "parcial": false
+}

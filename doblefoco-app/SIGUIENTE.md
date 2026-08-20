@@ -1,5 +1,87 @@
 # Por dónde seguir
 
+## 2026-08-19 · Cinco ramas sin fusionar, y una que además hay que desplegar
+
+Sesión larga. **Nada se subió a `main`.** Lo primero de mañana es decidir qué
+entra y en qué orden.
+
+### Lo urgente, y es una sola cosa
+
+**`motor/rehidratacion-pierde-tema` arregla que Categorías esté vacía, y vive en
+el servidor.** Empujar a `main` publica Vercel y NO Fly: hace falta
+`npm run deploy`. Mientras no se despliegue, sigue roto en producción — hoy la
+consulta a la base daba **4 050 historias sin ningún tema teniendo artículos con
+tema**, y el catálogo entero marcado como nacional.
+
+Hay una forma de comprobar que quedó arreglado sin mirar a ojo:
+`npm run invariantes` debe pasar los 7. Hoy pasa 6.
+
+### Las ramas, en orden de mérito
+
+| Rama | Qué trae | Nota |
+|---|---|---|
+| `motor/rehidratacion-pierde-tema` | Categorías y el ámbito | **Pide `npm run deploy`** |
+| `auditoria/trazabilidad` | La auditoría entera + libro de hallazgos + invariantes | Ya contiene `auditoria/estado-por-medio`; esa no hace falta fusionarla aparte |
+| `mapa/puntos-sin-color` | Los puntos invisibles y el realce de búsqueda | Solo cliente |
+| `estudio/ground-news` | `ESTUDIO_GROUND_NEWS.md` | Solo documentos |
+
+**Posible conflicto menor:** `estudio/ground-news` y `auditoria/trazabilidad`
+tocan las dos `PLANEACION.md`, en secciones distintas. Debería fusionar solo;
+si no, es un conflicto de texto sin trampa.
+
+Todo verificado en cada rama: lint limpio, `tsc` sin errores, **580/580 pruebas**
+y build correcto. Lo que **no** está verificado: no he abierto el mapa ni
+Categorías en un navegador. Se probó con pruebas, tipos y compilación.
+
+### Lo nuevo que conviene conocer antes de tocar nada
+
+- **`MINUTA.md`, en la raíz del repositorio.** Es el hilo de lo que queda
+  pendiente según auditorías y revisiones, pedido por Jose hoy. **Empezar el día
+  ahí.** Un hallazgo que no está en esa lista no está pendiente: está olvidado.
+- **`npm run auditoria`** corre los chequeos que antes eran a mano y lleva un
+  libro —`auditoria/hallazgos.json`— con id estable y antigüedad por hallazgo.
+  Corre solo los jueves. **23 hallazgos abiertos** al cierre de hoy.
+- **`npm run invariantes`** comprueba que lo que el sitio dice pueda ser cierto.
+  Corre en `vigilancia.yml`, cada 6 h.
+- **`ESTUDIO_GROUND_NEWS.md`** responde qué costaría archivo, buscador y ventana
+  de agrupamiento. Resumen: los dos primeros son baratos, el tercero tiene muro
+  medido a los 30 días y cabe a los 7.
+
+### Lo que descubrió el día, y no estaba buscado
+
+**Cuatro fallos con la misma forma:** la intención escrita en el código y en su
+comentario, y el comportamiento contrario, en silencio, siempre en una costura
+—JSX↔CSS, base↔memoria, API↔cliente—. Ninguno lo vieron las pruebas, que cubren
+muy bien `shared/` y no cubren ninguna costura. Es el punto ciego del proyecto y
+conviene tenerlo presente al revisar.
+
+**Dos cosas que medí mal y corregí el mismo día**, por si alguien las cita:
+
+1. «99 de 100 historias sin tema» era cierto **en ese momento**, pero el daño se
+   rehace en cada arranque y luego la ingesta fresca lo va tapando: horas después
+   daban 42 de 100. El dato estable es el de la base: 4 050 historias.
+2. La primera versión de la auditoría llamaba «roto» a Vorágine por publicar una
+   pieza cada 80 h, y a Razón Pública por un tropiezo de TLS. Las dos cosas están
+   corregidas, pero enseñan el sesgo del que hay que cuidarse: **una medida
+   correcta puede sostener una conclusión falsa.**
+
+### Lo que queda pendiente y NO es de código
+
+Está todo en `MINUTA.md` con su detalle. Lo que espera decisión de Jose:
+
+- **Infobae se muestrea al 38 %** y nadie lo decidió. Su margen contra la red de
+  seguridad de 2 h es 0,09: si el motor cae, se pierde el 91 % de Infobae.
+- **Permanencia.** Hoy una noticia dura 72 h y se borra la fila. 30 días son
+  gratis; un año, 25 USD/mes.
+- **Ventana de agrupamiento a 7 días.** Medido que cabe. Falta medir qué le hace
+  a los falsos agrupamientos, y esa medida va antes.
+- **Razón Pública puede ser falso positivo** —publica por tandas—. Es el caso de
+  estreno de `aceptado` con nota en el libro.
+- **`opinion` no se persiste**, así que la opinión reentra al agrupamiento en
+  cada arranque. Hermano del fallo de `topics`, sin arreglar.
+
+---
+
 ## F1-17 insistencia: medida, y el bloqueo no era el que decía el plan
 
 Rama **`f1-17-insistencia`**. Nuevo **`npm run insistencia`**, de solo lectura.

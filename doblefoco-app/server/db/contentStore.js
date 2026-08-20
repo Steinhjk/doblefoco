@@ -48,11 +48,73 @@ import { safeQuery, withTransaction } from './pool.js';
  * @param {{retentionMs:number, max:number}} options
  * @returns {Promise<Array<object>>} vacío si no hay base o si falla la lectura
  */
+/**
+ * Una fila de `articles` con la forma que el Map en memoria espera.
+ *
+ * ESTÁ FUERA DE LA CONSULTA PARA PODER PROBARLA. Lo que aquí se olvide no lo
+ * caza nada: no es un error de SQL ni de tipos, es un campo que llega
+ * `undefined` y que el resto del motor trata como «este artículo no tenía eso».
+ * Y así fue como pasó lo de abajo.
+ *
+ * LO QUE FALTABA, Y LO QUE COSTÓ (2026-08-19)
+ * -------------------------------------------
+ * `topics` y `ambito` estaban en la tabla, se escribían bien en cada ingesta y
+ * NO SE VOLVÍAN A LEER NUNCA. Cada arranque del motor rehidrata hasta 4 000
+ * artículos desde la base, y todos volvían sin tema y sin ámbito. Como las
+ * historias se construyen con la UNIÓN de los temas de sus artículos, la unión
+ * de nada es nada: **99 de las 100 historias de la portada tenían `topics: []`**
+ * y la pantalla de Categorías enseñaba catorce ceros sobre un catálogo de 6 400
+ * historias que sí estaban clasificadas.
+ *
+ * El ámbito cayó por lo mismo y de forma más silenciosa: sin `ambito` en los
+ * artículos, el recuento de «cuántos son internacionales» daba cero en todas las
+ * historias y **todo el catálogo quedaba marcado como nacional**. La API decía
+ * `internacional: 0` mientras servía piezas cuya sección heredada era
+ * literalmente «Internacional».
+ *
+ * Los dos se curan solos en el siguiente ciclo —las historias se reconstruyen y
+ * se vuelven a guardar—, pero solo con esta lectura arreglada.
+ *
+ * @param {Record<string, any>} row
+ */
+export function articuloDesdeFila(row) {
+    return {
+        id: row.id,
+        headline: row.headline,
+        rawTitle: row.raw_title ?? row.headline,
+        link: row.canonical_url,
+        snippet: row.snippet,
+        tone: row.tone,
+        publishedAt: row.published_at,
+        ingestedAtMs: Date.parse(row.ingested_at),
+        // Sin esto la memoria no sabría qué artículos ya tienen foto y el relleno
+        // de imágenes intentaría rellenar los 4 000 en cada ciclo.
+        imageUrl: row.image_url,
+        /*
+         * `?? []` y no `?? null`: aguas abajo esto se recorre con `flatMap`, y un
+         * artículo viejo de antes de que existiera la columna tiene que aportar
+         * cero temas, no reventar la construcción de su historia.
+         */
+        topics: row.topics ?? [],
+        ambito: row.ambito ?? null,
+        outlet: {
+            id: row.source_id,
+            name: row.source_name,
+            domain: row.source_domain,
+            bias: row.bias,
+            factuality: row.factuality,
+            spectrum: classifySpectrum(row.bias),
+        },
+        category: row.category,
+    };
+}
+
 export async function hydrateArticles({ retentionMs, max }) {
     const result = await safeQuery(
         `
         SELECT a.id, a.canonical_url, a.headline, a.raw_title, a.snippet,
                a.category, a.tone, a.published_at, a.ingested_at, a.image_url,
+               a.topics, a.ambito,
                s.id AS source_id, s.name AS source_name, s.domain AS source_domain,
                s.bias, s.factuality
           FROM articles a
@@ -67,28 +129,7 @@ export async function hydrateArticles({ retentionMs, max }) {
 
     if (!result) return [];
 
-    return result.rows.map((row) => ({
-        id: row.id,
-        headline: row.headline,
-        rawTitle: row.raw_title ?? row.headline,
-        link: row.canonical_url,
-        snippet: row.snippet,
-        tone: row.tone,
-        publishedAt: row.published_at,
-        ingestedAtMs: Date.parse(row.ingested_at),
-        // Sin esto la memoria no sabría qué artículos ya tienen foto y el relleno
-        // de imágenes intentaría rellenar los 4 000 en cada ciclo.
-        imageUrl: row.image_url,
-        outlet: {
-            id: row.source_id,
-            name: row.source_name,
-            domain: row.source_domain,
-            bias: row.bias,
-            factuality: row.factuality,
-            spectrum: classifySpectrum(row.bias),
-        },
-        category: row.category,
-    }));
+    return result.rows.map(articuloDesdeFila);
 }
 
 // ---------------------------------------------------------------------------

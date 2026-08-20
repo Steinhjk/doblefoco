@@ -79,15 +79,6 @@ comportamiento es el contrario.**
   perdemos el 91 % de Infobae sin que nada avise.
 - **Estado:** ABIERTO. **Decisión de producto de Jose**, no de código.
 
-### No existen invariantes de producción
-
-- **Origen:** conclusión de la sesión del 2026-08-19.
-- **Qué pasa:** la auditoría comprueba el mundo exterior —feeds, fuentes, rutas
-  ajenas— y **no comprueba nuestra propia salida**. Por eso lo de `topics` pudo
-  estar roto sin que nada chillara: la API respondía `internacional: 0` y ninguna
-  pieza del sistema tenía una opinión sobre si eso era posible.
-- **Estado:** EN CURSO — es el primer problema que Jose pidió atacar.
-
 ### Permanencia: una noticia dura 72 h y se borra
 
 - **Origen:** `ESTUDIO_GROUND_NEWS.md`, 2026-08-19.
@@ -195,6 +186,30 @@ Por lo mismo llevaba tiempo sin verse el realce de la búsqueda.
 **Hecho:** rama `mapa/puntos-sin-color`. Todos los puntos llevan su color y lo
 que cambia es la opacidad; la clave salió del desplegable a la leyenda; y va
 también en palabras, no solo en color.
+
+## 2026-08-19 · No existían invariantes de producción
+
+`npm run invariantes`, colgado de `vigilancia.yml` (cada 6 h). Comprueba que lo
+que el sitio dice **pueda ser cierto**, que es distinto de que el sitio esté en
+pie —lo del 19 de agosto pasó con el sitio perfectamente en pie—.
+
+**La regla del archivo: una contradicción, nunca un umbral.** No se comprueba
+«el 40 % de las historias debería tener tema», porque ese número no lo respalda
+nada y el día que falle nadie sabrá si el roto es el sitio o el umbral. Se
+comprueba que el sitio no se contradiga: si una historia se compone con la unión
+de los temas de sus artículos, **una historia sin ningún tema cuyos artículos sí
+lo tienen es imposible por construcción**. Eso no necesita número y no envejece.
+
+> **Una corrección a lo que dije antes, que salió de correr esto.** Medí «99 de
+> 100 historias sin tema» y era cierto en ese momento, pero **el daño no es
+> permanente: se rehace en cada arranque.** Al reiniciar, el motor rehidrata sin
+> temas y reconstruye las historias vacías; después la ingesta fresca va
+> devolviendo temas a las nuevas. Horas más tarde el mismo feed daba 42 de 100.
+>
+> Eso dejó ver que **los seis invariantes que miran la API no bastaban**: pasaban
+> los siete días de la semana salvo el del despliegue. El que sí lo caza siempre
+> mira la base, donde la contradicción está permanentemente visible — y al
+> escribir esto marcó **4 050 historias** sin tema teniendo artículos con tema.
 
 ## 2026-08-19 · La auditoría no dejaba rastro
 

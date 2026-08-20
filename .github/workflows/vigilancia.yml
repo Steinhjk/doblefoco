@@ -30,6 +30,11 @@
 #
 #  LO QUE ESTO NO ES, Y CONVIENE NO CONFUNDIRLO
 #
+#  Desde el 2026-08-19 corre además `invariantes.mjs`, que no pregunta si el
+#  sitio está en pie sino si lo que dice PUEDE ser cierto. Son cosas distintas y
+#  ese día se vio por qué: el sitio estaba perfectamente en pie sirviendo 4 050
+#  historias sin tema y un catálogo entero marcado como nacional.
+#
 #  No es un monitor de disponibilidad. Corre cada 6 horas y el cron de GitHub se
 #  retrasa, así que una caída de una hora puede pasar desapercibida. Para eso
 #  hace falta un servicio de monitoreo de verdad, con sondeo por minuto y aviso
@@ -92,6 +97,35 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+      # ── ¿Es POSIBLE lo que el sitio está diciendo? ─────────────────────────
+      #
+      #  El paso de arriba comprueba que el sitio esté EN PIE. Este comprueba que
+      #  lo que sirve no se contradiga a sí mismo, y existe por lo del 2026-08-19:
+      #  la rehidratación no leía `articles.topics`, 4 050 historias se quedaron
+      #  sin tema teniendo artículos con tema, y el catálogo entero salía marcado
+      #  como nacional. Nada chilló — ni las pruebas, ni el lint, ni esta misma
+      #  vigilancia, que veía el sitio en pie y con razón.
+      #
+      #  SALIR CON 2 NO ES UN INVARIANTE ROTO: es que no se pudo mirar, porque la
+      #  API no contestó. Se distingue a propósito. Acusar al sitio de
+      #  contradecirse cuando lo que pasa es que está caído es la clase de aviso
+      #  falso que enseña a ignorar los avisos — y la caída ya la reporta el paso
+      #  anterior, que para eso está.
+      - name: ¿Se contradice el sitio a sí mismo?
+        id: invariantes
+        continue-on-error: true
+        run: |
+          node scripts/invariantes.mjs --strict 2>&1 | tee -a "$RUNNER_TEMP/vigilancia.txt"
+          estado=${PIPESTATUS[0]}
+          if [ "$estado" = "2" ]; then
+            echo "No se pudieron comprobar los invariantes; no se acusa."               | tee -a "$RUNNER_TEMP/vigilancia.txt"
+            exit 0
+          fi
+          exit "$estado"
+        working-directory: doblefoco-app
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       # ── Aviso ──────────────────────────────────────────────────────────────
       # Se busca por etiqueta y no por título: el título lleva la fecha, así que
       # buscarlo abriría un issue nuevo cada día del mismo incidente.
@@ -105,7 +139,7 @@ jobs:
           echo "numero=$numero" >> "$GITHUB_OUTPUT"
 
       - name: Abrir o actualizar el aviso
-        if: steps.comprobacion.outcome == 'failure'
+        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
@@ -134,7 +168,7 @@ jobs:
           fi
 
       - name: Cerrar el aviso si ya se recuperó
-        if: steps.comprobacion.outcome == 'success' && steps.abierto.outputs.numero != ''
+        if: steps.comprobacion.outcome == 'success' && steps.invariantes.outcome == 'success' && steps.abierto.outputs.numero != ''
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
@@ -146,7 +180,7 @@ jobs:
       # sigue siendo el registro, y un job en verde con un issue abierto sería
       # una contradicción que acabaría creyéndose la parte cómoda.
       - name: Reflejar el resultado
-        if: steps.comprobacion.outcome == 'failure'
+        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure'
         run: |
           echo "La comprobación falló; hay un issue abierto con el detalle."
           exit 1

@@ -45,6 +45,7 @@
         "medir:termino": "node scripts/medirTermino.mjs",
         "centinela": "node scripts/centinela.mjs",
         "auditoria": "node scripts/auditoria.mjs",
+        "invariantes": "node scripts/invariantes.mjs",
         "envio": "node scripts/armarEnvio.mjs"
     },
     "dependencies": {

@@ -170,6 +170,25 @@
     display: inline-block;
 }
 
+/* El punto de «sin publicar». Va en gris y no en un color del espectro a
+   propósito: la palidez es transversal —la tienen medios de los tres bloques— y
+   pintarla de uno de ellos diría que es cosa de ese lado. La leyenda se lee de
+   izquierda a derecha como «rojo, gris, azul son bandas; este otro es estado». */
+.legend-dot-silencioso {
+    background: var(--text-muted);
+    opacity: 0.28;
+    box-shadow: 0 0 0 1px var(--text-muted);
+}
+
+/* La leyenda es larga en cuanto aparece la cuarta clave: en pantallas estrechas
+   se parte en dos filas en vez de estirar la página a lo ancho. */
+@media (max-width: 640px) {
+    .map-legend {
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+    }
+}
+
 /* ── Gráfico ───────────────────────────────────────────────────────────── */
 
 .map-figure {
@@ -308,7 +327,22 @@
 
 .map-point.matched {
     opacity: 1;
+    /* El aro de la coincidencia se pide AQUÍ y no con un atributo `stroke` en el
+       JSX. Allí estaba, y no hacía nada: `.map-point` fija `stroke` unas líneas
+       más arriba, y una regla de la hoja de estilos gana siempre a un atributo
+       de presentación. El realce de la búsqueda llevaba tiempo sin verse. */
+    stroke: var(--text-main);
+    stroke-width: 2.5;
     animation: map-point-pulse 1.6s infinite alternate ease-in-out;
+}
+
+/* Un medio que no ha publicado en la ventana. El relleno pálido lo pone el JSX
+   con `fill-opacity` —que el CSS no toca— y aquí se le deja el mismo aro de
+   superficie que a los demás: la diferencia es que aporta o no, no que esté
+   dentro o fuera del mapa. La misma información va en palabras en su etiqueta
+   accesible y en el texto de «cómo se lee». */
+.map-point.silencioso {
+    stroke: var(--bg-card);
 }
 
 @keyframes map-point-pulse {

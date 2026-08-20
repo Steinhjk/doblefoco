@@ -619,12 +619,13 @@ const MediaMap = () => {
 
                 {aportePorMedio && (
                     <p>
-                        Los círculos <strong>huecos</strong> son medios que no han publicado
+                        Los círculos <strong>pálidos</strong> son medios que no han publicado
                         nada en las últimas {ventanaHoras} horas. Siguen aquí porque su ficha de
                         propiedad es parte del mapa, pero{' '}
-                        <strong>no entran en ninguna comparación de cobertura</strong>. Algunos
-                        publican poco por oficio —investigación, periodicidad de fin de
-                        semana—, no por avería.
+                        <strong>no entran en ninguna comparación de cobertura</strong>. Y
+                        pálido <strong>no quiere decir averiado</strong>: varios publican poco
+                        por oficio —Vorágine saca una pieza cada 80 horas y no cabe en una
+                        ventana de {ventanaHoras}—, y otros son noticieros de fin de semana.
                     </p>
                 )}
             </details>
@@ -636,6 +637,21 @@ const MediaMap = () => {
                         {SPECTRUM_LABEL[key]}
                     </span>
                 ))}
+
+                {/*
+                  * LA CLAVE DE LA PALIDEZ, DONDE SE VE. Estaba solo dentro del
+                  * <details>, que nace plegado: quien notaba un punto distinto
+                  * no tenía dónde enterarse de qué significaba, y un mapa con
+                  * una marca sin clave se lee como un mapa averiado. Aparece
+                  * solo cuando hay datos de aporte, porque antes de eso ningún
+                  * punto está pálido y la leyenda hablaría de algo que no está.
+                  */}
+                {aportePorMedio && (
+                    <span className="legend-item">
+                        <span className="legend-dot legend-dot-silencioso" />
+                        Sin publicar en {ventanaHoras} h
+                    </span>
+                )}
             </div>
 
             {/*
@@ -750,18 +766,44 @@ const MediaMap = () => {
                                         cx={item.x}
                                         cy={item.y}
                                         r={isSelected ? 10 : isMatched ? 8 : 6}
-                                        // Hueco cuando el medio no aporta nada a
-                                        // la ventana: sigue en el mapa, pero se
-                                        // ve que no está en la comparación.
-                                        fill={aporta(item.id) === false ? 'transparent' : SPECTRUM_FILL[spectrum]}
-                                        stroke={isMatched ? 'var(--text-main)' : SPECTRUM_FILL[spectrum]}
-                                        strokeWidth={isMatched ? 2.5 : aporta(item.id) === false ? 2 : 0}
-                                        className={`map-point ${isSelected ? 'selected' : ''} ${isMatched ? 'matched' : ''} ${isDimmed ? 'dimmed' : ''}`}
+                                        /*
+                                         * EL COLOR NO SE LE QUITA A NADIE, Y ANTES SÍ.
+                                         *
+                                         * Esto pintaba `transparent` a los medios que no
+                                         * han publicado en la ventana, y confiaba el
+                                         * contorno a un atributo `stroke` con el color del
+                                         * espectro. Pero `.map-point` fija `stroke` en la
+                                         * hoja de estilos, y una regla CSS gana siempre a
+                                         * un atributo de presentación: el anillo salía del
+                                         * color del fondo. Sin relleno y con un aro
+                                         * invisible, esos medios directamente NO SE VEÍAN
+                                         * —Vorágine entre ellos—, que es lo contrario de
+                                         * «sigue en el mapa».
+                                         *
+                                         * Ahora el color del espectro lo llevan todos y lo
+                                         * que cambia es la OPACIDAD DEL RELLENO, que el CSS
+                                         * no toca. Un medio callado se ve pálido, no
+                                         * ausente. Y la razón por la que está pálido es la
+                                         * cadencia, no una avería: Vorágine publica una
+                                         * pieza cada 80 h y no cabe en una ventana de 72.
+                                         */
+                                        fill={SPECTRUM_FILL[spectrum]}
+                                        fillOpacity={aporta(item.id) === false ? 0.28 : 1}
+                                        className={`map-point ${isSelected ? 'selected' : ''} ${isMatched ? 'matched' : ''} ${isDimmed ? 'dimmed' : ''} ${aporta(item.id) === false ? 'silencioso' : ''}`}
                                         tabIndex={0}
                                         role="button"
                                         aria-label={
                                             `${item.name}. Orientación ${fmtBias(item.bias)}, ` +
                                             `factualidad ${fmtPct(item.factuality)}. ` +
+                                            /*
+                                             * La palidez es una señal de color, y sola no
+                                             * vale: quien no distingue colores o quien
+                                             * navega con lector de pantalla no la recibe.
+                                             * Aquí va la misma información en palabras.
+                                             */
+                                            (aporta(item.id) === false
+                                                ? `Sin publicar en las últimas ${ventanaHoras} horas. `
+                                                : '') +
                                             'Abrir ficha.'
                                         }
                                         onClick={() => setSelectedId(isSelected ? null : item.id)}
@@ -781,7 +823,10 @@ const MediaMap = () => {
                                       * cada renderizado de servidor.
                                       */}
                                     <title>
-                                        {`${item.name} · ${fmtBias(item.bias)} · ${fmtPct(item.factuality)}`}
+                                        {`${item.name} · ${fmtBias(item.bias)} · ${fmtPct(item.factuality)}` +
+                                            (aporta(item.id) === false
+                                                ? ` · sin publicar en ${ventanaHoras} h`
+                                                : '')}
                                     </title>
                                 </g>
                             );
@@ -864,12 +909,24 @@ const MediaMap = () => {
                 </div>
             )}
 
-            {/* Va DESPUÉS del mapa, no antes: el mapa responde «dónde está cada
-                medio» y esto responde «cuánto pesa cada dueño». Lo segundo solo
-                se entiende habiendo visto lo primero. */}
-            <PanoramaMediatico conteosExternos={conteos} />
-
+            {/*
+              * LA FICHA, PEGADA AL GRÁFICO DEL QUE SALE.
+              *
+              * Estaba al final de la página, debajo del panorama de dueños. Al
+              * pulsar un punto se abría fuera de la pantalla y no pasaba nada
+              * visible: había que bajar dos pantallas enteras para encontrar la
+              * respuesta a un clic dado arriba. Un punto que se pulsa y una
+              * ficha que aparece son la misma acción, y estaban separadas por
+              * todo un bloque.
+              */}
             {selected && <MediaProfile media={selected} onClose={() => setSelectedId(null)} />}
+
+            {/* Y el panorama, al final. Sigue yendo DESPUÉS del mapa por lo de
+                siempre: el mapa responde «dónde está cada medio» y esto responde
+                «cuánto pesa cada dueño», que solo se entiende habiendo visto lo
+                primero. Ahora además cede el sitio a la ficha, que es lo que el
+                lector acaba de pedir con el dedo. */}
+            <PanoramaMediatico conteosExternos={conteos} />
         </div>
     );
 };

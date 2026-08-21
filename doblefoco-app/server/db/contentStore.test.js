@@ -59,6 +59,28 @@ describe('articuloDesdeFila', () => {
         expect(() => [viejo].flatMap((a) => a.topics ?? [])).not.toThrow();
     });
 
+    it('marca la opinión, que es lo que la mantiene fuera del agrupamiento', () => {
+        const columna = articuloDesdeFila({
+            ...fila,
+            canonical_url:
+                'https://www.vanguardia.com/opinion/columnistas/luis-ernesto-ruiz/2026/08/06/el-reto-apenas-comienza/',
+        });
+        expect(columna.opinion).toEqual({
+            esOpinion: true,
+            tipo: 'columna',
+            columnista: 'Luis Ernesto Ruiz',
+        });
+    });
+
+    it('una noticia normal no queda marcada como opinión', () => {
+        /*
+         * El daño de un falso positivo es peor que el de un falso negativo:
+         * marcar una noticia real como opinión la saca del agrupamiento, que es
+         * la función central del sitio. Por eso se comprueba en los dos sentidos.
+         */
+        expect(articuloDesdeFila(fila).opinion.esOpinion).toBe(false);
+    });
+
     it('sigue trayendo lo de antes: medio, espectro y foto', () => {
         const a = articuloDesdeFila(fila);
         expect(a.outlet.name).toBe('El Tiempo');
@@ -100,5 +122,58 @@ describe('la consulta trae todo lo que el mapeo lee', () => {
 
     it.each(leidas)('la consulta selecciona «%s»', (columna) => {
         expect(consulta).toContain(`a.${columna}`);
+    });
+});
+
+describe('la costura con el agrupamiento', () => {
+    /*
+     * EL SENTIDO QUE FALTABA, Y ES EL QUE DE VERDAD IMPORTA.
+     *
+     * Que el mapeo devuelva `opinion` no prueba nada por sí solo: lo que se
+     * decidió el 2026-08-09 es que la opinión NO forme historias, y quien lo
+     * cumple es un filtro que vive en otro archivo. Esa costura —base↔memoria
+     * aquí, memoria↔agrupamiento allá— es el punto ciego del proyecto: los
+     * cuatro fallos del 2026-08-19 vivían todos en una.
+     *
+     * Medido el 2026-08-21 contra producción: 71 de los 4 000 artículos
+     * rehidratados eran opinión y entraban al agrupamiento en cada arranque,
+     * porque `undefined?.esOpinion` es `undefined` y `!undefined` es `true`.
+     */
+    const daemon = readFileSync(
+        fileURLToPath(new URL('../services/ingestDaemon.js', import.meta.url)),
+        'utf8',
+    );
+
+    it('el agrupamiento sigue filtrando por `opinion.esOpinion`', () => {
+        /*
+         * Si alguien cambia la forma del filtro, esta prueba cae y obliga a
+         * volver aquí. Sin esto, el mapeo podría seguir devolviendo un campo que
+         * ya no lee nadie —que es, literalmente, el fallo inverso del que se
+         * está cerrando—.
+         */
+        expect(daemon).toContain('!a.opinion?.esOpinion');
+    });
+
+    it('un artículo rehidratado de opinión NO pasa el filtro del agrupamiento', () => {
+        const columna = articuloDesdeFila({
+            ...fila,
+            canonical_url: 'https://www.elespectador.com/opinion/columnistas/alguien/algo/',
+        });
+        const noticia = articuloDesdeFila(fila);
+
+        // El predicado literal de buildMultisourceStories.
+        const entranAlAgrupamiento = [columna, noticia].filter((a) => !a.opinion?.esOpinion);
+
+        expect(entranAlAgrupamiento).toEqual([noticia]);
+    });
+
+    it('el editorial tampoco, aunque no traiga columnista', () => {
+        const editorial = articuloDesdeFila({
+            ...fila,
+            canonical_url: 'https://www.elespectador.com/opinion/editorial/lo-que-sea/',
+        });
+        expect(editorial.opinion.tipo).toBe('editorial');
+        expect(editorial.opinion.columnista).toBeNull();
+        expect([editorial].filter((a) => !a.opinion?.esOpinion)).toEqual([]);
     });
 });

@@ -27,6 +27,7 @@
  */
 
 import { classifySpectrum } from '../../shared/biasAnalysis.js';
+import { detectarOpinion } from '../../shared/opinion.js';
 import { safeQuery, withTransaction } from './pool.js';
 
 // ---------------------------------------------------------------------------
@@ -97,6 +98,40 @@ export function articuloDesdeFila(row) {
          */
         topics: row.topics ?? [],
         ambito: row.ambito ?? null,
+        /*
+         * LA OPINIÓN SE DERIVA, NO SE GUARDA (2026-08-21), y conviene decir por
+         * qué no es un atajo.
+         *
+         * El fallo era el mismo que el de `topics`: sin esto, el artículo
+         * rehidratado vuelve sin marca, y como el filtro de
+         * `buildMultisourceStories` pregunta `!a.opinion?.esOpinion`, un
+         * `undefined` responde «no es opinión». Medido el 2026-08-21: **71 de
+         * los 4 000 artículos en memoria eran opinión y reentraban al
+         * agrupamiento en cada arranque** —62 columnas, 7 editoriales, 2
+         * caricaturas—, deshaciendo la decisión del 2026-08-09.
+         *
+         * La cura del hermano fue una columna. Aquí NO hace falta, y no por
+         * ahorrar trabajo:
+         *
+         *   1. `detectarOpinion` es función PURA de la URL —tres expresiones
+         *      regulares sobre el pathname, sin registro ni estado— y la URL ya
+         *      es permanente: `canonical_url` es la clave del ON CONFLICT y no
+         *      se reescribe nunca. Guardar el veredicto sería duplicar un dato
+         *      que ya está, no conservar uno que se perdería.
+         *   2. Por eso NO se cierra ninguna puerta. El día que haga falta
+         *      consultarlo en SQL —el índice de columnistas, que hoy los
+         *      comentarios prometen y no existe— la columna se puede añadir y
+         *      rellenar entera desde `canonical_url`, sin haber perdido nada por
+         *      el camino.
+         *   3. Y se cura sola. La detección está declarada incompleta: el día
+         *      que se añada un patrón, un valor guardado seguiría mintiendo
+         *      sobre los artículos viejos, mientras que este se corrige en el
+         *      siguiente arranque.
+         *
+         * Cuesta 6,3 ms para los 4 000, medido, contra una consulta que tarda
+         * órdenes de magnitud más.
+         */
+        opinion: detectarOpinion(row.canonical_url),
         outlet: {
             id: row.source_id,
             name: row.source_name,

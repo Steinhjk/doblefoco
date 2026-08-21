@@ -97,6 +97,31 @@ naturaleza: no hay nada roto que arreglar, hay algo que **nadie ha decidido**.
   producto. **Nadie ha medido qué le hace eso a los falsos agrupamientos**, y esa
   medida va antes que el cambio.
 
+### Los puntos ciegos: 0 en 6 299 historias, y no es por falta de datos
+
+- **Origen:** `ESTUDIO_PUNTOS_CIEGOS.md`, 2026-08-21, pedido por Jose.
+- **Dos fallos independientes.** Uno es de costura: el servidor calcula el punto
+  ciego con tasas base y el cliente lo recalcula **sin ellas**, además de no
+  copiar `raw.blindspot` en `normalizeStory`. El veredicto no llega nunca a la
+  pantalla, y `MobileSidebar` tiene una pestaña «Puntos ciegos» que solo puede
+  enseñar su estado vacío.
+- **El otro es de modelo, y no lo cura más masa.** `(1-q)^n < 0,05` con la
+  izquierda al **3,29 %** exige **90 medios en una sola historia**; la mayor del
+  corpus tiene 16 y el catálogo son 76. **77 historias cumplen todas las demás
+  condiciones y mueren en esa.**
+- **La propiedad perversa:** cuanto más pequeña es la voz de un espectro, más
+  difícil se vuelve afirmar que falta. Contradice el propósito editorial escrito.
+- **Comprobado que no es cosa del umbral:** en historias de 10+ medios, que falte
+  la izquierda ocurre el **78 %** de las veces. Es lo normal, no lo raro.
+- **Y la izquierda calla en parte por avería:** 5 de sus 13 medios aportan cero
+  —Vorágine y Razón Pública entre ellos, ya diagnosticados como fallo de IP— y
+  dos medios aportan el 88,6 %.
+- **Estado:** ABIERTO. **Decisión de producto.** El estudio recomienda arreglar la
+  costura, declarar inalcanzable la rama de la izquierda con el número escrito, y
+  llevar el desequilibrio a donde sí se puede afirmar —el énfasis dispara en el
+  19,5 % de las historias grandes—. Lo que NO recomienda es bajar el umbral hasta
+  que algo salga.
+
 ## De la auditoría automática del 2026-08-19
 
 **Primera pasada del libro: 23 hallazgos abiertos** — 15 de feed, 5 de rutas, 3

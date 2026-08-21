@@ -1,41 +1,61 @@
 # Por dónde seguir
 
-## 2026-08-21 · Las cinco ramas ya están en producción. Lo que queda es de producto
+## 2026-08-21 · Todo desplegado. Lo que queda ya no es de código
 
-**Todo lo que la sesión del 19 dejó sin fusionar está publicado**, en el commit
-`68f0230`. Fly y Vercel en el mismo commit, sin desfase.
+Las cinco ramas pendientes están en producción, y **el último pendiente de código
+de la minuta —`opinion`— se cerró hoy.** Fly y Vercel en el mismo commit.
 
-`npm run invariantes` pasa **7/7** contra producción. Los tres números que
-estaban rotos:
+`npm run invariantes` pasa **7/7**. Lo que se movió:
 
 | | Antes | Ahora |
 |---|---|---|
 | Portada con tema | 30/100 | **96/100** |
 | Historias internacionales | 3 | **94** |
 | Historias que pierden el tema de sus artículos | 4 219 | **0** |
+| Piezas de opinión dentro de historias | 136 | **0** |
+| Historias multifuente contaminadas por opinión | 3 | **0** |
 
 Lo del ámbito era el daño callado: el catálogo entero se declaraba nacional
 mientras la API respondía `internacional: 0` sirviendo piezas cuya sección
 heredada era literalmente «Internacional».
 
-### Una lección que costó un susto, y conviene no repetir
+### La opinión: se deriva, no se guarda
 
-La primera lectura de los invariantes, **seis segundos** después de que el worker
-arrancara, daba todavía 6/7 y 4 189 historias rotas. Parecía que el arreglo no
-había servido. No era eso: **el motor rehidrata y recompone al arrancar**, y
-minuto y medio después reescribió las 6 443 historias de una vez.
+La minuta pedía columna, INSERT, lectura y migración, por analogía con `topics`.
+**La analogía era falsa.** `detectarOpinion` es función pura de la URL, y la URL
+ya es permanente —`canonical_url` es la clave del ON CONFLICT y no se reescribe
+nunca—. `topics` había que guardarlo porque se pierde si no se guarda; la opinión
+no. Guardarla sería duplicar un dato que ya está.
 
-> **Medir un despliegue en el instante en que termina mide la máquina anterior.**
-> Aquí la diferencia entre las dos lecturas era la que hay entre «arreglado» y
-> «no sirvió». Antes de creerle a un invariante después de un despliegue, dejar
-> pasar un ciclo.
+Y la versión derivada resultó **mejor**, no solo más barata: no cierra ninguna
+puerta —el día que haga falta en SQL, la columna se rellena entera desde
+`canonical_url`— y **se cura sola**, que una columna no haría, porque la
+detección está declarada incompleta y un valor guardado seguiría mintiendo sobre
+los artículos viejos al añadir un patrón.
+
+El detalle y la evidencia están en `MINUTA.md`.
+
+### Dos lecciones del día que conviene no volver a aprender
+
+**1. Medir un despliegue en el instante en que termina mide la máquina
+anterior.** La primera lectura de los invariantes, seis segundos después de que
+el worker arrancara, daba 6/7 y 4 189 historias rotas: parecía que el arreglo no
+había servido. El motor rehidrata y recompone **al arrancar**, y minuto y medio
+después reescribió las 6 443 historias de una vez. Antes de creerle a un
+invariante después de un despliegue, **dejar pasar un ciclo**.
+
+**2. Los comentarios de este repositorio prometen cosas que no existen.** Los de
+`opinion` dicen que alimenta «el agregado de formadores de opinión» y «el índice
+de columnistas». Ninguno de los dos existe: el único consumidor en todo el código
+es el filtro del agrupamiento. Es la enfermedad del 19 otra vez, y esta vez
+apareció en el comentario que iba a servir de prueba para justificar una columna.
 
 ### Lo primero de mañana: mirarlo con los ojos
 
-**Nada de esto se ha abierto en un navegador.** Se probó con pruebas (597/597),
+**Nada de esto se ha abierto en un navegador.** Se probó con pruebas (621/621),
 tipos, compilación e invariantes, que es mucho, pero **el punto ciego de este
-proyecto son las costuras** —JSX↔CSS, base↔memoria, API↔cliente— y las pruebas no
-cubren ninguna. Los cuatro fallos del 19 vivían justo ahí.
+proyecto son las costuras** —JSX↔CSS, base↔memoria, API↔cliente— y las pruebas
+apenas las cubren. Los cuatro fallos del 19 vivían justo ahí.
 
 Tres pantallas, en este orden:
 
@@ -48,12 +68,8 @@ Tres pantallas, en este orden:
 ### Lo que queda, y es todo decisión tuya
 
 Está en **`MINUTA.md`**, en la raíz, con el detalle y lo que costaría cada una.
-Ninguna es de código:
+**Ninguna es ya de código:**
 
-- **`opinion` no se persiste.** Hermano del fallo de `topics` que hoy se arregló,
-  y sin arreglar: la opinión reentra al agrupamiento en cada arranque. **Es el
-  único de los cinco que sí es trabajo de código** — columna, INSERT, lectura y
-  migración— y ya está diagnosticado.
 - **Infobae se muestrea al 38 %** y nadie lo decidió. Margen contra la red de
   seguridad de 2 h: 0,09.
 - **Permanencia.** Hoy una noticia dura 72 h y se borra. 30 días son gratis; un
@@ -66,6 +82,13 @@ Ninguna es de código:
 Y **23 hallazgos abiertos** en `auditoria/hallazgos.json`: cinco sitios que
 devuelven 200 a cualquier ruta, tres fuentes que ya no resuelven, cuatro feeds
 parados. El jueves corre la segunda pasada y ahí empiezan a tener antigüedad.
+
+### Un detalle de fontanería que ya no molesta
+
+`comprobarDesfase.mjs` comparaba commits por igualdad estricta, así que **escribir
+esta nota desalineaba Fly** y obligaba a un despliegue para callar la alarma. Ya
+no: pregunta si algún commit tocó una ruta que llega a la imagen. Escribir
+documentos vuelve a ser gratis.
 
 ---
 

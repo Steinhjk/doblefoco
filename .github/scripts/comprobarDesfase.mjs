@@ -14,6 +14,9 @@ const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const { getIngestFeeds } = await import(
     new URL(`file://${RAIZ}/doblefoco-app/shared/mediaRegistry.js`).href
 );
+const { llegaALaImagen } = await import(
+    new URL(`file://${RAIZ}/doblefoco-app/shared/rutasDeLaImagen.js`).href
+);
 
 const URL_SALUD = process.env.SALUD_URL ?? 'https://doblefoco.fly.dev/api/health';
 
@@ -31,6 +34,8 @@ console.log(`  Fly     ${commitDesplegado}   ${feedsDesplegados ?? '?'} feeds`);
 console.log('');
 
 const problemas = [];
+/** Cosas que conviene decir en voz alta aunque no sean un desfase. */
+const notas = [];
 
 // ── 1. Feeds. Funciona aunque la imagen no esté marcada. ────────────────────
 if (feedsDesplegados === null) {
@@ -53,22 +58,59 @@ if (commitDesplegado === 'desconocido') {
         '`npm run deploy`.'
     );
 } else if (commitDesplegado !== commitEnMain) {
+    /*
+     * UN COMMIT DE DIFERENCIA NO ES UN DESFASE: LO ES UN COMMIT QUE CAMBIE LA
+     * IMAGEN (2026-08-21).
+     *
+     * Antes esto era una igualdad estricta, y el 2026-08-21 quedó listo para
+     * gritar «Fly está 1 commit por detrás» porque se habían escrito dos `.md`.
+     * Hubo que pagar un despliegue entero para callarlo, y un vigilante que da
+     * alarmas falsas es un vigilante al que se deja de hacer caso — que es
+     * justo la avería que este archivo existe para evitar.
+     *
+     * Se sigue midiendo lo mismo que decía la cabecera: si Fly corre el CÓDIGO
+     * de main. `llegaALaImagen` lleva la lista de lo que se perdona, se equivoca
+     * a propósito hacia el lado de gritar, y tiene sus propias pruebas.
+     */
     let detras = null;
+    let cambiados = null;
     try {
         detras = execFileSync(
             'git', ['rev-list', '--count', `${commitDesplegado}..${commitEnMain}`],
             { encoding: 'utf8' }
         ).trim();
+        cambiados = execFileSync(
+            'git', ['diff', '--name-only', `${commitDesplegado}..${commitEnMain}`],
+            { encoding: 'utf8' }
+        ).split('\n').map((l) => l.trim()).filter(Boolean);
     } catch {
         // El commit desplegado puede no existir en este clon: rama borrada, o
         // una imagen construida desde algo que nunca se subió.
     }
-    problemas.push(
-        detras && detras !== '0'
-            ? `Fly está ${detras} commit(s) por detrás de main.`
-            : 'El commit desplegado no coincide con main y no se pudo medir la distancia; ' +
-              'puede venir de una rama que ya no existe.'
-    );
+
+    if (cambiados === null) {
+        problemas.push(
+            'El commit desplegado no coincide con main y NO SE PUDO MEDIR qué cambió; ' +
+            'puede venir de una rama que ya no existe. No se da por bueno: una ' +
+            'comprobación que calla cuando no puede comprobar es peor que no tenerla.'
+        );
+    } else {
+        const relevantes = cambiados.filter(llegaALaImagen);
+        if (relevantes.length) {
+            const muestra = relevantes.slice(0, 5).map((r) => `\n        ${r}`).join('');
+            const resto = relevantes.length > 5 ? `\n        …y ${relevantes.length - 5} más` : '';
+            problemas.push(
+                `Fly está ${detras} commit(s) por detrás de main, y ${relevantes.length} ` +
+                `archivo(s) que SÍ llegan a la imagen han cambiado:${muestra}${resto}`
+            );
+        } else {
+            notas.push(
+                `Fly está ${detras} commit(s) por detrás de main, pero ninguno de los ` +
+                `${cambiados.length} archivo(s) cambiados llega a la imagen ` +
+                '(prosa, pruebas o workflows). No hay nada que desplegar.'
+            );
+        }
+    }
 }
 
 /**
@@ -88,8 +130,15 @@ if (commitDesplegado === 'desconocido') {
  * Con `exitCode`, Node termina cuando el socket se cierra solo. Tarda unos
  * segundos más y no miente.
  */
+for (const n of notas) console.log(`  · ${n}`);
+if (notas.length) console.log('');
+
 if (!problemas.length) {
-    console.log('  ✓ Al día: mismo commit y mismo número de feeds.\n');
+    console.log(
+        notas.length
+            ? '  ✓ Al día en lo que importa: la imagen corre el código de main.\n'
+            : '  ✓ Al día: mismo commit y mismo número de feeds.\n'
+    );
 } else {
     console.error('  ✗ DESFASE\n');
     for (const p of problemas) console.error(`    · ${p}`);

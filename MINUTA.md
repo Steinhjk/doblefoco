@@ -48,20 +48,12 @@ Las dos reglas del cruce:
 
 ## De la revisión de código del 2026-08-19
 
-Ninguno de estos lo habría encontrado la auditoría. Los cuatro primeros comparten
-forma: **la intención está escrita en el código y en su comentario, y el
-comportamiento es el contrario.**
+Ninguno de estos lo habría encontrado la auditoría: salieron de leer código.
 
-### `opinion` no se persiste, y la exclusión del agrupamiento se deshace en cada arranque
-
-- **Origen:** revisión de código, 2026-08-19.
-- **Qué pasa:** el 2026-08-09 se decidió que la opinión no forma historias
-  —agrupar columnas con noticias mezcla «quién informó» con «quién opinó»—. Pero
-  `opinion` no tiene columna en `articles`: no se guarda. Tras cada arranque los
-  artículos rehidratados vuelven sin la marca y **reentran al agrupamiento**.
-- **Estado:** ABIERTO. Diagnosticado, no arreglado.
-- **Qué pide:** columna nueva, escritura en el INSERT, lectura en la
-  rehidratación, y migración. Es hermano del fallo de `topics`, ya corregido.
+El cuarto de esta lista —`opinion`, que era el que compartía forma con los fallos
+de aquel día, **la intención escrita en el código y el comportamiento
+contrario**— se cerró el 2026-08-21 y está abajo. Los tres que quedan son de otra
+naturaleza: no hay nada roto que arreglar, hay algo que **nadie ha decidido**.
 
 ### Infobae se muestrea al 38 % y nadie lo decidió
 
@@ -157,6 +149,83 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-08-21 · La opinión vuelve a quedarse fuera del agrupamiento
+
+Medido contra producción antes de tocar nada: **71 de los 4 000 artículos en
+memoria eran opinión** —62 columnas, 7 editoriales, 2 caricaturas— y reentraban
+al agrupamiento en cada arranque. Formaban **135 historias, 3 de ellas
+multifuente**, que son las que corrompen el producto. La peor era exactamente el
+caso que Jose describió el 2026-08-09:
+
+```
+HISTORIA: «Pereira y Risaralda: La hora de la solidaridad y la reconstrucción»
+   [OPINIÓN/columna]    el-diario-pereira
+   [OPINIÓN/editorial]  diario-del-norte
+```
+
+Dos opiniones y ni un solo hecho reportado, presentadas como historia
+multifuente. Otra juntaba una noticia de Pulzo con una columna de El Espectador:
+el sitio anunciaba dos fuentes cruzando espectro cuando una era una columna.
+
+**Después del despliegue (`593ad40`): 0, 0 y 0.** Las 6 310 historias se
+recompusieron y el total bajó de 6 443 a 6 310 — las ~133 que faltan eran
+historias que solo eran una columna. Los 7 invariantes siguen pasando.
+
+### Se deriva, no se guarda, y esta minuta pedía lo contrario
+
+Esta minuta pedía «columna nueva, escritura en el INSERT, lectura en la
+rehidratación, y migración», por analogía con `topics`. **La analogía era falsa y
+conviene dejar escrito por qué**, porque el criterio sirve para el próximo caso:
+
+`detectarOpinion` es **función pura de la URL** —tres expresiones regulares sobre
+el pathname, sin registro ni estado— y la URL ya es permanente: `canonical_url`
+es la clave del ON CONFLICT y no se reescribe nunca. `topics` había que guardarlo
+porque **se pierde si no se guarda**: es el resultado de una clasificación que no
+se puede rehacer desde la fila. La opinión no. Guardarla sería duplicar un dato
+que ya está.
+
+Y la versión derivada es **mejor**, no solo más barata:
+
+1. **No cierra ninguna puerta.** El día que haga falta consultarla en SQL —el
+   índice de columnistas— la columna se rellena entera desde `canonical_url`.
+2. **Se cura sola.** La detección está declarada incompleta. Un valor guardado
+   seguiría mintiendo sobre los artículos viejos cuando se añada un patrón; este
+   se corrige en el siguiente arranque.
+3. Cuesta **6,3 ms** para los 4 000, medido.
+
+### Lo que enseñó sobre los comentarios de este repositorio
+
+Los comentarios prometen que la opinión «alimenta el agregado de formadores de
+opinión» y «el índice de columnistas». **Ninguno de los dos existe.** El único
+consumidor de `opinion` en todo el código es el filtro del agrupamiento. Es la
+misma enfermedad del 2026-08-19 —el comentario describe una intención, no un
+comportamiento—, y esta vez apareció en el comentario que yo mismo iba a usar
+como prueba de que hacía falta una columna.
+
+## 2026-08-21 · El vigilante del desfase gritaba por la prosa
+
+`comprobarDesfase.mjs` comparaba el commit de Fly con el de `main` por igualdad
+estricta. Al actualizar esta minuta, `main` avanzó y el vigilante quedó listo
+para avisar de que «Fly está 1 commit por detrás» por dos archivos `.md`. **Hubo
+que pagar un despliegue entero de Fly solo para callarlo.**
+
+**Hecho:** rama `vigilancia/desfase-solo-lo-que-llega`. Ahora pregunta si algún
+commit entre Fly y main tocó una ruta que **llega a la imagen**, que es lo que la
+cabecera del workflow decía querer saber desde el principio.
+
+**Esto no es bajar un umbral para que deje de molestar**, que es como se estropea
+un vigilante y está escrito aquí mismo a propósito de Razón Pública. Es corregir
+QUÉ mide para que responda la pregunta que dice responder. La diferencia está en
+que **la lista es de lo que se perdona, no de lo que cuenta**: cualquier ruta que
+no encaje se trata como desfase, porque los dos errores no cuestan lo mismo
+—perdonar de más silencia la avería que este workflow existe para cazar, y que ya
+mordió dos veces—.
+
+Probado en los dos sentidos con una salud falsa: un commit de solo prosa sale 0 y
+lo dice en voz alta; un commit que toca `server/` sale 1 y nombra el archivo.
+El predicado tiene 19 pruebas propias en `shared/rutasDeLaImagen.test.js`.
+
 
 ## 2026-08-21 · Las cuatro ramas del 19 entran a `main`, y el motor se despliega
 

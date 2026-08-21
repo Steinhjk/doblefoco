@@ -264,6 +264,45 @@ relevancia, y se volvió a tropezar con ella.
 
 ---
 
+## ABIERTO · Archivo, buscador y ventana de agrupamiento
+
+**Planteado por Jose el 2026-08-19**, junto con el encargo de estudiar a Ground
+News: *«si estudiando ampliar más el motor de búsqueda, actualización y
+permanencia de noticias se encontrarían sobrecostos o imposibilidades
+técnicas»*.
+
+**El estudio está hecho y vive en `ESTUDIO_GROUND_NEWS.md`.** Lo que dejó
+decidido y lo que dejó abierto:
+
+### Lo que el estudio ya resuelve
+
+- **Permanencia y buscador NO tienen muro y casi no tienen costo.** Hoy una
+  noticia dura 72 h y `pruneExpiredArticles` borra la fila: no hay archivo. La
+  base crece 4,7 MB al día, así que 30 días caben en el plan gratuito de
+  Supabase y un año entero cuesta 25 USD/mes. El buscador es una columna
+  `tsvector` con índice GIN, y su consulta no crece con el archivo.
+- **Ampliar la ventana de AGRUPAMIENTO sí tiene muro, y está medido.** El primer
+  paso de `clusterArticles` compara cada artículo contra todos los grupos: es
+  cuadrático. 7 días caben (ciclo de 1–2 min contra cadencia de 30); 30 días no
+  (10–50 min, más que el propio intervalo). La salida, si algún día hace falta,
+  es llevar al primer paso el índice invertido que el segundo ya usa — algoritmo,
+  no infraestructura.
+
+### Lo que falta que decida Jose
+
+- **Cuánta permanencia.** No es solo dinero: un archivo permanente convierte cada
+  historia en una página que seguirá afirmando lo que afirmaba, con la ficha de
+  propiedad que era cierta ese día. Es la caducidad silenciosa contra la que ya
+  existe `revision-externa/`, y aplicada al contenido en vez de a las fichas.
+- **Si la ventana de agrupamiento sube a 7 días.** Multiplicaría por 2,3 el
+  tiempo en que una historia puede juntar medios de distinto espectro, que es
+  justo lo que hace falta para que un punto ciego se note. Nadie ha medido qué
+  le hace eso a la tasa de falsos agrupamientos.
+- **Antes de tocar la ventana, rehacer la medida** con corpus real del tamaño
+  que se pretenda: lo de 7 días es extrapolación y el documento lo dice.
+
+---
+
 ## ABIERTO · Medios alternativos — la categoría de canales de YouTube
 
 **Planteado:** en una sesión anterior (fecha sin registrar — se perdió).

@@ -168,7 +168,7 @@ nunca.
 
 ---
 
-## 5. La otra mitad del diagnóstico: la izquierda calla porque está rota
+## 5. La otra mitad del diagnóstico: la izquierda calla, y no por lo que parecía
 
 El 3,29 % no es solo composición editorial. De los **13 medios de izquierda del
 catálogo**:
@@ -193,14 +193,18 @@ catálogo**:
 88,6 %.** Quitando a El País, que es español, la izquierda **colombiana** del
 corpus es aún más delgada de lo que dice el 3,29 %.
 
-Y al menos dos de los mudos están ya diagnosticados en `MINUTA.md` como avería de
-infraestructura, no editorial: **Vorágine y Razón Pública fallan desde la IP de
-Actions y funcionan en local.**
+> ⚠ **Esta sección se escribió suponiendo que los mudos estaban averiados, y al
+> ir a arreglarlos resultó que no.** La minuta los tenía anotados como fallo de
+> infraestructura —Vorágine y Razón Pública caen desde la IP de Actions—, y con
+> ese antecedente di por hecho que la causa era esa. **No lo es:** los seis
+> responden HTTP 200 con diez ítems. Lo que los calla es nuestra ventana de 72 h.
+> El diagnóstico correcto está en el **§8**, y es de los dos que este estudio
+> corrige sobre la marcha.
 
-**Pero arreglarlos no desbloquea la señal.** Aunque los cinco mudos rindieran como
-los activos, la izquierda pasaría de ~3,3 % a quizá 5–6 %. Haría falta 17 %.
-Arreglarlos es correcto por sí mismo —y por la regla de no silenciar a nadie—,
-no como cura del punto ciego.
+**Y arreglarlos no desbloquea la señal, venga de donde venga la mudez.** Aunque
+los cinco rindieran como los activos, la izquierda pasaría de ~3,3 % a quizá
+5–6 %. Haría falta 17 %. Hay que arreglarlos por sí mismos —y por la regla de no
+silenciar a nadie—, no como cura del punto ciego.
 
 ---
 
@@ -252,3 +256,85 @@ salga.** Está medido que haría falta llevarlo a un terreno donde el 78 % de lo
 normal se presentaría como hallazgo. Ajustar una medida hasta que diga lo que
 queríamos oír es lo mismo que se rechazó con Razón Pública, con la diferencia de
 que aquí el que sale perjudicado es el lector.
+
+
+---
+
+## 8. Addendum — los medios mudos no están rotos: los callamos nosotros
+
+Al ir a arreglar los cinco medios de izquierda sin apariciones, resultó que
+ninguno está averiado. **Probados en vivo, los seis medios mudos con feed
+configurado responden HTTP 200 con 10 ítems:**
+
+| Medio | Espectro | HTTP | Ítems | Pieza más nueva | Dentro de 72 h |
+|---|---|---|---:|---:|---:|
+| CasaMacondo | izq | 200 | 10 | 111 h | **0** |
+| Vorágine | izq | 200 | 10 | 113 h | **0** |
+| Razón Pública | izq | 200 | 10 | 97 h | **0** |
+| Noticias Uno | izq | 200 | 10 | 94 h | **0** |
+| Telecaribe | mixta | 200 | 10 | 181 h | **0** |
+| El Manduco | mixta | 200 | 10 | 126 h | **0** |
+
+El motor los consulta con éxito cada media hora y **tira todo lo que trae**,
+porque `pruneArticles` borra por edad con `RETENTION_MS = 72 h` y su pieza más
+reciente ya nació fuera de la ventana.
+
+Los otros seis mudos —Financial Times, La Vanguardia, CNN en Español, Reuters,
+The Wall Street Journal y The New York Times— no tienen feed de ingesta. Es el
+bloqueo de F1-16 que ya está anotado, no este.
+
+### El comentario del código dice que esto ya estaba resuelto
+
+`pruneArticles` lleva escrito, a propósito de la decisión del 2026-08-07:
+
+> «Y los que caían fuera por edad eran los medios lentos: Vorágine publica una
+> pieza cada 74,7 h, más despacio que la propia ventana, así que quedaba excluido
+> de forma sistemática. [...] deja de morder y la ventana se alarga sola para
+> todo lo que si se compara. **No hace falta ninguna regla especial para los
+> medios lentos; se arregla como efecto.**»
+
+**No se arregló.** Aquella decisión cambió a quién expulsa EL TECHO, y eso sí
+funcionó. Pero el corte por edad es una deleción aparte que corre **primero y
+sin condición**, antes de mirar siquiera el techo:
+
+```js
+const cutoff = Date.now() - RETENTION_MS;
+for (...) if (stamp < cutoff) articlesByLink.delete(link);   // incondicional
+if (articlesByLink.size <= MAX_ARTICLES) return;             // el techo, despues
+```
+
+Es la enfermedad de siempre: la intención escrita en el comentario y el
+comportamiento contrario. Y esta vez el comentario nombra a Vorágine como caso
+resuelto mientras Vorágine lleva cero apariciones.
+
+### Y hay sitio de sobra
+
+| | Artículos |
+|---|---:|
+| En la ventana hoy | 9 613 |
+| Techo `MAX_ARTICLES` | 8 000 |
+| Internacionales sin comparación (primeros en la cola de expulsión) | 2 580 |
+| **Corpus tras expulsarlos** | **7 033** |
+| **Huecos libres bajo el techo** | **967** |
+| Lo que aportarían los seis mudos | **~60** |
+
+Los seis caben en el **6 %** del margen que ya sobra.
+
+### Por qué esto importa para los puntos ciegos
+
+Cuatro de los seis son de izquierda. La ventana de 72 h no es neutral: **calla al
+38 % de los medios de izquierda del catálogo y al 6 % de los de derecha**, porque
+en Colombia el periodismo de investigación y análisis —Vorágine, Razón Pública,
+CasaMacondo, Cuestión Pública, Revista RAYA— publica más despacio que el diario.
+
+O sea que **el 3,29 % de la izquierda es en parte una consecuencia de nuestra
+propia ventana**, no solo del catálogo. No basta para desbloquear el punto ciego
+—harían falta 17 %— pero es la primera vez que aparece una causa nuestra.
+
+### Lo que NO se ha hecho, porque es decisión de producto
+
+Cambiar `RETENTION_MS` toca el límite que el propio proyecto tiene abierto como
+decisión en la minuta («Permanencia: una noticia dura 72 h y se borra»). Y una
+excepción por medio chocaría con lo que ese mismo comentario decidió: «una
+excepción por medio habría sido una regla sobre quién publica y no sobre qué se
+puede comparar».

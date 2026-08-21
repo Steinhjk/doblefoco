@@ -1,0 +1,366 @@
+/*
+ * Auditoría del catálogo — panel de admin.
+ *
+ * POR QUÉ AQUÍ NO HAY UN ROJO PARA «ROTO».
+ * En este proyecto el rojo y el azul son el espectro político: `--bias-left-soft`
+ * es rojo y `--bias-right-soft` es azul, y una fila de medio pintada de rojo se
+ * leería como un medio de izquierda. El único acento disponible es `--warn`, que
+ * existe justamente por no pertenecer a ningún lado.
+ *
+ * Así que «roto» y «revisar» se distinguen por RELLENO, no por tono: roto va con
+ * el fondo de aviso, revisar solo con el borde. Y los dos llevan su palabra
+ * escrita, porque un estado que solo se distingue por color no lo lee ni quien
+ * no distingue colores ni quien imprime la pantalla.
+ */
+
+.auditoria {
+    margin-bottom: 40px;
+}
+
+.auditoria-cabecera h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin: 0 0 6px;
+    color: var(--text-main);
+}
+
+.auditoria-cabecera p {
+    margin: 0 0 10px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 70ch;
+}
+
+.auditoria-cabecera code,
+.auditoria-nota code {
+    font-size: 0.8rem;
+    background: var(--bg-subtle);
+    padding: 1px 5px;
+    border-radius: var(--radius-sm);
+}
+
+.auditoria-cuando {
+    margin-bottom: 20px !important;
+}
+
+.auditoria-parcial,
+.auditoria-aviso {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--warn);
+}
+
+.auditoria-aviso {
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+/* ── Cifras ─────────────────────────────────────────────────────────────── */
+
+.auditoria-cifras {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.auditoria-cifra {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.auditoria-cifra .cifra-num {
+    font-family: var(--font-heading);
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--accent);
+}
+
+.auditoria-cifra .cifra-lbl {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* ── Bloques ────────────────────────────────────────────────────────────── */
+
+.auditoria-bloque {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    min-width: 0;
+    margin-bottom: 20px;
+}
+
+.auditoria-bloque h3 {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    margin: 0 0 8px;
+    color: var(--text-main);
+}
+
+.auditoria-nota {
+    display: block;
+    margin: 0 0 14px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 80ch;
+}
+
+.auditoria-nota svg {
+    vertical-align: -2px;
+}
+
+.auditoria-nota-final {
+    margin: 14px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-light);
+}
+
+/* ── Tabla ──────────────────────────────────────────────────────────────── */
+
+/* Ancha por naturaleza: se desplaza dentro de su caja y la página nunca lo hace. */
+.auditoria-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    display: block;
+    overflow-x: auto;
+}
+
+.auditoria-tabla th {
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    padding: 0 12px 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.auditoria-tabla td {
+    padding: 10px 12px 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-main);
+    vertical-align: top;
+}
+
+.auditoria-tabla tr:last-child td {
+    border-bottom: none;
+}
+
+.celda-medio {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.celda-feed {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.celda-tenue {
+    color: var(--text-muted);
+}
+
+.celda-motivo {
+    min-width: 22ch;
+}
+
+.motivo {
+    display: block;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.motivo:last-child {
+    margin-bottom: 0;
+}
+
+.motivo svg {
+    vertical-align: -2px;
+}
+
+.motivo-url {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    /* Las URL de fuentes son largas y no llevan espacios: sin esto empujan la
+       tabla a lo ancho y se llevan el desplazamiento por delante. */
+    overflow-wrap: anywhere;
+    opacity: 0.8;
+}
+
+/* ── La pastilla de estado ──────────────────────────────────────────────── */
+
+.auditoria-estado {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    color: var(--text-muted);
+}
+
+.auditoria-estado.es-roto {
+    color: var(--warn);
+    background: var(--warn-soft);
+    border-color: var(--warn);
+}
+
+.auditoria-estado.es-revisar {
+    color: var(--warn);
+    border-color: var(--warn);
+}
+
+.auditoria-estado.es-incognita {
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+}
+
+.auditoria-estado.es-sano {
+    color: var(--text-muted);
+}
+
+/* ── Si el motor se cayera ──────────────────────────────────────────────── */
+
+.auditoria-riesgo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auditoria-riesgo li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.auditoria-riesgo li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.riesgo-nombre {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.riesgo-dato {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── El libro: lo que llevamos sin arreglar ─────────────────────────────── */
+
+.auditoria-libro {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auditoria-libro li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.auditoria-libro li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* La edad va primero y en cifra tabular: esta lista se lee en vertical, por la
+   columna de días, y no leyendo cada línea entera. */
+.libro-edad {
+    flex: 0 0 3.2rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 0.86rem;
+    color: var(--text-main);
+}
+
+.libro-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.libro-medio {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-weight: 700;
+    font-size: 0.86rem;
+    color: var(--text-main);
+}
+
+/* Reincidente. Va con palabra —«ha vuelto 3×»— y no solo con un color: es el
+   dato que distingue un problema crónico de uno nuevo, y perderlo por daltonismo
+   sería perder justo la parte que cambia la decisión. */
+.libro-cronico {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--warn);
+    background: var(--warn-soft);
+    padding: 1px 6px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.libro-resumen {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+}
+
+.libro-id {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+    overflow-wrap: anywhere;
+}

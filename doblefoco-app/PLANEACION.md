@@ -198,6 +198,70 @@ un certificado de cámara de comercio, no una consulta semanal.
 - Cada alta nueva debería entrar en la vigilancia igual que entra en la cola de
   revisión.
 
+### HECHO el 2026-08-19 · La auditoría: los chequeos corriendo solos
+
+**Jose, retomando el hilo:** *«un panel de admin donde podamos hacer todos los
+chequeos de forma automática»*. Lo que ya existía era la mitad —el panel del 17
+de agosto ENSEÑA lo que el repositorio afirma, pero no CORRE nada— y lo que
+faltaba era justo esta otra mitad.
+
+**Decidido por Jose, con la bifurcación puesta encima de la mesa:** los chequeos
+corren **en la nube y devuelven el resultado commiteado**, no por un endpoint con
+botón de «correr ahora». Motivo: un endpoint vive en Fly y obligaría a
+`npm run deploy` aparte de empujar a `main`, que es exactamente el desfase que
+`desfase.yml` vigila. El coste aceptado es que el panel enseña la última pasada
+y no el segundo actual — y lo dice, con su fecha.
+
+**Los cuatro chequeos que Jose eligió, y entraron los cuatro:** vitales del feed
+con la ventana real, la trampa de las rutas institucionales, el reintento con
+User-Agent limpio antes de declarar bloqueo, y las fuentes vivas de las fichas.
+
+Escrito:
+
+- **`shared/auditoria.js`** — la aritmética y los umbrales, compartidos por el
+  script y el panel para que no puedan discrepar.
+- **`scripts/auditoria.mjs`** (`npm run auditoria`) — la pasada. `--medio=<id>`
+  para uno solo, `--resumen=<ruta>` para el flujo, `--solo-informe` para releer.
+- **`auditoria/estado.json`** — el resultado, versionado como el del centinela.
+- **`.github/workflows/auditoria.yml`** — jueves 12:00 UTC. En jueves y no en
+  lunes para no sumarse a la pasada del centinela sobre los mismos 76 sitios.
+- **`src/components/EstadoDeLaAuditoria.jsx`** — el panel, debajo del de agosto.
+
+**LA DIFERENCIA CON EL CENTINELA, Y NO ES UN DESCUIDO: el commit de la auditoría
+NO lleva `[skip ci]`.** El del centinela sí, y hace bien —su estado es memoria
+del bot—. Aquí el archivo ES el producto, y Vercel omite el despliegue de los
+commits marcados. Con la marca, el panel enseñaría eternamente la pasada del día
+en que se desplegó otra cosa.
+
+### Lo que la primera pasada real enseñó, y ya está corregido
+
+**CERO PIEZAS FRESCAS SON DOS COSAS DISTINTAS.** La primera versión declaraba
+«roto» todo feed del que nada entrara en la ventana de 72 h, y con eso metía en
+el mismo saco a **Vorágine** —que saca una pieza cada 80 h: es periodismo de
+investigación, no una avería— y a **Telemedellín**, que publica 51 piezas al día
+y llevaba días callado. Lo que los separa no es el número de frescos sino **la
+edad de la pieza más nueva medida contra el propio ritmo del medio**: a más de
+tres huecos de silencio, el feed está parado; por debajo, es su cadencia. Es la
+misma lección que `verifyFeeds.mjs` ya tenía escrita sobre el orden por
+relevancia, y se volvió a tropezar con ella.
+
+**Y lo que encontró que nadie estaba mirando:**
+
+- **Cinco sitios devuelven 200 a una ruta inventada** —Quindío Noticias otra vez,
+  Cablenoticias, El Heraldo, Canal Capital, EFE—. En ellos, el 200 de una página
+  «quiénes somos» **no prueba nada**, y las fuentes institucionales que se apoyan
+  en eso bajan solas a «no comprobable».
+- **Infobae publica más de lo que cabe en un sondeo** (margen 0,37×): estamos
+  perdiendo piezas suyas y nada lo decía.
+- **Tres fuentes de fichas ya no resuelven** (Boyacá Digital, El Pilón, DW).
+
+### Lo que sigue faltando aquí
+
+- **Nadie ha decidido qué se hace con los cinco sitios que responden a todo.**
+  El chequeo los detecta; qué fuente los sustituye es trabajo de ficha.
+- El resultado **no alimenta `pendientes.md`**: sigue siendo la misma pregunta
+  abierta que dejó el centinela.
+
 ---
 
 ## ABIERTO · Medios alternativos — la categoría de canales de YouTube

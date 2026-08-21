@@ -158,6 +158,38 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-08-21 · Las cuatro ramas del 19 entran a `main`, y el motor se despliega
+
+Todo lo que quedó sin fusionar la sesión anterior está en producción, en el
+commit **`68f0230`**. Se fusionó primero a una rama de integración, se verificó
+el resultado **junto** —no rama por rama— y se desplegó desde `main` con el árbol
+limpio, para que la imagen de Fly quede marcada con el commit que de verdad
+sirve.
+
+| Rama | Dónde vive |
+|---|---|
+| `motor/rehidratacion-pierde-tema` | Fly (`npm run deploy`) |
+| `auditoria/trazabilidad` | Ambos: la auditoría corre fuera, el panel va en el cliente |
+| `mapa/puntos-sin-color` | Vercel |
+| `estudio/ground-news` | Solo documentos |
+
+Verificado sobre el resultado fusionado: lint limpio, `tsc` sin errores,
+**597/597 pruebas**, build correcto, y **7/7 invariantes** contra producción.
+El conflicto que se temía en `PLANEACION.md` no se materializó.
+
+**Fly y Vercel quedaron en el mismo commit**, que es la condición que
+`desfase.yml` comprueba y la que este proyecto rompe con más facilidad, porque
+empujar a `main` publica uno de los dos y no el otro.
+
+**Lo que se tocó de más, y por qué:** `.claude/` entró en `.gitignore`.
+`npm run deploy` aborta con el árbol sucio —y hace bien—, pero lo que lo
+ensuciaba era el worktree de la herramienta, que no es del proyecto.
+
+**Lo que NO está verificado:** nadie ha abierto el mapa ni Categorías en un
+navegador. Hay preview de Vercel para la rama de integración y el sitio
+responde 200, pero eso no es haberlo mirado.
+
+
 ## 2026-08-19 · Categorías enseñaba catorce ceros
 
 `hydrateArticles` no leía `articles.topics` ni `articles.ambito`. El motor
@@ -171,8 +203,18 @@ como nacional**, con la API respondiendo `internacional: 0`.
 para poder probarlo, y la prueba va en dos sentidos —que el mapeo devuelva los
 campos y que la consulta los pida—.
 
-> ⚠ **Esto vive en el servidor: no basta con empujar a `main`, hace falta
-> `npm run deploy` a Fly.** Mientras no se despliegue, sigue roto en producción.
+> ✅ **DESPLEGADO el 2026-08-21 en el commit `68f0230`**, Fly y Vercel en el
+> mismo commit. `npm run invariantes` pasa **7/7**. La portada pasó de 30/100
+> historias con tema a **96/100**, y lo internacional de **3 a 94** — ese era el
+> daño callado: el catálogo entero se declaraba nacional.
+>
+> **Y enseñó algo sobre cómo se mide un despliegue.** La primera medición, seis
+> segundos después de que el worker arrancara, daba todavía 6/7 y 4 189 historias
+> rotas; parecía que el arreglo no servía. No era eso: el motor rehidrata y
+> recompone **al arrancar**, y a las 02:06:47 reescribió las 6 443 historias de
+> una vez. **Medir un despliegue en el instante en que termina mide la máquina
+> anterior**, y en este proyecto la diferencia entre las dos lecturas era la que
+> hay entre «arreglado» y «no sirvió».
 
 ## 2026-08-19 · Puntos invisibles en el mapa de medios
 

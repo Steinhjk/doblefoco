@@ -1,84 +1,71 @@
 # Por dónde seguir
 
-## 2026-08-19 · Cinco ramas sin fusionar, y una que además hay que desplegar
+## 2026-08-21 · Las cinco ramas ya están en producción. Lo que queda es de producto
 
-Sesión larga. **Nada se subió a `main`.** Lo primero de mañana es decidir qué
-entra y en qué orden.
+**Todo lo que la sesión del 19 dejó sin fusionar está publicado**, en el commit
+`68f0230`. Fly y Vercel en el mismo commit, sin desfase.
 
-### Lo urgente, y es una sola cosa
+`npm run invariantes` pasa **7/7** contra producción. Los tres números que
+estaban rotos:
 
-**`motor/rehidratacion-pierde-tema` arregla que Categorías esté vacía, y vive en
-el servidor.** Empujar a `main` publica Vercel y NO Fly: hace falta
-`npm run deploy`. Mientras no se despliegue, sigue roto en producción — hoy la
-consulta a la base daba **4 050 historias sin ningún tema teniendo artículos con
-tema**, y el catálogo entero marcado como nacional.
-
-Hay una forma de comprobar que quedó arreglado sin mirar a ojo:
-`npm run invariantes` debe pasar los 7. Hoy pasa 6.
-
-### Las ramas, en orden de mérito
-
-| Rama | Qué trae | Nota |
+| | Antes | Ahora |
 |---|---|---|
-| `motor/rehidratacion-pierde-tema` | Categorías y el ámbito | **Pide `npm run deploy`** |
-| `auditoria/trazabilidad` | La auditoría entera + libro de hallazgos + invariantes | Ya contiene `auditoria/estado-por-medio`; esa no hace falta fusionarla aparte |
-| `mapa/puntos-sin-color` | Los puntos invisibles y el realce de búsqueda | Solo cliente |
-| `estudio/ground-news` | `ESTUDIO_GROUND_NEWS.md` | Solo documentos |
+| Portada con tema | 30/100 | **96/100** |
+| Historias internacionales | 3 | **94** |
+| Historias que pierden el tema de sus artículos | 4 219 | **0** |
 
-**Posible conflicto menor:** `estudio/ground-news` y `auditoria/trazabilidad`
-tocan las dos `PLANEACION.md`, en secciones distintas. Debería fusionar solo;
-si no, es un conflicto de texto sin trampa.
+Lo del ámbito era el daño callado: el catálogo entero se declaraba nacional
+mientras la API respondía `internacional: 0` sirviendo piezas cuya sección
+heredada era literalmente «Internacional».
 
-Todo verificado en cada rama: lint limpio, `tsc` sin errores, **580/580 pruebas**
-y build correcto. Lo que **no** está verificado: no he abierto el mapa ni
-Categorías en un navegador. Se probó con pruebas, tipos y compilación.
+### Una lección que costó un susto, y conviene no repetir
 
-### Lo nuevo que conviene conocer antes de tocar nada
+La primera lectura de los invariantes, **seis segundos** después de que el worker
+arrancara, daba todavía 6/7 y 4 189 historias rotas. Parecía que el arreglo no
+había servido. No era eso: **el motor rehidrata y recompone al arrancar**, y
+minuto y medio después reescribió las 6 443 historias de una vez.
 
-- **`MINUTA.md`, en la raíz del repositorio.** Es el hilo de lo que queda
-  pendiente según auditorías y revisiones, pedido por Jose hoy. **Empezar el día
-  ahí.** Un hallazgo que no está en esa lista no está pendiente: está olvidado.
-- **`npm run auditoria`** corre los chequeos que antes eran a mano y lleva un
-  libro —`auditoria/hallazgos.json`— con id estable y antigüedad por hallazgo.
-  Corre solo los jueves. **23 hallazgos abiertos** al cierre de hoy.
-- **`npm run invariantes`** comprueba que lo que el sitio dice pueda ser cierto.
-  Corre en `vigilancia.yml`, cada 6 h.
-- **`ESTUDIO_GROUND_NEWS.md`** responde qué costaría archivo, buscador y ventana
-  de agrupamiento. Resumen: los dos primeros son baratos, el tercero tiene muro
-  medido a los 30 días y cabe a los 7.
+> **Medir un despliegue en el instante en que termina mide la máquina anterior.**
+> Aquí la diferencia entre las dos lecturas era la que hay entre «arreglado» y
+> «no sirvió». Antes de creerle a un invariante después de un despliegue, dejar
+> pasar un ciclo.
 
-### Lo que descubrió el día, y no estaba buscado
+### Lo primero de mañana: mirarlo con los ojos
 
-**Cuatro fallos con la misma forma:** la intención escrita en el código y en su
-comentario, y el comportamiento contrario, en silencio, siempre en una costura
-—JSX↔CSS, base↔memoria, API↔cliente—. Ninguno lo vieron las pruebas, que cubren
-muy bien `shared/` y no cubren ninguna costura. Es el punto ciego del proyecto y
-conviene tenerlo presente al revisar.
+**Nada de esto se ha abierto en un navegador.** Se probó con pruebas (597/597),
+tipos, compilación e invariantes, que es mucho, pero **el punto ciego de este
+proyecto son las costuras** —JSX↔CSS, base↔memoria, API↔cliente— y las pruebas no
+cubren ninguna. Los cuatro fallos del 19 vivían justo ahí.
 
-**Dos cosas que medí mal y corregí el mismo día**, por si alguien las cita:
+Tres pantallas, en este orden:
 
-1. «99 de 100 historias sin tema» era cierto **en ese momento**, pero el daño se
-   rehace en cada arranque y luego la ingesta fresca lo va tapando: horas después
-   daban 42 de 100. El dato estable es el de la base: 4 050 historias.
-2. La primera versión de la auditoría llamaba «roto» a Vorágine por publicar una
-   pieza cada 80 h, y a Razón Pública por un tropiezo de TLS. Las dos cosas están
-   corregidas, pero enseñan el sesgo del que hay que cuidarse: **una medida
-   correcta puede sostener una conclusión falsa.**
+1. **`/mapa`** — los puntos que estaban invisibles, y el realce de la búsqueda.
+2. **Categorías** — que ya no enseñe catorce ceros.
+3. **El panel de administración** — trae `EstadoDeLaAuditoria`, componente nuevo
+   que nadie ha visto funcionando. Lee de `auditoria/estado.json` y
+   `auditoria/hallazgos.json`, empaquetados en el build: no depende de la API.
 
-### Lo que queda pendiente y NO es de código
+### Lo que queda, y es todo decisión tuya
 
-Está todo en `MINUTA.md` con su detalle. Lo que espera decisión de Jose:
+Está en **`MINUTA.md`**, en la raíz, con el detalle y lo que costaría cada una.
+Ninguna es de código:
 
-- **Infobae se muestrea al 38 %** y nadie lo decidió. Su margen contra la red de
-  seguridad de 2 h es 0,09: si el motor cae, se pierde el 91 % de Infobae.
-- **Permanencia.** Hoy una noticia dura 72 h y se borra la fila. 30 días son
-  gratis; un año, 25 USD/mes.
-- **Ventana de agrupamiento a 7 días.** Medido que cabe. Falta medir qué le hace
-  a los falsos agrupamientos, y esa medida va antes.
+- **`opinion` no se persiste.** Hermano del fallo de `topics` que hoy se arregló,
+  y sin arreglar: la opinión reentra al agrupamiento en cada arranque. **Es el
+  único de los cinco que sí es trabajo de código** — columna, INSERT, lectura y
+  migración— y ya está diagnosticado.
+- **Infobae se muestrea al 38 %** y nadie lo decidió. Margen contra la red de
+  seguridad de 2 h: 0,09.
+- **Permanencia.** Hoy una noticia dura 72 h y se borra. 30 días son gratis; un
+  año, 25 USD/mes.
+- **Ventana de agrupamiento a 7 días.** Cabe, está medido. Falta medir qué le
+  hace a los falsos agrupamientos, y esa medida va antes que el cambio.
 - **Razón Pública puede ser falso positivo** —publica por tandas—. Es el caso de
-  estreno de `aceptado` con nota en el libro.
-- **`opinion` no se persiste**, así que la opinión reentra al agrupamiento en
-  cada arranque. Hermano del fallo de `topics`, sin arreglar.
+  estreno de `aceptado` con nota en el libro de hallazgos.
+
+Y **23 hallazgos abiertos** en `auditoria/hallazgos.json`: cinco sitios que
+devuelven 200 a cualquier ruta, tres fuentes que ya no resuelven, cuatro feeds
+parados. El jueves corre la segunda pasada y ahí empiezan a tener antigüedad.
 
 ---
 

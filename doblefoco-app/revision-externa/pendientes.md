@@ -1,12 +1,35 @@
 # Cola de revisión
 
-> ## ESTA COLA ES AHORA EL ÚLTIMO PASO DEL TRABAJO, NO EL QUE VA DETRÁS
+> ## EL ALTA YA NO ESPERA A LA COLA (Jose, 2026-08-24)
+>
+> **Esto MODIFICA la decisión del 2026-08-17 que hay debajo, y conviene leer las dos.**
+> Jose: *«las fichas pueden esperar pero me interesa más por el momento ver más
+> sitios»*. La cola se había vuelto el cuello de botella —77 medios, 56 fichas,
+> CERO firmadas— y la distancia entre lo publicado y lo auditado crecía más
+> rápido de lo que se cerraba.
+>
+> **Un medio entra al catálogo sin ficha de sesgo.** La cola deja de ser una
+> puerta y pasa a ser una deuda declarada.
+>
+> **Lo que NO se relajó, y no es un matiz:**
+>
+> | | ¿Puede esperar? |
+> |---|---|
+> | Ficha de SESGO (`fichas/*.md` + esta cola) | **Sí.** Es lo que libera esta decisión |
+> | Ficha de PROPIEDAD (`shared/mediaOwnership.js`) | **No.** `check:registry` la exige, y hace bien: sin ella el medio sale en el mapa sin decir de quién es |
+>
+> Para la propiedad no hace falta saberlo todo: vale `ownerType: null` diciendo
+> dónde y cuándo se buscó. Lo que no vale es callar. Y `reviewedAt: null` sigue
+> diciendo que el valor no está firmado, que es el estado de 74 de los 77.
+>
+> ## LA DECISIÓN ANTERIOR, QUE SIGUE VALIENDO PARA TODO LO DEMÁS
 >
 > **Decisión de Jose, 2026-08-17:** *el punto final de cada prueba de sesgo son las
 > fichas para las IAs.* Ninguna medición se cierra dentro de casa. Una ficha no está
 > terminada cuando se escribe, sino cuando ha pasado por aquí y sus objeciones están
-> resueltas o declaradas. Y **cada alta nueva entra en esta cola**: dar de alta un
-> medio ya no acaba en el registro.
+> resueltas o declaradas. ~~Y **cada alta nueva entra en esta cola**: dar de alta un
+> medio ya no acaba en el registro.~~ **← esta última frase queda sustituida por lo
+> de arriba: el alta entra primero, la ficha va detrás.**
 >
 > Sigue en pie lo de `LEEME.md`: **se pide objeción, no opinión**, el **acuerdo no
 > cuenta como aval**, y **la firma es de Jose**. Las IAs son el examen, no el

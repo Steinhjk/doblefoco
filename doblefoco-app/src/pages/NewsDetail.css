@@ -343,92 +343,155 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* Media Logos Grouped Grid with Compact Efficient Layout */
+/* Quien publico, agrupado por espectro.
+ *
+ * Era una rejilla de TRES columnas iguales dentro de una barra lateral de unos
+ * 335 px, y de ahi salian los tres defectos que se veian:
+ *
+ *  1. `white-space: nowrap` en un titulo de 1/3 de columna hacia que
+ *     «ORIENTACION MIXTA» se saliera y se pintara encima de «DERECHA».
+ *  2. Los nombres se recortaban a media palabra («Vanguard», «Telemede»),
+ *     porque la tarjeta tenia `overflow: hidden` y el ancho no daba.
+ *  3. Un grupo vacio se comia un tercio del ancho mientras el de al lado,
+ *     con siete medios, se ahogaba.
+ *
+ * Ahora los tres grupos se apilan y cada uno ocupa el ancho entero, con sus
+ * medios fluyendo en varias lineas. Un grupo mide lo que necesita.
+ *
+ * Y cada grupo lleva su color de espectro —el MISMO que su tramo en la barra
+ * de arriba y que su punto en el mapa de medios—, de modo que «70 % Mixta» y
+ * la columna «ORIENTACION MIXTA» se lean como el mismo dato dicho dos veces.
+ */
 .media-logos-grouped-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     margin-bottom: 20px;
     border-top: 1px solid var(--border-color);
     padding-top: 20px;
-    overflow-x: auto;
 }
 
 .media-group-col {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-width: 0; /* Previene desbordamientos de texto */
+    min-width: 0;
+}
+
+/* Un solo sitio donde vive el color de cada espectro dentro de este bloque.
+   Las reglas de abajo se escriben una vez contra `--espectro`. */
+.media-group-col.left {
+    --espectro: var(--bias-left);
+    --espectro-soft: var(--bias-left-soft);
+}
+
+.media-group-col.center {
+    --espectro: var(--bias-objective);
+    --espectro-soft: var(--bias-objective-soft);
+}
+
+.media-group-col.right {
+    --espectro: var(--bias-right);
+    --espectro-soft: var(--bias-right-soft);
 }
 
 .group-col-title {
-    font-size: 0.70rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 9px;
+    border-left: 3px solid var(--espectro);
+    font-size: 0.68rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: var(--text-muted);
-    letter-spacing: 0.5px;
-    white-space: nowrap;
+    letter-spacing: 0.06em;
+    color: var(--espectro);
+    /* Sin `nowrap`: que baje de linea antes que invadir al vecino. */
+    line-height: 1.3;
+}
+
+.group-col-count {
+    flex-shrink: 0;
+    min-width: 20px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--espectro-soft);
+    color: var(--espectro);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
 }
 
 .group-logos-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 6px;
+    padding-left: 12px;
 }
 
 .media-logo-card.interactive-media-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
+    max-width: 100%;
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-top: 2px solid var(--media-brand-color, var(--accent));
-    padding: 6px 8px;
-    border-radius: 3px;
+    border: 1px solid var(--border-light);
+    /* Era el color de marca del medio, que peleaba con el del espectro: la
+       tarjeta de Infobae decia naranja y la columna decia mixta. Manda el
+       espectro, que es lo que este bloque afirma. */
+    border-left: 3px solid var(--espectro);
+    padding: 5px 9px 5px 7px;
+    border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-main);
     text-decoration: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .media-logo-card.interactive-media-link:hover {
-    background: var(--bg-subtle);
-    transform: translateY(-2px);
-    border-color: var(--text-muted);
+    background: var(--espectro-soft);
+    border-color: var(--espectro);
+    border-left-color: var(--espectro);
+    transform: translateY(-1px);
     color: var(--text-main);
 }
 
-.media-logo-img {
+/* Hueco fijo para el logo: antes iba a 16 px y las marcas con palabra dentro
+   —«CARACOL RADIO»— llegaban a la pantalla como una mancha. A 20 px sobre
+   fondo blanco propio se distinguen, y las que no traen logo caen al
+   monograma de MediaLogo, que a este tamano ya se lee. */
+.media-logo-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     width: 24px;
     height: 24px;
-    border-radius: 4px;
-    object-fit: contain;
-    flex-shrink: 0;
+    border-radius: 3px;
     background: #ffffff;
-    padding: 2px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
 }
 
 .media-logo-name {
     line-height: 1.2;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.media-external-icon {
-    color: var(--text-muted);
-    opacity: 0.6;
-    transition: opacity 0.2s, color 0.2s;
-}
-
-.interactive-media-link:hover .media-external-icon {
-    opacity: 1;
-    color: var(--accent);
-}
-
+/* «Sin cobertura» es una afirmacion del producto, no un hueco: se dice con el
+   color del espectro que falta, en tenue, para que no se lea como error. */
 .empty-group {
-    font-size: 0.75rem;
+    padding: 4px 9px;
+    border-radius: 4px;
+    border: 1px dashed var(--espectro, var(--border-color));
+    background: var(--espectro-soft, transparent);
+    font-size: 0.72rem;
     color: var(--text-muted);
     font-style: italic;
 }
@@ -839,14 +902,12 @@
     }
 
     .media-logos-grouped-grid {
-        grid-template-columns: 1fr;
         gap: 20px;
     }
 }
 
 @media (max-width: 768px) {
     .media-logos-grouped-grid {
-        grid-template-columns: 1fr;
         gap: 20px;
     }
 

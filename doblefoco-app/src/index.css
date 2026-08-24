@@ -55,6 +55,12 @@
   --bias-objective-soft: rgba(203, 213, 225, 0.14);
   --bias-right-soft: rgba(59, 130, 246, 0.16);
 
+  /* Trama del segmento mixto de la barra de cobertura.
+     `--bias-objective` invierte su claridad con el tema —aquí es claro, en el
+     tema claro es casi negro—, así que una trama fija se volvía invisible en
+     uno de los dos. Este token la acompaña. */
+  --bias-objective-pattern: rgba(0, 0, 0, 0.28);
+
   /* Aviso / énfasis. NO es un color del espectro: marca lenguaje
      sensacionalista, que puede venir de cualquier lado. */
   --warn: #f59e0b;
@@ -135,6 +141,7 @@
   --bias-left-soft: rgba(220, 38, 38, 0.12);
   --bias-objective-soft: rgba(15, 23, 42, 0.08);
   --bias-right-soft: rgba(37, 99, 235, 0.12);
+  --bias-objective-pattern: rgba(255, 255, 255, 0.34);
   --warn: #b45309;
   --warn-soft: rgba(180, 83, 9, 0.14);
   --on-accent: #f8fafc;

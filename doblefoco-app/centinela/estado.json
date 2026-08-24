@@ -2,7 +2,7 @@
     "version": 1,
     "medios": {
         "diario-la-libertad": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -83,7 +83,7 @@
             }
         },
         "la-nacion-neiva": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -113,7 +113,7 @@
             }
         },
         "cablenoticias": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": null,
             "htmlValidado": false,
             "consultas": {
@@ -123,7 +123,7 @@
             }
         },
         "telecafe": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -133,7 +133,7 @@
             }
         },
         "diario-del-huila": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -143,7 +143,7 @@
             }
         },
         "diario-del-norte": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -158,12 +158,16 @@
             }
         },
         "el-diario-pereira": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Ramírez Múnera": {
                     "vistos": [
+                        "https://www.eldiario.com.co/opinion/el-pereirano-javier-ignacio-ramirez-munera/",
+                        "https://www.eldiario.com.co/sociales/reconocimiento-al-dr-javier-ignacio-ramirez-munera/",
+                        "https://www.eldiario.com.co/seccion-d/personaje/en-imagenes-reconocimiento-a-la-trayectoria-de-javier-ignacio-ramirez-munera/",
+                        "https://www.eldiario.com.co/noticias/politica/hoy-encuentro-de-amigos-de-luis-carlos-ramirez-munera/",
                         "https://www.eldiario.com.co/opinion/el-pereirano-javier-ignacio-ramirez-munera/",
                         "https://www.eldiario.com.co/sociales/reconocimiento-al-dr-javier-ignacio-ramirez-munera/",
                         "https://www.eldiario.com.co/seccion-d/personaje/en-imagenes-reconocimiento-a-la-trayectoria-de-javier-ignacio-ramirez-munera/",
@@ -173,7 +177,7 @@
             }
         },
         "proclama-del-pacifico": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -183,12 +187,20 @@
             }
         },
         "choco-7-dias": {
-            "ultimaComprobacion": "2026-08-17",
-            "canal": "rest",
-            "htmlValidado": false,
+            "ultimaComprobacion": "2026-08-24",
+            "canal": "html",
+            "htmlValidado": true,
             "consultas": {
                 "Cañadas": {
                     "vistos": [
+                        "https://choco7dias.com/edicto-gabriela-garrido-de-canadas/",
+                        "https://choco7dias.com/primer-aniversario-ivan-canadas-garrido/",
+                        "https://choco7dias.com/feliz-ano-nuevo-cronicas-y-anecdotas-de-alvaro-paz-canadas-x/",
+                        "https://choco7dias.com/el-dorado-cronicas-y-anecdotas-de-alvaro-paz-canadas-ix/",
+                        "https://choco7dias.com/inmigrante-cronicas-y-anecdotas-de-alvaro-paz-canadas-viii/",
+                        "https://choco7dias.com/atrato-oro-y-platino-cronicas-y-anecdotas-de-alvaro-paz-canadas-vii/",
+                        "https://choco7dias.com/colera-cronicas-y-anecdotas-de-alvaro-paz-canadas-vi/",
+                        "https://choco7dias.com/fallecio-yenny-canadas/",
                         "https://choco7dias.com/edicto-gabriela-garrido-de-canadas/",
                         "https://choco7dias.com/primer-aniversario-ivan-canadas-garrido/",
                         "https://choco7dias.com/feliz-ano-nuevo-cronicas-y-anecdotas-de-alvaro-paz-canadas-x/",
@@ -201,12 +213,23 @@
             }
         },
         "el-manduco": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Díaz": {
                     "vistos": [
+                        "https://elmanduco.com.co/2026/08/05/el-salon-olimpia-y-la-llegada-del-cine-parlante-al-choco/",
+                        "https://elmanduco.com.co/2026/07/12/camaras-en-la-selva-la-expedicion-de-10-mujeres-exploradoras-britanico-colombiana-del-atrato-de-1977-por-gonzalo-diaz-canadas/",
+                        "https://elmanduco.com.co/2026/06/21/los-remedios-que-llenaron-las-paginas-de-la-prensa-chocoana-por-gonzalo-diaz-canadas/",
+                        "https://elmanduco.com.co/2026/06/16/sautata-la-utopia-azucarera-que-florecio-en-la-selva-del-atrato-por-gonzalo-diaz-canadas/",
+                        "https://elmanduco.com.co/2026/05/06/la-disputa-por-jurado-que-estuvo-a-punto-de-desatar-una-guerra-entre-colombia-y-panama-por-gonzalo-diaz-canadas/",
+                        "https://elmanduco.com.co/2026/03/15/el-choco-en-la-guerra-de-los-mil-dias-1899-1902-por-coronel-delfino-diaz-ruiz-bogota-nov-1938/",
+                        "https://elmanduco.com.co/2026/03/08/gonzalo-diaz-canadas-el-periodista-que-rescata-la-memoria-historica-del-choco/",
+                        "https://elmanduco.com.co/2026/03/04/exposicion-rios-y-selvas-que-curan-y-abrazan-de-laura-rios-diaz-en-la-biblioteca-departamental-de-quibdo/",
+                        "https://elmanduco.com.co/2026/03/04/rescatar-la-memoria-escrita-del-choco-el-compromiso-de-gonzalo-diaz-canadas-con-el-patrimonio-documental-regional/",
+                        "https://elmanduco.com.co/2026/03/03/fallecio-el-ex-gobernador-del-choco-y-ex-parlamentario-osias-lozano-diaz/",
+                        "https://elmanduco.com.co/2025/11/14/newton-c-marshall-el-gerente-de-la-choco-pacifico-mining-company-que-llego-a-convertirse-en-uno-del-hombre-mas-poderoso-del-choco-por-gonzalo-diaz-canadas/",
                         "https://elmanduco.com.co/2026/08/05/el-salon-olimpia-y-la-llegada-del-cine-parlante-al-choco/",
                         "https://elmanduco.com.co/2026/07/12/camaras-en-la-selva-la-expedicion-de-10-mujeres-exploradoras-britanico-colombiana-del-atrato-de-1977-por-gonzalo-diaz-canadas/",
                         "https://elmanduco.com.co/2026/06/21/los-remedios-que-llenaron-las-paginas-de-la-prensa-chocoana-por-gonzalo-diaz-canadas/",
@@ -223,19 +246,20 @@
             }
         },
         "miputumayo": {
-            "ultimaComprobacion": "2026-08-17",
-            "canal": "rest",
-            "htmlValidado": false,
+            "ultimaComprobacion": "2026-08-24",
+            "canal": "html",
+            "htmlValidado": true,
             "consultas": {
                 "Chamorro Burbano": {
                     "vistos": [
+                        "https://miputumayo.com.co/2012/12/18/en-colombia-periodista-luis-carlos-chamorro-burbano-recibio-galardon-2012/",
                         "https://miputumayo.com.co/2012/12/18/en-colombia-periodista-luis-carlos-chamorro-burbano-recibio-galardon-2012/"
                     ]
                 }
             }
         },
         "el-morichal": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -248,7 +272,7 @@
             }
         },
         "vive-el-meta": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -258,31 +282,33 @@
             }
         },
         "lente-regional": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
                 "Sánchez Cardozo": {
                     "vistos": [
+                        "https://lenteregional.com/?page_id=38108",
                         "https://lenteregional.com/?page_id=38108"
                     ]
                 }
             }
         },
         "periodismo-publico": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Corporación Humanista": {
                     "vistos": [
+                        "https://periodismopublico.com/corporacion-humanista-continua",
                         "https://periodismopublico.com/corporacion-humanista-continua"
                     ]
                 }
             }
         },
         "archipielago-press": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -292,7 +318,7 @@
             }
         },
         "al-aire-noticias": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -305,12 +331,20 @@
             }
         },
         "noticias-uno": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Coronell": {
                     "vistos": [
+                        "https://www.noticiasuno.com/reporte-coronell-por-noticias-uno/posesion-historica-y-millonaria-por-que-costara-mas-de-6-000-millones-el-reporte-coronell/",
+                        "https://www.noticiasuno.com/politica/eso-no-me-interesa-dijo-petro-sobre-la-reeleccion-en-entrevista-con-la-revista-cambio-y-coronell/",
+                        "https://www.noticiasuno.com/nacional/parrafo-en-posesion-de-barbosa-que-proponia-prohibicion-electoral-desaparecio-de-sus-libros-de-balance-denuncia-daniel-coronell/",
+                        "https://www.noticiasuno.com/nacional/columnista-daniel-coronell-revela-grave-trafico-de-influencias-en-proceso-en-la-fiscalia/",
+                        "https://www.noticiasuno.com/nacional/daniel-coronell-publica-reveladores-mensajes-de-aliada-judicial-de-exgobernador-ramos/",
+                        "https://www.noticiasuno.com/nacional/exvicepresidente-de-senado-pulgar-grabado-cuando-intentaba-sobornar-a-juez-revela-columna-de-coronell/",
+                        "https://www.noticiasuno.com/nacional/top-secret-el-enfrentamiento-de-petro-con-los-danieles/",
+                        "https://www.noticiasuno.com/nacional/los-danieles-publicaron-sus-columnas-en-un-portal-propio-que-ya-tiene-100-mil-seguidores-en-twiter/",
                         "https://www.noticiasuno.com/reporte-coronell-por-noticias-uno/posesion-historica-y-millonaria-por-que-costara-mas-de-6-000-millones-el-reporte-coronell/",
                         "https://www.noticiasuno.com/politica/eso-no-me-interesa-dijo-petro-sobre-la-reeleccion-en-entrevista-con-la-revista-cambio-y-coronell/",
                         "https://www.noticiasuno.com/nacional/parrafo-en-posesion-de-barbosa-que-proponia-prohibicion-electoral-desaparecio-de-sus-libros-de-balance-denuncia-daniel-coronell/",
@@ -324,7 +358,7 @@
             }
         },
         "valora-analitik": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -337,19 +371,20 @@
             }
         },
         "casa-macondo": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Barrientos": {
                     "vistos": [
+                        "https://casamacondo.co/opinion/juan-pablo-barrientos-gana-premio-a-la-libertad-de-prensa-de-reporteros-sin-fronteras/",
                         "https://casamacondo.co/opinion/juan-pablo-barrientos-gana-premio-a-la-libertad-de-prensa-de-reporteros-sin-fronteras/"
                     ]
                 }
             }
         },
         "volcanicas": {
-            "ultimaComprobacion": "2026-08-17",
+            "ultimaComprobacion": "2026-08-24",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {

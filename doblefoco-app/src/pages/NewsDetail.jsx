@@ -26,6 +26,7 @@ import DuenoCompartido from '../components/DuenoCompartido';
 import './NewsDetail.css';
 import { nombreDeSeccion } from '../lib/seccion';
 import { categories } from '../data/categories';
+import { decimal } from '../../shared/numeros.js';
 
 /** Ver la nota de `nombreDeSeccion`: la etiqueta sale de `topics`, no del feed. */
 const seccionDe = (story) => nombreDeSeccion(story, categories);
@@ -492,7 +493,7 @@ const NewsDetail = () => {
                             <strong>{describirOrientacionMedia(coverage.meanBias)}</strong>
                             <br />
                             <span className="verdict-note">
-                                Dispersión entre fuentes: {coverage.polarization.toFixed(2)}
+                                Dispersión entre fuentes: {decimal(coverage.polarization, 2)}
                                 {coverage.isHighlyPolarized && ' — cobertura polarizada'}
                             </span>
                         </p>

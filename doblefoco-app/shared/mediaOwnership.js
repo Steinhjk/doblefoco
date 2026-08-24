@@ -946,6 +946,54 @@ export const CONTROL_GROUPS = {
             fuentes: ['https://www.colombiainforma.info/somos/', 'https://www.rues.org.co/'],
         }],
     },
+    'las2orillas-fundacion-las-dos-orillas': {
+        label: 'Fundación Las Dos Orillas — sus fundadores y asociados',
+        sectores: [],
+        personas: [
+            {
+                nombre: 'María Elvira Bonilla',
+                papel: 'Fundadora y directora.',
+                desde: '2013',
+                fuentes: ['https://www.las2orillas.co/quienes-somos/'],
+            },
+            {
+                nombre: 'Elisa Pastrana',
+                papel: 'Fundadora y editora de opinión.',
+                desde: '2013',
+                fuentes: ['https://www.las2orillas.co/quienes-somos/'],
+            },
+            {
+                nombre: 'Adriana Arcila',
+                papel: 'Fundadora y periodista.',
+                desde: '2013',
+                fuentes: ['https://www.las2orillas.co/quienes-somos/'],
+            },
+            {
+                nombre: 'León Valencia',
+                papel:
+                    'Fundador y asociado. ATENCIÓN: dirige la Fundación Paz y Reconciliación ' +
+                    '(Pares), que opina de forma habitual sobre los mismos asuntos que el medio ' +
+                    'cubre. Se anota como desvelamiento, no como acusación.',
+                desde: '2013',
+                fuentes: ['https://www.las2orillas.co/quienes-somos/'],
+            },
+            {
+                nombre: 'Rafael Santos',
+                papel:
+                    'Fundador y asociado. ATENCIÓN: fue directivo de EL TIEMPO y pertenece a la ' +
+                    'familia Santos, presente en varios medios de este catálogo. Es el tipo de ' +
+                    'cruce que el mapa de propiedad existe para enseñar.',
+                desde: '2013',
+                fuentes: ['https://www.las2orillas.co/quienes-somos/'],
+            },
+            {
+                nombre: 'Jorge Enrique Botero',
+                papel: 'Fundador y asociado. Periodista.',
+                desde: '2013',
+                fuentes: ['https://www.las2orillas.co/quienes-somos/'],
+            },
+        ],
+    },
     'casamacondo-direccion': {
         label: 'CasaMacondo — su equipo directivo',
         sectores: [],
@@ -1126,6 +1174,22 @@ export const OWNERSHIP_PROFILES = {
      * consultable sobre quién la controla ni de qué vive. Lo que hace falta es
      * el certificado de existencia del RUES o sus estatutos.
      */
+    'las2orillas': {
+        ownerType: 'independiente',
+        controlGroup: 'las2orillas-fundacion-las-dos-orillas',
+        holdings: [
+            'Fundación Las Dos Orillas, NIT 900.615.503-8: fundación SIN ÁNIMO DE LUCRO, con sede en Bogotá. La figura jurídica la declara el propio medio en su página «Quiénes somos».',
+            'Fundado en 2013. Portal nativo digital de análisis, columna y periodismo ciudadano: su propia descripción dice que «le da la palabra a la ciudadanía para que publique, de primera mano, sus historias».',
+        ],
+        notes: [
+            'NO TIENE DUEÑO ÚNICO NI GRUPO EMPRESARIAL DETRÁS: es una fundación con trece fundadores y asociados declarados, entre ellos María Elvira Bonilla (fundadora y directora), Elisa Pastrana (fundadora y editora de opinión), Adriana Arcila (fundadora), León Valencia, Jorge Enrique Botero y Rafael Santos.',
+            'DOS DE ESOS NOMBRES PIDEN CONTEXTO, y se anotan como desvelamiento y no como acusación. León Valencia dirige la Fundación Paz y Reconciliación (Pares), que opina de forma habitual sobre los mismos asuntos que el medio cubre. Rafael Santos fue directivo de EL TIEMPO y pertenece a la familia Santos, presente en varios de los medios de este catálogo.',
+            'LA FINANCIACIÓN NO ESTÁ DOCUMENTADA. Su «Quiénes somos» declara la figura jurídica y el NIT, pero no de dónde salen los ingresos de la fundación. Queda sin documentar hasta poder citarlo, igual que en CasaMacondo.',
+        ],
+        sources: ['https://www.las2orillas.co/quienes-somos/'],
+        verifiedAt: '2026-08-24',
+    },
+
     'casa-macondo': {
         ownerType: 'independiente',
         controlGroup: 'casamacondo-direccion',
@@ -1755,6 +1819,23 @@ export const OWNERSHIP_PROFILES = {
             'https://colombia.mom-gmr.org/es/proprietarios/companies-database/detail/company/company/show/valorem-sa/',
         ],
         verifiedAt: VERIFICADO_CICLO1,
+    },
+
+    'ntn24': {
+        ownerType: 'conglomerado',
+        controlGroup: 'ardila-lulle',
+        holdings: [
+            'Canal internacional de noticias de la casa RCN (Organización Ardila Lülle), la misma que controla Noticias RCN, RCN Radio/La FM y el diario económico La República.',
+            'Con este medio son CUATRO los del catálogo bajo el mismo control. Es el conjunto más grande de un solo dueño que hay aquí.',
+        ],
+        notes: [
+            'HEREDA EL NIVEL 1 DE LA CASA, con sus tres defectos, y por tanto también su expediente vencido: la página del MOM lista como titulares vigentes a dos personas fallecidas en 2021 y deja el 63,4 % del holding en una sociedad panameña sin llegar a persona natural. Ver `noticias-rcn`, donde está el detalle. No se documenta dos veces lo mismo, pero tampoco se presenta como cerrado.',
+            'NO SE BUSCÓ una sociedad propia de NTN24 en el registro mercantil colombiano el 2026-08-24: el alta se hizo por la vía del grupo. Si alguna vez importa distinguir la sociedad que edita el canal de la matriz, ese trabajo está sin hacer y se declara aquí en vez de darlo por hecho.',
+        ],
+        sources: [
+            'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
+        ],
+        verifiedAt: '2026-08-24',
     },
 
     'noticias-rcn': {

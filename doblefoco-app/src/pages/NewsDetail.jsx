@@ -448,7 +448,10 @@ const NewsDetail = () => {
 
                                 return (
                                     <div key={spectrum} className={`media-group-col ${spectrum}`}>
-                                        <span className="group-col-title">{SPECTRUM_LABEL[spectrum]}</span>
+                                        <span className="group-col-title">
+                                            {SPECTRUM_LABEL[spectrum]}
+                                            <span className="group-col-count">{group.length}</span>
+                                        </span>
                                         <div className="group-logos-list">
                                             {group.length > 0 ? (
                                                 group.map((s, idx) => {
@@ -462,7 +465,9 @@ const NewsDetail = () => {
                                                             className="media-logo-card interactive-media-link"
                                                             title={`Abrir ${info.name}`}
                                                         >
-                                                            <MediaLogo media={info} size={16} />
+                                                            <span className="media-logo-slot">
+                                                                <MediaLogo media={info} size={20} />
+                                                            </span>
                                                             <span className="media-logo-name">{info.shortName}</span>
                                                         </a>
                                                     );

@@ -17,8 +17,12 @@
     color: var(--bias-left);
 }
 
+/* La mixta es un valor del espectro, no texto secundario.
+   Estaba en `--text-muted`, el mismo gris con el que el mapa pinta «sin
+   publicar en 72 h»: dos hechos distintos con el mismo color, y en la misma
+   pagina. El mapa ya usa `--bias-objective` para la mixta; esto lo alinea. */
 .coverage-label.center {
-    color: var(--text-muted);
+    color: var(--bias-objective);
 }
 
 .coverage-label.right {
@@ -50,7 +54,7 @@
 }
 
 .coverage-segment.center {
-    background: var(--text-muted);
+    background: var(--bias-objective);
 }
 
 .coverage-segment.right {
@@ -67,7 +71,7 @@
 .coverage-segment.center .coverage-segment-pattern {
     background-image: repeating-linear-gradient(
         45deg,
-        rgba(0, 0, 0, 0.28) 0 2px,
+        var(--bias-objective-pattern) 0 2px,
         transparent 2px 5px
     );
 }

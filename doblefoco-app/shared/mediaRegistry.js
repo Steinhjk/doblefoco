@@ -206,6 +206,43 @@ export const MEDIA_REGISTRY = [
          * Ficha pendiente en `fichas/`. `reviewedAt` sigue en null: el número es
          * una propuesta, no un juicio firmado.
          */
+        /**
+         * ALTA DEL 2026-08-24, a peticion de Jose.
+         *
+         * NO ESTABA MUDO NI NOS BLOQUEABA. Quedo fuera del catalogo en julio
+         * por un 403, y ese 403 lo causaba NUESTRO User-Agent: el de la tilde
+         * en «periodistica», que no es un caracter admisible en una cabecera
+         * HTTP. Con el User-Agent actual responde 200, su feed esta DECLARADO
+         * en el HTML y trae 150 articulos con el ultimo de hace una hora. Es
+         * el mismo error que ya habia cerrado puertas que nadie cerraba.
+         *
+         * ES EL PENDIENTE MAS VIEJO DE «no muteemos a nadie», del 2026-07-30.
+         *
+         * AVISO SOBRE SU OPINION, y es el motivo de que esta nota exista.
+         * Sus URL son PLANAS —`/titulo-de-la-pieza/`, sin `/opinion/` ni
+         * `/columnistas/`—, asi que `detectarOpinion` NO puede verla: es
+         * funcion pura de la ruta y aqui la ruta no dice nada. Las2Orillas es
+         * en buena parte un portal de columnas, de modo que sus opiniones
+         * entraran al agrupamiento sin marcar, que es justo lo que se quito en
+         * el commit 593ad40. Se da de alta igual —la decision es de Jose y la
+         * regla de no silenciar manda—, pero queda MEDIDO como riesgo, no
+         * descubierto despues.
+         *
+         * SIN FICHA, y a proposito: por decision de Jose del 2026-08-24 el
+         * alta ya no espera a la ficha. `reviewedAt: null` dice que el valor
+         * de abajo es un juicio argumentado sin firmar, como el de otros 73
+         * medios del catalogo.
+         */
+        id: 'las2orillas', name: 'Las2Orillas', shortName: 'Las2Orillas',
+        domain: 'las2orillas.co', country: 'CO', group: 'Independiente',
+        bias: -0.35, factuality: 0.80, reviewedAt: null,
+        biasRationale:
+            'Portal nativo digital de analisis y columna con linea editorial critica del establecimiento y del poder economico regional; publica firmas de varias corrientes pero su seleccion y encuadre son sostenidamente progresistas. Valor propuesto por comparacion con CasaMacondo (-0,35) y por debajo de la investigacion militante (Voragine, Cuestion Publica). SIN FIRMAR.',
+        feed: { url: 'https://www.las2orillas.co/feed/', via: 'direct', category: 'Politica' },
+        // Sirve sus imagenes desde su propio WordPress, no por CDN externo.
+        imageHosts: ['las2orillas.co'],
+    },
+    {
         id: 'casa-macondo', name: 'CasaMacondo', shortName: 'CasaMacondo',
         domain: 'casamacondo.co', country: 'CO', group: 'Investigación independiente',
         bias: -0.35, factuality: 0.88, reviewedAt: null,

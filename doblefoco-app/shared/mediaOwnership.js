@@ -1821,6 +1821,23 @@ export const OWNERSHIP_PROFILES = {
         verifiedAt: VERIFICADO_CICLO1,
     },
 
+    'ntn24': {
+        ownerType: 'conglomerado',
+        controlGroup: 'ardila-lulle',
+        holdings: [
+            'Canal internacional de noticias de la casa RCN (Organización Ardila Lülle), la misma que controla Noticias RCN, RCN Radio/La FM y el diario económico La República.',
+            'Con este medio son CUATRO los del catálogo bajo el mismo control. Es el conjunto más grande de un solo dueño que hay aquí.',
+        ],
+        notes: [
+            'HEREDA EL NIVEL 1 DE LA CASA, con sus tres defectos, y por tanto también su expediente vencido: la página del MOM lista como titulares vigentes a dos personas fallecidas en 2021 y deja el 63,4 % del holding en una sociedad panameña sin llegar a persona natural. Ver `noticias-rcn`, donde está el detalle. No se documenta dos veces lo mismo, pero tampoco se presenta como cerrado.',
+            'NO SE BUSCÓ una sociedad propia de NTN24 en el registro mercantil colombiano el 2026-08-24: el alta se hizo por la vía del grupo. Si alguna vez importa distinguir la sociedad que edita el canal de la matriz, ese trabajo está sin hacer y se declara aquí en vez de darlo por hecho.',
+        ],
+        sources: [
+            'https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/',
+        ],
+        verifiedAt: '2026-08-24',
+    },
+
     'noticias-rcn': {
         /**
          * EL CASO QUE MEJOR EXPLICA POR QUÉ EL MOM NO BASTA (ciclo 1, 2026-08-17).

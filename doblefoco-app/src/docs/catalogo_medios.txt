@@ -8,7 +8,7 @@ noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
 Generado: 2026-08-24
-Medios en el catálogo: 77
+Medios en el catálogo: 78
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -425,7 +425,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
     económico.
 
 ----------------------------------------------------------------------
-DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
+DERECHA MODERADA  [+0.20 a +0.60)  —  19 medios
 ----------------------------------------------------------------------
 
   El Heraldo  ·  sesgo +0.20  ·  factualidad 84%
@@ -514,6 +514,15 @@ DERECHA MODERADA  [+0.20 a +0.60)  —  18 medios
     lafm.com.co · Organización Ardila Lülle · CO · vía Google News · PROVISIONAL
     Radio informativa del grupo RCN; línea editorial crítica con
     gobiernos progresistas.
+
+  NTN24  ·  sesgo +0.35  ·  factualidad 82%
+    ntn24.com · Organización Ardila Lülle · CO · vía Google News · PROVISIONAL
+    Canal internacional de noticias de la casa RCN, con linea
+    editorial marcadamente critica de los gobiernos de izquierda de la
+    region y un lugar propio en la cobertura de Venezuela. Valor
+    propuesto a la altura de La FM (+0,35), su hermana de grupo, y por
+    encima de Noticias RCN (+0,25), cuyo encuadre es mas
+    institucional. SIN FIRMAR.
 
   El Colombiano  ·  sesgo +0.35  ·  factualidad 86%
     elcolombiano.com · Regional Antioquia · CO · RSS propio · revisado 2026-08-18

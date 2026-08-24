@@ -875,6 +875,48 @@ export const MEDIA_REGISTRY = [
         feed: { url: gnews('lafm.com.co'), via: 'gnews', category: 'Política' },
     },
     {
+        /**
+         * ALTA DEL 2026-08-24. Estaba en `MARCAS_NO_ASIGNADAS` de
+         * `shared/audiencia.js` con 9 % de alcance offline medido y la nota
+         * «no esta en el catalogo»: era una ausencia ya identificada, no un
+         * descubrimiento.
+         *
+         * ENTRA POR GOOGLE NEWS, y no por gusto. No publica RSS por ninguna de
+         * las tres vias: su HTML no declara ninguno, `/arc/outboundfeeds/`
+         * devuelve 404 y las rutas convencionales tambien. Medido antes de
+         * darlo de alta: 100 items, el mas reciente de hace 0,9 h, mediana 24 h
+         * y 76 de 100 dentro de la ventana de 72 h. Es de los gnews sanos, no
+         * de los que rinden ocho veces menos.
+         *
+         * POR QUE SUMA AUNQUE SEA EL CUARTO MEDIO DE LA MISMA CASA: el mapa de
+         * propiedad mide concentracion, y por PROPIEDAD —`controlGroup:
+         * 'ardila-lulle'` en mediaOwnership— la casa pasa a controlar CUATRO
+         * medios de este catalogo: Noticias RCN, La FM, La Republica y ahora
+         * NTN24. Dejarlo fuera no hacia el catalogo mas neutral: hacia la
+         * concentracion mas invisible.
+         *
+         * OJO AL CAMPO `group`, QUE NO DICE LO MISMO: ahi La Republica figura
+         * como «Editorial La Republica» y no como la casa. `group` es la marca
+         * editorial y `controlGroup` es quien manda; cuentan cosas distintas y
+         * conviene no leer una por la otra.
+         *
+         * `country: 'CO'` porque la propiedad es colombiana, igual que
+         * `infobae-co` lleva 'AR' por su casa matriz. AVISO: su producto
+         * editorial es panregional —en el primer barrido hay piezas de
+         * Venezuela y Costa Rica junto a las colombianas—, asi que su ambito
+         * no deberia darse por nacional sin mirar. Si el ambito empieza a
+         * equivocarse, mirar aqui.
+         *
+         * Valor SIN FIRMAR, como los otros 74.
+         */
+        id: 'ntn24', name: 'NTN24', shortName: 'NTN24',
+        domain: 'ntn24.com', country: 'CO', group: 'Organización Ardila Lülle',
+        bias: 0.35, factuality: 0.82, reviewedAt: null,
+        biasRationale:
+            'Canal internacional de noticias de la casa RCN, con linea editorial marcadamente critica de los gobiernos de izquierda de la region y un lugar propio en la cobertura de Venezuela. Valor propuesto a la altura de La FM (+0,35), su hermana de grupo, y por encima de Noticias RCN (+0,25), cuyo encuadre es mas institucional. SIN FIRMAR.',
+        feed: { url: gnews('ntn24.com'), via: 'gnews', category: 'Internacional' },
+    },
+    {
         id: 'el-colombiano', name: 'El Colombiano', shortName: 'El Colombiano',
         domain: 'elcolombiano.com', departamento: 'Antioquia', country: 'CO', group: 'Regional Antioquia',
         bias: 0.35, factuality: 0.86,

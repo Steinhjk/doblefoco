@@ -123,13 +123,23 @@ export const MARCAS_NO_ASIGNADAS = [
         marca: 'CityTv',
         online: 14,
         offline: 20,
-        motivo: 'No está en el catálogo. Canal local de Bogotá de Casa Editorial El Tiempo.',
+        motivo:
+            'No está en el catálogo. Canal local de Bogotá de Casa Editorial El Tiempo. ' +
+            'INTENTADO EL 2026-08-24 y no se pudo: su dominio devuelve 403 a nuestro ' +
+            'User-Agent en TODAS las rutas, incluida la portada, y esta vez no es cosa ' +
+            'nuestra —el User-Agent ya es ASCII puro desde el caso de Las2Orillas—. La ' +
+            'vía de Google News tampoco sirve: rinde 2 ítems. Queda como el candidato de ' +
+            'mayor audiencia que este catálogo NO puede alcanzar hoy.',
     },
     {
         marca: 'Las2Orillas',
         online: 12,
         offline: null,
-        motivo: 'No está en el catálogo. Portal de opinión y análisis, nativo digital.',
+        motivo:
+            'YA ESTÁ EN EL CATÁLOGO desde el 2026-08-24, con id `las2orillas`. Se queda ' +
+            'escrito aquí porque la razón por la que estuvo fuera importa: un 403 que ' +
+            'causaba nuestro propio User-Agent con tilde, no un bloqueo del medio. ' +
+            'Pendiente: asignarle esta cifra de alcance en AUDIENCIA_REUTERS.',
     },
     {
         marca: 'Q´Hubo',

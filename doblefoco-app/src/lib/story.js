@@ -135,6 +135,58 @@ function normalizePerspective(raw) {
 }
 
 /**
+ * EL PUNTO CIEGO LO DECIDE EL SERVIDOR, Y ES EL ÚNICO CAMPO ASÍ (2026-08-21).
+ *
+ * `analyzeCoverage` calcula todo con las fuentes de la historia salvo una cosa:
+ * el punto ciego necesita saber CADA CUÁNTO aparece cada espectro en el corpus
+ * entero —`tasasBase`— para poder decir si su ausencia sorprende. Sin esas tasas
+ * la función calla a propósito: afirmar que alguien omitió algo sin saber con
+ * qué frecuencia aparece sería acusar sin prueba.
+ *
+ * **El cliente no puede tener esas tasas y no debería fingir que sí.** Solo se
+ * ha descargado 100 historias; el servidor las calcula sobre las 7 559
+ * apariciones medio-historia del corpus. Una tasa base estimada sobre lo
+ * descargado cambiaría con el desplazamiento de la lista.
+ *
+ * QUÉ ESTABA ROTO. Aquí se llamaba `analyzeCoverage(sources)` sin tasas, así que
+ * el punto ciego salía `null` SIEMPRE, y además este normalizador construye un
+ * objeto nuevo que no copiaba `raw.blindspot`: el veredicto que el servidor sí
+ * manda se tiraba por el camino. `MobileSidebar` tiene una pestaña «Puntos
+ * ciegos» que por eso solo podía enseñar su estado vacío.
+ *
+ * Es literalmente el fallo que esta misma función advierte más abajo a propósito
+ * de la imagen —«un campo que no se copie aquí desaparece sin error»—, repetido.
+ *
+ * Los conteos de los dos lados coinciden, comprobado sobre las 100 historias del
+ * feed: por eso se puede trasplantar el veredicto sin que los números que lleva
+ * dentro su descripción contradigan la barra que se pinta al lado.
+ *
+ * El tipo se ata al de `analyzeCoverage` en vez de repetir la forma a mano: si
+ * algún día se añade una rama —o cambia la etiqueta de una—, esto tiene que
+ * dejar de compilar en lugar de aceptar en silencio algo que la interfaz no sabe
+ * pintar.
+ *
+ * @param {Record<string, any>} raw historia tal como la manda la API
+ * @returns {ReturnType<typeof analyzeCoverage>['blindspot']} el veredicto del
+ *   servidor, o `null` si no lo hay
+ */
+export function puntoCiegoDelServidor(raw) {
+    const delServidor = raw?.blindspot;
+
+    /*
+     * `undefined` y `null` acaban los dos en `null`, pero NO significan lo
+     * mismo y conviene tenerlo presente: `null` es «el servidor miró y no hay»,
+     * `undefined` es «esta API no manda el campo» —un despliegue anterior a que
+     * existiera—. En los dos casos lo correcto es callar, así que se colapsan
+     * aquí; si algún día hubiera que distinguirlos, este es el sitio.
+     */
+    if (!delServidor || typeof delServidor !== 'object') return null;
+    if (!delServidor.spectrum || !delServidor.label) return null;
+
+    return delServidor;
+}
+
+/**
  * Convierte cualquiera de las dos formas en la forma canónica.
  * Devuelve null si la entrada no es utilizable, para que la UI pueda
  * descartarla en lugar de reventar al acceder a un campo ausente.
@@ -143,7 +195,18 @@ export function normalizeStory(raw) {
     if (!raw || typeof raw !== 'object' || !raw.id || !raw.title) return null;
 
     const sources = resolveSources(raw.sources);
-    const coverage = analyzeCoverage(sources);
+
+    /*
+     * Todo lo local sale de las fuentes; el punto ciego viene del servidor. Ver
+     * `puntoCiegoDelServidor`: es el ÚNICO campo de `analyzeCoverage` que
+     * depende de las tasas base del corpus —`sorprende()` solo se usa dentro de
+     * las tres ramas del punto ciego—, y por eso el énfasis, la polarización y
+     * los porcentajes sí se pueden calcular aquí sin perder nada.
+     */
+    const coverage = {
+        ...analyzeCoverage(sources),
+        blindspot: puntoCiegoDelServidor(raw),
+    };
 
     return {
         id: String(raw.id),

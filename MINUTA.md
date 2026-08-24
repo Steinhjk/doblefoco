@@ -97,6 +97,37 @@ naturaleza: no hay nada roto que arreglar, hay algo que **nadie ha decidido**.
   producto. **Nadie ha medido qué le hace eso a los falsos agrupamientos**, y esa
   medida va antes que el cambio.
 
+### Los puntos ciegos: 0 en 6 299 historias, y no es por falta de datos
+
+- **Origen:** `ESTUDIO_PUNTOS_CIEGOS.md`, 2026-08-21, pedido por Jose.
+- **Dos fallos independientes.** Uno es de costura: el servidor calcula el punto
+  ciego con tasas base y el cliente lo recalcula **sin ellas**, además de no
+  copiar `raw.blindspot` en `normalizeStory`. El veredicto no llega nunca a la
+  pantalla, y `MobileSidebar` tiene una pestaña «Puntos ciegos» que solo puede
+  enseñar su estado vacío.
+- **El otro es de modelo, y no lo cura más masa.** `(1-q)^n < 0,05` con la
+  izquierda al **3,29 %** exige **90 medios en una sola historia**; la mayor del
+  corpus tiene 16 y el catálogo son 76. **77 historias cumplen todas las demás
+  condiciones y mueren en esa.**
+- **La propiedad perversa:** cuanto más pequeña es la voz de un espectro, más
+  difícil se vuelve afirmar que falta. Contradice el propósito editorial escrito.
+- **Comprobado que no es cosa del umbral:** en historias de 10+ medios, que falte
+  la izquierda ocurre el **78 %** de las veces. Es lo normal, no lo raro.
+- **Y la izquierda calla en parte por nuestra propia ventana, no por avería.**
+  5 de sus 13 medios aportan cero y dos aportan el 88,6 %. Fui a arreglar los
+  mudos dando por hecho lo que decía esta minuta —Vorágine y Razón Pública caen
+  desde la IP de Actions— y **no era eso**: los seis mudos con feed responden
+  HTTP 200 con 10 ítems. Lo que los borra es `RETENTION_MS = 72 h`, porque su
+  pieza más nueva ya nace fuera de la ventana. Detalle en el §8 del estudio.
+- **Estado:** **la costura está arreglada** en la rama
+  `costura/punto-ciego-del-servidor` (`c80de64`, 8 pruebas propias): el cliente
+  deja de recalcular sin tasas y trasplanta el veredicto del servidor. **Sin
+  fusionar y sin mirar en un navegador.** Lo demás sigue ABIERTO y es **decisión
+  de producto**: declarar inalcanzable la rama de la izquierda con el número
+  escrito, y llevar el desequilibrio a donde sí se puede afirmar —el énfasis
+  dispara en el 19,5 % de las historias grandes—. Lo que el estudio NO recomienda
+  es bajar el umbral hasta que algo salga.
+
 ## De la auditoría automática del 2026-08-19
 
 **Primera pasada del libro: 23 hallazgos abiertos** — 15 de feed, 5 de rutas, 3

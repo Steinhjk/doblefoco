@@ -172,8 +172,8 @@ function normalizePerspective(raw) {
  * @returns {ReturnType<typeof analyzeCoverage>['blindspot']} el veredicto del
  *   servidor, o `null` si no lo hay
  */
-export function puntoCiegoDelServidor(raw) {
-    const delServidor = raw?.blindspot;
+export function puntoCiegoDelServidor(raw, campo = 'blindspot') {
+    const delServidor = raw?.[campo];
 
     /*
      * `undefined` y `null` acaban los dos en `null`, pero NO significan lo
@@ -199,15 +199,21 @@ export function normalizeStory(raw) {
     const sources = resolveSources(raw.sources);
 
     /*
-     * Todo lo local sale de las fuentes; el punto ciego viene del servidor. Ver
-     * `puntoCiegoDelServidor`: es el ÚNICO campo de `analyzeCoverage` que
-     * depende de las tasas base del corpus —`sorprende()` solo se usa dentro de
-     * las tres ramas del punto ciego—, y por eso el énfasis, la polarización y
-     * los porcentajes sí se pueden calcular aquí sin perder nada.
+     * Todo lo local sale de las fuentes; el veredicto y la ausencia vienen del
+     * servidor. Ver `puntoCiegoDelServidor`: los dos traen su `contexto` —cada
+     * cuánto falta ese espectro en el corpus entero— y ese número el cliente no
+     * lo tiene, porque solo se ha descargado un puñado de historias. Sin él, la
+     * ausencia se leería como hallazgo, que es justo lo que no es.
+     *
+     * SON DOS CAMPOS Y HAY QUE COPIAR LOS DOS. Olvidar uno no da error: da un
+     * `null` silencioso y una pestaña que solo puede enseñar su estado vacío.
+     * Pasó el 2026-08-21 con `blindspot`, y `ausencia` se añadió el 25 por esta
+     * misma puerta.
      */
     const coverage = {
         ...analyzeCoverage(sources),
-        blindspot: puntoCiegoDelServidor(raw),
+        blindspot: puntoCiegoDelServidor(raw, 'blindspot'),
+        ausencia: puntoCiegoDelServidor(raw, 'ausencia'),
     };
 
     return {

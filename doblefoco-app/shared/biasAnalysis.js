@@ -225,6 +225,29 @@ export function probabilidadDeAusenciaEnCatalogo(delEspectro, total, n) {
 }
 
 /**
+ * Cuántos medios tendrían que cubrir UNA historia para que la ausencia de este
+ * espectro deje de explicarse por azar.
+ *
+ * Es el número que el sitio publica cuando declara la rama «no medible». Se
+ * calcula, no se escribe: un «14» fijado a mano sería mentira el día que entren
+ * cuatro medios de izquierda al catálogo, y este proyecto ya sabe cómo
+ * envejecen los números escritos a mano.
+ *
+ * Devuelve `Infinity` si no se alcanza ni cubriéndolo el catálogo entero — que
+ * es lo que ocurría con la fórmula vieja, donde hacían falta 90 medios de 78.
+ *
+ * @param {'left'|'center'|'right'} espectro
+ */
+export function mediosParaAfirmarAusencia(espectro) {
+    const cat = catalogo();
+    if (!(cat[espectro] > 0)) return Infinity;
+    for (let n = 2; n <= cat.total; n += 1) {
+        if (probabilidadDeAusenciaEnCatalogo(cat[espectro], cat.total, n) < UMBRAL_SORPRESA) return n;
+    }
+    return Infinity;
+}
+
+/**
  * Cada cuánto falta cada espectro, MEDIDO, en las historias evaluables.
  *
  * Es el número que impide que un punto ciego mienta. Si la izquierda falta en
@@ -467,6 +490,22 @@ function distributePercentages(counts, total) {
 }
 
 /**
+ * Una señal sobre la composición de la cobertura.
+ *
+ * `contexto` es lo que impide que la señal mienta: cada cuánto falta ese
+ * espectro, medido sobre el corpus. Es `null` cuando quien llama no dio la
+ * medida —el cliente, por ejemplo, que solo tiene las historias descargadas—.
+ *
+ * @typedef {{
+ *   spectrum: 'left'|'center'|'right',
+ *   label: string,
+ *   etiquetaAusencia: string,
+ *   description: string,
+ *   contexto: null | {frecuencia: number, evaluables: number, esLoNormal: boolean}
+ * }} Senal
+ */
+
+/**
  * Analiza la cobertura de una historia a partir de sus fuentes.
  *
  * @param {Array<{name?: string, bias?: number}>} sources
@@ -479,7 +518,8 @@ function distributePercentages(counts, total) {
  *   isHighlyPolarized: boolean,
  *   dominantSpectrum: 'left'|'center'|'right'|null,
  *   insufficientCoverage: boolean,
- *   blindspot: null | {spectrum: 'left'|'right', label: string, description: string},
+ *   blindspot: null | Senal,
+ *   ausencia: null | Senal,
  *   enfasis: null | {spectrum: 'left'|'right', label: string, description: string}
  * }}
  */
@@ -554,7 +594,38 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         };
     };
 
-    let blindspot = null;
+    /**
+     * ─────────────────────────────────────────────────────────────────────────
+     * DOS AFIRMACIONES DEL MISMO CÁLCULO, Y POR QUÉ SON DOS (2026-08-25)
+     * ─────────────────────────────────────────────────────────────────────────
+     *
+     * `ausencia`  — «en esta historia no aparece ningún medio de X». Es un
+     *               HECHO comprobable de la lista de medios. No afirma que
+     *               nadie omitiera nada.
+     *
+     * `blindspot` — «esta ausencia sorprende». Es una AFIRMACIÓN sobre el
+     *               comportamiento, y exige además superar la prueba de la nula
+     *               de catálogo.
+     *
+     * `blindspot` es siempre un subconjunto de `ausencia`. Salen del MISMO
+     * recorrido de condiciones a propósito: escribir dos veces «izquierda ≤
+     * 15 % y derecha > 15 % y al menos 2 de derecha» habría creado dos listas
+     * que divergen en cuanto alguien toque una, que es la enfermedad de este
+     * repositorio.
+     *
+     * POR QUÉ EXISTE `ausencia`, decisión de Jose del 2026-08-25. Con la nula
+     * corregida, la rama de la izquierda pasó de exigir 90 medios a exigir 14 —
+     * alcanzable— pero la historia más cubierta de hoy tiene 10, así que el
+     * veredicto sigue saliendo cero. Medido a la vez: 38 de 100 historias
+     * cumplen TODO lo sustantivo y mueren en el tamaño, y 35 de esas 38 son de
+     * Política. Ese reparto es información, y no había forma de verlo.
+     *
+     * EL HALLAZGO ES LA LISTA, NO CADA ELEMENTO, y de eso se encarga
+     * `contexto`: en una de las 38 no aparece la izquierda porque el hecho era
+     * que Karol G donó un millón de dólares, y eso no dice nada de nadie. Por
+     * eso `ausencia` NUNCA se llama punto ciego en la pantalla.
+     */
+    const candidatos = [];
     if (!insufficientCoverage) {
         /**
          * La condición que sostiene el umbral de 4: el lado que SÍ cubre tiene
@@ -564,65 +635,67 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         if (
             rightRatio <= BLINDSPOT_MAX_RATIO &&
             leftRatio > BLINDSPOT_MAX_RATIO &&
-            counts.left >= BLINDSPOT_MIN_COBERTURA_LADO &&
-            sorprende(SPECTRUM.RIGHT)
+            counts.left >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
-            blindspot = {
+            candidatos.push({
                 spectrum: SPECTRUM.RIGHT,
-                contexto: contextoDe(SPECTRUM.RIGHT),
                 label: 'Punto ciego de la derecha',
+                etiquetaAusencia: 'Sin medios de derecha',
                 description:
                     `${counts.left + counts.center} de ${total} medios que cubren el hecho ` +
                     `son de izquierda o de orientación mixta. Solo ${counts.right} de derecha lo reportan.`,
-            };
-        } else if (
+            });
+        }
+        if (
             leftRatio <= BLINDSPOT_MAX_RATIO &&
             rightRatio > BLINDSPOT_MAX_RATIO &&
-            counts.right >= BLINDSPOT_MIN_COBERTURA_LADO &&
-            sorprende(SPECTRUM.LEFT)
+            counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
-            blindspot = {
+            candidatos.push({
                 spectrum: SPECTRUM.LEFT,
-                contexto: contextoDe(SPECTRUM.LEFT),
                 label: 'Punto ciego de la izquierda',
+                etiquetaAusencia: 'Sin medios de izquierda',
                 description:
                     `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
                     `son de derecha o de orientación mixta. Solo ${counts.left} de izquierda lo reportan.`,
-            };
-        } else if (
+            });
+        }
+        if (
             /**
              * SOLO MEDIOS DE IZQUIERDA Y DERECHA (2026-08-08, decisión de Jose).
              *
-             * SE LLAMABA «Solo medios con línea marcada», y ese nombre murió con
-             * la separación entre orientación y sesgo: ahora se afirma que TODOS
-             * los medios tienen línea editorial, así que distinguir a unos como
-             * «los que la tienen» se contradice con el resto del sitio.
-             *
              * Lo que la señal dice, dicho bien: el hecho solo interesó a medios
-             * cuya orientación SÍ se sitúa en el eje izquierda-derecha, y ninguno
-             * de orientación mixta lo cubrió. Con esos en el 54 % de las
-             * apariciones, que falten todos es raro y dice algo del hecho.
+             * cuya orientación SÍ se sitúa en el eje izquierda-derecha, y
+             * ninguno de orientación mixta lo cubrió.
              *
-             * No es un punto ciego y por eso no se llama así: NO afirma que nadie
-             * omitiera nada. Y va la ÚLTIMA de las tres a propósito: si alguna
-             * vez se pudiera afirmar un punto ciego de izquierda o de derecha,
-             * esa afirmación es más fuerte y tiene prioridad.
+             * No es un punto ciego y por eso no se llama así: NO afirma que
+             * nadie omitiera nada. Va la ÚLTIMA de las tres a propósito: si se
+             * puede afirmar un punto ciego de izquierda o de derecha, esa
+             * afirmación es más fuerte y tiene prioridad.
              */
             total >= SOLO_EJE_MIN_SOURCES &&
             centerRatio <= BLINDSPOT_MAX_RATIO &&
-            counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO &&
-            sorprende(SPECTRUM.CENTER)
+            counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
-            blindspot = {
+            candidatos.push({
                 spectrum: SPECTRUM.CENTER,
-                contexto: contextoDe(SPECTRUM.CENTER),
                 label: 'Solo medios de izquierda y derecha',
+                etiquetaAusencia: 'Sin medios de orientación mixta',
                 description:
                     `Los ${counts.left + counts.right} de ${total} medios que cubren el hecho ` +
                     'se sitúan en el eje izquierda-derecha. Ninguno de orientación mixta lo reportó.',
-            };
+            });
         }
     }
+
+    const conContexto = (c) =>
+        c ? { ...c, contexto: contextoDe(c.spectrum) } : null;
+
+    /** El hecho: el primero que cumple las condiciones sustantivas. */
+    const ausencia = conContexto(candidatos[0] ?? null);
+
+    /** La afirmación: el primero que ADEMÁS sorprende bajo la nula. */
+    const blindspot = conContexto(candidatos.find((c) => sorprende(c.spectrum)) ?? null);
 
     /**
      * PUNTO DE ÉNFASIS: quién cuenta esto con una intensidad que no comparte
@@ -671,6 +744,7 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         dominantSpectrum,
         insufficientCoverage,
         blindspot,
+        ausencia,
         enfasis,
     };
 }

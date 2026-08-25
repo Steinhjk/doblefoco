@@ -325,3 +325,62 @@
     padding: 24px 0;
     text-align: center;
 }
+
+/*
+ * EL AVISO DE LAS AUSENCIAS.
+ *
+ * Sale solo con el filtro «Falta un lado» puesto, y es lo ÚNICO que impide que
+ * 38 etiquetas seguidas se lean como 38 acusaciones. Sin estilo se leía como
+ * texto de relleno entre los filtros y la lista —comprobado el 2026-08-25— y
+ * entonces no cumplía su función.
+ *
+ * Toma prestado el idioma de `AvisoDesequilibrio`: fondo de tarjeta y un filo
+ * lateral, sin color de alarma. No es una advertencia de error; es el contexto
+ * que hace verdadera la lista que viene debajo.
+ */
+.feed-ausencia-aviso {
+    margin: 0 0 20px;
+    padding: 18px 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--text-main);
+    border-radius: 4px;
+}
+
+.feed-ausencia-aviso p {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.feed-ausencia-aviso p:last-child {
+    margin-bottom: 0;
+}
+
+.feed-ausencia-aviso .ausencia-aviso-titulo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* El icono no puede quedar pegado a la primera letra, que es como salía. */
+.feed-ausencia-aviso .ausencia-aviso-titulo svg {
+    flex-shrink: 0;
+}
+
+.feed-ausencia-aviso strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+/* La segunda frase es la que dice qué SÍ se puede leer: se separa para que no
+   se pierda dentro del párrafo que la precede. */
+.feed-ausencia-aviso .ausencia-aviso-nota {
+    padding-top: 10px;
+    border-top: 1px solid var(--border-light);
+    font-size: 0.85rem;
+}

@@ -1,0 +1,13 @@
+{
+  "fecha": "2026-08-25",
+  "historias": 100,
+  "evaluables": 66,
+  "mayorHistoria": 15,
+  "conAusencia": 44,
+  "conPuntoCiego": 2,
+  "faltaEnEvaluables": {
+    "left": 55,
+    "center": 1,
+    "right": 3
+  }
+}

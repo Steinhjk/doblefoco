@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import AnimateIn from '../../components/AnimateIn';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '../../lib/contacto';
-import { BookOpen, FileText, ListTree } from 'lucide-react';
+import { BookOpen, FileText, ListTree, SlidersHorizontal } from 'lucide-react';
 import metodologiaText from '../../docs/metodologia.txt?raw';
 import catalogoText from '../../docs/catalogo_medios.txt?raw';
+import modeloText from '../../docs/modelo_sesgo.txt?raw';
 import { MEDIA_REGISTRY } from '../../../shared/mediaRegistry';
 import './SobreNosotros.css';
 
@@ -20,6 +21,7 @@ const TOTAL_SOURCES = MEDIA_REGISTRY.filter((m) => m.feed?.url).length;
 const SobreNosotros = () => {
     const [showMethodology, setShowMethodology] = useState(false);
     const [showCatalog, setShowCatalog] = useState(false);
+    const [showModelo, setShowModelo] = useState(false);
 
     return (
         <div className="about-page">
@@ -102,6 +104,18 @@ const SobreNosotros = () => {
                         >
                             <ListTree size={16} /> {showCatalog ? 'Ocultar catálogo de medios' : 'Ver catálogo de medios'}
                         </button>
+                        {/*
+                          * Los PARÁMETROS, no solo el catálogo. Publicar a quién
+                          * clasificamos y callar con qué números decidimos deja la
+                          * mitad discutible fuera del alcance de quien discute.
+                          */}
+                        <button
+                            className="methodology-toggle-btn"
+                            onClick={() => setShowModelo(prev => !prev)}
+                            aria-expanded={showModelo}
+                        >
+                            <SlidersHorizontal size={16} /> {showModelo ? 'Ocultar parámetros del modelo' : 'Ver parámetros del modelo'}
+                        </button>
 
                         {showMethodology && (
                             <div className="methodology-text-container">
@@ -122,6 +136,18 @@ const SobreNosotros = () => {
                                     </span>
                                 </div>
                                 <pre className="methodology-pre">{catalogoText}</pre>
+                            </div>
+                        )}
+
+                        {showModelo && (
+                            <div className="methodology-text-container">
+                                <div className="methodology-text-header">
+                                    <SlidersHorizontal size={16} />
+                                    <span>
+                                        Parámetros del modelo · generados desde las mismas constantes que deciden
+                                    </span>
+                                </div>
+                                <pre className="methodology-pre">{modeloText}</pre>
                             </div>
                         )}
                     </section>

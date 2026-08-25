@@ -257,6 +257,58 @@ que puede arreglarse.»*
 
 ---
 
+## Del trabajo del 2026-08-25
+
+### El punto ciego dispara con UN medio del lado que dice que falta
+
+**Encontrado al medir para `docs:modelo`, no buscándolo.** El 2026-08-25 la señal
+disparó por primera vez desde que se corrigió la nula — y las dos veces sobre
+historias donde el lado «ausente» **sí estaba**:
+
+| Historia | Medios | Cobertura | Lo que se publica |
+|---|---:|---|---|
+| Murió Dolly Parton a los 80 años | 15 | izq 1 · mixta 7 · der 7 | «Punto ciego de la izquierda» |
+| Migrantes: qué propone De la Espriella | 14 | izq 1 · mixta 7 · der 6 | «Punto ciego de la izquierda» |
+
+La causa es que la rama compara una **proporción** —`leftRatio <= 15 %`— mientras
+que el nombre, la etiqueta `Sin medios de izquierda` y la palabra «ausencia»
+prometen un **cero**. Con historias pequeñas las dos cosas coincidían: a 4 medios,
+uno solo es el 25 % y no pasa el filtro. **Dejan de coincidir a partir de 7
+medios**, que es un tamaño que este corpus no alcanzaba hasta ahora. El defecto
+estaba latente desde el principio y se volvió alcanzable esta semana.
+
+Hoy son **5 de las 44** historias marcadas. La descripción sí dice la verdad
+—«Solo 1 de izquierda lo reportan»— así que lo que hay en pantalla es un titular
+que se contradice con su propia frase, no una mentira limpia. Y en un caso es
+peor de lo que parece: «Murió el padre Javier Giraldo: así fue su defensa de los
+derechos humanos» sale marcada como sin medios de izquierda, teniendo uno.
+
+- **Estado:** ABIERTO, y es decisión de producto. Las dos salidas:
+  **(a)** exigir `counts[espectro] === 0` para publicar la ausencia — la palabra
+  recupera su significado, y las dos de hoy desaparecen; **(b)** dejar la
+  proporción y cambiar los textos —«apenas un medio de izquierda»—, que conserva
+  una señal real a costa de que «punto ciego» deje de significar ausencia.
+  Nada se ha tocado a la espera de que Jose decida.
+
+### Hay una rama sin fusionar del 2026-08-20 con trabajo de verdad
+
+`tendencias/una-sola-lista`, encontrada al limpiar las 43 ramas ya fusionadas.
+Rehace la página de Tendencias: quita el segundo bloque, convierte el ranking en
+un `<ol>` de verdad y añade `Trending.layout.test.js` (155 líneas) que prohíbe los
+selectores por etiqueta.
+
+**Su premisa se volvió a medir el 2026-08-25 y sigue siendo cierta: 8 de las 10
+historias del segundo bloque son exactamente las 8 tarjetas del primero**, bajo
+dos encabezados que prometen medidas distintas.
+
+- **Estado:** ABIERTO. **Conflicta con `main`**, porque el arreglo estrecho del
+  `h3`/`h2` se hizo aparte el 2026-08-25 y toca el mismo `Trending.css`. Son dos
+  soluciones al mismo fallo: la de la rama es estructural y la de `main` está en
+  producción. Hay que elegir una y resolver el conflicto a mano. **La rama NO se
+  borra** hasta que se decida.
+
+---
+
 ## De la auditoría automática del 2026-08-19
 
 **Primera pasada del libro: 23 hallazgos abiertos** — 15 de feed, 5 de rutas, 3

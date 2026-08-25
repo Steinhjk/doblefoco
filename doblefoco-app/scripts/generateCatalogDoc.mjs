@@ -77,7 +77,7 @@ export function renderCatalog() {
 const lines = [];
 const push = (text = '') => lines.push(text);
 
-push('CATÁLOGO DE MEDIOS CLASIFICADOS — SINCUENTO.CO');
+push('CATÁLOGO DE MEDIOS CLASIFICADOS — DOBLEFOCO.CO');
 push('='.repeat(70));
 push();
 push(wrap(

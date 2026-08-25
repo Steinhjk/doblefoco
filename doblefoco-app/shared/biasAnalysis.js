@@ -62,29 +62,38 @@ export const BLINDSPOT_MAX_RATIO = 0.15;
 /**
  * LA AUSENCIA TIENE QUE SER SORPRENDENTE, NO SOLO UNA AUSENCIA (2026-08-08).
  *
- * POR QUÉ SE AÑADE ESTO. Medido sobre 4 807 historias, la función insignia del
+ * POR QUÉ SE AÑADIÓ. Medido sobre 4 807 historias, la función insignia del
  * producto solo sabía decir una cosa:
  *
  *   puntos ciegos declarados ...... 30 de izquierda, 0 de derecha
  *   tasa base de aparición ........ centro 58,5 % · derecha 42,9 % · izquierda 3,1 %
  *   de las 35 historias con 4+ medios: 33 sin izquierda, 1 sin derecha
  *
- * Es decir: la izquierda falta en el 94 % de las historias evaluables porque
- * publica el 3 % del volumen, no porque decida callar. El aviso estaba midiendo
- * cadencia de publicación y presentándolo como comportamiento editorial. Un
- * lector que ve treinta «punto ciego de la izquierda» y ninguno de la derecha
- * concluye algo que estos datos no sostienen.
+ * Es decir: la izquierda faltaba en el 94 % de las historias evaluables porque
+ * publica el 3 % del volumen, no porque decidiera callar. El aviso medía cadencia
+ * de publicación y lo presentaba como comportamiento editorial. Un lector que ve
+ * treinta «punto ciego de la izquierda» y ninguno de la derecha concluye algo que
+ * estos datos no sostienen.
  *
- * QUÉ HACE LA CORRECCIÓN. Un espectro ausente solo se señala cuando esa ausencia
- * es IMPROBABLE dada la frecuencia con la que ese espectro aparece en el corpus.
- * Si un espectro está en la fracción `q` de las apariciones, la probabilidad de
- * que no aparezca en una historia cubierta por `n` medios es aproximadamente
- * (1 − q)^n. Se exige que esa probabilidad sea menor que este umbral.
+ * QUÉ EXIGE HOY. Que la ausencia sea improbable **bajo la nula de catálogo**: si
+ * los `n` medios que cubren el hecho se hubieran sacado al azar del catálogo,
+ * ¿qué probabilidad había de que no saliera ninguno de ese espectro? Lo calcula
+ * `probabilidadDeAusenciaEnCatalogo`, y se exige que baje de este umbral.
  *
- * CONSECUENCIA, DICHA SIN ADORNOS: con la izquierda en el 3 %, su ausencia no
- * será improbable casi nunca y esos treinta avisos desaparecen. La función pasa
- * a disparar muy poco, y algunos días nada. Es correcto: un punto ciego que se
- * afirma siempre no es un hallazgo, es una constante.
+ * OJO, QUE AQUÍ HUBO UN ERROR Y CONVIENE NO REPETIRLO. Hasta el 2026-08-25 la
+ * nula usaba `(1 − q)^n` con `q` = cuota de APARICIONES del espectro. Mezclaba
+ * cuántos medios existen de ese lado con cuánto publica cada uno, y castigaba a
+ * un espectro silencioso dos veces: una por ser pocos y otra por publicar poco
+ * —siendo lo segundo culpa de nuestra ventana de 72 h, no del mundo—. Era además
+ * circular hacia el lado malo: cuanto más callaba un espectro, más medios se
+ * exigían para poder echarlo en falta. Pedía 90 medios donde la nula correcta
+ * pide 14. El relato entero está en el §2 de `ESTUDIO_PUNTOS_CIEGOS.md`.
+ *
+ * CONSECUENCIA, DICHA SIN ADORNOS: con 13 medios de izquierda en un catálogo de
+ * 72, su ausencia sigue sin ser improbable casi nunca. La señal dispara muy poco
+ * y algunos días nada. Es correcto: un punto ciego que se afirma siempre no es un
+ * hallazgo, es una constante. Lo que sí se publica es el HECHO de la ausencia
+ * —`ausencia`— con su frecuencia al lado, que es otra afirmación y más honesta.
  *
  * El 0,05 es el convenio habitual para «esto no parece azar». No tiene nada de
  * sagrado y está aquí, en una constante, para poder discutirlo.
@@ -116,22 +125,16 @@ export const UMBRAL_SORPRESA = 0.05;
  */
 export const SOLO_EJE_MIN_SOURCES = 6;
 
-/**
- * Probabilidad de que un espectro con frecuencia `q` no aparezca entre `n`
- * medios, si los medios que cubren un hecho fueran independientes de su línea.
+/*
+ * AQUÍ VIVÍA `probabilidadDeAusencia(q, n) = (1 − q)^n`, la nula por
+ * apariciones. Se retiró el 2026-08-25, cuando dejó de tener un solo consumidor:
+ * la sustituyó `probabilidadDeAusenciaEnCatalogo`, que mide medios en vez de
+ * volumen. Se borra en vez de dejarse «por si acaso» porque una función
+ * exportada que nadie llama es un modelo alternativo esperando a que alguien la
+ * use por error, y este archivo es el peor sitio posible para tener dos.
  *
- * Es un modelo deliberadamente simple —y por tanto conservador—: supone
- * independencia, que es justo lo que un punto ciego niega. Al suponerla, el
- * modelo hace MÁS difícil declarar un punto ciego, nunca más fácil. Errar hacia
- * callar es lo correcto cuando lo que se afirma es que alguien omitió algo.
- *
- * @param {number} q  fracción de apariciones del espectro en el corpus, [0,1]
- * @param {number} n  medios distintos que cubren el hecho
+ * Qué preguntaba y por qué estaba mal: el §2 de `ESTUDIO_PUNTOS_CIEGOS.md`.
  */
-export function probabilidadDeAusencia(q, n) {
-    if (!(q > 0) || !(n > 0)) return 1;
-    return (1 - Math.min(q, 1)) ** n;
-}
 
 /**
  * MEDIOS DEL CATÁLOGO QUE PODRÍAN HABER CUBIERTO, por espectro.

@@ -1,0 +1,167 @@
+CÓMO MIDE DOBLEFOCO — PARÁMETROS DEL MODELO
+======================================================================
+
+Este documento se genera desde el código que corre. No se edita a
+mano: cada número de aquí sale de la misma constante que usa el motor
+para decidir, o se deriva de ella y del catálogo. Si los dos pudieran
+divergir, esta página no serviría de nada — y ya divergió dos veces
+este mes, que es la razón de que exista.
+
+Generado: 2026-08-25
+
+
+1. QUÉ MIDE ESTE MODELO, Y QUÉ NO
+----------------------------------------------------------------------
+
+Mide QUIÉN cubrió cada hecho, no cómo lo contó. La orientación es una
+propiedad del MEDIO, documentada y publicada en el catálogo; no se
+analiza el texto de la pieza y no se le pone nota a ninguna noticia.
+Cuando este sitio dice que a una historia le falta un lado, la
+afirmación entera es: entre los medios que la cubrieron no hay
+ninguno de esa orientación.
+
+Eso deja fuera, a propósito, todo lo que haría falta para decir que
+alguien OMITIÓ algo: no sabemos qué escribió cada redacción y
+descartó, ni si el hecho llegó a su mesa. Por eso la ausencia se
+publica como hecho y con su frecuencia al lado, y la palabra «punto
+ciego» se reserva para cuando esa ausencia además sorprenda.
+
+
+2. LAS BANDAS DEL ESPECTRO
+----------------------------------------------------------------------
+
+Cada medio lleva un valor entre −1 y +1. La frontera entre la banda
+media y los extremos está en 0,20:
+
+    bias <= −0,20           izquierda
+    entre −0,20 y +0,20     orientación mixta
+    bias >= +0,20           derecha
+
+La banda media se llama «orientación mixta» y no «centro» porque no
+hay tal cosa como un centro político neutral: lo que la banda recoge
+son medios cuya línea no se sitúa de forma marcada en el eje.
+
+
+3. EL CATÁLOGO QUE VE EL MODELO
+----------------------------------------------------------------------
+
+Cuentan solo los medios CON FEED. Un medio sin feed no puede aparecer
+en ninguna historia, así que meterlo en el denominador inventaría
+competidores que no compiten — y haría más fácil declarar ausente a
+quien nunca pudo estar.
+
+    Izquierda ...................   13    18,1 %
+    Orientación mixta ...........   41    56,9 %
+    Derecha .....................   18    25,0 %
+    ----------------------------------------
+    Con feed ....................   72
+    En el registro ..............   78
+
+
+4. CUÁNDO SE DICE QUE A UNA HISTORIA LE FALTA UN LADO
+----------------------------------------------------------------------
+
+Hacen falta al menos 4 medios cubriendo el hecho. Por debajo de eso
+no se evalúa nada: con dos o tres medios, que falte una orientación
+no dice más que quién madrugó.
+
+    Medios mínimos para evaluar .................  4
+    Un lado se considera ausente si tiene .......  15,0 % o menos
+    Y el otro lado tiene que aportar ............  2 medios o más
+    «Solo medios del eje» pide, además ..........  6 medios
+
+La condición de los 2 medios es la que sostiene el umbral de 4. Un
+lado ausente está por definición en cero, así que lo único
+comprobable es que el otro no sea uno solo: con un único medio
+cubriendo, lo que hay no es «un lado omite esto» sino «un periódico
+decidió cubrirlo».
+
+
+5. CUÁNDO ESA AUSENCIA ADEMÁS SORPRENDE
+----------------------------------------------------------------------
+
+Que falte un lado casi nunca es noticia por sí solo: depende de
+cuántos medios de ese lado hay para empezar. La pregunta que se hace
+el modelo es: si los medios que cubrieron el hecho se hubieran sacado
+al azar del catálogo, ¿qué probabilidad había de que no saliera
+ninguno de ese lado? Si baja de 5,0 %, la ausencia se llama punto
+ciego. Si no, se publica el hecho y nada más.
+
+Traducido a lo único que se puede mirar de un vistazo: cuántos medios
+tiene que reunir UNA historia para que la ausencia de cada lado deje
+de ser lo esperable.
+
+    Lado ausente          Medios que haría falta reunir
+    --------------------------------------------------
+    Izquierda             14
+    Orientación mixta     4
+    Derecha               10
+
+Para comparar: la historia más cubierta del último corpus medido
+reunió 15 medios.
+
+Esta cuenta mira MEDIOS, no artículos. Es una corrección del
+2026-08-25: antes miraba la cuota de apariciones, lo que mezclaba
+cuántos medios existen de un lado con cuánto publica cada uno, y
+castigaba dos veces a un lado silencioso. El relato está en el §2 de
+ESTUDIO_PUNTOS_CIEGOS.md.
+
+
+6. ÉNFASIS Y POLARIZACIÓN
+----------------------------------------------------------------------
+
+El énfasis es el reverso del punto ciego y no su sinónimo: mira la
+concentración en vez de la ausencia. Solo se calcula sobre los
+extremos, porque que la mayoría de medios de un hecho no tenga línea
+marcada es lo normal en este catálogo y no dice nada.
+
+    Un lado marca énfasis desde el ..............  60,0 % de la cobertura
+    y con al menos ..............................  2 medios
+    Polarización alta desde una desviación de ...  0,25
+
+
+7. LA VENTANA DE TIEMPO
+----------------------------------------------------------------------
+
+    Una noticia vive ............................  72 horas
+
+Pasadas esas 72 horas la pieza se borra. Conviene saberlo al leer
+cualquier cifra de este documento: un medio que publica cada cuatro
+días no aparece nunca, y su silencio en las cuentas es nuestro, no
+suyo. Es la razón por la que la pregunta del §5 mira medios y no
+volumen.
+
+
+8. LO MEDIDO CONTRA EL CORPUS
+----------------------------------------------------------------------
+
+Esto NO se recalcula al generar el documento: sale de una medición
+fechada contra la API pública, y por eso lleva la fecha delante. Los
+apartados anteriores describen la regla; este dice qué pasa cuando se
+aplica.
+
+    Medido el ...................................  2026-08-25
+    Historias en la ventana .....................  100
+    De ellas, evaluables (4+ medios) ............  66
+    Historia más cubierta .......................  15 medios
+
+    Con un lado ausente .........................  44
+    De ellas, punto ciego .......................  2
+
+    Cada cuánto falta cada lado, en las evaluables:
+
+      Izquierda              55 de 66    83,3 %
+      Orientación mixta       1 de 66     1,5 %
+      Derecha                 3 de 66     4,5 %
+
+La columna de la derecha es la que impide que el veredicto mienta.
+Una ausencia que ocurre en la mayoría de las historias no es un
+hallazgo sobre la noticia: es el estado por defecto de este catálogo,
+y enseñarla sin decir cada cuánto pasa sería convertir la norma en
+titular.
+
+
+======================================================================
+Todos estos números son discutibles y están en constantes para poder
+discutirlos. Si cree que alguno está mal, escríbanos: lo que no se
+puede es cambiarlos sin que este documento cambie con ellos.

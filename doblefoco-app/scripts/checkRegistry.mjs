@@ -22,6 +22,13 @@ import {
     getBand,
 } from '../shared/mediaRegistry.js';
 import { renderCatalog, OUTPUT, GENERATED_LINE } from './generateCatalogDoc.mjs';
+import {
+    renderModelo,
+    OUTPUT as MODELO_OUTPUT,
+    LINEA_GENERADO,
+    leerMedido,
+    DIAS_ANTES_DE_CADUCAR,
+} from './generarDocModelo.mjs';
 import { OWNERSHIP_PROFILES, OWNER_TYPES } from '../shared/mediaOwnership.js';
 
 const problems = [];
@@ -210,6 +217,46 @@ try {
     }
 } catch {
     fail(`${GENERATED_DOC} no existe. Ejecuta: npm run docs:catalog`);
+}
+
+// ── 5 bis. Los parámetros del modelo, publicados y sin caducar ──────────────
+//
+// Mismo trato que el catálogo, por la misma razón y con un matiz.
+//
+// LA MITAD DERIVABLE se compara letra a letra: si alguien toca una constante y
+// no regenera, esto falla. Es lo que impide que el documento público siga
+// diciendo «hacen falta 90 medios» cuatro días después de que sean 14 — que es
+// literalmente lo que pasó con ESTUDIO_PUNTOS_CIEGOS.md este mes.
+//
+// LA MITAD MEDIDA no se puede comparar así: depende de la API y cambia cada
+// media hora. Compararla dejaría la verificación en rojo permanente, y una
+// verificación siempre roja se apaga. Lo que sí se comprueba es que no sea
+// vieja, que es la diferencia entre un dato fechado y un dato caducado.
+
+const MODELO_DOC = 'src/docs/modelo_sesgo.txt';
+
+try {
+    const enDisco = normalizar(readFileSync(MODELO_OUTPUT, 'utf8').replace(LINEA_GENERADO, 'Generado: —'));
+    const esperado = normalizar(renderModelo().replace(LINEA_GENERADO, 'Generado: —'));
+
+    if (enDisco !== esperado) {
+        fail(`${MODELO_DOC} está desactualizado respecto al código. Ejecuta: npm run docs:modelo`);
+    }
+} catch {
+    fail(`${MODELO_DOC} no existe. Ejecuta: npm run docs:modelo`);
+}
+
+const medido = leerMedido();
+if (!medido?.fecha) {
+    warn(`${MODELO_DOC} no lleva ninguna medición. Ejecuta: npm run docs:modelo -- --medir`);
+} else {
+    const dias = Math.floor((Date.now() - Date.parse(medido.fecha)) / 86_400_000);
+    if (dias > DIAS_ANTES_DE_CADUCAR) {
+        warn(
+            `lo medido en ${MODELO_DOC} tiene ${dias} días (${medido.fecha}). ` +
+            'Ejecuta: npm run docs:modelo -- --medir'
+        );
+    }
 }
 
 // ── 6. Fichas de propiedad: nada se afirma sin fuente ───────────────────────

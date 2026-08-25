@@ -15,6 +15,7 @@
         "test:watch": "vitest",
         "preview": "vite preview",
         "docs:catalog": "node scripts/generateCatalogDoc.mjs",
+    "docs:modelo": "node scripts/generarDocModelo.mjs",
         "fonts:fetch": "node scripts/fetchFonts.mjs",
         "mirar": "node scripts/mirar.mjs",
     "mapa:generar": "node scripts/generarMapaColombia.mjs",

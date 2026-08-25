@@ -3,6 +3,7 @@ import { Clock, AlertCircle } from 'lucide-react';
 import { SPECTRUM_LABEL } from '../../shared/biasAnalysis.js';
 import { retrasoDelEspectro } from '../../shared/coverageTimeline.js';
 import './CoverageTimeline.css';
+import { decimalCorto } from '../../shared/numeros.js';
 
 const ESPECTROS = ['left', 'center', 'right'];
 
@@ -11,7 +12,7 @@ function formatearRetraso(horas) {
     if (horas === null) return null;
     if (horas < 1 / 60) return 'a la vez';
     if (horas < 1) return `+${Math.round(horas * 60)} min`;
-    return `+${String(horas).replace('.', ',')} h`;
+    return `+${decimalCorto(horas, 1)} h`;
 }
 
 const hora = (iso) =>

@@ -6,6 +6,7 @@ import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import { repartoPorDueno, repartoPorEspectro, duenosParaLaMitad } from '../../shared/panorama.js';
 import './PanoramaMediatico.css';
+import { decimal } from '../../shared/numeros.js';
 
 /**
  * EL ESPACIO MEDIÁTICO POR DUEÑO Y POR VOLUMEN — F3-16.
@@ -133,10 +134,10 @@ const PanoramaMediatico = ({ conteosExternos = null }) => {
                                         style={{ width: `${banda[fila.clave]}%` }}
                                         title={`${banda.label}: ${
                                             fila.clave === 'pctMedios' ? banda.medios : banda.articulos
-                                        } ${fila.unidad} (${banda[fila.clave].toFixed(1)} %)`}
+                                        } ${fila.unidad} (${decimal(banda[fila.clave], 1)} %)`}
                                     >
                                         {banda[fila.clave] > 12 && (
-                                            <span>{banda[fila.clave].toFixed(0)}%</span>
+                                            <span>{decimal(banda[fila.clave], 0)}%</span>
                                         )}
                                     </div>
                                 )
@@ -165,7 +166,7 @@ const PanoramaMediatico = ({ conteosExternos = null }) => {
                             key={g.grupoId}
                             className={`panorama-seg dueno-${i % 8} ${g.grupoId === 'sin-documentar' ? 'sin-documentar' : ''}`}
                             style={{ width: `${g.porcentaje}%` }}
-                            title={`${g.label}: ${g.articulos.toLocaleString('es-CO')} artículos (${g.porcentaje.toFixed(1)} %)`}
+                            title={`${g.label}: ${g.articulos.toLocaleString('es-CO')} artículos (${decimal(g.porcentaje, 1)} %)`}
                         />
                     ))}
                 </div>
@@ -175,7 +176,7 @@ const PanoramaMediatico = ({ conteosExternos = null }) => {
                         <li key={g.grupoId}>
                             <span className={`panorama-punto dueno-${i % 8}`} aria-hidden="true" />
                             <span className="dueno-label">{g.label}</span>
-                            <span className="dueno-pct">{g.porcentaje.toFixed(1)} %</span>
+                            <span className="dueno-pct">{decimal(g.porcentaje, 1)} %</span>
                             <span className="dueno-medios">
                                 {g.medios.map((m) => m.nombre).join(' · ')}
                             </span>

@@ -16,6 +16,7 @@ import {
     SPECTRUM_LABEL_SHORT,
 } from '../../shared/biasAnalysis.js';
 import { DEPARTAMENTO_POR_SLUG, slugDepartamento } from '../../shared/geografia.js';
+import { decimal } from '../../shared/numeros.js';
 import './NewsFeed.css';
 
 /**
@@ -412,7 +413,7 @@ const NewsFeed = () => {
                         Son las historias donde <strong>no aparece ningún medio</strong> de un
                         lado del espectro. Hoy ese lado es{' '}
                         <strong>{SPECTRUM_LABEL_SHORT[espectroQueFalta]?.toLowerCase()}</strong>, que falta en{' '}
-                        <strong>{Math.round(contextoAusencia.frecuencia * 100)} %</strong> de las{' '}
+                        <strong>{decimal(contextoAusencia.frecuencia * 100, 0)} %</strong> de las{' '}
                         {contextoAusencia.evaluables} historias con {BLINDSPOT_MIN_SOURCES} medios
                         o más. Con esa frecuencia, señalar una historia concreta no dice nada
                         sobre ella.

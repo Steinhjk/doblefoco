@@ -21,7 +21,7 @@
 import Parser from 'rss-parser';
 import {
     analyzeCoverage,
-    calcularTasasBase,
+    calcularTasasDeAusencia,
     averageFactuality,
     classifySpectrum,
     SPECTRUM,
@@ -1219,7 +1219,23 @@ function buildMultisourceStories() {
      * mucho volumen una frecuencia inflada y haría su ausencia artificialmente
      * más sorprendente.
      */
-    const tasasBase = calcularTasasBase(
+    /*
+     * CADA CUÁNTO FALTA CADA ESPECTRO, medido sobre los grupos ya formados.
+     *
+     * Antes aquí se calculaban las TASAS BASE —cuota de apariciones— porque
+     * alimentaban la prueba `(1−q)^n`. Esa prueba se retiró el 2026-08-25: la
+     * nula pasó a ser de catálogo y la lee `biasAnalysis` por su cuenta, así
+     * que ya no hay nada que acordarse de pasar para que el punto ciego exista.
+     *
+     * Lo que se mide ahora no decide, describe: acompaña al veredicto con la
+     * frecuencia con la que ese espectro falta, para que señalar una historia
+     * concreta no se lea como hallazgo cuando es la norma.
+     *
+     * Se construye desde los grupos ya formados —una entrada por medio y
+     * grupo— y no desde `articlesByLink`, para que un medio que publica cinco
+     * notas sobre el mismo hecho cuente una vez.
+     */
+    const tasasDeAusencia = calcularTasasDeAusencia(
         clusters.map((c) => ({
             sources: [...new Map(
                 c.articles.map((a) => [a.outlet.name, { bias: a.outlet.bias }])
@@ -1283,7 +1299,7 @@ function buildMultisourceStories() {
         }
 
         const sources = [...outletsByName.values()];
-        const coverage = analyzeCoverage(sources, tasasBase);
+        const coverage = analyzeCoverage(sources, tasasDeAusencia);
 
         /**
          * Se anota qué artículos encontraron pareja, para que la poda del ciclo

@@ -137,16 +137,18 @@ function normalizePerspective(raw) {
 /**
  * EL PUNTO CIEGO LO DECIDE EL SERVIDOR, Y ES EL ÚNICO CAMPO ASÍ (2026-08-21).
  *
- * `analyzeCoverage` calcula todo con las fuentes de la historia salvo una cosa:
- * el punto ciego necesita saber CADA CUÁNTO aparece cada espectro en el corpus
- * entero —`tasasBase`— para poder decir si su ausencia sorprende. Sin esas tasas
- * la función calla a propósito: afirmar que alguien omitió algo sin saber con
- * qué frecuencia aparece sería acusar sin prueba.
+ * `analyzeCoverage` calcula todo con las fuentes de la historia. Desde el
+ * 2026-08-25 la prueba de «¿sorprende esta ausencia?» ya NO depende de que
+ * nadie pase tasas: la nula es de catálogo y `biasAnalysis` lo lee solo. Lo que
+ * el cliente sigue sin poder tener es el CONTEXTO —cada cuánto falta cada
+ * espectro— porque solo se ha descargado un puñado de historias y el servidor
+ * lo mide sobre el corpus entero. Una frecuencia estimada sobre lo descargado
+ * cambiaría al desplazar la lista, y ese número es justo el que impide que el
+ * veredicto se lea como hallazgo.
  *
- * **El cliente no puede tener esas tasas y no debería fingir que sí.** Solo se
- * ha descargado 100 historias; el servidor las calcula sobre las 7 559
- * apariciones medio-historia del corpus. Una tasa base estimada sobre lo
- * descargado cambiaría con el desplazamiento de la lista.
+ * Así que el veredicto del servidor se sigue trasplantando en vez de
+ * recalcularlo: no porque el cliente no sepa calcularlo, sino porque el
+ * servidor lo calcula con la frase que lo acompaña.
  *
  * QUÉ ESTABA ROTO. Aquí se llamaba `analyzeCoverage(sources)` sin tasas, así que
  * el punto ciego salía `null` SIEMPRE, y además este normalizador construye un

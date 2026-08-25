@@ -123,6 +123,40 @@ describe('la consulta trae todo lo que el mapeo lee', () => {
     it.each(leidas)('la consulta selecciona «%s»', (columna) => {
         expect(consulta).toContain(`a.${columna}`);
     });
+
+    /*
+     * EL TERCER SENTIDO, Y EL QUE FALTABA: que la ESCRITURA guarde todo lo que
+     * la lectura pide.
+     *
+     * Las dos pruebas de arriba cierran el camino base -> memoria: el mapeo
+     * devuelve los campos, y la consulta los selecciona. Pero las dos dan por
+     * bueno que la columna EXISTE con algo dentro. Si el INSERT nunca la
+     * escribe, la consulta la selecciona vacía, el mapeo la mapea a null y las
+     * tres pruebas pasan mientras el producto enseña un hueco.
+     *
+     * Es la misma forma del fallo de `topics` —se escribía y no se leía—, vista
+     * desde el otro lado. Hoy no falta ninguna: 12 leídas, 13 escritas, cero
+     * huecos. Lo que no había era nada que lo vigilara, así que el día que
+     * alguien añada un campo al mapeo y olvide el INSERT, vuelve la pantalla de
+     * Categorías con sus ceros y nadie se entera hasta mirarla.
+     *
+     * Se lee el texto del SQL por el mismo motivo que la prueba de arriba: el
+     * defecto vive en la lista de columnas, no en ningún valor inspeccionable.
+     */
+    const insert = fuente.slice(fuente.indexOf('INSERT INTO articles'));
+    const columnasEscritas = insert
+        .slice(insert.indexOf('(') + 1, insert.indexOf(')'))
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
+
+    it('el INSERT declara columnas de verdad, no está vacío', () => {
+        expect(columnasEscritas.length).toBeGreaterThan(8);
+    });
+
+    it.each(leidas)('el INSERT escribe «%s», que el mapeo lee', (columna) => {
+        expect(columnasEscritas).toContain(columna);
+    });
 });
 
 describe('la costura con el agrupamiento', () => {

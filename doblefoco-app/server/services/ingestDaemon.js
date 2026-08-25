@@ -849,8 +849,10 @@ export async function runIngestionBatch() {
                          *
                          * No se descarta —es el mejor indicio de la orientación
                          * de un medio, porque a quién le das una columna es una
-                         * decisión deliberada y repetida— sino que se desvía al
-                         * agregado de formadores de opinión.
+                         * decisión deliberada y repetida— sino que se marca y se
+                         * deja fuera del agrupamiento. Eso es TODO lo que ocurre
+                         * hoy con la marca: no hay ningún agregado detrás. El
+                         * detalle, en `shared/opinion.js`.
                          */
                         opinion: detectarOpinion(link),
                         outlet: {

@@ -12,8 +12,9 @@
  * Perder un reporte es asumible. Interrumpir la lectura, no.
  */
 
-const RAW_BASE = import.meta.env.VITE_API_URL ?? '';
-const API_BASE = RAW_BASE.replace(/\/+$/, '');
+import { API_BASE, HAY_API } from './apiBase.js';
+
+
 
 /**
  * @param {string} storyId
@@ -21,7 +22,7 @@ const API_BASE = RAW_BASE.replace(/\/+$/, '');
  *   'medio-mal-clasificado' | 'historias-distintas'
  */
 export function sendReport(storyId, kind) {
-    if (!API_BASE || !storyId || !kind) return;
+    if (!HAY_API || !storyId || !kind) return;
 
     // Sin `await` a propósito: el componente no espera. `keepalive` permite que
     // la petición sobreviva si el lector navega a otra página justo después de

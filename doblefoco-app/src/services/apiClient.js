@@ -19,11 +19,10 @@
  * deben usar su respaldo local SIN intentar la petición.
  */
 
-const RAW_BASE = import.meta.env.VITE_API_URL ?? '';
-const API_BASE = RAW_BASE.replace(/\/+$/, '');
+import { API_BASE, HAY_API } from './apiBase.js';
 
-/** ¿Hay backend configurado para este build? */
-export const isApiConfigured = Boolean(API_BASE);
+/** ¿Hay backend al que pedir? Los tres estados, en `apiBase.js`. */
+export const isApiConfigured = HAY_API;
 
 const DEFAULT_TIMEOUT_MS = 8_000;
 

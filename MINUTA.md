@@ -189,6 +189,13 @@ a ser de **especificidad**: dispararía marcando lo normal.
   las dos, porque si muere solo por el 78 % alguien la resucitará cuando el
   corpus cambie.
 
+> **HAY PLAN ESCRITO:** `doblefoco-app/PLAN_REVISION_KIMI.md`, del 2026-08-24.
+> Clasifica lo accionable en dos fases, deja fuera lo que depende de una
+> decisión de producto ya abierta, y avisa de una trampa de secuencia: corregir
+> la nula sin corregir la justificación de D **empeora** el producto, porque
+> haría disparar la señal justo donde la ausencia es lo normal el 78 % de las
+> veces. Nada de ese plan está aprobado.
+
 ### Y cinco hallazgos de estructura
 
 Todos con su caso concreto. Los cuatro primeros piden trabajo de código, el

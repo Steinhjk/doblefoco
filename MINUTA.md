@@ -163,10 +163,22 @@ Corregir la nula hace que la señal dispare justo donde el 78 % dice que la
 ausencia es la situación por defecto. El problema deja de ser de potencia y pasa
 a ser de **especificidad**: dispararía marcando lo normal.
 
-- **Estado:** ABIERTO. Hay que **rehacer la sección 2 del estudio** con la nula
-  correcta, y **cambiar la justificación de la opción D**: hoy se apoya en el 90,
-  que se cae en cuanto se corrige la nula; tiene que apoyarse en el 78 %, que
-  sobrevive a la corrección. Es trabajo de escritura, no de código.
+- **Estado: CERRADO el 2026-08-25** (commit `T1-4`). La sección 2 del estudio
+  está rehecha: cuenta el error entero —por qué la `q` de apariciones era la
+  pregunta equivocada, y que castigaba a la izquierda dos veces, una por ser
+  pocos y otra por publicar poco, siendo lo segundo culpa de nuestra ventana de
+  72 h—. El número es **14**, no 90.
+
+  La justificación de D ya no se apoya en la aritmética sino en la medida: la
+  izquierda falta en el **87 %** de las evaluables de producción y en el **78 %**
+  de las de 10+ medios del corpus histórico. **D sobrevivió a su propia
+  corrección**, que era la prueba que había que pasar.
+
+  Una nota de contabilidad, porque los dos números andan sueltos por ahí: la
+  tabla de arriba cuenta **14 de 78** —el registro entero— y el modelo cuenta
+  **13 de 72** —solo los medios con feed, que son los que pueden aparecer—. Las
+  dos cuentas dan 14 medios, así que la conclusión no depende de cuál se use.
+  La del código es la correcta: un medio sin feed no puede estar ausente.
 
 ### Lo demás que dejó abierto, y que es decisión de producto
 
@@ -182,8 +194,20 @@ a ser de **especificidad**: dispararía marcando lo normal.
   derecha». No es argumento contra la opción E —sigue siendo la correcta— sino
   contra adoptarla sin escribir esa línea.
 - **Las ramas 1 y 3 tienen el mismo vicio que la 2** (su O5) y el estudio no lo
-  dice: umbrales fijados sin contrastar contra la tasa base del espectro que
-  nombran. Solo la rama 2 lo tiene escrito en símbolos.
+  decía: umbrales fijados sin contrastar contra la tasa base del espectro que
+  nombran. Solo la rama 2 lo tenía escrito en símbolos.
+  **Medido y escrito el 2026-08-25**, y salió peor de lo que decía la objeción:
+  puesta en las unidades de la nula, la rama 3 exige de entrada entre **15 y
+  2 509 veces** menos probable que el 5 % que la nula llama sorprendente — o sea
+  que **el filtro previo es la prueba de verdad y la nula es decorado**. Y su
+  dureza no crece con `n`: va a saltos en los dos sentidos, porque «15 % de n» se
+  redondea a un número entero de medios. Una historia de 10 tiene que ser siete
+  veces más rara que una de 8 para pasar el mismo filtro, y nadie lo decidió.
+  La rama 1 comparte el vicio en otra escala —de 8× a 1,2×— y lo que de verdad la
+  mata es `counts.left >= 2`.
+  **Sigue ABIERTO lo que hay que decidir:** recalibrar contra el catálogo, o
+  cambiar el 15 % por un número de medios —que quitaría los saltos—, o declararlas
+  sin disparo previsible. No se ha tocado ninguna: son decisión de producto.
 - **Nadie contó los tests** (su O4): a α = 0,05 sobre 77 historias se esperan 3,9
   falsos positivos. Mata la opción C por segunda vía, y conviene enterrarla por
   las dos, porque si muere solo por el 78 % alguien la resucitará cuando el
@@ -211,7 +235,12 @@ Todos con su caso concreto. Los cuatro primeros piden trabajo de código, el
    función usada en ambas direcciones más un test de ida y vuelta. Lo llama «el
    arreglo más barato de toda la lista, y habría cazado el fallo más caro».
 4. **Un check de CI que falle si un comentario nombra un identificador que no
-   existe.** Contra la enfermedad del 19.
+   existe.** Contra la enfermedad del 19. **HECHO el 2026-08-25**:
+   `npm run check:comentarios`, ya en `ci.yml`. En su primera pasada acusó a 4 y
+   **ninguna era falsa**; las tres primeras llevaban meses ahí. Lo que quitó el
+   ruido fueron dos reglas: solo se acusan citas con **mayúscula interior** —la
+   prosa no va en camello— y se exime el párrafo que ya dice que eso se retiró,
+   que es documentación buena y no una mentira. De 29 acusaciones a 4.
 5. **Falta un modo de arranque de prueba del sistema**, y esa es la razón real de
    que las costuras no estén cubiertas — no que nadie supiera escribir los tests.
 

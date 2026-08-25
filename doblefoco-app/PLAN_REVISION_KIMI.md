@@ -59,7 +59,7 @@ Seis cosas. Ninguna toca un parámetro de producto ni necesita datos nuevos.
 > | T1-5 | nula hipergeométrica | **hecho** — en producción, con `ausencia` como consecuencia |
 > | T1-6 | despliegue automático | **hecho**, y **sin usar**: falta el secreto `FLY_API_TOKEN` |
 > | T1-4 | sección 2 del estudio | **hecho** — este es el commit |
-> | T1-3 | check de comentarios en CI | pendiente, el último a propósito |
+> | T1-3 | check de comentarios en CI | **hecho** — 4 acusaciones, 0 falsos positivos, 3 comentarios corregidos |
 >
 > La regla de arriba —T1-5 no sale sin T1-4— **se rompió**: T1-5 se desplegó el
 > 25 y T1-4 llega después. Se rompió a sabiendas y con la mitad que importaba
@@ -126,6 +126,38 @@ La segunda mitad de su M4, y la que evita que vuelva.
   ignorado. Un check ruidoso se silencia y entonces es peor que nada. Si al
   montarlo salen más de ~15 falsos positivos, **mejor no montarlo** y quedarse
   con T1-2.
+
+> **Cómo salió, el 2026-08-25.** Se midió antes de escribirlo, que era la
+> pregunta que decidía si merecía la pena.
+>
+> | Regla acumulada | Acusaciones | De ellas, falsas |
+> |---|---:|---:|
+> | citas en acentos graves con forma de identificador | 29 | ~20 |
+> | …y con **mayúscula interior** | 9 | 5 |
+> | …y el párrafo **no** dice ya que se retiró | 4 | **0** |
+>
+> **Las cuatro eran de verdad**, y las tres primeras ya estaban ahí antes de
+> esta revisión: `porMedios`/`porVolumen` en `panorama.js`, que nombraban un
+> diseño que nunca salió; `initialInView` en `useInView.jsx`, que describía un
+> parámetro que no existe; y `sinAncla`, que era prosa escrita como si fuera
+> código.
+>
+> **Las dos reglas que quitaron ruido no son cosméticas, y conviene entender por
+> qué funcionan.** La mayúscula interior separa un nombre de una palabra: la
+> prosa no va en camello, así que `nasa`, `marte`, `feminicidio` y `destacadas`
+> —entradas de un léxico, bien escritas— dejan de saltar. Y la marca de pasado
+> protege justo el comentario que este proyecto quiere: «SE LLAMABA
+> `describeBias` y era un nombre engañoso» nombra lo ausente **diciendo que está
+> ausente**, que es documentación buena y no una mentira.
+>
+> **Lo que esa segunda regla cuesta, medido:** exime 286 de 3 022 bloques de
+> comentario —el 9,5 %—, y dentro de ellos hay 8 citas en camello que no existen
+> en el código. Se revisaron una a una: **las ocho son referencias históricas
+> correctas.** El agujero es real y hoy está vacío.
+>
+> **Lo que NO caza, dicho para que no decepcione:** el comentario que describe
+> mal algo que sí existe, que es el caso más común de los dos. Esto es el 10 %
+> del problema por el 1 % del trabajo.
 
 ### T1-4 · Rehacer la sección 2 del estudio con la nula correcta
 

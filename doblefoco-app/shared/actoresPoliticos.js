@@ -11,7 +11,7 @@
  * CÓMO SE RELLENA (protocolo de la sección 16.4 del diseño).
  * La búsqueda puede hacerla un modelo de lenguaje; **lo que se guarda es el
  * documento, no lo que el modelo recuerde**. Sin URL comprobable no hay entrada:
- * el actor se queda como `sinAncla` y eso se publica como tal. Un dato que no se
+ * el actor se queda «sin ancla» y eso se publica como tal. Un dato que no se
  * puede abrir y verificar no entra.
  *
  * POR QUÉ IMPORTA TANTO ESA REGLA. La arquitectura entera existe para tener

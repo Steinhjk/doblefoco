@@ -96,12 +96,15 @@ export function repartoPorDueno(conteos, registro) {
 /**
  * El espectro contado de dos formas, que es el argumento de esta vista.
  *
- * `porMedios` cuenta cabezas: cuántos medios hay en cada banda.
- * `porVolumen` pesa: cuánto publica cada banda.
+ * Cada banda vuelve con las dos cuentas: `medios` y `pctMedios` cuentan cabezas
+ * —cuántos medios hay de esa orientación—, y `articulos` y `pctVolumen` pesan
+ * —cuánto publican—.
  *
  * Cuando las dos cifras difieren mucho, la primera está escondiendo algo. Por
- * eso se devuelven juntas y no por separado: mostrar solo una de las dos es lo
- * que hace que un catálogo desigual parezca equilibrado.
+ * eso van juntas en el mismo objeto y no en dos llamadas: mostrar solo una de
+ * las dos es lo que hace que un catálogo desigual parezca equilibrado. En este
+ * catálogo difieren tanto que son el argumento de la vista entera —la izquierda
+ * es el 22,6 % de los medios y el 3,3 % del volumen—.
  *
  * @param {Array<{sourceId: string, articulos: number}>} conteos
  * @param {Array<{id: string, bias: number}>} registro

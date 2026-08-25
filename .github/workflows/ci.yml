@@ -73,6 +73,14 @@ jobs:
       - name: Integridad del catálogo
         run: npm run check:registry
 
+      # Un comentario que nombra algo que no existe no lo ve el lint, ni los
+      # tipos, ni las pruebas — y es peor que no comentar, porque hace confiar.
+      # Va el último porque es el más nuevo y el que más se puede afinar: si
+      # empieza a dar falsos positivos, la respuesta correcta es afinarlo o
+      # quitarlo, NO acostumbrarse a verlo en rojo.
+      - name: Los comentarios nombran cosas que existen
+        run: npm run check:comentarios
+
   # ===========================================================================
   #  ¿Se puede levantar la base desde cero y restaurar una copia?
   # ===========================================================================

@@ -7,9 +7,11 @@ import { useEffect, useRef, useState } from 'react';
  * cada render, así que incluirlo en las dependencias reejecutaba el efecto
  * indefinidamente y omitirlo dejaba un aviso de exhaustive-deps.
  *
- * `initialInView` existe por seguridad: el CSS de entrada parte de opacidad 0,
- * de modo que si el observador nunca se dispara el contenido quedaría
- * invisible. Ver la nota en AnimateIn.
+ * HAY UNA RED DE SEGURIDAD, y está en el estado inicial: `useState` arranca en
+ * `true` cuando el navegador no trae `IntersectionObserver`. Importa porque el
+ * CSS de entrada parte de opacidad 0, así que un observador que no se dispara
+ * nunca no deja el contenido quieto — lo deja invisible. Ver la nota en
+ * AnimateIn.
  */
 /** Se evalúa una vez por carga: la capacidad del navegador no cambia. */
 const SUPPORTS_OBSERVER =

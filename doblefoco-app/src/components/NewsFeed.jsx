@@ -10,8 +10,13 @@ import { repartoGeografico } from '../lib/geografiaDelFeed.js';
 import { useConteosPorDepartamento } from '../hooks/useConteosPorDepartamento';
 import EmptyState from './EmptyState';
 import { EsqueletoTarjetas } from './Esqueleto';
-import { BLINDSPOT_MIN_SOURCES, SPECTRUM_LABEL_SHORT } from '../../shared/biasAnalysis.js';
+import {
+    mediosParaAfirmarAusencia,
+    BLINDSPOT_MIN_SOURCES,
+    SPECTRUM_LABEL_SHORT,
+} from '../../shared/biasAnalysis.js';
 import { DEPARTAMENTO_POR_SLUG, slugDepartamento } from '../../shared/geografia.js';
+import { decimal } from '../../shared/numeros.js';
 import './NewsFeed.css';
 
 /**
@@ -122,7 +127,7 @@ const NewsFeed = () => {
                 }
 
                 if (polarizationFilter === 'high' && !coverage.isHighlyPolarized) return false;
-                if (blindspotFilter === 'only' && !coverage.blindspot) return false;
+                if (blindspotFilter === 'only' && !coverage.ausencia) return false;
 
                 return true;
             }),
@@ -147,8 +152,51 @@ const NewsFeed = () => {
     }, [filteredNews, sortBy]);
 
     const displayedNews = sortedNews.slice(0, visibles);
+    /*
+     * SE CUENTAN LAS AUSENCIAS, NO LOS PUNTOS CIEGOS, y la diferencia es el
+     * producto entero.
+     *
+     * Una AUSENCIA es un hecho de la lista de medios: aquí no aparece ninguno
+     * de ese espectro. Un PUNTO CIEGO es una afirmación sobre el
+     * comportamiento, y hoy sale cero porque exige 14 medios en una historia y
+     * la mayor tiene 10.
+     *
+     * Contar los puntos ciegos dejaba este filtro permanentemente en «(0)» y
+     * desactivado: una función que el sitio anuncia y nunca puede usarse. Con
+     * las ausencias enseña 38 de 100, que es información real — sobre todo su
+     * reparto: 35 de esas 38 son de Política.
+     */
+    /**
+     * Qué espectro es el que falta en estas historias.
+     *
+     * Se lee del corpus en vez de suponer «izquierda»: hoy son 38 de 38, pero
+     * dar por hecho el lado es exactamente cómo se escriben los textos que
+     * caducan sin avisar.
+     */
+    const espectroQueFalta = useMemo(() => {
+        const cuenta = {};
+        for (const s of allNews) {
+            const e = s.coverage.ausencia?.spectrum;
+            if (e) cuenta[e] = (cuenta[e] ?? 0) + 1;
+        }
+        const masFrecuente = Object.entries(cuenta).sort((a, b) => b[1] - a[1])[0]?.[0];
+        return /** @type {'left'|'center'|'right'} */ (masFrecuente ?? 'left');
+    }, [allNews]);
+
+    /** El contexto viaja en cada ausencia; basta con leerlo de la primera. */
+    const contextoAusencia = useMemo(
+        () => allNews.find((s) => s.coverage.ausencia?.contexto)?.coverage.ausencia.contexto ?? null,
+        [allNews]
+    );
+
+    /** La historia más cubierta que se ha traído, para decir cuánto falta. */
+    const maxMedios = useMemo(
+        () => allNews.reduce((m, s) => Math.max(m, s.coverage.total ?? 0), 0),
+        [allNews]
+    );
+
     const blindspotCount = useMemo(
-        () => allNews.filter((s) => s.coverage.blindspot).length,
+        () => allNews.filter((s) => s.coverage.ausencia).length,
         [allNews]
     );
     const evaluableCount = useMemo(
@@ -243,11 +291,11 @@ const NewsFeed = () => {
                             title={
                                 blindspotCount === 0
                                     ? `Ninguna historia tiene aún los ${BLINDSPOT_MIN_SOURCES} medios necesarios para evaluar omisiones`
-                                    : undefined
+                                    : 'Historias donde falta por completo un lado del espectro. No es una acusación: mire la frecuencia.'
                             }
                             onClick={() => asignar('ciego', 'only')}
                         >
-                            Con punto ciego ({blindspotCount})
+                            Falta un lado ({blindspotCount})
                         </button>
                         <button
                             className={`filter-btn ${polarizationFilter === 'high' ? 'active' : ''}`}
@@ -341,6 +389,43 @@ const NewsFeed = () => {
                     </div>
                 </div>
             </div>
+
+            {/*
+              * EL HALLAZGO ES LA LISTA, NO CADA ELEMENTO.
+              *
+              * Sin esta caja, 38 etiquetas «sin medios de izquierda» seguidas
+              * se leen como 38 acusaciones. Con ella se leen como lo que son:
+              * el retrato de un catálogo donde la izquierda son 13 de 72 medios
+              * y falta en 9 de cada 10 historias evaluables.
+              *
+              * El proyecto ya pagó esto una vez —treinta «punto ciego de la
+              * izquierda» y cero de la derecha, midiendo cadencia de
+              * publicación y presentándolo como comportamiento editorial—, así
+              * que el número que lo desmiente va ARRIBA y no en una nota al pie.
+              */}
+            {blindspotFilter === 'only' && contextoAusencia && (
+                <div className="feed-ausencia-aviso">
+                    <p className="ausencia-aviso-titulo">
+                        <EyeOff size={15} aria-hidden="true" />
+                        Esto no es una lista de omisiones deliberadas
+                    </p>
+                    <p>
+                        Son las historias donde <strong>no aparece ningún medio</strong> de un
+                        lado del espectro. Hoy ese lado es{' '}
+                        <strong>{SPECTRUM_LABEL_SHORT[espectroQueFalta]?.toLowerCase()}</strong>, que falta en{' '}
+                        <strong>{decimal(contextoAusencia.frecuencia * 100, 0)} %</strong> de las{' '}
+                        {contextoAusencia.evaluables} historias con {BLINDSPOT_MIN_SOURCES} medios
+                        o más. Con esa frecuencia, señalar una historia concreta no dice nada
+                        sobre ella.
+                    </p>
+                    <p className="ausencia-aviso-nota">
+                        Lo que sí se puede leer aquí es <strong>cuáles son</strong> y de qué
+                        hablan. Para afirmar que una ausencia sorprende harían falta{' '}
+                        {mediosParaAfirmarAusencia(espectroQueFalta)} medios en una sola historia, y la más cubierta
+                        de ahora tiene {maxMedios}.
+                    </p>
+                </div>
+            )}
 
             {evaluableCount === 0 && (
                 <p className="feed-coverage-caveat">

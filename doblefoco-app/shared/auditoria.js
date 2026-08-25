@@ -1,5 +1,7 @@
 // @ts-check
 
+import { decimal } from './numeros.js';
+
 /**
  * EL VOCABULARIO DE LA AUDITORÍA — lo único que el script y el panel comparten.
  *
@@ -237,12 +239,12 @@ function sinNadaFresco(v) {
     if (huecos > HUECOS_ANTES_DE_PARADO)
         return {
             estado: 'roto',
-            motivo: `el feed está parado: publica una pieza cada ${huecoHoras.toFixed(1)} h y lo más nuevo es de hace ${Math.round(v.edadMasNuevoHoras)} h`,
+            motivo: `el feed está parado: publica una pieza cada ${decimal(huecoHoras, 1)} h y lo más nuevo es de hace ${Math.round(v.edadMasNuevoHoras)} h`,
         };
 
     return {
         estado: 'revisar',
-        motivo: `publica despacio —una pieza cada ${huecoHoras.toFixed(1)} h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto`,
+        motivo: `publica despacio —una pieza cada ${decimal(huecoHoras, 1)} h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto`,
     };
 }
 
@@ -268,12 +270,12 @@ export function clasificarFeed(v) {
     if (v.margen !== null && v.margen < 1)
         return {
             estado: 'revisar',
-            motivo: `publica más de lo que cabe en un sondeo (margen ${v.margen.toFixed(2)}×): se pierden piezas`,
+            motivo: `publica más de lo que cabe en un sondeo (margen ${decimal(v.margen, 2)}×): se pierden piezas`,
         };
     if (v.margen !== null && v.margen < 2)
         return {
             estado: 'revisar',
-            motivo: `margen estrecho (${v.margen.toFixed(1)}×): un día movido desborda el sondeo`,
+            motivo: `margen estrecho (${decimal(v.margen, 1)}×): un día movido desborda el sondeo`,
         };
 
     /*

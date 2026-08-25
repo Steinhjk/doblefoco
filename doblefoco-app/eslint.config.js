@@ -55,4 +55,23 @@ export default defineConfig([
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
     },
   },
+
+  // `scripts/mirar.mjs` corre en Node PERO lleva dentro una función que se
+  // ejecuta en el navegador, vía `page.evaluate`. Ahí `document`, `window` y
+  // `getComputedStyle` son legítimos y el linter los daba por indefinidos.
+  //
+  // Se le dan los dos juegos de globales en vez de silenciar `no-undef` en el
+  // archivo: silenciarlo taparía también un identificador escrito mal, que es
+  // justo lo que la sección de arriba existe para cazar.
+  {
+    files: ['scripts/mirar.mjs'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+    rules: {
+      // La URL que escribe Vite viene con códigos ANSI dentro, y quitarlos
+      // exige nombrar el carácter de escape. Es la razón de ser de la línea.
+      'no-control-regex': 'off',
+    },
+  },
 ])

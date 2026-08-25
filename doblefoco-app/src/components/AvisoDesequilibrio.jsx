@@ -6,6 +6,7 @@ import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import { repartoPorEspectro } from '../../shared/panorama.js';
 import './AvisoDesequilibrio.css';
+import { decimal } from '../../shared/numeros.js';
 
 /**
  * ANTES DE LEER: AQUÍ FALTA UN LADO.
@@ -88,8 +89,8 @@ const AvisoDesequilibrio = () => {
             <p>
                 De los {medios} medios que seguimos,{' '}
                 <strong>{izquierda.medios} son de izquierda</strong> —el{' '}
-                {izquierda.pctMedios.toFixed(0)} % del catálogo— pero publican el{' '}
-                <strong>{izquierda.pctVolumen.toFixed(1)} % de los artículos</strong>: por cada
+                {decimal(izquierda.pctMedios, 0)} % del catálogo— pero publican el{' '}
+                <strong>{decimal(izquierda.pctVolumen, 1)} % de los artículos</strong>: por cada
                 nota suya hay <strong>{porCada} del resto</strong>.
             </p>
 

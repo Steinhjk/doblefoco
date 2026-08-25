@@ -21,6 +21,7 @@ import {
 import MediaLogo from '../components/MediaLogo';
 import { getMediaByName } from '../data/mediaLogos';
 import './MediaMap.css';
+import { sesgo } from '../../shared/numeros.js';
 
 /**
  * MAPA MEDIÁTICO — dispersión orientación × factualidad.
@@ -77,7 +78,7 @@ const SPECTRUM_FILL = {
  * otra cosa.
  */
 
-const fmtBias = (bias) => `${bias >= 0 ? '+' : '−'}${Math.abs(bias).toFixed(2)}`;
+const fmtBias = (bias) => sesgo(bias, 2);
 
 /**
  * `null` es «no medida», y se dice. Antes esto devolvía «NaN%» en cuanto

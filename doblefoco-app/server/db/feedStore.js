@@ -29,7 +29,13 @@
  * no para servir.
  */
 
-import { analyzeCoverage, averageFactuality, classifySpectrum, SPECTRUM } from '../../shared/biasAnalysis.js';
+import {
+    analyzeCoverage,
+    averageFactuality,
+    classifySpectrum,
+    BLINDSPOT_MIN_SOURCES,
+    SPECTRUM,
+} from '../../shared/biasAnalysis.js';
 import { buildCoverageTimeline } from '../../shared/coverageTimeline.js';
 import { analyzeArticleTone } from '../../shared/headlineTone.js';
 import { ordenPorRelevanciaSQL } from '../../shared/relevancia.js';
@@ -113,9 +119,9 @@ async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }
     for (const fila of articulos.rows) porHistoria.get(fila.story_id)?.push(fila);
 
     // Una sola vez para todo el lote, no una por historia.
-    const tasasBase = await tasasBaseDelCorpus();
+    const tasasDeAusencia = await tasasDeAusenciaDelCorpus();
 
-    return historias.rows.map((h) => componerHistoria(h, porHistoria.get(h.id) ?? [], tasasBase));
+    return historias.rows.map((h) => componerHistoria(h, porHistoria.get(h.id) ?? [], tasasDeAusencia));
 }
 
 /**
@@ -167,13 +173,14 @@ function elegirPerspectiva(articulos, espectro) {
  * Cada cuánto aparece cada espectro, leído de la base.
  *
  * HACE FALTA AQUÍ, y omitirlo tenía consecuencia visible. Desde el 2026-08-08 un
- * punto ciego solo se afirma cuando la ausencia del espectro es improbable dada
- * su frecuencia; sin pasarle esa frecuencia, `analyzeCoverage` falla cerrado y
- * NINGUNA historia leída de la base mostraría punto ciego. La función habría
- * desaparecido del sitio en silencio.
+ * el veredicto viaja con la frecuencia con la que ese espectro falta, y sin ese
+ * número la afirmación se queda sin la frase que impide que mienta. Ya NO
+ * decide si hay punto ciego —de eso se encarga la nula de catálogo, dentro de
+ * `biasAnalysis`— así que olvidarlo ya no puede apagar la señal en silencio,
+ * que es como desapareció dos veces.
  *
  * Se cuenta sobre `coverage_*`, que ya son medios distintos por historia: es la
- * misma unidad que usa `calcularTasasBase` en el motor, así que las dos vías
+ * misma unidad que usa `calcularTasasDeAusencia` en el motor, así que las dos vías
  * producen el mismo número.
  *
  * Se cachea cinco minutos. La cifra se mueve despacio —es un agregado sobre
@@ -183,38 +190,59 @@ function elegirPerspectiva(articulos, espectro) {
 const TASAS_TTL_MS = 5 * 60 * 1000;
 let tasasCache = { valor: null, cuando: 0 };
 
-async function tasasBaseDelCorpus() {
+async function tasasDeAusenciaDelCorpus() {
     const ahora = Date.now();
     if (tasasCache.valor && ahora - tasasCache.cuando < TASAS_TTL_MS) return tasasCache.valor;
 
+    /*
+     * CAMBIÓ QUÉ SE CUENTA, Y CONVIENE VER LA DIFERENCIA (2026-08-25).
+     *
+     * Antes esto sumaba `coverage_*` sobre TODAS las historias para sacar la
+     * cuota de apariciones de cada espectro, y esa cuota alimentaba la prueba
+     * `(1−q)^n`. Esa prueba se retiró: la nula ahora es de catálogo y la lee
+     * `biasAnalysis` por su cuenta.
+     *
+     * Lo que se cuenta ahora es otra cosa y va a otro sitio: EN CUÁNTAS de las
+     * historias evaluables falta cada espectro. No decide si se afirma un punto
+     * ciego; decide qué frase lo acompaña. Si la izquierda falta en el 91 % de
+     * las historias, señalar una concreta no es un hallazgo, y el veredicto
+     * tiene que decirlo en la misma línea.
+     *
+     * Solo cuentan las historias con `BLINDSPOT_MIN_SOURCES` medios o más: las
+     * de una sola fuente meterían en el denominador casos donde faltar no
+     * significa nada.
+     */
     const resultado = await safeQuery(
-        `SELECT coalesce(sum(coverage_left), 0)   AS izq,
-                coalesce(sum(coverage_center), 0) AS cen,
-                coalesce(sum(coverage_right), 0)  AS der
-           FROM stories`,
-        [],
-        'tasas base del espectro'
+        `SELECT count(*)                                          AS evaluables,
+                count(*) FILTER (WHERE coverage_left = 0)         AS sin_izq,
+                count(*) FILTER (WHERE coverage_center = 0)       AS sin_cen,
+                count(*) FILTER (WHERE coverage_right = 0)        AS sin_der
+           FROM stories
+          WHERE coverage_left + coverage_center + coverage_right >= $1`,
+        [BLINDSPOT_MIN_SOURCES],
+        'tasas de ausencia por espectro'
     );
 
-    // Sin base, `null`: analyzeCoverage no afirmará puntos ciegos, que es la
-    // degradación correcta —callar— y no la contraria.
+    // Sin medida, `null`: el veredicto sale sin su frase de contexto, que es la
+    // degradación correcta. Inventar una frecuencia sería peor que callarla.
     if (!resultado?.rows?.length) return null;
 
-    const { izq, cen, der } = resultado.rows[0];
-    const total = Number(izq) + Number(cen) + Number(der);
-    if (!total) return null;
+    const { evaluables, sin_izq, sin_cen, sin_der } = resultado.rows[0];
+    const n = Number(evaluables);
+    if (!n) return null;
 
     const valor = {
-        left: Number(izq) / total,
-        center: Number(cen) / total,
-        right: Number(der) / total,
+        left: Number(sin_izq) / n,
+        center: Number(sin_cen) / n,
+        right: Number(sin_der) / n,
+        evaluables: n,
     };
     tasasCache = { valor, cuando: ahora };
     return valor;
 }
 
 /** Arma la historia con la misma forma que producía el motor en memoria. */
-function componerHistoria(fila, articulos, tasasBase = null) {
+function componerHistoria(fila, articulos, tasasDeAusencia = null) {
     // Un medio, una entrada: si publicó tres notas, no cuenta triple.
     const porMedio = new Map();
     for (const a of articulos) {
@@ -231,7 +259,7 @@ function componerHistoria(fila, articulos, tasasBase = null) {
     }
 
     const sources = [...porMedio.values()];
-    const coverage = analyzeCoverage(sources, tasasBase);
+    const coverage = analyzeCoverage(sources, tasasDeAusencia);
 
     /**
      * LA IMAGEN ES DEL MEDIO QUE PONE EL TITULAR, o de ninguno.

@@ -14,11 +14,14 @@ import { describe, it, expect } from 'vitest';
 import {
     analyzeCoverage,
     averageFactuality,
+    catalogoDelModelo,
     classifySpectrum,
     describirOrientacionMedia,
+    probabilidadDeAusenciaEnCatalogo,
     BLINDSPOT_MIN_SOURCES,
     SOLO_EJE_MIN_SOURCES,
     SPECTRUM_THRESHOLD,
+    UMBRAL_SORPRESA,
 } from './biasAnalysis.js';
 
 /** Atajo: construye fuentes con los sesgos dados. */
@@ -53,16 +56,35 @@ describe('classifySpectrum', () => {
 });
 
 /**
- * Tasas base de referencia para las pruebas del punto ciego.
+ * LOS UMBRALES YA NO SE PASAN: SALEN DEL CATÁLOGO (2026-08-25).
  *
- * Desde 2026-08-08 un punto ciego solo se afirma cuando la ausencia es
- * improbable DADA la frecuencia con la que ese espectro aparece en el corpus.
- * Estas pruebas usan un corpus imaginario equilibrado —un tercio cada
- * espectro— para comprobar la lógica del umbral sin que la mida el
- * desequilibrio real. El comportamiento con el corpus REAL se prueba aparte,
- * más abajo, y es el que importa para el producto.
+ * Hasta hoy estas pruebas inventaban un corpus equilibrado —un tercio cada
+ * espectro— y comprobaban `(1−q)^n`. Esa fórmula se retiró: la hipótesis nula
+ * declarada habla de MEDIOS que eligen, y `q` medía APARICIONES, que mezcla la
+ * elección editorial con la cadencia de publicación y con nuestra ventana de
+ * 72 h. El detalle está en `probabilidadDeAusenciaEnCatalogo`.
+ *
+ * Ahora la nula es hipergeométrica sobre el catálogo, así que los umbrales son
+ * hechos del catálogo y no parámetros de la prueba. Se leen aquí en vez de
+ * escribirlos a mano: si mañana entran cuatro medios de izquierda, estas
+ * pruebas siguen diciendo la verdad en vez de fijar un número caducado.
  */
-const EQUILIBRADO = { left: 1 / 3, center: 1 / 3, right: 1 / 3 };
+const CAT = catalogoDelModelo();
+
+/** Medios que tienen que cubrir una historia para que la ausencia sorprenda. */
+function minimoPara(espectro) {
+    for (let n = 2; n <= CAT.total; n += 1) {
+        if (probabilidadDeAusenciaEnCatalogo(CAT[espectro], CAT.total, n) < UMBRAL_SORPRESA) return n;
+    }
+    return Infinity;
+}
+
+const MIN_IZQ = minimoPara('left');
+const MIN_DER = minimoPara('right');
+
+/** `n` fuentes de un solo signo, para llevar una historia hasta el umbral. */
+const seguidas = (signo, n) =>
+    sources(...Array.from({ length: n }, (_, i) => signo * (0.3 + (i % 5) * 0.05)));
 
 describe('analyzeCoverage — el umbral de F1-03', () => {
     it(`no afirma un punto ciego por debajo de ${BLINDSPOT_MIN_SOURCES} fuentes`, () => {
@@ -84,7 +106,7 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
         // cuatro medios ocurre por azar el 20 % de las veces: (2/3)⁴ = 0,198.
         // Llamar «punto ciego» a algo que pasa una de cada cinco veces es acusar
         // a alguien de omitir cuando lo que hubo fue una moneda.
-        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, 0), EQUILIBRADO);
+        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, 0));
 
         expect(result.total).toBe(4);
         expect(result.insufficientCoverage).toBe(false);
@@ -92,16 +114,30 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
     });
 
     it('lo afirma cuando hay medios suficientes para que la ausencia sea rara', () => {
-        // Ocho medios y ninguno de derecha. Con un tercio de tasa base,
-        // (2/3)⁸ = 0,039: por debajo del 5 %. Ahí sí se puede afirmar.
-        const result = analyzeCoverage(
-            sources(-0.6, -0.5, -0.4, -0.3, 0, 0.1, -0.05, 0.05),
-            EQUILIBRADO
-        );
+        // Justo en el umbral de la derecha, sea cual sea hoy: con ese número de
+        // medios cubriendo y ninguno de derecha, su ausencia baja del 5 % bajo
+        // la nula de catálogo.
+        const result = analyzeCoverage(seguidas(-1, MIN_DER));
 
         expect(result.counts.right).toBe(0);
         expect(result.blindspot).not.toBeNull();
         expect(result.blindspot.spectrum).toBe('right');
+    });
+
+    it('UNO MENOS no basta, que es lo que hace del umbral un umbral', () => {
+        // La prueba de arriba sin esta no vale nada: demostraría que dispara,
+        // no que discrimina.
+        //
+        // Se comprueba que NO sea el punto ciego de la derecha, y no que no
+        // haya ninguno. Con todas las fuentes en un extremo salta la tercera
+        // rama —«solo medios de izquierda y derecha»—, que es correcta y dice
+        // otra cosa: nadie de orientación mixta cubrió el hecho. Afirmar
+        // `blindspot === null` aquí sería fijar como verdad un efecto
+        // colateral de cómo se construye la muestra.
+        const result = analyzeCoverage(seguidas(-1, MIN_DER - 1));
+
+        expect(result.counts.right).toBe(0);
+        expect(result.blindspot?.spectrum).not.toBe('right');
     });
 
     it('NO lo afirma si el lado que cubre es UN SOLO medio', () => {
@@ -128,13 +164,15 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
     });
 
     it('detecta el punto ciego de la izquierda cuando la ausencia es improbable', () => {
-        const result = analyzeCoverage(
-            sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0),
-            EQUILIBRADO
-        );
+        // ESTO ES NUEVO Y ES EL CAMBIO DE FONDO. Con la fórmula vieja la rama
+        // de la izquierda exigía 90 medios en una sola historia y la mayor del
+        // corpus tiene 16: era inalcanzable. Con la nula de catálogo el umbral
+        // es alcanzable, y por eso ahora hay que probar que dispara.
+        const result = analyzeCoverage(seguidas(1, MIN_IZQ));
 
-        expect(result.blindspot.spectrum).toBe('left');
-        expect(result.blindspot.description).toContain('8');
+        expect(MIN_IZQ).toBeLessThanOrEqual(CAT.total);
+        expect(result.blindspot?.spectrum).toBe('left');
+        expect(result.blindspot.description).toContain(String(MIN_IZQ));
     });
 });
 
@@ -150,32 +188,31 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
  * que solo refleja cuánto publica cada quien.
  */
 describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () => {
-    const REAL = { left: 0.031, center: 0.585, right: 0.429 };
+    it('la izquierda hace falta MÁS que la derecha, porque hay menos', () => {
+        // La asimetría no desaparece con la nula nueva: sigue habiendo menos
+        // medios de izquierda que de derecha, así que su ausencia sorprende
+        // más tarde. Lo que cambia es que ya no es INALCANZABLE.
+        expect(MIN_IZQ).toBeGreaterThan(MIN_DER);
+        expect(MIN_IZQ).toBeLessThanOrEqual(CAT.total);
+    });
 
-    it('NO acusa a la izquierda de omitir: con el 3 % su ausencia es lo normal', () => {
-        // Ocho medios, ninguno de izquierda. Antes esto era un punto ciego.
-        // Ahora no: con la izquierda apareciendo en el 3 % de las historias,
-        // (1−0,031)⁸ = 0,78. Su ausencia es lo esperable en cuatro de cada cinco
-        // historias, así que no dice nada sobre lo que la izquierda decidió.
-        const result = analyzeCoverage(
-            sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0),
-            REAL
-        );
+    it('con pocos medios no acusa a nadie, ni a un lado ni al otro', () => {
+        // Ocho medios sin izquierda: por debajo de su umbral. Antes esto
+        // producía un punto ciego de izquierda con la fórmula equilibrada, y
+        // era el defecto que arrancó todo.
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0));
 
         expect(result.counts.left).toBe(0);
         expect(result.blindspot).toBeNull();
     });
 
-    it('SÍ puede acusar a la derecha, que aparece en el 43 %', () => {
-        // Seis medios y ninguno de derecha: (1−0,429)⁶ = 0,035, por debajo del
-        // 5 %. Aquí la ausencia sí es rara y merece señalarse. Que el aviso
-        // pueda apuntar a los dos lados es lo que lo convierte en una medición
-        // en vez de en una constante.
-        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, -0.3, 0, 0), REAL);
+    it('SÍ puede acusar a la derecha, y desde menos medios que a la izquierda', () => {
+        // Que el aviso pueda apuntar a los dos lados es lo que lo convierte en
+        // una medición en vez de en una constante.
+        const result = analyzeCoverage(seguidas(-1, MIN_DER));
 
         expect(result.counts.right).toBe(0);
-        expect(result.blindspot).not.toBeNull();
-        expect(result.blindspot.spectrum).toBe('right');
+        expect(result.blindspot?.spectrum).toBe('right');
     });
 
     it('señala cuando SOLO cubrieron medios con línea marcada', () => {
@@ -185,7 +222,7 @@ describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () =
         //
         // No afirma que nadie omitiera nada: describe que el hecho solo interesó
         // a medios con posición declarada.
-        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0.55), REAL);
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0.55));
 
         expect(result.counts.center).toBe(0);
         expect(result.blindspot?.spectrum).toBe('center');
@@ -199,29 +236,50 @@ describe('analyzeCoverage — el punto ciego contra el desequilibrio real', () =
         //
         // OJO: no se excluye el deporte, se exige más evidencia. Estos mismos
         // cuatro medios con dos más habrían disparado la señal.
-        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3), REAL);
+        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3));
 
         expect(result.counts.center).toBe(0);
         expect(result.blindspot).toBeNull();
     });
 
-    it('el umbral de 4 sigue en pie para izquierda y derecha', () => {
-        // La constante de esta señal es APARTE a propósito: BLINDSPOT_MIN_SOURCES
-        // vale 4 por decisión del 2026-07-30 y no se toca. Con seis medios de
-        // izquierda y ninguno de derecha, el punto ciego de derecha se afirma
-        // sin necesitar el umbral más alto.
-        const result = analyzeCoverage(sources(-0.6, -0.5, -0.4, -0.3, 0, 0), REAL);
-
+    it('la constante de 4 sigue siendo APARTE de la de «solo eje»', () => {
+        // BLINDSPOT_MIN_SOURCES vale 4 por decisión del 2026-07-30 y no se
+        // toca. Subir aquella para arreglar la señal de «solo eje» habría
+        // deshecho esa decisión de paso y en silencio.
         expect(BLINDSPOT_MIN_SOURCES).toBe(4);
+        expect(SOLO_EJE_MIN_SOURCES).toBeGreaterThan(BLINDSPOT_MIN_SOURCES);
+    });
+
+    it('YA NO depende de que quien llama pase las tasas, y eso es el arreglo', () => {
+        // ESTA PRUEBA AFIRMA LO CONTRARIO QUE LA QUE SUSTITUYE, a propósito.
+        //
+        // Antes, llamar sin tasas base apagaba el punto ciego en silencio, y se
+        // llamaba «fallar cerrado». Sonaba prudente y costó dos incidentes: la
+        // rehidratación y el cliente llamaban sin tasas, así que la función
+        // insignia del producto no existía por ahí y nadie se enteró.
+        //
+        // La nula de catálogo no necesita que nadie pase nada. Un dato que hay
+        // que acordarse de pasar es un dato que algún día no se pasa.
+        const result = analyzeCoverage(seguidas(-1, MIN_DER));
+
         expect(result.blindspot?.spectrum).toBe('right');
     });
 
-    it('sin tasas base no afirma nada, en vez de suponerlas', () => {
-        // Fallar cerrado: quien llame sin decir cada cuánto aparece cada
-        // espectro no obtiene una acusación por omisión.
-        const result = analyzeCoverage(sources(0.6, 0.5, 0.4, 0.3, 0.35, 0.45, 0, 0));
+    it('el veredicto viaja con su frecuencia cuando se le da la medida', () => {
+        // Es lo que impide que un punto ciego mienta: si ese espectro falta en
+        // la mitad de las historias evaluables, no es un hallazgo y el propio
+        // veredicto lo dice.
+        const medida = { left: 0.78, center: 0.02, right: 0.6, evaluables: 118 };
+        const result = analyzeCoverage(seguidas(-1, MIN_DER), medida);
 
-        expect(result.blindspot).toBeNull();
+        expect(result.blindspot.contexto.frecuencia).toBe(0.6);
+        expect(result.blindspot.contexto.evaluables).toBe(118);
+        expect(result.blindspot.contexto.esLoNormal).toBe(true);
+    });
+
+    it('sin medida no inventa una frecuencia: la calla', () => {
+        const result = analyzeCoverage(seguidas(-1, MIN_DER));
+        expect(result.blindspot.contexto).toBeNull();
     });
 });
 
@@ -331,7 +389,7 @@ describe('describirOrientacionMedia', () => {
 describe('analyzeCoverage — puntos de énfasis', () => {
     it('marca énfasis cuando un lado concentra la cobertura', () => {
         // Cuatro de derecha y uno sin línea: el 80 % en un solo lado.
-        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3, 0), EQUILIBRADO);
+        const result = analyzeCoverage(sources(0.5, 0.4, 0.6, 0.3, 0));
 
         expect(result.enfasis).not.toBeNull();
         expect(result.enfasis.spectrum).toBe('right');
@@ -371,15 +429,13 @@ describe('analyzeCoverage — puntos de énfasis', () => {
         // Las dos señales pueden coincidir, y cuando lo hacen es correcto que
         // las dos se disparen: son afirmaciones distintas sobre el mismo hecho.
         //
-        // Hacen falta ocho medios y no cuatro desde que el punto ciego exige que
-        // la ausencia sea improbable. El énfasis NO cambió: con cuatro de un
-        // solo lado ya se dispara. Que una señal necesite más pruebas que la
-        // otra es correcto —el énfasis describe lo que hay, el punto ciego acusa
-        // de lo que falta— y es justamente por qué conviene no confundirlas.
-        const result = analyzeCoverage(
-            sources(0.5, 0.4, 0.6, 0.3, 0.55, 0.45, 0.35, 0.25),
-            EQUILIBRADO
-        );
+        // Hacen falta tantos medios como pida el umbral de la izquierda, y no
+        // cuatro, desde que el punto ciego exige que la ausencia sorprenda. El
+        // énfasis NO cambió: con cuatro de un solo lado ya se dispara. Que una
+        // señal necesite más pruebas que la otra es correcto —el énfasis
+        // describe lo que hay, el punto ciego acusa de lo que falta— y es
+        // justamente por qué conviene no confundirlas.
+        const result = analyzeCoverage(seguidas(1, MIN_IZQ));
 
         expect(result.enfasis?.spectrum).toBe('right');
         expect(result.blindspot?.spectrum).toBe('left');

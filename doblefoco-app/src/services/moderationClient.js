@@ -11,13 +11,12 @@
  * el servidor las rechaza sin ella.
  */
 
-const RAW_BASE = import.meta.env.VITE_API_URL ?? '';
-const API_BASE = RAW_BASE.replace(/\/+$/, '');
+import { API_BASE, HAY_API } from './apiBase.js';
 
-export const isModerationAvailable = Boolean(API_BASE);
+export const isModerationAvailable = HAY_API;
 
 async function request(path, options = {}) {
-    if (!API_BASE) {
+    if (!HAY_API) {
         return { ok: false, error: 'Este despliegue no tiene API configurada.' };
     }
 

@@ -114,7 +114,11 @@ const MobileSidebar = () => {
                                                     role="meter"
                                                     aria-valuemin={-1}
                                                     aria-valuemax={1}
-                                                    aria-valuenow={Number(diet.avgBias.toFixed(2))}
+                                                    aria-valuenow={/* con PUNTO a proposito: ARIA exige un decimal
+                                    valido y una coma lo invalida, con lo que el
+                                    lector de pantalla deja de anunciar el valor.
+                                    Lo que se lee es la etiqueta, no esto. */
+                                Number(diet.avgBias.toFixed(2))}
                                                     aria-valuetext={diet.label}
                                                 >
                                                     <div className="mobile-bias-indicator" style={{ left: `${diet.biasPosition}%` }} />

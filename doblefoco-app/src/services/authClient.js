@@ -15,13 +15,14 @@
  * distinto del sitio.
  */
 
-const RAW_BASE = import.meta.env.VITE_API_URL ?? '';
-const API_BASE = RAW_BASE.replace(/\/+$/, '');
+import { API_BASE, HAY_API } from './apiBase.js';
+
+
 
 const TIMEOUT_MS = 10_000;
 
 async function request(path, options = {}) {
-    if (!API_BASE) {
+    if (!HAY_API) {
         return {
             ok: false,
             unavailable: true,

@@ -19,6 +19,23 @@
     align-items: start;
 }
 
+/*
+ * `min-width: 0` EN LOS HIJOS DE LA REJILLA, y no es cosmético.
+ *
+ * Un hijo de grid no baja por defecto de la anchura MÍNIMA INTRÍNSECA de su
+ * contenido. En móvil eso dejaba `.news-feed` en 498 px dentro de una columna
+ * de 412: se salía 110 px, y lo empujaba la fila de filtros del panel de
+ * perspectivas, que no cabe entera.
+ *
+ * Se veía bien porque el desbordamiento quedaba recortado, y un recorte no
+ * arregla nada: esconde. Lo destapó `npm run mirar` el 2026-08-25 midiendo la
+ * caja en vez de mirarla. Es el mismo defecto que las tarjetas de Tendencias,
+ * en su versión de rejilla.
+ */
+.home-content > * {
+    min-width: 0;
+}
+
 @media (max-width: 992px) {
     .home-content {
         grid-template-columns: 1fr;

@@ -128,6 +128,99 @@ naturaleza: no hay nada roto que arreglar, hay algo que **nadie ha decidido**.
   dispara en el 19,5 % de las historias grandes—. Lo que el estudio NO recomienda
   es bajar el umbral hasta que algo salga.
 
+## De la revisión externa de Kimi K3 del 2026-08-25
+
+**Primera respuesta de clase «diseño» y «estructura» del proyecto.** Literal en
+`revision-externa/respuestas/kimi-k3-estructura-y-puntos-ciegos.md`. Se le pidió
+objeción **y alternativa**, y juicio en los dos sentidos.
+
+**Comprobé todos sus cálculos y cuadran uno por uno**: la tabla hipergeométrica
+(0,215 / 0,142 / 0,060 / 0,038), el `(1−0,0329)^76 = 0,0787`, las razones de
+verosimilitud (1,4 / 1,7 / 2,7) y las probabilidades de la rama 3 (1,7×10⁻³ y
+2×10⁻⁵). No inventó ni un número.
+
+### Corrigió una afirmación NUESTRA, y hay que rehacerla
+
+`ESTUDIO_PUNTOS_CIEGOS.md` dice que la rama de la izquierda «seguiría siendo
+inalcanzable aunque los 76 medios cubrieran la misma noticia el mismo día».
+**Eso solo es cierto para la formulación con `q` ponderada por apariciones.**
+
+La nula que el propio estudio declara es *«los medios eligen qué cubrir con
+independencia de su línea»* — y **quien elige es el medio, no la aparición**. Con
+la nula de catálogo el cálculo es hipergeométrico, `C(total−izq, n)/C(total, n)`,
+y entonces:
+
+| Catálogo | Primer `n` que baja del 5 % |
+|---|---:|
+| 13 de 78 (el del estudio) | **15** |
+| **14 de 78 (hoy, con Las2Orillas)** | **14** |
+
+**La mayor historia del corpus tiene 16 medios.** O sea que bajo la nula que
+decimos usar, la rama de la izquierda **no es inalcanzable: es alcanzable hoy**.
+
+**Y eso NO es una buena noticia**, que es lo que hace valiosa la objeción.
+Corregir la nula hace que la señal dispare justo donde el 78 % dice que la
+ausencia es la situación por defecto. El problema deja de ser de potencia y pasa
+a ser de **especificidad**: dispararía marcando lo normal.
+
+- **Estado:** ABIERTO. Hay que **rehacer la sección 2 del estudio** con la nula
+  correcta, y **cambiar la justificación de la opción D**: hoy se apoya en el 90,
+  que se cae en cuanto se corrige la nula; tiene que apoyarse en el 78 %, que
+  sobrevive a la corrección. Es trabajo de escritura, no de código.
+
+### Lo demás que dejó abierto, y que es decisión de producto
+
+- **La `q` se estima con el mismo pipeline que se evalúa** (su O3). La tasa base
+  contra la que se juzga cada ausencia está fabricada por las mismas decisiones
+  —qué medios entran, retención de 72 h, deduplicación— que producen las
+  ausencias juzgadas. Su Alt-3: **separar la ventana de estimación (30–90 días)
+  de la de agrupamiento (72 h)**. Dice que es prerrequisito de cualquier arreglo
+  serio, y que abre una pregunta que hoy está escondida: **¿por qué 72 h es la
+  ventana correcta para agrupar? Posiblemente nadie lo midió.**
+- **El énfasis tiene la misma ceguera direccional** (su O6): 23 para la derecha,
+  0 para la izquierda. «El énfasis funciona» quiere decir «funciona para la
+  derecha». No es argumento contra la opción E —sigue siendo la correcta— sino
+  contra adoptarla sin escribir esa línea.
+- **Las ramas 1 y 3 tienen el mismo vicio que la 2** (su O5) y el estudio no lo
+  dice: umbrales fijados sin contrastar contra la tasa base del espectro que
+  nombran. Solo la rama 2 lo tiene escrito en símbolos.
+- **Nadie contó los tests** (su O4): a α = 0,05 sobre 77 historias se esperan 3,9
+  falsos positivos. Mata la opción C por segunda vía, y conviene enterrarla por
+  las dos, porque si muere solo por el 78 % alguien la resucitará cuando el
+  corpus cambie.
+
+### Y cinco hallazgos de estructura
+
+Todos con su caso concreto. Los cuatro primeros piden trabajo de código, el
+último es de infraestructura de prueba:
+
+1. **El vigilante del desfase que solo avisa es la peor posición intermedia.**
+   Propone un *handshake* de versión en tiempo de ejecución: el cliente lleva
+   incrustado el commit esperado del motor y degrada visiblemente si difieren.
+2. **Cuatro componentes pidiendo los mismos datos** producen pantallas
+   internamente inconsistentes en el cambio de ciclo de 30 min — el hero enseña
+   una historia que el feed ya no tiene.
+3. **La rehidratación es un segundo serializador escrito a mano.** Pide una sola
+   función usada en ambas direcciones más un test de ida y vuelta. Lo llama «el
+   arreglo más barato de toda la lista, y habría cazado el fallo más caro».
+4. **Un check de CI que falle si un comentario nombra un identificador que no
+   existe.** Contra la enfermedad del 19.
+5. **Falta un modo de arranque de prueba del sistema**, y esa es la razón real de
+   que las costuras no estén cubiertas — no que nadie supiera escribir los tests.
+
+**Lo que dijo que está bien**, y conviene no perderlo porque también es
+información: los invariantes contra producción («la respuesta correcta, no un
+parche»), el libro de hallazgos con motivo obligatorio, la detección de opinión
+como función pura de la URL, no analizar el texto de la pieza y decirlo, el
+comprobador de integridad del registro, y la regla de los 2 medios con su razón
+escrita.
+
+Y sobre lo mejor del método: *«es capaz de decir cero en 6 299 historias y de
+demostrarlo (…) un sistema que puede exhibir su fracaso con números es un sistema
+que puede arreglarse.»*
+
+---
+
 ## De la auditoría automática del 2026-08-19
 
 **Primera pasada del libro: 23 hallazgos abiertos** — 15 de feed, 5 de rutas, 3

@@ -50,6 +50,24 @@ exactamente lo que el estudio se negó a hacer bajando el umbral.
 
 Seis cosas. Ninguna toca un parámetro de producto ni necesita datos nuevos.
 
+> **Estado al 2026-08-25.**
+>
+> | | | |
+> |---|---|---|
+> | T1-1 | costura base↔memoria | **hecho** — cuarta prueba de contrato, y encontró un fallo de verdad |
+> | T1-2 | comentarios que prometen | **hecho** |
+> | T1-5 | nula hipergeométrica | **hecho** — en producción, con `ausencia` como consecuencia |
+> | T1-6 | despliegue automático | **hecho**, y **sin usar**: falta el secreto `FLY_API_TOKEN` |
+> | T1-4 | sección 2 del estudio | **hecho** — este es el commit |
+> | T1-3 | check de comentarios en CI | pendiente, el último a propósito |
+>
+> La regla de arriba —T1-5 no sale sin T1-4— **se rompió**: T1-5 se desplegó el
+> 25 y T1-4 llega después. Se rompió a sabiendas y con la mitad que importaba
+> cubierta: lo que la regla protegía era que no se publicara un disparo sobre la
+> norma, y eso lo impidió `ausencia`, que separa el hecho de la afirmación. Lo
+> que quedó sin hacer fue la parte de escribirlo. Queda anotado porque una regla
+> que se salta en silencio deja de ser una regla.
+
 ### T1-1 · Cerrar el sentido que falta de la costura base↔memoria
 
 **Su M3, y resulta que está medio hecho.** `contentStore.test.js` ya tiene una

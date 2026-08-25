@@ -7,6 +7,15 @@ ciegos, entender debilidades y oportunidades, ahora que hay más masa informativ
 y no es por falta de datos. Hay **dos fallos independientes**, y el segundo no se
 arregla con más masa.
 
+> **Este documento se ha corregido dos veces sobre la marcha, y las dos veces
+> hacia abajo.** El §5 daba por averiados unos medios que no lo estaban —los
+> callaba nuestra ventana de 72 h, §8—, y el §2 daba por imposible una rama que
+> solo era imposible bajo una nula mal planteada —90 medios era un artefacto;
+> son 14—. Las correcciones están donde estaba el error, no en un apéndice: un
+> estudio al que hay que llegar hasta el final para saber que la mitad no vale
+> es peor que no tenerlo. **Lo que ninguna de las dos correcciones tumbó es la
+> conclusión**, y por eso sigue en pie.
+
 ---
 
 ## 1. El fallo de costura: el veredicto del servidor no llega a la pantalla
@@ -46,62 +55,161 @@ estado vacío. Todos los consumidores —`NewsCard`, `MobileSidebar`— leen
 
 ---
 
-## 2. El fallo de modelo: a menor voz, más difícil decir que falta
+## 2. El fallo de modelo: la nula preguntaba por el volumen, no por quién existe
 
-`probabilidadDeAusencia(q, n) = (1 - q)^n` pregunta: *si los medios eligieran qué
-cubrir con independencia de su línea, ¿qué probabilidad hay de que este espectro
-no aparezca entre los n que cubren el hecho?* Se declara punto ciego si esa
-probabilidad baja del 5 %.
+> **Corregido el 2026-08-25.** Lo que sigue es la sección tal como quedó después
+> de arreglar el modelo. Lo que decía el 21 de agosto —que hacían falta **90
+> medios** para afirmar que falta la izquierda— **era cierto bajo la nula de
+> entonces, y esa nula preguntaba lo que no era**. El número real es **14**. La
+> corrección no rescata la rama, pero cambia de quién es la culpa, y eso cambia
+> qué hay que hacer. Se cuenta entera porque el error importa más que el número.
 
-### Las tasas base reales del corpus
+### Lo que preguntaba antes
 
-Sobre **7 559 apariciones medio-historia**:
+`probabilidadDeAusencia(q, n) = (1 - q)^n`, con `q` = **cuota de apariciones** de
+ese espectro en el corpus. O sea: *de cada 100 artículos leídos, ¿cuántos salen
+de medios de este lado?* Para la izquierda, 249 de 7 559 apariciones: **3,29 %**.
 
-| Espectro | Apariciones | Cuota |
+Con eso, para bajar del 5 % hacían falta 90 medios en una sola historia. El
+catálogo entero eran 76. La conclusión que sacó este estudio —«la rama es
+inalcanzable»— era correcta sobre el modelo que había, y de ahí salió la
+recomendación D.
+
+### Por qué esa pregunta era la equivocada
+
+Un punto ciego afirma **que alguien no se presentó**. La población que podía
+presentarse es **el catálogo**: los medios que este sitio lee. No el registro de
+apariciones.
+
+Y `q` mezclaba dos cosas que no son la misma:
+
+- **cuántos medios existen de ese lado** — 13 de 72 con feed, un **18 %**;
+- **cuánto publica cada uno** — donde Cambio y El País ponen el 88,6 % de la voz
+  de la izquierda y cinco medios ponen cero.
+
+Al multiplicar las dos, un catálogo con 13 medios de izquierda se comportaba en
+la fórmula como si tuviera **dos y medio**. **La nula castigaba a la izquierda
+dos veces: una por ser pocos y otra por publicar poco.** Y la segunda no es una
+propiedad de la noticia, es una propiedad de nuestra ventana de 72 h —§8—, o sea
+**una decisión nuestra entrando en el veredicto como si fuera del mundo**.
+
+Peor todavía: la fórmula era **circular en la dirección que no conviene**. Cuanto
+más callaba un espectro, más bajaba `q`; cuanto más bajaba `q`, más medios se
+exigían para poder decir que faltaba. Un espectro silenciado se volvía, por
+construcción, imposible de echar en falta.
+
+### Lo que pregunta ahora
+
+`probabilidadDeAusenciaEnCatalogo(delEspectro, total, n)`: *si los n medios que
+cubren este hecho se hubieran sacado del catálogo al azar, ¿qué probabilidad hay
+de que no salga ninguno de este lado?*
+
+Es la hipergeométrica —`C(total − espectro, n) / C(total, n)`, escrita como
+producto para no desbordar— y solo cuenta **quién existe**, que es lo que la
+afirmación necesita. Catálogo de hoy, contando solo medios **con feed**:
+
+| Espectro | Medios | Cuota del catálogo |
 |---|---:|---:|
-| Izquierda | 249 | **3,29 %** |
-| Mixta | 4 938 | 65,33 % |
-| Derecha | 2 372 | 31,38 % |
+| Izquierda | 13 | 18,1 % |
+| Mixta | 41 | 56,9 % |
+| Derecha | 18 | 25,0 % |
+| **Total** | **72** | |
 
-### Lo que exige el umbral
+*(El registro tiene 78; seis todavía no tienen feed y no pueden aparecer, así que
+tampoco cuentan como ausentes.)*
 
-Cuántos medios tienen que cubrir **una sola historia** para que la ausencia de
-cada espectro baje del 5 %:
+### Lo que exige el umbral, corregido
 
-| Espectro ausente | Medios necesarios |
-|---|---:|
-| Izquierda | **90** |
-| Mixta | 3 |
-| Derecha | 8 |
+| Espectro ausente | Antes (apariciones) | **Ahora (catálogo)** |
+|---|---:|---:|
+| Izquierda | 90 | **14** |
+| Mixta | 3 | **4** |
+| Derecha | 8 | **10** |
 
-**La historia más cubierta de todo el corpus tiene 16 medios. El catálogo entero
-son 76.** «Punto ciego de la izquierda» no es una señal exigente: es
-**inalcanzable**, y lo seguiría siendo si los 76 medios cubrieran la misma
-noticia el mismo día.
+De 90 a 14. Deja de ser aritméticamente imposible: 14 cabe en el catálogo, y es
+un tamaño que una noticia grande de verdad puede alcanzar.
 
-### La cuota que haría falta, por tamaño de historia
+**Pero sigue sin disparar, y por otra razón.** La historia más cubierta de hoy
+tiene **10 medios**. La rama ya no muere de imposible: muere de que aquí no pasan
+cosas suficientemente grandes, que es un diagnóstico distinto y con arreglo
+distinto.
 
-| Medios en la historia | Cuota mínima del espectro |
-|---:|---:|
-| 4 | 52,7 % |
-| 6 | 39,3 % |
-| 8 | 31,2 % |
-| 10 | 25,9 % |
-| 16 | 17,1 % |
-| 30 | 9,5 % |
+### Lo que la corrección NO arregla, y hay que decirlo
 
-Para disparar en la historia más grande que existe hoy, la izquierda tendría que
-ser el **17,1 %** de todas las apariciones del corpus: multiplicarla por 5,2.
+Con la nula nueva, que falte la izquierda en una historia de 10 medios tiene una
+probabilidad del **11,7 %** bajo azar. No baja del 5 %. Y eso **no es un defecto
+de la fórmula**: 13 de 72 es de verdad una fracción pequeña, y de verdad no
+sorprende que no salga ninguno en un puñado de diez.
 
-> **La propiedad perversa del modelo, dicha sin rodeos: cuanto más pequeña es la
-> voz de un espectro, más difícil se vuelve afirmar que falta.** Un espectro que
-> aporta el 52,7 % puede declararse ausente con 4 medios; uno que aporta el
-> 3,29 % no puede declararse ausente nunca.
+Lo que dice la medida, dicho sin adornos: **con este catálogo, la ausencia de la
+izquierda casi nunca puede sorprender, porque es lo esperable.** Y lo empírico lo
+confirma desde el otro lado — hoy, en producción, falta la izquierda en el
+**87 %** de las 93 historias con 4 medios o más.
+
+> **La propiedad perversa se estrechó, no desapareció.** Antes el modelo hacía
+> imposible afirmar la ausencia de una voz pequeña **aunque el catálogo la
+> tuviera bien representada**, porque medía volumen. Eso era un fallo y está
+> arreglado. Lo que queda es la parte honesta del mismo hecho: si un lado son 13
+> de 72, su ausencia en una historia mediana es la norma, y ninguna medida seria
+> puede llamar hallazgo a la norma.
 >
-> Eso contradice el propósito editorial escrito de este proyecto —exponer el
-> desequilibrio, no buscar falso balance—. El modelo es conservador en la
-> dirección correcta cuando los espectros están equilibrados, y ciego justo donde
-> el desequilibrio es mayor.
+> La consecuencia de producto es el `ausencia` del 2026-08-25: se publica **el
+> hecho** —«aquí no hay ningún medio de izquierda»— con su frecuencia al lado, y
+> se reserva la palabra «punto ciego» para cuando de verdad sorprenda.
+
+### El vicio no estaba solo en la nula
+
+Merece quedar escrito, porque es el patrón y no el caso: **la nula era una de
+tres constantes calibradas contra una distribución que este catálogo no tiene.**
+Se arregló una y quedan dos, las dos en el §3:
+
+| Dónde | La condición | Contra qué choca |
+|---|---|---|
+| ~~Nula del punto ciego~~ | ~~`(1 − q)^n < 5 %`~~ | ~~arreglada: ahora mira el catálogo~~ |
+| Rama 1 (derecha) | `leftRatio > 15 %` y `counts.left >= 2` | la izquierda es el 3,3 % de las apariciones: pasar del 15 % **con dos medios** casi no ocurre |
+| Rama 3 (solo eje) | `centerRatio <= 15 %` | la mixta es el 65 % de las apariciones: bajar del 15 % no ocurre nunca |
+
+Las tres cometían el mismo error: **un porcentaje fijo, escrito cuando se
+suponían los espectros más o menos parejos, aplicado a un catálogo que no lo
+está.** Una constante así no se comporta como el filtro barato que aparenta ser
+—se supone que la prueba dura viene después, en la nula— sino como **una segunda
+prueba de significancia, no declarada y de dureza desconocida**.
+
+Y se puede medir cuánto. Poniendo cada condición en las mismas unidades que la
+nula —la probabilidad de que ocurra por azar bajo las tasas base del corpus—:
+
+| n | Rama 3 · `centerRatio ≤ 15 %` | ¿Cuánto más dura que el 5 % de la nula? |
+|---:|---:|---:|
+| 6 | 1,7×10⁻³ | 29 × |
+| 8 | 3,4×10⁻³ | 15 × |
+| 10 | 5,0×10⁻⁴ | 100 × |
+| 16 | 2,0×10⁻⁵ | **2 509 ×** |
+
+**En ningún tamaño la rama 3 pide menos de 15 veces lo que la nula considera
+sorprendente, y en la historia más grande que ha existido —16 medios— pide dos
+mil quinientas.** El filtro previo es la prueba de verdad; la nula, que es la que
+está escrita como prueba, es decorado. Por eso su cero no es «el embudo funcionando»: es una condición
+que nunca se pensó como test y actúa como el más severo del sistema.
+
+Y hay algo peor, que no es de calibración sino de construcción: **la dureza no
+crece con `n`, va a saltos y hacia los dos lados.** De 6 a 8 medios la condición
+se afloja a la mitad, y de 8 a 10 se endurece siete veces. No lo decidió nadie:
+sale de que `15 % de n` se redondea hacia abajo a un número entero de medios —a
+n=8 caben 1 mixto, a n=10 también caben 1—. Una historia de 10 medios tiene que
+ser **siete veces más rara** que una de 8 para pasar el mismo filtro, y eso no
+está escrito en ninguna parte porque nadie lo escribió.
+
+La rama 1 comparte el vicio pero **en otra escala, y conviene no exagerarlo**: va
+de 8 × más dura que la nula con 4 medios a 1,2 × con 10. Es severa, no absurda.
+Su cero se explica mejor por el `counts.left >= 2` —que con 13 medios de
+izquierda de los que dos ponen el 88,6 % de la voz es lo que de verdad no pasa—
+que por el 15 %.
+
+**Lo que esto deja pendiente** es decidir si esas dos ramas se recalibran contra
+el catálogo —como se hizo con la nula—, si el 15 % pasa a ser un número de medios
+en vez de una fracción —que quitaría los saltos—, o si se declaran sin disparo
+previsible por escrito, como pide la opción D. No se ha tocado ninguna: la nula
+era un fallo claro y estas dos son decisión de producto.
 
 ---
 
@@ -121,7 +229,7 @@ Sobre las **118 historias con 4 medios o más** (de 6 299):
 | izquierda ≤ 15 % | 104 |
 | y derecha > 15 % | 94 |
 | y al menos 2 medios de derecha | **77** |
-| y la ausencia sorprende | **0** ← exige 90 medios |
+| y la ausencia sorprende | **0** ← exigía 90; hoy 14, y la mayor tiene 10 |
 
 | Rama 3 · Solo medios del eje | Pasan |
 |---|---:|
@@ -129,8 +237,14 @@ Sobre las **118 historias con 4 medios o más** (de 6 299):
 | y mixta ≤ 15 % | **0** |
 
 **Lo que hay que mirar es el 77.** Setenta y siete historias cumplen todas las
-condiciones sustantivas del punto ciego de la izquierda y mueren en la última,
-que es la imposible. No falta evidencia: falta que la prueba pueda superarse.
+condiciones sustantivas del punto ciego de la izquierda y mueren en la última.
+
+> **Actualizado el 2026-08-25.** Cuando se escribió esto, esa última condición
+> era imposible —90 medios— y la frase era «falta que la prueba pueda
+> superarse». Con la nula corregida —§2— la prueba **se puede superar**: pide 14.
+> Sigue muriendo ahí, pero ahora por tamaño y no por aritmética. Y las 77 dejaron
+> de ser invisibles: desde el 2026-08-25 se publican como `ausencia`, con su
+> frecuencia al lado. Hoy son **42 de las últimas 100**.
 
 La rama 1 muere en `counts.left >= 2`: con la izquierda al 3,29 %, una historia
 donde supere el 15 % tiene casi siempre **un solo** medio de izquierda — y el
@@ -236,16 +350,26 @@ hecho del catálogo, dicho sin pretender que sea un hallazgo sobre la noticia.
 | **A. Pasar el veredicto del servidor al cliente** | Que un punto ciego encontrado se vea | No hace que se encuentre ninguno | Bajo |
 | **B. Revivir los 5 medios mudos de izquierda** | El corpus, la regla de no silenciar, toda otra medida | La izquierda llegaría a ~6 %, hace falta 17 % | Medio |
 | **C. Umbral por tamaño, medido empíricamente** | Honestidad del modelo | Nada: empíricamente la ausencia de la izquierda es lo normal (78 %) | Medio |
-| **D. Reconocer que la rama de la izquierda es inalcanzable** | Deja de prometer lo que no puede dar | El producto pierde una señal que nunca tuvo | Bajo |
+| **D. Reconocer que la rama de la izquierda no va a disparar** | Deja de prometer lo que no puede dar | El producto pierde una señal que nunca tuvo | Bajo |
 | **E. Mover el peso al énfasis** | Da una afirmación real en el 19,5 % de historias grandes | No es una afirmación sobre ausencia | Bajo |
 | **F. Declarar la asimetría como contexto** | Dice la verdad estructural: «la izquierda es el 3,3 % de este catálogo» | No es una señal por historia | Medio |
 
 **Lo que este estudio recomienda**, y queda a decisión de Jose:
 
 **A + D + F.** El fallo de costura se arregla porque es un fallo, cueste lo que
-cueste hoy. La rama de la izquierda se declara inalcanzable **con este modelo y
-este catálogo**, con el número escrito, en vez de dejarla ahí aparentando que
-vigila algo. Y el desequilibrio se cuenta donde de verdad está: no en que un
+cueste hoy. La rama de la izquierda se declara **sin disparo previsible con este
+catálogo**, con el número escrito, en vez de dejarla ahí aparentando que vigila
+algo.
+
+> **La justificación de D cambió, y conviene no dejar la vieja en pie.** Se
+> apoyaba en los 90 medios: «es imposible, punto». Ese número era un artefacto de
+> la nula mal planteada, y con la nula corregida la exigencia es **14** — cabe en
+> el catálogo. Lo que sostiene D hoy no es la aritmética sino **la medida**: la
+> izquierda falta en el **87 %** de las historias evaluables de producción, y en
+> el **78 %** de las de 10 medios o más del corpus histórico —§4—. Una señal que
+> dispara sobre lo que ocurre cuatro de cada cinco veces no es un hallazgo.
+> **D sobrevive a su propia corrección**, y esa es la única razón por la que
+> sigue recomendada: si hubiera caído con el 90, habría que haberla retirado. Y el desequilibrio se cuenta donde de verdad está: no en que un
 medio de izquierda faltara en una noticia, sino en que la izquierda sea el 3,3 %
 de todo lo que este sitio lee.
 

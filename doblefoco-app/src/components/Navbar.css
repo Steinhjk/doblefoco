@@ -446,6 +446,41 @@
         margin-left: 16px;
     }
 
+    /*
+     * EL RECORTE TIENE QUE IR EN `html`, NO EN `body`.
+     *
+     * `body` ya tenía `overflow-x: hidden` y no servía de nada: cuando el
+     * elemento raíz no recorta, el desplazamiento se propaga al viewport y el
+     * de `body` se ignora. Medido: 732 px de documento en 412 de ventana, y el
+     * deslizamiento lateral funcionaba de verdad hasta 320 px.
+     *
+     * Solo en móvil, que es donde vive el panel fuera de pantalla. En
+     * escritorio no se toca nada.
+     */
+    /*
+     * EL RECORTE TIENE QUE IR EN `html`, NO EN `body`.
+     *
+     * `body` ya tenía `overflow-x: hidden` y no servía de nada: cuando el
+     * elemento raíz no recorta, el desplazamiento se propaga al viewport y el
+     * de `body` se ignora. Medido el 2026-08-25: 732 px de documento en 412 de
+     * ventana, y el deslizamiento lateral funcionaba de verdad hasta 320 px, en
+     * TODAS las rutas.
+     *
+     * SIGUE HACIENDO FALTA aunque el panel esté ya en `visibility: hidden`:
+     * comprobado quitándolo, el desplazamiento vuelve. Un elemento oculto sigue
+     * ocupando su sitio; lo que no crea es árbol de accesibilidad.
+     *
+     * Y ES UNA RED, NO UN ARREGLO. Recortar esconde lo que se sale, así que un
+     * defecto de verdad puede quedarse debajo — pasó con `.news-feed`, que se
+     * salía 110 px y se veía bien porque esto lo tapaba. De cazar eso se
+     * encarga `npm run mirar`, que mide las cajas en vez de mirarlas.
+     *
+     * Solo en móvil, que es donde vive el panel fuera de pantalla.
+     */
+    html {
+        overflow-x: hidden;
+    }
+
     .navbar-links {
         position: fixed;
         top: 0;
@@ -458,12 +493,37 @@
         border-left: 1px solid var(--border-color);
         box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
         z-index: 1001;
-        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0s linear 0.4s;
         padding: 100px 24px 24px;
+
+        /*
+         * CERRADO SIGNIFICA CERRADO, y hasta hoy no lo significaba.
+         *
+         * El panel vivía en `right: -320px`: fuera de la pantalla, pero
+         * `visible` y ocupando ancho de documento. Dos consecuencias que nadie
+         * había visto, las dos medidas el 2026-08-25 con `npm run mirar`:
+         *
+         *  1. El documento medía 732 px en una ventana de 412, y el desplazamiento
+         *     lateral FUNCIONABA: se podía deslizar hasta 320 px de página en
+         *     blanco. En TODAS las rutas. `body` tenía `overflow-x: hidden`, pero
+         *     `html` no, y ahí el recorte no llega.
+         *  2. Un lector de pantalla anunciaba los enlaces del menú cerrado, porque
+         *     estar fuera de la ventana no es estar oculto.
+         *
+         * `visibility: hidden` arregla las dos: saca el panel del árbol de
+         * accesibilidad y deja de estirar el documento. El retardo en la
+         * transición es para que la animación de cierre se vea entera antes de
+         * ocultarlo; al abrir se quita el retardo y aparece de inmediato.
+         */
+        visibility: hidden;
     }
 
     .navbar-links.open {
         right: 0;
+        visibility: visible;
+        transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 0s;
     }
 
     .navbar-search-mobile {

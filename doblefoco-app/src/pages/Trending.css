@@ -38,11 +38,44 @@
     color: var(--accent);
 }
 
-.topic-info h3 {
+/*
+ * `min-width: 0` NO ES ADORNO: sin él, un hijo de flex no baja de la anchura
+ * mínima intrínseca de su contenido, y un titular con una palabra larga y sin
+ * puntos de corte —«"patrocinadores», con la comilla pegada, es UN token para
+ * el navegador— empuja la caja y se sale de la tarjeta.
+ *
+ * Lo encontró `npm run mirar` el 2026-08-25, en su primera pasada, y lo
+ * enseñaba en tres de las ocho tarjetas: «Trump retira a Siria de la lista de
+ * "patrocinadore» cortado a media palabra, con «del terrorismo"» pintado fuera
+ * del recuadro blanco. Ninguna de las 642 pruebas lo veía, porque no hay nada
+ * que romper: el texto está, solo que donde no se puede leer.
+ *
+ * `overflow-wrap: anywhere` es el complemento: permite partir esas palabras en
+ * vez de desbordar. En un titular partir una palabra es feo; enseñarla cortada
+ * y encima del vecino es peor.
+ */
+.topic-info {
+    min-width: 0;
+}
+
+/*
+ * ERA `h3` Y EL MARCADO PINTA `h2`, así que esta regla llevaba sin aplicarse
+ * desde F2-03 (2026-07), cuando el titular de la tarjeta subió de nivel para
+ * arreglar la jerarquía de encabezados y nadie tocó el CSS. El resultado: los
+ * titulares de Tendencias salían con el tamaño por defecto de un `h2` —el de
+ * un titular de página— dentro de una tarjeta de 180 px.
+ *
+ * Lo destapó `npm run mirar` el 2026-08-25: la herramienta señalaba `<h2>`
+ * donde este archivo decía `h3`, y esa discrepancia era el fallo entero. Es la
+ * costura JSX↔CSS, que no rompe ninguna prueba porque no hay nada roto: hay
+ * algo que no se aplica.
+ */
+.topic-info h2 {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--primary);
     margin-bottom: 4px;
+    overflow-wrap: anywhere;
 }
 
 .topic-articles {

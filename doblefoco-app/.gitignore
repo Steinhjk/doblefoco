@@ -50,3 +50,4 @@ dist-server
 # — exactamente la caducidad silenciosa contra la que existe `revision-externa/`.
 # Lo que sí se versiona es la ficha y la respuesta del modelo.
 /revision-externa/envios/
+capturas/

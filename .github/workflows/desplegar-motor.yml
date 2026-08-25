@@ -1,0 +1,107 @@
+# =============================================================================
+#  Desplegar el motor cuando el commit lo toca
+# =============================================================================
+#  POR QUÉ EXISTE. Empujar a `main` publica el cliente en Vercel pero NO la API
+#  ni el motor: eso salía a mano con `npm run deploy`. Olvidarlo no produce
+#  ningún error, así que nadie se entera hasta que alguien va a buscar el fallo.
+#
+#  Ya mordió dos veces. La peor: seis días con el motor leyendo 37 feeds cuando
+#  el registro tenía 39, y tres secciones de la portada contando en cero.
+#
+#  Hasta ahora había un vigilante —`desfase.yml`— que compara los dos commits y
+#  AVISA. Una revisión externa lo llamó «la peor posición intermedia», y tenía
+#  razón: mide el problema y delega el arreglo en la memoria humana, que es
+#  exactamente el componente que falla. Esto lo cierra.
+#
+#  QUÉ DECIDE SI DESPLIEGA. El mismo predicado que usa el vigilante,
+#  `shared/rutasDeLaImagen.js`, con sus 19 pruebas: ¿alguno de los commits
+#  empujados toca una ruta que LLEGA a la imagen de Fly? Si solo se tocó prosa
+#  —minutas, estudios, planes— no se despliega y se dice por qué.
+#
+#  LA LISTA ES DE LO QUE SE PERDONA, NO DE LO QUE CUENTA. Cualquier ruta que no
+#  encaje se trata como relevante, porque los dos errores no cuestan lo mismo:
+#  perdonar de más silencia la avería que esto existe para evitar.
+#
+#  CÓMO SALTÁRSELO. `[solo-cliente]` en el mensaje del commit. Es para publicar
+#  un arreglo de cliente sin pagar un despliegue del motor —que rehidrata y
+#  recompone al arrancar, y no es gratis—. La diferencia con antes es que ahora
+#  es una decisión ESCRITA y no un olvido.
+#
+#  QUÉ HACE FALTA PARA QUE FUNCIONE: el secreto `FLY_API_TOKEN` en el
+#  repositorio. Se saca con `fly tokens create deploy -x 999999h`. Sin él, este
+#  workflow falla en voz alta en vez de callar, que es lo que se quiere.
+# =============================================================================
+
+name: Desplegar el motor
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      forzar:
+        description: 'Desplegar aunque ningún cambio llegue a la imagen'
+        type: boolean
+        default: false
+
+concurrency:
+  # Dos despliegues a la vez dejarían la imagen marcada con un commit que no es
+  # el que corre. Se encola, no se cancela: cancelar el primero dejaría un
+  # despliegue a medias.
+  group: desplegar-motor
+  cancel-in-progress: false
+
+jobs:
+  decidir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      desplegar: ${{ steps.predicado.outputs.desplegar }}
+      motivo: ${{ steps.predicado.outputs.motivo }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Hacen falta los dos extremos del empujón para saber qué cambió.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - id: predicado
+        name: ¿Toca algo que llegue a la imagen?
+        env:
+          ANTES: ${{ github.event.before }}
+          FORZAR: ${{ inputs.forzar }}
+          MENSAJE: ${{ github.event.head_commit.message }}
+        run: node .github/scripts/decidirDespliegue.mjs
+
+  desplegar:
+    needs: decidir
+    if: needs.decidir.outputs.desplegar == 'si'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Desplegar con el commit marcado en la imagen
+        working-directory: doblefoco-app
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        # `GIT_SHA` es lo que después publica /api/health y lo que compara el
+        # vigilante del desfase. Sin él la imagen sale «desconocida».
+        run: flyctl deploy --build-arg GIT_SHA=${{ github.sha }} --wait-timeout 600
+
+      - name: Comprobar que lo que corre es lo que se empujó
+        run: |
+          sleep 20
+          servido=$(curl -sS --max-time 30 https://doblefoco.fly.dev/api/health | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{process.stdout.write(JSON.parse(d).version.commit||'')}catch{process.stdout.write('')}})")
+          echo "en Fly : $servido"
+          echo "empujado: ${{ github.sha }}"
+          if [ "$servido" != "${{ github.sha }}" ]; then
+            echo "::error::El despliegue terminó pero /api/health sirve otro commit."
+            exit 1
+          fi
+          echo "Fly y main coinciden."

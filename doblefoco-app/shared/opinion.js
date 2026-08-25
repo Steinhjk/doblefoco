@@ -14,10 +14,17 @@
  * Medido el 2026-08-09: 105 de 2 749 artículos colombianos del corpus eran
  * opinión, y estaban entrando al agrupamiento como si fueran noticia.
  *
- * NO SE DESCARTA, SE DESVÍA. La opinión es material valioso —seguramente el
+ * NO SE DESCARTA, SE MARCA. La opinión es material valioso —seguramente el
  * mejor indicio de la orientación de un medio, porque a quién le das una columna
- * es una decisión deliberada y repetida, no un accidente de cobertura—. Sale del
- * flujo de noticias y alimenta el agregado de formadores de opinión.
+ * es una decisión deliberada y repetida, no un accidente de cobertura—, así que
+ * el artículo se conserva con su marca y solo sale del AGRUPAMIENTO.
+ *
+ * QUÉ HACE HOY CON ESA MARCA, dicho sin adornos: **nada más que eso**. Su único
+ * consumidor en todo el código es el filtro del agrupamiento. Esta línea decía
+ * que «alimenta el agregado de formadores de opinión», y ese agregado NO EXISTE.
+ * Lo señaló una revisión externa el 2026-08-25, y era la tercera vez este mes que
+ * un comentario de este repositorio describía una intención en vez de un
+ * comportamiento. Cuando exista algo que consuma la marca, se escribe aquí.
  *
  * LA URL ES LA PISTA, y hay que decir por qué
  * -------------------------------------------
@@ -41,8 +48,10 @@ const PATRONES = [
     // fuerte de su línea, más que cualquier columnista invitado, y por eso se
     // distingue en vez de meterlo en el mismo saco.
     { tipo: 'editorial', re: /\/(editorial(es)?)\//i },
-    // Caricatura: opinión, pero no texto. No sirve para el índice de columnistas
-    // ni para medir corriente, y se marca para poder excluirla del recuento.
+    // Caricatura: opinión, pero no texto. Se distingue de la columna porque no
+    // sirve para medir corriente —no hay argumento que leer— y porque el día que
+    // se cuenten columnistas habrá que dejarla fuera del recuento. Hoy, como el
+    // resto de la marca, su único efecto es salir del agrupamiento.
     { tipo: 'caricatura', re: /\/(caricaturas?|humor\s*grafico)\//i },
     { tipo: 'columna', re: /\/(opinion|columnistas?|columnas?|blogs?)\//i },
 ];

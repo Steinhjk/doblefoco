@@ -332,11 +332,91 @@ if (rightish < 6) warn(`solo ${rightish} medios de derecha/centro-derecha con fe
 // ── Informe ─────────────────────────────────────────────────────────────────
 
 console.log('CATÁLOGO DE MEDIOS');
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * `group` CONTRA `controlGroup`: dicen cosas distintas, y hay que poder verlo
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * Son dos conceptos y está bien que lo sean. `group` es la MARCA editorial que
+ * se enseña al lector; `controlGroup` es QUIÉN MANDA, y es lo que usa el mapa
+ * de propiedad para medir concentración. Por eso La República figura como
+ * «Editorial La República» en uno y bajo `ardila-lulle` en el otro: por marca
+ * la casa tiene tres medios y por propiedad tiene cuatro.
+ *
+ * Lo que estaba mal no era la diferencia: era que NADA avisaba cuando se leen
+ * como si fueran lo mismo. Y hay un fallo peor, silencioso y trivial de
+ * cometer, que se coló el 2026-08-24: escribir «Organizacion Ardila Lulle» sin
+ * tildes al dar de alta NTN24. La casa quedó PARTIDA EN DOS al agrupar por
+ * `group`, y se descubrió por casualidad al contar medios.
+ */
+const porControl = new Map();
+for (const medio of MEDIA_REGISTRY) {
+    const perfil = OWNERSHIP_PROFILES[medio.id];
+    if (!perfil?.controlGroup) continue;
+    if (!porControl.has(perfil.controlGroup)) porControl.set(perfil.controlGroup, []);
+    porControl.get(perfil.controlGroup).push(medio);
+}
+
+const casasConVariasMarcas = [];
+for (const [control, medios] of porControl) {
+    const marcas = [...new Set(medios.map((m) => m.group ?? '(sin group)'))];
+    if (marcas.length > 1) casasConVariasMarcas.push({ control, medios: medios.length, marcas });
+}
+
+/*
+ * VA COMO INFORMACIÓN Y NO COMO AVISO, a propósito.
+ *
+ * `gobiernos-locales` reúne cuatro canales públicos de cuatro administraciones
+ * distintas: por naturaleza tendrá siempre cuatro marcas. Un aviso que sale
+ * igual todas las semanas y nunca hay nada que hacer con él es exactamente como
+ * se estropea un vigilante —lo mismo que este repositorio escribió a propósito
+ * de Razón Pública—, y acaba tapando los avisos que sí importan.
+ *
+ * Pero la información vale: dice dónde el mapa de propiedad cuenta como un solo
+ * dueño lo que el lector ve como marcas separadas, que es justo la afirmación
+ * central del producto. Así que se enseña, sin gritar.
+ */
+
+/*
+ * Y el que SÍ es error: dos cadenas de `group` que solo se diferencian en
+ * tildes, mayúsculas o espacios. Eso nunca es intencionado, y parte la casa en
+ * dos cubos sin que nadie lo note.
+ */
+const sinTildes = (g) =>
+    g.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+const porNormal = new Map();
+for (const medio of MEDIA_REGISTRY) {
+    if (!medio.group) continue;
+    const clave = sinTildes(medio.group);
+    if (!porNormal.has(clave)) porNormal.set(clave, new Set());
+    porNormal.get(clave).add(medio.group);
+}
+
+for (const [clave, variantes] of porNormal) {
+    if (variantes.size > 1) {
+        fail(
+            `el grupo «${clave}» está escrito de ${variantes.size} formas distintas: ` +
+            `${[...variantes].map((g) => `«${g}»`).join(' vs ')}. ` +
+            'Se diferencian solo en tildes, mayúsculas o espacios, así que al agrupar ' +
+            'por `group` la misma casa se parte en varios cubos. Unifícalas.'
+        );
+    }
+}
+
 console.log('─'.repeat(62));
 console.log(`medios registrados        : ${MEDIA_REGISTRY.length}`);
 console.log(`con feed de ingesta       : ${ingestedMedia.length} (${feeds.length} feeds)`);
 console.log(`sin feed (solo referencia): ${MEDIA_REGISTRY.length - ingestedMedia.length}`);
 console.log();
+if (casasConVariasMarcas.length) {
+    console.log('una casa, varias marcas (por propiedad, no por `group`):');
+    for (const c of casasConVariasMarcas) {
+        console.log(`  ${c.control.padEnd(22)} ${c.medios} medios · ${c.marcas.join(' · ')}`);
+    }
+    console.log();
+}
+
 console.log('distribución por banda (medios con feed):');
 for (const band of SPECTRUM_BANDS) {
     const count = perBand[band.id] ?? 0;

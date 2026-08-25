@@ -121,3 +121,64 @@ describe('normalizeStory conserva el veredicto del servidor', () => {
         expect(total).toBe(historia().sources.length);
     });
 });
+
+/**
+ * LA AUSENCIA VIAJA POR LA MISMA PUERTA, Y HAY QUE COPIARLA TAMBIÉN.
+ *
+ * `ausencia` se añadió el 2026-08-25 al lado de `blindspot`. Olvidar copiarla
+ * en `normalizeStory` no daría error: daría un `null` silencioso y un filtro
+ * que siempre cuenta cero. Es literalmente el fallo del 21, repetido con otro
+ * nombre, y por eso se fija aquí.
+ */
+describe('la ausencia observada cruza la costura igual que el veredicto', () => {
+    const AUSENCIA = {
+        spectrum: 'left',
+        label: 'Punto ciego de la izquierda',
+        etiquetaAusencia: 'Sin medios de izquierda',
+        description: '8 de 10 medios son de derecha o de orientación mixta.',
+        contexto: { frecuencia: 0.91, evaluables: 58, esLoNormal: true },
+    };
+
+    it('la lee del campo que se le pida', () => {
+        expect(puntoCiegoDelServidor({ ausencia: AUSENCIA }, 'ausencia')).toEqual(AUSENCIA);
+    });
+
+    it('no confunde un campo con el otro', () => {
+        expect(puntoCiegoDelServidor({ ausencia: AUSENCIA }, 'blindspot')).toBeNull();
+    });
+
+    it('normalizeStory la trasplanta, con su contexto entero', () => {
+        const story = normalizeStory({
+            id: 'x1',
+            title: 'Una historia',
+            sources: [
+                { name: 'A', bias: 0.4 },
+                { name: 'B', bias: 0.3 },
+                { name: 'C', bias: 0 },
+                { name: 'D', bias: 0.1 },
+            ],
+            ausencia: AUSENCIA,
+        });
+
+        expect(story.coverage.ausencia).toEqual(AUSENCIA);
+        expect(story.coverage.ausencia.contexto.frecuencia).toBe(0.91);
+    });
+
+    it('sin ausencia del servidor NO la inventa el cliente', () => {
+        // El cliente sí sabría calcular las condiciones, pero no la frecuencia
+        // que las acompaña: solo tiene las historias descargadas. Una ausencia
+        // sin su contexto se leería como hallazgo.
+        const story = normalizeStory({
+            id: 'x2',
+            title: 'Otra',
+            sources: [
+                { name: 'A', bias: 0.4 },
+                { name: 'B', bias: 0.3 },
+                { name: 'C', bias: 0 },
+                { name: 'D', bias: 0.1 },
+            ],
+        });
+
+        expect(story.coverage.ausencia).toBeNull();
+    });
+});

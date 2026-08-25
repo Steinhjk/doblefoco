@@ -211,3 +211,41 @@ describe('la costura con el agrupamiento', () => {
         expect([editorial].filter((a) => !a.opinion?.esOpinion)).toEqual([]);
     });
 });
+
+/**
+ * EL CUARTO SENTIDO DE LA COSTURA: memoria -> RESPUESTA.
+ *
+ * Las tres pruebas de arriba cierran base <-> memoria. Falta el tramo que va de
+ * la memoria al navegador, y tiene un defecto propio: las dos listas que
+ * componen la respuesta —`ingestDaemon` para el motor y `feedStore` para lo que
+ * se lee de la base— ENUMERAN LOS CAMPOS A MANO. Un campo que no se escriba en
+ * ellas llega `undefined` al cliente y no produce ningún error.
+ *
+ * Pasó el 2026-08-25 con `ausencia`, el mismo día que se estrenó: estaba
+ * calculada en `analyzeCoverage`, probada, y trasplantada en `normalizeStory`.
+ * El sitio la enseñaba vacía porque ninguna de las dos listas la nombraba. Y no
+ * lo cazó nada, porque la comprobación con navegador INYECTABA el campo en la
+ * respuesta y así se saltaba justo la capa rota.
+ *
+ * Se leen los dos archivos como texto por el mismo motivo que las pruebas de
+ * arriba: el defecto vive en la lista, no en un valor inspeccionable.
+ */
+describe('la respuesta nombra todo lo que el cliente trasplanta', () => {
+    /**
+     * Campos de `coverage` que el cliente NO puede recalcular y por tanto
+     * espera recibir. Ver `puntoCiegoDelServidor` en `src/lib/story.js`.
+     */
+    const DEL_SERVIDOR = ['blindspot', 'ausencia'];
+
+    const leer = (ruta) => readFileSync(fileURLToPath(new URL(ruta, import.meta.url)), 'utf8');
+    const COMPOSITORES = {
+        'ingestDaemon.js': leer('../services/ingestDaemon.js'),
+        'feedStore.js': leer('./feedStore.js'),
+    };
+
+    for (const [nombre, fuente] of Object.entries(COMPOSITORES)) {
+        it.each(DEL_SERVIDOR)(`${nombre} escribe «%s» en la respuesta`, (campo) => {
+            expect(fuente).toContain(`${campo}: coverage.${campo},`);
+        });
+    }
+});

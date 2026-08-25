@@ -307,7 +307,10 @@ function componerHistoria(fila, articulos, tasasDeAusencia = null) {
         coveragePercentages: coverage.percentages,
         dominantSpectrum: coverage.dominantSpectrum,
         insufficientCoverage: coverage.insufficientCoverage,
+        /* Los dos: ver la nota en `ingestDaemon`. Un campo que no se nombre
+           aquí llega `undefined` y la función desaparece sin error. */
         blindspot: coverage.blindspot,
+        ausencia: coverage.ausencia,
 
         factuality: averageFactuality(sources),
 

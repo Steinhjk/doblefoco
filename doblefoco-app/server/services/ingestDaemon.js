@@ -1408,7 +1408,23 @@ function buildMultisourceStories() {
             coveragePercentages: coverage.percentages,
             dominantSpectrum: coverage.dominantSpectrum,
             insufficientCoverage: coverage.insufficientCoverage,
+            /*
+             * LOS DOS CAMPOS, Y HAY QUE ENUMERAR LOS DOS.
+             *
+             * `blindspot` afirma que una ausencia sorprende; `ausencia` solo
+             * dice que ese lado no está. Esta lista es a mano, así que un campo
+             * que no se escriba aquí NO llega al cliente y no da ningún error:
+             * llega `undefined`, el filtro cuenta cero y la función desaparece
+             * en silencio.
+             *
+             * Pasó el 2026-08-25 con `ausencia`, recién estrenada: estaba
+             * calculada, probada y trasplantada en el cliente, y aun así el
+             * sitio la enseñaba vacía porque estas dos listas —esta y la de
+             * `feedStore`— no la nombraban. La prueba de contrato de
+             * `contentStore.test.js` existe para que no vuelva a pasar.
+             */
             blindspot: coverage.blindspot,
+            ausencia: coverage.ausencia,
 
             // Media real de las fuentes, o null. Nunca la constante 0.88.
             factuality: averageFactuality(sources),

@@ -61,6 +61,15 @@ Seis cosas. Ninguna toca un parámetro de producto ni necesita datos nuevos.
 > | T1-4 | sección 2 del estudio | **hecho** — este es el commit |
 > | T1-3 | check de comentarios en CI | **hecho** — 4 acusaciones, 0 falsos positivos, 3 comentarios corregidos |
 >
+> **Fase 1 cerrada.** De la Fase 2 va **T1-4 → T2-4** (`npm run docs:modelo`,
+> publicado en Transparencia y comprobado por `check:registry`). Quedan T2-3
+> (cadencias), T2-1 (handshake) y T2-2 (consulta compartida), en ese orden.
+>
+> **Y T2-4 pagó su coste el primer día**, que es lo que se esperaba de él: al
+> medir contra producción para rellenar el documento salió que el punto ciego
+> estaba disparando sobre historias donde el lado «ausente» sí aparecía. No lo
+> encontró nadie leyendo el código — lo encontró tener que escribir el número.
+>
 > La regla de arriba —T1-5 no sale sin T1-4— **se rompió**: T1-5 se desplegó el
 > 25 y T1-4 llega después. Se rompió a sabiendas y con la mitad que importaba
 > cubierta: lo que la regla protegía era que no se publicara un disparo sobre la

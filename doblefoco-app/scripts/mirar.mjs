@@ -37,7 +37,32 @@ import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
 
-const RUTAS_POR_DEFECTO = ['/', '/categorias', '/tendencias', '/mapa-medios', '/transparencia'];
+/**
+ * Las rutas que se miran cuando no se pide ninguna.
+ *
+ * `/transparencia` ES SOLO EL ÍNDICE, y eso costó una comprobación en falso el
+ * 2026-08-25: se publicó un botón nuevo en «Sobre nosotros» y esta herramienta
+ * dio verde cinco veces sin haberlo visto jamás, porque las cinco páginas que
+ * cuelgan de Transparencia no estaban en la lista. Un vigilante que no mira una
+ * página no dice que esté bien: dice que no la ha mirado, y las dos cosas se
+ * leen igual en la salida.
+ *
+ * `/noticia/:id` y `/buscar` siguen fuera porque necesitan un id o una consulta
+ * que no se puede fijar aquí sin inventarse datos. `/admin` está fuera a
+ * propósito.
+ */
+const RUTAS_POR_DEFECTO = [
+    '/',
+    '/categorias',
+    '/tendencias',
+    '/mapa-medios',
+    '/transparencia',
+    '/transparencia/sobre-nosotros',
+    '/transparencia/clasificacion',
+    '/transparencia/dinero',
+    '/transparencia/datos',
+    '/transparencia/limitaciones',
+];
 const CAPTURAS = 'capturas';
 /** Puerto de partida. Si está ocupado, Vite coge el siguiente y lo dice. */
 const PUERTO = 5390;

@@ -1,91 +1,196 @@
+/**
+ * TENDENCIAS.
+ *
+ * NINGÚN SELECTOR DE ESTE ARCHIVO APUNTA A UNA ETIQUETA, y es a propósito.
+ * La versión anterior estilizaba `.topic-info h3` mientras el JSX renderizaba un
+ * `<h2>`: la regla no se aplicaba nunca, el titular caía al `1.5em` por defecto
+ * del navegador y se veía enorme dentro de una tarjeta estrecha. No hay error
+ * que salte —ni de CSS, ni de tipos, ni de pruebas—, así que puede durar meses.
+ *
+ * Es la misma costura JSX↔CSS que dejó los puntos del mapa invisibles el
+ * 2026-08-19. Con el estilo colgado de una clase, cambiar el nivel del
+ * encabezado por accesibilidad no puede desmaquetar nada en silencio.
+ *
+ * `.page-header` NO vive aquí: lo comparten Secciones y Tendencias y está en
+ * index.css. Las rutas van en trozos separados, así que un estilo compartido
+ * guardado en el archivo de una de las páginas deja a la otra sin él.
+ */
+
 .trending-page {
-    max-width: 1000px;
+    max-width: 820px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 40px 20px 64px;
 }
 
-/* `.page-header` vivía aquí y lo usan dos páginas. Se movió a index.css: las
-   rutas van en trozos separados, así que entrar directo a /categorias no
-   descargaba el CSS de Tendencias y el encabezado salía sin estilo. */
+/* ── El ranking ─────────────────────────────────────────────────────────── */
 
-.trending-topics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 50px;
-}
-
-.topic-card {
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 20px;
+.trend-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trend-item {
+    /* El marcador se quita porque el puesto ya se pinta a mano en
+       `.trend-rank`; el <ol> está por la semántica, no por sus viñetas. */
+    list-style: none;
+}
+
+.trend-row {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    align-items: start;
     gap: 16px;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
+
+    padding: 16px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.topic-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+.trend-row:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-subtle);
+    /* Un desplazamiento lateral y no vertical: en una lista larga, doce filas
+       que suben al pasar por encima parecen temblar. */
+    transform: translateX(3px);
 }
 
-.topic-rank {
+/* ── El numeral ─────────────────────────────────────────────────────────── */
+
+.trend-rank {
+    font-family: var(--font-heading);
     font-size: 1.5rem;
     font-weight: 800;
-    color: var(--accent);
+    line-height: 1.1;
+    text-align: right;
+
+    /* Apagado a propósito: el puesto ordena la lista, no compite con el
+       titular. Cuando el número gritaba más que la noticia, la página parecía
+       un marcador deportivo. */
+    color: var(--text-muted);
+    opacity: 0.55;
+    font-variant-numeric: tabular-nums;
+    padding-top: 1px;
 }
 
-/*
- * `min-width: 0` NO ES ADORNO: sin él, un hijo de flex no baja de la anchura
- * mínima intrínseca de su contenido, y un titular con una palabra larga y sin
- * puntos de corte —«"patrocinadores», con la comilla pegada, es UN token para
- * el navegador— empuja la caja y se sale de la tarjeta.
- *
- * Lo encontró `npm run mirar` el 2026-08-25, en su primera pasada, y lo
- * enseñaba en tres de las ocho tarjetas: «Trump retira a Siria de la lista de
- * "patrocinadore» cortado a media palabra, con «del terrorismo"» pintado fuera
- * del recuadro blanco. Ninguna de las 642 pruebas lo veía, porque no hay nada
- * que romper: el texto está, solo que donde no se puede leer.
- *
- * `overflow-wrap: anywhere` es el complemento: permite partir esas palabras en
- * vez de desbordar. En un titular partir una palabra es feo; enseñarla cortada
- * y encima del vecino es peor.
- */
-.topic-info {
-    min-width: 0;
+.trend-row:hover .trend-rank {
+    opacity: 1;
+    color: var(--text-main);
 }
 
-/*
- * ERA `h3` Y EL MARCADO PINTA `h2`, así que esta regla llevaba sin aplicarse
- * desde F2-03 (2026-07), cuando el titular de la tarjeta subió de nivel para
- * arreglar la jerarquía de encabezados y nadie tocó el CSS. El resultado: los
- * titulares de Tendencias salían con el tamaño por defecto de un `h2` —el de
- * un titular de página— dentro de una tarjeta de 180 px.
- *
- * Lo destapó `npm run mirar` el 2026-08-25: la herramienta señalaba `<h2>`
- * donde este archivo decía `h3`, y esa discrepancia era el fallo entero. Es la
- * costura JSX↔CSS, que no rompe ninguna prueba porque no hay nada roto: hay
- * algo que no se aplica.
- */
-.topic-info h2 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 4px;
+/* ── El cuerpo ──────────────────────────────────────────────────────────── */
+
+.trend-body {
+    min-width: 0; /* deja que el titular se rompa en vez de desbordar la fila */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.trend-title {
+    font-family: var(--font-heading);
+    /* 1,05rem: un punto por debajo del titular de NewsCard (1,1rem), porque
+       aquí hay doce seguidos y la página se lee de un vistazo, no una a una. */
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--text-main);
+    margin: 0;
+    transition: color 0.2s ease;
+
+    /*
+     * SE TRAE DE LA RAMA PRINCIPAL, donde se aprendió después de escribir esto.
+     *
+     * `min-width: 0` en `.trend-body` deja que la caja encoja, pero no basta:
+     * una palabra sin puntos de corte sigue sin partirse. «"patrocinadores»,
+     * con la comilla pegada, es UN token para el navegador, y el 2026-08-25
+     * `npm run mirar` lo pilló saliéndose de tres de las ocho tarjetas —«Trump
+     * retira a Siria de la lista de "patrocinadore» cortado a media palabra, y
+     * «del terrorismo"» pintado fuera del recuadro—.
+     *
+     * Partir una palabra en un titular es feo; enseñarla cortada y encima del
+     * vecino es peor.
+     */
     overflow-wrap: anywhere;
 }
 
-.topic-articles {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.trend-row:hover .trend-title {
+    color: var(--accent);
 }
 
-.trending-news h2 {
-    font-size: 1.5rem;
+.trend-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+
+    font-family: var(--font-main);
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.trend-medios {
     font-weight: 700;
-    margin-bottom: 24px;
-    color: var(--primary);
+    color: var(--text-main);
+}
+
+.trend-sep {
+    opacity: 0.45;
+}
+
+/* La barra ya trae su propio alto en `is-compact`; aquí solo se le da aire y se
+   le impide estirarse a lo ancho de la fila en pantallas grandes, donde una
+   barra de 800 px deja de leerse como una proporción. */
+.trend-body .coverage-bar-box {
+    max-width: 340px;
+    margin-top: 2px;
+}
+
+/* ── Pantallas estrechas ────────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+    .trending-page {
+        padding: 28px 14px 48px;
+    }
+
+    .trend-row {
+        grid-template-columns: 28px 1fr;
+        gap: 12px;
+        padding: 14px 14px;
+    }
+
+    .trend-rank {
+        font-size: 1.1rem;
+    }
+
+    .trend-title {
+        font-size: 1rem;
+    }
+
+    /* En móvil la fila ya es estrecha: dejar que la barra la ocupe entera se
+       lee mejor que un tope pensado para escritorio. */
+    .trend-body .coverage-bar-box {
+        max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trend-row,
+    .trend-row:hover {
+        transition: none;
+        transform: none;
+    }
 }

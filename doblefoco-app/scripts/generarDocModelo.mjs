@@ -89,6 +89,19 @@ const ORDEN = [
     ['right', 'Derecha'],
 ];
 
+/**
+ * La fecha de hoy EN BOGOTÁ, no en UTC.
+ *
+ * `toISOString()` da la fecha en Greenwich, y Colombia va cinco horas por
+ * detrás: cualquier ejecución después de las siete de la tarde fechaba el
+ * documento **al día siguiente**. Salió a la primera, generando esto a las
+ * 20:40 del 25 y viendo escrito «2026-08-26». En un documento público de un
+ * sitio colombiano, una fecha que va por delante del calendario del lector es
+ * un error pequeño y de los que hacen desconfiar del resto.
+ */
+const hoyEnBogota = () =>
+    new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+
 const ANCHO = 70;
 const raya = (c = '=') => c.repeat(ANCHO);
 
@@ -154,11 +167,20 @@ export async function medir(base = 'https://doblefoco.fly.dev') {
     }
 
     return {
-        fecha: new Date().toISOString().slice(0, 10),
+        fecha: hoyEnBogota(),
         historias: historias.length,
         evaluables: evaluables.length,
         mayorHistoria: historias.reduce((max, h) => Math.max(max, medios(h)), 0),
         conAusencia: historias.filter((h) => h.ausencia).length,
+        /*
+         * Las dos formas por separado, porque no son la misma afirmación: la
+         * regla selecciona por proporción y en una historia grande cabe un
+         * medio del lado que se dice que falta. Contarlas juntas es lo que hizo
+         * que el aviso del feed dijera «no aparece ningún medio» sobre cinco
+         * historias donde sí aparecía uno.
+         */
+        sinNingunMedio: historias.filter((h) => h.ausencia?.presentes === 0).length,
+        apenasUnos: historias.filter((h) => h.ausencia && h.ausencia.presentes > 0).length,
         conPuntoCiego: historias.filter((h) => h.blindspot).length,
         faltaEnEvaluables: falta,
     };
@@ -181,7 +203,7 @@ export function renderModelo() {
         'dos veces este mes, que es la razón de que exista.'
     ));
     push();
-    push(`Generado: ${new Date().toISOString().slice(0, 10)}`);
+    push(`Generado: ${hoyEnBogota()}`);
     push();
     push();
 
@@ -374,8 +396,12 @@ export function renderModelo() {
         push(fila(`De ellas, evaluables (${BLINDSPOT_MIN_SOURCES}+ medios)`, medido.evaluables));
         push(fila('Historia más cubierta', `${medido.mayorHistoria} medios`));
         push();
-        push(fila('Con un lado ausente', medido.conAusencia));
-        push(fila('De ellas, punto ciego', medido.conPuntoCiego));
+        push(fila('Con un lado por debajo del umbral', medido.conAusencia));
+        if (typeof medido.sinNingunMedio === 'number') {
+            push(fila('  de esas, sin ningún medio', medido.sinNingunMedio));
+            push(fila('  de esas, con alguno suelto', medido.apenasUnos));
+        }
+        push(fila('Puntos ciegos declarados', medido.conPuntoCiego));
         push();
         push('    Cada cuánto falta cada lado, en las evaluables:');
         push();

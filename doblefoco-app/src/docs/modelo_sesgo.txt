@@ -98,7 +98,7 @@ de ser lo esperable.
     Derecha               10
 
 Para comparar: la historia más cubierta del último corpus medido
-reunió 15 medios.
+reunió 14 medios.
 
 Esta cuenta mira MEDIOS, no artículos. Es una corrección del
 2026-08-25: antes miraba la cuota de apariciones, lo que mezclaba
@@ -142,17 +142,19 @@ aplica.
 
     Medido el ...................................  2026-08-25
     Historias en la ventana .....................  100
-    De ellas, evaluables (4+ medios) ............  66
-    Historia más cubierta .......................  15 medios
+    De ellas, evaluables (4+ medios) ............  71
+    Historia más cubierta .......................  14 medios
 
-    Con un lado ausente .........................  44
-    De ellas, punto ciego .......................  2
+    Con un lado por debajo del umbral ...........  46
+      de esas, sin ningún medio .................  41
+      de esas, con alguno suelto ................  5
+    Puntos ciegos declarados ....................  0
 
     Cada cuánto falta cada lado, en las evaluables:
 
-      Izquierda              55 de 66    83,3 %
-      Orientación mixta       1 de 66     1,5 %
-      Derecha                 3 de 66     4,5 %
+      Izquierda              58 de 71    81,7 %
+      Orientación mixta       1 de 71     1,4 %
+      Derecha                 4 de 71     5,6 %
 
 La columna de la derecha es la que impide que el veredicto mienta.
 Una ausencia que ocurre en la mayoría de las historias no es un

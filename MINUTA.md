@@ -283,12 +283,23 @@ que se contradice con su propia frase, no una mentira limpia. Y en un caso es
 peor de lo que parece: «Murió el padre Javier Giraldo: así fue su defensa de los
 derechos humanos» sale marcada como sin medios de izquierda, teniendo uno.
 
-- **Estado:** ABIERTO, y es decisión de producto. Las dos salidas:
-  **(a)** exigir `counts[espectro] === 0` para publicar la ausencia — la palabra
-  recupera su significado, y las dos de hoy desaparecen; **(b)** dejar la
-  proporción y cambiar los textos —«apenas un medio de izquierda»—, que conserva
-  una señal real a costa de que «punto ciego» deje de significar ausencia.
-  Nada se ha tocado a la espera de que Jose decida.
+- **Estado: CERRADO el 2026-08-25.** Jose eligió **las dos señales separadas**:
+  `Sin medios de X` exige cero y solo esa puede llamarse punto ciego; `Apenas N
+  medios de X` cubre el tramo entre uno y el 15 %, y su titular es la propia
+  etiqueta.
+
+  **Y debajo del rótulo había un fallo peor, que salió al arreglarlo: la prueba
+  no probaba la afirmación.** Se decía «apenas uno» y se calculaba la
+  probabilidad de «ninguno», que es un suceso distinto y bastante más raro
+  —P(izq=0 | n=15) = 0,034 frente a P(izq≤1 | n=15) = 0,184—. Con la prueba
+  puesta sobre lo que de verdad se dice, aquella historia no sorprende: harían
+  falta 22 medios, no 15. La nula se generalizó a
+  `probabilidadDeComoMuchoEnCatalogo(K, N, n, k)` y la de ausencia es su caso
+  `k = 0`.
+
+  Comprobado en producción: **0 etiquetas falsas, 5 marcadas «Apenas 1 medio de
+  izquierda», 0 puntos ciegos.** El aviso del feed también decía algo falso —«no
+  aparece ningún medio»— y ahora dice la regla que de verdad selecciona.
 
 ### Hay una rama sin fusionar del 2026-08-20 con trabajo de verdad
 
@@ -301,11 +312,11 @@ selectores por etiqueta.
 historias del segundo bloque son exactamente las 8 tarjetas del primero**, bajo
 dos encabezados que prometen medidas distintas.
 
-- **Estado:** ABIERTO. **Conflicta con `main`**, porque el arreglo estrecho del
-  `h3`/`h2` se hizo aparte el 2026-08-25 y toca el mismo `Trending.css`. Son dos
-  soluciones al mismo fallo: la de la rama es estructural y la de `main` está en
-  producción. Hay que elegir una y resolver el conflicto a mano. **La rama NO se
-  borra** hasta que se decida.
+- **Estado: CERRADO el 2026-08-25.** Fusionada, resolviendo el conflicto hacia
+  la rama —su solución del `h3`/`h2` es estructural: ningún selector apunta ya a
+  una etiqueta, y hay pruebas que lo obligan— pero llevándole encima lo que
+  `main` aprendió después: el `overflow-wrap: anywhere` del titular, que salió el
+  25 cuando `npm run mirar` pilló «"patrocinadores» saliéndose de tres tarjetas.
 
 ---
 

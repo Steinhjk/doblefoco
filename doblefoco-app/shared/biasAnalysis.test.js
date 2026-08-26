@@ -18,6 +18,7 @@ import {
     classifySpectrum,
     describirOrientacionMedia,
     probabilidadDeAusenciaEnCatalogo,
+    probabilidadDeComoMuchoEnCatalogo,
     BLINDSPOT_MIN_SOURCES,
     SOLO_EJE_MIN_SOURCES,
     SPECTRUM_THRESHOLD,
@@ -439,5 +440,121 @@ describe('analyzeCoverage — puntos de énfasis', () => {
 
         expect(result.enfasis?.spectrum).toBe('right');
         expect(result.blindspot?.spectrum).toBe('left');
+    });
+});
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * LA RAMA COMPARA UNA PROPORCIÓN, Y LA ETIQUETA PROMETÍA UN CERO (2026-08-25)
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * El 2026-08-25 el sitio publicó «Punto ciego de la izquierda» sobre la muerte
+ * de Dolly Parton: quince medios la cubrieron y **uno era de izquierda**. Debajo
+ * del titular, su propia frase decía «Solo 1 de izquierda lo reportan».
+ *
+ * No fue una regresión: el defecto estaba desde el principio y era inalcanzable.
+ * La rama exige `leftRatio <= 15 %`, y con 4, 5 o 6 medios un solo medio ya pasa
+ * del 15 % — así que la proporción y el cero coincidían. **Dejan de coincidir a
+ * partir de 7**, y el corpus llegó a ese tamaño esa semana.
+ *
+ * Y había un segundo fallo debajo del primero, peor: **la prueba no probaba la
+ * afirmación**. Se decía «apenas uno» y se calculaba la probabilidad de
+ * «ninguno», que es un suceso distinto y más raro. Con la prueba puesta sobre lo
+ * que se afirma, aquella historia no sorprende ni de lejos.
+ *
+ * Estas pruebas fijan las dos señales que decidió Jose y la nula que les toca.
+ */
+describe('las dos señales: sin medios, y apenas unos pocos', () => {
+    /** Una historia de `n` medios donde `izq` de ellos son de izquierda. */
+    const historia = (n, izq) =>
+        sources(
+            ...Array.from({ length: izq }, () => -0.5),
+            ...Array.from({ length: Math.ceil((n - izq) / 2) }, () => 0.4),
+            ...Array.from({ length: Math.floor((n - izq) / 2) }, () => 0)
+        );
+
+    it('con cero medios del espectro dice «Sin medios de izquierda»', () => {
+        const c = analyzeCoverage(historia(MIN_IZQ, 0));
+        expect(c.counts.left).toBe(0);
+        expect(c.ausencia?.etiquetaAusencia).toBe('Sin medios de izquierda');
+        expect(c.ausencia?.description).toContain('Ninguno de izquierda lo reportó.');
+    });
+
+    it('con un medio del espectro dice «Apenas 1 medio», no «Sin medios»', () => {
+        // Quince medios y uno de izquierda: la forma exacta de Dolly Parton.
+        const c = analyzeCoverage(historia(15, 1));
+        expect(c.counts.left).toBe(1);
+        expect(c.ausencia?.etiquetaAusencia).toBe('Apenas 1 medio de izquierda');
+        expect(c.ausencia?.label).toBe('Apenas 1 medio de izquierda');
+        // La concordancia importa: se leía «Solo 1 de izquierda lo reportan».
+        expect(c.ausencia?.description).toContain('Solo 1 de izquierda lo reporta.');
+    });
+
+    it('NO llama punto ciego a una historia que ese espectro sí cubrió', () => {
+        // Es la afirmación que se publicó mal. Con n grande, la ausencia total
+        // sí sorprendería —está por debajo del umbral— y aun así aquí no debe
+        // haber punto ciego, porque no hay ausencia.
+        const c = analyzeCoverage(historia(15, 1));
+        expect(probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, 15)).toBeLessThan(UMBRAL_SORPRESA);
+        expect(c.blindspot).toBeNull();
+    });
+
+    it('sigue llamando punto ciego a la ausencia de verdad, con los mismos medios', () => {
+        const c = analyzeCoverage(historia(15, 0));
+        expect(c.blindspot?.label).toBe('Punto ciego de la izquierda');
+    });
+
+    it('la sorpresa se mide sobre lo que se afirma, no sobre «ninguno»', () => {
+        // Si «apenas uno» se juzgara con la nula de «ninguno», con 15 medios
+        // saldría 0,034 —por debajo del 5 %— y volvería el fallo. La nula que
+        // corresponde da 0,18.
+        const conNinguno = probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, 15);
+        const conUno = probabilidadDeComoMuchoEnCatalogo(CAT.left, CAT.total, 15, 1);
+        expect(conNinguno).toBeLessThan(UMBRAL_SORPRESA);
+        expect(conUno).toBeGreaterThan(UMBRAL_SORPRESA);
+    });
+});
+
+describe('probabilidadDeComoMuchoEnCatalogo', () => {
+    /** Referencia por fuerza bruta, en logaritmos, para no depender del código. */
+    const logC = (arriba, abajo) => {
+        if (abajo < 0 || abajo > arriba) return -Infinity;
+        let acc = 0;
+        for (let i = 0; i < abajo; i += 1) acc += Math.log(arriba - i) - Math.log(i + 1);
+        return acc;
+    };
+    const referencia = (K, N, n, k) => {
+        let s = 0;
+        for (let j = 0; j <= Math.min(k, K, n); j += 1) {
+            s += Math.exp(logC(K, j) + logC(N - K, n - j) - logC(N, n));
+        }
+        return Math.min(s, 1);
+    };
+
+    it('coincide con la referencia en todo el rango que usa el modelo', () => {
+        for (const [K, N] of [[13, 72], [18, 72], [41, 72], [2, 10], [1, 3], [40, 41]]) {
+            for (let n = 1; n <= Math.min(N, 30); n += 1) {
+                for (let k = 0; k <= Math.min(4, n); k += 1) {
+                    expect(probabilidadDeComoMuchoEnCatalogo(K, N, n, k))
+                        .toBeCloseTo(referencia(K, N, n, k), 10);
+                }
+            }
+        }
+    });
+
+    it('acierta cuando P(0) es cero, que es donde se rompía la versión anterior', () => {
+        // Con 5 del espectro en 20 y 16 medios cubriendo, es IMPOSIBLE que no
+        // salga ninguno del espectro: solo hay 15 fuera. La implementación por
+        // recurrencia arrancaba en P(0) = 0 y se quedaba en cero para siempre,
+        // devolviendo 0 donde la respuesta es 0,72.
+        expect(probabilidadDeAusenciaEnCatalogo(5, 20, 16)).toBe(0);
+        expect(probabilidadDeComoMuchoEnCatalogo(5, 20, 16, 4)).toBeCloseTo(0.71827, 4);
+    });
+
+    it('con k = 0 es exactamente la nula de ausencia', () => {
+        for (let n = 2; n <= 30; n += 1) {
+            expect(probabilidadDeComoMuchoEnCatalogo(CAT.left, CAT.total, n, 0))
+                .toBe(probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, n));
+        }
     });
 });

@@ -13,6 +13,7 @@ import { EsqueletoTarjetas } from './Esqueleto';
 import {
     mediosParaAfirmarAusencia,
     BLINDSPOT_MIN_SOURCES,
+    BLINDSPOT_MAX_RATIO,
     SPECTRUM_LABEL_SHORT,
 } from '../../shared/biasAnalysis.js';
 import { DEPARTAMENTO_POR_SLUG, slugDepartamento } from '../../shared/geografia.js';
@@ -197,6 +198,20 @@ const NewsFeed = () => {
 
     const blindspotCount = useMemo(
         () => allNews.filter((s) => s.coverage.ausencia).length,
+        [allNews]
+    );
+
+    /**
+     * De las marcadas, cuántas están de verdad en cero.
+     *
+     * NO SON LO MISMO Y HAY QUE DECIRLO. La regla que las selecciona compara una
+     * proporción —15 % o menos—, así que en una historia grande cabe un medio
+     * del lado que se dice que falta. Este aviso decía «no aparece ningún
+     * medio», y el 2026-08-25 eso era falso en 5 de 44. Se cuentan las dos
+     * cosas en vez de elegir la frase más redonda.
+     */
+    const sinNingunMedio = useMemo(
+        () => allNews.filter((s) => s.coverage.ausencia?.presentes === 0).length,
         [allNews]
     );
     const evaluableCount = useMemo(
@@ -410,8 +425,15 @@ const NewsFeed = () => {
                         Esto no es una lista de omisiones deliberadas
                     </p>
                     <p>
-                        Son las historias donde <strong>no aparece ningún medio</strong> de un
-                        lado del espectro. Hoy ese lado es{' '}
+                        Son las historias donde un lado del espectro{' '}
+                        <strong>no llega al {decimal(BLINDSPOT_MAX_RATIO * 100, 0)} % de la cobertura</strong>
+                        {sinNingunMedio < blindspotCount ? (
+                            <> — en {sinNingunMedio} de las {blindspotCount} no aparece ninguno, y en el
+                            resto aparece alguno suelto</>
+                        ) : (
+                            <>, y en todas ellas hoy no aparece ninguno</>
+                        )}
+                        . Hoy ese lado es{' '}
                         <strong>{SPECTRUM_LABEL_SHORT[espectroQueFalta]?.toLowerCase()}</strong>, que falta en{' '}
                         <strong>{decimal(contextoAusencia.frecuencia * 100, 0)} %</strong> de las{' '}
                         {contextoAusencia.evaluables} historias con {BLINDSPOT_MIN_SOURCES} medios

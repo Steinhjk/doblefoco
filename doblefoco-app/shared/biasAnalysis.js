@@ -215,16 +215,64 @@ export function catalogoDelModelo() {
  * @param {number} n            medios que efectivamente cubrieron
  */
 export function probabilidadDeAusenciaEnCatalogo(delEspectro, total, n) {
-    if (!(delEspectro > 0) || !(n > 0) || !(total > 0)) return 1;
-    if (n > total - delEspectro) return 0;
+    return probabilidadDeComoMuchoEnCatalogo(delEspectro, total, n, 0);
+}
 
-    // Se calcula como producto y no con factoriales: C(78, 16) desborda el
-    // entero seguro de JavaScript, y con el producto nunca se sale de [0, 1].
-    let p = 1;
-    for (let i = 0; i < n; i += 1) {
-        p *= (total - delEspectro - i) / (total - i);
+/**
+ * La misma nula, pero para «como mucho `k`» en vez de «ninguno».
+ *
+ * POR QUÉ HIZO FALTA GENERALIZARLA (2026-08-25). La rama del punto ciego no
+ * exige que un espectro esté en cero: exige que no pase de `BLINDSPOT_MAX_RATIO`.
+ * Con historias pequeñas daba igual —a 4 medios, uno solo es el 25 % y no
+ * pasa— pero **a partir de 7 medios deja de dar igual**, y el corpus llegó a
+ * ese tamaño esta semana. El resultado fue que el sitio publicó «Punto ciego de
+ * la izquierda» sobre una historia con 15 medios de los que **uno era de
+ * izquierda**, contradiciéndose con su propia frase de debajo.
+ *
+ * El fallo de fondo no era la etiqueta: era que **la prueba no probaba la
+ * afirmación**. Se afirmaba «apenas uno» y se calculaba la probabilidad de
+ * «ninguno», que es un suceso distinto y bastante más raro. Con la prueba
+ * puesta sobre lo que de verdad se dice, aquella historia no sorprende ni de
+ * lejos: P(izq ≤ 1 | n=15) = 0,18, y para bajar del 5 % harían falta 22 medios.
+ *
+ * SE SUMA EN LOGARITMOS, y no es adorno. `C(78, 16)` desborda el entero seguro
+ * de JavaScript, así que los binomiales no se pueden calcular de frente. La
+ * versión anterior lo esquivaba con un producto de razones, que va bien para
+ * P(0) y **se rompe en cuanto hay que sumar más términos**: cuando quedan menos
+ * medios fuera del espectro que medios cubriendo, P(0) vale cero y una
+ * recurrencia multiplicativa a partir de ahí se queda en cero para siempre.
+ * Salió al comparar contra una referencia por fuerza bruta, con K=5, N=20, n=16:
+ * daba 0 donde la respuesta es 0,72. Con logaritmos no hay caso degenerado.
+ *
+ * @param {number} delEspectro  medios de ese espectro que podían cubrir (K)
+ * @param {number} total        medios del catálogo que podían cubrir (N)
+ * @param {number} n            medios que efectivamente cubrieron
+ * @param {number} k            cuántos de ese espectro aparecieron, como mucho
+ */
+export function probabilidadDeComoMuchoEnCatalogo(delEspectro, total, n, k = 0) {
+    if (!(delEspectro > 0) || !(n > 0) || !(total > 0)) return 1;
+    if (k >= delEspectro || k >= n) return 1;
+
+    /** log C(n, k), sumando en vez de multiplicando factoriales enormes. */
+    const logC = (arriba, abajo) => {
+        if (abajo < 0 || abajo > arriba) return -Infinity;
+        let acc = 0;
+        for (let i = 0; i < abajo; i += 1) acc += Math.log(arriba - i) - Math.log(i + 1);
+        return acc;
+    };
+
+    // Con `total − delEspectro` medios fuera del espectro, si cubren más que
+    // eso es imposible que aparezcan menos de `minimoPosible` del espectro.
+    const minimoPosible = Math.max(0, n - (total - delEspectro));
+    if (minimoPosible > k) return 0;
+
+    const techo = Math.min(k, delEspectro, n);
+    const logTotal = logC(total, n);
+    let acumulado = 0;
+    for (let j = minimoPosible; j <= techo; j += 1) {
+        acumulado += Math.exp(logC(delEspectro, j) + logC(total - delEspectro, n - j) - logTotal);
     }
-    return p;
+    return Math.min(acumulado, 1);
 }
 
 /**
@@ -395,6 +443,19 @@ export const SPECTRUM = {
  * izquierda-derecha, no que no exista. «Mixta» describe eso. «Sin línea» lo
  * negaba.
  */
+/**
+ * El complemento con el que se nombra a un espectro dentro de una frase.
+ *
+ * Vive aquí y no suelto en cada plantilla porque se usa en cuatro textos que el
+ * lector ve juntos, y cuatro copias de una palabra son cuatro sitios donde
+ * puede divergir.
+ */
+const DE_ESPECTRO = {
+    left: 'de izquierda',
+    center: 'de orientación mixta',
+    right: 'de derecha',
+};
+
 export const SPECTRUM_LABEL = {
     left: 'Izquierda',
     center: 'Orientación mixta',
@@ -499,8 +560,15 @@ function distributePercentages(counts, total) {
  * espectro, medido sobre el corpus. Es `null` cuando quien llama no dio la
  * medida —el cliente, por ejemplo, que solo tiene las historias descargadas—.
  *
+ * `presentes` es cuántos medios de ese espectro sí aparecieron. Casi siempre es
+ * cero, pero NO siempre: la rama compara una proporción, así que en historias
+ * grandes puede haber uno. De ahí salen los dos nombres —«Sin medios de X» y
+ * «Apenas N medios de X»— y de ahí sale también con qué hipótesis se prueba la
+ * sorpresa.
+ *
  * @typedef {{
  *   spectrum: 'left'|'center'|'right',
+ *   presentes: number,
  *   label: string,
  *   etiquetaAusencia: string,
  *   description: string,
@@ -570,13 +638,52 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
      * inventada sería peor que ninguna.
      */
     const cat = catalogo();
-    const sorprende = (espectro) => {
-        // NULA DE CATÁLOGO, no de apariciones. El porqué está en
-        // `probabilidadDeAusenciaEnCatalogo`. Ya no depende de que quien llama
-        // se acuerde de pasar nada: el catálogo lo lee este módulo.
+    /**
+     * ¿Sorprende lo que se está a punto de afirmar?
+     *
+     * NULA DE CATÁLOGO, no de apariciones — el porqué está en
+     * `probabilidadDeComoMuchoEnCatalogo`. Y se le pasa `presentes`, que es la
+     * corrección del 2026-08-25: **la prueba tiene que probar la afirmación
+     * concreta**. Cuando aparece un medio del espectro, lo que se dice es
+     * «apenas uno», y calcular la probabilidad de «ninguno» sería probar un
+     * suceso distinto y más raro — o sea, poner el listón donde no toca y
+     * declarar sorprendente algo que no lo es.
+     */
+    const sorprende = (espectro, presentes) => {
         if (!(cat[espectro] > 0)) return false;
-        return probabilidadDeAusenciaEnCatalogo(cat[espectro], cat.total, total) < UMBRAL_SORPRESA;
+        return probabilidadDeComoMuchoEnCatalogo(cat[espectro], cat.total, total, presentes) < UMBRAL_SORPRESA;
     };
+
+    /**
+     * CÓMO SE NOMBRA LO QUE SE ENCONTRÓ, según cuántos medios aparecieron.
+     *
+     * Son DOS señales y no una, por decisión de Jose del 2026-08-25:
+     *
+     *   presentes = 0   «Sin medios de izquierda»       — y si sorprende,
+     *                                                     «Punto ciego».
+     *   presentes ≥ 1   «Apenas 1 medio de izquierda»   — el titular ES la
+     *                                                     etiqueta: no hay
+     *                                                     punto ciego donde
+     *                                                     alguien sí cubrió.
+     *
+     * POR QUÉ HIZO FALTA. La rama compara una PROPORCIÓN —15 %— y la etiqueta
+     * prometía un CERO. Con historias de 4 a 6 medios las dos cosas coincidían;
+     * a partir de 7 dejan de coincidir, y el corpus llegó a ese tamaño el
+     * 2026-08-25. Ese día el sitio publicó «Punto ciego de la izquierda» sobre
+     * la muerte de Dolly Parton —15 medios, uno de ellos de izquierda— con una
+     * frase debajo que decía «Solo 1 de izquierda lo reportan». El titular se
+     * contradecía con su propio texto.
+     */
+    const etiquetaDe = (espectro, presentes) =>
+        presentes === 0
+            ? `Sin medios ${DE_ESPECTRO[espectro]}`
+            : `Apenas ${presentes} ${presentes === 1 ? 'medio' : 'medios'} ${DE_ESPECTRO[espectro]}`;
+
+    /** Cuántos medios de ese espectro lo reportaron, dicho en castellano. */
+    const cuantosReportaron = (espectro, presentes) =>
+        presentes === 0
+            ? `Ninguno ${DE_ESPECTRO[espectro]} lo reportó.`
+            : `Solo ${presentes} ${DE_ESPECTRO[espectro]} ${presentes === 1 ? 'lo reporta' : 'lo reportan'}.`;
 
     /**
      * La frase que impide que el veredicto mienta.
@@ -642,11 +749,15 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         ) {
             candidatos.push({
                 spectrum: SPECTRUM.RIGHT,
-                label: 'Punto ciego de la derecha',
-                etiquetaAusencia: 'Sin medios de derecha',
+                presentes: counts.right,
+                label: counts.right === 0
+                    ? 'Punto ciego de la derecha'
+                    : etiquetaDe(SPECTRUM.RIGHT, counts.right),
+                etiquetaAusencia: etiquetaDe(SPECTRUM.RIGHT, counts.right),
                 description:
                     `${counts.left + counts.center} de ${total} medios que cubren el hecho ` +
-                    `son de izquierda o de orientación mixta. Solo ${counts.right} de derecha lo reportan.`,
+                    `son de izquierda o de orientación mixta. ` +
+                    cuantosReportaron(SPECTRUM.RIGHT, counts.right),
             });
         }
         if (
@@ -656,11 +767,15 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         ) {
             candidatos.push({
                 spectrum: SPECTRUM.LEFT,
-                label: 'Punto ciego de la izquierda',
-                etiquetaAusencia: 'Sin medios de izquierda',
+                presentes: counts.left,
+                label: counts.left === 0
+                    ? 'Punto ciego de la izquierda'
+                    : etiquetaDe(SPECTRUM.LEFT, counts.left),
+                etiquetaAusencia: etiquetaDe(SPECTRUM.LEFT, counts.left),
                 description:
                     `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
-                    `son de derecha o de orientación mixta. Solo ${counts.left} de izquierda lo reportan.`,
+                    `son de derecha o de orientación mixta. ` +
+                    cuantosReportaron(SPECTRUM.LEFT, counts.left),
             });
         }
         if (
@@ -682,11 +797,15 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         ) {
             candidatos.push({
                 spectrum: SPECTRUM.CENTER,
-                label: 'Solo medios de izquierda y derecha',
-                etiquetaAusencia: 'Sin medios de orientación mixta',
+                presentes: counts.center,
+                label: counts.center === 0
+                    ? 'Solo medios de izquierda y derecha'
+                    : etiquetaDe(SPECTRUM.CENTER, counts.center),
+                etiquetaAusencia: etiquetaDe(SPECTRUM.CENTER, counts.center),
                 description:
-                    `Los ${counts.left + counts.right} de ${total} medios que cubren el hecho ` +
-                    'se sitúan en el eje izquierda-derecha. Ninguno de orientación mixta lo reportó.',
+                    `${counts.left + counts.right} de ${total} medios que cubren el hecho ` +
+                    'se sitúan en el eje izquierda-derecha. ' +
+                    cuantosReportaron(SPECTRUM.CENTER, counts.center),
             });
         }
     }
@@ -698,7 +817,7 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
     const ausencia = conContexto(candidatos[0] ?? null);
 
     /** La afirmación: el primero que ADEMÁS sorprende bajo la nula. */
-    const blindspot = conContexto(candidatos.find((c) => sorprende(c.spectrum)) ?? null);
+    const blindspot = conContexto(candidatos.find((c) => sorprende(c.spectrum, c.presentes)) ?? null);
 
     /**
      * PUNTO DE ÉNFASIS: quién cuenta esto con una intensidad que no comparte

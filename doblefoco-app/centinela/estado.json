@@ -2,7 +2,7 @@
     "version": 1,
     "medios": {
         "diario-la-libertad": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -83,20 +83,19 @@
             }
         },
         "la-nacion-neiva": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Olave": {
                     "vistos": [
+                        "https://www.lanacion.com.co/empresario-olave-en-los-microfonos-de-la-nacion-stereo/",
                         "https://www.lanacion.com.co/olave-y-el-concejo-en-el-divan/",
                         "https://www.lanacion.com.co/me-tope-con-la-politiqueria-empresario-olave/",
                         "https://www.lanacion.com.co/empresario-olave-recibe-apoyo-de-inversionistas-nacionales-e-internacionales/",
                         "https://www.lanacion.com.co/el-empresario-felipe-olave-plantea-seis-acciones-para-recuperar-el-rio-del-oro/",
                         "https://www.lanacion.com.co/oficial-sic-otorgo-marcas-del-atletico-huila-al-empresario-felipe-olave/",
                         "https://www.lanacion.com.co/definida-ruta-de-navegacion-para-viabilidad-del-estadio-del-empresario-felipe-olave/",
-                        "https://www.lanacion.com.co/celebrando-los-cumpleanos-de-claudia-olave/",
-                        "https://www.lanacion.com.co/el-empresario-felipe-olave-llevo-la-vision-del-mirador-del-magdalena-a-bogota/",
                         "https://www.lanacion.com.co/olave-y-el-concejo-en-el-divan/",
                         "https://www.lanacion.com.co/me-tope-con-la-politiqueria-empresario-olave/",
                         "https://www.lanacion.com.co/empresario-olave-recibe-apoyo-de-inversionistas-nacionales-e-internacionales/",
@@ -113,7 +112,7 @@
             }
         },
         "cablenoticias": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": null,
             "htmlValidado": false,
             "consultas": {
@@ -123,7 +122,7 @@
             }
         },
         "telecafe": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -133,7 +132,7 @@
             }
         },
         "diario-del-huila": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -143,12 +142,16 @@
             }
         },
         "diario-del-norte": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
                 "Demis Pacheco": {
                     "vistos": [
+                        "https://diariodelnorte.net/sociales/ismael-fernandez-gamez-y-su-esposa-demis-pacheco-padrinos-del-festival-cuna-de-acordeones/",
+                        "https://diariodelnorte.net/opinion/demis-pacheco-la-madrina-universal-de-sara-socarras/",
+                        "https://diariodelnorte.net/sociales/demis-pacheco-fernandez-la-dama-del-periodismo-en-la-guajira/",
+                        "https://diariodelnorte.net/sociales/demis-pacheco-una-mujer-que-se-destaca-entre-la-base-familiar-y-el-emprendimiento-periodistico/",
                         "https://diariodelnorte.net/sociales/ismael-fernandez-gamez-y-su-esposa-demis-pacheco-padrinos-del-festival-cuna-de-acordeones/",
                         "https://diariodelnorte.net/opinion/demis-pacheco-la-madrina-universal-de-sara-socarras/",
                         "https://diariodelnorte.net/sociales/demis-pacheco-fernandez-la-dama-del-periodismo-en-la-guajira/",
@@ -158,7 +161,7 @@
             }
         },
         "el-diario-pereira": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -177,7 +180,7 @@
             }
         },
         "proclama-del-pacifico": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -187,8 +190,8 @@
             }
         },
         "choco-7-dias": {
-            "ultimaComprobacion": "2026-08-24",
-            "canal": "html",
+            "ultimaComprobacion": "2026-08-31",
+            "canal": "rest",
             "htmlValidado": true,
             "consultas": {
                 "Cañadas": {
@@ -200,20 +203,20 @@
                         "https://choco7dias.com/inmigrante-cronicas-y-anecdotas-de-alvaro-paz-canadas-viii/",
                         "https://choco7dias.com/atrato-oro-y-platino-cronicas-y-anecdotas-de-alvaro-paz-canadas-vii/",
                         "https://choco7dias.com/colera-cronicas-y-anecdotas-de-alvaro-paz-canadas-vi/",
-                        "https://choco7dias.com/fallecio-yenny-canadas/",
                         "https://choco7dias.com/edicto-gabriela-garrido-de-canadas/",
                         "https://choco7dias.com/primer-aniversario-ivan-canadas-garrido/",
                         "https://choco7dias.com/feliz-ano-nuevo-cronicas-y-anecdotas-de-alvaro-paz-canadas-x/",
                         "https://choco7dias.com/el-dorado-cronicas-y-anecdotas-de-alvaro-paz-canadas-ix/",
                         "https://choco7dias.com/inmigrante-cronicas-y-anecdotas-de-alvaro-paz-canadas-viii/",
                         "https://choco7dias.com/atrato-oro-y-platino-cronicas-y-anecdotas-de-alvaro-paz-canadas-vii/",
-                        "https://choco7dias.com/colera-cronicas-y-anecdotas-de-alvaro-paz-canadas-vi/"
+                        "https://choco7dias.com/colera-cronicas-y-anecdotas-de-alvaro-paz-canadas-vi/",
+                        "https://choco7dias.com/fallecio-yenny-canadas/"
                     ]
                 }
             }
         },
         "el-manduco": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -246,8 +249,8 @@
             }
         },
         "miputumayo": {
-            "ultimaComprobacion": "2026-08-24",
-            "canal": "html",
+            "ultimaComprobacion": "2026-08-31",
+            "canal": "rest",
             "htmlValidado": true,
             "consultas": {
                 "Chamorro Burbano": {
@@ -259,7 +262,7 @@
             }
         },
         "el-morichal": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -272,9 +275,9 @@
             }
         },
         "vive-el-meta": {
-            "ultimaComprobacion": "2026-08-24",
-            "canal": "rest",
-            "htmlValidado": false,
+            "ultimaComprobacion": "2026-08-31",
+            "canal": "html",
+            "htmlValidado": true,
             "consultas": {
                 "Grupo La Independencia": {
                     "vistos": []
@@ -282,7 +285,7 @@
             }
         },
         "lente-regional": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -295,7 +298,7 @@
             }
         },
         "periodismo-publico": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -308,7 +311,7 @@
             }
         },
         "archipielago-press": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -318,7 +321,7 @@
             }
         },
         "al-aire-noticias": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -331,7 +334,7 @@
             }
         },
         "noticias-uno": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -358,7 +361,7 @@
             }
         },
         "valora-analitik": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -371,7 +374,7 @@
             }
         },
         "casa-macondo": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -384,7 +387,7 @@
             }
         },
         "volcanicas": {
-            "ultimaComprobacion": "2026-08-24",
+            "ultimaComprobacion": "2026-08-31",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {

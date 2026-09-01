@@ -678,7 +678,7 @@ export async function countStored() {
 export async function lastRunFromDb() {
     const result = await safeQuery(
         `
-        SELECT at, duration_ms, feeds_ok, feeds_failed, new_articles, total_stories
+        SELECT at, duration_ms, feeds_ok, feeds_failed, new_articles, total_stories, actor
           FROM ingest_runs
          ORDER BY at DESC
          LIMIT 1
@@ -697,6 +697,7 @@ export async function lastRunFromDb() {
         feedsFailed: fila.feeds_failed,
         newArticles: fila.new_articles,
         totalStories: fila.total_stories,
+        actor: fila.actor ?? null,
     };
 }
 
@@ -708,8 +709,8 @@ export async function recordRun(row) {
             (at, duration_ms, feeds_ok, feeds_failed, active_feeds, new_articles,
              total_articles, total_stories, multi_source_stories,
              cross_spectrum_stories, blindspot_stories, filtered_articles,
-             ventana_horas)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+             ventana_horas, actor)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         ON CONFLICT (at) DO NOTHING
         `,
         [
@@ -726,6 +727,7 @@ export async function recordRun(row) {
             row.blindspotStories ?? 0,
             row.filteredArticles ?? 0,
             row.ventanaHoras ?? null,
+            row.actor ?? null,
         ],
         'registro del ciclo'
     );

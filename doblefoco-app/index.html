@@ -5,24 +5,61 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 
-  <title>DobleFoco.co - Perspectivas Múltiples para Colombia</title>
+  <!--
+    LO QUE EL SITIO DICE DE SÍ MISMO CUANDO NO ESTÁ DELANTE.
+
+    Estas etiquetas son el sitio entero para quien lo ve compartido en WhatsApp
+    o en X sin llegar a entrar. Reescritas el 2026-08-31, antes de salir a hacer
+    mercadeo, porque las anteriores venían de antes de que el proyecto tuviera
+    criterio editorial y decían tres cosas que hoy no se sostienen:
+
+      · «Información Objetiva y Moderna» y «Sin sesgos ocultos». Este proyecto
+        DESCARTA por regla todo lo que suene a virtud —«objetivo», «sin sesgo»,
+        «imparcial»—, porque afirma una cualidad que la medición no sostiene, y
+        porque elogiar la ausencia de bando es el falso equilibrio que el sitio
+        combate. Estaba escrito en la metodología y desmentido en la portada.
+      · «más de 20 fuentes nacionales». Son 78 medios, 65 colombianos. La cifra
+        llevaba meses envejeciendo aquí.
+      · «diseño premium e inmersivo». No describe lo que hace el producto.
+
+    LA REGLA PARA LO QUE SE ESCRIBA AQUÍ: se dice lo que el sitio HACE, nunca lo
+    que el sitio ES. «Enseña quién cubre cada hecho» es comprobable; «es
+    objetivo» es una medalla que nos ponemos solos. Y no van números: esta
+    cabecera no se regenera con el catálogo, así que cualquier cifra que se
+    escriba aquí empieza a caducar el mismo día.
+
+    Lo comprueba `src/metadatos.test.js`.
+  -->
+
+  <title>DobleFoco.co — quién cubre cada noticia en Colombia, y quién no</title>
   <meta name="description"
-    content="DobleFoco.co analiza noticias colombianas desde múltiples perspectivas. Combate el sesgo informativo y promueve transparencia mediática con diseño premium e inmersivo." />
+    content="Reúne la cobertura de los medios colombianos sobre un mismo hecho y enseña quién lo está contando, quién no, y de quién es cada medio. No verifica noticias: clasifica organizaciones, y publica cómo." />
   <meta name="theme-color" content="#121212" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="DobleFoco.co - Más allá de la noticia" />
+  <meta property="og:url" content="https://doblefoco.co/" />
+  <meta property="og:title" content="DobleFoco.co — quién está contando esta noticia, y quién no" />
   <meta property="og:description"
-    content="Explora todas las perspectivas del periodismo colombiano. Análisis instantáneo de polarización de más de 20 fuentes nacionales." />
+    content="La cobertura de los medios colombianos sobre un mismo hecho, con quién es dueño de cada uno al lado." />
+  <!-- La tarjeta la genera `npm run og:generar`. Es la misma que sirven las
+       páginas de noticia desde el servidor, para que compartir la portada y
+       compartir una historia no den dos identidades distintas. -->
+  <meta property="og:image" content="https://doblefoco.co/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="DobleFoco.co — quién está contando esta noticia, y quién no" />
   <meta property="og:site_name" content="DobleFoco.co" />
   <meta property="og:locale" content="es_CO" />
 
-  <!-- Twitter Card -->
+  <!-- Twitter Card. Dice LO MISMO que Open Graph a propósito: antes cada una
+       anunciaba un sitio distinto, y la de Twitter era la que llevaba la frase
+       que contradecía la metodología. -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DobleFoco.co - Información Objetiva y Moderna" />
+  <meta name="twitter:title" content="DobleFoco.co — quién está contando esta noticia, y quién no" />
   <meta name="twitter:description"
-    content="Descubre cómo los medios cubren cada historia política y decide por ti mismo. Sin sesgos ocultos." />
+    content="La cobertura de los medios colombianos sobre un mismo hecho, con quién es dueño de cada uno al lado." />
+  <meta name="twitter:image" content="https://doblefoco.co/og-image.png" />
 
   <!-- Preconnect & Fonts -->
   <!-- Ya no hay preconnect a images.unsplash.com. Abría una conexión a un

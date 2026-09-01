@@ -52,6 +52,10 @@ async function request(path, { timeoutMs = DEFAULT_TIMEOUT_MS, ...options } = {}
                 ok: false,
                 status: response.status,
                 error: payload?.error ?? `La API respondió ${response.status}`,
+                // El cuerpo viaja también en el error: /api/health responde 503
+                // con un cuerpo útil (version, ingestion) y tirarlo obligaba a
+                // fetchHealth a inventarse uno vacío.
+                data: payload,
             };
         }
 
@@ -143,7 +147,11 @@ export async function fetchHealth() {
     // /api/health devuelve 503 cuando la ingesta está obsoleta: ese cuerpo sí
     // interesa mostrarlo, así que se rescata del error.
     if (!result.ok && result.status === 503) {
-        return { ok: true, health: { status: 'degradado' }, degraded: true };
+        return {
+            ok: true,
+            health: { ...(result.data ?? {}), status: 'degradado' },
+            degraded: true,
+        };
     }
     if (!result.ok) return result;
     return { ok: true, health: result.data };

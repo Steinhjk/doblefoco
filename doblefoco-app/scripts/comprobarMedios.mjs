@@ -127,6 +127,51 @@ if (callados.length) {
  * en rojo se ignora desde el primer día.
  */
 
+// ── 3. ¿Sigue vivo el motor, o la ingesta corre en muletas? ────────────
+//
+// Desde el 2026-09-01 cada ciclo firma en `ingest_runs.actor` quién lo corrió.
+// El fallo que se busca aquí no lo ve /api/health: el motor de Fly muere, la
+// red de seguridad de Actions sigue escribiendo cada 2 h, y la última pasada
+// siempre parece fresca — pero Infobae, con margen 0,25× contra el sondeo de
+// 2 h, pierde el 91 % de sus piezas mientras tanto. El relevo tiene que sonar.
+//
+// TRES HORAS DE UMBRAL: el motor pasa cada 30 min, así que son seis ciclos
+// perdidos — no salta por un tropiezo, salta por una caída. Y si la columna
+// aún no tiene ninguna firma del motor (recién migrada, o motor sin
+// redesplegar), se dice y NO se acusa: acusar sin poder comprobar es la
+// receta para que el aviso nazca en rojo y se ignore desde el primer día.
+const HORAS_MOTOR = 3;
+const relevoRes = await pool.query(`
+    SELECT
+        (SELECT max(at) FROM ingest_runs WHERE actor = 'motor')  AS motor,
+        (SELECT max(at) FROM ingest_runs)                        AS cualquiera
+`);
+const relevo = relevoRes.rows[0];
+
+console.log('\n  QUIÉN ESTÁ INGIRIENDO\n');
+if (!relevo.motor) {
+    console.log('  ? el motor aún no firma ciclos (columna nueva); no se acusa');
+} else {
+    const horasMotor = (Date.now() - new Date(relevo.motor).getTime()) / 3.6e6;
+    const horasUlt = (Date.now() - new Date(relevo.cualquiera).getTime()) / 3.6e6;
+    if (horasMotor <= HORAS_MOTOR) {
+        console.log(`  ✓ motor vivo: su último ciclo hace ${horasMotor.toFixed(1)} h`);
+    } else if (horasUlt < horasMotor) {
+        console.log(`  ✗ el motor calla desde hace ${horasMotor.toFixed(1)} h y otro actor lo está supliendo`);
+        problemas.push(
+            `El motor no firma un ciclo desde hace ${horasMotor.toFixed(1)} h y la ingesta ` +
+            'vive de la red de seguridad de 2 h: se está perdiendo la mayor parte de los ' +
+            'medios de alto volumen (Infobae, margen 0,25×) sin que el sitio lo aparente.'
+        );
+    } else {
+        console.log(`  ✗ nadie ingiere desde hace ${horasUlt.toFixed(1)} h`);
+        problemas.push(
+            `Ningún actor registra un ciclo desde hace ${horasUlt.toFixed(1)} h: ni el motor ` +
+            'ni la red de seguridad. /api/health ya debería declararse degradado; esto lo confirma.'
+        );
+    }
+}
+
 await pool.end();
 
 // `exitCode` y no `process.exit()`: abortar mientras los sockets del `fetch` se

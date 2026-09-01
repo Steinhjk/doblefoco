@@ -67,6 +67,18 @@ ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS filtered_articles INTEGER NOT N
 -- inventa hacia atrás un dato que no se midió.
 ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS ventana_horas REAL;
 
+-- Quién ejecutó el ciclo: 'motor' (el worker de Fly, cada 30 min),
+-- 'red-de-seguridad' (el cron de Actions, cada 2 h) o 'manual'.
+--
+-- Existe porque sin él los dos ingestores son indistinguibles en la serie, y
+-- eso hace invisible el peor fallo parcial del sistema: el motor muere, la red
+-- de 2 h sigue escribiendo, y todo parece vivo — solo que Infobae, con margen
+-- 0,09 contra esa cadencia, pierde el 91 % de sus piezas sin que nada lo diga
+-- (medido en MINUTA.md, 2026-08-19). La vigilancia pregunta por esta columna
+-- para acusar el relevo. Nula en los ciclos de antes del 2026-09-01: no se
+-- inventa hacia atrás.
+ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS actor TEXT;
+
 -- ── 2. Medios ────────────────────────────────────────────────────────────────
 -- PROYECCIÓN de shared/mediaRegistry.js. Se regenera; no se edita a mano.
 -- El sesgo vive en el registro y en ningún otro sitio: esa fue la tarea F1-04 y

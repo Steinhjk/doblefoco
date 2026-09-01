@@ -53,10 +53,12 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
-# Solo para abrir, comentar y cerrar el issue de aviso. Nada más.
+# `issues: write` para el aviso; `actions: read` para preguntar cuándo
+# corrieron por última vez la copia y el archivo (el hombre muerto de abajo).
 permissions:
   contents: read
   issues: write
+  actions: read
 
 jobs:
   comprobar:
@@ -126,6 +128,46 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+      # ── El hombre muerto (añadido el 2026-09-01) ───────────────────────
+      #  Los flujos que escriben lo irreemplazable —la copia y el archivo de
+      #  conducta— avisan cuando FALLAN, pero nada avisaba si dejaban de
+      #  CORRER: un cron deshabilitado por inactividad del repositorio, un
+      #  workflow renombrado o borrado no produce ningún fallo que reportar.
+      #  Aquí se pregunta cuándo fue la última ejecución EXITOSA de cada uno
+      #  y se acusa a las 48 horas: ambos son diarios, así que eso da un día
+      #  entero de gracia antes de gritar.
+      - name: ¿Siguen corriendo la copia y el archivo?
+        id: presencia
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo
+            echo "  PRESENCIA DE LOS FLUJOS DIARIOS"
+            echo
+            fallo=0
+            ahora=$(date -u +%s)
+            for flujo in backup.yml archivo.yml; do
+              ultima=$(gh run list --workflow "$flujo" --status success \
+                         --limit 1 --json updatedAt --jq '.[0].updatedAt // empty')
+              if [ -z "$ultima" ]; then
+                echo "  ✗ $flujo no tiene ninguna ejecución exitosa que enseñar"
+                fallo=1
+                continue
+              fi
+              edad=$(( (ahora - $(date -u -d "$ultima" +%s)) / 3600 ))
+              if [ "$edad" -ge 48 ]; then
+                echo "  ✗ $flujo lleva ${edad} h sin correr con éxito (última: $ultima)"
+                fallo=1
+              else
+                echo "  ✓ $flujo corrió bien hace ${edad} h"
+              fi
+            done
+            exit "$fallo"
+          } 2>&1 | tee -a "$RUNNER_TEMP/vigilancia.txt"
+          exit "${PIPESTATUS[0]}"
+
       # ── Aviso ──────────────────────────────────────────────────────────────
       # Se busca por etiqueta y no por título: el título lleva la fecha, así que
       # buscarlo abriría un issue nuevo cada día del mismo incidente.
@@ -139,7 +181,7 @@ jobs:
           echo "numero=$numero" >> "$GITHUB_OUTPUT"
 
       - name: Abrir o actualizar el aviso
-        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure'
+        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure' || steps.presencia.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
@@ -164,11 +206,12 @@ jobs:
             gh issue create \
               --title "Vigilancia en rojo — $(date -u '+%Y-%m-%d %H:%M UTC')" \
               --label vigilancia \
+              --assignee Steinhjk \
               --body-file "$RUNNER_TEMP/cuerpo.md"
           fi
 
       - name: Cerrar el aviso si ya se recuperó
-        if: steps.comprobacion.outcome == 'success' && steps.invariantes.outcome == 'success' && steps.abierto.outputs.numero != ''
+        if: steps.comprobacion.outcome == 'success' && steps.invariantes.outcome == 'success' && steps.presencia.outcome == 'success' && steps.abierto.outputs.numero != ''
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
@@ -180,7 +223,7 @@ jobs:
       # sigue siendo el registro, y un job en verde con un issue abierto sería
       # una contradicción que acabaría creyéndose la parte cómoda.
       - name: Reflejar el resultado
-        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure'
+        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure' || steps.presencia.outcome == 'failure'
         run: |
           echo "La comprobación falló; hay un issue abierto con el detalle."
           exit 1

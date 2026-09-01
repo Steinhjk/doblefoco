@@ -20,6 +20,7 @@
         "mirar": "node scripts/mirar.mjs",
     "mapa:generar": "node scripts/generarMapaColombia.mjs",
         "logos:fetch": "node scripts/fetchLogos.mjs",
+        "og:generar": "node scripts/generarOgImage.mjs",
         "backup": "node scripts/backup.mjs",
         "backup:restore": "node scripts/restore.mjs",
         "check:registry": "node scripts/checkRegistry.mjs",

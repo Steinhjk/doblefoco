@@ -27,6 +27,13 @@
 #  SI ESTO FALLA, FALLA EN VERDE MAÑANA. Por eso la ejecución sale con error si
 #  no pudo escribir: un archivador que se cae en silencio deja un agujero que
 #  solo se descubre al ir a analizar la serie, cuando ya no se puede rellenar.
+#
+#  POR QUÉ ADEMÁS ABRE ISSUE (añadido el 2026-09-01). Porque salir con error no
+#  bastó en el caso hermano: la copia de seguridad estuvo TRECE días en rojo en
+#  la pestaña de Actions sin que nadie lo viera, y este flujo protege lo único
+#  que duele más perder — la copia se puede rehacer mañana; un día sin archivar
+#  no se vuelve a observar nunca. Era el último de los flujos que escriben algo
+#  irreemplazable sin timbre propio.
 # =============================================================================
 
 name: Archivo de conducta
@@ -37,6 +44,11 @@ on:
     # UTC, y a una hora en la que el corpus del día anterior ya está completo.
     - cron: '0 9 * * *'
   workflow_dispatch:
+
+# Solo para abrir, comentar y cerrar el issue de aviso. Nada más.
+permissions:
+  contents: read
+  issues: write
 
 # Dos archivadores a la vez insertarían los mismos pares: la clave primaria lo
 # aguanta, pero se estorbarían en la transacción sin ganar nada.
@@ -66,12 +78,90 @@ jobs:
 
       # Idempotente y cuesta segundos. Se ejecuta aquí para que las tablas del
       # archivo existan aunque nadie se haya acordado de migrar tras añadirlas.
+      #
+      # `continue-on-error` en los dos pasos NO significa que dé igual: el
+      # resultado se guarda y el último paso vuelve a poner el job en rojo.
+      # Existe para que el aviso llegue a correr — un fallo aquí lo saltaría,
+      # que es justo lo que le pasó a la copia trece días.
       - name: Aplicar migraciones
-        run: npm run db:migrate
+        id: migrar
+        continue-on-error: true
+        run: npm run db:migrate 2>&1 | tee "$RUNNER_TEMP/archivo.txt"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Archivar la ventana viva
-        run: npm run archivo:conducta
+        id: archivar
+        if: steps.migrar.outcome == 'success'
+        continue-on-error: true
+        run: npm run archivo:conducta 2>&1 | tee -a "$RUNNER_TEMP/archivo.txt"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      # ── Aviso ──────────────────────────────────────────────────────────────
+      # Por etiqueta y no por título, como los demás: el título lleva la fecha.
+      - name: Asegurar la etiqueta
+        if: steps.migrar.outcome == 'failure' || steps.archivar.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create archivo \
+            --color B60205 \
+            --description "El archivo de conducta no pudo escribir su día" \
+            --force
+
+      - name: Buscar el aviso abierto
+        id: abierto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          numero=$(gh issue list --label archivo --state open \
+                     --limit 1 --json number --jq '.[0].number // empty')
+          echo "numero=$numero" >> "$GITHUB_OUTPUT"
+
+      - name: Abrir o actualizar el aviso
+        if: steps.migrar.outcome == 'failure' || steps.archivar.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "**El archivo de conducta no escribió su día.** A diferencia de la copia,"
+            echo "esto no se recupera mañana: un día sin archivar es un día que no se"
+            echo "vuelve a observar, y las fichas prometen la medición a los 90 días."
+            echo
+            echo "Salida completa:"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/archivo.txt"
+            echo '```'
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/cuerpo.md"
+
+          if [ -n "$NUMERO" ]; then
+            gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
+          else
+            gh issue create \
+              --title "El archivo de conducta falló — $(date -u '+%Y-%m-%d')" \
+              --label archivo \
+              --assignee Steinhjk \
+              --body-file "$RUNNER_TEMP/cuerpo.md"
+          fi
+
+      - name: Cerrar el aviso si ya se recuperó
+        if: steps.migrar.outcome == 'success' && steps.archivar.outcome == 'success' && steps.abierto.outputs.numero != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+        run: |
+          gh issue close "$NUMERO" --comment \
+            "Recuperado: el archivo volvió a escribir el $(date -u '+%Y-%m-%d %H:%M UTC')."
+
+      # El job queda en rojo igual: el issue es el aviso, el aspa es el registro.
+      - name: Reflejar el resultado
+        if: steps.migrar.outcome == 'failure' || steps.archivar.outcome == 'failure'
+        run: |
+          echo "El archivo falló; hay un issue abierto con el detalle."
+          exit 1

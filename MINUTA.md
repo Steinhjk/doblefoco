@@ -47,6 +47,64 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## De la auditoría de integración del 2026-09-01
+
+Pedida por Jose: una auditoría de la integración entre sistemas, con sus
+hallazgos en `doblefoco-app/AUDITORIA_INTEGRACION_2026-09.md` y un plan que
+sucede al de continuidad: `doblefoco-app/PLAN_PRODUCTO_FINAL.md`. Todo se
+midió contra el sistema vivo. Lo nuevo que queda pendiente, con su código:
+
+- **I-2 · El vigilante del desfase no abre issue** — es el único de los cinco
+  sin timbre; su fallo del 31/08 no lo vio nadie y el desfase que acusaba (Fly
+  en `2c82323`, main en `c872ddb`) sigue vivo. Copiarle el patrón de
+  `vigilancia.yml`. **HECHO el 2026-09-01 en `integracion/etapa-0`**; además
+  la cabecera de `comprobarDesfase.mjs` ya no afirma que «GitHub ya avisa»,
+  porque el 31/08 demostró que no. Se cierra al fusionar.
+- **I-3 · Los issues de los vigilantes no llegan a ninguna bandeja leída** — el
+  del centinela lleva desde el 24/08 sin abrirse. Abrirlos con `--assignee`
+  para que GitHub mande correo. **HECHO el 2026-09-01 en la rama**: los siete
+  issues de vigilante (vigilancia, auditoría ×2, centinela ×2, copia, y los
+  nuevos de desfase y archivo) se abren asignados.
+- **I-4 · Nada avisa si la copia deja de CORRER** (el fallo sí avisa; la
+  ausencia no). Hombre-muerto en la vigilancia: última ejecución exitosa de
+  `backup.yml` con más de 48 h, se acusa. **HECHO el 2026-09-01 en la rama**,
+  y cubre también `archivo.yml` —que resultó ser el ÚLTIMO flujo que escribe
+  algo irreemplazable sin timbre propio: ahora abre issue al fallar, como la
+  copia—.
+- **I-5 · Configuración muerta que instruye:** `public/_headers` (CSP vieja,
+  aún con unsplash; Vercel no lo lee), `public/_redirects` (catch-all que
+  rompería el SSR en otro host) y `securityService.js` (cero imports, duda
+  10). Borrar los tres y corregir el comentario de `.env.example` que manda
+  mantenerlos. **HECHO el 2026-09-01 en la rama**: borrados los tres, y los
+  comentarios de `.env.example` y `server/index.js` dicen ahora dónde vive la
+  única CSP. También el `.env*` huérfano del `.gitignore` de la raíz.
+- **I-6 · `api.doblefoco.co` está en la CSP y el DNS no existe.** Crear el
+  CNAME (recomendado: despega al cliente del hostname de Fly) o retirarlo.
+  **ABIERTO — decisión de una frase de Jose.**
+- **I-8 · El relevo a la red de seguridad de 2 h es silencioso** y con Infobae a
+  margen 0,09 pierde el 91 % sin aviso. Acusar desde la vigilancia cuando la
+  ingesta lleve horas sin pasada del motor. **HECHO el 2026-09-01 en la rama**:
+  columna `actor` en `ingest_runs` (motor / red-de-seguridad / manual, firmada
+  por cada punto de entrada), y la vigilancia acusa si el motor calla 3 h
+  mientras otro lo suple —sin acusar mientras la columna no tenga firmas, para
+  que el aviso no nazca en rojo—.
+- **I-9 · El repositorio vive dentro de OneDrive** — locks y sync de
+  `node_modules` y `.git`. Excluirlo de la sincronización. **ABIERTO —
+  trámite de Jose, 15 min.**
+
+Lo demás que encontró la auditoría ya estaba en esta minuta con otro nombre
+(I-1 es el secreto de Fly; I-7 es el handshake 2-B) y no se duplica.
+
+> **I-7 / 2-B, el handshake: HECHO el 2026-09-01 en la rama.** Y no compara
+> commits, a propósito: compara la huella del registro de medios que cada lado
+> lleva compilado (`registroHash` en `/api/health`, `__REGISTRO_HASH_ESPERADO__`
+> en el bundle), porque el commit también cambia con la prosa y acusar por él
+> es la alarma falsa que ya se pagó una vez con el vigilante del desfase. El
+> aviso (`AvisoDesfase`) solo existe cuando los catálogos difieren, habla en
+> lenguaje de lector y manda lo técnico a la consola. Sin datos no acusa: un
+> motor anterior a la función produce silencio, no un estreno en rojo. El
+> extremo a extremo queda pendiente del primer despliegue del motor tras 0.1.
+
 ## Del repaso de memos y auditorías del 2026-08-26
 
 Pedido de Jose: poner los memos y las auditorías al día del estado real y
@@ -444,6 +502,107 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-01 · Lo que el sitio afirmaba de sí mismo, y la tarjeta vacía
+
+**Salió del estudio de mercadeo del 31 de agosto**, y lo que unía a las cuatro
+cosas es que **ninguna se ve desde dentro del sitio**: son lo que ve quien lo
+comparte, o quien lo lee con el tema claro, o quien va a la letra pequeña. Por
+eso aguantaron meses.
+
+### La tarjeta que se compartía estaba vacía
+
+`public/og-image.png` era **un rectángulo oscuro con un borde dorado, y nada
+más**. El generador anterior, `createOgImage.mjs`, pintaba los píxeles a mano y
+**no tenía forma de dibujar texto**: hacía exactamente lo que sabía hacer, y
+nadie miró el resultado. Desde el **2026-07-29**.
+
+Y no estaba en un rincón: `metadatos.js` y `paginasEstaticas.js` la sirven como
+`og:image` de **todas** las páginas de noticia. Cada vez que alguien compartía
+una historia de DobleFoco en WhatsApp o en X, lo que se veía era el rectángulo.
+
+> Esto corrige algo que yo mismo escribí el 31 de agosto. Dije que **«las páginas
+> de noticia están impecables»** mirando sus etiquetas, que efectivamente lo
+> están. Miré el `og:image` como cadena de texto y di por buena la imagen sin
+> abrirla. La etiqueta apuntaba a un archivo vacío.
+
+- **Estado: HECHO.** `npm run og:generar` la compone con Playwright —ya era
+  dependencia, `npm run mirar` lo usa— sobre un HTML con la tipografía y la
+  paleta del propio sitio.
+- **Dos decisiones de diseño que conviene no deshacer.** No lleva **barra de
+  espectro**: habría que darle un ancho a cada tramo, y tres tramos iguales
+  **afirman que el espacio mediático colombiano está repartido en tercios**, que
+  es el falso equilibrio contra el que existe el proyecto; con la proporción real
+  sería un dato con fecha dentro de una imagen que nadie regenera. Y **no lleva
+  ningún número**, por lo mismo. Tampoco nada que lata ni que arda: acompaña a la
+  peor noticia del día igual que a las demás.
+
+### La portada anunciaba un sitio que no es este
+
+Las etiquetas de `index.html` son el sitio entero para quien lo ve compartido y
+no llega a entrar. Venían de antes de que el proyecto tuviera criterio editorial:
+
+- **«Información Objetiva y Moderna»** en `twitter:title` y **«Sin sesgos
+  ocultos»** en su descripción — mientras `/transparencia/clasificacion` dice,
+  literal, «no significa neutral, imparcial ni objetivo». El sitio se desmentía a
+  sí mismo, y la versión que ganaba era la que se ve sin entrar.
+- **«más de 20 fuentes nacionales»**, cuando son 78 medios.
+- Sin `og:image` teniendo el archivo, y con `summary_large_image` declarado: se
+  prometía una imagen grande y no se mandaba ninguna.
+- Open Graph y Twitter **decían cosas distintas**.
+
+- **Estado: HECHO**, y con la regla escrita en el propio archivo: **se dice lo
+  que el sitio HACE, nunca lo que el sitio ES**, y no van cifras, porque esta
+  cabecera no se regenera con el catálogo. Lo sostiene `src/metadatos.test.js`.
+
+### Las dos páginas de transparencia se contradecían con su propio contador
+
+**Este es el peor de los cuatro**, porque está en la página que promete que no
+hacemos esto:
+
+- `/transparencia/limitaciones` decía, en la misma línea: *«**Ninguna** de las 78
+  clasificaciones está firmada. **5** han pasado por revisión editorial formal.»*
+  El «Ninguna» era texto fijo de cuando el contador valía 0.
+- `/transparencia/sobre-nosotros` repetía la versión vieja, ya falsa.
+- Las dos afirmaban que **de todos** los medios consta quién los controla «con
+  una excepción», cuando **son quince** los que llevan `ownerType: null`.
+- Y `sobre-nosotros` abría con el lema **«Información objetiva para un ciudadano
+  informado»**, a dos clics de la página que dice lo contrario.
+
+**Es el defecto que este repositorio persigue en el código —una afirmación que
+describe algo que dejó de ocurrir— pero en la prosa.** La cifra ya se calculaba
+sola; lo escrito a mano era **la frase que la interpreta**, y una frase también
+envejece.
+
+- **Estado: HECHO.** Las frases se generan en `src/lib/catalogo.js` y son ciertas
+  con cualquier número, incluidos el cero y el total. `EstadoDelCatalogo` cuenta
+  ahora desde ahí en vez de repetir la definición.
+- **Y la misión se reescribió con lo que el proyecto sí sostiene**: que no se
+  busca el equilibrio sino que se vea el desequilibrio. Estaba en la memoria y en
+  el ROADMAP, no en la página.
+
+### El encabezado era blanco sobre blanco, y su regla de estilo no se aplicaba
+
+En `/transparencia/sobre-nosotros`, `.about-hero` fijaba `color: white` sobre un
+degradado que en el tema **claro** vale `#f8fafc → #f1f5f9`. Contraste
+**1,03:1**: el título de la página y su lema eran **invisibles** para quien no usa
+el tema oscuro. Ahora es 17,06:1.
+
+**Y debajo había un segundo fallo, el mismo de siempre:** la hoja estilaba
+`.about-hero h1` y el JSX pinta `<h2 className="sn-titulo">`. La regla del tamaño
+**no se aplicó nunca**. Es la **tercera vez** que este proyecto pierde estilos en
+la costura JSX↔CSS —los puntos del mapa el 19 de agosto, el titular de Tendencias
+el 21— y tres veces es un patrón. La defensa, ya aplicada las tres veces: **el
+CSS apunta a la clase, no a la etiqueta.**
+
+- **Estado: HECHO**, con `SobreNosotros.layout.test.js`.
+
+### Las tres pruebas nuevas se rompieron a propósito para ver que acusan
+
+Metiendo «objetiva» en las etiquetas: acusa, y de paso acusa que Open Graph y
+Twitter dejaron de coincidir. Dejando la tarjeta lisa: acusa. Devolviendo el CSS
+a `.about-hero h1`: acusa dos veces. **Deshecho con la edición inversa**, no con
+`git checkout`.
 
 ## 2026-08-31 · Trece días sin copia de seguridad, y la restauración tampoco sabía
 

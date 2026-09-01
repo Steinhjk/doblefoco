@@ -46,6 +46,11 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // seguro en los dos casos.
 dotenv.config({ path: resolve(ROOT, '.env.local'), quiet: true });
 
+// Quién corre este ciclo. En Actions, ingest.yml pone 'red-de-seguridad';
+// sin nada puesto es alguien en una terminal. El motor de Fly no pasa por
+// aquí: firma 'motor' desde ingestWorker.mjs.
+process.env.INGEST_ACTOR ??= 'manual';
+
 const { prepareStorage } = await import('../server/bootstrap.js');
 const { runIngestionBatch } = await import('../server/services/ingestDaemon.js');
 const { closePool } = await import('../server/db/pool.js');

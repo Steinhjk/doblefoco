@@ -31,6 +31,10 @@ import dotenv from 'dotenv';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 dotenv.config({ path: resolve(ROOT, '.env.local'), quiet: true });
 
+// Este proceso ES el motor: cada ciclo suyo queda firmado así en `ingest_runs`
+// para que la vigilancia distinga su silencio del de la red de seguridad.
+process.env.INGEST_ACTOR ??= 'motor';
+
 const { prepareStorage } = await import('../server/bootstrap.js');
 const { runIngestionBatch } = await import('../server/services/ingestDaemon.js');
 const { claimCycleRequest, finishCycleRequest } = await import('../server/db/requestStore.js');

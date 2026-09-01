@@ -162,6 +162,7 @@ jobs:
             gh issue create \
               --title "Sin copia de seguridad — $(date -u '+%Y-%m-%d')" \
               --label copia \
+              --assignee Steinhjk \
               --body-file "$RUNNER_TEMP/cuerpo.md"
           fi
 

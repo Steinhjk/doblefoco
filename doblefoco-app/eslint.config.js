@@ -17,7 +17,9 @@ export default defineConfig([
     ],
     languageOptions: {
       ecmaVersion: 'latest',
-      globals: globals.browser,
+      // La huella que incrusta el `define` de vite.config.js (el handshake de
+      // version). Sin declararla, cada uso seria un no-undef.
+      globals: { ...globals.browser, __REGISTRO_HASH_ESPERADO__: 'readonly' },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
@@ -56,15 +58,16 @@ export default defineConfig([
     },
   },
 
-  // `scripts/mirar.mjs` corre en Node PERO lleva dentro una función que se
-  // ejecuta en el navegador, vía `page.evaluate`. Ahí `document`, `window` y
-  // `getComputedStyle` son legítimos y el linter los daba por indefinidos.
+  // `scripts/mirar.mjs` y `scripts/generarOgImage.mjs` corren en Node PERO
+  // llevan dentro código que se ejecuta en el navegador, vía `page.evaluate`.
+  // Ahí `document`, `window` y `getComputedStyle` son legítimos y el linter los
+  // daba por indefinidos.
   //
-  // Se le dan los dos juegos de globales en vez de silenciar `no-undef` en el
+  // Se les dan los dos juegos de globales en vez de silenciar `no-undef` en el
   // archivo: silenciarlo taparía también un identificador escrito mal, que es
   // justo lo que la sección de arriba existe para cazar.
   {
-    files: ['scripts/mirar.mjs'],
+    files: ['scripts/mirar.mjs', 'scripts/generarOgImage.mjs'],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
     },

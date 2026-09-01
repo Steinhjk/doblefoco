@@ -1,0 +1,25 @@
+/**
+ * El aviso de desfase de versión.
+ *
+ * Es una franja de estado transitoria, no una alarma: usa el ámbar de --warn
+ * en un filo y no pinta la caja entera de color. La regla de la casa aplica
+ * también aquí — un aviso que grita se aprende a ignorar, y este tiene que
+ * poder aparecer en mitad de cualquier portada sin pelearse con ella.
+ */
+.aviso-desfase {
+    max-width: 1240px;
+    margin: 12px auto;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-main);
+    background: var(--warn-soft);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--warn);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.aviso-desfase strong {
+    font-weight: 600;
+}

@@ -55,36 +55,8 @@ contra Actions destapó cuatro cosas que nadie estaba mirando. Las dos primeras
 son la misma enfermedad de siempre —un vigilante que acusa y nadie que lea la
 acusación—.
 
-### La copia de seguridad lleva OCHO DÍAS fallando y nadie se enteró
-
-- **Origen:** repaso del 2026-08-26, mirando `gh run list`.
-- **Qué pasa:** `backup.yml` (cron diario, 07:50 UTC) falla **desde el
-  2026-08-19**. Ocho ejecuciones seguidas en rojo; la última buena es del 18.
-- **La causa exacta**, del log del run `32945864289`:
-
-      ✗ Tablas sin decisión: conducta_archivo, conducta_archivo_runs
-        Añádelas a TABLAS o a EXCLUIDAS en scripts/backup.mjs, con su motivo.
-
-  El guardián de `backup.mjs` exige que **toda** tabla de la base esté
-  clasificada con su motivo. El archivo de conducta creó dos tablas nuevas y
-  nadie las clasificó, así que la copia se niega a correr. **El guardián hizo
-  exactamente lo que se le pidió.**
-- **Lo que falló es el aviso, y es un defecto de diseño nuestro:** `backup.yml`
-  es el único de los cuatro flujos con vigilante que **NO abre issue**.
-  `vigilancia.yml`, `auditoria.yml` y `centinela.yml` sí. Un rojo en Actions no
-  lo ve nadie — que es palabra por palabra lo que este proyecto escribió el
-  2026-08-11 al montar la Vigilancia, y volvió a pasar en el único sitio donde
-  no se aplicó la lección.
-- **Por qué es lo más grave de esta lista:** los artículos se descartan a las
-  72 h. La copia es lo **único permanente** que tiene el proyecto. Ocho días sin
-  copia son ocho días en que perder la base habría sido irreversible.
-- **Estado: ABIERTO.** Dos arreglos, y el segundo es el que importa:
-  1. Clasificar las dos tablas con su motivo. **Van en `TABLAS`, no en
-     `EXCLUIDAS`**: el archivo de conducta es precisamente el registro que
-     sobrevive a la ventana de 72 h, así que excluirlo del respaldo sería
-     respaldar todo menos lo único que no se puede reconstruir.
-  2. Que `backup.yml` abra y cierre issue como los otros tres. Sin esto, el
-     siguiente fallo se descubrirá igual: por casualidad, ocho días tarde.
+> **La primera, la copia de seguridad, está CERRADA el 2026-08-31** y su
+> desenlace está abajo. Las otras tres siguen abiertas.
 
 ### El motor no se despliega solo: el workflow está y el secreto no
 
@@ -472,6 +444,67 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-08-31 · Trece días sin copia de seguridad, y la restauración tampoco sabía
+
+**Encontrado el 26 de agosto mirando `gh run list`, arreglado el 31.**
+
+`backup.yml` falló **trece días seguidos, del 19 al 31 de agosto**. La última
+copia buena era del 18. Los artículos se descartan a las 72 h, así que fueron
+trece días en los que perder la base habría sido irreversible.
+
+**La causa, y no es un fallo:** el 2026-08-18 entró el archivo de conducta con
+dos tablas nuevas, `conducta_archivo` y `conducta_archivo_runs`. El guardián de
+`backup.mjs` —el que exige que toda tabla esté clasificada con su motivo— las
+vio sin decidir y rompió la ejecución, **que es exactamente lo que se le pidió
+que hiciera**.
+
+> **La ironía conviene no perderla:** la tabla que rompió el respaldo era
+> precisamente la que se creó por ser lo único del corpus imposible de
+> reconstruir después.
+
+**Lo que sí falló fue el aviso**, y era un defecto de diseño nuestro: de los
+cuatro flujos con vigilante, `backup.yml` era **el único que no abría issue**.
+Vigilancia, auditoría y centinela sí. Un rojo en Actions no lo mira nadie — que
+es palabra por palabra lo que este proyecto escribió el 2026-08-11 al montar la
+Vigilancia, repetido en el único sitio donde no se aplicó la lección.
+
+### Lo que se hizo, y son tres cosas, no dos
+
+1. **Las dos tablas entran en `TABLAS`, no en `EXCLUIDAS`**, con su motivo
+   escrito. Cumplen las dos condiciones del respaldo de forma más literal que
+   ninguna otra: irreemplazables —se archivan justo porque la purga se las
+   llevaba— y sin datos personales, porque son dos identificadores y una fecha,
+   ni un titular ni un enlace. `conducta_archivo_runs` va con ella y no sin
+   ella: restaurar la conducta sin sus huecos declarados sería restaurar una
+   serie que miente.
+2. **`backup.yml` abre, comenta y cierra issue** como los otros tres, con
+   etiqueta `copia`, y el cuerpo lleva la salida del guardián — que ya dice qué
+   hacer, así que copiarla es copiar la instrucción entera. El job sigue
+   quedando en rojo: el issue es el aviso, el aspa es el registro.
+3. **Y al arreglarlo salió un agujero peor, que nadie buscaba.**
+   `scripts/restore.mjs` tiene **su propia lista** de tablas, escrita a mano y
+   distinta de la de `backup.mjs`. Las dos tablas nuevas iban a entrar en la
+   copia y **salir por la restauración sin decir una palabra**: no da error, da
+   una restauración incompleta que parece completa. Es el defecto que este
+   repositorio persigue en todas partes —dos listas nuestras que pueden
+   divergir— y aquí la dirección del fallo es silenciosa. Añadidas a `ORDEN`, y
+   **puesto el guardián recíproco**: un `.ndjson` en la copia que la
+   restauración no conozca ahora rompe la ejecución, igual que hace el de
+   `backup.mjs` con una tabla sin clasificar.
+
+**Comprobado, no supuesto.** `npm run backup` corre en verde y se lleva
+**43 284 pares de conducta y 15 ejecuciones** que nunca habían estado en un
+respaldo. El viaje de vuelta con `--dry-run` devuelve las seis tablas con las
+mismas cuentas. Y el guardián nuevo se probó rompiéndolo a propósito —un
+`.ndjson` inventado, **en una carpeta de usar y tirar, no en el árbol de
+trabajo**— y falla con código 1 y el mensaje que toca. 714 pruebas,
+`check:comentarios` y `check:registry` en verde.
+
+**Lo que queda sin cubrir, dicho para que no se crea cubierto:** el aviso avisa
+del fallo, no de la ausencia. Si el flujo dejara de ejecutarse —no fallar, sino
+no correr— nadie se enteraría, porque no hay nada que vigile que la copia se
+hizo. No se arregla hoy y no se olvida.
 
 ## 2026-08-26 · Los memos: tres retirados, diecisiete corregidos
 

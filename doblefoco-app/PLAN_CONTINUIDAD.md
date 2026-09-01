@@ -24,7 +24,7 @@ los tramos 1 y 3 dependen de decisiones que no son de código.
 | Ramas sin fusionar | **ninguna** — las 20 del remoto están todas en `main` |
 | Hallazgos abiertos en el libro | **23**, ninguno aceptado con nota; última pasada 2026-08-20, la siguiente cae el jueves |
 | Vigilantes que corren solos | ingesta (2 h), vigilancia (6 h), desfase (diario), archivo de conducta (diario), copia (diario), centinela (lunes), auditoría (jueves) |
-| Vigilantes en rojo | **la copia de seguridad, desde el 2026-08-19** |
+| Vigilantes en rojo | ninguno — la copia se arregló el 2026-08-31, tras trece días |
 
 ---
 
@@ -42,7 +42,14 @@ puede reconstruir.
 Tres cosas, ninguna larga, y la primera es la única de todo el documento que
 puede costar algo irreversible.
 
-### 0-A · La copia de seguridad lleva ocho días sin correr
+### 0-A · La copia de seguridad lleva ocho días sin correr — **HECHO el 2026-08-31**
+
+> **Cerrado.** Fueron trece días, no ocho: el arreglo llegó el 31. Las dos
+> tablas entran en `TABLAS` con su motivo, `backup.yml` ya abre issue con
+> etiqueta `copia`, y al hacerlo salió un tercer agujero que nadie buscaba —
+> `restore.mjs` tenía su propia lista y las habría dejado fuera en silencio—.
+> El detalle, en `MINUTA.md`. **Lo que sigue sin cubrir:** el aviso avisa del
+> fallo, no de la ausencia; si el flujo dejara de correr, nadie se enteraría.
 
 `backup.yml` falla desde el 2026-08-19: `conducta_archivo` y
 `conducta_archivo_runs` no están clasificadas en `backup.mjs`. Los artículos se

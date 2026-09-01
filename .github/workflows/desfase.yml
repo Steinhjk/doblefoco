@@ -1,39 +1,36 @@
 # =============================================================================
-#  ¿Está Fly corriendo lo que hay en main?
+#  Desfase de despliegue — ¿corre Fly lo que hay en main?
 # =============================================================================
-#  QUÉ PROBLEMA RESUELVE. Empujar a `main` publica el cliente en Vercel pero NO
-#  la API ni el motor: eso sale a mano con `npm run deploy`. Olvidarlo no
-#  produce ningún error, así que nadie se entera.
+#  QUÉ PROBLEMA RESUELVE. El desfase entre Fly y `main` ya mordió dos veces sin
+#  que nada avisara: el síntoma no era un error sino números peores. Esto lo
+#  pregunta a diario comparando /api/health con el repositorio.
 #
-#  Ya mordió dos veces. La peor: seis días con el motor leyendo 37 feeds cuando
-#  el registro de `main` tenía 39, y tres secciones de la portada contando en
-#  cero. El síntoma no era un fallo, eran números peores — la clase de avería
-#  que solo aparece si alguien va a buscarla.
+#  POR QUÉ ABRE ISSUE, Y NO SIEMPRE LO HIZO (añadido el 2026-09-01). La versión
+#  original se apoyaba en que «GitHub ya avisa de los workflows que fallan», y
+#  la evidencia dice que no: la pasada del 2026-08-31 salió en rojo, el desfase
+#  que acusaba —Fly tres commits por detrás— siguió abierto, y se descubrió al
+#  día siguiente por una auditoría, no por el aviso. Es el mismo agujero que
+#  costó trece días de copia de seguridad: un rojo en la pestaña de Actions no
+#  es un aviso, es un registro. Ahora este vigilante habla por el mismo canal
+#  que los otros cuatro.
 #
-#  DOS COMPROBACIONES, Y LA SEGUNDA ES LA QUE SIEMPRE FUNCIONA
-#
-#  1. El commit. `/api/health` publica el `GIT_SHA` con el que se construyó la
-#     imagen. Si no coincide con el de `main`, hay desfase y se dice cuántos
-#     commits.
-#
-#  2. El número de feeds. Se compara el que reporta la API con el que sale del
-#     registro en `main`. Funciona AUNQUE la imagen no esté marcada, y fue así
-#     como se detectó el desfase la primera vez.
-#
-#  Si la imagen se desplegó con `fly deploy` a secas, el commit viene como
-#  «desconocido» y esto lo dice en voz alta en vez de dar el despliegue por
-#  bueno. Una comprobación que calla cuando no puede comprobar es peor que no
-#  tenerla: da confianza sin respaldo.
+#  EL ISSUE SÍ SE CIERRA SOLO, a diferencia del de la auditoría: «Fly volvió a
+#  coincidir con main» es un hecho que la máquina puede comprobar, no una
+#  decisión que espera a una persona.
 # =============================================================================
 
 name: Desfase de despliegue
 
 on:
   schedule:
-    # 13:00 UTC ≈ 08:00 en Colombia: el aviso llega al empezar el día, no de
-    # madrugada, porque exige una acción manual de una persona.
+    # 13:00 UTC ≈ 08:00 en Colombia, después del despliegue nocturno si lo hubo.
     - cron: '0 13 * * *'
   workflow_dispatch:
+
+# `issues: write` para el aviso; nada más.
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   comprobar:
@@ -43,8 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          # Hace falta el historial para poder contar cuántos commits de
-          # distancia hay; con el clon superficial solo se sabría que difieren.
           fetch-depth: 0
 
       - uses: actions/setup-node@v5
@@ -52,6 +47,83 @@ jobs:
           node-version: '22'
 
       - name: Comparar lo desplegado con main
-        run: node .github/scripts/comprobarDesfase.mjs
+        id: comprobacion
+        continue-on-error: true
+        run: node .github/scripts/comprobarDesfase.mjs 2>&1 | tee "$RUNNER_TEMP/desfase.txt"
         env:
           SALUD_URL: https://doblefoco.fly.dev/api/health
+
+      # Se busca por etiqueta y no por título, como en los demás vigilantes: el
+      # título lleva la fecha y buscarlo abriría un issue nuevo por día.
+      - name: Asegurar la etiqueta
+        if: steps.comprobacion.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create desfase \
+            --color B60205 \
+            --description "Fly no corre el código de main" \
+            --force
+
+      - name: Buscar el aviso abierto
+        id: abierto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          numero=$(gh issue list --label desfase --state open \
+                     --limit 1 --json number --jq '.[0].number // empty')
+          echo "numero=$numero" >> "$GITHUB_OUTPUT"
+
+      # `--assignee` no es un adorno: un issue asignado dispara el correo de
+      # GitHub, y el correo es la única bandeja que esta casa mira a diario. Los
+      # issues sin asignar del centinela y de la auditoría llevan semanas
+      # abiertos sin lectura; esa es la medida de lo que vale un issue sin
+      # asignar.
+      - name: Abrir o actualizar el aviso
+        if: steps.comprobacion.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "**Fly no corre el código de main.** Mientras esto siga abierto, lo que se"
+            echo "publica en el sitio no es lo que dice el repositorio."
+            echo
+            echo "Salida completa:"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/desfase.txt"
+            echo '```'
+            echo
+            echo "Se corrige con \`cd doblefoco-app && npm run deploy\` — o, desde que existe"
+            echo "\`desplegar-motor.yml\` con su secreto, con cualquier push que toque la imagen."
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/cuerpo.md"
+
+          if [ -n "$NUMERO" ]; then
+            gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
+          else
+            gh issue create \
+              --title "Desfase de despliegue — $(date -u '+%Y-%m-%d')" \
+              --label desfase \
+              --assignee Steinhjk \
+              --body-file "$RUNNER_TEMP/cuerpo.md"
+          fi
+
+      - name: Cerrar el aviso si ya coinciden
+        if: steps.comprobacion.outcome == 'success' && steps.abierto.outputs.numero != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+        run: |
+          gh issue close "$NUMERO" --comment \
+            "Recuperado: Fly volvió a coincidir con main el $(date -u '+%Y-%m-%d %H:%M UTC')."
+
+      # El job queda en rojo igual: el issue es el aviso, el aspa es el registro.
+      - name: Reflejar el resultado
+        if: steps.comprobacion.outcome == 'failure'
+        run: |
+          echo "Hay desfase; el issue tiene el detalle."
+          exit 1

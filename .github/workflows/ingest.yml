@@ -110,3 +110,7 @@ jobs:
         run: npm run ingest:once
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Firma del ciclo en `ingest_runs.actor`: la vigilancia usa esta marca
+          # para detectar el relevo silencioso —el motor muerto y solo la red
+          # escribiendo—, que sin ella es invisible.
+          INGEST_ACTOR: red-de-seguridad

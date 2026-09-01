@@ -92,6 +92,10 @@ una dependencia de un tercero.
 2026-07-30. Es una lista de cabeceras con aspecto de configuración que no
 protege nada; la CSP real está en `vercel.json`.
 *La pregunta:* ¿se borra, o se deja como referencia?
+**RESUELTA el 2026-09-01:** se borró en la rama `integracion/etapa-0` junto a
+`public/_headers` y `public/_redirects`, que tampoco leía nadie —Vercel ignora
+esas convenciones de Netlify—. La CSP vive solo en `vercel.json`, guardada por
+`csp.test.js`.
 
 ---
 

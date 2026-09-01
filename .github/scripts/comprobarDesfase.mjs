@@ -1,9 +1,11 @@
 /**
  * ¿Corre Fly lo que hay en main? Lo ejecuta .github/workflows/desfase.yml.
  *
- * Sale con 1 cuando hay desfase, para que el fallo del workflow sea el aviso.
- * No manda correos por su cuenta: GitHub ya avisa de los workflows que fallan,
- * y añadir un segundo canal sería otra cosa que mantener.
+ * Sale con 1 cuando hay desfase. El aviso lo pone el workflow: abre un issue
+ * asignado, porque la premisa original de este archivo —«GitHub ya avisa de
+ * los workflows que fallan»— resultó falsa en la práctica: la pasada del
+ * 2026-08-31 falló en silencio y el desfase se descubrió al día siguiente
+ * por una auditoría, no por el rojo de Actions.
  */
 
 import { execFileSync } from 'node:child_process';

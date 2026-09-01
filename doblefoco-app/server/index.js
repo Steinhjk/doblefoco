@@ -122,7 +122,7 @@ app.use(express.json({ limit: '32kb' }));
 /**
  * Cabeceras de seguridad de la API.
  *
- * El sitio estático ya las lleva en vercel.json y public/_headers, pero la API
+ * El sitio estático ya las lleva en vercel.json, pero la API
  * es un origen distinto y sirve las suyas: una cabecera puesta en el frontend
  * no protege las respuestas del backend.
  */

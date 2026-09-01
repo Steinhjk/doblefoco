@@ -999,6 +999,10 @@ export async function runIngestionBatch() {
             totalArticles: report.totalArticles,
             totalStories: report.totalStories,
             ventanaHoras: report.ventanaHoras,
+            // Quién corre este proceso lo declara el punto de entrada
+            // (ingestWorker → 'motor', ingestOnce → 'manual' salvo que
+            // Actions diga 'red-de-seguridad'). El daemon no lo adivina.
+            actor: process.env.INGEST_ACTOR ?? null,
             ...shape,
         };
 

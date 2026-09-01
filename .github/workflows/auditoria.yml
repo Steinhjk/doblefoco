@@ -206,6 +206,7 @@ jobs:
             gh issue create \
               --title "Auditoría — $(date -u '+%Y-%m-%d'): $NUEVOS nuevo(s), $SIN_CERRAR sin cerrar" \
               --label auditoria \
+              --assignee Steinhjk \
               --body-file "$RUNNER_TEMP/cuerpo.md"
           fi
 
@@ -239,6 +240,7 @@ jobs:
           gh issue create \
             --title "Auditoría rota — $(date -u '+%Y-%m-%d')" \
             --label auditoria \
+            --assignee Steinhjk \
             --body-file "$RUNNER_TEMP/averia.md"
 
           exit 1

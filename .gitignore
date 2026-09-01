@@ -51,7 +51,6 @@ pnpm-debug.log*
 *.sw?
 
 .vercel
-.env*
 
 # Worktrees y estado local de la herramienta, no del proyecto.
 .claude/

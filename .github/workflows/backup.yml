@@ -22,6 +22,19 @@
 #  haría por defecto, habría publicado las tres a diario y en horario.
 #  Si algún día hay que respaldar alguna de ellas, la conversación es sobre
 #  cifrado, no sobre añadirla a la lista.
+#
+#  POR QUÉ ESTO ABRE UN ISSUE (añadido el 2026-08-31). Porque no lo hacía, y
+#  costó trece días de respaldo. El 2026-08-18 entró el archivo de conducta con
+#  dos tablas nuevas; el guardián de backup.mjs las vio sin clasificar y rompió
+#  la ejecución, que es exactamente lo que tiene que hacer. Pero este era el
+#  ÚNICO de los cuatro flujos vigilantes que no avisaba —vigilancia, auditoría y
+#  centinela sí—, así que el rojo se quedó en Actions donde no lo mira nadie, y
+#  se descubrió por casualidad el 26 de agosto.
+#
+#  Un vigilante que acusa donde nadie lee no es un vigilante. Y aquí duele más
+#  que en los otros tres: los artículos se descartan a las 72 horas, así que
+#  esta copia es lo único permanente que tiene el proyecto. Trece días en rojo
+#  fueron trece días en que perder la base habría sido irreversible.
 # =============================================================================
 
 name: Copia de seguridad
@@ -32,6 +45,11 @@ on:
     # antes de que nadie mire el sitio.
     - cron: '20 7 * * *'
   workflow_dispatch:
+
+# Solo para abrir, comentar y cerrar el issue de aviso. Nada más.
+permissions:
+  contents: read
+  issues: write
 
 concurrency:
   group: backup
@@ -62,12 +80,26 @@ jobs:
       # ejecución: un respaldo que sale en verde sin contenido es peor que no
       # tener respaldo, porque crea la confianza sin la copia, y eso solo se
       # descubre el día que hace falta.
+      #
+      # `continue-on-error` NO significa que dé igual: el resultado se guarda,
+      # el artefacto no se sube y el último paso vuelve a poner el job en rojo.
+      # Existe para que los pasos del aviso lleguen a correr, porque un fallo
+      # aquí los saltaría — que es justo lo que pasaba antes.
+      #
+      # La salida se guarda además en un fichero para meterla en el issue: un
+      # aviso que dice «algo falló, mira los logs» obliga a abrir Actions, y
+      # entonces no ha ahorrado nada. Aquí el mensaje del guardián YA dice qué
+      # hacer («añádelas a TABLAS o a EXCLUIDAS, con su motivo»), así que
+      # copiarlo al issue es copiar la instrucción entera.
       - name: Exportar
-        run: npm run backup
+        id: exportar
+        continue-on-error: true
+        run: npm run backup 2>&1 | tee "$RUNNER_TEMP/copia.txt"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Guardar el artefacto
+        if: steps.exportar.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: doblefoco-backup-${{ github.run_id }}
@@ -78,3 +110,75 @@ jobs:
           # almacenamiento por copias que nadie va a mirar.
           retention-days: 30
           if-no-files-found: error
+
+      # ── Aviso ──────────────────────────────────────────────────────────────
+      # Se busca por etiqueta y no por título, igual que en vigilancia.yml: el
+      # título lleva la fecha, así que buscarlo abriría un issue nuevo cada día
+      # del mismo incidente. Trece días habrían sido trece issues.
+      - name: Asegurar la etiqueta
+        if: steps.exportar.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create copia \
+            --color B60205 \
+            --description "La copia de seguridad diaria no se pudo hacer" \
+            --force
+
+      - name: Buscar el aviso abierto
+        id: abierto
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          numero=$(gh issue list --label copia --state open \
+                     --limit 1 --json number --jq '.[0].number // empty')
+          echo "numero=$numero" >> "$GITHUB_OUTPUT"
+
+      - name: Abrir o actualizar el aviso
+        if: steps.exportar.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+          ENLACE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "**No hay copia de seguridad de hoy.** Los artículos se descartan"
+            echo "a las 72 h, así que mientras esto siga en rojo no existe ninguna"
+            echo "copia de lo que no se puede reconstruir."
+            echo
+            echo "Salida completa:"
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/copia.txt"
+            echo '```'
+            echo
+            echo "[Ver la ejecución completa]($ENLACE)"
+          } > "$RUNNER_TEMP/cuerpo.md"
+
+          if [ -n "$NUMERO" ]; then
+            # Sigue roto desde ayer: se comenta, no se abre otro.
+            gh issue comment "$NUMERO" --body-file "$RUNNER_TEMP/cuerpo.md"
+          else
+            gh issue create \
+              --title "Sin copia de seguridad — $(date -u '+%Y-%m-%d')" \
+              --label copia \
+              --body-file "$RUNNER_TEMP/cuerpo.md"
+          fi
+
+      - name: Cerrar el aviso si ya se recuperó
+        if: steps.exportar.outcome == 'success' && steps.abierto.outputs.numero != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMERO: ${{ steps.abierto.outputs.numero }}
+        run: |
+          gh issue close "$NUMERO" --comment \
+            "Recuperada: la copia volvió a hacerse el $(date -u '+%Y-%m-%d %H:%M UTC')."
+
+      # El job tiene que quedar en rojo igual. El issue es el aviso; el aspa
+      # sigue siendo el registro, y un job en verde con un issue abierto sería
+      # una contradicción que acabaría creyéndose la parte cómoda.
+      - name: Reflejar el resultado
+        if: steps.exportar.outcome == 'failure'
+        run: |
+          echo "La copia falló; hay un issue abierto con el detalle."
+          exit 1

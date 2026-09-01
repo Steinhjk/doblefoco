@@ -20,6 +20,18 @@
  *
  * NO SOBRESCRIBE. Todo va con ON CONFLICT DO NOTHING: restaurar dos veces no
  * duplica, y restaurar sobre una base viva no pisa lo que ya haya.
+ *
+ * ESTA LISTA Y LA DE backup.mjs SON DOS, Y PUEDEN DIVERGIR. Es el defecto que
+ * este repositorio persigue en todas partes: dos listas escritas a mano que
+ * dicen cosas distintas sin que nada salte. Aquí la divergencia es peor que en
+ * otros sitios, porque la dirección del fallo es SILENCIOSA — una tabla que se
+ * respalda y no se restaura no da error, da una restauración incompleta que
+ * parece completa, y eso solo se descubre el día que hace falta.
+ *
+ * Por eso, más abajo, un `.ndjson` de la copia que esta lista no conozca ROMPE
+ * la restauración en vez de saltárselo. Se descubrió el 2026-08-31, al añadir
+ * las dos tablas del archivo de conducta: entraban en el respaldo y salían por
+ * aquí sin decir una palabra.
  */
 
 import { readFile, readdir } from 'node:fs/promises';
@@ -49,6 +61,10 @@ const carpeta = isAbsolute(carpetaArg) ? carpetaArg : resolve(ROOT, carpetaArg);
  */
 const ORDEN = [
     { tabla: 'ingest_runs', conflicto: '(at)' },
+    // No dependen de nadie: son identificadores en texto, sin clave foránea.
+    // Van antes que moderation por eso, no por preferencia.
+    { tabla: 'conducta_archivo', conflicto: '(story_id, source_id)' },
+    { tabla: 'conducta_archivo_runs', conflicto: '(at)' },
     { tabla: 'moderation', conflicto: '(story_id)' },
     { tabla: 'reader_reports', conflicto: '' },
     { tabla: 'reportes_propiedad', conflicto: '' },
@@ -70,6 +86,20 @@ try {
 
 console.log(`\n  RESTAURACIÓN — DobleFoco${dryRun ? '  (ENSAYO, no escribe)' : ''}`);
 console.log(`  origen: ${carpetaArg}\n`);
+
+// ¿Trae la copia alguna tabla que esta lista no sepa restaurar? Ver la cabecera.
+const conocidas = new Set(ORDEN.map((o) => `${o.tabla}.ndjson`));
+const huerfanos = archivos.filter((a) => a.endsWith('.ndjson') && !conocidas.has(a));
+
+if (huerfanos.length) {
+    console.error(
+        '  ✗ La copia trae tablas que esta restauración no sabe devolver: ' +
+        `${huerfanos.map((a) => a.replace('.ndjson', '')).join(', ')}` + '\n' +
+        '    Añádelas a ORDEN en scripts/restore.mjs, con su columna de conflicto.\n'
+    );
+    await closePool();
+    process.exit(1);
+}
 
 for (const { tabla, conflicto } of ORDEN) {
     const archivo = `${tabla}.ndjson`;

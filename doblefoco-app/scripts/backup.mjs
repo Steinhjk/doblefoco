@@ -26,6 +26,14 @@
  * ASÍ QUE SE ELIGE QUÉ SE GUARDA, Y SE DICE POR QUÉ. La lista de abajo es la
  * decisión, no un detalle de implementación.
  *
+ * EL GUARDIÁN DE TABLAS SIN DECIDIR FUNCIONA, Y HAY QUE LEER LO QUE DICE. El
+ * 2026-08-18 entró el archivo de conducta con dos tablas nuevas, nadie las
+ * clasificó, y esto rompió la ejecución como está diseñado que haga. Estuvo
+ * trece días en rojo sin que nadie lo viera, porque backup.yml era el único
+ * flujo vigilante que no abría issue. Se arreglaron las dos cosas el 2026-08-31.
+ * La ironía que conviene no olvidar: la tabla que rompió el respaldo era
+ * precisamente la que se creó por ser lo único imposible de reconstruir.
+ *
  * CÓMO SE RESTAURA
  * ----------------
  *   1. `npm run db:migrate` sobre la base nueva. Crea el esquema y proyecta los
@@ -58,6 +66,25 @@ const TABLAS = [
         porque:
             'La serie de F1-01. Es LO único verdaderamente irrecuperable: mide ' +
             'ciclos que ya ocurrieron y no se pueden volver a observar.',
+    },
+    {
+        nombre: 'conducta_archivo',
+        porque:
+            'El par (historia, medio) con su fecha. Cumple las dos condiciones ' +
+            'a la vez y de forma más literal que ninguna otra: es irreemplazable ' +
+            '—se archiva justo porque la purga de 72 h se lo llevaba— y no tiene ' +
+            'datos personales, porque son dos identificadores y una fecha, ni un ' +
+            'titular ni un enlace. Sin esto, la medición a los 90 días que ' +
+            'prometen cuarenta fichas no puede ocurrir.',
+    },
+    {
+        nombre: 'conducta_archivo_runs',
+        porque:
+            'Los huecos del archivador. Va con la tabla de arriba y no sin ella: ' +
+            'sin estas filas, un archivador que no corrió tres días es ' +
+            'indistinguible de tres días sin noticias, y la ventana de 90 días ' +
+            'leería un agujero de datos como silencio editorial. Restaurar la ' +
+            'conducta sin sus huecos sería restaurar una serie que miente.',
     },
     {
         nombre: 'moderation',

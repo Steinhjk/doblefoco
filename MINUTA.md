@@ -547,6 +547,21 @@ lento» de «roto». Nada lo lee todavía, a propósito.
   lectura; la regla por cadencia (Etapa 3) se implementa con esa serie, no
   antes.
 
+## 2026-09-01 · La 2.2 ya estaba hecha desde el 24 de agosto, y dos planes la daban por pendiente
+
+Al ir a hacer la **2.2** del plan de producto —el check de `group` /
+`controlGroup` en `check:registry` (2-C / D-3)— resultó que **ya existe**:
+entró el 2026-08-24 en `3f35b9d`, el mismo día de la revisión de Kimi que la
+pidió, con las dos comprobaciones que pedía D-3 (la discrepancia entre casa y
+marca se enseña como información, y las variantes por tildes o mayúsculas son
+error). `npm run check:registry` pasa hoy con 78 medios y sin errores.
+
+**Lo que falló no es el código: es la cuenta.** `PLAN_CONTINUIDAD.md` (del 26)
+y `PLAN_PRODUCTO_FINAL.md` (del 1 de septiembre) la listaron como pendiente de
+dos horas, porque nadie la anotó aquí al cerrarla. Es la enfermedad del 19 al
+revés: un documento que describe una tarea que ya ocurrió. Se anota ahora, se
+marca en la tabla del plan, y no se rehace.
+
 ## 2026-09-01 · Lo que el sitio afirmaba de sí mismo, y la tarjeta vacía
 
 **Salió del estudio de mercadeo del 31 de agosto**, y lo que unía a las cuatro

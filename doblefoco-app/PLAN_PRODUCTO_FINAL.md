@@ -87,8 +87,8 @@ Puede empezar hoy, en paralelo con las etapas 0 y 1.
 
 | # | Tarea | Origen | Cuánto |
 |---|---|---|---|
-| 2.1 | **Grabar la cadencia por medio** — solo acumular, sin usar | 2-A / T2-3 | 1 día, **y es urgente por calendario**: su utilidad llega sola a los 30–90 días |
-| 2.2 | Check de `group`/`controlGroup` en `check:registry` | 2-C / D-3 | 2 h |
+| 2.1 | **Grabar la cadencia por medio** — solo acumular, sin usar. **Hecha y estrenada el 2026-09-01** (PR #7); ver `MINUTA.md` | 2-A / T2-3 | 1 día, **y es urgente por calendario**: su utilidad llega sola a los 30–90 días |
+| 2.2 | Check de `group`/`controlGroup` en `check:registry` — **ya estaba hecho desde el 2026-08-24 (`3f35b9d`)**; ver `MINUTA.md` | 2-C / D-3 | — |
 | 2.3 | Una sola consulta compartida en la portada | 2-D / T2-2 | 2–3 días |
 | 2.4 | Serializador único de rehidratación + prueba de ida y vuelta | Kimi E-3 | 1 día |
 | 2.5 | Fichas nuevas según la prioridad que salga de 1.6 — el alta ya no espera a la ficha, pero la deuda se paga | 1-G | continuo, por tandas |

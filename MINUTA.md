@@ -47,6 +47,54 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## De la auditoría de integración del 2026-09-01
+
+Pedida por Jose: una auditoría de la integración entre sistemas, con sus
+hallazgos en `doblefoco-app/AUDITORIA_INTEGRACION_2026-09.md` y un plan que
+sucede al de continuidad: `doblefoco-app/PLAN_PRODUCTO_FINAL.md`. Todo se
+midió contra el sistema vivo. Lo nuevo que queda pendiente, con su código:
+
+- **I-2 · El vigilante del desfase no abre issue** — es el único de los cinco
+  sin timbre; su fallo del 31/08 no lo vio nadie y el desfase que acusaba (Fly
+  en `2c82323`, main en `c872ddb`) sigue vivo. Copiarle el patrón de
+  `vigilancia.yml`. **HECHO el 2026-09-01 en `integracion/etapa-0`**; además
+  la cabecera de `comprobarDesfase.mjs` ya no afirma que «GitHub ya avisa»,
+  porque el 31/08 demostró que no. Se cierra al fusionar.
+- **I-3 · Los issues de los vigilantes no llegan a ninguna bandeja leída** — el
+  del centinela lleva desde el 24/08 sin abrirse. Abrirlos con `--assignee`
+  para que GitHub mande correo. **HECHO el 2026-09-01 en la rama**: los siete
+  issues de vigilante (vigilancia, auditoría ×2, centinela ×2, copia, y los
+  nuevos de desfase y archivo) se abren asignados.
+- **I-4 · Nada avisa si la copia deja de CORRER** (el fallo sí avisa; la
+  ausencia no). Hombre-muerto en la vigilancia: última ejecución exitosa de
+  `backup.yml` con más de 48 h, se acusa. **HECHO el 2026-09-01 en la rama**,
+  y cubre también `archivo.yml` —que resultó ser el ÚLTIMO flujo que escribe
+  algo irreemplazable sin timbre propio: ahora abre issue al fallar, como la
+  copia—.
+- **I-5 · Configuración muerta que instruye:** `public/_headers` (CSP vieja,
+  aún con unsplash; Vercel no lo lee), `public/_redirects` (catch-all que
+  rompería el SSR en otro host) y `securityService.js` (cero imports, duda
+  10). Borrar los tres y corregir el comentario de `.env.example` que manda
+  mantenerlos. **HECHO el 2026-09-01 en la rama**: borrados los tres, y los
+  comentarios de `.env.example` y `server/index.js` dicen ahora dónde vive la
+  única CSP. También el `.env*` huérfano del `.gitignore` de la raíz.
+- **I-6 · `api.doblefoco.co` está en la CSP y el DNS no existe.** Crear el
+  CNAME (recomendado: despega al cliente del hostname de Fly) o retirarlo.
+  **ABIERTO — decisión de una frase de Jose.**
+- **I-8 · El relevo a la red de seguridad de 2 h es silencioso** y con Infobae a
+  margen 0,09 pierde el 91 % sin aviso. Acusar desde la vigilancia cuando la
+  ingesta lleve horas sin pasada del motor. **HECHO el 2026-09-01 en la rama**:
+  columna `actor` en `ingest_runs` (motor / red-de-seguridad / manual, firmada
+  por cada punto de entrada), y la vigilancia acusa si el motor calla 3 h
+  mientras otro lo suple —sin acusar mientras la columna no tenga firmas, para
+  que el aviso no nazca en rojo—.
+- **I-9 · El repositorio vive dentro de OneDrive** — locks y sync de
+  `node_modules` y `.git`. Excluirlo de la sincronización. **ABIERTO —
+  trámite de Jose, 15 min.**
+
+Lo demás que encontró la auditoría ya estaba en esta minuta con otro nombre
+(I-1 es el secreto de Fly; I-7 es el handshake 2-B) y no se duplica.
+
 ## Del repaso de memos y auditorías del 2026-08-26
 
 Pedido de Jose: poner los memos y las auditorías al día del estado real y

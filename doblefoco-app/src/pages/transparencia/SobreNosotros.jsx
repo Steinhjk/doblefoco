@@ -6,6 +6,7 @@ import metodologiaText from '../../docs/metodologia.txt?raw';
 import catalogoText from '../../docs/catalogo_medios.txt?raw';
 import modeloText from '../../docs/modelo_sesgo.txt?raw';
 import { MEDIA_REGISTRY } from '../../../shared/mediaRegistry';
+import { fraseDeFirmas } from '../../lib/catalogo';
 import './SobreNosotros.css';
 
 /**
@@ -27,7 +28,15 @@ const SobreNosotros = () => {
         <div className="about-page">
             <div className="about-hero">
                 <h2 className="sn-titulo">Sobre DobleFoco.co</h2>
-                <p className="tagline">Información objetiva para un ciudadano informado.</p>
+                {/*
+                  * DECÍA «Información objetiva para un ciudadano informado», y era la
+                  * frase que este proyecto tiene prohibida por escrito: proclamar una
+                  * virtud que la medición no sostiene. Y estaba a dos clics de
+                  * /transparencia/clasificacion, que dice literalmente «no significa
+                  * neutral, imparcial ni objetivo». El sitio se contradecía dentro de
+                  * su propia sección de transparencia. Corregido el 2026-08-31.
+                  */}
+                <p className="tagline">Quién está contando cada noticia, y quién no.</p>
             </div>
 
             <div className="about-content">
@@ -35,16 +44,20 @@ const SobreNosotros = () => {
                     <section className="about-section">
                         <h2>Nuestra Misión</h2>
                         <p>
-                            DobleFoco.co es una plataforma dedicada a promover la objetividad
-                            en los medios de comunicación colombianos. Creemos que el acceso a
-                            información veraz y sin sesgos es fundamental para una democracia sana
-                            y ciudadanos empoderados.
+                            DobleFoco.co reúne la cobertura de los medios colombianos sobre un
+                            mismo hecho y enseña <strong>quién lo está contando y quién no</strong>,
+                            con quién es dueño de cada medio al lado. No verificamos si una noticia
+                            es cierta: eso es otro oficio. Clasificamos organizaciones, no piezas, y
+                            publicamos cómo lo hacemos.
                         </p>
                         <p>
-                            En un mundo donde la polarización mediática fragmenta la conversación
-                            pública, ofrecemos una herramienta que reúne perspectivas diversas bajo
-                            un mismo techo, inspirados en los estándares internacionales de Ground News,
-                            para permitirte ver el panorama completo de cada historia.
+                            <strong>No buscamos el equilibrio, buscamos que se vea el
+                            desequilibrio.</strong> En Colombia el espacio mediático no está
+                            repartido: contando cabezas, los medios de izquierda son cerca de un
+                            cuarto del catálogo; pesando lo que cada uno publica, son el 3 % de los
+                            artículos. Presentar eso como «las dos caras de la historia» sería
+                            blanquearlo. Un agregador que finge simetría donde no la hay le hace un
+                            favor a quien se beneficia de la asimetría.
                         </p>
                     </section>
                 </AnimateIn>
@@ -86,9 +99,10 @@ const SobreNosotros = () => {
                             de cada sector la cuentan y cuáles la están omitiendo.
                         </p>
                         <p>
-                            Ninguna de las {MEDIA_REGISTRY.length} clasificaciones ha pasado aún por revisión
-                            editorial formal, así que las publicamos marcadas como provisionales, cada una con
-                            su justificación al lado. Están para ser discutidas.
+                            {fraseDeFirmas()} Las que no la llevan se publican marcadas como
+                            provisionales, cada una con su justificación al lado. Están para ser
+                            discutidas: si cree que una está mal, la sección de{' '}
+                            <strong>limitaciones</strong> dice cómo objetarla.
                         </p>
                         <button
                             className="methodology-toggle-btn"
@@ -159,7 +173,9 @@ const SobreNosotros = () => {
                         <ul className="values-list">
                             <li><strong>Transparencia:</strong> Mostramos abiertamente cómo clasificamos las fuentes.</li>
                             <li><strong>Independencia:</strong> No recibimos financiación de partidos políticos ni grupos de interés.</li>
-                            <li><strong>Accesibilidad:</strong> Creemos que la información objetiva debe estar al alcance de todos.</li>
+                            <li><strong>Decir lo que no sabemos:</strong> Las clasificaciones sin
+                            firmar, los medios cuya propiedad no consta y las cifras que todavía no
+                            cuadran están publicados, no escondidos.</li>
                         </ul>
                     </section>
                 </AnimateIn>

@@ -4,6 +4,7 @@ import { Layers, CalendarClock, Radar, CircleSlash } from 'lucide-react';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry.js';
 import { OWNERSHIP_PROFILES } from '../../shared/mediaOwnership.js';
 import { VIGILANCIA } from '../../shared/centinela.js';
+import { SIN_FIRMAR } from '../lib/catalogo.js';
 import estadoCentinela from '../../centinela/estado.json';
 import './EstadoDelCatalogo.css';
 
@@ -61,7 +62,10 @@ const AHORA = Date.now();
 
 const EstadoDelCatalogo = () => {
     const datos = useMemo(() => {
-        const sinFirmar = MEDIA_REGISTRY.filter((m) => !m.reviewedAt).length;
+        // La cuenta viene de `lib/catalogo.js`, que es donde vive la definición
+        // de «firmada» desde el 2026-08-31. Estaba escrita aquí y otra vez en la
+        // página de transparencia, y allí se desincronizó de su propia frase.
+        const sinFirmar = SIN_FIRMAR;
         const fichas = Object.values(OWNERSHIP_PROFILES);
         const sinComprobar = fichas.filter((f) => !f.verifiedAt).length;
 

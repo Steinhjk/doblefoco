@@ -2,22 +2,43 @@
     width: 100%;
 }
 
+/*
+ * EL ENCABEZADO ERA BLANCO SOBRE BLANCO, Y LLEVABA ASÍ DESDE QUE HAY TEMA CLARO.
+ *
+ * Encontrado el 2026-09-01 mirando la página, no leyendo el código. Aquí había
+ * un `color: white` fijo sobre un degradado que sale de `--hero-from` y
+ * `--hero-to`, y esas dos variables valen **#f8fafc y #f1f5f9 en el tema
+ * claro**: blanco puro sobre casi blanco, una relación de contraste de 1,03:1.
+ * El título de «Sobre DobleFoco.co» y su lema eran literalmente invisibles para
+ * cualquiera que no tuviera el sitio en oscuro. En una página de transparencia.
+ *
+ * Y HABÍA UN SEGUNDO FALLO DEBAJO, DE LA MISMA FAMILIA QUE EL DE TENDENCIAS:
+ * esta hoja estilaba `.about-hero h1` y el JSX renderiza un
+ * `<h2 className="sn-titulo">`. La regla del tamaño no se aplicaba nunca, así
+ * que el título caía al tamaño por defecto del navegador. Es la TERCERA vez que
+ * este proyecto pierde estilos en la costura JSX↔CSS —antes fueron los puntos
+ * del mapa y el titular de Tendencias— y por eso ahora se apunta a la clase y
+ * no a la etiqueta: una clase no cambia sola cuando alguien reescribe el
+ * marcado. Lo obliga `SobreNosotros.layout.test.js`.
+ */
 .about-hero {
     background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
-    color: white;
+    color: var(--text-main);
     padding: 80px 20px;
     text-align: center;
 }
 
-.about-hero h1 {
+.about-hero .sn-titulo {
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 12px;
 }
 
+/* El lema iba a `opacity: 0.9`, que sobre un fondo claro solo lo acercaba más
+   al fondo. Va al color apagado del sistema, que está pensado para esto. */
 .about-hero .tagline {
     font-size: 1.2rem;
-    opacity: 0.9;
+    color: var(--text-muted);
 }
 
 .about-content {

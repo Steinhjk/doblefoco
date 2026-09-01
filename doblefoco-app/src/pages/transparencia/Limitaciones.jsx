@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AlertTriangle, Mail } from 'lucide-react';
 import { MEDIA_REGISTRY } from '../../../shared/mediaRegistry';
+import { fraseDeFirmas, fraseDePropiedad } from '../../lib/catalogo';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '../../lib/contacto';
 import './Transparencia.css';
 
@@ -12,7 +13,17 @@ import './Transparencia.css';
  * cambio de estructura no arrastrara cambios de contenido sin querer.
  */
 const ACTIVE_FEEDS = MEDIA_REGISTRY.filter((m) => m.feed?.url).length;
-const REVIEWED = MEDIA_REGISTRY.filter((m) => m.reviewedAt).length;
+
+/*
+ * LAS DOS AFIRMACIONES DE ABAJO SE ESCRIBEN SOLAS, Y ESO ES EL ARREGLO.
+ *
+ * Aquí había un `REVIEWED` que contaba las firmadas, junto a una frase fija que
+ * empezaba «Ninguna de las 78 clasificaciones está firmada». Cuando el contador
+ * pasó de 0 a 5, el número se movió y la frase no: durante semanas esta página
+ * se contradijo a sí misma en dos oraciones seguidas. Lo mismo pasaba con la
+ * propiedad, que afirmaba constar la de todos los medios «con una excepción»
+ * cuando eran quince. Ver `src/lib/catalogo.js`.
+ */
 
 const TrLimitaciones = () => (
     <>
@@ -24,9 +35,8 @@ const TrLimitaciones = () => (
         </p>
         <ul className="tr-limits">
             <li>
-                <strong>Ninguna de las {MEDIA_REGISTRY.length} clasificaciones está
-                firmada.</strong> {REVIEWED === 0 ? 'Cero' : REVIEWED} han pasado por
-                revisión editorial formal. Se publican marcadas como provisionales.
+                <strong>{fraseDeFirmas()}</strong> Las que no la llevan se publican
+                marcadas como provisionales, cada una con su justificación al lado.
             </li>
             <li>
                 <strong>El catálogo está desequilibrado, y más de lo que parece.</strong>{' '}
@@ -43,13 +53,22 @@ const TrLimitaciones = () => (
                 pieza es otro oficio.
             </li>
             <li>
-                <strong>Falta un nombre propio.</strong> Todos los medios del catálogo
-                tienen documentado quién los controla, con la fuente al lado, y en los
-                colombianos el hilo llega hasta las personas. Con una excepción: de{' '}
+                <strong>De algunos medios no consta quién manda.</strong>{' '}
+                {fraseDePropiedad()} Casi todos son prensa regional que no publica su
+                mástil, y ahí no saber es lo corriente: de veintisiete candidatos que se
+                revisaron, diecisiete no dicen quién los edita. Pero no siempre es por
+                falta de datos — de <strong>Cablenoticias</strong> consta la estructura
+                societaria entera y la fuente que la trae se actualizó por última vez en
+                2018, así que tampoco afirmamos que hoy sea suya.
+            </li>
+            <li>
+                <strong>Y a veces el hilo se para antes de una persona.</strong> De{' '}
                 <strong>Colombia Informa</strong> conocemos la razón social —Corporación
                 Colombia Informa, NIT 900.408.141-8—, cómo se financia y con qué red
                 trabaja, pero no quién la representa legalmente. Ese dato es público y está
-                en el RUES; hasta tenerlo en la mano no escribimos ningún nombre. Saber
+                en el RUES; hasta tenerlo en la mano no escribimos ningún nombre. No es el
+                único caso: en Pulzo, en los tres medios de la Organización Ardila Lülle y
+                en el propio Cablenoticias el rastro termina en otra sociedad. Saber
                 quién es dueño de un medio importa tanto como su línea editorial, y por eso
                 mismo no se afirma de oídas.
             </li>

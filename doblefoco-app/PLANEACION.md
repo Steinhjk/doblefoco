@@ -30,6 +30,160 @@ idea completa olvidada. Si falta detalle, se escribe qué falta y quién lo sabe
 
 ---
 
+## ABIERTO · Salir a hacer mercadeo — qué hay que mirar antes
+
+**Planteado por Jose el 2026-08-31:** «empecemos a pensar en los últimos toques
+para salir a hacer mercadeo a la página… estudia y explícame lo que debería
+considerar antes de empezar a rotar la página por ahí».
+
+Esto no es todavía una tarea: es lo que salió de **medir el sitio en producción**
+ese día, ordenado por lo que costaría más si se promociona sin tocarlo. **Nada de
+esto está decidido.**
+
+### Lo primero, porque el riesgo es asimétrico: lo que el sitio AFIRMA
+
+Este sitio clasifica políticamente a 78 medios reales con nombre propio y nombra
+a sus dueños. Mientras nadie lo mira, un error es un error. Con tráfico, un error
+es una carta de un abogado — y el primer sitio que va a leer quien venga a
+discutir es `/transparencia/limitaciones`, que es justo donde hoy hay dos fallos:
+
+1. **La página se contradice a sí misma en dos frases seguidas.** Hoy se lee,
+   literal: *«Ninguna de las 78 clasificaciones está firmada. 5 han pasado por
+   revisión editorial formal.»* La primera frase es texto fijo y el 5 es un
+   contador que se movió debajo. Es el defecto más barato de arreglar y el más
+   caro si lo encuentra un tercero: está en la página que promete transparencia.
+2. **Afirma más de lo que consta sobre la propiedad.** Dice *«Todos los medios
+   del catálogo tienen documentado quién los controla… con una excepción»*
+   (Colombia Informa). **Son 15 los medios con `ownerType: null`**, y el propio
+   registro dice que el hilo se para antes de llegar a persona natural en al
+   menos cinco. Esta afirmación ya se retiró de la memoria del asistente el 26 de
+   agosto por ser falsa; en la página sigue.
+
+Y dos cosas que no son fallos pero hay que decidirlas antes, no después:
+
+- **No hay procedimiento para cuando un medio objete.** Es la duda abierta
+  número 12, del 2026-07-30. Hoy es un correo en «Corregirnos». Con mercadeo
+  llega la primera objeción, y se responderá improvisando. Conviene escribir
+  antes: quién responde, en cuánto tiempo, qué se corrige y qué no, y **dónde
+  queda el registro público de la corrección** — que es lo que separa a un sitio
+  serio de uno que edita en silencio.
+- **La asimetría de las fichas es el flanco.** 50 de 78 medios tienen ficha, pero
+  **3 de los 14 de izquierda**. Quien quiera desacreditar el proyecto no va a
+  discutir el número de El Tiempo: va a señalar que el lado del que más se afirma
+  es del que menos expediente hay. Es defendible —el alta va por delante desde el
+  24— pero hay que **poder decirlo**, no que lo digan primero.
+
+### Lo segundo: el enlace que compartes se muere
+
+**Comprobado el 2026-08-31.** Una historia del 16 de agosto responde **404,
+«Noticia no encontrada»**. No es que se vea vacía: la fila desapareció con la
+purga de 72 h.
+
+Mercadeo es compartir enlaces. Aquí **todos los enlaces caducan en días**:
+
+- Un tuit que funcione bien lleva gente a una página que a la semana no existe.
+- El `sitemap.xml` le ofrece a Google **596 URLs** que van a ser 404 en días. Un
+  sitio cuyas páginas desaparecen no acumula autoridad de búsqueda: la pierde.
+- Todo el juicio invertido por medio se evapora con la historia.
+
+**No es un fallo: es la decisión de retención, y está abierta como 1-A en
+`PLAN_CONTINUIDAD.md`.** Lo que cambia hoy es que deja de ser una preferencia
+técnica y pasa a ser **la condición de que el mercadeo sirva de algo**. Treinta
+días caben en el plan gratuito de Supabase.
+
+### Lo tercero: la tarjeta que se ve al compartir
+
+Aquí hay una buena noticia y un descuido.
+
+- **Las páginas de noticia están impecables.** Título, `og:image`, URL canónica
+  con slug, y una descripción que dice algo que ningún otro agregador puede
+  decir: *«13 medios cubren este hecho: 2 de izquierda, 6 de centro, 5 de
+  derecha.»* Eso es un anuncio en sí mismo.
+- **La portada no tiene `og:image`**, teniendo `public/og-image.png` ahí mismo, y
+  declara `twitter:card=summary_large_image` — o sea que promete una imagen
+  grande y no la manda. Compartir `doblefoco.co` da una tarjeta sosa.
+- **Y el `twitter:title` de la portada dice «Información Objetiva y Moderna».**
+  Contradice la regla editorial del propio proyecto —se descarta todo lo que
+  suene a virtud, «Objetivo» el primero, porque afirma una cualidad que la
+  medición no sostiene— y además no coincide con el `og:title`, que dice otra
+  cosa. Es la frase que más gente va a leer del sitio sin entrar en él.
+
+### Lo cuarto: qué se lleva un teléfono al abrir la portada
+
+Medido con Playwright a 390×844 contra producción:
+
+| | |
+|---|---|
+| Hasta que la red se calla | **~4 s** |
+| Transferido de verdad | **~1 MB** (la API va comprimida con Brotli: 799 KB → 130 KB) |
+| JSON que el teléfono tiene que analizar | **4,4 MB** |
+| Llamadas a la API | **8** |
+
+Y el desglose es lo interesante:
+
+```
+ 781 KB  /api/feed?limit=60      <-.
+ 781 KB  /api/feed?limit=60      <-+  la MISMA peticion, tres veces
+ 781 KB  /api/feed?limit=60      <-'
+1140 KB  /api/portada?limit=100
+1122 KB  /api/feed?limit=100
+ 579 KB  /api/feed?limit=40
+```
+
+**Esto le pone número a T2-2 de la revisión de Kimi.** Su objeción era de
+coherencia —cuatro componentes pidiendo por su cuenta enseñan estados de dos
+mundos en el relevo de los 30 minutos—. Resulta que además es **más de la mitad
+del peso de la portada**, repetido, en el país donde la mayoría entra por datos
+móviles. La misma tarea paga dos veces.
+
+### Lo quinto: si se promociona sin medir, no se aprende nada
+
+**No hay analítica de ninguna clase** en el sitio. Ni una línea. Eso significa
+que una campaña no podría responder a nada de lo que se le va a preguntar: si
+llegó gente, por dónde, si se quedó, si volvió, qué sección miró.
+
+Y hay una decisión de coherencia antes que técnica: un sitio sobre manipulación
+mediática que instale Google Analytics estará haciendo con su lector algo
+parecido a lo que denuncia. Las opciones sin cookies y sin perfilado —Plausible,
+Umami, la analítica de Vercel— cuestan poco y encajan con lo que el sitio dice de
+sí mismo. **Es decisión de Jose**, y conviene tomarla antes y no después de la
+primera campaña, porque los visitantes que no se midieron no vuelven a pasar.
+
+### Lo sexto: qué pasa si un tuit funciona
+
+La API corre en **una sola máquina de Fly, `shared-cpu-1x` con 256 MB**, sin
+escalado horizontal (`min_machines_running = 1`). En reposo consume 74 MB y le
+sobra, y eso está medido y escrito en `fly.toml`. Pero cada visita a la portada
+son **8 peticiones** y hasta 1,1 MB de JSON serializado por respuesta.
+
+No hay que dimensionar para un éxito imaginario. Hay que **saber de antemano cuál
+es el número que rompe** y qué se hace ese día — aunque la respuesta sea «se cae
+y lo levanto». Lo que no conviene es enterarse durante la campaña. Arreglar T2-2
+baja el tráfico por visita a menos de la mitad, así que ese trabajo también es
+capacidad.
+
+### Y lo que NO haría todavía
+
+- **Prometer los puntos ciegos como la función insignia.** Es lo más vendible del
+  producto y es lo que está en revisión: las opciones D y E siguen sin decidirse
+  (1-C), y las ramas 1 y 3 sin recalibrar (1-D). Salir a decir «te enseñamos lo
+  que no te están contando» con esa señal a medio calibrar es lo único de esta
+  lista que podría costar credibilidad de verdad.
+- **Ampliar catálogo antes de salir.** 78 medios y 29 de 33 departamentos ya
+  sostienen la afirmación. El medio 79 no mueve nada; que la página de
+  limitaciones sea cierta, sí.
+
+### Lo que ya está bien y conviene no tocar
+
+Dicho porque también es información: el `robots.txt` y el `sitemap.xml` están
+puestos y correctos, Search Console verificado, la tarjeta de las noticias es
+buena, las páginas de noticia se renderizan en el servidor (las ve Google sin
+ejecutar JavaScript), hay HTTPS con certificado propio, y la transparencia
+—cuando dice la verdad— es más de la que enseña la mayoría de los medios que
+clasifica.
+
+---
+
 ## ABIERTO · Automatizar el trabajo de comprobar el catálogo — «el centinela»
 
 **Planteado por Jose el 2026-08-17**, justo después de comprobar a mano la ficha

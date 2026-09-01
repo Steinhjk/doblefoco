@@ -22,6 +22,12 @@ todavía no tiene forma de tarea. Justo lo que más fácil se pierde.
 idea completa olvidada. Si falta detalle, se escribe qué falta y quién lo sabe.
 **No se rellena con suposiciones**: si no se dijo, va como pregunta abierta.
 
+> **Y desde el 2026-08-26 hay un quinto archivo, `PLAN_CONTINUIDAD.md`**, que es
+> el orden en que conviene atacar lo que ya está identificado. La frontera con
+> este: aquí entra lo que **todavía es idea**; allí, lo que ya tiene nombre,
+> tamaño y un motivo para ir antes o después. Una idea de aquí que madura no se
+> copia allí, se **mueve**.
+
 ---
 
 ## ABIERTO · Automatizar el trabajo de comprobar el catálogo — «el centinela»

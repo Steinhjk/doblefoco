@@ -20,6 +20,7 @@ Esto es distinto de los otros tres archivos, y conviene no mezclarlos:
 | `PLANEACION.md` | Ideas a medio hablar, rumbos, lo que todavía no es tarea |
 | `DECISIONES.md` | Decisiones tomadas, con su razón |
 | `SIGUIENTE.md` | La nota de traspaso de una sesión |
+| `doblefoco-app/PLAN_CONTINUIDAD.md` | El orden en que conviene atacar lo ya identificado |
 | **`MINUTA.md`** | **Lo que una revisión encontró y todavía no se ha hecho** |
 
 ## Cómo se cruza con el libro de hallazgos
@@ -45,6 +46,101 @@ Las dos reglas del cruce:
 ---
 
 # ABIERTO
+
+## Del repaso de memos y auditorías del 2026-08-26
+
+Pedido de Jose: poner los memos y las auditorías al día del estado real y
+retirar lo que ya no sirva. Comprobar cada afirmación contra el repositorio y
+contra Actions destapó cuatro cosas que nadie estaba mirando. Las dos primeras
+son la misma enfermedad de siempre —un vigilante que acusa y nadie que lea la
+acusación—.
+
+### La copia de seguridad lleva OCHO DÍAS fallando y nadie se enteró
+
+- **Origen:** repaso del 2026-08-26, mirando `gh run list`.
+- **Qué pasa:** `backup.yml` (cron diario, 07:50 UTC) falla **desde el
+  2026-08-19**. Ocho ejecuciones seguidas en rojo; la última buena es del 18.
+- **La causa exacta**, del log del run `32945864289`:
+
+      ✗ Tablas sin decisión: conducta_archivo, conducta_archivo_runs
+        Añádelas a TABLAS o a EXCLUIDAS en scripts/backup.mjs, con su motivo.
+
+  El guardián de `backup.mjs` exige que **toda** tabla de la base esté
+  clasificada con su motivo. El archivo de conducta creó dos tablas nuevas y
+  nadie las clasificó, así que la copia se niega a correr. **El guardián hizo
+  exactamente lo que se le pidió.**
+- **Lo que falló es el aviso, y es un defecto de diseño nuestro:** `backup.yml`
+  es el único de los cuatro flujos con vigilante que **NO abre issue**.
+  `vigilancia.yml`, `auditoria.yml` y `centinela.yml` sí. Un rojo en Actions no
+  lo ve nadie — que es palabra por palabra lo que este proyecto escribió el
+  2026-08-11 al montar la Vigilancia, y volvió a pasar en el único sitio donde
+  no se aplicó la lección.
+- **Por qué es lo más grave de esta lista:** los artículos se descartan a las
+  72 h. La copia es lo **único permanente** que tiene el proyecto. Ocho días sin
+  copia son ocho días en que perder la base habría sido irreversible.
+- **Estado: ABIERTO.** Dos arreglos, y el segundo es el que importa:
+  1. Clasificar las dos tablas con su motivo. **Van en `TABLAS`, no en
+     `EXCLUIDAS`**: el archivo de conducta es precisamente el registro que
+     sobrevive a la ventana de 72 h, así que excluirlo del respaldo sería
+     respaldar todo menos lo único que no se puede reconstruir.
+  2. Que `backup.yml` abra y cierre issue como los otros tres. Sin esto, el
+     siguiente fallo se descubrirá igual: por casualidad, ocho días tarde.
+
+### El motor no se despliega solo: el workflow está y el secreto no
+
+- **Origen:** T1-6 del `PLAN_REVISION_KIMI.md`, cerrado el 2026-08-24.
+- **Comprobado el 2026-08-26:** `gh secret list` devuelve **un solo secreto,
+  `DATABASE_URL`**. `desplegar-motor.yml` existe, está bien escrito y su propia
+  cabecera lo dice —«QUÉ HACE FALTA PARA QUE FUNCIONE: el secreto
+  `FLY_API_TOKEN`»—, pero **nunca ha podido ejecutarse**.
+- **Qué significa:** el despliegue del motor sigue siendo a mano, con la bomba
+  que explota al desplegar descrita el 2026-08-11. Lo que sí funciona es
+  `desfase.yml`, que compara a diario lo desplegado con `main` y hoy pasó en
+  verde: el desfase **se ve**, lo que no se ha ganado es que **se cierre solo**.
+- **Estado: ABIERTO, y es trámite de Jose**, no de código:
+  `fly tokens create deploy` y `printf '%s' "$TOKEN" | gh secret set FLY_API_TOKEN`
+  —sin pegar el valor en el chat, según el procedimiento de la credencial de
+  Supabase—.
+
+### Las fichas de sesgo cubren el catálogo al revés de lo que dice el propósito
+
+- **Medido el 2026-08-26:** 50 de los 78 medios tienen ficha (las otras 7 fichas
+  del directorio son candidaturas del barrido departamental, sin medio en el
+  registro). Repartidas por banda:
+
+  | Banda | Medios | Con ficha |
+  |---|---:|---:|
+  | Izquierda (≤ −0,6) | 2 | **0** |
+  | Izquierda moderada | 12 | 3 |
+  | Orientación mixta | 46 | 33 |
+  | Derecha moderada | 19 | 14 |
+
+  **La izquierda entera: 3 de 14 (21 %)**, contra el 72 % de la mixta y el 74 %
+  de la derecha moderada. Sin ficha: Semanario VOZ, Colombia Informa,
+  Las2Orillas, Revista RAYA, Vorágine, Cuestión Pública, Razón Pública, Cambio y
+  RTVC.
+- **Por qué importa y no es una laguna cualquiera:** la `q` sobre la que se
+  apoya el modelo de puntos ciegos —el **3,29 %**— es la tasa de la izquierda, y
+  de los 14 medios que la componen solo 3 tienen expediente. El producto afirma
+  un desequilibrio apoyándose justo en los valores que menos ha documentado.
+- **Y la laguna se movió, no siguió igual:** el reproche del 2026-08-11 era que
+  los medios grandes no tenían ficha. **Eso se cerró** — El Tiempo, Semana,
+  Noticias Caracol, Noticias RCN, Caracol Radio y La FM ya la tienen. Lo que
+  quedó descubierto es el otro extremo.
+- **Estado: ABIERTO.** Es trabajo de ficha, y va detrás del alta desde el
+  2026-08-24 por decisión de Jose. Se anota para que la prioridad sea suya y no
+  del orden en que fueron cayendo.
+
+### El centinela tiene una pieza sin leer desde el 24 (issue #4)
+
+- **Chocó 7 Días** publicó «Falleció Yenny Cañadas» y el centinela lo marcó
+  porque la ficha vigila que **Iván Cañadas Garrido** siga siendo propietario y
+  editor. El aviso lleva abierto desde el 2026-08-24 sin que nadie lo lea.
+- **Dos «NO COMPROBABLE» que pueden ser la IP y no el medio:** Telecafé (403) y
+  Diario del Norte (fetch failed). El propio aviso lo dice. Toca probarlos desde
+  aquí antes de anotarlos como bloqueo ajeno — es la trampa del User-Agent con
+  tilde otra vez.
+- **Estado: ABIERTO.**
 
 ## De la revisión de código del 2026-08-19
 
@@ -119,10 +215,11 @@ naturaleza: no hay nada roto que arreglar, hay algo que **nadie ha decidido**.
   desde la IP de Actions— y **no era eso**: los seis mudos con feed responden
   HTTP 200 con 10 ítems. Lo que los borra es `RETENTION_MS = 72 h`, porque su
   pieza más nueva ya nace fuera de la ventana. Detalle en el §8 del estudio.
-- **Estado:** **la costura está arreglada** en la rama
-  `costura/punto-ciego-del-servidor` (`c80de64`, 8 pruebas propias): el cliente
-  deja de recalcular sin tasas y trasplanta el veredicto del servidor. **Sin
-  fusionar y sin mirar en un navegador.** Lo demás sigue ABIERTO y es **decisión
+- **Estado:** **la costura está arreglada y fusionada.** `c80de64` (8 pruebas
+  propias) está en `main` desde el 2026-08-24: el cliente deja de recalcular sin
+  tasas y trasplanta el veredicto del servidor. Esta minuta lo daba por «sin
+  fusionar»; **comprobado el 2026-08-26, ninguna rama del remoto queda fuera de
+  `main`.** Lo demás sigue ABIERTO y es **decisión
   de producto**: declarar inalcanzable la rama de la izquierda con el número
   escrito, y llevar el desequilibrio a donde sí se puede afirmar —el énfasis
   dispara en el 19,5 % de las historias grandes—. Lo que el estudio NO recomienda
@@ -213,7 +310,10 @@ a ser de **especificidad**: dispararía marcando lo normal.
   las dos, porque si muere solo por el 78 % alguien la resucitará cuando el
   corpus cambie.
 
-> **HAY PLAN ESCRITO:** `doblefoco-app/PLAN_REVISION_KIMI.md`, del 2026-08-24.
+> **HAY PLAN ESCRITO, y desde el 2026-08-26 tiene sucesor:**
+> `doblefoco-app/PLAN_CONTINUIDAD.md` absorbe lo que quedaba de este y le añade
+> lo que ha salido después. El original,
+> `doblefoco-app/PLAN_REVISION_KIMI.md`, del 2026-08-24.
 > Clasifica lo accionable en dos fases, deja fuera lo que depende de una
 > decisión de producto ya abierta, y avisa de una trampa de secuencia: corregir
 > la nula sin corregir la justificación de D **empeora** el producto, porque
@@ -372,6 +472,95 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-08-26 · Los memos: tres retirados, diecisiete corregidos
+
+Pedido de Jose. Los memos son las notas de memoria del asistente
+(`~/.claude/projects/<proyecto>/memory/`), que es donde viven los criterios
+editoriales que él dicta de viva voz y que no se deducen del código. Eran 46,
+y dos de ellos ni siquiera estaban en el índice que se carga en cada sesión.
+**Se comprobó cada afirmación contra el repositorio**, no contra el recuerdo.
+
+**Antes de borrar nada se escribió aquí qué decía y por qué se va**, que es la
+condición que puso Jose y la misma regla que ya rige para silenciar un hallazgo
+del libro: retirar sin motivo escrito y olvidar se ven igual a los tres meses.
+
+### Los tres que se retiran, con lo que decían
+
+**1. `doblefoco-investigacion-propiedad`** (escrito el 2026-08-08).
+
+- *Qué decía:* que ninguna ficha de propiedad del catálogo estaba vacía y que
+  quedaba **un solo dato pendiente** en todo el mapa: quién representa
+  legalmente a Colombia Informa, que exige el certificado del RUES con el NIT
+  900.408.141-8. Traía además la corrección de una razón social sacada de un
+  directorio.
+- *Por qué se va:* **su afirmación central es falsa desde hace semanas.** Hoy hay
+  78 perfiles para 78 medios, pero **15 llevan `ownerType: null`** y el propio
+  registro dice que el hilo se para antes de llegar a persona natural en al
+  menos cinco medios —Colombia Informa, Pulzo, los tres de Ardila Lülle y
+  Cablenoticias—. «Falta un dato» describía un mapa que ya no existe, y leerlo
+  hoy induce a error sobre cuánto queda por hacer.
+- *Qué sobrevive y dónde:* el NIT, la razón social y la nota de que es un
+  problema estructural están en `shared/mediaOwnership.js`, que es la fuente y
+  no envejece a espaldas de nadie. La regla —una afirmación sobre el dueño se
+  publica con el enlace donde consta o no se publica— ya vive en
+  `doblefoco-ausencia-de-dueno-se-declara`, adonde se ha trasladado el único
+  pendiente vivo (el certificado del RUES).
+
+**2. `doblefoco-feeds-mudos-no-se-arreglan`** (escrito el 2026-07-29, corregido
+el 30).
+
+- *Qué decía:* que un feed mudo es mejor que uno que miente —el caso de W Radio
+  y RTVC, cuyos feeds entregaban páginas de etiqueta como si fueran piezas— y
+  que por eso no había que «arreglarlos». Al día siguiente se le añadió una
+  corrección en mayúsculas diciendo que esa segunda mitad ya no aplicaba, porque
+  Jose había fijado el criterio contrario.
+- *Por qué se va:* **su título afirma lo contrario de lo que decide el
+  proyecto**, y llevaba un mes sostenido por una corrección interna que ocupaba
+  más que la nota. Un memo cuyo nombre hay que desmentir al leerlo no es una
+  memoria, es una trampa. Lo que queda de él es una regla de código —qué titular
+  se acepta— que vive en `shared/contentQuality.js` con sus pruebas.
+- *Qué sobrevive y dónde:* la frase que sí decide —no se ingiere un titular que
+  no es una pieza, con patrones anclados al titular completo— se ha trasladado a
+  `doblefoco-no-silenciar-medios`, que es el memo que manda sobre esto y que
+  siempre lo fue.
+
+**3. `doblefoco-clasificacion-forzada-y-recategorizar`** (escrito el 2026-08-03).
+
+- *Qué decía:* dos decisiones del mismo día. Recategorizar lo ya ingerido en vez
+  de esperar a que la ventana de 72 h lo renovara sola, y «forzar un poco» la
+  clasificación —inclinar el umbral a asignar tema antes que a dejarlo vacío—.
+- *Por qué se va:* la primera es **un acto que ya se ejecutó** y hoy es una
+  herramienta del repositorio (`npm run recategorizar`, ensayo por defecto,
+  documentada en `doblefoco-taxonomia-de-secciones`); no es un criterio que
+  aplicar mañana. La segunda es la misma preferencia de «abarcar de más a de
+  menos» que ya estaba escrita en el memo hermano del mismo día. **Además nunca
+  estuvo en el índice `MEMORY.md`**, así que en la práctica llevaba tres semanas
+  sin cargarse en ninguna sesión.
+- *Qué sobrevive y dónde:* el sesgo hacia asignar —y su límite, que «un poco»
+  solo se sabe dónde acaba con el número delante— se ha trasladado a
+  `doblefoco-clasificar-por-contenido-no-por-feed`, que sí queda indexado.
+
+### Lo que se corrigió sin retirarlo
+
+Diecisiete memos afirmaban algo que ya no era cierto. Los tres de más peso:
+
+- **`doblefoco-dos-despliegues-vercel-y-fly`** decía «no hay workflow que
+  despliegue la API». Ya lo hay desde el 24 —y no funciona por falta del
+  secreto—, que es un estado distinto de los dos y el que hay que saber.
+- **`doblefoco-auditoria-de-sesgo-la-hace-jose`** decía que `respuestas/` seguía
+  vacía y que los medios grandes no tenían ficha. Hay 22 respuestas del ciclo 1
+  y los grandes ya tienen ficha; el hueco de hoy es la izquierda.
+- **`doblefoco-no-silenciar-medios`** dejaba a Las2Orillas anotado como el único
+  medio silenciado. Entró al catálogo el 2026-08-24, y no estaba mudo: lo
+  callaba nuestra tilde en el User-Agent.
+
+El resto eran cifras que se movieron y se han vuelto a medir: departamentos con
+medio propio (18 → **29 de 33**), internacionales con feed (6 → **7 de 13**),
+medios que entran por Google News (7 → **8**, con Cambio ya en feed directo),
+fichas firmadas (2 → **5**), y el `.radar-pulse-dot` que el memo de los adornos
+daba por suelto en `Sidebar.css` y hoy es un comentario que cuenta que se
+retiró.
 
 ## 2026-08-21 · La opinión vuelve a quedarse fuera del agrupamiento
 

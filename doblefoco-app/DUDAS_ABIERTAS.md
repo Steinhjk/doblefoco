@@ -7,6 +7,23 @@ o porque dependen de información que no tengo.
 Abierto el 2026-07-30 a petición de Jose. Se van tachando, no borrando: saber
 qué se preguntó y cómo se decidió vale más que una lista corta.
 
+> **Repaso del 2026-08-26.** Esta lista llevaba **cuatro semanas sin tocarse** y
+> cinco de sus doce preguntas ya tenían respuesta en otro sitio. Se marcan aquí
+> —no se borran— y se dice dónde se contestaron. Lo que queda vivo son siete.
+>
+> | | Estado |
+> |---|---|
+> | **1.** El pie corrido | **RESUELTA por otra vía.** Desde el 2026-08-24 `npm run mirar` abre las páginas y acusa lo que se sale o se solapa; ya cazó un titular saliéndose de tres tarjetas. Si el pie sigue corrido, esa es la herramienta que lo dirá, no la descripción. |
+> | **2.** Revisión estética general | **HECHA** en la tanda de `pulido-ui`, ya fusionada. Y salió de ella una regla que no estaba prevista: un adorno tiene que sobrevivir a la peor noticia del día. |
+> | **4.** `ITEMS_PER_FEED = 15` | **VIVA, y mejor medida.** Es el mismo asunto que «Infobae se muestrea al 38 % y nadie lo decidió» en `MINUTA.md`, con el número delante. **Se sigue por la minuta, no por aquí.** |
+> | **7.** La portada tarda 1-2 s | **HECHA.** La portada se renderiza en el servidor (`src/entry-server.jsx`, `npm run build:server`). La recomendación de julio era no hacerlo todavía; se hizo después y con motivo. |
+> | **9.** Los enlaces de Google News | **VIVA, y son 8 medios, no 7.** Entraron NTN24 y EFE el 24 de agosto; salió Cambio, que ya tiene feed propio. |
+> | **11.** ¿«Punto ciego» es la métrica correcta para la izquierda? | **CONTESTADA, y era la pregunta buena.** `ESTUDIO_PUNTOS_CIEGOS.md` la responde con números: la izquierda falta en el 78 % de las historias de 10+ medios, así que su ausencia es lo normal y marcarla sería marcar la norma. La revisión de Kimi K3 lo confirmó y corrigió la nula. Lo que sigue abierto ya no es esta pregunta sino **qué se hace con la respuesta**, y eso está en `MINUTA.md`. |
+>
+> **Siguen abiertas y sin dueño: 3, 5, 6, 10 y 12.** La 12 —qué pasa cuando un
+> medio nos escriba— es la única cuya falta se nota fuera de casa, y lleva
+> abierta desde el primer día.
+
 ---
 
 ## Estéticas y de interfaz

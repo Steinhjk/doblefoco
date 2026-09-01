@@ -1,5 +1,12 @@
 # Plan de acción — lo accionable de la revisión de Kimi K3
 
+> **SUCEDIDO el 2026-08-26 por `PLAN_CONTINUIDAD.md`.** La Fase 1 de aquí está
+> cerrada y T2-4 también; lo que quedaba —T2-3, T2-1 y T2-2— vive ahora en el
+> tramo 2 de ese documento, junto a lo que ha aparecido después. **Este archivo
+> se conserva porque guarda el razonamiento**: el criterio de corte, la trampa de
+> secuencia, y por qué cada cosa quedó dentro o fuera. Para saber qué toca hacer,
+> el otro; para saber por qué, este.
+
 **Escrito el 2026-08-24.** Responde a
 `revision-externa/respuestas/kimi-k3-estructura-y-puntos-ciegos.md`.
 

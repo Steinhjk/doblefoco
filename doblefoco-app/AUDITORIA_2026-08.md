@@ -1,5 +1,15 @@
 # Auditoría de DobleFoco — agosto de 2026
 
+> **DÓNDE SE SIGUE ESTO HOY (nota del 2026-08-26).** Esta auditoría es de la
+> primera semana de agosto y se conserva porque su método —medir contra
+> producción y decir dónde no se pudo medir— es el que se sigue usando. **Pero ya
+> no es donde vive lo pendiente.** Desde el 19 de agosto hay dos sitios y ninguno
+> es este: `doblefoco-app/auditoria/hallazgos.json` es el libro que lleva la
+> máquina (id estable, `primeraVez` que no se toca, se concilia solo cada jueves)
+> y `MINUTA.md`, en la raíz, es el hilo humano y es más ancho. **Un hallazgo de
+> este documento que siga vivo tiene que estar en uno de los dos**; si no está,
+> no está pendiente: está olvidado.
+>
 > **Estado al 2026-08-07.** La Fase A.1 está hecha y cambió el diagnóstico de
 > H2: la serie de F1-01 demostró que el techo de 5 000 no solo recortaba la
 > ventana, sino que **era el que fijaba la tasa multifuente del producto**. La

@@ -1,5 +1,15 @@
 # ¿Tiene cada departamento un medio propio que funcione?
 
+> **Actualización del 2026-08-26, y es la que manda.** El catálogo tiene hoy
+> medios propios en **29 de los 33 departamentos**. Faltan cuatro, y cada uno por
+> un motivo distinto que conviene no confundir: **Amazonas, Guainía y Vaupés no
+> tienen medios web** —allí la comunicación es radio comunitaria e indígena, que
+> un agregador de RSS no alcanza; es un límite del formato, no del catálogo— y
+> **Sucre está cerrado por vía técnica**: las cuatro vías se agotaron el
+> 2026-08-14, hay ficha de candidatura escrita y lo que lo abre es **escribirle a
+> Korraleja o a El Meridiano**. Es correo, no búsqueda, y por eso lleva parado.
+> Todo lo de abajo es de agosto y se conserva por lo que enseña del método.
+>
 > **Actualización del 2026-08-12.** Entraron tres medios más —EL DIARIO de
 > Boyacá, Vive el Meta y Lente Regional— con la propiedad declarada como no
 > comprobada. **Meta y Caquetá dejan de estar en blanco**, así que el recuento

@@ -50,6 +50,7 @@ import {
     recordRun,
 } from '../db/contentStore.js';
 import { rejectedStoryIds } from '../db/moderationStore.js';
+import { archivarCadencia, crearMemoriaDeCadencia } from '../db/cadenciaStore.js';
 import { enriquecerImagenes } from './imageEnricher.js';
 
 // ---------------------------------------------------------------------------
@@ -57,6 +58,13 @@ import { enriquecerImagenes } from './imageEnricher.js';
 // ---------------------------------------------------------------------------
 
 const FEED_TIMEOUT_MS = 12_000;
+
+/**
+ * Qué piezas ya archivó este proceso en `cadencia_piezas`. Vive lo que vive el
+ * proceso: al arrancar se reintenta una vez todo lo que enseñen los feeds, y
+ * la base descarta lo que ya tenía. Ver server/db/cadenciaStore.js.
+ */
+const memoriaDeCadencia = crearMemoriaDeCadencia();
 const FEED_RETRIES = 2;
 const FEED_CONCURRENCY = 4;
 
@@ -310,6 +318,31 @@ const MARGEN_FUTURO_MS = 30 * 60 * 1000;
  * @param {any} item
  * @param {number} [ahoraMs] - inyectable para poder probarlo sin depender del reloj
  */
+/**
+ * La observación de cadencia de una pieza: qué medio, qué pieza, cuándo dice el
+ * medio que la publicó. Se toma de TODO lo que enseña el feed —también de lo
+ * que ya está en memoria y de lo que nace fuera de la ventana de 72 h—, porque
+ * para un medio lento eso último es toda su producción y `articles` no lo ve
+ * nunca. Es la tarea 2.1 del plan: solo acumular. Ni titular ni enlace.
+ *
+ * `descartada` la rellena el bucle si el filtro editorial deja la pieza fuera
+ * del índice; aquí nace en null.
+ *
+ * @param {{ mediaId: string }} feedConfig
+ * @param {any} item
+ * @param {string} link enlace ya canonicalizado
+ * @param {string} headline
+ * @param {number} [ahoraMs]
+ */
+export function observarPieza(feedConfig, item, link, headline, ahoraMs = Date.now()) {
+    return {
+        sourceId: feedConfig.mediaId,
+        piezaId: articleId(link, headline),
+        publicadaEl: parsePublishedAt(item, ahoraMs),
+        descartada: null,
+    };
+}
+
 export function parsePublishedAt(item, ahoraMs = Date.now()) {
     const raw = item?.isoDate || item?.pubDate;
     if (!raw) return null;
@@ -747,11 +780,20 @@ export async function runIngestionBatch() {
                     console.warn(
                         `[ingesta] feed inaccesible: ${feedConfig.name} (${feedConfig.url}) — ${result.error}`
                     );
-                    return { feed: feedConfig.name, url: feedConfig.url, ok: false, added: 0, error: result.error };
+                    return {
+                        feed: feedConfig.name,
+                        url: feedConfig.url,
+                        mediaId: feedConfig.mediaId,
+                        ok: false,
+                        added: 0,
+                        error: result.error,
+                    };
                 }
 
                 const fresh = [];
                 const discarded = {};
+                /** Todo lo que el feed enseñó, para el archivo de cadencia (2.1). */
+                const observadas = [];
                 /** Artículos ya guardados a los que el feed acaba de dar imagen. */
                 const imagenesRecuperadas = [];
 
@@ -761,6 +803,11 @@ export async function runIngestionBatch() {
 
                     const headline = cleanHeadline(item?.title, feedConfig.name, feedConfig.domain);
                     if (!headline) continue;
+
+                    // Antes de cualquier descarte: la cadencia mide lo que el
+                    // medio publica, no lo que nosotros indexamos.
+                    const observacion = observarPieza(feedConfig, item, link, headline);
+                    observadas.push(observacion);
 
                     // La clave es el enlace: deduplicación O(1) e idempotente
                     // entre ejecuciones. Antes era un .some() sobre todo el
@@ -794,6 +841,7 @@ export async function runIngestionBatch() {
                     const quality = assessArticle({ headline });
                     if (!quality.indexable) {
                         discarded[quality.ruleId] = (discarded[quality.ruleId] ?? 0) + 1;
+                        observacion.descartada = quality.ruleId;
                         continue;
                     }
 
@@ -885,6 +933,7 @@ export async function runIngestionBatch() {
                     fresh,
                     discarded,
                     imagenesRecuperadas,
+                    observadas,
                 };
             }
         );
@@ -910,6 +959,28 @@ export async function runIngestionBatch() {
             .filter((article) => articlesByLink.has(article.link));
 
         const persisted = await persistToDatabase(fresh);
+
+        /**
+         * ARCHIVO DE CADENCIA (tarea 2.1). Va aquí, después de persistir y
+         * antes de informar, con el mismo criterio que el resto de la
+         * persistencia: si falla, el ciclo ya sirvió su función. Se graba todo
+         * lo que el feed enseñó —la poda acaba de sacar del Map lo que nace
+         * fuera de la ventana, y eso es precisamente lo que aquí interesa— y
+         * los feeds que no respondieron, para que un hueco nuestro no se lea
+         * después como silencio del medio. Solo lo que este proceso no había
+         * archivado ya: la memoria evita reintentar ~500 filas por ciclo.
+         */
+        const cadencia = isDatabaseEnabled()
+            ? await archivarCadencia({
+                piezas: memoriaDeCadencia.seleccionarNuevas(
+                    perFeed.flatMap((f) => f.observadas ?? [])
+                ),
+                huecos: perFeed
+                    .filter((f) => !f.ok && f.mediaId)
+                    .map((f) => ({ sourceId: f.mediaId, error: f.error })),
+                at: new Date(startedAt).toISOString(),
+            })
+            : null;
 
         /**
          * Relleno de imágenes de artículos ya guardados. Va aquí, junto a la
@@ -1003,6 +1074,8 @@ export async function runIngestionBatch() {
             // (ingestWorker → 'motor', ingestOnce → 'manual' salvo que
             // Actions diga 'red-de-seguridad'). El daemon no lo adivina.
             actor: process.env.INGEST_ACTOR ?? null,
+            // null si no había base o la escritura falló: ausencia, no cero.
+            cadenciaNuevas: cadencia?.nuevas ?? null,
             ...shape,
         };
 

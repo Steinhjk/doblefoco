@@ -503,6 +503,50 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-01 · La cadencia por medio empieza a grabarse (2.1 / 2-A / T2-3)
+
+**La tarea urgente por calendario del plan de producto**, y la única de la
+Etapa 2 que no podía esperar: cada día sin grabar era un día menos de la serie
+de 30–90 días que necesita la regla por cadencia (1-B). Rama
+`cadencia/empezar-a-grabar`. La decisión, con lo que se descartó, está en
+`DECISIONES.md` (2026-09-01).
+
+**Qué se hizo.** Dos tablas —`cadencia_piezas` (medio, hash, fecha declarada,
+primera vista, regla de descarte) y `cadencia_huecos` (medio, ciclo, error)—,
+escritas en cada ciclo desde el bucle del feed y ANTES de la poda, y la columna
+`ingest_runs.cadencia_nuevas`. Copia y restauración las conocen. Pruebas 755/755,
+lint y tipos limpios. Esquema aplicado a la base viva y **estrenado con un
+ciclo manual el 2026-09-01 a las 23:46 UTC**.
+
+**Lo que enseñó el primer ciclo, y es la prueba del diseño:**
+
+| | |
+|---|---|
+| Piezas observadas | 924, de 71 medios |
+| Ya fuera de la ventana de 72 h | **123, de 18 medios** — `articles` no las vio ni las verá |
+| Medios con TODAS sus piezas fuera | **3**: Casa Macondo, La Patria, Telecaribe |
+| Sin fecha del medio | 32 (Valora Analitik 15, Telecafé 10, Cambio 7) — se guardan como NULL |
+| Descartadas por el filtro editorial | 6 (sorteo 4, índice 1, horóscopo 1) |
+| Huecos | 1: El Manduco, 500 |
+
+Telecaribe lleva desde el 13 de agosto sin publicar y La Patria muestra piezas
+desde abril: el archivo ya distingue lo que hasta hoy se veía igual, «sano y
+lento» de «roto». Nada lo lee todavía, a propósito.
+
+**Lo que queda abierto, y no es de esta tarea:**
+
+- **Hasta que exista `FLY_API_TOKEN` (0.1), el motor de Fly corre código
+  anterior y NO archiva.** Solo lo hace la red de seguridad de Actions, cada
+  2 h, con 15 piezas por feed: un medio que publique más de 15 piezas en dos
+  horas pierde las que sobren hasta que el motor se despliegue. Es un motivo
+  más, y con fecha, para 0.1.
+- La vigilancia no acusa si `cadencia_nuevas` deja de crecer. Se ve en la
+  serie; añadir el aviso es una tarde, y conviene hacerlo cuando el motor ya
+  escriba, para que no nazca en rojo.
+- **En 30 días** (hacia el 1 de octubre) hay serie suficiente para la primera
+  lectura; la regla por cadencia (Etapa 3) se implementa con esa serie, no
+  antes.
+
 ## 2026-09-01 · Lo que el sitio afirmaba de sí mismo, y la tarjeta vacía
 
 **Salió del estudio de mercadeo del 31 de agosto**, y lo que unía a las cuatro

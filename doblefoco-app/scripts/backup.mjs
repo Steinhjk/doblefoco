@@ -87,6 +87,22 @@ const TABLAS = [
             'conducta sin sus huecos sería restaurar una serie que miente.',
     },
     {
+        nombre: 'cadencia_piezas',
+        porque:
+            'Qué piezas enseñó el feed de cada medio y cuándo dice el medio que ' +
+            'las publicó. Irreemplazable por la misma razón que el archivo de ' +
+            'conducta —se graba justo porque la ventana de 72 h no lo ve— y sin ' +
+            'datos personales: medio, hash del enlace y fechas. Es la serie de la ' +
+            'que depende la regla por cadencia (tarea 2.1).',
+    },
+    {
+        nombre: 'cadencia_huecos',
+        porque:
+            'Los feeds que no respondieron en cada ciclo. Va con la tabla de ' +
+            'arriba y no sin ella: sin estas filas, un feed averiado tres ciclos ' +
+            'se leería como un medio que dejó de publicar.',
+    },
+    {
         nombre: 'moderation',
         porque:
             'Decisiones editoriales sobre qué se retiró y por qué. Perderlas ' +

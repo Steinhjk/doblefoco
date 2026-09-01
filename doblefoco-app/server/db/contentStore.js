@@ -709,8 +709,8 @@ export async function recordRun(row) {
             (at, duration_ms, feeds_ok, feeds_failed, active_feeds, new_articles,
              total_articles, total_stories, multi_source_stories,
              cross_spectrum_stories, blindspot_stories, filtered_articles,
-             ventana_horas, actor)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+             ventana_horas, actor, cadencia_nuevas)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         ON CONFLICT (at) DO NOTHING
         `,
         [
@@ -728,6 +728,9 @@ export async function recordRun(row) {
             row.filteredArticles ?? 0,
             row.ventanaHoras ?? null,
             row.actor ?? null,
+            // null y no 0: un ciclo sin archivo de cadencia (base caída, motor
+            // anterior a la columna) es ausencia de dato, no cero piezas.
+            row.cadenciaNuevas ?? null,
         ],
         'registro del ciclo'
     );

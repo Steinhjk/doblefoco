@@ -674,6 +674,70 @@ CREATE TABLE IF NOT EXISTS conducta_archivo_runs (
 );
 
 
+-- ── 12 bis. Cadencia por medio ───────────────────────────────────────────────
+--
+-- POR QUÉ EXISTE. La ventana de 72 horas no es neutral: calla al 38 % de los
+-- medios de izquierda del catálogo y al 6 % de los de derecha, porque el
+-- periodismo de investigación publica más despacio que el diario. Cinco medios
+-- con feed sano aportan cero, y hoy «sano y lento» y «roto» se ven exactamente
+-- igual. La única salida sin trato de favor es una regla uniforme por cadencia,
+-- y una cadencia no se puede decidir sin haberla medido antes: hacen falta
+-- 30–90 días de serie. Esta tabla existe para que esos días empiecen a contar.
+-- Es la tarea 2.1 del plan de producto (2-A / T2-3), y **solo acumula**: nada
+-- la lee todavía, y esa es la decisión —grabar es barato, esperar es lo caro—.
+--
+-- POR QUÉ NO BASTA `articles`. Un feed enseña sus últimas quince piezas, y
+-- una pieza publicada hace más de 72 horas se descarta ANTES de llegar a la
+-- base. Para un medio que publica cada diez días, eso es todo lo que publica:
+-- su cadencia es justamente lo que `articles` nunca ve. Por eso la observación
+-- se toma del feed, en el propio ciclo, antes de la poda.
+--
+-- QUÉ GUARDA, Y QUÉ NO. El medio, el id de la pieza —el mismo hash del enlace
+-- que usa `articles.id`, no el enlace—, la fecha que declara el medio, la
+-- primera vez que la vimos, y si el filtro editorial la dejó fuera del índice
+-- (un horóscopo también es una publicación, y esa distinción se decide al leer,
+-- no al grabar). Ni titular, ni enlace, ni extracto: la retención de 72 h sigue
+-- rigiendo el contenido. Se guarda la pieza y no el intervalo ya calculado por
+-- la misma razón que el archivo de conducta guarda el par y no el agregado:
+-- sobre las piezas se calcula cualquier cadencia —mediana, días con
+-- publicación, huecos— en cualquier ventana, y el agregado obligaría a decidir
+-- hoy la métrica que se necesitará en noviembre.
+CREATE TABLE IF NOT EXISTS cadencia_piezas (
+    source_id     TEXT NOT NULL,
+    pieza_id      TEXT NOT NULL,
+    -- La fecha que declara el medio, tal como la acepta parsePublishedAt: NULL
+    -- si el feed no la trae o si no se sostiene (futuro). No se sustituye por
+    -- «ahora»; para eso está `vista_el`, que sí es verificable.
+    publicada_el  TIMESTAMPTZ,
+    vista_el      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    -- Id de la regla de contentQuality que la dejó fuera del índice, o NULL.
+    descartada    TEXT,
+    PRIMARY KEY (source_id, pieza_id)
+);
+
+CREATE INDEX IF NOT EXISTS cadencia_piezas_medio_idx ON cadencia_piezas (source_id, publicada_el);
+
+-- LOS HUECOS SE DECLARAN, NO SE DEDUCEN — la misma regla que el archivo de
+-- conducta, pero aquí el hueco es POR MEDIO: un feed que falló tres ciclos
+-- seguidos es indistinguible de tres ciclos sin publicar, y una cadencia que
+-- lea ese silencio como pausa editorial mediría nuestra avería como conducta
+-- suya. Solo se graban los fallos: los ciclos que corrieron ya están en
+-- `ingest_runs`, y un medio sin fila aquí en un ciclo que existe allí es un
+-- medio que sí se observó.
+CREATE TABLE IF NOT EXISTS cadencia_huecos (
+    source_id  TEXT NOT NULL,
+    at         TIMESTAMPTZ NOT NULL,   -- el ciclo: el mismo `at` de ingest_runs
+    error      TEXT NOT NULL,
+    PRIMARY KEY (source_id, at)
+);
+
+-- Cuántas piezas nuevas archivó cada ciclo. Va en la serie para que una
+-- archivación que deje de crecer se vea venir, igual que la ventana efectiva.
+-- NULL en los ciclos anteriores a la columna, y en los de un motor que aún no
+-- la escribe: ausencia de dato, no cero.
+ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS cadencia_nuevas INTEGER;
+
+
 -- ── 13. Cerrar la API pública de Supabase ────────────────────────────────────
 --
 -- QUÉ PASABA. Supabase publica una API REST sobre el esquema `public` y le da

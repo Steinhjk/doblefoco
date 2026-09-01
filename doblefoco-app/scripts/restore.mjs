@@ -65,6 +65,8 @@ const ORDEN = [
     // Van antes que moderation por eso, no por preferencia.
     { tabla: 'conducta_archivo', conflicto: '(story_id, source_id)' },
     { tabla: 'conducta_archivo_runs', conflicto: '(at)' },
+    { tabla: 'cadencia_piezas', conflicto: '(source_id, pieza_id)' },
+    { tabla: 'cadencia_huecos', conflicto: '(source_id, at)' },
     { tabla: 'moderation', conflicto: '(story_id)' },
     { tabla: 'reader_reports', conflicto: '' },
     { tabla: 'reportes_propiedad', conflicto: '' },

@@ -64,6 +64,7 @@ export function recordIngestRun(record) {
         crossSpectrumStories: record.crossSpectrumStories ?? 0,
         blindspotStories: record.blindspotStories ?? 0,
         activeFeeds: record.activeFeeds ?? 0,
+        cadenciaNuevas: record.cadenciaNuevas ?? null,
     };
 
     // Encolado: dos ciclos solapados no pueden entrelazar sus escrituras.

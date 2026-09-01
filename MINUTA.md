@@ -445,6 +445,59 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-08-31 · Las categorías no llevaban a ningún lado, y era cierto
+
+**Lo reportó Jose mirando la página**, que es como se encuentran las cosas de
+esta clase: «al clickear cualquier categoría no lleva a ningún lado».
+
+**El clic funcionaba.** Medido en producción antes de tocar nada: la tarjeta
+quedaba con `aria-pressed="true"`, `.category-results` se pintaba, y dentro
+había trece historias de verdad. Cero errores de consola.
+
+**Lo que no funcionaba era llegar hasta ellas.** La lista se pinta debajo de una
+rejilla de diecisiete tarjetas y la página no se movía:
+
+| | Dónde caían los resultados | Distancia |
+|---|---:|---|
+| Escritorio (1280×900) | y = 1 474 | 1,6 pantallas |
+| **Móvil (390×844)** | **y = 4 456** | **5,3 pantallas** |
+
+En un teléfono el visitante tocaba una sección y tenía que adivinar que había
+que bajar cinco pantallas. **Desde su lado eso no es una lista lejana: es un
+botón que no hace nada.** Y no falló nada —ni la consola, ni el build, ni las
+714 pruebas—, porque la página se pinta; solo que no sirve. Es la misma familia
+que la costura de Tendencias del 21 de agosto.
+
+- **Estado: ARREGLADO, sin fusionar**, en `arreglo/categorias-no-llevan-a-ningun-lado`.
+  Al elegir sección se lleva la vista a los resultados **y también el foco**: un
+  desplazamiento no le dice nada a quien navega con teclado o lector de
+  pantalla, y el foco se quedaría en la tarjeta —el mismo problema, para otra
+  persona—. Se respeta `prefers-reduced-motion` y al deseleccionar no se mueve
+  nada.
+- **Comprobado con datos reales, no con la lógica:** tras el arreglo los
+  resultados caen en **y = 0** en los dos tamaños, con las 13 historias
+  listadas y el foco en el encabezado. Y la prueba nueva se rompió a propósito
+  para ver que acusa —deshecha con la edición inversa, no con `git checkout`—.
+
+### Lo que salió de camino: el comentario que mandaba vaciar la variable
+
+Para poder mirar esto en local hubo que atravesar el proxy de desarrollo (D-1),
+y **su comentario en `vite.config.js` daba una instrucción falsa**: decía que
+`VITE_API_URL` debía quedar **vacía**. Pero `apiBase.js` declara tres estados y
+reserva el vacío para el **modo demostración**, en el que no se intenta ninguna
+petición. Seguir la instrucción producía exactamente la pantalla que ese proxy
+existe para evitar —contadores en cero— y encima sin una sola petición fallida
+en la consola que delatara por qué.
+
+Comprobado las dos veces: con la variable vacía, **0 historias**; con
+`same-origin`, las **5 637** del catálogo. Corregido el comentario.
+
+**Y no es que `.env.local` esté mal.** `http://localhost:5000` es lo correcto
+cuando se levanta también `npm run dev:server`. Son dos formas distintas de
+mirar y el comentario describía mal una de ellas. `check:comentarios` no puede
+cazar esto: comprueba que un comentario nombre cosas que existen, no que la
+instrucción que da sea cierta.
+
 ## 2026-08-31 · Trece días sin copia de seguridad, y la restauración tampoco sabía
 
 **Encontrado el 26 de agosto mirando `gh run list`, arreglado el 31.**

@@ -195,6 +195,15 @@
     color: var(--primary);
 }
 
+/* Este encabezado lleva `tabIndex={-1}` para recibir el foco al elegir sección,
+   y por eso se le quita el anillo: NO está en el orden de tabulación, así que
+   aquí nunca llega un foco de teclado que haya que señalar. El anillo sería un
+   marco alrededor de un título que nadie ha enfocado a propósito. Si algún día
+   este `h2` se vuelve tabulable, esta regla hay que quitarla con él. */
+.category-results-header h2:focus {
+    outline: none;
+}
+
 .category-results-count {
     font-size: 0.85rem;
     color: var(--text-muted);

@@ -9,6 +9,8 @@
 #    · Que doblefoco.co y la API responden 200, y que la API no se declara
 #      «degradado» (lo hace sola cuando la ingesta lleva demasiado sin correr).
 #    · Que ningún medio con feed lleva 14 días o más sin aportar un artículo.
+#    · Que la copia de seguridad diaria se hizo — y esta es distinta de las
+#      otras dos: comprueba que algo OCURRIÓ, no que algo salió bien. Ver abajo.
 #
 #  CÓMO AVISA, Y POR QUÉ NO BASTA CON FALLAR
 #
@@ -35,6 +37,15 @@
 #  ese día se vio por qué: el sitio estaba perfectamente en pie sirviendo 4 050
 #  historias sin tema y un catálogo entero marcado como nacional.
 #
+#  Y desde el 2026-08-31 hay una tercera clase de comprobación, que no se parece
+#  a ninguna de las dos: **los fallos por NO ocurrir**. Un flujo que se ejecuta y
+#  sale mal deja un aspa roja; uno que deja de ejecutarse no deja nada, y por eso
+#  es el más difícil de ver. Se añadió aquí porque la copia de seguridad estuvo
+#  trece días rota sin que nadie lo notara, y al arreglarla quedó claro que el
+#  aviso nuevo cubría el fallo pero no la ausencia. Lo natural sería que cada
+#  flujo se vigilara a sí mismo, y es justo lo que no puede hacer: si no corre,
+#  no corre nada suyo. Tiene que mirarlo alguien de fuera.
+#
 #  No es un monitor de disponibilidad. Corre cada 6 horas y el cron de GitHub se
 #  retrasa, así que una caída de una hora puede pasar desapercibida. Para eso
 #  hace falta un servicio de monitoreo de verdad, con sondeo por minuto y aviso
@@ -53,10 +64,12 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
-# Solo para abrir, comentar y cerrar el issue de aviso. Nada más.
+# Para abrir, comentar y cerrar el issue de aviso, y para poder preguntarle a
+# Actions cuándo fue la última copia de seguridad que salió bien. Nada más.
 permissions:
   contents: read
   issues: write
+  actions: read
 
 jobs:
   comprobar:
@@ -126,6 +139,58 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+      # ── ¿Y las cosas que fallan por NO ocurrir? ────────────────────────────
+      #
+      #  Los dos pasos de arriba comprueban algo que corrió y salió mal. Esto
+      #  comprueba lo contrario: algo que tenía que correr y no corrió, que es
+      #  un fallo sin síntoma —no hay aspa roja, no hay log, no hay nada—.
+      #
+      #  Existe por lo del 2026-08-31. La copia de seguridad estuvo trece días
+      #  en rojo y se descubrió por casualidad; al arreglarla quedó escrito que
+      #  el aviso nuevo cubría el fallo pero NO la ausencia: si backup.yml
+      #  dejara de ejecutarse, nadie se enteraría. Esto cierra ese hueco, y no
+      #  es hipotético — GitHub desactiva solos los flujos programados de un
+      #  repositorio sin actividad, y ese es exactamente el caso.
+      #
+      #  POR QUÉ 36 HORAS, Y POR QUÉ ESE NÚMERO SÍ ESTÁ FUNDADO. Este archivo
+      #  tiene escrito que se comprueban contradicciones y no umbrales, porque
+      #  un umbral que no respalda nada acaba discutiéndose en vez de leerse.
+      #  Aquí el número NO sale del gusto de nadie: sale del cron de backup.yml,
+      #  que es diario. Más de 36 h sin una copia buena es el flujo
+      #  contradiciendo su propio horario, con doce horas de margen para una
+      #  ejecución que se retrase o se encole. Si el cron cambia, este número
+      #  cambia con él o deja de significar algo.
+      #
+      #  Y mide la última que SALIÓ BIEN, no la última que se intentó: trece
+      #  intentos fallidos seguidos son trece días sin copia, no actividad.
+      - name: ¿Se hizo la copia de seguridad?
+        id: copia
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ultima=$(gh run list --workflow=backup.yml --status=success \
+                     --limit 1 --json createdAt --jq '.[0].createdAt // empty')
+
+          if [ -z "$ultima" ]; then
+            echo "✗ No consta NINGUNA copia de seguridad correcta." \
+              | tee -a "$RUNNER_TEMP/vigilancia.txt"
+            exit 1
+          fi
+
+          horas=$(( ( $(date -u +%s) - $(date -u -d "$ultima" +%s) ) / 3600 ))
+
+          if [ "$horas" -gt 36 ]; then
+            echo "✗ La última copia de seguridad correcta fue hace $horas h ($ultima)." \
+              | tee -a "$RUNNER_TEMP/vigilancia.txt"
+            echo "  El flujo es diario: o está fallando, o ha dejado de ejecutarse." \
+              | tee -a "$RUNNER_TEMP/vigilancia.txt"
+            exit 1
+          fi
+
+          echo "Copia de seguridad: la última correcta fue hace $horas h." \
+            | tee -a "$RUNNER_TEMP/vigilancia.txt"
+
       # ── Aviso ──────────────────────────────────────────────────────────────
       # Se busca por etiqueta y no por título: el título lleva la fecha, así que
       # buscarlo abriría un issue nuevo cada día del mismo incidente.
@@ -139,7 +204,7 @@ jobs:
           echo "numero=$numero" >> "$GITHUB_OUTPUT"
 
       - name: Abrir o actualizar el aviso
-        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure'
+        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure' || steps.copia.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
@@ -168,7 +233,7 @@ jobs:
           fi
 
       - name: Cerrar el aviso si ya se recuperó
-        if: steps.comprobacion.outcome == 'success' && steps.invariantes.outcome == 'success' && steps.abierto.outputs.numero != ''
+        if: steps.comprobacion.outcome == 'success' && steps.invariantes.outcome == 'success' && steps.copia.outcome == 'success' && steps.abierto.outputs.numero != ''
         env:
           GH_TOKEN: ${{ github.token }}
           NUMERO: ${{ steps.abierto.outputs.numero }}
@@ -180,7 +245,7 @@ jobs:
       # sigue siendo el registro, y un job en verde con un issue abierto sería
       # una contradicción que acabaría creyéndose la parte cómoda.
       - name: Reflejar el resultado
-        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure'
+        if: steps.comprobacion.outcome == 'failure' || steps.invariantes.outcome == 'failure' || steps.copia.outcome == 'failure'
         run: |
           echo "La comprobación falló; hay un issue abierto con el detalle."
           exit 1

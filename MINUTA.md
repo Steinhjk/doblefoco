@@ -501,10 +501,36 @@ mismas cuentas. Y el guardián nuevo se probó rompiéndolo a propósito —un
 trabajo**— y falla con código 1 y el mensaje que toca. 714 pruebas,
 `check:comentarios` y `check:registry` en verde.
 
-**Lo que queda sin cubrir, dicho para que no se crea cubierto:** el aviso avisa
-del fallo, no de la ausencia. Si el flujo dejara de ejecutarse —no fallar, sino
-no correr— nadie se enteraría, porque no hay nada que vigile que la copia se
-hizo. No se arregla hoy y no se olvida.
+### Y el hueco que quedaba, cerrado el mismo día
+
+Al cerrar esto quedó escrito que **el aviso cubría el fallo pero no la
+ausencia**: si `backup.yml` dejara de ejecutarse —no fallar, sino no correr— no
+habría aspa, ni log, ni nada que mirar. **No es hipotético:** GitHub desactiva
+solos los flujos programados de un repositorio sin actividad.
+
+Y no lo puede vigilar el propio flujo, porque si no corre no corre nada suyo:
+tiene que mirarlo alguien de fuera. Se añadió a `vigilancia.yml`, que ya corre
+cada 6 horas y ya sabe abrir y cerrar issue: pregunta a Actions cuándo fue la
+última copia **que salió bien** —no la última que se intentó, porque trece
+intentos fallidos son trece días sin copia— y acusa si pasa de 36 h.
+
+**El umbral está fundado, y por eso se puede escribir aquí sin incomodidad.**
+Este repositorio tiene por norma comprobar contradicciones y no umbrales. El 36
+no sale del gusto de nadie: sale del cron de `backup.yml`, que es diario, con
+doce horas de margen para una ejecución que se retrase o se encole. Si el cron
+cambia, el número cambia con él o deja de significar algo, y así está escrito en
+el propio archivo.
+
+**Probado contra la realidad antes de subirlo:** ejecutada la consulta hoy
+responde que la última copia buena fue hace **332 horas**, y el paso acusa. Se
+apagará solo cuando la copia de mañana salga en verde.
+
+> **Esto abre una clase de comprobación que el proyecto no tenía:** los fallos
+> **por no ocurrir**. Los otros dos pasos de la vigilancia miran algo que corrió
+> —si sigue en pie, si se contradice—. Este mira algo que no corrió, que no deja
+> síntoma. Los demás flujos programados —ingesta, archivo, centinela,
+> auditoría, desfase— **siguen sin nadie que vigile su ausencia.** Se dice para
+> que no se crea cubierto.
 
 ## 2026-08-26 · Los memos: tres retirados, diecisiete corregidos
 

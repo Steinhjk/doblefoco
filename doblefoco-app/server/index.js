@@ -49,6 +49,8 @@ import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
 import { RUTAS_RENDERIZADAS, metadatosDePagina } from './ssr/paginasEstaticas.js';
 import { esRutaCanonica, idDesdeRuta, rutaDeHistoria } from '../shared/storyPath.js';
+import { MEDIA_REGISTRY } from '../shared/mediaRegistry.js';
+import { hashDelRegistro } from '../shared/registroHash.js';
 import { TEMAS } from '../shared/topicClassifier.js';
 import { DEPARTAMENTOS } from '../shared/geografia.js';
 import { contarSinResolver, erroresRecientes, marcarResuelto, registrarError } from './db/errorStore.js';
@@ -261,6 +263,13 @@ app.get('/api/live', (req, res) => {
  * constancia, y solo se cae al estado en memoria si no hay base —el caso de
  * quien arranca en local sin Postgres.
  */
+/**
+ * La huella del registro compilado en ESTE proceso, para el handshake del
+ * cliente (AvisoDesfase). Se calcula una vez: el registro no cambia en
+ * caliente, cambia desplegando.
+ */
+const REGISTRO_HASH = hashDelRegistro(MEDIA_REGISTRY);
+
 app.get('/api/health', async (req, res) => {
     const stats = getDatabaseStats();
 
@@ -298,12 +307,19 @@ app.get('/api/health', async (req, res) => {
         version: {
             commit: process.env.GIT_SHA?.trim() || 'desconocido',
             feeds: RSS_FEEDS_CONFIG.length,
+            // La huella del catalogo compilado. El cliente compara la suya con
+            // esta y avisa si difieren: es el desfase que el lector SUFRE, a
+            // diferencia del commit, que tambien cambia con la prosa.
+            registroHash: REGISTRO_HASH,
         },
         ingestion: {
             lastRunAt,
             // De dónde sale la fecha. En producción siempre 'base': si aquí
             // aparece 'memoria' con la base configurada, la consulta falló.
             lastRunSource: ultimoCiclo ? 'base' : 'memoria',
+            // Quien corrio el ultimo ciclo: 'motor', 'red-de-seguridad' o
+            // 'manual'. Nulo en ciclos de antes del 2026-09-01.
+            lastRunActor: ultimoCiclo?.actor ?? null,
             inProgress: stats.ingestionInProgress,
             intervalMs: INGEST_INTERVAL_MS,
             feedsOk: ultimoCiclo?.feedsOk ?? null,

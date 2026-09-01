@@ -1,6 +1,7 @@
 // @ts-check
 import { Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import AvisoDesfase from './components/AvisoDesfase';
 import ErrorBoundary from './components/ErrorBoundary';
 import Rutas from './Rutas';
 
@@ -28,6 +29,11 @@ export default function Shell() {
             <div className="App">
                 <a href="#main-content" className="skip-link">Ir al contenido principal</a>
                 <Navbar />
+                {/* Solo existe si el sitio y su motor llevan catalogos
+                    distintos; el resto del tiempo no pinta nada. En el SSR
+                    tampoco: su efecto no corre ahi, y por eso no puede
+                    desencajar la hidratacion. */}
+                <AvisoDesfase />
 
                 <main id="main-content" className="main-content">
                     <Rutas />

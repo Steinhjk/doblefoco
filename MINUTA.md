@@ -95,6 +95,16 @@ midió contra el sistema vivo. Lo nuevo que queda pendiente, con su código:
 Lo demás que encontró la auditoría ya estaba en esta minuta con otro nombre
 (I-1 es el secreto de Fly; I-7 es el handshake 2-B) y no se duplica.
 
+> **I-7 / 2-B, el handshake: HECHO el 2026-09-01 en la rama.** Y no compara
+> commits, a propósito: compara la huella del registro de medios que cada lado
+> lleva compilado (`registroHash` en `/api/health`, `__REGISTRO_HASH_ESPERADO__`
+> en el bundle), porque el commit también cambia con la prosa y acusar por él
+> es la alarma falsa que ya se pagó una vez con el vigilante del desfase. El
+> aviso (`AvisoDesfase`) solo existe cuando los catálogos difieren, habla en
+> lenguaje de lector y manda lo técnico a la consola. Sin datos no acusa: un
+> motor anterior a la función produce silencio, no un estreno en rojo. El
+> extremo a extremo queda pendiente del primer despliegue del motor tras 0.1.
+
 ## Del repaso de memos y auditorías del 2026-08-26
 
 Pedido de Jose: poner los memos y las auditorías al día del estado real y

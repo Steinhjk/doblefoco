@@ -17,7 +17,9 @@ export default defineConfig([
     ],
     languageOptions: {
       ecmaVersion: 'latest',
-      globals: globals.browser,
+      // La huella que incrusta el `define` de vite.config.js (el handshake de
+      // version). Sin declararla, cada uso seria un no-undef.
+      globals: { ...globals.browser, __REGISTRO_HASH_ESPERADO__: 'readonly' },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },

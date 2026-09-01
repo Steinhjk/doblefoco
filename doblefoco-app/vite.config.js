@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { MEDIA_REGISTRY } from './shared/mediaRegistry.js'
+import { hashDelRegistro } from './shared/registroHash.js'
 
 /**
  * La API de producción, para el proxy de desarrollo de abajo.
@@ -12,6 +14,19 @@ const API_DEV = process.env.API_DEV ?? 'https://doblefoco.fly.dev'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+
+  /**
+   * El handshake de version (I-7 / 2-B): el cliente lleva incrustada la huella
+   * del registro con el que se construyo, y el motor publica la suya en
+   * /api/health. AvisoDesfase compara las dos en el navegador y avisa si el
+   * sitio y su motor estan sirviendo catalogos distintos —que es el desfase
+   * que ya mordio dos veces (37 feeds contra 39, tres secciones en cero)—.
+   * Se calcula aqui y no en runtime porque el navegador no puede hashear lo
+   * que importa: necesita saber que esperaba SU build, no lo que ve.
+   */
+  define: {
+    __REGISTRO_HASH_ESPERADO__: JSON.stringify(hashDelRegistro(MEDIA_REGISTRY)),
+  },
 
   server: {
     /**

@@ -445,6 +445,107 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-01 · Lo que el sitio afirmaba de sí mismo, y la tarjeta vacía
+
+**Salió del estudio de mercadeo del 31 de agosto**, y lo que unía a las cuatro
+cosas es que **ninguna se ve desde dentro del sitio**: son lo que ve quien lo
+comparte, o quien lo lee con el tema claro, o quien va a la letra pequeña. Por
+eso aguantaron meses.
+
+### La tarjeta que se compartía estaba vacía
+
+`public/og-image.png` era **un rectángulo oscuro con un borde dorado, y nada
+más**. El generador anterior, `createOgImage.mjs`, pintaba los píxeles a mano y
+**no tenía forma de dibujar texto**: hacía exactamente lo que sabía hacer, y
+nadie miró el resultado. Desde el **2026-07-29**.
+
+Y no estaba en un rincón: `metadatos.js` y `paginasEstaticas.js` la sirven como
+`og:image` de **todas** las páginas de noticia. Cada vez que alguien compartía
+una historia de DobleFoco en WhatsApp o en X, lo que se veía era el rectángulo.
+
+> Esto corrige algo que yo mismo escribí el 31 de agosto. Dije que **«las páginas
+> de noticia están impecables»** mirando sus etiquetas, que efectivamente lo
+> están. Miré el `og:image` como cadena de texto y di por buena la imagen sin
+> abrirla. La etiqueta apuntaba a un archivo vacío.
+
+- **Estado: HECHO.** `npm run og:generar` la compone con Playwright —ya era
+  dependencia, `npm run mirar` lo usa— sobre un HTML con la tipografía y la
+  paleta del propio sitio.
+- **Dos decisiones de diseño que conviene no deshacer.** No lleva **barra de
+  espectro**: habría que darle un ancho a cada tramo, y tres tramos iguales
+  **afirman que el espacio mediático colombiano está repartido en tercios**, que
+  es el falso equilibrio contra el que existe el proyecto; con la proporción real
+  sería un dato con fecha dentro de una imagen que nadie regenera. Y **no lleva
+  ningún número**, por lo mismo. Tampoco nada que lata ni que arda: acompaña a la
+  peor noticia del día igual que a las demás.
+
+### La portada anunciaba un sitio que no es este
+
+Las etiquetas de `index.html` son el sitio entero para quien lo ve compartido y
+no llega a entrar. Venían de antes de que el proyecto tuviera criterio editorial:
+
+- **«Información Objetiva y Moderna»** en `twitter:title` y **«Sin sesgos
+  ocultos»** en su descripción — mientras `/transparencia/clasificacion` dice,
+  literal, «no significa neutral, imparcial ni objetivo». El sitio se desmentía a
+  sí mismo, y la versión que ganaba era la que se ve sin entrar.
+- **«más de 20 fuentes nacionales»**, cuando son 78 medios.
+- Sin `og:image` teniendo el archivo, y con `summary_large_image` declarado: se
+  prometía una imagen grande y no se mandaba ninguna.
+- Open Graph y Twitter **decían cosas distintas**.
+
+- **Estado: HECHO**, y con la regla escrita en el propio archivo: **se dice lo
+  que el sitio HACE, nunca lo que el sitio ES**, y no van cifras, porque esta
+  cabecera no se regenera con el catálogo. Lo sostiene `src/metadatos.test.js`.
+
+### Las dos páginas de transparencia se contradecían con su propio contador
+
+**Este es el peor de los cuatro**, porque está en la página que promete que no
+hacemos esto:
+
+- `/transparencia/limitaciones` decía, en la misma línea: *«**Ninguna** de las 78
+  clasificaciones está firmada. **5** han pasado por revisión editorial formal.»*
+  El «Ninguna» era texto fijo de cuando el contador valía 0.
+- `/transparencia/sobre-nosotros` repetía la versión vieja, ya falsa.
+- Las dos afirmaban que **de todos** los medios consta quién los controla «con
+  una excepción», cuando **son quince** los que llevan `ownerType: null`.
+- Y `sobre-nosotros` abría con el lema **«Información objetiva para un ciudadano
+  informado»**, a dos clics de la página que dice lo contrario.
+
+**Es el defecto que este repositorio persigue en el código —una afirmación que
+describe algo que dejó de ocurrir— pero en la prosa.** La cifra ya se calculaba
+sola; lo escrito a mano era **la frase que la interpreta**, y una frase también
+envejece.
+
+- **Estado: HECHO.** Las frases se generan en `src/lib/catalogo.js` y son ciertas
+  con cualquier número, incluidos el cero y el total. `EstadoDelCatalogo` cuenta
+  ahora desde ahí en vez de repetir la definición.
+- **Y la misión se reescribió con lo que el proyecto sí sostiene**: que no se
+  busca el equilibrio sino que se vea el desequilibrio. Estaba en la memoria y en
+  el ROADMAP, no en la página.
+
+### El encabezado era blanco sobre blanco, y su regla de estilo no se aplicaba
+
+En `/transparencia/sobre-nosotros`, `.about-hero` fijaba `color: white` sobre un
+degradado que en el tema **claro** vale `#f8fafc → #f1f5f9`. Contraste
+**1,03:1**: el título de la página y su lema eran **invisibles** para quien no usa
+el tema oscuro. Ahora es 17,06:1.
+
+**Y debajo había un segundo fallo, el mismo de siempre:** la hoja estilaba
+`.about-hero h1` y el JSX pinta `<h2 className="sn-titulo">`. La regla del tamaño
+**no se aplicó nunca**. Es la **tercera vez** que este proyecto pierde estilos en
+la costura JSX↔CSS —los puntos del mapa el 19 de agosto, el titular de Tendencias
+el 21— y tres veces es un patrón. La defensa, ya aplicada las tres veces: **el
+CSS apunta a la clase, no a la etiqueta.**
+
+- **Estado: HECHO**, con `SobreNosotros.layout.test.js`.
+
+### Las tres pruebas nuevas se rompieron a propósito para ver que acusan
+
+Metiendo «objetiva» en las etiquetas: acusa, y de paso acusa que Open Graph y
+Twitter dejaron de coincidir. Dejando la tarjeta lisa: acusa. Devolviendo el CSS
+a `.about-hero h1`: acusa dos veces. **Deshecho con la edición inversa**, no con
+`git checkout`.
+
 ## 2026-08-31 · Trece días sin copia de seguridad, y la restauración tampoco sabía
 
 **Encontrado el 26 de agosto mirando `gh run list`, arreglado el 31.**

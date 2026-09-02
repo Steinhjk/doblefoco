@@ -104,6 +104,46 @@ const TrLimitaciones = () => (
             para ser discutidos; por eso cada uno se publica con su argumento al lado.
         </p>
     </section>
+
+    {/*
+      * EL PROCEDIMIENTO PARA UN MEDIO, escrito (decisión de Jose, 2026-09-02,
+      * duda 12). Hasta hoy un lector tenía camino —el panel, el correo— y un
+      * medio no: era la única ausencia que se notaba desde fuera. Lo que se
+      * promete aquí son plazos y publicación, no un resultado: la
+      * reclasificación, si la hay, sigue el protocolo de juicio editorial y no
+      * la presión. Los plazos viven también en PROTOCOLO_JUICIO_EDITORIAL.md
+      * (sección 7); si cambian, cambian en los dos sitios.
+      */}
+    <section className="tr-section tr-contact" id="medios">
+        <h2><Mail size={18} aria-hidden="true" /> Si usted es un medio del catálogo</h2>
+        <p>
+            Si su medio aparece aquí y no está de acuerdo con su clasificación, con su
+            ficha de propiedad o con un aviso que publicamos, escríbanos desde una cuenta
+            del medio a{' '}
+            <a href={`${CONTACT_MAILTO}?subject=${encodeURIComponent('Objeción de un medio del catálogo')}`}>
+                <strong>{CONTACT_EMAIL}</strong>
+            </a>
+            , diciendo qué afirmación objeta y con qué evidencia. Esto es lo que nos
+            comprometemos a hacer:
+        </p>
+        <ul className="tr-limits">
+            <li>
+                <strong>Acusar recibo en cinco días y responder por escrito en quince.</strong>{' '}
+                La respuesta dice qué se cambia, qué no, y por qué.
+            </li>
+            <li>
+                <strong>Publicar la objeción y la respuesta junto a la ficha del medio,
+                con fecha</strong>, cambie o no la clasificación. Quien lea la ficha verá
+                que el medio la discutió y qué dijimos.
+            </li>
+            <li>
+                <strong>Cambiar solo con evidencia.</strong> Una clasificación se revisa
+                con el mismo protocolo con el que se hizo —cobertura reciente, fuentes
+                consultables— y no por la insistencia. Lo que sí cambia siempre es un
+                dato de hecho que se demuestre errado: un dueño, una fecha, un cargo.
+            </li>
+        </ul>
+    </section>
     </>
 );
 

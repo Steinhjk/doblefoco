@@ -527,6 +527,18 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Un medio ya tiene a dónde escribir, y sabe qué pasa después (3.8)
+
+**La única ausencia que se notaba desde fuera** (duda 12). Decisión de Jose del
+2026-09-02, punto 8c: el contacto es el mismo correo del boletín. Lo que se
+hizo: una sección nueva en `/transparencia/limitaciones` —«Si usted es un
+medio del catálogo»— con los tres compromisos (acuse en 5 días, respuesta por
+escrito en 15, publicación de objeción y respuesta junto a la ficha con fecha,
+cambie o no la clasificación), la regla en la sección 7 del protocolo, y la
+descripción de la página en el SSR. Lo que NO se prometió: un resultado. La
+reclasificación sigue el protocolo, no la insistencia. El mecanismo para
+publicar la objeción es la `note` de la ficha que ya existe; se estrenará con
+el primer caso.
 ## 2026-09-02 · `aceptado` se estrena con Vorágine (3.6)
 
 **Primer uso del estado desde que existe** (2026-08-19). `voragine/feed` pasa

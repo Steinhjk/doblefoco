@@ -120,7 +120,8 @@ export const PAGINAS_ESTATICAS = {
         titulo: () => 'Lo que DobleFoco todavía no hace bien',
         descripcion: () =>
             'Las limitaciones conocidas del sitio, declaradas por el propio proyecto, ' +
-            'y cómo corregirnos si encuentra un error.',
+            'cómo corregirnos si encuentra un error, y qué hacemos cuando un medio ' +
+            'del catálogo objeta su clasificación.',
         tipoSchema: 'WebPage',
     },
 };

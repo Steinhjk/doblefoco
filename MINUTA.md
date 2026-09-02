@@ -532,6 +532,42 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · El archivo permanente se hace: plan escrito y coste aceptado
+
+**Decisión de Jose:** adelante con la opción B, con sus 25 USD al mes. El plan
+está en `doblefoco-app/PLAN_ARCHIVO_PERMANENTE.md`, y **no da nada por hecho**.
+
+**Lo que ya estaba resuelto sin saberlo:** los artículos ya sobreviven 30 días,
+cada historia ya tiene URL estable, y la cobertura ya se guarda CALCULADA —así
+que revisar el sesgo de un medio mañana no reescribe lo que una historia vieja
+le mostró al lector—. Eso último es media respuesta al problema de fondo de
+cualquier archivo.
+
+**El obstáculo real, y no es el dinero:** `persistStories` BORRA cada ciclo las
+historias que ya no produce. Archivar es dejar de borrar, y eso cambia lo que
+significa la tabla: hoy `stories` es «lo que hay ahora» y pasaría a ser «todo lo
+que hubo». Cada consulta que se olvide de filtrar empezaría a servir noticias
+de hace meses como si fueran de hoy. Va con prueba.
+
+**Cuatro etapas:** congelar en vez de borrar (2–3 días), la página archivada
+(1–2), las fichas fechadas (medio día la versión mínima) y el buscador (2–3).
+Semana y media en total.
+
+**El dinero, medido hoy:** la infraestructura cuesta ~5,30 USD/mes (Fly; Supabase
+y Vercel en plan gratuito). Con el Pro serían ~30,30 al mes, unos 364 al año.
+**No hay que pagarlo todavía**: con 30 días la base se estabiliza en ~290 MB de
+los 500 gratuitos, y el techo se alcanza cuando la retención pase de ~55 días.
+El pago es el último paso y el más fácil de revertir.
+
+**Decisión que queda de Jose:** cuál de las tres salidas para las fichas
+fechadas —decirlo con un aviso, instantánea por historia, o fichas con
+vigencia—. Recomendada la primera ahora y la tercera cuando cambie la primera
+ficha de verdad; la intermedia es la peor de las tres y el plan dice por qué.
+
+**Y una comprobación antes de contratar:** el consumo de ancho de banda de
+Supabase, que es el otro techo del plan gratuito y no se ha medido nunca.
+
+
 ## 2026-09-02 · El aviso de dueño compartido sale de la página de la noticia
 
 **Decisión de Jose**, anotada en `DECISIONES.md`: la concentración por dueño no le

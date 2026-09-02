@@ -39,6 +39,7 @@ import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { porRelevancia } from '../../shared/relevancia.js';
 import { detectarDepartamento } from '../../shared/geografia.js';
 import { USER_AGENT } from '../../shared/userAgent.js';
+import { CAMPOS_ITEM_RSS, fechaDeclarada } from '../../shared/rssItems.js';
 import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
@@ -191,18 +192,9 @@ const MAX_ARTICLES = 8_000;
 const parser = new Parser({
     headers: { 'User-Agent': USER_AGENT },
     timeout: FEED_TIMEOUT_MS,
-    // `media:*` no son campos estándar de RSS, así que rss-parser los ignora
-    // salvo que se pidan. `keepArray` porque un item suele traer varias
-    // resoluciones de la misma foto y hay que poder elegir.
-    customFields: {
-        item: [
-            ['media:content', 'mediaContent', { keepArray: true }],
-            ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
-            // Varios medios no declaran media:content pero sí incrustan la foto
-            // en el HTML del contenido. Pedirlo no cuesta ninguna petición extra.
-            ['content:encoded', 'contentEncoded'],
-        ],
-    },
+    // Qué campos se piden y por qué, en shared/rssItems.js: los pedían tres
+    // archivos por su cuenta y las copias ya habían empezado a divergir.
+    customFields: { item: [...CAMPOS_ITEM_RSS] },
 });
 
 /**
@@ -394,7 +386,10 @@ export function observarPieza(feedConfig, item, link, headline, ahoraMs = Date.n
 }
 
 export function parsePublishedAt(item, ahoraMs = Date.now()) {
-    const raw = item?.isoDate || item?.pubDate;
+    // La fecha declarada sale de `fechaDeclarada` y no de `item.pubDate`: hay
+    // un feed que la emite en minúsculas y XML distingue la caja. Ver
+    // shared/rssItems.js.
+    const raw = fechaDeclarada(item);
     if (!raw) return null;
 
     const date = new Date(raw);

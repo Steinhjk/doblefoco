@@ -532,6 +532,89 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Los cuatro feeds parados: uno era culpa nuestra, y los otros tres no tienen vía (Etapa 4)
+
+**Es lo que el punto 7 de la sesión de decisiones dejó pendiente:** reintentar
+la vía de Telecaribe, El Manduco, W Radio y Telecafé, y traer el resultado para
+que Jose decida si alguno sale del catálogo. Reintentados uno por uno el
+2026-09-02, cada uno por su feed y por Google News.
+
+### Telecafé no estaba roto: la fecha la perdíamos nosotros (ARREGLADO)
+
+**Su feed emite `<pubdate>` en minúsculas.** XML distingue mayúsculas, así que
+rss-parser no lo reconoce como el `<pubDate>` de RSS 2.0 y lo descartaba: sus
+diez piezas entraban **sin fecha**, y sin fecha se ordenan por el momento en
+que las vimos. Estábamos publicando como de hoy piezas de hace tres días.
+
+**Lo delató una contradicción entre dos herramientas nuestras**, y las dos
+tenían razón sobre su propio método: `npm run feed:descubrir` decía «último
+hace 70 h» —lee el XML como texto, con una expresión insensible a la caja— y la
+auditoría decía «ninguna pieza trae fecha», porque usa el parser. Medido sobre
+los 76 feeds: **Telecafé es el único así**.
+
+Arreglado en `shared/rssItems.js`, que ahora es el único sitio donde se declara
+qué se le pide a un ítem de RSS. Los tres parsers —motor, auditoría y
+`check:feeds`— repetían la lista a mano y dos leían la fecha con su propia
+expresión; ahora importan lo mismo, y una prueba lo comprueba. **No se
+normaliza el XML entero a minúsculas**: sería tocar el parseo de los 76 feeds
+por culpa de uno.
+
+**Efecto medido, y es a la baja a propósito:** Telecafé pasa de 10 piezas sin
+fecha a 10 fechadas, de las cuales **3 caen dentro de la ventana de 72 h**.
+Aporta menos y deja de mentir sobre cuándo se publicó. Su cadencia ya se puede
+medir, así que el hallazgo «responde, pero ninguna pieza trae fecha» se cierra
+solo en la próxima pasada.
+
+### W Radio: no está parado, su feed expone dos piezas (DECISIÓN DE JOSE)
+
+El libro dice «el feed está parado: una pieza cada 2 909 h». **Ese número es un
+artefacto:** su feed Arc trae exactamente **2 ítems**, uno de hace 15 h y otro
+de hace 4,6 años; la cadencia se calcula entre esos dos. El medio publica todos
+los días —Google News tiene 100 piezas suyas, la última de hace 13 h—.
+
+Probadas siete rutas (Arc por categoría y sección, `/feed/`, `/rss/`,
+`/rss.xml`, sitemap de noticias): ninguna otra responde. Queda Google News, y
+**medido, no compensa**:
+
+| Vía | Piezas dentro de la ventana | Enlaces |
+|---|---|---|
+| Su feed Arc (hoy) | 1 | canónicos, a wradio.com.co |
+| Google News | 2 | redirecciones de news.google.com |
+
+Subir su techo por feed no cambia nada: con 15, 30, 60 o 100 ítems siguen
+siendo 2 los que caen en la ventana, porque Google News ordena por relevancia y
+el resto es viejo. **Cambiar una pieza por perder todos sus enlaces canónicos
+no parece un trato bueno, y es la duda 9 —que ya afecta a 9 medios— un poco
+peor.** Recomendación: dejarlo como está y aceptar el hallazgo con nota, que es
+para lo que existe `aceptado`. **Decisión de Jose.**
+
+### Telecaribe y El Manduco: no hay vía porque no hay qué traer
+
+- **Telecaribe.** Su feed responde y está sano; lo que pasa es que **no publica
+  desde hace unos veinte días**, y Google News dice lo mismo (última pieza hace
+  501 h). Coincide con lo que enseñó la cadencia grabada el 1 de septiembre:
+  ninguna pieza desde el 13 de agosto. No es lentitud: es un silencio largo.
+- **El Manduco.** **El sitio entero devuelve HTTP 500**, no solo el feed —la
+  portada también—, y así lleva los cuatro ciclos que `cadencia_huecos` tiene
+  grabados. Google News fecha su última pieza hace **5,5 meses**. Está caído.
+
+Los dos siguen en el catálogo y en el mapa, con su ficha: **la regla de no
+silenciar a nadie no se toca por una avería ajena.** Lo que Jose tiene que
+decidir es si se quedan como están —con su hallazgo aceptado y una nota que
+diga desde cuándo callan— o si salen. Mi lectura: Telecaribe es un canal
+público vivo que volverá, y El Manduco lleva medio año sin publicar con el
+sitio caído, que es otra cosa.
+
+### Un defecto de la auditoría que salió de paso, y queda ABIERTO
+
+**La cadencia de un feed con un ancla vieja no significa nada.** El «2 909 h»
+de W Radio sale de dos ítems separados por cuatro años y medio. Un feed que
+expone su última pieza y un artículo fijo de 2022 produce el mismo número que
+un medio moribundo. La auditoría debería calcular la cadencia sobre la mediana
+de los intervalos, no sobre el rango entre el primero y el último, o declararla
+no calculable con menos de tres piezas recientes. Es media hora de trabajo y no
+se hizo aquí para no mezclarlo con el arreglo de Telecafé.
+
 ## 2026-09-02 · El punto ciego dice la verdad de sí mismo (3.2)
 
 **Decisión de Jose, punto 3 (D, E y número fijo para 1-D).** Tres cosas en

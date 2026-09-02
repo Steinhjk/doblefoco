@@ -80,7 +80,24 @@ midió contra el sistema vivo. Lo nuevo que queda pendiente, con su código:
   única CSP. También el `.env*` huérfano del `.gitignore` de la raíz.
 - **I-6 · `api.doblefoco.co` está en la CSP y el DNS no existe.** Crear el
   CNAME (recomendado: despega al cliente del hostname de Fly) o retirarlo.
-  **ABIERTO — decisión de una frase de Jose.**
+  **HECHO el 2026-09-02.** Jose eligió crearlo: certificado en Fly
+  (`flyctl certs add`) y, como Fly pidió A y AAAA en vez de CNAME, esos dos
+  registros en Porkbun —que es quien lleva el DNS de `doblefoco.co`; Vercel
+  solo recibe el tráfico—. Verificado desde fuera: `/api/health` responde el
+  mismo commit que Fly, CORS acepta `https://doblefoco.co` (petición y
+  preflight), y sitemap, robots, transparencia y mapa-medios dan 200 por el
+  hostname nuevo. El cliente cambia en la PR #8 (`vercel.json`, proxy de
+  desarrollo, scripts que miden la API); los workflows de despliegue y de
+  desfase siguen mirando `doblefoco.fly.dev` a propósito, porque auditan la
+  máquina y no el DNS. La preview de Vercel está protegida con login y no se
+  pudo abrir desde fuera; la portada se miró con `npm run mirar` contra el
+  hostname nuevo.
+- **Hallazgo de paso, y no es de hoy: `/sobre-nosotros` da 404** en Fly, por
+  `api.doblefoco.co` y en `doblefoco.co`. `paginasEstaticas.js` dice que es
+  una redirección permanente a `/transparencia/sobre-nosotros`, y
+  `vercel.json` la reescribe al motor, que responde 404. Dos artefactos
+  nuestros que dicen cosas distintas. Pequeño; **ABIERTO**, para la siguiente
+  rama de pulido.
 - **I-8 · El relevo a la red de seguridad de 2 h es silencioso** y con Infobae a
   margen 0,09 pierde el 91 % sin aviso. Acusar desde la vigilancia cuando la
   ingesta lleve horas sin pasada del motor. **HECHO el 2026-09-01 en la rama**:

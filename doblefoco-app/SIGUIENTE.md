@@ -1,5 +1,48 @@
 # Por dónde seguir
 
+## 2026-09-02, fin de la sesión · Dónde quedamos exactamente
+
+**Lo primero al volver: la PR #16 está abierta y sin fusionar.** Es la primera
+tanda de la Etapa 4 (el arreglo de Telecafé). Todo lo demás del día está en
+`main` y desplegado.
+
+**Estado del plan.** Etapa 0: cerrada, salvo dos gestos de Jose (issue #4 del
+centinela y sacar el repositorio de OneDrive). Etapa 1: **hecha entera** —los
+ocho puntos, en `DECISIONES.md` (2026-09-02)—. Etapa 2: 2.1 y 2.2 hechas;
+quedan 2.3 (consulta compartida de portada) y 2.4 (serializador de
+rehidratación). Etapa 3: **hecha entera** salvo lo que espera por naturaleza,
+que son las fichas de izquierda (3.5) y la regla por cadencia (3.9). Etapa 4:
+empezada por los feeds parados.
+
+**Tres decisiones esperando a Jose, ya medidas** (el detalle, en `MINUTA.md`,
+entrada «Los cuatro feeds parados»):
+
+1. **W Radio.** No está parado: su feed expone 2 ítems, uno de hace 4,6 años, y
+   de ahí sale el «2 909 h» del libro. Por Google News se gana 1 pieza y se
+   pierden todos sus enlaces canónicos. Recomendado: dejarlo y aceptar el
+   hallazgo con nota.
+2. **Telecaribe.** Feed sano, ~20 días sin publicar. Canal público; mi lectura
+   es que vuelve.
+3. **El Manduco.** El sitio entero devuelve 500 y su última pieza es de hace
+   5,5 meses. Es el único de los cuatro que de verdad plantea salir del
+   catálogo.
+
+**Lo siguiente de código, sin orden obligado:**
+
+- El 404 de `/sobre-nosotros` (abierto desde antes del 2026-09-02).
+- La cadencia de la auditoría, que se calcula entre la pieza más nueva y la más
+  vieja del feed: un ancla de 2022 produce números absurdos. Debería ser la
+  mediana de los intervalos. Media hora.
+- H4: escribir solo lo que cambió en cada ciclo.
+- 2.3 y 2.4, que vienen del plan de continuidad.
+
+**Dos fechas que no dependen de nadie:** hacia el **2 de octubre**, medir el
+tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de
+~300 MB hay que decidir) y arrancar la regla por cadencia con 30 días de serie.
+Hacia **diciembre**, revisar la opción B del archivo permanente.
+
+---
+
 ## 2026-09-02 · Etapa 3 ejecutada el mismo día que se decidió
 
 Jose contestó los ocho puntos de la sesión de decisiones y **todo lo que era

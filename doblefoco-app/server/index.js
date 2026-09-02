@@ -333,6 +333,14 @@ app.get('/api/health', async (req, res) => {
             // invita a buscar una avería que no existe.
             articles: conteos?.articles ?? stats.totalArticles,
             stories: conteos?.stories ?? stats.totalStories,
+            // Desde el 2026-09-02 la base guarda 30 días y el motor agrupa 72 h,
+            // así que `articles` ya no coincide con lo que hay en memoria ni con
+            // la portada. Se publican las dos ventanas para que nadie lea esa
+            // diferencia como una avería.
+            retencion: {
+                agrupamientoHoras: stats.retentionHours,
+                baseDias: stats.retencionBaseDias,
+            },
             // Qué respalda esos números. `false` significa que un reinicio los
             // pone a cero: es información operativa, no un detalle interno.
             persistent: isDatabaseEnabled(),

@@ -234,8 +234,9 @@ async function main() {
     // ── El límite que ninguna calibración arregla ───────────────────────────
     console.log('  4. LO QUE ESTA MEDIDA NO PUEDE AFIRMAR, Y POR QUÉ');
     console.log('  ──────────────────────────────────────────────────────────────────');
-    console.log(`    El corpus cubre ${dias.length} días porque la ingesta borra a las 72 h`);
-    console.log('    (`RETENTION_MS` en ingestDaemon.js). UNA AGENDA NO SE MIDE EN TRES DÍAS.');
+    console.log(`    El corpus cubre ${dias.length} días. Desde el 2026-09-02 la base conserva 30`);
+    console.log('    (`RETENCION_BASE_MS` en ingestDaemon.js); antes borraba a las 72 h, y una');
+    console.log('    agenda no se mide en tres días. La serie se llena sola: un día por día.');
     console.log('');
     console.log('    El ROADMAP daba F1-17 por bloqueada a falta de «detección de tema a');
     console.log('    partir del titular». Eso ya existe —es lo que usa este script—. El');

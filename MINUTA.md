@@ -532,6 +532,41 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · La base conserva 30 días; el motor sigue agrupando 72 h (3.1)
+
+**Decisión de Jose, punto 1, opción C.** Dos ventanas con nombre en el motor:
+`RETENTION_MS` (72 h) sigue siendo lo que se agrupa, se muestra y se rehidrata;
+`RETENCION_BASE_MS` (30 días) es cuánto viven los artículos en la base. **El
+cambio de conducta es una línea** —la poda— y todo lo demás es dejar escrito
+que son dos cosas: en `/api/health` (`database.retencion`), en el esquema, en
+la metodología pública, en el mensaje de `npm run insistencia` y en el motivo
+por el que la copia sigue sin respaldar `articles`. Una prueba lee el fuente
+y acusa si alguien vuelve a unificar las dos ventanas en cualquier dirección.
+
+**Lo que NO cambia, y es la parte que importa:** ninguna historia vieja vuelve
+a la portada ni tiene URL. Las historias se recalculan cada ciclo sobre las
+72 h de memoria, como siempre. Sin páginas permanentes: eso es la opción B,
+que se revisa a los 90 días de serie (≈ diciembre de 2026).
+
+**Lo que desbloquea desde hoy:** la serie de `npm run insistencia` se llena un
+día por día (antes: cuatro días y nunca más); la ventana de estimación del
+modelo de puntos ciegos puede separarse de la de agrupamiento (3.2); y la
+regla por cadencia (3.9) tendrá artículos y no solo piezas.
+
+**Punto de partida, medido el 2026-09-02:** `articles` 14 MB, 8 478 filas; la
+base entera, 43 MB. **Pendiente con fecha: medir el tamaño hacia el 2 de
+octubre.** Con el techo propio de Infobae la estimación de 4,7 MB/día de
+agosto se queda corta; si el mes cierra por encima de ~300 MB, hay que
+decidir entre bajar el techo de Infobae o los 30 días, y es decisión de Jose.
+
+**Hallazgo de paso, arreglado en la misma rama: la metodología pública se leía
+con las tildes rotas.** `src/docs/metodologia.txt` —que `/transparencia/sobre-nosotros`
+importa tal cual— tenía 132 secuencias de doble codificación («artÃ­culos»)
+junto a 23 tildes sanas de ediciones recientes; `criterios_clasificacion_medios`,
+`loop_ingestion_doc` y `plan_motor` igual. Se deshizo solo en las secuencias
+que lo delatan, sin tocar lo que estaba bien. Llevaba así desde que se escribió
+el archivo, y ninguna prueba lo miraba.
+
 ## 2026-09-02 · La regla de quien dirige, escrita, y el aviso de La Libertad a la vista (3.4)
 
 **Decisión de Jose, punto 5.** La regla está en el protocolo (§1, «REGLA DE

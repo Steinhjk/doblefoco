@@ -208,7 +208,12 @@ CREATE INDEX IF NOT EXISTS articles_sin_tema_idx
     ON articles (published_at DESC NULLS LAST) WHERE topics IS NULL;
 
 -- La ventana de retención pasa a ser una consulta, no un barrido en memoria:
---   DELETE FROM articles WHERE COALESCE(published_at, ingested_at) < now() - interval '72 hours';
+--   DELETE FROM articles WHERE COALESCE(published_at, ingested_at) < now() - interval '30 days';
+-- Son 30 DÍAS desde el 2026-09-02 (RETENCION_BASE_MS, decisión de Jose, opción
+-- C): la base conserva para medir; el motor sigue agrupando y mostrando 72 h
+-- (RETENTION_MS), y las historias se recalculan cada ciclo, así que ningún
+-- artículo viejo vuelve a la portada. Sin páginas permanentes: eso es la
+-- opción B, que se revisa a los 90 días de serie.
 
 -- ── 4. Historias ─────────────────────────────────────────────────────────────
 -- Las métricas de cobertura se guardan CALCULADAS porque dependen del catálogo

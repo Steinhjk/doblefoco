@@ -1,40 +1,40 @@
 ﻿====================================================================
-CRITERIOS DE CLASIFICACIÃ“N DE MEDIOS â€” NOTA HISTÃ“RICA
+CRITERIOS DE CLASIFICACIÃ“N DE MEDIOS — NOTA HISTÃ“RICA
 ====================================================================
 
 ESTE DOCUMENTO YA NO CONTIENE CLASIFICACIONES.
 
-Hasta el 2026-07-27 aquÃ­ vivÃ­a una tabla con el sesgo y la factualidad de 30
+Hasta el 2026-07-27 aquí vivía una tabla con el sesgo y la factualidad de 30
 medios colombianos, escrita a mano. Era uno de los cuatro lugares del proyecto
-donde se declaraban esos valores (los otros: el catÃ¡logo de logos, los datos
-de las noticias y la configuraciÃ³n del motor de ingesta) y no coincidÃ­a con
+donde se declaraban esos valores (los otros: el catálogo de logos, los datos
+de las noticias y la configuración del motor de ingesta) y no coincidía con
 ninguno de ellos:
 
-    Medio                este documento    catÃ¡logo del motor
+    Medio                este documento    catálogo del motor
     Revista Semana           +0.65               +0.45
     Noticias RCN             +0.45               +0.25
     RTVC Noticias            -0.50               -0.35
     Colombia Informa         -0.70               -0.65
-    CuestiÃ³n PÃºblica         -0.50               -0.45
+    Cuestión Pública         -0.50               -0.45
     El Colombiano            +0.40               +0.35
     El Espectador            -0.15               -0.20   (hoy 0.00, firmado 2026-08-18)
 
-Un agregador cuya afirmaciÃ³n central es "clasificamos medios con mÃ©todo" no
+Un agregador cuya afirmación central es "clasificamos medios con método" no
 puede tener cuatro clasificaciones del mismo medio. Y el problema no era solo
-la incoherencia: el valor de este documento â€”el destinado al lectorâ€” era casi
-siempre mÃ¡s extremo que el que el motor usaba para calcular. El sitio prometÃ­a
+la incoherencia: el valor de este documento —el destinado al lector— era casi
+siempre más extremo que el que el motor usaba para calcular. El sitio prometía
 una severidad que no aplicaba.
 
-La divergencia equivalente entre el catÃ¡logo de logos y los datos de las
-noticias estÃ¡ documentada en la cabecera de shared/mediaRegistry.js.
+La divergencia equivalente entre el catálogo de logos y los datos de las
+noticias está documentada en la cabecera de shared/mediaRegistry.js.
 
-DÃ“NDE ESTÃN AHORA LOS VALORES
+DÃ“NDE ESTÁN AHORA LOS VALORES
 --------------------------------------------------------------------
-En un Ãºnico archivo: shared/mediaRegistry.js. Todo lo demÃ¡s â€”el motor de
-ingesta, los logos, los filtros de la interfaz y el catÃ¡logo pÃºblicoâ€” deriva
-de ahÃ­ y no puede declarar un valor propio.
+En un único archivo: shared/mediaRegistry.js. Todo lo demás —el motor de
+ingesta, los logos, los filtros de la interfaz y el catálogo público— deriva
+de ahí y no puede declarar un valor propio.
 
-El catÃ¡logo que se le muestra al pÃºblico (src/docs/catalogo_medios.txt) se
+El catálogo que se le muestra al público (src/docs/catalogo_medios.txt) se
 GENERA desde ese archivo con `npm run docs:catalog`. No se escribe a mano,
 justamente para que no pueda repetirse lo que documenta esta nota.
 
@@ -43,33 +43,33 @@ del registro.
 
 LOS CRITERIOS
 --------------------------------------------------------------------
-Los criterios con los que se asigna cada valor â€”propiedad y estructura
-econÃ³mica, selecciÃ³n de agenda, encuadre, y balance de fuentes citadasâ€” estÃ¡n
-descritos en src/docs/metodologia.txt, que es el documento pÃºblico.
+Los criterios con los que se asigna cada valor —propiedad y estructura
+económica, selección de agenda, encuadre, y balance de fuentes citadas— están
+descritos en src/docs/metodologia.txt, que es el documento público.
 
-Dos criterios que figuraban en la versiÃ³n anterior de esta pÃ¡gina se retiraron
-porque describÃ­an capacidades inexistentes:
+Dos criterios que figuraban en la versión anterior de esta página se retiraron
+porque describían capacidades inexistentes:
 
-  Â· "Monitoreo computacional de adjetivaciÃ³n en titulares". No existe tal
-    monitoreo aplicado a la clasificaciÃ³n de medios. SÃ­ existe una mediciÃ³n de
-    carga del titular (shared/headlineTone.js), pero anota artÃ­culos
+  · "Monitoreo computacional de adjetivación en titulares". No existe tal
+    monitoreo aplicado a la clasificación de medios. Sí existe una medición de
+    carga del titular (shared/headlineTone.js), pero anota artículos
     individuales y no interviene en el sesgo asignado al medio.
 
-  Â· "AuditorÃ­a semestral" y "contraste con informes de FLIP y CEPER". No se ha
-    realizado ninguna auditorÃ­a. Los valores actuales estÃ¡n marcados como
-    PROVISIONALES en el catÃ¡logo pÃºblico, que es lo que son.
+  · "Auditoría semestral" y "contraste con informes de FLIP y CEPER". No se ha
+    realizado ninguna auditoría. Los valores actuales están marcados como
+    PROVISIONALES en el catálogo público, que es lo que son.
 
-MEDIOS QUE SALIERON DEL CATÃLOGO
+MEDIOS QUE SALIERON DEL CATÁLOGO
 --------------------------------------------------------------------
-La tabla anterior incluÃ­a medios que hoy no se ingieren. Se deja constancia
+La tabla anterior incluía medios que hoy no se ingieren. Se deja constancia
 para que la ausencia no parezca un descuido:
 
-  Â· Las2Orillas — FUERA POR DECISIÓN EDITORIAL, no por un fallo técnico.
+  · Las2Orillas — FUERA POR DECISIÓN EDITORIAL, no por un fallo técnico.
     Responde 403 a nuestro User-Agent, pero ese no es el motivo: es un
     recolector de columnas de opinión y no tiene una línea editorial propia
     que clasificar. Asignarle un valor de sesgo describiría a quien más
     publicó esa semana, no al medio. Sigue siendo fuente válida para las
     fichas de propiedad, donde se cita en nueve de ellas.
-  Â· Canal Capital, PanamPost, Diario del Huila â€” sin feed verificado contra la
-    red. Entran al catÃ¡logo cuando lo tengan.
+  · Canal Capital, PanamPost, Diario del Huila — sin feed verificado contra la
+    red. Entran al catálogo cuando lo tengan.
 

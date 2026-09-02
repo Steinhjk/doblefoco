@@ -532,6 +532,19 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Las historias sin foto llevan marcador, no hueco ni foto ajena (3.7)
+
+**Decisión de Jose, punto 8a (duda 3).** Componente nuevo `MarcadorSinImagen`:
+el logo del medio que abre la historia —o sus iniciales, si no hay logo, como
+en el resto del sitio— sobre un fondo plano con trama, y la frase «Sin imagen
+del medio». Va en la tarjeta de noticia, en la destacada de la portada y, en
+versión compacta, en las miniaturas del bloque secundario. La tarjeta ya no
+colapsa a una columna: la lista se alinea y el hueco dice lo que es.
+
+Lo que sigue prohibido, y ahora está escrito en el componente: la foto
+«relacionada». El marcador es plano, lleva texto y no tiene nada que se lea
+como fotografía. La regla `.sin-imagen` de la tarjeta se retiró porque ya no
+se emite: no dejar configuración muerta.
 ## 2026-09-02 · El techo por feed: Infobae deja de muestrearse a escondidas (3.3)
 
 **Decisión de Jose, punto 4, opción B.** `ITEMS_PER_FEED` sigue en 15 como

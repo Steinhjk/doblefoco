@@ -87,6 +87,12 @@
     transform: scale(1.02);
 }
 
+/* El marcador en la destacada: mismo alto que la foto, sin borde lateral. */
+.spotlight-image-link--marcador .marcador-sin-imagen {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
 .spotlight-category-inline {
     background: var(--bg-subtle);
     color: var(--text-main);

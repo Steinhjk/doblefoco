@@ -3626,6 +3626,21 @@ export function hasDocumentedOwnership(mediaId) {
  * expone quién manda en cada una, que es un hecho registral, y el lector saca
  * su conclusión con el dato delante en vez de sin él.
  *
+ * SIN CONSUMIDOR EN PRODUCCIÓN DESDE EL 2026-09-02, y a propósito.
+ *
+ * Su único uso era el aviso de dueño compartido de la página de una noticia,
+ * que Jose retiró ese día: la concentración por dueño le parece poco relevante
+ * en el ecosistema de hoy, y el aviso saltaba sobre todo para decir que doce de
+ * trece medios tenían dueños distintos. Ver DECISIONES.md (2026-09-02).
+ *
+ * NO SE BORRA, y esto no es la excepción de siempre: es lógica de dominio con
+ * quince pruebas que fijan casos difíciles —coposesión que no es control, dos
+ * medios con el mismo nombre y distinto dueño, un medio repetido en la lista—.
+ * Reconstruir eso costaría más que conservarlo, y el día que la propiedad vuelva
+ * a la página de la noticia estará listo. Lo que sí está prohibido es que se
+ * quede sin esta nota: un módulo sin consumidor y sin motivo escrito es lo que
+ * este repositorio retiró en `securityService.js`.
+ *
  * @param {string[]} mediaIds
  * @returns {Array<{groupId: string, label: string, sectores: string[], medios: string[]}>}
  */

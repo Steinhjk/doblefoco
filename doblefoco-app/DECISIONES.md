@@ -17,6 +17,37 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-02 · El aviso de dueño compartido sale de la página de la noticia
+
+**Decisión de Jose.** El bloque que avisaba de que dos medios de una historia
+responden ante el mismo dueño se retira del detalle de la noticia. **Motivo
+suyo:** la concentración por dueño no le parece tan relevante en el ecosistema
+mediático de hoy.
+
+**Lo que se va y lo que se queda.** Se va el bloque entero —la cabecera con el
+conteo, las líneas de «X e Y pertenecen a Z» y la nota—, junto con el
+componente y su hoja de estilos. **Las fichas de propiedad no se tocan**: el
+mapa de medios sigue diciendo de quién es cada medio, con sus fuentes y su
+fecha, y ahí sigue viéndose la concentración del catálogo entero.
+
+**Lo que se pierde, dicho sin adornos.** Quien lee una noticia cubierta por
+trece medios ya no verá que dos de ellos son de la misma casa; para saberlo
+tiene que ir al mapa. Era el único sitio donde la propiedad aparecía junto a
+una cobertura concreta.
+
+**Lo que lo hacía discutible, y por eso la decisión no es arbitraria:** el
+aviso saltaba en cuanto DOS medios compartían dueño, y con catorce fuentes su
+propia cabecera decía «13 medios, 12 dueños distintos» —o sea, anunciaba una
+concentración que en ese caso casi no existía—. Se ofreció calibrarlo para que
+solo apareciera cuando la pluralidad real cayera de verdad; Jose prefirió
+retirarlo.
+
+**Lo que NO se borró:** `gruposCompartidos()` en `shared/mediaOwnership.js`, con sus
+quince pruebas y una nota que explica por qué se queda sin consumidor. El día
+que la propiedad vuelva a la página de la noticia, está lista.
+
+---
+
 ## 2026-09-02 · La sesión de decisiones: los ocho puntos de la Etapa 1, decididos
 
 **Decididos por Jose en una sola sesión**, sobre `SESION_DECISIONES.md`, que

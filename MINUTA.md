@@ -532,6 +532,21 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · El aviso de dueño compartido sale de la página de la noticia
+
+**Decisión de Jose**, anotada en `DECISIONES.md`: la concentración por dueño no le
+parece tan relevante en el ecosistema de hoy. Se retira el bloque entero del
+detalle de la noticia, con su componente y su CSS. **Las fichas de propiedad no
+se tocan**: el mapa de medios sigue igual.
+
+**Lo que se pierde:** era el único sitio donde la propiedad aparecía junto a una
+cobertura concreta. Quien lea una noticia de trece medios ya no verá que dos son
+de la misma casa sin ir al mapa.
+
+**Lo que no se borró:** `gruposCompartidos()` y sus quince pruebas, con la nota que
+dice por qué se queda sin consumidor. Un módulo huérfano sin motivo escrito es
+lo que se retiró en `securityService.js`; con el motivo escrito, es una pieza
+guardada.
 ## 2026-09-02 · Los tres medios parados, decididos: dos aceptados y El Manduco fuera de la ingesta
 
 **Decisión de Jose sobre lo que la Etapa 4 dejó medido.** Las notas completas

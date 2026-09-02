@@ -46,7 +46,7 @@ archivo entero.
 
 ## Las cuatro etapas, en orden de dependencia
 
-### A · Congelar en vez de borrar
+### A · Congelar en vez de borrar — **HECHO el 2026-09-02**
 
 - Columna `archivada_el TIMESTAMPTZ` en `stories`. Una historia que el ciclo ya
   no produce **no se borra: se sella** con la fecha.
@@ -170,7 +170,7 @@ ha medido nunca.
 ## Orden propuesto
 
 1. ~~**C.1** — el aviso de ficha fechada.~~ **HECHO el 2026-09-02.**
-2. **A** — congelar en vez de borrar, con la prueba del filtro.
+2. ~~**A** — congelar en vez de borrar, con la prueba del filtro.~~ **HECHO.**
 3. **B** — la página archivada.
 4. **D** — el buscador.
 5. **Contratar el Pro** cuando la retención vaya a pasar de 55 días, no antes.

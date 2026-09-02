@@ -691,7 +691,8 @@ export async function countStored() {
         `
         SELECT
             (SELECT count(*) FROM articles)    AS articles,
-            (SELECT count(*) FROM stories)     AS stories,
+            (SELECT count(*) FROM stories WHERE archivada_el IS NULL)     AS stories,
+            (SELECT count(*) FROM stories WHERE archivada_el IS NOT NULL) AS archived_stories,
             (SELECT count(*) FROM ingest_runs) AS runs
         `,
         [],
@@ -700,8 +701,8 @@ export async function countStored() {
 
     if (!result) return null;
 
-    const { articles, stories, runs } = result.rows[0];
-    return { articles, stories, runs };
+    const { articles, stories, archived_stories: archivadas, runs } = result.rows[0];
+    return { articles, stories, archivadas, runs };
 }
 
 /**

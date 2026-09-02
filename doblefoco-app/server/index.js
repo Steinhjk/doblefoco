@@ -333,6 +333,10 @@ app.get('/api/health', async (req, res) => {
             // invita a buscar una avería que no existe.
             articles: conteos?.articles ?? stats.totalArticles,
             stories: conteos?.stories ?? stats.totalStories,
+            // Las archivadas ya no están en `stories`: se sellaron y salieron
+            // del feed, pero conservan su página. Publicar las dos cifras evita
+            // leer el archivo creciendo como si la portada se hubiera llenado.
+            historiasArchivadas: conteos?.archivadas ?? null,
             // Desde el 2026-09-02 la base guarda 30 días y el motor agrupa 72 h,
             // así que `articles` ya no coincide con lo que hay en memoria ni con
             // la portada. Se publican las dos ventanas para que nadie lea esa

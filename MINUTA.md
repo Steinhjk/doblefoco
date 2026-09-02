@@ -532,6 +532,45 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Etapa A del archivo: las historias multifuente se congelan (ya no se borran)
+
+**La pieza que convierte los 30 días en archivo.** Hasta hoy una historia que
+el ciclo ya no producía se BORRABA; ahora las multifuente se sellan con
+`stories.archivada_el` y no se recalculan nunca más.
+
+**Solo las multifuente, y es una decisión medida:** de 6 434 historias vivas,
+664 tenían más de un medio. Una historia de una sola fuente es un titular
+suelto —no hay cobertura que comparar, que es lo único que este sitio existe
+para enseñar— y son el 90 % del volumen. Esas se siguen borrando.
+
+**La trampa que había debajo, y que no era obvia:** `story_articles` cae en
+CASCADE con el artículo. Sin tocar la poda, una historia sellada habría perdido
+todos sus enlaces al cumplir los 30 días —se quedaría con sus números y sin un
+solo enlace al medio que la publicó— y además habría desaparecido de la
+consulta, que hace JOIN con sus artículos. Ahora la poda no se lleva lo que
+sostiene una historia archivada. **No se duplica nada en una instantánea**: el
+artículo ya está ahí y su titular es una cita literal, la misma razón por la
+que `opinion` se deriva y no se guarda.
+
+**El riesgo de verdad está en las consultas**, y por eso hay red: `stories` pasó
+de ser «lo que hay ahora» a «todo lo que hubo», y una consulta que se olvide
+del filtro sirve noticias de hace meses **sin fallar**. Una prueba lee el
+fuente y acusa a cualquier consulta sobre `stories` sin filtro ni excepción
+declarada; **se comprobó quitando un filtro a propósito, y acusó**. Excepciones
+escritas: `readStory` —su página es lo que el archivo sirve— y el sitemap.
+
+**Probado contra la base viva, no solo con pruebas.** Un ciclo real archivó 25
+historias y borró 216 de una sola fuente. Después: ninguna archivada aparece en
+el feed; `readStory` devuelve una de 7 medios con sus 7 fuentes; 64 artículos
+quedan protegidos de la poda; y su página responde 200 con su título y sus
+medios. El ciclo y `/api/health` informan ahora de las archivadas aparte, para
+que el archivo creciendo no se lea como una portada que se llena.
+
+**Lo que queda del plan:** la página archivada tiene que DECIRSE archivo (etapa
+B) —hoy se sirve idéntica a una viva, y eso es lo único que aún no es honesto—,
+y el buscador (etapa D).
+
+
 ## 2026-09-02 · Las fichas dicen cuándo se comprobaron, y las que no, lo declaran
 
 **Decisión de Jose:** de las tres salidas para las fichas fechadas, la primera

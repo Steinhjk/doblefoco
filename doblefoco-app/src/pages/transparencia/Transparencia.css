@@ -119,6 +119,9 @@
 
 .tr-contact h2 { margin-bottom: 0.7rem; }
 .tr-contact p { margin-bottom: 0; }
+/* El bloque para medios lleva párrafo y lista: la lista necesita aire arriba. */
+.tr-contact ul { margin-top: 0.9rem; }
+.tr-contact + .tr-contact { margin-top: 1.25rem; }
 
 @media (max-width: 640px) {
     .transparency-page { padding: 1.25rem 0.9rem 3rem; }

@@ -110,3 +110,7 @@ quizá lo que hay que medir es **agenda divergente** y no ausencia.
 **12. ¿Qué pasa cuando un medio nos escriba?** No hay procedimiento escrito para
 una objeción formal de un medio sobre su clasificación de sesgo o su ficha de
 propiedad. Los reportes de lector ya tienen camino (panel); un medio, no.
+**RESUELTA el 2026-09-02** (sesión de decisiones, punto 8c): contacto en
+`/transparencia/limitaciones` con el correo del boletín, acuse en 5 días,
+respuesta en 15, y la objeción publicada junto a la ficha con fecha. El
+procedimiento está en la sección 7 del protocolo de juicio editorial.

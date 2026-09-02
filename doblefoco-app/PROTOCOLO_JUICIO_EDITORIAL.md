@@ -212,6 +212,17 @@ preguntarle por qué**, que es exactamente lo que hoy no hay.
   la condición escrita en REFUTACIÓN.
 - **Por réplica**: cualquier lector puede impugnar una ficha aportando evidencia
   de nivel 1-3. Una impugnación con fuente obliga a responder por escrito.
+- **Por objeción del medio** (añadido el 2026-09-02 por Jose, duda 12): si el
+  propio medio objeta su clasificación, su ficha o un aviso, escribiendo desde
+  una cuenta suya a `doblefoco.co@gmail.com`, **se acusa recibo en 5 días y se
+  responde por escrito en 15**. La objeción y la respuesta **se publican junto a
+  la ficha, con fecha**, cambie o no la clasificación —como una `note` de
+  `mediaOwnership.js`, con la fecha de recepción y, si el medio publicó su
+  objeción, el enlace—. La reclasificación, si la hay, sigue este protocolo
+  entero: evidencia de nivel 1-3, regla del presente, refutación. Un dato de
+  hecho demostrado errado —dueño, fecha, cargo— se corrige siempre. La
+  insistencia no es evidencia. El procedimiento está publicado en
+  `/transparencia/limitaciones`; si los plazos cambian, cambian en los dos sitios.
 
 **El caso previsto**: la ficha de RTVC ya lleva anotado que su gerencia depende
 del gobierno de turno y que el período cambió el 7 de agosto de 2026. Es la

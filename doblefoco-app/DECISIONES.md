@@ -17,6 +17,56 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-01 · La cadencia por medio se graba desde el feed, y desde hoy
+
+**Decisión.** Tarea 2.1 del plan de producto (2-A / T2-3). Dos tablas nuevas,
+`cadencia_piezas` y `cadencia_huecos`, escritas en cada ciclo de ingesta, y la
+columna `ingest_runs.cadencia_nuevas` para ver si el archivo sigue creciendo.
+**Solo acumulan.** Nada las lee todavía, y esa es la decisión: la regla uniforme
+por cadencia que pide 1-B necesita 30–90 días de serie, grabar es barato y
+esperar es lo caro. Se implementó y se estrenó el mismo día.
+
+**Por qué del feed y no de `articles`.** Una pieza publicada hace más de 72 h se
+poda antes de llegar a la base; para un medio lento, eso es toda su producción.
+El primer ciclo lo demostró: de 924 piezas observadas, **123 ya estaban fuera
+de la ventana**, de 18 medios, y **tres medios tenían todas sus piezas fuera**
+—Casa Macondo, La Patria y Telecaribe—. Son los mudos de 1-B, y `articles` no
+los verá nunca. La observación se toma en el bucle del feed, antes de cualquier
+descarte.
+
+**Qué se guarda y qué no.** Medio, hash del enlace (el mismo `articles.id`, para
+poder cruzarlos mientras la pieza viva), la fecha que declara el medio, la
+primera vez que se vio, y la regla del filtro editorial si la dejó fuera del
+índice. Ni titular, ni enlace, ni extracto: la retención de 72 h sigue rigiendo
+el contenido. La fecha ausente o insostenible se guarda como NULL, no como
+«ahora» —la misma regla que `parsePublishedAt`—.
+
+**Lo que se descartó, y por qué.**
+- *Un job diario sobre `articles`, como el del archivo de conducta.* No ve a los
+  lentos, que son el motivo de la tarea.
+- *El agregado diario (día, medio, piezas).* Obliga a decidir hoy la métrica
+  que se necesitará en noviembre; con las piezas se calcula cualquiera —mediana
+  de intervalo, días con publicación, huecos— sobre cualquier ventana. Es el
+  mismo argumento con el que la conducta guarda el par y no el agregado.
+- *Grabar solo lo indexable.* Un horóscopo también es una publicación; si la
+  cadencia debe contarlo o no se decide al leer, y para eso está la columna.
+
+**Los huecos se declaran por medio.** Solo los fallos: un feed que no respondió
+en un ciclo deja una fila (medio, ciclo, error). Los ciclos que corrieron ya
+están en `ingest_runs`. Sin esto, tres ciclos de avería nuestra se leerían como
+tres ciclos sin publicar, y la cadencia mediría nuestra avería como conducta
+del medio.
+
+**Coste.** Una sentencia por ciclo, y solo con lo que el proceso no había
+archivado ya —una memoria acotada evita reintentar las ~500 piezas que los
+feeds reexponen—. Las tablas entran en la copia de seguridad y en la
+restauración: son irreemplazables por la misma razón que la conducta.
+
+**Dónde.** Bloque 12 bis de `server/db/schema.sql`, `server/db/cadenciaStore.js`,
+y `observarPieza` en el daemon de ingesta.
+
+---
+
 ## 2026-08-18 · El eje mide la relación con un polo fijo, no con quien gobierne
 
 **Decisión de Jose.** Izquierda y derecha son posiciones ideológicas, no posturas

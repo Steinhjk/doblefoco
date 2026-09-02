@@ -1,6 +1,7 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
-import { parsePublishedAt, extractImage, cleanHeadline, elegirTitularReciente } from './ingestDaemon.js';
+import { parsePublishedAt, extractImage, cleanHeadline, elegirTitularReciente, observarPieza } from './ingestDaemon.js';
+import { articleId } from '../../shared/clustering.js';
 
 /**
  * La fecha del feed es un dato que declara el medio y que nadie comprueba. Estas
@@ -366,5 +367,39 @@ describe('elegirTitularReciente', () => {
         ];
 
         expect(elegirTitularReciente(items).headline).toBe('Con fecha');
+    });
+});
+
+/**
+ * LA CADENCIA SE OBSERVA DEL FEED, NO DE LO QUE INDEXAMOS (tarea 2.1).
+ *
+ * Una pieza publicada hace diez días nunca entra en `articles`: la poda de 72 h
+ * la saca antes. Para un medio lento eso es toda su producción, y es
+ * exactamente lo que la observación tiene que ver. Estas pruebas fijan que la
+ * observación no depende de la ventana ni del filtro editorial.
+ */
+describe('observarPieza', () => {
+    const AHORA = Date.parse('2026-09-01T12:00:00.000Z');
+    const feed = { mediaId: 'razon-publica' };
+
+    it('observa una pieza de hace diez días, que articles no vería nunca', () => {
+        const obs = observarPieza(feed, { isoDate: '2026-08-22T09:00:00.000Z' }, 'https://razonpublica.com/nota', 'Titular', AHORA);
+        expect(obs.sourceId).toBe('razon-publica');
+        expect(obs.publicadaEl).toBe('2026-08-22T09:00:00.000Z');
+        expect(obs.descartada).toBeNull();
+    });
+
+    it('usa el mismo id que articles.id, para poder cruzarlos mientras la pieza viva', () => {
+        const link = 'https://razonpublica.com/nota';
+        expect(observarPieza(feed, {}, link, 'Titular', AHORA).piezaId).toBe(articleId(link, 'Titular'));
+    });
+
+    it('sin fecha del medio guarda null, no «ahora»: la ausencia se declara', () => {
+        expect(observarPieza(feed, {}, 'https://razonpublica.com/nota', 'Titular', AHORA).publicadaEl).toBeNull();
+    });
+
+    it('una fecha en el futuro tampoco se guarda: es la misma regla que parsePublishedAt', () => {
+        const obs = observarPieza(feed, { isoDate: '2026-09-03T09:00:00.000Z' }, 'https://razonpublica.com/nota', 'Titular', AHORA);
+        expect(obs.publicadaEl).toBeNull();
     });
 });

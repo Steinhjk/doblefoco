@@ -1,5 +1,27 @@
 # Por dónde seguir
 
+## 2026-09-01 · La cadencia se graba; lo que sigue del plan es de Jose
+
+Rama `cadencia/empezar-a-grabar`, PR abierta. Es la 2.1 del
+`PLAN_PRODUCTO_FINAL.md`; el detalle y los números del primer ciclo están en
+`MINUTA.md` (CERRADO, 2026-09-01) y la decisión en `DECISIONES.md`.
+
+**Estado del plan al cerrar la sesión.** Etapa 0: todo el código fusionado
+(PR #6); quedan los cuatro gestos de Jose —**0.1 `FLY_API_TOKEN`** (el
+despliegue del motor falló en el merge, como estaba previsto, y sin él ni el
+handshake ni la cadencia corren en el motor), 0.9 `api.doblefoco.co`, 0.10 el
+issue #4, 0.11 OneDrive—. Etapa 1 entera es la sesión de decisiones. De la
+Etapa 2 quedan 2.2 (check de `group`/`controlGroup`), 2.3 (consulta compartida
+de portada) y 2.4 (serializador de rehidratación): son código y no esperan a
+nadie. **Lo primero, en orden: 0.1, después 2.2.**
+
+**Una cosa de fontanería para quien edite con scripts.** Los archivos del
+repositorio están en CRLF en la copia de trabajo (autocrlf); un parche que
+busque texto con `\n` no encuentra nada. Normalizar al leer, devolver al
+escribir.
+
+---
+
 ## 2026-08-21 · Todo desplegado. Lo que queda ya no es de código
 
 Las cinco ramas pendientes están en producción, y **el último pendiente de código

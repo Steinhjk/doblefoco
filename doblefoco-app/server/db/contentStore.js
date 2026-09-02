@@ -379,15 +379,37 @@ export async function persistArticles(articles) {
  * Aplica la ventana de retención en SQL.
  *
  * Antes era un barrido sobre el Map; ahora la base es la que manda, porque es
- * la que sobrevive al reinicio. El borrado arrastra `story_articles` en cascada.
+ * la que sobrevive al reinicio. El borrado arrastra «story_articles» en cascada.
  *
  * @returns {Promise<number>} artículos borrados
  */
 export async function pruneExpiredArticles(retentionMs) {
     const result = await safeQuery(
         `
-        DELETE FROM articles
-         WHERE COALESCE(published_at, ingested_at) < now() - ($1::bigint * interval '1 millisecond')
+        DELETE FROM articles a
+         WHERE COALESCE(a.published_at, a.ingested_at) < now() - ($1::bigint * interval '1 millisecond')
+           /*
+            * LO QUE SOSTIENE UNA HISTORIA ARCHIVADA NO SE PODA (2026-09-02).
+            *
+            * \`story_articles\` borra en cascada con el artículo, así que sin esta
+            * condición una historia sellada perdería sus fuentes al cumplir los
+            * 30 días: se quedaría con sus números —la cobertura se guarda
+            * calculada— y sin un solo enlace al medio que la publicó. Una
+            * página de archivo sin los originales no vale nada, y además la
+            * consulta que sirve historias hace JOIN con sus artículos, así que
+            * la historia desaparecería del todo.
+            *
+            * No se duplica el artículo en una instantánea: ya está aquí, y el
+            * titular es una cita literal que no cambia. Es la misma razón por
+            * la que \`opinion\` se deriva y no se guarda.
+            */
+           AND NOT EXISTS (
+               SELECT 1
+                 FROM story_articles sa
+                 JOIN stories s ON s.id = sa.story_id
+                WHERE sa.article_id = a.id
+                  AND s.archivada_el IS NOT NULL
+           )
         `,
         [retentionMs],
         'poda por retención'
@@ -415,7 +437,7 @@ export async function pruneExpiredArticles(retentionMs) {
  * Todo va en una transacción. Un fallo a mitad dejaría historias sin sus
  * artículos, que es peor que no haber guardado nada.
  *
- * @returns {Promise<{stories:number, links:number, removed:number}|null>}
+ * @returns {Promise<{stories:number, links:number, removed:number, archived:number}|null>}
  */
 export async function persistStories(entrada) {
     let stories = entrada;
@@ -468,7 +490,7 @@ export async function persistStories(entrada) {
              * misma transacción: con ~1 800 historias, 1 800 idas y vueltas a
              * São Paulo manteniendo los bloqueos de fila abiertos de principio
              * a fin. Decenas de segundos en los que NADA más puede tocar
-             * `stories`.
+             * «stories».
              *
              * No es teórico: intentando rellenar una columna nueva mientras
              * corría el ciclo, el UPDATE se quedó esperando y murió por tiempo
@@ -610,25 +632,48 @@ export async function persistStories(entrada) {
             }
 
             /**
-             * Las historias que este ciclo ya no produce se retiran, EXCEPTO
-             * las que tengan una decisión de moderación.
+             * LO QUE ESTE CICLO YA NO PRODUCE: SE ARCHIVA O SE BORRA, SEGÚN
+             * CUÁNTOS MEDIOS LO CUBRIERON (2026-09-02).
              *
-             * Sin esa excepción, un cambio de agrupamiento borraría en silencio
-             * el trabajo editorial de alguien —una historia aprobada o
-             * rechazada— y nadie se enteraría. La excepción es una salvaguarda
-             * provisional: F2-02 tiene que decidir de verdad qué significa
-             * moderar una historia cuyo agrupamiento cambió.
+             * Antes se borraba todo. Ahora las **multifuente se sellan** con la
+             * fecha y se quedan: son las que tienen algo que enseñar —cómo
+             * cubrió cada medio el mismo hecho— y son el archivo. Una historia
+             * sellada no vuelve a recalcularse jamás, y eso es lo que la hace
+             * archivo y no una historia vieja mal mantenida.
+             *
+             * Las de UNA SOLA FUENTE se siguen borrando. No es un descarte por
+             * ahorrar: un titular sin nadie con quien compararlo no sostiene
+             * ninguna afirmación de este sitio, y son el 90 % del volumen
+             * (medido el 2026-09-02: 664 multifuente de 6 434).
+             *
+             * SE MANTIENE LA SALVAGUARDA DE MODERACIÓN en el borrado: un
+             * cambio de agrupamiento no puede llevarse por delante el trabajo
+             * editorial de alguien. Ahora hay una segunda red, además, porque
+             * casi todo lo moderado es multifuente y por tanto se archiva.
              */
+            const { rowCount: archived } = await client.query(
+                `
+                UPDATE stories
+                   SET archivada_el = now()
+                 WHERE id <> ALL($1::text[])
+                   AND archivada_el IS NULL
+                   AND source_count > 1
+                `,
+                [ids]
+            );
+
             const { rowCount: removed } = await client.query(
                 `
                 DELETE FROM stories
                  WHERE id <> ALL($1::text[])
+                   AND archivada_el IS NULL
+                   AND source_count <= 1
                    AND id NOT IN (SELECT story_id FROM moderation)
                 `,
                 [ids]
             );
 
-            return { stories: stories.length, links, removed };
+            return { stories: stories.length, links, removed, archived };
         });
     } catch (error) {
         console.warn(`[db] guardado de historias falló: ${error.message}`);

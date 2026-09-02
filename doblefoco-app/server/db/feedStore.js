@@ -65,7 +65,7 @@ const ORDEN_DEL_FEED = ordenPorRelevanciaSQL(
  * por red para una página de 20, y contra un Postgres gestionado el coste es la
  * latencia, no la base.
  */
-async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }) {
+async function leerHistorias({ where = '', params = [], limit = 20, offset = 0, incluirArchivadas = false }) {
     const historias = await safeQuery(
         `
         SELECT s.id, s.title, s.category, s.topics, s.ambito, s.departamento,
@@ -83,6 +83,14 @@ async function leerHistorias({ where = '', params = [], limit = 20, offset = 0 }
           -- paginación cuadre. Descartarlas después dejaría páginas cortas.
           LEFT JOIN moderation m ON m.story_id = s.id
          WHERE (m.state IS NULL OR m.state <> 'rechazada')
+           /*
+            * LO ARCHIVADO NO SALE EN LO VIVO (2026-09-02). Sin esta línea, una
+            * historia sellada hace tres meses volvería a la portada como si
+            * fuera de hoy —y no daría ningún error—. La única que pide
+            * \`incluirArchivadas\` es \`readStory\`: su página es justamente lo
+            * que el archivo existe para servir.
+            */
+           ${incluirArchivadas ? '' : 'AND s.archivada_el IS NULL'}
            ${where}
          GROUP BY s.id, src.name
          -- Relevancia: medios distintos, con vida media de 24 h. La fecha ya no
@@ -218,7 +226,11 @@ async function tasasDeAusenciaDelCorpus() {
                 count(*) FILTER (WHERE coverage_center = 0)       AS sin_cen,
                 count(*) FILTER (WHERE coverage_right = 0)        AS sin_der
            FROM stories
-          WHERE coverage_left + coverage_center + coverage_right >= $1`,
+          -- Sobre lo vivo: la tasa dice cada cuánto falta un espectro HOY, y
+          -- mezclarle el archivo la volvería una media histórica que no
+          -- describe el corpus que el lector tiene delante.
+          WHERE archivada_el IS NULL
+            AND coverage_left + coverage_center + coverage_right >= $1`,
         [BLINDSPOT_MIN_SOURCES],
         'tasas de ausencia por espectro'
     );
@@ -469,6 +481,7 @@ export async function countByDepartamento() {
           FROM stories s
           LEFT JOIN moderation m ON m.story_id = s.id
          WHERE (m.state IS NULL OR m.state <> 'rechazada')
+           AND s.archivada_el IS NULL
            AND s.departamento IS NOT NULL
          GROUP BY s.departamento
         `,
@@ -508,7 +521,9 @@ export async function vocabularioDelCorpus() {
     if (vocabularioCacheado && Date.now() < vocabularioCaducaEn) return vocabularioCacheado;
 
     const filas = await safeQuery(
-        'SELECT title FROM stories WHERE title IS NOT NULL',
+        // Vocabulario del corpus VIVO: alimenta el agrupamiento de ahora, y el
+        // agrupamiento solo trabaja sobre las 72 h de memoria.
+        'SELECT title FROM stories WHERE title IS NOT NULL AND archivada_el IS NULL',
         [],
         'vocabulario del corpus'
     );
@@ -529,6 +544,9 @@ export async function readStory(id) {
         params: [id],
         limit: 1,
         offset: 0,
+        // La página de una historia archivada tiene que seguir existiendo: es
+        // el archivo. Lo que no hace es volver al feed.
+        incluirArchivadas: true,
     });
 
     return historias[0] ?? null;
@@ -572,6 +590,10 @@ export async function readSitemapEntries({ limit = 50_000 } = {}) {
            -- una pérdida; es dejar de reclamar como obra propia 3 178 páginas que
            -- son un titular y un enlace al medio que sí lo escribió.
            AND s.source_count >= 2
+           -- ARCHIVO A PROPÓSITO: EL SITEMAP SÍ LO INCLUYE (2026-09-02), y no es un olvido del
+           -- filtro que llevan las demás consultas: una historia sellada
+           -- conserva su página y su URL, así que anunciarla es exactamente
+           -- para lo que se archiva. Es lo vivo lo que caduca, no lo archivado.
          ORDER BY lastmod DESC NULLS LAST
          LIMIT $1
         `,
@@ -664,6 +686,7 @@ export async function countFeed() {
               JOIN articles a        ON a.id = sa.article_id
               LEFT JOIN moderation m ON m.story_id = s.id
              WHERE (m.state IS NULL OR m.state <> 'rechazada')
+               AND s.archivada_el IS NULL
              GROUP BY s.id, s.ambito
           ) AS historias
         `,

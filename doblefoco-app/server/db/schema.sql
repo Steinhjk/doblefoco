@@ -325,6 +325,32 @@ CREATE INDEX IF NOT EXISTS stories_topics_idx ON stories USING GIN (topics);
 CREATE INDEX IF NOT EXISTS stories_ambito_idx
     ON stories (ambito, source_count DESC, published_at DESC NULLS LAST);
 
+-- ── Archivo de historias (2026-09-02) ────────────────────────────────────────
+--
+-- QUÉ CAMBIA. Hasta hoy una historia que el ciclo ya no producía se BORRABA, y
+-- eso ocurría a las 72 h, cuando sus artículos salían de la ventana de
+-- agrupamiento. Con esta columna deja de borrarse: se SELLA con la fecha en que
+-- dejó de estar viva, y a partir de ahí no se recalcula nunca más. Eso es lo
+-- que la convierte en archivo y no en una historia vieja mal mantenida.
+--
+-- LA TABLA CAMBIA DE SIGNIFICADO, y ese es el riesgo de verdad: `stories` era
+-- «lo que hay ahora» y pasa a ser «todo lo que hubo». Cualquier consulta que
+-- sirva la portada, el feed o un conteo y se olvide de `archivada_el IS NULL`
+-- empezará a servir noticias de hace meses como si fueran de hoy, sin fallar.
+-- Por eso hay una prueba que lee feedStore.js y exige el filtro.
+--
+-- SOLO SE ARCHIVAN LAS MULTIFUENTE, y es una decisión medida (2026-09-02): de
+-- 6 434 historias vivas, 664 tenían más de un medio. Una historia de una sola
+-- fuente es un titular suelto —no hay cobertura que comparar, que es lo único
+-- que este sitio existe para enseñar— y archivar 2 500 de esas al día sería
+-- pagar por guardar lo que no dice nada. Las de una fuente se siguen borrando.
+ALTER TABLE stories ADD COLUMN IF NOT EXISTS archivada_el TIMESTAMPTZ;
+
+-- Las vivas son la minoría en cuanto el archivo crezca, y son las que se
+-- consultan en cada visita. Índice parcial: solo indexa lo vivo.
+CREATE INDEX IF NOT EXISTS stories_vivas_idx
+    ON stories (published_at DESC NULLS LAST) WHERE archivada_el IS NULL;
+
 CREATE TABLE IF NOT EXISTS story_articles (
     story_id    TEXT NOT NULL REFERENCES stories (id) ON DELETE CASCADE,
     article_id  TEXT NOT NULL REFERENCES articles (id) ON DELETE CASCADE,

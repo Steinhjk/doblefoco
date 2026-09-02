@@ -532,6 +532,37 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · La regla de quien dirige, escrita, y el aviso de La Libertad a la vista (3.4)
+
+**Decisión de Jose, punto 5.** La regla está en el protocolo (§1, «REGLA DE
+QUIEN DIRIGE»): se avisa con candidatura o cargo público vigente de quien
+dirige la redacción, con fecha y fuente; nunca por afinidad ni militancia; el
+aviso caduca con el cargo y no se borra. En código: el campo `direccion` de la
+ficha, `avisosDeDireccion` (filtra los caducados), el bloque en la ficha del
+mapa de medios —sin rojo, con fecha, fuente y la frase de que no cambia la
+clasificación— y el check del registro, que rechaza un aviso sin fecha, sin
+fuente, con un hecho que no sea candidatura o cargo, o cuya fuente no esté en
+`sources`.
+
+**Publicado: Diario La Libertad**, directora con candidatura anunciada el
+12-10-2025, fuente del propio diario. Hasta hoy estaba en la sexta de nueve
+notas de la ficha; ahora abre «Quién está detrás». **Y al ir a publicarlo hubo
+que comprobar «vigente»**: el anuncio no decía a qué elección, y las
+legislativas fueron en marzo de 2026. Comprobado el 2026-09-02: no figura
+entre los 76 candidatos del Atlántico ni en los resultados; sí fue candidata
+liberal en 2014, que es la ficha que Congreso Visible conserva. El aviso dice
+exactamente eso —anuncio sin retiro conocido, no inscrita en 2026, siguiente
+contienda en 2027— y la comprobación quedó en `buscadoEn` con fecha. **Es
+juicio editorial y lo firma Jose: si prefiere que un anuncio sin inscripción
+no sea aviso, se pone `hasta` y desaparece sin borrarse.**
+
+**No publicado: La Nación (Neiva), y es un hallazgo.** Se venía citando como
+caso hermano desde agosto. Al aplicar la regla, la ficha no contiene ninguna
+candidatura ni cargo de quien dirige: lo que documenta es que el diario cubre a
+su dueño, Felipe Olave, y eso es asunto de la ficha de propiedad, no de esta
+regla. Publicar un aviso sin el hecho sería inventarlo. Jose pidió los dos
+casos; queda uno, y este es el motivo. Si aparece la candidatura o el cargo,
+es una entrada en `direccion` y nada más.
 ## 2026-09-02 · Las historias sin foto llevan marcador, no hueco ni foto ajena (3.7)
 
 **Decisión de Jose, punto 8a (duda 3).** Componente nuevo `MarcadorSinImagen`:

@@ -325,6 +325,35 @@ for (const media of MEDIA_REGISTRY) {
         }
     }
 
+    /*
+     * QUIEN DIRIGE, EN POLÍTICA (regla del 2026-09-02). El aviso afirma algo
+     * sobre una persona con nombre: sin fecha, sin fuente o con un hecho que no
+     * sea candidatura o cargo público, no se publica. Y la fuente tiene que
+     * estar también en `sources`, que es la lista que el lector ve.
+     */
+    for (const aviso of profile.direccion ?? []) {
+        const donde = `${media.id}: aviso de dirección de «${aviso?.persona ?? '?'}»`;
+        if (!aviso?.persona || !aviso?.cargoEnElMedio || !aviso?.detalle) {
+            fail(`${donde} necesita persona, cargoEnElMedio y detalle`);
+        }
+        if (!['candidatura', 'cargo publico'].includes(aviso?.hecho)) {
+            fail(`${donde}: "hecho" tiene que ser 'candidatura' o 'cargo publico', no "${aviso?.hecho}"`);
+        }
+        for (const campo of ['desde', 'publicadoEl']) {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(aviso?.[campo] ?? '')) {
+                fail(`${donde}: "${campo}" tiene que ser una fecha AAAA-MM-DD`);
+            }
+        }
+        if (aviso?.hasta !== null && aviso?.hasta !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(aviso.hasta)) {
+            fail(`${donde}: "hasta" tiene que ser null (vigente) o una fecha AAAA-MM-DD`);
+        }
+        if (!/^https?:\/\/\S+$/.test(aviso?.fuente ?? '')) {
+            fail(`${donde}: "fuente" tiene que ser una URL`);
+        } else if (!(profile.sources ?? []).includes(aviso.fuente)) {
+            fail(`${donde}: la fuente del aviso no está en "sources", que es lo que el lector ve`);
+        }
+    }
+
     const claims = (profile.holdings?.length ?? 0) + (profile.notes?.length ?? 0);
 
     if (claims > 0) {

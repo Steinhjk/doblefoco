@@ -1030,14 +1030,15 @@ app.get('/noticia/:id', async (req, res) => {
 /**
  * LAS PÁGINAS QUE NO DEPENDEN DE LA BASE, TAMBIÉN RENDERIZADAS.
  *
- * El motivo y por qué solo estas tres está en server/ssr/paginasEstaticas.js.
+ * El motivo y cuáles son está en server/ssr/paginasEstaticas.js —hoy son ocho,
+ * no las tres del principio, y por eso esta frase ya no las cuenta—.
  * Aquí solo importa una diferencia con la ruta de noticia, y es deliberada:
  *
  * ANTE UN FALLO, ESTA RUTA SIRVE LA SPA; LA DE NOTICIA DEVUELVE 500. No es
  * incoherencia. Una noticia que no se puede renderizar puede ser una historia
  * retirada o un id inventado, y ahí el código de estado es información: decirle
  * al buscador «esto existe» cuando no existe deja indexada una página vacía.
- * Estas tres siempre existen y no dependen de ningún dato externo, así que si
+ * Estas páginas siempre existen y no dependen de ningún dato externo, así que si
  * el renderizado falla la plantilla de la SPA las muestra perfectamente en el
  * navegador. Devolver 500 rompería para una persona una página que funciona,
  * solo porque el buscador iba a verla peor.
@@ -1086,6 +1087,43 @@ app.get(RUTAS_RENDERIZADAS, async (req, res) => {
         } catch {
             return res.type('html').send(await readFile(resolve(RAIZ_APP, 'dist/index.html'), 'utf8'));
         }
+    }
+});
+
+/**
+ * UNA SUB-PÁGINA DE TRANSPARENCIA QUE NO EXISTE (2026-09-02).
+ *
+ * POR QUÉ HACE FALTA. Desde hoy `vercel.json` manda `/transparencia/*` entero
+ * a este motor, y no solo las rutas que sabe renderizar: enumerarlas allí sería
+ * una segunda lista que divergiría de `RUTAS_RENDERIZADAS` en cuanto alguien
+ * añadiera una página, que es la enfermedad que este repositorio persigue. El
+ * precio de esa decisión es que las rutas inventadas bajo `/transparencia/`
+ * llegaban aquí y se topaban con el 404 por omisión de Express: un
+ * «Cannot GET» en Times New Roman.
+ *
+ * QUÉ HACE. Lo mismo que la ruta de noticia con un id inventado: responde
+ * **404 de verdad** —no se indexa lo que no existe— pero con la plantilla de
+ * la aplicación, para que quien lo vea encuentre la página de «no encontrado»
+ * del sitio y pueda seguir navegando.
+ *
+ * VA DESPUÉS de `app.get(RUTAS_RENDERIZADAS)` a propósito: Express prueba en
+ * orden, así que las páginas de verdad ya se han servido cuando esto se
+ * ejecuta. La expresión regular en vez de un comodín porque Express 5 cambió
+ * la sintaxis de los patrones y una regexp no depende de esa versión.
+ */
+app.get(/^\/transparencia\//, async (req, res) => {
+    res.status(404).type('html');
+    res.setHeader('Cache-Control', 'no-store');
+    try {
+        return res.send(await obtenerPlantilla());
+    } catch {
+        return res.send(
+            '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+            '<title>Página no encontrada · DobleFoco.co</title>' +
+            '<meta name="robots" content="noindex"></head><body>' +
+            '<h1>Esta página no existe</h1>' +
+            '<p><a href="/transparencia">Ir a Transparencia</a></p></body></html>'
+        );
     }
 });
 

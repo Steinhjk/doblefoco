@@ -47,6 +47,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/sobre-nosotros",
+      "destination": "/transparencia/sobre-nosotros",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -69,8 +76,8 @@
       "destination": "https://api.doblefoco.co/transparencia"
     },
     {
-      "source": "/sobre-nosotros",
-      "destination": "https://api.doblefoco.co/sobre-nosotros"
+      "source": "/transparencia/(.*)",
+      "destination": "https://api.doblefoco.co/transparencia/$1"
     },
     {
       "source": "/((?!assets/).*)",

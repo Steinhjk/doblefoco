@@ -532,6 +532,63 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Cinco páginas renderizadas que el sitio nunca pedía, y el 404 que las delató
+
+**Salió de ir a arreglar el 404 de `/sobre-nosotros`**, que estaba anotado como
+«pequeño» desde ayer. Lo era; lo que había detrás no.
+
+### El 404, y por qué el cliente creía estar redirigiendo
+
+`/sobre-nosotros` se retiró el 2026-08-09 y se dejó una redirección permanente
+a `/transparencia/sobre-nosotros`… **en el enrutador del cliente**. Pero
+`vercel.json` seguía mandando esa ruta al motor, que ya no la renderiza a
+propósito. Resultado: quien tecleaba o seguía un enlace a `/sobre-nosotros`
+recibía un 404 del motor, y el `<Navigate>` del cliente **nunca llegaba a
+correr**, porque para eso la aplicación tiene que cargarse primero. Una
+redirección la tiene que hacer quien atiende la petición. Ahora es un
+`redirects` de Vercel, permanente, y el `<Navigate>` se queda solo para la
+navegación dentro de la aplicación.
+
+### Lo gordo: el sitio servía las cinco sub-páginas con el título equivocado
+
+Al comprobar las rutas una por una apareció esto, medido en producción el
+2026-09-02:
+
+| Ruta | Lo que sirve el motor | Lo que servía el sitio |
+|---|---|---|
+| `/transparencia/sobre-nosotros` | «Sobre DobleFoco.co: comparar cómo cubre cada medio…» | el título genérico del sitio |
+| `/transparencia/clasificacion` | «Qué significan izquierda y derecha…» | ídem |
+| `/transparencia/dinero` | «De dónde sale el dinero de DobleFoco.co» | ídem |
+| `/transparencia/datos` | «Qué hace DobleFoco con sus datos» | ídem |
+| `/transparencia/limitaciones` | «Lo que DobleFoco todavía no hace bien» | ídem |
+
+El motor las renderizaba con sus metadatos, el sitemap las anunciaba a los
+buscadores, y **`vercel.json` solo reescribía `/transparencia` exacto**: las
+cinco caían en el catch-all y se servían con el `index.html` genérico. El
+comentario que justificó partirlas —«cada tema gana ahora su propio título y su
+propia descripción, que es lo que un buscador puede mostrar a quien pregunta
+justo por eso»— describía algo que llevaba **casi un mes sin ocurrir**. Nada
+fallaba: se servía la página correcta con la etiqueta equivocada.
+
+### Qué se hizo, y la decisión que hay dentro
+
+- `vercel.json` manda ahora `/transparencia/(.*)` al motor. **Un comodín y no
+  las cinco rutas enumeradas**, a propósito: una lista enumerada es una segunda
+  copia de `RUTAS_RENDERIZADAS` y divergiría en cuanto alguien añadiera una
+  página, que es exactamente lo que acaba de pasar.
+- El precio del comodín es que una sub-página inventada llega al motor, y el
+  motor respondía el 404 por omisión de Express —un «Cannot GET» sin estilos—.
+  Ahora responde **404 de verdad con la plantilla de la aplicación**, el mismo
+  trato que da la ruta de noticia a un id que no existe.
+- **Una prueba lee `vercel.json` y `RUTAS_RENDERIZADAS` y los compara**: cada
+  ruta renderizada tiene que llegar al motor, el catch-all tiene que ir el
+  último, y `/sobre-nosotros` tiene que redirigir y no reescribirse. Es la
+  misma forma que `schema.test.js` usa con el .sql, y por el mismo motivo: dos
+  artefactos declarativos que pueden divergir en silencio.
+
+Probado contra el motor local: las cinco sirven su título, la inventada da 404
+con la aplicación y `/api/health` sigue en pie. **El `redirects` de Vercel solo
+se puede comprobar de verdad después de desplegar.**
 ## 2026-09-02 · Los cuatro feeds parados: uno era culpa nuestra, y los otros tres no tienen vía (Etapa 4)
 
 **Es lo que el punto 7 de la sesión de decisiones dejó pendiente:** reintentar

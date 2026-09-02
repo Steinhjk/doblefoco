@@ -11,7 +11,7 @@ import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
-    avisosDeDireccion,
+    avisosDeDireccion, vigenciaDeFicha, MESES_REVISION_FICHA,
     ALCANCES, alcanceDe, ausenciaDeclarada, conAusenciaDeclarada,
 } from '../../shared/mediaOwnership';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
@@ -1263,17 +1263,45 @@ const MediaProfile = ({ media, onClose }) => {
                             ))}
                         </ul>
                         {/*
-                          * LA FECHA DE COMPROBACIÓN, A LA VISTA. Una ficha de
-                          * propiedad sin fecha se lee como si fuera de hoy, y no
-                          * lo es: los dueños cambian. Decir cuándo se comprobó
-                          * deja que el lector calcule por su cuenta cuánto
-                          * confiar, en vez de tener que confiar del todo o nada.
+                          * LA FECHA DE COMPROBACIÓN, A LA VISTA, Y TAMBIÉN SU
+                          * AUSENCIA (2026-09-02).
+                          *
+                          * Una ficha de propiedad sin fecha se lee como si fuera
+                          * de hoy, y no lo es: los dueños cambian. Eso ya estaba
+                          * escrito aquí, y aun así la pantalla callaba cuando no
+                          * había fecha —once fichas del catálogo—, que es
+                          * exactamente el caso en que hacía falta decir algo.
+                          * Ahora se dice siempre: la fecha, o que no consta.
                           */}
-                        {ownership.verifiedAt && (
-                            <p className="profile-fecha">
-                                Comprobado contra estas fuentes el <strong>{ownership.verifiedAt}</strong>.
-                            </p>
-                        )}
+                        {(() => {
+                            const vigencia = vigenciaDeFicha(media.id);
+                            /*
+                             * Un medio con AUSENCIA DECLARADA no pasa por aquí:
+                             * su bloque publica `consultadoEl` —cuándo se buscó
+                             * y no se encontró—, y decirle además «no registra
+                             * cuándo se comprobó» sería contradecirse dos
+                             * párrafos más abajo.
+                             */
+                            if (!vigencia.fecha) {
+                                if (ausencia) return null;
+                                return (
+                                    <p className="profile-fecha profile-fecha--sin">
+                                        <strong>Esta ficha no registra cuándo se comprobó.</strong>{' '}
+                                        Lo que dice puede haber cambiado sin que nos hayamos
+                                        enterado; sus fuentes están arriba para comprobarlo.
+                                    </p>
+                                );
+                            }
+                            return (
+                                <p className={`profile-fecha${vigencia.caducada ? ' profile-fecha--vieja' : ''}`}>
+                                    Comprobado contra estas fuentes el <strong>{vigencia.fecha}</strong>.
+                                    {vigencia.caducada && (
+                                        <> Hace más de {MESES_REVISION_FICHA} meses, así que le toca
+                                        revisión: los dueños cambian y esto puede haber envejecido.</>
+                                    )}
+                                </p>
+                            );
+                        })()}
                     </>
                 ) : !ausencia && (
                     <p className="profile-missing">

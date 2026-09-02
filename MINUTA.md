@@ -532,6 +532,86 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Las fichas dicen cuándo se comprobaron, y las que no, lo declaran
+
+**Decisión de Jose:** de las tres salidas para las fichas fechadas, la primera
+—avisar con la fecha—. Es el paso C.1 de `PLAN_ARCHIVO_PERMANENTE.md`.
+
+**El hueco era el silencio, no la falta de fecha.** El comentario del código
+decía desde el principio que «una ficha de propiedad sin fecha se lee como si
+fuera de hoy, y no lo es», y la pantalla hacía justo eso: enseñaba la fecha
+cuando la había y **callaba cuando no la había**. Medido: de los 78 medios, 52
+tienen dueño documentado con fecha, 15 declaran la ausencia con su
+`consultadoEl`, y **11 afirman quién manda sin decir cuándo se comprobó**. Esos
+once se leían como recién verificados.
+
+**Qué se hizo.** `vigenciaDeFicha()` y la ficha del mapa dice siempre una de tres
+cosas: la fecha; la fecha más «le toca revisión» si pasa de doce meses; o que no
+consta, con la advertencia de que puede haber cambiado. **Los doce meses no son
+un número elegido aquí: son la revisión ordinaria del protocolo (§7).** No se
+inventó ninguna fecha —la de un commit diría cuándo se escribió la ficha, que no
+es cuándo se comprobó—. `check:registry` avisa ahora de las once.
+
+**Lo que NO se toca:** los medios con ausencia declarada, que ya publican su
+propia fecha de búsqueda; decirles además «no registra cuándo se comprobó» sería
+contradecirse dos párrafos más abajo.
+
+**Deuda que esto deja a la vista, ABIERTA:** esas once fichas siguen sin fecha.
+Ahora se ve, que es distinto de que no exista. Ponerles la fecha exige
+volver a comprobarlas, y eso es trabajo de ficha que firma Jose.
+
+
+## 2026-09-02 · El archivo permanente se hace: plan escrito y coste aceptado
+
+**Decisión de Jose:** adelante con la opción B, con sus 25 USD al mes. El plan
+está en `doblefoco-app/PLAN_ARCHIVO_PERMANENTE.md`, y **no da nada por hecho**.
+
+**Lo que ya estaba resuelto sin saberlo:** los artículos ya sobreviven 30 días,
+cada historia ya tiene URL estable, y la cobertura ya se guarda CALCULADA —así
+que revisar el sesgo de un medio mañana no reescribe lo que una historia vieja
+le mostró al lector—. Eso último es media respuesta al problema de fondo de
+cualquier archivo.
+
+**El obstáculo real, y no es el dinero:** `persistStories` BORRA cada ciclo las
+historias que ya no produce. Archivar es dejar de borrar, y eso cambia lo que
+significa la tabla: hoy `stories` es «lo que hay ahora» y pasaría a ser «todo lo
+que hubo». Cada consulta que se olvide de filtrar empezaría a servir noticias
+de hace meses como si fueran de hoy. Va con prueba.
+
+**Cuatro etapas:** congelar en vez de borrar (2–3 días), la página archivada
+(1–2), las fichas fechadas (medio día la versión mínima) y el buscador (2–3).
+Semana y media en total.
+
+**El dinero, medido hoy:** la infraestructura cuesta ~5,30 USD/mes (Fly; Supabase
+y Vercel en plan gratuito). Con el Pro serían ~30,30 al mes, unos 364 al año.
+**No hay que pagarlo todavía**: con 30 días la base se estabiliza en ~290 MB de
+los 500 gratuitos, y el techo se alcanza cuando la retención pase de ~55 días.
+El pago es el último paso y el más fácil de revertir.
+
+**Decisión que queda de Jose:** cuál de las tres salidas para las fichas
+fechadas —decirlo con un aviso, instantánea por historia, o fichas con
+vigencia—. Recomendada la primera ahora y la tercera cuando cambie la primera
+ficha de verdad; la intermedia es la peor de las tres y el plan dice por qué.
+
+**Y una comprobación antes de contratar:** el consumo de ancho de banda de
+Supabase, que es el otro techo del plan gratuito y no se ha medido nunca.
+
+
+## 2026-09-02 · El aviso de dueño compartido sale de la página de la noticia
+
+**Decisión de Jose**, anotada en `DECISIONES.md`: la concentración por dueño no le
+parece tan relevante en el ecosistema de hoy. Se retira el bloque entero del
+detalle de la noticia, con su componente y su CSS. **Las fichas de propiedad no
+se tocan**: el mapa de medios sigue igual.
+
+**Lo que se pierde:** era el único sitio donde la propiedad aparecía junto a una
+cobertura concreta. Quien lea una noticia de trece medios ya no verá que dos son
+de la misma casa sin ir al mapa.
+
+**Lo que no se borró:** `gruposCompartidos()` y sus quince pruebas, con la nota que
+dice por qué se queda sin consumidor. Un módulo huérfano sin motivo escrito es
+lo que se retiró en `securityService.js`; con el motivo escrito, es una pieza
+guardada.
 ## 2026-09-02 · Los tres medios parados, decididos: dos aceptados y El Manduco fuera de la ingesta
 
 **Decisión de Jose sobre lo que la Etapa 4 dejó medido.** Las notas completas

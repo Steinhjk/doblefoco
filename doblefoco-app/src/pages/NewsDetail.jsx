@@ -22,7 +22,6 @@ import ToneSummary from '../components/ToneSummary';
 import MediaLogo from '../components/MediaLogo';
 import UserFeedbackWidget from '../components/UserFeedbackWidget';
 import ShareModal from '../components/ShareModal';
-import DuenoCompartido from '../components/DuenoCompartido';
 import './NewsDetail.css';
 import { nombreDeSeccion } from '../lib/seccion';
 import { categories } from '../data/categories';
@@ -435,8 +434,6 @@ const NewsDetail = () => {
                                 omisión: hacen falta al menos {BLINDSPOT_MIN_SOURCES}.
                             </p>
                         )}
-
-                        <DuenoCompartido sources={story.sources} total={coverage.total} />
 
                         <div className="media-logos-grouped-grid">
                             {spectrums.map((spectrum) => {

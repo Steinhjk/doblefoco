@@ -3605,6 +3605,43 @@ export function avisosDeDireccion(mediaId, hoy = new Date().toISOString().slice(
     return avisos.filter((a) => !a.hasta || a.hasta >= hoy);
 }
 
+/**
+ * CUÁNDO SE COMPROBÓ ESTA FICHA, Y SI ESO YA QUEDA LEJOS.
+ *
+ * POR QUÉ EXISTE (2026-09-02, decisión de Jose). El comentario de la ficha
+ * decía desde el principio que «una ficha de propiedad sin fecha se lee como
+ * si fuera de hoy, y no lo es», y la pantalla hacía justo eso: enseñaba la
+ * fecha cuando la había y **callaba cuando no la había**. Medido ese día: de
+ * los 78 medios, 52 tienen dueño documentado con fecha, 15 declaran la
+ * ausencia con su `consultadoEl`, y **11 afirman quién manda sin decir cuándo
+ * se comprobó**. Esos once se leían como recién verificados.
+ *
+ * El silencio es el problema, no la falta de fecha: no saber cuándo se miró
+ * es un dato sobre la ficha, y se publica igual que se publica no saber quién
+ * es el dueño. Aquí no se inventa ninguna fecha —la de un commit diría cuándo
+ * se escribió, que no es cuándo se comprobó—.
+ *
+ * LOS DOCE MESES NO SON UN NÚMERO ELEGIDO AQUÍ: es la revisión ordinaria que
+ * fija PROTOCOLO_JUICIO_EDITORIAL.md §7. Si allí cambia, cambia aquí.
+ *
+ * @param {string} mediaId
+ * @param {string} [hoy] ISO (AAAA-MM-DD); inyectable para poder probarlo
+ * @returns {{fecha: string|null, meses: number|null, caducada: boolean}}
+ */
+export function vigenciaDeFicha(mediaId, hoy = new Date().toISOString().slice(0, 10)) {
+    const perfil = getOwnership(mediaId);
+    // La ausencia declarada ya publica su propia fecha (`consultadoEl`) y su
+    // propio bloque; aquí interesa la de quien SÍ afirma un dueño.
+    const fecha = perfil?.verifiedAt ?? null;
+    if (!fecha) return { fecha: null, meses: null, caducada: false };
+
+    const dias = (Date.parse(hoy) - Date.parse(fecha)) / 86_400_000;
+    const meses = Math.floor(dias / 30.44);
+    return { fecha, meses, caducada: meses >= MESES_REVISION_FICHA };
+}
+
+/** Cada cuántos meses toca revisar una ficha. Ver PROTOCOLO_JUICIO_EDITORIAL.md §7. */
+export const MESES_REVISION_FICHA = 12;
 export function hasDocumentedOwnership(mediaId) {
     const profile = getOwnership(mediaId);
     if (!profile) return false;
@@ -3625,6 +3662,21 @@ export function hasDocumentedOwnership(mediaId) {
  * No se afirma que se hayan coordinado —eso no consta y no se publica—; se
  * expone quién manda en cada una, que es un hecho registral, y el lector saca
  * su conclusión con el dato delante en vez de sin él.
+ *
+ * SIN CONSUMIDOR EN PRODUCCIÓN DESDE EL 2026-09-02, y a propósito.
+ *
+ * Su único uso era el aviso de dueño compartido de la página de una noticia,
+ * que Jose retiró ese día: la concentración por dueño le parece poco relevante
+ * en el ecosistema de hoy, y el aviso saltaba sobre todo para decir que doce de
+ * trece medios tenían dueños distintos. Ver DECISIONES.md (2026-09-02).
+ *
+ * NO SE BORRA, y esto no es la excepción de siempre: es lógica de dominio con
+ * quince pruebas que fijan casos difíciles —coposesión que no es control, dos
+ * medios con el mismo nombre y distinto dueño, un medio repetido en la lista—.
+ * Reconstruir eso costaría más que conservarlo, y el día que la propiedad vuelva
+ * a la página de la noticia estará listo. Lo que sí está prohibido es que se
+ * quede sin esta nota: un módulo sin consumidor y sin motivo escrito es lo que
+ * este repositorio retiró en `securityService.js`.
  *
  * @param {string[]} mediaIds
  * @returns {Array<{groupId: string, label: string, sectores: string[], medios: string[]}>}

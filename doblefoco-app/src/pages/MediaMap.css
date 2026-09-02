@@ -936,6 +936,18 @@
     color: var(--text-muted);
 }
 
+/* Sin fecha y caducada llevan el mismo tono de aviso que la ausencia declarada:
+   no es una alarma sobre el medio, es una advertencia sobre lo que sabemos. */
+.profile-fecha--sin,
+.profile-fecha--vieja {
+    padding: 0.5rem 0.7rem;
+    border-left: 2px solid var(--border-color);
+    background: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+}
+
+.profile-fecha--sin strong { color: var(--text-main); }
+
 /* ── Audiencia ──────────────────────────────────────────────────────────── */
 
 /* La atribución de la cifra ajena. Discreta pero enlazada: quien quiera

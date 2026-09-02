@@ -91,6 +91,13 @@ midió contra el sistema vivo. Lo nuevo que queda pendiente, con su código:
 - **I-9 · El repositorio vive dentro de OneDrive** — locks y sync de
   `node_modules` y `.git`. Excluirlo de la sincronización. **ABIERTO —
   trámite de Jose, 15 min.**
+- **I-1 / 0.1 y 0.2 · `FLY_API_TOKEN` y el primer despliegue automático del
+  motor: HECHO el 2026-09-02.** Fly sirve `6a4bf31` (el merge de la PR #7),
+  el handshake tiene por fin un motor que publica `registroHash`, y el
+  desfase que arrastraba desde el 31/08 quedó cerrado. Lección de fontanería:
+  el token hay que guardarlo con `gh secret set --body` desde una variable
+  recortada; con una tubería de PowerShell llega con `\r` y Fly lo rechaza
+  con «token validation error».
 
 Lo demás que encontró la auditoría ya estaba en esta minuta con otro nombre
 (I-1 es el secreto de Fly; I-7 es el handshake 2-B) y no se duplica.
@@ -535,11 +542,12 @@ lento» de «roto». Nada lo lee todavía, a propósito.
 
 **Lo que queda abierto, y no es de esta tarea:**
 
-- **Hasta que exista `FLY_API_TOKEN` (0.1), el motor de Fly corre código
-  anterior y NO archiva.** Solo lo hace la red de seguridad de Actions, cada
-  2 h, con 15 piezas por feed: un medio que publique más de 15 piezas en dos
-  horas pierde las que sobren hasta que el motor se despliegue. Es un motivo
-  más, y con fecha, para 0.1.
+- ~~Hasta que exista `FLY_API_TOKEN` (0.1), el motor de Fly no archiva.~~
+  **Cerrado el 2026-09-02 a las 00:29 UTC:** Jose creó el token, el
+  despliegue automático corrió por primera vez (run 33574808256, tras un
+  primer intento con el token roto por la tubería de PowerShell, que le añade
+  retorno de carro) y el primer ciclo del motor archivó 128 piezas nuevas con
+  `actor = motor`. Ya no hay ventana de pérdida.
 - La vigilancia no acusa si `cadencia_nuevas` deja de crecer. Se ve en la
   serie; añadir el aviso es una tarde, y conviene hacerlo cuando el motor ya
   escriba, para que no nazca en rojo.

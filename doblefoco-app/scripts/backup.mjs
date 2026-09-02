@@ -128,7 +128,12 @@ const EXCLUIDAS = {
     admin_sessions: 'Guarda IP y user-agent. Datos personales, y caducan solas.',
     waitlist: 'Correos de suscriptores. Datos personales; exigiría cifrado antes de salir de la base.',
     rate_limits: 'Contadores con ventana. Caducan en minutos y no hay nada que restaurar.',
-    articles: 'Se reconstruye solo: la ventana de retención es de 72 h.',
+    articles:
+        'Las últimas 72 h se reconstruyen solas desde los feeds. Los 30 días que la ' +
+        'base conserva desde el 2026-09-02 son para medir, y se aceptan perdibles: lo ' +
+        'irreemplazable de ellos —con quién coincide cada medio y cuándo publica— ya ' +
+        'está en conducta_archivo y cadencia_piezas, que sí se respaldan. Meter aquí ' +
+        '~200 MB diarios de titulares no compra nada que esas dos tablas no den.',
     stories: 'Derivadas de los artículos; se recalculan en el primer ciclo.',
     story_articles: 'Igual que stories.',
     sources: 'Proyección de shared/mediaRegistry.js. `db:migrate` la regenera.',

@@ -8,7 +8,12 @@ import {
     observarPieza,
     techoDelFeed,
     ITEMS_PER_FEED,
+    RETENTION_MS,
+    RETENCION_BASE_MS,
 } from './ingestDaemon.js';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { articleId } from '../../shared/clustering.js';
 
 /**
@@ -433,5 +438,33 @@ describe('techoDelFeed', () => {
         expect(techoDelFeed({ techo: 0 })).toBe(ITEMS_PER_FEED);
         expect(techoDelFeed({ techo: -5 })).toBe(ITEMS_PER_FEED);
         expect(techoDelFeed({ techo: 12.5 })).toBe(ITEMS_PER_FEED);
+    });
+});
+
+
+/**
+ * DOS VENTANAS (2026-09-02, opción C). La base conserva 30 días; el motor
+ * agrupa, muestra y rehidrata 72 h. Lo que estas pruebas protegen es la
+ * COSTURA: que la poda use la ventana larga y la rehidratación la corta. Si
+ * alguien «unifica» las dos por limpieza, o la portada resucita noticias de
+ * hace tres semanas, o la base vuelve a borrar lo que se decidió conservar.
+ * Se lee el fuente como texto, igual que schema.test.js con el .sql.
+ */
+describe('las dos ventanas de retención', () => {
+    const FUENTE = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), 'ingestDaemon.js'), 'utf8');
+
+    it('la base conserva 30 días y el motor agrupa 72 h', () => {
+        expect(RETENTION_MS).toBe(72 * 3_600_000);
+        expect(RETENCION_BASE_MS).toBe(30 * 86_400_000);
+        expect(RETENCION_BASE_MS).toBeGreaterThan(RETENTION_MS);
+    });
+
+    it('la poda de la base usa la ventana larga', () => {
+        expect(FUENTE).toMatch(/pruneExpiredArticles\(RETENCION_BASE_MS\)/);
+        expect(FUENTE).not.toMatch(/pruneExpiredArticles\(RETENTION_MS\)/);
+    });
+
+    it('la rehidratación sigue leyendo solo la ventana corta: nada viejo vuelve a la portada', () => {
+        expect(FUENTE).toMatch(/hydrateArticles\(\{ retentionMs: RETENTION_MS/);
     });
 });

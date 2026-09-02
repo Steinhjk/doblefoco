@@ -107,6 +107,37 @@ export function techoDelFeed(feedConfig) {
 export const RETENTION_MS = 72 * 60 * 60 * 1000; // 72 horas
 
 /**
+ * DOS VENTANAS, Y DESDE EL 2026-09-02 SON DISTINTAS A PROPÓSITO.
+ *
+ * `RETENTION_MS` (72 h) es la VENTANA DE AGRUPAMIENTO Y DE PORTADA: lo que el
+ * motor tiene en memoria, lo que agrupa en historias, lo que el lector ve y lo
+ * que rehidrata al arrancar. No cambia: subirla multiplica el coste cuadrático
+ * del agrupamiento y la ocasión de falsos agrupamientos, y nadie ha medido lo
+ * segundo (ver MINUTA, «Ventana de agrupamiento: 7 días caben, 30 no»).
+ *
+ * `RETENCION_BASE_MS` (30 días) es cuánto viven los artículos EN LA BASE. Es la
+ * opción C de la sesión de decisiones del 2026-09-02 (Jose): retención interna
+ * sin páginas permanentes. Los artículos siguen en `articles` con su medio, su
+ * fecha, sus temas y su ámbito, para poder medir sobre ventanas de semanas —la
+ * insistencia por banda y tema, la estimación del modelo de puntos ciegos, la
+ * regla por cadencia— sin que ninguna historia vieja vuelva a la portada ni
+ * tenga URL: `hydrateArticles` sigue leyendo solo las 72 h y las historias se
+ * siguen recalculando cada ciclo. Lo que cambia es UNA línea: la poda.
+ *
+ * COSTE. 4,7 MB al día medidos en agosto; con el techo propio de Infobae (60)
+ * serán más. 30 días caben en el plan gratuito de Supabase (500 MB) con margen;
+ * se mide al cerrar el primer mes (MINUTA). La copia de seguridad sigue sin
+ * incluir `articles` a propósito: lo irreemplazable de estos 30 días —con
+ * quién coincide cada medio, y cuándo publica— ya vive en `conducta_archivo`
+ * y en `cadencia_piezas`, que sí se respaldan.
+ *
+ * LA OPCIÓN B —archivo permanente con página por historia, ficha fechada y
+ * buscador— no se descartó: se revisa a los 90 días de serie (diciembre de
+ * 2026). Si se adopta, esta constante crece y el resto ya está preparado.
+ */
+export const RETENCION_BASE_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
+
+/**
  * Techo duro de artículos en memoria, para que el proceso no crezca sin fin.
  *
  * SUBIDO DE 5 000 A 8 000 EL 2026-08-07, y el motivo es el hallazgo de F1-01.
@@ -693,7 +724,10 @@ async function persistToDatabase(fresh) {
     // de que el borrado por retención haya pasado, y no al revés: guardar y
     // borrar acto seguido lo que se acaba de guardar sería trabajo perdido y
     // una ventana más ancha para la carrera que filtra `persistStories`.
-    const expired = await pruneExpiredArticles(RETENTION_MS);
+    //
+    // Y PODA A 30 DÍAS, NO A 72 H (2026-09-02). Ver RETENCION_BASE_MS: la base
+    // conserva más de lo que el motor agrupa. La memoria sigue en 72 h.
+    const expired = await pruneExpiredArticles(RETENCION_BASE_MS);
     const saved = await persistArticles(fresh);
     const stories = await persistStories(storiesFeed);
     await refreshModeration();
@@ -1596,6 +1630,7 @@ export const getDatabaseStats = () => ({
     storiesWithBlindspot: storiesFeed.filter((s) => s.blindspot).length,
     storiesWithSufficientCoverage: storiesFeed.filter((s) => !s.insufficientCoverage).length,
     retentionHours: RETENTION_MS / 3_600_000,
+    retencionBaseDias: RETENCION_BASE_MS / 86_400_000,
     lastRunAt,
     lastRunReport,
     ingestionInProgress,

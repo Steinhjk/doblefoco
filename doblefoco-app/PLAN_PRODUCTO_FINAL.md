@@ -50,7 +50,12 @@ se vigila y reclama atención él solo.
 De Jose son tres gestos cortos (0.1, 0.10, 0.11) y una frase (0.9). Todo lo
 demás es código que no necesita permiso y cabe en una semana.
 
-# ETAPA 1 · La sesión de decisiones — medio día de Jose, con todo servido
+# ETAPA 1 · La sesión de decisiones — **HECHA el 2026-09-02**
+
+Los ocho puntos están decididos y anotados en `DECISIONES.md` (2026-09-02).
+Lo que sigue es lo que se escribió antes de la sesión; se conserva porque dice
+por qué cada punto estaba en la cola. La Etapa 3 de abajo ya está reescrita
+con lo decidido.
 
 **Es el cuello de botella del proyecto entero.** Cada punto ya tiene su estudio
 escrito y sus opciones cerradas; ninguno necesita investigación nueva. La
@@ -93,28 +98,36 @@ Puede empezar hoy, en paralelo con las etapas 0 y 1.
 | 2.4 | Serializador único de rehidratación + prueba de ida y vuelta | Kimi E-3 | 1 día |
 | 2.5 | Fichas nuevas según la prioridad que salga de 1.6 — el alta ya no espera a la ficha, pero la deuda se paga | 1-G | continuo, por tandas |
 
-# ETAPA 3 · Ejecutar lo decidido — dos a cuatro semanas, según la Etapa 1
+# ETAPA 3 · Ejecutar lo decidido — dos a cuatro semanas
 
-El contenido exacto lo fija la sesión de decisiones; estas son las ramas
-posibles ya dimensionadas:
+Fijado por la sesión del 2026-09-02. Es código y no espera a nadie, salvo la
+regla por cadencia, que espera a la serie.
 
-- **Si se archiva (1):** migración de retención, páginas de historia permanente
-  con su ficha fechada, buscador `tsvector` + GIN, y separar ventana de
-  estimación (30–90 d) de la de agrupamiento (72 h). 1–2 semanas.
-- **Regla por cadencia (2):** se implementa cuando `2.1` tenga 30 días de serie
-  — cae a mitad de esta etapa por sí sola. 2–3 días.
-- **Punto ciego (3):** rotular lo no medible con el número, adoptar énfasis con
-  su límite escrito, y recalibrar o declarar las ramas 1 y 3. 3–5 días, más la
-  actualización de `/transparencia` y del doc del modelo.
-- **Lo que se decida sobre Infobae, La Libertad y las dudas cortas:** días
-  sueltos cada una.
+| # | Tarea | Decisión | Cuánto |
+|---|---|---|---|
+| 3.1 | **Retención interna de 30 días sin páginas permanentes**: `articles` vive 30 d; portada, agrupamiento y URL siguen en 72 h. Separar ventana de estimación y de agrupamiento. Medir el tamaño de la base al cerrar. | 1 (C) | 3–5 días |
+| 3.2 | **Punto ciego que dice la verdad**: rama de la izquierda «no medible» con el 78 % en pantalla; énfasis con su ceguera direccional escrita; ramas 1 y 3 con número fijo de medios en vez del 15 %. Actualizar `/transparencia` y el doc del modelo. | 3 | 3–5 días |
+| 3.3 | **Techo por feed**: `ITEMS_PER_FEED` por defecto 15 y valor propio para quien publique más de 15 en 30 min (Infobae; medir Semana). Declararlo en la metodología. | 4 (B) | 1 día |
+| 3.4 | **La regla de quien dirige**, escrita en el protocolo, y los avisos con fecha de La Libertad y La Nación (Neiva) en el texto que ve el lector. | 5 | 1–2 días |
+| 3.5 | **Fichas de los 11 de izquierda**, por tandas de 3 o 4, cada tanda firmada por Jose. | 6 | continuo |
+| 3.6 | **Estrenar `aceptado`** con Vorágine y su nota en `hallazgos.json`. | 7 | 1 h |
+| 3.7 | **Marcador con logo** para historias sin imagen; nunca foto relacionada. `npm run mirar` como juez. | 8a | 1 día |
+| 3.8 | **Contacto para medios en `/transparencia`** (`doblefoco.co@gmail.com`) y el procedimiento escrito: acuse 5 días, respuesta 15, publicación junto a la ficha. | 8c | medio día |
+| 3.9 | **Regla uniforme por cadencia**: se implementa cuando `cadencia_piezas` tenga 30 días (≈ 1 de octubre de 2026). | 2 | 2–3 días |
+
+**Y una revisión con fecha, no una tarea:** cuando haya **90 días de serie**
+(≈ diciembre de 2026), **revisar si se hace la opción B** —archivo permanente
+con página por historia, ficha fechada y buscador, 25 USD/mes—. Jose lo pidió
+anotado: B no se descartó, se aplazó.
 
 # ETAPA 4 · Pulido de producto final — el cierre
 
 - **Catálogo:** escribir a Korraleja o El Meridiano por Sucre (lo único que lo
-  abre); otra vía de feed para los cuatro parados (Telemedellín, Telecafé,
-  W Radio, Razón Pública si no quedó aceptado); sustituir las fuentes 404/503 de
-  las fichas; los seis internacionales sin feed que bloquean F1-16.
+  abre); **otra vía de feed para Telecaribe, El Manduco, W Radio y Telecafé**
+  (Razón Pública y Telemedellín ya publican a diario, medido el 2026-09-02) —y
+  lo que no tenga vía se lleva a Jose para decidir si sale del catálogo, que
+  fue su condición en el punto 7—; sustituir las fuentes 404/503 de las
+  fichas; los seis internacionales sin feed que bloquean F1-16.
 - **Eficiencia:** escribir solo lo que cambió en cada ciclo (H4 — hoy son
   ~447 000 escrituras diarias para ~1 500 historias nuevas); evaluar la región
   `bog` de Fly (I-10).

@@ -17,6 +17,62 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-02 · La sesión de decisiones: los ocho puntos de la Etapa 1, decididos
+
+**Decididos por Jose en una sola sesión**, sobre `SESION_DECISIONES.md`, que
+tenía cada punto con lo medido y una recomendación marcada como tal. Se anotan
+aquí en el momento, como pide la regla. Lo que cada una desencadena está en
+`PLAN_PRODUCTO_FINAL.md` (Etapa 3) y la cuenta la lleva `MINUTA.md`.
+
+**1 · Archivo: opción C.** Retención interna de **30 días sin páginas
+permanentes**: las piezas viven 30 días en la base para estimar; la portada y
+las URL siguen siendo de 72 h. Gratis dentro del plan actual y reversible.
+**Queda anotado en el plan revisar si se hace B** —archivo permanente con
+página por historia, ficha fechada y buscador, 25 USD/mes al año vista— cuando
+haya 90 días de serie. B no se descarta: se aplaza con fecha.
+
+**2 · Regla uniforme por cadencia.** La ventana de cada medio **se deriva de su
+propio ritmo, con la misma fórmula para todos**. Se implementa cuando
+`cadencia_piezas` tenga 30 días de serie (hacia el 1 de octubre de 2026), no
+antes. Lo que NO se hace: alargar la retención a mano para nadie.
+
+**3 · El punto ciego dice la verdad de sí mismo.** La rama de la izquierda se
+declara **no medible, con el número en pantalla** (falta en el 78 % de las
+historias de 10+ medios). El énfasis se adopta **con su ceguera direccional
+escrita** donde el lector la vea (23 disparos para la derecha, 0 para la
+izquierda). Las ramas 1 y 3 cambian el «15 % de n» por **un número fijo de
+medios**, que quita los saltos.
+
+**4 · Infobae: opción B.** Techo por feed: `ITEMS_PER_FEED` sigue en 15 por
+defecto y los feeds que publican más de 15 piezas en 30 minutos llevan un valor
+propio. Hoy es Infobae; se mide si Semana también. Se declara en la metodología.
+
+**5 · La regla de quien dirige.** Se avisa cuando quien dirige la redacción
+tiene **candidatura o cargo público vigente**, con fecha y fuente; el aviso
+caduca con el cargo. No se avisa por afinidad, militancia pasada ni opinión.
+**Se publican los dos casos con fecha:** Diario La Libertad y La Nación
+(Neiva). Es desvelamiento, no acusación.
+
+**6 · Fichas: primero los 11 de izquierda, por tandas.** Tandas de 3 o 4 para
+que cada una sea revisable; después los más leídos que falten; al final el
+resto por departamento. La ficha la sigue firmando Jose.
+
+**7 · `aceptado` se estrena con Vorágine, y solo con él.** Nota: investigación,
+cadencia lenta (una pieza cada 3,3 días, medido). **Del resto —Telecaribe, El
+Manduco, W Radio, Telecafé— hay que decidir si se borran del catálogo o se
+reintenta el feed por otra vía.** Primero se reintenta (Etapa 4); lo que no
+tenga vía se trae aquí para decidir si sale.
+
+**8 · Las tres dudas cortas.** (a) Historias sin imagen: **marcador con el logo
+del medio**, claramente no fotográfico; nunca una foto relacionada. (b) La
+cifra de patrocinio **se queda en la plantilla y fuera de todo lo público**.
+(c) Cuando un medio escriba: **contacto en `/transparencia` con el mismo correo
+del boletín, `doblefoco.co@gmail.com`**; acuse en 5 días y respuesta en 15; la
+objeción y la respuesta se publican junto a la ficha, con fecha, cambie o no la
+clasificación; la reclasificación sigue el protocolo de juicio editorial.
+
+---
+
 ## 2026-09-02 · El motor tiene hostname propio: `api.doblefoco.co`
 
 **Decisión de Jose.** Ante I-6 —el hostname estaba en la CSP y no existía en el

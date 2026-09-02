@@ -1,4 +1,14 @@
-# Sesión de decisiones — servida el 2026-09-02
+# Sesión de decisiones — servida y **respondida el 2026-09-02**
+
+> **Respondida entera por Jose el mismo día.** Las decisiones están en
+> `DECISIONES.md` (2026-09-02) y las tareas que producen, en la Etapa 3 de
+> `PLAN_PRODUCTO_FINAL.md`. En resumen: 1 → C, y revisar B a los 90 días;
+> 2 → regla uniforme por cadencia; 3 → la recomendación entera; 4 → B; 5 → la
+> regla y publicar los dos casos con fecha; 6 → los 11 de izquierda por tandas;
+> 7 → `aceptado` solo con Vorágine, y decidir después si el resto se borra o se
+> reintenta; 8 → marcador con logo, cifra fuera de lo público, y contacto con
+> `doblefoco.co@gmail.com`. Este documento queda como registro de lo que se
+> puso sobre la mesa.
 
 **Es la Etapa 1 de `PLAN_PRODUCTO_FINAL.md`, y el cuello de botella del proyecto.**
 Todo lo que hay aquí ya tiene su estudio escrito; ninguno de los ocho puntos

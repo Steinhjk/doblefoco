@@ -527,6 +527,24 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · La sesión de decisiones: los ocho puntos, en una sesión
+
+**El cuello de botella del proyecto, vaciado.** Jose contestó los ocho puntos
+de la Etapa 1 sobre `SESION_DECISIONES.md`, y cada respuesta se anotó en
+`DECISIONES.md` en el momento. La Etapa 3 de `PLAN_PRODUCTO_FINAL.md` quedó
+reescrita con nueve tareas concretas (3.1 a 3.9) y una revisión con fecha:
+**a los 90 días de serie, revisar si se hace el archivo permanente (opción B)**.
+
+**Lo que abre trabajo de código ya:** retención interna de 30 días (3.1), el
+punto ciego que dice la verdad (3.2), techo por feed (3.3), la regla de quien
+dirige con sus dos avisos (3.4), `aceptado` con Vorágine (3.6), el marcador con
+logo (3.7) y el contacto para medios (3.8). Lo que espera: la regla por
+cadencia (3.9), a la serie de 30 días; y las fichas de izquierda (3.5), a las
+tandas que firme Jose.
+
+**Lo que sigue siendo suyo:** decidir, cuando la Etapa 4 haya reintentado los
+feeds, si Telecaribe, El Manduco, W Radio y Telecafé salen del catálogo.
+
 ## 2026-09-01 · La cadencia por medio empieza a grabarse (2.1 / 2-A / T2-3)
 
 **La tarea urgente por calendario del plan de producto**, y la única de la

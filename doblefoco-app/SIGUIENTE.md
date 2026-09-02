@@ -1,5 +1,36 @@
 # Por dónde seguir
 
+## 2026-09-02 · Etapa 3 ejecutada el mismo día que se decidió
+
+Jose contestó los ocho puntos de la sesión de decisiones y **todo lo que era
+código está en `main` y desplegado** (PRs #9 a #15, más dos commits de
+limpieza): `aceptado` con Vorágine, contacto para medios, techo por feed
+(Infobae en 60), marcador con logo, regla de quien dirige con el aviso de La
+Libertad, retención de 30 días en la base con 72 h en portada, y el punto ciego
+que dice la verdad de sí mismo. La cuenta, entrada por entrada, en `MINUTA.md`
+(CERRADO, 2026-09-02); las decisiones en `DECISIONES.md`.
+
+**Lo que queda, y de quién es:**
+
+- **Jose:** las fichas de los 11 medios de izquierda, por tandas de 3 o 4
+  (3.5); el issue #4 del centinela; sacar el repositorio de OneDrive; y decidir
+  qué pasa con Telecaribe, El Manduco, W Radio y Telecafé cuando la Etapa 4
+  haya reintentado sus feeds.
+- **Con fecha:** hacia el **2 de octubre**, medir el tamaño de la base (30 días
+  más Infobae en 60) y arrancar la regla por cadencia (3.9) con 30 días de
+  serie; hacia **diciembre**, revisar la opción B (archivo permanente).
+- **Código, Etapa 4:** otra vía de feed para los cuatro parados, el 404 de
+  `/sobre-nosotros`, escribir solo lo que cambió en cada ciclo (H4), y la
+  revisión móvil del mapa.
+
+**Dos hallazgos de paso que ya están arreglados y conviene saber:** los `.txt`
+de `src/docs` llevaban las tildes con doble codificación desde que se
+escribieron (la metodología pública se leía «artÃ­culos»), y un comentario que
+nombraba una constante retirada rompió el CI en `main` durante veinte minutos:
+el vigilante de comentarios funciona.
+
+---
+
 ## 2026-09-01 · La cadencia se graba; lo que sigue del plan es de Jose
 
 Rama `cadencia/empezar-a-grabar`, PR abierta. Es la 2.1 del

@@ -1,6 +1,9 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry.js';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { PAGINAS_ESTATICAS, RUTAS_RENDERIZADAS, metadatosDePagina } from './paginasEstaticas.js';
 
 const SITIO = 'https://doblefoco.co';
@@ -98,5 +101,76 @@ describe('metadatosDePagina', () => {
 
     it('una ruta desconocida falla en vez de servir metadatos vacíos', () => {
         expect(() => metadatosDePagina('/inventada', SITIO)).toThrow(/ficha/);
+    });
+});
+
+
+/**
+ * LO QUE EL SERVIDOR RENDERIZA TIENE QUE LLEGARLE, Y ESO LO DECIDE OTRO ARCHIVO.
+ *
+ * POR QUÉ EXISTE ESTA PRUEBA (2026-09-02). El 2026-08-09 se partió
+ * `/transparencia` en cinco sub-páginas «para que cada tema gane su propio
+ * título y su propia descripción, que es lo que un buscador puede mostrar a
+ * quien pregunta justo por eso» —el comentario sigue ahí—. El servidor las
+ * renderizaba, el sitemap las anunciaba… y `vercel.json` nunca se las pedía:
+ * caían en el catch-all y se servían con el título genérico del sitio. Medido
+ * en producción el 2026-09-02, las cinco. Casi un mes sirviendo la página
+ * correcta con la etiqueta equivocada, sin que nada fallara.
+ *
+ * Dos artefactos declarativos nuestros que pueden divergir en silencio: el
+ * mismo caso que `schema.test.js` con el .sql, y se comprueba igual, leyendo
+ * los dos y comparándolos.
+ */
+describe('el enrutamiento de Vercel y las rutas que el servidor renderiza', () => {
+    const vercel = JSON.parse(
+        readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../../vercel.json'), 'utf8')
+    );
+
+    /** Qué hace Vercel con una ruta: gana el PRIMER rewrite que casa, como allí. */
+    const destinoDe = (ruta) => {
+        for (const r of vercel.rewrites) {
+            if (new RegExp(`^${r.source}$`).test(ruta)) return r.destination;
+        }
+        return null;
+    };
+
+    it('cada ruta renderizada llega al motor y no al index.html', () => {
+        for (const ruta of RUTAS_RENDERIZADAS) {
+            expect(destinoDe(ruta), `«${ruta}» no llega al motor`).toMatch(/^https:\/\/api\.doblefoco\.co/);
+        }
+    });
+
+    it('el catch-all va el último: si subiera, se comería todo lo anterior', () => {
+        const ultimo = vercel.rewrites[vercel.rewrites.length - 1];
+        expect(ultimo.destination).toBe('/index.html');
+    });
+
+    it('«/sobre-nosotros» redirige de forma permanente y NO se reescribe al motor', () => {
+        // Se retiró de las páginas renderizadas el 2026-08-09 y el rewrite se
+        // quedó apuntando al motor: el visitante recibía un 404 mientras el
+        // cliente creía estar redirigiendo. La redirección la tiene que hacer
+        // quien atiende la petición, no el JavaScript que nunca llega a correr.
+        expect(RUTAS_RENDERIZADAS).not.toContain('/sobre-nosotros');
+        expect(destinoDe('/sobre-nosotros')).toBe('/index.html');
+
+        const redir = (vercel.redirects ?? []).find((r) => r.source === '/sobre-nosotros');
+        expect(redir, 'falta la redirección de /sobre-nosotros').toBeDefined();
+        expect(redir.destination).toBe('/transparencia/sobre-nosotros');
+        expect(redir.permanent).toBe(true);
+    });
+
+    it('una sub-página inventada la atiende el motor, que responde 404 con la aplicación', () => {
+        // El precio de mandar /transparencia/* entero al motor en vez de
+        // enumerar las rutas —enumerarlas sería la lista que diverge—. El
+        // manejador vive en server/index.js, justo después de las renderizadas.
+        expect(destinoDe('/transparencia/inventada')).toMatch(/^https:\/\/api\.doblefoco\.co/);
+
+        const servidor = readFileSync(
+            resolve(dirname(fileURLToPath(import.meta.url)), '../index.js'),
+            'utf8'
+        );
+        expect(servidor).toMatch(/app\.get\(\/\^\\\/transparencia\\\/\//);
+        expect(servidor.indexOf('app.get(RUTAS_RENDERIZADAS'))
+            .toBeLessThan(servidor.indexOf('app.get(/^\\/transparencia\\//'));
     });
 });

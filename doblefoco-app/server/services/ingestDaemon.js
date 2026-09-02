@@ -730,6 +730,9 @@ async function persistToDatabase(fresh) {
     const parts = [`db: +${saved} art.`];
     if (stories) parts.push(`${stories.stories} hist.`);
     if (stories?.removed) parts.push(`−${stories.removed} obsoletas`);
+    // Lo archivado se informa aparte de lo borrado: son cosas distintas y la
+    // diferencia es el producto entero. Ver el bloque del archivo en schema.sql.
+    if (stories?.archived) parts.push(`${stories.archived} archivadas`);
     if (expired) parts.push(`−${expired} caducadas`);
 
     return parts.join(' · ');

@@ -32,7 +32,9 @@ dotenv.config({
 const DIAS_MUDO = 14;
 const SITIOS = [
     { nombre: 'sitio', url: 'https://doblefoco.co' },
-    { nombre: 'API', url: 'https://doblefoco.fly.dev/api/health' },
+    // Por el hostname propio, no por el de Fly: se vigila el camino que usa el
+    // lector, DNS y certificado incluidos.
+    { nombre: 'API', url: 'https://api.doblefoco.co/api/health' },
 ];
 
 const problemas = [];

@@ -9,7 +9,7 @@ import { hashDelRegistro } from './shared/registroHash.js'
  * Se puede apuntar a otra con `API_DEV=http://localhost:3000 npm run dev`, que
  * es lo que hay que hacer cuando se está tocando el servidor.
  */
-const API_DEV = process.env.API_DEV ?? 'https://doblefoco.fly.dev'
+const API_DEV = process.env.API_DEV ?? 'https://api.doblefoco.co'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -38,7 +38,7 @@ export default defineConfig({
      * defectos que las 629 pruebas no vieron.
      *
      * Y hasta hoy eso costaba más de lo que debería. Poniendo
-     * `VITE_API_URL=https://doblefoco.fly.dev` el navegador pide a OTRO origen,
+     * `VITE_API_URL=https://api.doblefoco.co` el navegador pide a OTRO origen,
      * la API solo permite el de producción, y todas las llamadas mueren en la
      * CORS. Lo que se ve entonces no es el fallo que se venía a buscar: es la
      * página vacía, con sus contadores en cero. **Es un diagnóstico falso

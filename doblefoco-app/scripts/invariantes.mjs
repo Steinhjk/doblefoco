@@ -57,7 +57,7 @@ const arg = (nombre) =>
 
 const STRICT = process.argv.includes('--strict');
 const RUTA_RESUMEN = arg('resumen');
-const API = (arg('api') ?? process.env.API_URL ?? 'https://doblefoco.fly.dev').replace(/\/+$/, '');
+const API = (arg('api') ?? process.env.API_URL ?? 'https://api.doblefoco.co').replace(/\/+$/, '');
 
 const TIMEOUT_MS = 30_000;
 

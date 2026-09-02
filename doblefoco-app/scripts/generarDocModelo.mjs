@@ -149,7 +149,7 @@ export function leerMedido() {
  * Va contra producción a propósito y no contra la base: lo que este documento
  * promete es lo que el LECTOR obtiene, y el lector obtiene lo que sirve la API.
  */
-export async function medir(base = 'https://doblefoco.fly.dev') {
+export async function medir(base = 'https://api.doblefoco.co') {
     const respuesta = await fetch(`${base}/api/feed?limit=200`);
     if (!respuesta.ok) throw new Error(`la API respondió ${respuesta.status}`);
     const cuerpo = await respuesta.json();

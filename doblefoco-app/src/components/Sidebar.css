@@ -64,9 +64,25 @@
     list-style: none;
 }
 
+/*
+ * EL NÚMERO, EL TITULAR Y EL CONTEO NO SE TOCAN (2026-09-02).
+ *
+ * Reportado por Jose: «los números de las tendencias se sobreponen con los
+ * títulos». Medido: no se solapaban en píxeles —el número acababa justo en la
+ * x donde empezaba el titular, 967 y 967— y por eso ninguna prueba lo veía;
+ * pero sin un solo píxel entre los dos se leen como una sola palabra:
+ * «#1Corte Constitucional». Y con align-items: center el número flotaba a
+ * media altura de un titular de tres líneas, metido entre la segunda y la
+ * tercera.
+ *
+ * Dos arreglos, y ninguno es de tamaño: separación explícita entre las tres
+ * partes, y el número alineado con la PRIMERA línea del titular, que es donde
+ * un lector espera encontrarlo en una lista numerada.
+ */
 .trend-link {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    gap: 10px;
     width: 100%;
     padding: 10px 0;
     border-radius: 0px;
@@ -89,8 +105,12 @@
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--primary);
-    /* Changed to black */
-    width: 30px;
+    /* Ni crece ni se encoge: con width a secas, un `#10` empujaba el titular,
+       porque en un contenedor flex el ancho es una sugerencia. */
+    flex: 0 0 auto;
+    min-width: 24px;
+    /* Que la cifra case con la primera línea del titular, no con su centro. */
+    line-height: 1.5;
 }
 
 .trend-name {
@@ -106,6 +126,8 @@
     background: var(--bg-subtle);
     padding: 2px 8px;
     border-radius: 2px;
+    /* Mismo motivo que el número: que no lo aplaste un titular largo. */
+    flex: 0 0 auto;
 }
 
 .bias-summary {

@@ -277,7 +277,8 @@ export function probabilidadDeAusenciaEnCatalogo(delEspectro, total, n) {
  * La misma nula, pero para «como mucho `k`» en vez de «ninguno».
  *
  * POR QUÉ HIZO FALTA GENERALIZARLA (2026-08-25). La rama del punto ciego no
- * exige que un espectro esté en cero: exige que no pase de `BLINDSPOT_MAX_RATIO`.
+ * exige que un espectro esté en cero: exige que no pase de `BLINDSPOT_MAX_PRESENTES`
+ * medios (hasta el 2026-09-02 era una proporción, el 15 %, y esa constante ya no existe).
  * Con historias pequeñas daba igual —a 4 medios, uno solo es el 25 % y no
  * pasa— pero **a partir de 7 medios deja de dar igual**, y el corpus llegó a
  * ese tamaño esta semana. El resultado fue que el sitio publicó «Punto ciego de

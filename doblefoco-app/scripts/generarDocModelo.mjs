@@ -57,7 +57,9 @@ import {
     SPECTRUM_THRESHOLD,
     BLINDSPOT_MIN_SOURCES,
     BLINDSPOT_MIN_COBERTURA_LADO,
-    BLINDSPOT_MAX_RATIO,
+    analyzeCoverage,
+    BLINDSPOT_MAX_PRESENTES,
+    RAMAS_NO_MEDIBLES,
     UMBRAL_SORPRESA,
     SOLO_EJE_MIN_SOURCES,
     ENFASIS_MIN_RATIO,
@@ -183,6 +185,15 @@ export async function medir(base = 'https://api.doblefoco.co') {
         apenasUnos: historias.filter((h) => h.ausencia && h.ausencia.presentes > 0).length,
         conPuntoCiego: historias.filter((h) => h.blindspot).length,
         faltaEnEvaluables: falta,
+        // El énfasis por lado, para que la ceguera direccional quede medida y
+        // no solo dicha (opción E, 2026-09-02).
+        // Se recalcula desde las fuentes con el modelo de ESTE código, igual que
+        // hace el cliente (normalizeStory): la API sirve el modelo que tenga
+        // desplegado, y aquí se mide el que se está documentando.
+        enfasis: {
+            left: historias.filter((h) => analyzeCoverage(h.sources ?? []).enfasis?.spectrum === 'left').length,
+            right: historias.filter((h) => analyzeCoverage(h.sources ?? []).enfasis?.spectrum === 'right').length,
+        },
     };
 }
 
@@ -283,7 +294,7 @@ export function renderModelo() {
     ));
     push();
     push(fila('Medios mínimos para evaluar', BLINDSPOT_MIN_SOURCES));
-    push(fila('Un lado se considera ausente si tiene', `${pct(BLINDSPOT_MAX_RATIO)} o menos`));
+    push(fila('Un lado se considera ausente si lo cubren', `${BLINDSPOT_MAX_PRESENTES} medio(s) o menos`));
     push(fila('Y el otro lado tiene que aportar', `${BLINDSPOT_MIN_COBERTURA_LADO} medios o más`));
     push(fila('«Solo medios del eje» pide, además', `${SOLO_EJE_MIN_SOURCES} medios`));
     push();
@@ -418,6 +429,28 @@ export function renderModelo() {
             'este catálogo, y enseñarla sin decir cada cuánto pasa sería ' +
             'convertir la norma en titular.'
         ));
+        push();
+        push(envolver(
+            `RAMAS DECLARADAS NO MEDIBLES: ${[...RAMAS_NO_MEDIBLES].map((e) => ORDEN.find(([k]) => k === e)?.[1] ?? e).join(', ')}. ` +
+            'Desde el 2026-09-02 la ausencia de ese lado nunca se llama «punto ciego», ' +
+            'aunque la nula la declare improbable: con la frecuencia de arriba, señalar ' +
+            'una historia concreta sería acusarla de lo que hace el catálogo. Se publica ' +
+            'el hecho —«sin medios de»— con su frecuencia al lado, y el desequilibrio se ' +
+            'cuenta donde está, en el mapa de medios. Se revisa si entran medios de ese ' +
+            'lado o si la frecuencia baja de la mitad.'
+        ));
+        if (medido.enfasis) {
+            push();
+            push(fila('Énfasis hacia la derecha', medido.enfasis.right));
+            push(fila('Énfasis hacia la izquierda', medido.enfasis.left));
+            push(envolver(
+                'El énfasis es la señal que sí funciona en un corpus asimétrico, y tiene ' +
+                'una ceguera direccional que conviene tener a la vista: en este catálogo ' +
+                'apunta casi siempre a la derecha y casi nunca a la izquierda. No es un ' +
+                'hallazgo sobre las noticias; es que la izquierda es una parte pequeña del ' +
+                'catálogo. Se adopta con eso escrito (2026-09-02).'
+            ));
+        }
     }
     push();
     push();

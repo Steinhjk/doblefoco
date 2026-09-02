@@ -56,8 +56,63 @@ export const BLINDSPOT_MIN_SOURCES = 4;
  */
 export const BLINDSPOT_MIN_COBERTURA_LADO = 2;
 
-/** Un espectro se considera omitido si tiene esta cobertura o menos. */
-export const BLINDSPOT_MAX_RATIO = 0.15;
+/**
+ * UN ESPECTRO CUENTA COMO AUSENTE CUANDO LO CUBRE COMO MUCHO ESTE NÚMERO DE
+ * MEDIOS, sea cual sea el tamaño de la historia (2026-09-02, decisión de Jose).
+ *
+ * Antes era una proporción: «15 % de n o menos». Medido el 2026-08-25 y
+ * escrito en 1-D del plan: la proporción se redondea a medios enteros, así que
+ * la dureza de la rama iba A SALTOS —con 4 a 6 medios permitía cero, con 7 a
+ * 13 permitía uno, con 14 permitía dos—, y una historia de 10 tenía que ser
+ * siete veces más rara que una de 8 para pasar el mismo filtro. Un número fijo
+ * quita los saltos y además dice lo mismo que la etiqueta que el lector lee:
+ * «Sin medios de X» o «Apenas 1 medio de X». Con el 15 %, la etiqueta y la
+ * regla se contradecían a partir de 14 medios.
+ *
+ * POR QUÉ UNO Y NO CERO NI DOS. Medido sobre la base viva el 2026-09-02 (113
+ * historias evaluables, la mayor de 14 medios):
+ *
+ *   regla        ausencia izq   ausencia der   solo-eje   solo-eje sorprende
+ *   15 % de n         76             0            1              1
+ *   fijo ≤ 0          72             0            0              0
+ *   fijo ≤ 1          82             1            5              5
+ *   fijo ≤ 2          45             0           10              5
+ *
+ * Cero apaga la tercera rama del todo; dos vacía la rama de la izquierda a la
+ * mitad porque exige que el otro lado tenga tres. Uno es el que coincide con
+ * la etiqueta y mueve menos: la rama de la izquierda apenas cambia, y la
+ * tercera rama pasa a decir algo cuando de 6+ medios ninguno o solo uno es de
+ * orientación mixta, que es exactamente lo raro que debería señalar.
+ */
+export const BLINDSPOT_MAX_PRESENTES = 1;
+
+/**
+ * RAMAS DECLARADAS NO MEDIBLES CON ESTE CATÁLOGO (2026-09-02, decisión de Jose,
+ * opción D del estudio de puntos ciegos).
+ *
+ * La ausencia de la izquierda es la norma, no la excepción: falta en el 84 %
+ * de las historias evaluables (95 de 113, medido el 2026-09-02) y en el 78 %
+ * de las de 10 medios o más del corpus histórico. Una señal que dispara sobre
+ * lo que ocurre cuatro de cada cinco veces no es un hallazgo sobre la noticia:
+ * es el catálogo —13 medios de izquierda entre 72— con nombre propio. Y ya
+ * pasó: treinta «punto ciego de la izquierda» y cero de la derecha, midiendo
+ * cadencia de publicación y presentándola como conducta editorial.
+ *
+ * Con la nula corregida la rama SÍ puede dispararse aritméticamente (desde 14
+ * medios), y por eso esto es una decisión y no una imposibilidad: aunque la
+ * nula sorprenda, **una ausencia de la izquierda nunca se llama «punto ciego»**.
+ * Lo que se publica es el HECHO —`ausencia`, con la frecuencia al lado y el
+ * número en pantalla— y el desequilibrio se cuenta donde está: en el mapa de
+ * medios y en la metodología. Se revisa cuando entren medios de izquierda al
+ * catálogo o cuando la tasa medida baje de la mitad; hasta entonces, declarar
+ * la rama no medible es lo único que no promete lo que no puede dar.
+ */
+export const RAMAS_NO_MEDIBLES = /** @type {ReadonlySet<'left'|'center'|'right'>} */ (new Set(['left']));
+
+/** ¿Está esta rama declarada no medible? Ver RAMAS_NO_MEDIBLES. */
+export function ramaNoMedible(espectro) {
+    return RAMAS_NO_MEDIBLES.has(espectro);
+}
 
 /**
  * LA AUSENCIA TIENE QUE SER SORPRENDENTE, NO SOLO UNA AUSENCIA (2026-08-08).
@@ -624,7 +679,6 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
 
     const leftRatio = total ? counts.left / total : 0;
     const rightRatio = total ? counts.right / total : 0;
-    const centerRatio = total ? counts.center / total : 0;
 
     /**
      * ¿Sorprende que falte este espectro bajo la nula de catálogo?
@@ -666,13 +720,14 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
      *                                                     punto ciego donde
      *                                                     alguien sí cubrió.
      *
-     * POR QUÉ HIZO FALTA. La rama compara una PROPORCIÓN —15 %— y la etiqueta
+     * POR QUÉ HIZO FALTA. La rama comparaba una PROPORCIÓN —15 %— y la etiqueta
      * prometía un CERO. Con historias de 4 a 6 medios las dos cosas coincidían;
-     * a partir de 7 dejan de coincidir, y el corpus llegó a ese tamaño el
+     * a partir de 7 dejaban de coincidir, y el corpus llegó a ese tamaño el
      * 2026-08-25. Ese día el sitio publicó «Punto ciego de la izquierda» sobre
      * la muerte de Dolly Parton —15 medios, uno de ellos de izquierda— con una
      * frase debajo que decía «Solo 1 de izquierda lo reportan». El titular se
-     * contradecía con su propio texto.
+     * contradecía con su propio texto. Desde el 2026-09-02 la regla es un
+     * número fijo (BLINDSPOT_MAX_PRESENTES) y dice lo mismo que la etiqueta.
      */
     const etiquetaDe = (espectro, presentes) =>
         presentes === 0
@@ -718,10 +773,14 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
      *               de catálogo.
      *
      * `blindspot` es siempre un subconjunto de `ausencia`. Salen del MISMO
-     * recorrido de condiciones a propósito: escribir dos veces «izquierda ≤
-     * 15 % y derecha > 15 % y al menos 2 de derecha» habría creado dos listas
+     * recorrido de condiciones a propósito: escribir dos veces «izquierda con
+     * como mucho un medio y al menos 2 de derecha» habría creado dos listas
      * que divergen en cuanto alguien toque una, que es la enfermedad de este
      * repositorio.
+     *
+     * Y LA ETIQUETA «PUNTO CIEGO» SOLO EXISTE EN LAS RAMAS MEDIBLES (2026-09-02,
+     * ver RAMAS_NO_MEDIBLES): una ausencia de la izquierda se nombra siempre
+     * como hecho —«Sin medios de izquierda»—, nunca como veredicto.
      *
      * POR QUÉ EXISTE `ausencia`, decisión de Jose del 2026-08-25. Con la nula
      * corregida, la rama de la izquierda pasó de exigir 90 medios a exigir 14 —
@@ -743,14 +802,14 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
          * lado omite esto» sino «un periódico decidió cubrirlo».
          */
         if (
-            rightRatio <= BLINDSPOT_MAX_RATIO &&
-            leftRatio > BLINDSPOT_MAX_RATIO &&
+            counts.right <= BLINDSPOT_MAX_PRESENTES &&
+            counts.left > BLINDSPOT_MAX_PRESENTES &&
             counts.left >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
             candidatos.push({
                 spectrum: SPECTRUM.RIGHT,
                 presentes: counts.right,
-                label: counts.right === 0
+                label: counts.right === 0 && !ramaNoMedible(SPECTRUM.RIGHT)
                     ? 'Punto ciego de la derecha'
                     : etiquetaDe(SPECTRUM.RIGHT, counts.right),
                 etiquetaAusencia: etiquetaDe(SPECTRUM.RIGHT, counts.right),
@@ -761,14 +820,14 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
             });
         }
         if (
-            leftRatio <= BLINDSPOT_MAX_RATIO &&
-            rightRatio > BLINDSPOT_MAX_RATIO &&
+            counts.left <= BLINDSPOT_MAX_PRESENTES &&
+            counts.right > BLINDSPOT_MAX_PRESENTES &&
             counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
             candidatos.push({
                 spectrum: SPECTRUM.LEFT,
                 presentes: counts.left,
-                label: counts.left === 0
+                label: counts.left === 0 && !ramaNoMedible(SPECTRUM.LEFT)
                     ? 'Punto ciego de la izquierda'
                     : etiquetaDe(SPECTRUM.LEFT, counts.left),
                 etiquetaAusencia: etiquetaDe(SPECTRUM.LEFT, counts.left),
@@ -792,7 +851,7 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
              * afirmación es más fuerte y tiene prioridad.
              */
             total >= SOLO_EJE_MIN_SOURCES &&
-            centerRatio <= BLINDSPOT_MAX_RATIO &&
+            counts.center <= BLINDSPOT_MAX_PRESENTES &&
             counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
             candidatos.push({
@@ -816,8 +875,14 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
     /** El hecho: el primero que cumple las condiciones sustantivas. */
     const ausencia = conContexto(candidatos[0] ?? null);
 
-    /** La afirmación: el primero que ADEMÁS sorprende bajo la nula. */
-    const blindspot = conContexto(candidatos.find((c) => sorprende(c.spectrum, c.presentes)) ?? null);
+    /**
+     * La afirmación: el primero que ADEMÁS sorprende bajo la nula — y cuya rama
+     * esté declarada medible. Una ausencia de la izquierda puede sorprender a
+     * la aritmética y aun así no se llama punto ciego: ver RAMAS_NO_MEDIBLES.
+     */
+    const blindspot = conContexto(
+        candidatos.find((c) => !ramaNoMedible(c.spectrum) && sorprende(c.spectrum, c.presentes)) ?? null
+    );
 
     /**
      * PUNTO DE ÉNFASIS: quién cuenta esto con una intensidad que no comparte

@@ -1035,7 +1035,33 @@ export const MEDIA_REGISTRY = [
         domain: 'elmanduco.com.co', departamento: 'Guaviare', country: 'CO', group: 'Regional Guaviare',
         bias: 0.0, factuality: null, reviewedAt: null,
         biasRationale: 'Medio de San José del Guaviare cuyos cuatro cargos —fundador, director, director emérito y gerente— ocupa la misma familia. La estructura dice quién manda, no hacia dónde tira — ver fichas/el-manduco.md.',
-        feed: { url: 'https://elmanduco.com.co/feed/', via: 'direct', category: 'Política' },
+        /*
+         * SIN FEED DESDE EL 2026-09-02, POR DECISIÓN DE JOSE, Y NO ES UN
+         * SILENCIAMIENTO.
+         *
+         * Su sitio entero devuelve HTTP 500 —la portada también, no solo el
+         * feed—, lleva 40 ciclos consecutivos así (`cadencia_huecos`), tiene
+         * cero artículos en la base y su última pieza conocida es de marzo de
+         * 2026. Se reintentó por Google News, que es la vía por la que entran
+         * otros nueve medios: tampoco trae nada reciente. No hay noticias que
+         * traer.
+         *
+         * SE QUEDA EN EL CATÁLOGO. Pedirle a la ingesta un sitio caído es
+         * gastar una petición cada media hora en un 500, y por eso se le retira
+         * el feed; pero su ficha, su clasificación y su sitio en el mapa siguen
+         * ahí, como los seis internacionales de referencia. La regla de no
+         * silenciar a nadie prohíbe callar a un medio que habla, no mantener
+         * llamando a una puerta que lleva medio año sin abrir.
+         *
+         * LO QUE CUESTA, Y HAY QUE SABERLO: el Guaviare era suyo y solo suyo.
+         * Con esto la cobertura baja de 29 departamentos a 28. Es el precio de
+         * la decisión, no un efecto que se descubra luego.
+         *
+         * VUELVE EN UNA LÍNEA: descomentar el feed el día que su sitio responda.
+         * El centinela no lo vigila —vigila fichas, no feeds—, así que la
+         * comprobación es a mano: npm run feed:descubrir -- elmanduco.com.co
+         */
+        // feed: { url: 'https://elmanduco.com.co/feed/', via: 'direct', category: 'Política' },
     },
     {
         id: 'miputumayo', name: 'MiPutumayo', shortName: 'MiPutumayo',

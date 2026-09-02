@@ -68,10 +68,10 @@
             "resumen": "publica despacio —una pieza cada 165,5 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
             "primeraVez": "2026-08-20",
             "ultimaVez": "2026-08-27",
-            "estado": "abierto",
+            "estado": "aceptado",
             "resueltoEl": null,
             "reincidencias": 0,
-            "nota": null
+            "nota": "Decisión de Jose, 2026-09-02. El feed responde y está sano; el medio no publica desde el 13 de agosto de 2026, y Google News dice lo mismo, así que no es una ruta que nos falte. Es un canal público regional y se espera que vuelva. Se acepta con la fecha escrita: si el 13 de octubre de 2026 sigue sin publicar, deja de ser un silencio y pasa a ser una baja que hay que decidir."
         },
         "telecafe/feed": {
             "id": "telecafe/feed",
@@ -124,10 +124,10 @@
             "resumen": "el feed está parado: publica una pieza cada 2909,5 h y lo más nuevo es de hace 60011 h",
             "primeraVez": "2026-08-20",
             "ultimaVez": "2026-08-27",
-            "estado": "abierto",
+            "estado": "aceptado",
             "resueltoEl": null,
             "reincidencias": 0,
-            "nota": null
+            "nota": "Decisión de Jose, 2026-09-02. NO está parado: publica a diario. Su feed Arc expone exactamente dos ítems —uno reciente y otro de hace 4,6 años—, y la cadencia de este informe se calcula entre esos dos, de donde sale el número absurdo. Probadas siete rutas (Arc por categoría y sección, /feed/, /rss/, /rss.xml, sitemap de noticias): ninguna otra responde. Google News daría UNA pieza más dentro de la ventana a cambio de que todos sus enlaces dejen de ser canónicos, y eso no compensa. Se acepta: es su feed el que expone poco, no el medio el que calla."
         },
         "noticias-caracol/feed": {
             "id": "noticias-caracol/feed",
@@ -223,10 +223,10 @@
             "resumen": "publica despacio —una pieza cada 52,6 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
             "primeraVez": "2026-08-27",
             "ultimaVez": "2026-08-27",
-            "estado": "abierto",
+            "estado": "aceptado",
             "resueltoEl": null,
             "reincidencias": 0,
-            "nota": null
+            "nota": "Decisión de Jose, 2026-09-02: EL MEDIO SALE DE LA INGESTA. El sitio entero devuelve HTTP 500 —no solo el feed, también la portada—, lleva 40 ciclos consecutivos así, tiene cero artículos en la base y Google News fecha su última pieza en marzo de 2026. No hay noticias recientes ni otra vía por la que traerlas. Se le retira el feed del registro y se queda como medio de referencia, con su ficha y su sitio en el mapa: no se borra el trabajo hecho ni se niega que exista. Vuelve a la ingesta el día que su sitio responda, y eso es una línea en shared/mediaRegistry.js. CUIDADO al leer la próxima pasada: la conciliación marcará este hallazgo como «resuelto» porque el medio ya no se audita, y eso NO significa que se arreglara."
         },
         "boyaca-digital/fuente/holdingconsultants.org/nuestra-organizacion": {
             "id": "boyaca-digital/fuente/holdingconsultants.org/nuestra-organizacion",

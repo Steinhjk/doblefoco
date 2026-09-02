@@ -50,6 +50,10 @@ foto. Hoy salen sin imagen y el diseño se adapta.
 logo del medio sobre un fondo— que se lea como «no hay imagen» y no como «esta
 es la imagen»? Lo que NO se hará es buscar una foto «relacionada»: sería la
 fabricación que se retiró el 2026-07-30.
+**RESUELTA el 2026-09-02** (sesión de decisiones, punto 8a): el marcador con
+el logo del medio sobre fondo plano y la frase «Sin imagen del medio», en la
+tarjeta, en la destacada y en las miniaturas de la portada
+(`MarcadorSinImagen`). Ninguna foto relacionada, nunca.
 
 **4. `ITEMS_PER_FEED = 15`.** El RSS de Semana expone 100 artículos y solo
 miramos 15. Subirlo daría más cobertura y más volumen de ingesta.

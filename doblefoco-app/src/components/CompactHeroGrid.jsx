@@ -5,6 +5,7 @@ import { ExternalLink, Layers, Sparkles } from 'lucide-react';
 import { useStories } from '../hooks/useStories';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
 import StoryImage from './StoryImage';
+import MarcadorSinImagen from './MarcadorSinImagen';
 import { EsqueletoHero } from './Esqueleto';
 import { tieneImagen } from '../services/imageEngineService';
 import { storyTimeLabel } from '../lib/story';
@@ -131,8 +132,10 @@ const CompactHeroGrid = () => {
 
             <div className="compact-hero-grid">
                 <article className="hero-spotlight-card">
-                    {/* Sin imagen no se deja el hueco: el titular sube arriba. */}
-                    {tieneImagen(main) && (
+                    {/* Sin imagen, el marcador ocupa su sitio (decisión del
+                        2026-09-02, duda 3): el logo del medio sobre fondo plano,
+                        que se lee como «no hay foto» y nunca como una foto. */}
+                    {tieneImagen(main) ? (
                         <Link
                             to={rutaDeHistoria(main)}
                             className="spotlight-image-link"
@@ -150,6 +153,10 @@ const CompactHeroGrid = () => {
                                 <span className="spotlight-category-tag">{seccionDe(main)}</span>
                             </StoryImage>
                         </Link>
+                    ) : (
+                        <div className="spotlight-image-link spotlight-image-link--marcador">
+                            <MarcadorSinImagen story={main} tamano={56} />
+                        </div>
                     )}
 
                     <div className="spotlight-body">
@@ -228,7 +235,7 @@ const CompactHeroGrid = () => {
                 <div className="hero-secondary-stack">
                     {secondary.map((story) => (
                         <article key={story.id} className="secondary-compact-card">
-                            {tieneImagen(story) && (
+                            {tieneImagen(story) ? (
                                 <Link
                                     to={rutaDeHistoria(story)}
                                     className="secondary-image-link"
@@ -244,6 +251,10 @@ const CompactHeroGrid = () => {
                                         showCredit={false}
                                     />
                                 </Link>
+                            ) : (
+                                <div className="secondary-image-link">
+                                    <MarcadorSinImagen story={story} tamano={30} compacto />
+                                </div>
                             )}
 
                             <div className="secondary-content">

@@ -47,10 +47,8 @@
     min-height: 160px;
 }
 
-.news-card-inner-grid.sin-imagen {
-    grid-template-columns: 1fr;
-    min-height: 0;
-}
+/* El hueco del marcador no se anima al pasar el ratón: no es una foto. */
+.news-card-image-wrapper--marcador { cursor: default; }
 
 .news-card-category-inline {
     background: var(--bg-subtle);

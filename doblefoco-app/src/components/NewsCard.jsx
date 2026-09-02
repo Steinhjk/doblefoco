@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { EyeOff, ExternalLink, HelpCircle, TrendingUp } from 'lucide-react';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
 import StoryImage from './StoryImage';
+import MarcadorSinImagen from './MarcadorSinImagen';
 import { tieneImagen } from '../services/imageEngineService';
 import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
@@ -26,8 +27,13 @@ const NewsCard = ({ story: rawStory }) => {
     const timeLabel = storyTimeLabel(story);
     const absoluteTime = formatAbsoluteTime(story.publishedAt);
 
-    // La mayoría de los feeds no traen imagen, así que la tarjeta sin foto es el
-    // caso normal y el layout se adapta en vez de dejar la columna vacía.
+    /*
+     * Sin foto del medio, la columna de la imagen lleva el MARCADOR: el logo del
+     * medio sobre fondo plano y la frase «Sin imagen del medio». Decisión de
+     * Jose del 2026-09-02 (duda 3). Antes la tarjeta colapsaba a una columna,
+     * que era honesto pero no decía nada y desalineaba la lista. Lo que sigue
+     * sin hacerse, y es la regla del 2026-07-30: buscar una foto «relacionada».
+     */
     const muestraImagen = tieneImagen(story);
 
     return (
@@ -58,8 +64,8 @@ const NewsCard = ({ story: rawStory }) => {
                 </div>
             )}
 
-            <div className={`news-card-inner-grid ${muestraImagen ? '' : 'sin-imagen'}`}>
-                {muestraImagen && (
+            <div className="news-card-inner-grid">
+                {muestraImagen ? (
                     <Link
                         to={rutaDeHistoria(story)}
                         className="news-card-image-wrapper"
@@ -70,6 +76,16 @@ const NewsCard = ({ story: rawStory }) => {
                         <StoryImage story={story} className="news-card-img">
                             <span className="news-card-category-badge">{seccionDe(story)}</span>
                         </StoryImage>
+                    </Link>
+                ) : (
+                    <Link
+                        to={rutaDeHistoria(story)}
+                        className="news-card-image-wrapper news-card-image-wrapper--marcador"
+                        onClick={() => recordRead(story)}
+                        tabIndex={-1}
+                        aria-hidden="true"
+                    >
+                        <MarcadorSinImagen story={story} />
                     </Link>
                 )}
 

@@ -21,7 +21,7 @@
 
 import Parser from 'rss-parser';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getIngestFeeds, getBand } from '../shared/mediaRegistry.js';
-import { ITEMS_PER_FEED, RETENTION_MS } from '../server/services/ingestDaemon.js';
+import { ITEMS_PER_FEED, RETENTION_MS, techoDelFeed } from '../server/services/ingestDaemon.js';
 
 const STRICT = process.argv.includes('--strict');
 
@@ -138,7 +138,7 @@ async function probe(feed) {
         const items = parsed?.items ?? [];
         const ahora = Date.now();
         // Solo los que el motor tomaría. Ver la nota «RESPONDER NO ES ALIMENTAR».
-        const tomados = items.slice(0, ITEMS_PER_FEED);
+        const tomados = items.slice(0, techoDelFeed(feed));
         // Sin `filter` aquí el orden se rompería al quitar los que no tienen
         // fecha, y `esCronologico` mediría un orden que el feed no tiene.
         const edades = tomados.map((i) => edadMs(i, ahora)).filter(Number.isFinite);
@@ -218,7 +218,7 @@ for (const result of results) {
 
 const registryById = new Map(MEDIA_REGISTRY.map((m) => [m.id, m]));
 
-console.log('FEEDS  —  «frescos» y «foto» se miden sobre los ' + ITEMS_PER_FEED + ' ítems que toma el motor');
+console.log('FEEDS  —  «frescos» y «foto» se miden sobre los ' + ITEMS_PER_FEED + ' ítems que toma el motor (o el techo propio del feed)');
 console.log('─'.repeat(78));
 console.log('   medio                  vía      ítems  frescos  foto   mediana  orden');
 console.log('─'.repeat(78));

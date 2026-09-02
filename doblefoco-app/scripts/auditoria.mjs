@@ -67,7 +67,7 @@ import Parser from 'rss-parser';
 import { MEDIA_REGISTRY, getIngestFeeds } from '../shared/mediaRegistry.js';
 import { OWNERSHIP_PROFILES } from '../shared/mediaOwnership.js';
 import { USER_AGENT } from '../shared/userAgent.js';
-import { RETENTION_MS, ITEMS_PER_FEED } from '../server/services/ingestDaemon.js';
+import { RETENTION_MS, techoDelFeed } from '../server/services/ingestDaemon.js';
 import {
     RED_HORAS,
     VERSION_AUDITORIA,
@@ -267,7 +267,7 @@ async function auditarFeed(feeds) {
             const { ventanaHoras, piezasPorDia } = ventanaYRitmo(fechas);
 
             // Lo fresco, en cambio, se mide sobre lo que el motor toma.
-            const tomados = items.slice(0, ITEMS_PER_FEED);
+            const tomados = items.slice(0, techoDelFeed(feed));
             const edades = tomados
                 .map((i) => ahora - Date.parse(i.isoDate ?? i.pubDate ?? ''))
                 .filter(Number.isFinite);

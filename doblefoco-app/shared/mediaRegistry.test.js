@@ -35,6 +35,17 @@ describe('getIngestFeeds', () => {
         expect(portada?.country).toBe('ES');
     });
 
+    it('el techo propio de un feed llega al motor, y los demás van sin techo', () => {
+        // Decisión del 2026-09-02 (punto 4, opción B): 15 por defecto y valor
+        // propio para quien publique más de 15 en media hora. Hoy es Infobae.
+        const feeds = getIngestFeeds();
+        const infobae = feeds.find((f) => f.mediaId === 'infobae-co');
+        expect(infobae?.techo).toBe(60);
+
+        const conTecho = feeds.filter((f) => f.techo !== null);
+        expect(conTecho.map((f) => f.mediaId)).toEqual(['infobae-co']);
+    });
+
     it('sin país propio, el feed secundario hereda el del medio', () => {
         const feeds = getIngestFeeds();
         for (const media of MEDIA_REGISTRY) {

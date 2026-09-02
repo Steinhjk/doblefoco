@@ -1,6 +1,14 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
-import { parsePublishedAt, extractImage, cleanHeadline, elegirTitularReciente, observarPieza } from './ingestDaemon.js';
+import {
+    parsePublishedAt,
+    extractImage,
+    cleanHeadline,
+    elegirTitularReciente,
+    observarPieza,
+    techoDelFeed,
+    ITEMS_PER_FEED,
+} from './ingestDaemon.js';
 import { articleId } from '../../shared/clustering.js';
 
 /**
@@ -401,5 +409,29 @@ describe('observarPieza', () => {
     it('una fecha en el futuro tampoco se guarda: es la misma regla que parsePublishedAt', () => {
         const obs = observarPieza(feed, { isoDate: '2026-09-03T09:00:00.000Z' }, 'https://razonpublica.com/nota', 'Titular', AHORA);
         expect(obs.publicadaEl).toBeNull();
+    });
+});
+
+
+/**
+ * EL TECHO POR FEED (2026-09-02). Un feed sin techo propio toma el general; uno
+ * con techo toma el suyo. Y un techo mal escrito —cero, negativo, decimal— no
+ * apaga el feed: cae al general, y `check:registry` es quien lo acusa.
+ */
+describe('techoDelFeed', () => {
+    it('sin techo propio, el general', () => {
+        expect(techoDelFeed({})).toBe(ITEMS_PER_FEED);
+        expect(techoDelFeed({ techo: null })).toBe(ITEMS_PER_FEED);
+        expect(techoDelFeed(undefined)).toBe(ITEMS_PER_FEED);
+    });
+
+    it('con techo propio, el suyo', () => {
+        expect(techoDelFeed({ techo: 60 })).toBe(60);
+    });
+
+    it('un techo inválido no apaga el feed: cae al general', () => {
+        expect(techoDelFeed({ techo: 0 })).toBe(ITEMS_PER_FEED);
+        expect(techoDelFeed({ techo: -5 })).toBe(ITEMS_PER_FEED);
+        expect(techoDelFeed({ techo: 12.5 })).toBe(ITEMS_PER_FEED);
     });
 });

@@ -685,7 +685,18 @@ export const MEDIA_REGISTRY = [
         domain: 'infobae.com', country: 'AR', group: 'Infobae',
         bias: 0.15, factuality: 0.80, reviewedAt: null,
         biasRationale: 'Portal regional de alto volumen; cobertura rápida con menor verificación que la prensa tradicional.',
-        feed: { url: 'https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml', via: 'direct', category: 'Internacional' },
+        /**
+         * TECHO PROPIO (decisión de Jose, 2026-09-02, sesión de decisiones,
+         * punto 4). Infobae publica unas 42 piezas cada media hora —medido el
+         * 2026-09-02 sobre su feed: 100 ítems que cubren 1,18 h— y el techo
+         * general de 15 por ciclo lo muestreaba al 38 % sin que nadie lo
+         * hubiera decidido. 60 cubre media hora de su producción con margen
+         * para un ciclo que llegue tarde. Es el único medio del catálogo que
+         * supera las 15 en media hora: Semana, el siguiente, publica 8.
+         * Consecuencia que conviene saber: Infobae pasa de ~720 a ~1 900 piezas
+         * al día en el corpus, y ya era el medio más voluminoso.
+         */
+        feed: { url: 'https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml', via: 'direct', category: 'Internacional', techo: 60 },
     },
     {
         id: 'la-republica', name: 'La República', shortName: 'La República',
@@ -1807,6 +1818,10 @@ export function getIngestFeeds() {
             via: media.feed.via,
             category: media.feed.category ?? 'Política',
             imageHosts: media.imageHosts ?? [],
+            // Cuántas piezas toma el motor por ciclo de este feed, o null para
+            // el techo general (ITEMS_PER_FEED). Solo lo declara quien publica
+            // más de 15 en media hora; hoy, Infobae.
+            techo: media.feed.techo ?? null,
         });
 
         for (const extra of media.extraFeeds ?? []) {
@@ -1837,6 +1852,7 @@ export function getIngestFeeds() {
                 via: media.feed.via,
                 category: extra.category ?? 'Política',
                 imageHosts: media.imageHosts ?? [],
+                techo: extra.techo ?? null,
             });
         }
     }

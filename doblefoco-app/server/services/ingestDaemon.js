@@ -69,14 +69,33 @@ const FEED_RETRIES = 2;
 const FEED_CONCURRENCY = 4;
 
 /**
- * Cuántos ítems se toman de cada feed por ciclo.
+ * Cuántos ítems se toman de cada feed por ciclo, POR OMISIÓN.
  *
  * SE EXPORTA para que `check:feeds` mida sobre los mismos 15 que entran de
  * verdad. Comprobar la frescura del feed entero engañaría: un feed puede traer
  * 100 ítems recientes y aun así no aportar nada si los 15 primeros son viejos,
  * que es exactamente lo que pasaba con los de Google News.
+ *
+ * TECHO POR FEED (2026-09-02). Un feed puede declarar `techo` en el registro y
+ * entonces manda el suyo. Existe porque el techo general era un muestreo sin
+ * decidir para el medio de más volumen: Infobae publica 42 piezas cada media
+ * hora y con 15 se quedaba el 38 %. Lo decidió Jose (sesión de decisiones,
+ * punto 4, opción B): 15 por defecto, y valor propio para quien publique más
+ * de 15 en media hora. Todo lo que mide «lo que el motor toma» —la auditoría,
+ * `check:feeds`— pasa por `techoDelFeed` para medir sobre lo mismo.
  */
 export const ITEMS_PER_FEED = 15;
+
+/**
+ * Cuántas piezas toma el motor de este feed por ciclo: su techo propio si lo
+ * declara, y el general si no.
+ *
+ * @param {{ techo?: number | null } | null | undefined} feedConfig
+ */
+export function techoDelFeed(feedConfig) {
+    const propio = feedConfig?.techo;
+    return Number.isInteger(propio) && propio > 0 ? propio : ITEMS_PER_FEED;
+}
 
 /**
  * Ventana de retención. Más allá de esto los artículos se descartan.
@@ -797,7 +816,7 @@ export async function runIngestionBatch() {
                 /** Artículos ya guardados a los que el feed acaba de dar imagen. */
                 const imagenesRecuperadas = [];
 
-                for (const item of result.items.slice(0, ITEMS_PER_FEED)) {
+                for (const item of result.items.slice(0, techoDelFeed(feedConfig))) {
                     const link = canonicalizeLink(item?.link);
                     if (!link) continue;
 

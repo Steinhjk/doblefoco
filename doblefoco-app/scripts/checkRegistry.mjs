@@ -364,6 +364,22 @@ if (documentedProfiles === 0) {
 const feeds = getIngestFeeds();
 const ingestedMedia = MEDIA_REGISTRY.filter((m) => m.feed?.url);
 
+/*
+ * TECHO POR FEED. Un techo por debajo del general sería un muestreo escondido
+ * con nombre propio —justo lo que la decisión del 2026-09-02 vino a quitar—, y
+ * uno desmesurado convierte a un medio en el corpus entero. Se acota a 100,
+ * que es lo que expone el feed más largo del catálogo.
+ */
+for (const feed of feeds) {
+    if (feed.techo === null || feed.techo === undefined) continue;
+    if (!Number.isInteger(feed.techo) || feed.techo <= 15 || feed.techo > 100) {
+        fail(
+            `${feed.name}: techo por feed inválido (${feed.techo}). Tiene que ser un entero ` +
+            'mayor que 15 —el general— y como mucho 100.'
+        );
+    }
+}
+
 const perBand = {};
 for (const media of ingestedMedia) {
     const band = getBand(media.bias).id;

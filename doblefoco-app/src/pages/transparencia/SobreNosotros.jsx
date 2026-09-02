@@ -18,6 +18,12 @@ import './SobreNosotros.css';
  */
 const NATIONAL_SOURCES = MEDIA_REGISTRY.filter((m) => m.country === 'CO' && m.feed?.url).length;
 const TOTAL_SOURCES = MEDIA_REGISTRY.filter((m) => m.feed?.url).length;
+/*
+ * Los medios con techo propio se leen del registro para que esta frase no
+ * pueda mentir: si mañana Semana lo necesita, aparece aquí sin tocar el texto.
+ */
+const CON_TECHO_PROPIO = MEDIA_REGISTRY.filter((m) => m.feed?.techo)
+    .map((m) => `${m.shortName ?? m.name} (${m.feed.techo})`);
 
 const SobreNosotros = () => {
     const [showMethodology, setShowMethodology] = useState(false);
@@ -70,7 +76,14 @@ const SobreNosotros = () => {
                             <h3>Agregamos</h3>
                             <p>
                                 Leemos los canales públicos de {NATIONAL_SOURCES} medios colombianos
-                                y {TOTAL_SOURCES - NATIONAL_SOURCES} internacionales.
+                                y {TOTAL_SOURCES - NATIONAL_SOURCES} internacionales, cada media hora
+                                y hasta 15 piezas por canal y ciclo.
+                                {CON_TECHO_PROPIO.length > 0 && (
+                                    <>
+                                        {' '}Quien publica más que eso en media hora lleva un techo
+                                        propio, para no muestrearlo a escondidas: {CON_TECHO_PROPIO.join(', ')}.
+                                    </>
+                                )}
                             </p>
                         </div></AnimateIn>
                         <AnimateIn delay={2}><div className="step">

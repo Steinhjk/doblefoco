@@ -808,6 +808,49 @@
     background: var(--bg-subtle);
 }
 
+/* El aviso de quien dirige: mismo tono que la ausencia declarada, sin rojo. */
+.profile-direccion {
+    margin: 0.7rem 0 0.9rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--text-muted);
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+}
+
+.profile-direccion h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.45rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+.profile-direccion-lede {
+    margin: 0 0 0.5rem;
+    font-size: 0.88rem !important;
+    line-height: 1.55;
+    color: var(--text-main);
+}
+
+.profile-direccion-pie {
+    margin: 0;
+    font-size: 0.78rem !important;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.profile-direccion-pie a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--text-main);
+    text-decoration: underline;
+}
+
 .profile-ausencia h4 {
     display: flex;
     align-items: center;

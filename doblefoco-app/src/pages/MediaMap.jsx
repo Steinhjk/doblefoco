@@ -3,7 +3,7 @@ import { fetchPanorama, isApiConfigured } from '../services/apiClient';
 import {
     ExternalLink, Table2, ScatterChart, Info,
     Building2, Sprout, Users, Landmark, Globe, Bot, FileSearch, Mail,
-    Search, X,
+    Search, X, Megaphone,
 } from 'lucide-react';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand, REDACCIONES, esRedaccionAutomatizada } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
@@ -11,6 +11,7 @@ import ReportePropiedad from '../components/ReportePropiedad';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
+    avisosDeDireccion,
     ALCANCES, alcanceDe, ausenciaDeclarada, conAusenciaDeclarada,
 } from '../../shared/mediaOwnership';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '../lib/contacto';
@@ -1160,6 +1161,36 @@ const MediaProfile = ({ media, onClose }) => {
                     {ownerType && <span className="owner-type"> · {ownerType.label}</span>}
                 </p>
                 {ownerType && <p className="owner-type-desc">{ownerType.description}</p>}
+                {/**
+                 * QUIEN DIRIGE, EN POLÍTICA. Regla del 2026-09-02 (protocolo §1):
+                 * se avisa solo con candidatura o cargo público vigente, con
+                 * fecha y fuente, y el aviso caduca con el cargo. No va en rojo,
+                 * como el resto de avisos de propiedad: es desvelamiento, no
+                 * acusación, y no mueve la clasificación.
+                 */}
+                {avisosDeDireccion(media.id).map((aviso) => (
+                    <div className="profile-direccion" key={aviso.persona + aviso.desde}>
+                        <h4>
+                            <Megaphone size={15} aria-hidden="true" />
+                            {aviso.hecho === 'cargo publico'
+                                ? 'Quien lo dirige ocupa un cargo público'
+                                : 'Quien lo dirige es candidata o candidato'}
+                        </h4>
+                        <p className="profile-direccion-lede">
+                            <strong>{aviso.persona}</strong>, {aviso.cargoEnElMedio}. {aviso.detalle}
+                        </p>
+                        <p className="profile-direccion-pie">
+                            Desde el <strong>{aviso.desde}</strong>
+                            {aviso.hasta ? <> hasta el <strong>{aviso.hasta}</strong></> : ', vigente'}.
+                            {' '}Publicado el {aviso.publicadoEl}. El aviso caduca con la
+                            candidatura o el cargo, y no cambia la clasificación del medio.{' '}
+                            <a href={aviso.fuente} target="_blank" rel="noopener noreferrer">
+                                Fuente
+                                <ExternalLink size={11} aria-hidden="true" />
+                            </a>
+                        </p>
+                    </div>
+                ))}
 
                 {/**
                  * HASTA QUIÉN LLEGA EL HILO.

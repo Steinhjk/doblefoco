@@ -81,6 +81,40 @@ evidencia de primer orden. Lo mismo vale para el encuadre asimétrico entre
 candidatos, la cobertura del propio accionista y la línea declarada por la casa.
 Esta regla acota una sola cosa —la crítica al poder vigente— y no las demás.
 
+### REGLA DE QUIEN DIRIGE (añadida el 2026-09-02 por Jose, en la sesión de decisiones)
+
+**La política de quien DIRIGE la redacción es materia de aviso cuando es una
+candidatura o un cargo público vigente. Nada más lo es.**
+
+El mapa de propiedad nombra a quien posee. Pero quien decide qué se publica es
+quien dirige, y cuando esa persona compite por un cargo o lo ocupa, el lector
+tiene derecho a saberlo al leer el medio. Es la misma lógica que el aviso de
+propiedad: **desvelamiento, no acusación**, y no mueve la clasificación.
+
+**Qué dispara el aviso.** Una candidatura anunciada o inscrita, o un cargo
+público en ejercicio, de quien dirige la redacción —directora, director,
+editor general—, **con fecha y con fuente consultable**. La fuente tiene que
+estar en la lista de fuentes de la ficha, que es lo que el lector ve.
+
+**Qué NO lo dispara.** Afinidad, militancia pasada, opinión publicada, parentesco
+con un político, o un dueño que hace política: lo del dueño ya tiene su
+instrumento en la ficha de propiedad, y lo demás es orientación —y la
+orientación se mide con corpus, no con biografía—.
+
+**Cuándo caduca.** Con la candidatura o con el cargo. Se anota `hasta` y el
+aviso deja de mostrarse **sin borrarse**: es historia de la ficha.
+
+**Los casos del 2026-09-02.** Diario La Libertad: la directora anunció su
+candidatura en su propio periódico el 12-10-2025, sin decir a cuál; se comprobó
+ese día que **no se inscribió a la Cámara en marzo de 2026**, y el anuncio no
+consta retirado. Aviso publicado **como anuncio**, que es lo que es, y con esa
+comprobación escrita: un aviso que afirmara más de lo que consta sería la
+misma falta que este protocolo persigue en los medios. La Nación
+(Neiva) se había citado como caso hermano, y al aplicar la regla **no la
+cumple**: la ficha documenta que el diario cubre a su dueño, que es asunto de
+propiedad, y no consta candidatura ni cargo de quien la dirige. No se publica
+aviso sin el hecho.
+
 ---
 
 ## 2. Jerarquía de la evidencia

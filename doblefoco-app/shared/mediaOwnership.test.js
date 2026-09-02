@@ -8,7 +8,41 @@ import {
     ausenciaDeclarada,
     conAusenciaDeclarada,
     getOwnerBadge,
+    avisosDeDireccion,
 } from './mediaOwnership.js';
+
+/**
+ * QUIEN DIRIGE, EN POLÍTICA — regla del 2026-09-02. Lo que fijan estas pruebas:
+ * que el aviso de La Libertad existe y está vigente, que un aviso caducado se
+ * calla sin borrarse, y que un medio sin avisos devuelve lista vacía y no
+ * rompe la ficha.
+ */
+describe('avisosDeDireccion', () => {
+    it('La Libertad lleva el aviso de su directora, vigente y con fuente en sources', () => {
+        const avisos = avisosDeDireccion('diario-la-libertad', '2026-09-02');
+        expect(avisos).toHaveLength(1);
+        expect(avisos[0].hecho).toBe('candidatura');
+        expect(avisos[0].hasta).toBeNull();
+        expect(OWNERSHIP_PROFILES['diario-la-libertad'].sources).toContain(avisos[0].fuente);
+    });
+
+    it('un aviso con "hasta" en el pasado se calla, y uno vigente en esa fecha se muestra', () => {
+        const perfil = OWNERSHIP_PROFILES['diario-la-libertad'];
+        const original = perfil.direccion;
+        try {
+            perfil.direccion = [{ ...original[0], hasta: '2026-06-30' }];
+            expect(avisosDeDireccion('diario-la-libertad', '2026-09-02')).toHaveLength(0);
+            expect(avisosDeDireccion('diario-la-libertad', '2026-06-30')).toHaveLength(1);
+        } finally {
+            perfil.direccion = original;
+        }
+    });
+
+    it('un medio sin avisos, o sin ficha, devuelve lista vacía', () => {
+        expect(avisosDeDireccion('la-nacion-neiva')).toEqual([]);
+        expect(avisosDeDireccion('medio-que-no-existe')).toEqual([]);
+    });
+});
 
 describe('gruposCompartidos', () => {
     it('detecta dos medios del mismo dueño entre los que cubren un hecho', () => {

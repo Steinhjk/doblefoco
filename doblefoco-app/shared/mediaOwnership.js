@@ -246,6 +246,14 @@ export function getOwnerBadge(mediaId) {
  *   consultadoEl fecha en que se BUSCÓ. Obligatoria si `ownerType` es null.
  *   buscadoEn    dónde se buscó y qué dio. Obligatoria si `ownerType` es null.
  *   falta        qué documento cerraría el hueco.
+ *   direccion    QUIEN DIRIGE, EN POLÍTICA (regla del 2026-09-02, ver
+ *                PROTOCOLO_JUICIO_EDITORIAL.md §1). Lista de avisos, cada uno
+ *                con persona, cargo en el medio, hecho ('candidatura' o
+ *                'cargo publico'), desde, hasta (null = vigente), detalle,
+ *                fuente (URL) y publicadoEl. Solo con candidatura o cargo
+ *                público VIGENTE y con fuente; nunca por afinidad, militancia
+ *                pasada u opinión. Caduca con el cargo: se pone `hasta`, y el
+ *                aviso deja de mostrarse sin borrarse.
  */
 
 /**
@@ -3052,6 +3060,32 @@ export const OWNERSHIP_PROFILES = {
             'SI SE CONFIRMA, HAY `controlGroup` QUE MARCAR con El Espacio (Bogotá), que entró en la misma operación. Hoy no se marca.',
             'NO SE LE DEDUCE ORIENTACIÓN DE LA POSICIÓN POLÍTICA DE SU COMPRADOR ANUNCIADO. Que Tcherassi se enfrente al clan Char no permite colocar al periódico en el eje: hace falta corpus propio, y hay una hipótesis falsable a mano —comparar cómo cubre a la Alcaldía frente a El Heraldo, que es del mismo mercado y ya está en el catálogo—.',
         ],
+        /*
+         * EL AVISO DE QUIEN DIRIGE, publicado. Hasta el 2026-09-02 la candidatura
+         * de la directora estaba solo en la nota de arriba, en medio de otras
+         * ocho; el lector que no leyera la ficha entera no lo veía. La regla del
+         * protocolo (§1, 2026-09-02) lo saca a la vista, con fecha y fuente, y
+         * lo hace caducar con la candidatura. Desvelamiento, no acusación.
+         */
+        direccion: [
+            {
+                persona: 'Luz Marina Esper Fayad',
+                cargoEnElMedio: 'directora del diario y de la Cadena Radial La Libertad',
+                hecho: 'candidatura',
+                desde: '2025-10-12',
+                hasta: null,
+                detalle:
+                    'Anunció su candidatura en su propio periódico: «No lo pongas en duda, voy ' +
+                    'para la contienda electoral» (12-10-2025), sin decir a cuál. NO se inscribió ' +
+                    'a la Cámara en las legislativas de marzo de 2026: no aparece entre los 76 ' +
+                    'candidatos del Atlántico ni en los resultados (comprobado el 2026-09-02). El ' +
+                    'anuncio no consta retirado, y la siguiente contienda son las regionales de ' +
+                    'octubre de 2027. Se publica como anuncio, que es lo que es. El diario no ' +
+                    'declara el conflicto en ninguna parte. No se le deduce orientación por ello.',
+                fuente: 'https://diariolalibertad.com/2025/10/12/luz-marina-esper-estaria-en-la-contienda-electoral-esta-escuchando-y-abierta-al-dialogo-en-libertad/',
+                publicadoEl: '2026-09-02',
+            },
+        ],
         sources: [
             'https://www.lasillavacia.com/en-vivo/samuel-tcherassi-sera-socio-del-diario-la-libertad/',
             'https://www.valoraanalitik.com/movidas-medios-comunicacion-colombia/',
@@ -3098,11 +3132,16 @@ export const OWNERSHIP_PROFILES = {
                 resultado: 'Existe una ficha «Luz Marina Esper Fayad | Candidato a la Cámara», pero la URL devuelve HTTP 500 y no se ha podido fechar. NO SE USA: sin saber a qué elección corresponde, podría ser historia y no presente.',
                 url: 'https://congresovisible.uniandes.edu.co/congresistas/perfil/luz-marina-esper-fayad/7623/',
             },
+            {
+                fuente: 'Candidatos y resultados a la Cámara por el Atlántico, marzo de 2026 (comprobado el 2026-09-02)',
+                resultado: 'La directora NO figura entre los 76 candidatos inscritos por el Atlántico (Zona Cero, 07-03-2026) ni en los resultados del 8 de marzo. El anuncio del 12-10-2025 no se materializó en esa elección. Sí fue candidata liberal a la Cámara en 2014, que es la ficha que Congreso Visible conserva.',
+                url: 'https://zonacero.com/politica/son-76-los-candidatos-por-el-atlantico-que-buscan-ganar-una-curul-en-la-camara',
+            },
         ],
         falta: [
             'PRIORITARIO: certificado de existencia y representación en la Cámara de Comercio de Barranquilla — qué sociedad edita hoy el periódico, quiénes son sus socios y si Samuel Tcherassi figura entre ellos. Es un certificado nuevo, no estaba entre los diez pendientes, y aquí no es un trámite de rutina: decide si hay que publicar un aviso de conflicto de interés.',
             'Cuál es la sociedad activa, dado que DIARIO LA LIBERTAD LIMITADA consta en liquidación. Es el caso de El Nuevo Día: el impreso cerró su sociedad y otra distinta publica hoy.',
-            'EN QUÉ QUEDÓ LA CANDIDATURA DE LA DIRECTORA: por qué partido, a qué corporación y si llegó a inscribirse para las legislativas de marzo de 2026. Su ficha en Congreso Visible existe y devuelve 500, y su propio medio no lo cuenta.',
+            'A QUÉ CONTIENDA SE REFERÍA EL ANUNCIO DEL 12-10-2025. Comprobado el 2026-09-02: no se inscribió a la Cámara en marzo de 2026. Si es a las regionales de octubre de 2027, constará en la Registraduría al inscribirse; hasta entonces el aviso de dirección se publica como anuncio, y caduca si consta retiro.',
             'Contar el corpus completo —no solo titulares— de cobertura de la Alcaldía de Barranquilla, y compararlo con El Heraldo, que es del mismo mercado y ya está en el catálogo.',
             'Si la operación se confirma: `controlGroup` con El Espacio (Bogotá) y aviso de conflicto de interés en la ficha pública.',
         ],
@@ -3547,6 +3586,25 @@ export function getOwnership(mediaId) {
  * varios sitios y la respuesta "no, y lo decimos" es una rama de primera clase,
  * no un caso borde.
  */
+/**
+ * Los avisos VIGENTES de quien dirige un medio en política.
+ *
+ * Regla del 2026-09-02 (decisión de Jose, sesión de decisiones, punto 5): se
+ * avisa cuando quien dirige la redacción tiene candidatura o cargo público
+ * vigente, con fecha y fuente, y el aviso caduca con el cargo. Un aviso con
+ * `hasta` anterior a `hoy` no se muestra, pero no se borra: es historia de la
+ * ficha. Sin ficha o sin avisos, lista vacía.
+ *
+ * @param {string} mediaId
+ * @param {string} [hoy] ISO (AAAA-MM-DD); inyectable para probarlo
+ * @returns {Array<{persona: string, cargoEnElMedio: string, hecho: string, desde: string, hasta: string|null, detalle: string, fuente: string, publicadoEl: string}>}
+ */
+export function avisosDeDireccion(mediaId, hoy = new Date().toISOString().slice(0, 10)) {
+    const profile = getOwnership(mediaId);
+    const avisos = profile?.direccion ?? [];
+    return avisos.filter((a) => !a.hasta || a.hasta >= hoy);
+}
+
 export function hasDocumentedOwnership(mediaId) {
     const profile = getOwnership(mediaId);
     if (!profile) return false;

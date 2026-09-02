@@ -17,6 +17,23 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-02 · El motor tiene hostname propio: `api.doblefoco.co`
+
+**Decisión de Jose.** Ante I-6 —el hostname estaba en la CSP y no existía en el
+DNS— eligió crearlo en vez de retirarlo. Certificado en Fly, registros A y AAAA
+en Porkbun (que lleva el DNS de `doblefoco.co`; Vercel solo recibe el tráfico).
+El cliente, los rewrites de Vercel, la CSP, el proxy de desarrollo y los scripts
+que miden la API apuntan ahí desde la PR #8.
+
+**Por qué.** Despega al cliente del hostname de Fly: si el motor se muda, cambia
+el DNS y no el cliente. Los workflows de despliegue y de desfase siguen mirando
+`doblefoco.fly.dev` a propósito, porque auditan la máquina y no el DNS.
+
+**Lo que se descartó.** Retirarlo de la CSP: más barato hoy, pero deja al
+cliente atado al proveedor.
+
+---
+
 ## 2026-09-01 · La cadencia por medio se graba desde el feed, y desde hoy
 
 **Decisión.** Tarea 2.1 del plan de producto (2-A / T2-3). Dos tablas nuevas,

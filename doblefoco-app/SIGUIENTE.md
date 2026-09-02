@@ -6,14 +6,15 @@ Rama `cadencia/empezar-a-grabar`, PR abierta. Es la 2.1 del
 `PLAN_PRODUCTO_FINAL.md`; el detalle y los números del primer ciclo están en
 `MINUTA.md` (CERRADO, 2026-09-01) y la decisión en `DECISIONES.md`.
 
-**Estado del plan al cerrar la sesión.** Etapa 0: todo el código fusionado
-(PR #6); quedan los cuatro gestos de Jose —**0.1 `FLY_API_TOKEN`** (el
-despliegue del motor falló en el merge, como estaba previsto, y sin él ni el
-handshake ni la cadencia corren en el motor), 0.9 `api.doblefoco.co`, 0.10 el
-issue #4, 0.11 OneDrive—. Etapa 1 entera es la sesión de decisiones. De la
-Etapa 2 quedan 2.2 (check de `group`/`controlGroup`), 2.3 (consulta compartida
-de portada) y 2.4 (serializador de rehidratación): son código y no esperan a
-nadie. **Lo primero, en orden: 0.1, después 2.2.**
+**Estado del plan al cerrar la sesión (actualizado el 2026-09-02).** Etapa 0:
+**cerrada en lo que es código y en dos de los cuatro gestos**: `FLY_API_TOKEN`
+existe y el motor se despliega solo (dos despliegues automáticos ese día), y
+`api.doblefoco.co` está creado y en uso (PR #8). Quedan 0.10 (issue #4) y
+0.11 (OneDrive). Etapa 1 entera es la sesión de decisiones, y **está servida en
+`SESION_DECISIONES.md`**: los ocho puntos con lo medido, las opciones y una
+recomendación marcada como tal. De la Etapa 2, la 2.2 resultó estar hecha desde
+el 24/08; quedan 2.3 (consulta compartida de portada) y 2.4 (serializador de
+rehidratación), que no esperan a nadie. **Lo primero: la sesión de decisiones.**
 
 **Una cosa de fontanería para quien edite con scripts.** Los archivos del
 repositorio están en CRLF en la copia de trabajo (autocrlf); un parche que

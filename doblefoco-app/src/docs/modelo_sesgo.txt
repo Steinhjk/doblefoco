@@ -7,7 +7,7 @@ para decidir, o se deriva de ella y del catálogo. Si los dos pudieran
 divergir, esta página no serviría de nada — y ya divergió dos veces
 este mes, que es la razón de que exista.
 
-Generado: 2026-09-01
+Generado: 2026-09-02
 
 
 1. QUÉ MIDE ESTE MODELO, Y QUÉ NO
@@ -50,11 +50,11 @@ en ninguna historia, así que meterlo en el denominador inventaría
 competidores que no compiten — y haría más fácil declarar ausente a
 quien nunca pudo estar.
 
-    Izquierda ...................   13    18,1 %
-    Orientación mixta ...........   41    56,9 %
-    Derecha .....................   18    25,0 %
+    Izquierda ...................   13    18,3 %
+    Orientación mixta ...........   40    56,3 %
+    Derecha .....................   18    25,4 %
     ----------------------------------------
-    Con feed ....................   72
+    Con feed ....................   71
     En el registro ..............   78
 
 

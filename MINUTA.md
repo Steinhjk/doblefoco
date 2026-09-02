@@ -532,6 +532,37 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Los tres medios parados, decididos: dos aceptados y El Manduco fuera de la ingesta
+
+**Decisión de Jose sobre lo que la Etapa 4 dejó medido.** Las notas completas
+están en el libro de hallazgos; aquí el resumen y lo que cuesta.
+
+- **W Radio: aceptado.** No está parado —publica a diario—; su feed Arc expone
+  dos ítems, uno de hace 4,6 años, y de ese par salía el «2 909 h» del libro.
+  Se queda como está: por Google News se ganaba una pieza y se perdían todos
+  sus enlaces canónicos.
+- **Telecaribe: aceptado, con fecha de revisión.** Feed sano, sin publicar
+  desde el 13 de agosto. Es un canal público y se espera que vuelva. **Si el
+  13 de octubre de 2026 sigue callado, deja de ser un silencio y pasa a ser una
+  baja que hay que decidir.**
+- **El Manduco: FUERA DE LA INGESTA.** Sitio entero en HTTP 500, 40 ciclos
+  seguidos, cero artículos en la base, última pieza conocida de marzo. Se le
+  retira el feed y **se queda en el catálogo como medio de referencia**, con su
+  ficha y su sitio en el mapa: no se borra el trabajo hecho.
+
+**Lo que cuesta, y se dice aquí para que no se descubra luego: el Guaviare era
+suyo y solo suyo.** La cobertura departamental baja de **29 a 28**, y el
+catálogo pasa de 72 medios con feed a 71. Vuelve descomentando una línea de
+`shared/mediaRegistry.js` el día que su sitio responda; la comprobación es a
+mano, porque el centinela vigila fichas y no feeds.
+
+**Y un defecto del libro que sale de aquí, ABIERTO:** la conciliación marcará
+`el-manduco/feed` como «resuelto» en la próxima pasada, porque el medio ya no
+se audita. Un medio retirado no es un defecto arreglado, y hoy el libro no
+sabe distinguirlos. La nota lo avisa; el arreglo sería un estado «retirado», o
+que la conciliación respete `aceptado` cuando el medio desaparece del barrido.
+
+
 ## 2026-09-02 · El coste de guardar, vuelto a medir: 6,4 MB al día, no 4,7
 
 **Pregunta de Jose:** si los 25 USD/mes del archivo permanente valen la pena.

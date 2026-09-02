@@ -7,7 +7,7 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-08-25
+Generado: 2026-09-02
 Medios en el catálogo: 78
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
@@ -186,7 +186,7 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
     fichas/choco-7-dias.md.
 
   El Manduco  ·  sesgo +0.00  ·  factualidad sin medir
-    elmanduco.com.co · Regional Guaviare · CO · RSS propio · PROVISIONAL
+    elmanduco.com.co · Regional Guaviare · CO · sin feed (solo referencia) · PROVISIONAL
     Medio de San José del Guaviare cuyos cuatro cargos —fundador,
     director, director emérito y gerente— ocupa la misma familia. La
     estructura dice quién manda, no hacia dónde tira — ver

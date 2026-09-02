@@ -532,6 +532,53 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · El coste de guardar, vuelto a medir: 6,4 MB al día, no 4,7
+
+**Pregunta de Jose:** si los 25 USD/mes del archivo permanente valen la pena.
+Antes de opinar había que rehacer la cuenta, porque **la que circulaba es de
+agosto y el catálogo ya no es el de agosto**: con el techo propio de Infobae
+(60 piezas por ciclo, decidido ayer) entran 4 097 artículos al día en vez de
+unos 2 500.
+
+Medido el 2026-09-02 sobre la base viva:
+
+| | |
+|---|---|
+| Coste por artículo, con índices | **1,6 KB** (igual que en agosto) |
+| Artículos nuevos en 24 h | **4 097** |
+| Crecimiento de `articles` | **6,4 MB/día** (antes se decía 4,7) |
+| Crecimiento total con historias e índices | ~8,6 MB/día |
+
+Y lo que sale de ahí, que **cambia una de las suposiciones del plan**:
+
+| Retención | Tamaño en régimen | Plan | Coste |
+|---|---|---|---|
+| 30 días (hoy) | **~290 MB** | Supabase gratuito (500 MB) | 0 USD |
+| 90 días | **~810 MB** | ya NO cabe en el gratuito | 25 USD/mes |
+| 1 año | ~3,2 GB | Pro (8 GB), con margen para ~2,5 años | 25 USD/mes |
+
+**Lo que estaba mal en el plan:** decía «90 días caben justo en el gratuito, sin
+margen». Con el volumen de hoy, no caben: 810 MB contra un techo de 500. Los 30
+días que se decidieron ayer sí caben y **se estabilizan en unos 290 MB**,
+porque la poda borra a la misma velocidad a la que entra. Margen sobre el techo
+gratuito: **40 %**.
+
+**Pendiente que sale de esto, y es barato:** nada vigila el tamaño de la base.
+Hoy hay 40 % de margen, pero un medio nuevo de volumen o una subida de techo se
+lo come sin que nadie se entere hasta que Supabase corte las escrituras. Un
+aviso en la vigilancia cuando la base pase del 80 % del plan es media hora de
+trabajo. **ABIERTO.**
+
+**Y la parte que no es de dinero.** La opción B no se decide con esta tabla.
+Una página permanente **seguirá afirmando lo que afirmaba, con la ficha de
+propiedad que era cierta ese día**, y hoy las fichas no guardan historial: si
+mañana cambia el dueño de un medio, la página de una historia de hace seis
+meses mostraría la ficha nueva sobre una cobertura vieja. Eso no es archivar:
+es reescribir el pasado. Antes de pagar por el archivo hacen falta dos cosas
+—la ficha fechada en la página de la historia y el buscador, porque un archivo
+sin buscador es un cementerio— y ninguna de las dos cuesta 25 USD: cuestan
+días. La cuenta de arriba solo dice que **el dinero no es el obstáculo**.
+
 ## 2026-09-02 · Cinco páginas renderizadas que el sitio nunca pedía, y el 404 que las delató
 
 **Salió de ir a arreglar el 404 de `/sobre-nosotros`**, que estaba anotado como

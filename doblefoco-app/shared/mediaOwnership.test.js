@@ -9,6 +9,8 @@ import {
     conAusenciaDeclarada,
     getOwnerBadge,
     avisosDeDireccion,
+    vigenciaDeFicha,
+    MESES_REVISION_FICHA,
 } from './mediaOwnership.js';
 
 /**
@@ -255,5 +257,40 @@ describe('ausencia declarada', () => {
         const medios = [{ id: 'el-tiempo' }, { id: 'la-razon-cordoba' }, { id: 'semana' }];
         expect(conAusenciaDeclarada(medios).map((m) => m.id)).toEqual(['la-razon-cordoba']);
         expect(conAusenciaDeclarada([])).toEqual([]);
+    });
+});
+
+
+/**
+ * LA FECHA DE UNA FICHA, Y SOBRE TODO SU AUSENCIA (2026-09-02).
+ *
+ * La pantalla enseñaba la fecha cuando la había y callaba cuando no. Once
+ * fichas del catálogo afirman quién manda sin decir cuándo se comprobó, y esas
+ * son justamente las que necesitaban decir algo. Lo que estas pruebas fijan es
+ * que la ausencia se distingue del silencio, y que el umbral de caducidad sale
+ * del protocolo y no de aquí.
+ */
+describe("vigenciaDeFicha", () => {
+    it("devuelve la fecha y su antigüedad en meses", () => {
+        const v = vigenciaDeFicha("el-tiempo", "2027-08-17");
+        expect(v.fecha).toBe("2026-08-17");
+        expect(v.meses).toBe(11);
+    });
+
+    it("no caduca antes de los doce meses, y caduca al cumplirlos", () => {
+        expect(vigenciaDeFicha("el-tiempo", "2027-08-01").caducada).toBe(false);
+        expect(vigenciaDeFicha("el-tiempo", "2027-09-01").caducada).toBe(true);
+        expect(MESES_REVISION_FICHA).toBe(12);
+    });
+
+    it("una ficha sin fecha lo dice con null, y no inventa ninguna", () => {
+        const v = vigenciaDeFicha("telecafe", "2026-09-02");
+        expect(v.fecha).toBeNull();
+        expect(v.meses).toBeNull();
+        expect(v.caducada).toBe(false);
+    });
+
+    it("un medio que no existe no revienta la ficha", () => {
+        expect(vigenciaDeFicha("medio-que-no-existe").fecha).toBeNull();
     });
 });

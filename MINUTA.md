@@ -532,6 +532,35 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Las fichas dicen cuándo se comprobaron, y las que no, lo declaran
+
+**Decisión de Jose:** de las tres salidas para las fichas fechadas, la primera
+—avisar con la fecha—. Es el paso C.1 de `PLAN_ARCHIVO_PERMANENTE.md`.
+
+**El hueco era el silencio, no la falta de fecha.** El comentario del código
+decía desde el principio que «una ficha de propiedad sin fecha se lee como si
+fuera de hoy, y no lo es», y la pantalla hacía justo eso: enseñaba la fecha
+cuando la había y **callaba cuando no la había**. Medido: de los 78 medios, 52
+tienen dueño documentado con fecha, 15 declaran la ausencia con su
+`consultadoEl`, y **11 afirman quién manda sin decir cuándo se comprobó**. Esos
+once se leían como recién verificados.
+
+**Qué se hizo.** `vigenciaDeFicha()` y la ficha del mapa dice siempre una de tres
+cosas: la fecha; la fecha más «le toca revisión» si pasa de doce meses; o que no
+consta, con la advertencia de que puede haber cambiado. **Los doce meses no son
+un número elegido aquí: son la revisión ordinaria del protocolo (§7).** No se
+inventó ninguna fecha —la de un commit diría cuándo se escribió la ficha, que no
+es cuándo se comprobó—. `check:registry` avisa ahora de las once.
+
+**Lo que NO se toca:** los medios con ausencia declarada, que ya publican su
+propia fecha de búsqueda; decirles además «no registra cuándo se comprobó» sería
+contradecirse dos párrafos más abajo.
+
+**Deuda que esto deja a la vista, ABIERTA:** esas once fichas siguen sin fecha.
+Ahora se ve, que es distinto de que no exista. Ponerles la fecha exige
+volver a comprobarlas, y eso es trabajo de ficha que firma Jose.
+
+
 ## 2026-09-02 · El archivo permanente se hace: plan escrito y coste aceptado
 
 **Decisión de Jose:** adelante con la opción B, con sus 25 USD al mes. El plan

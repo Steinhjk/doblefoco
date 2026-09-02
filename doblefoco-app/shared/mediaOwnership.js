@@ -3605,6 +3605,43 @@ export function avisosDeDireccion(mediaId, hoy = new Date().toISOString().slice(
     return avisos.filter((a) => !a.hasta || a.hasta >= hoy);
 }
 
+/**
+ * CUÁNDO SE COMPROBÓ ESTA FICHA, Y SI ESO YA QUEDA LEJOS.
+ *
+ * POR QUÉ EXISTE (2026-09-02, decisión de Jose). El comentario de la ficha
+ * decía desde el principio que «una ficha de propiedad sin fecha se lee como
+ * si fuera de hoy, y no lo es», y la pantalla hacía justo eso: enseñaba la
+ * fecha cuando la había y **callaba cuando no la había**. Medido ese día: de
+ * los 78 medios, 52 tienen dueño documentado con fecha, 15 declaran la
+ * ausencia con su `consultadoEl`, y **11 afirman quién manda sin decir cuándo
+ * se comprobó**. Esos once se leían como recién verificados.
+ *
+ * El silencio es el problema, no la falta de fecha: no saber cuándo se miró
+ * es un dato sobre la ficha, y se publica igual que se publica no saber quién
+ * es el dueño. Aquí no se inventa ninguna fecha —la de un commit diría cuándo
+ * se escribió, que no es cuándo se comprobó—.
+ *
+ * LOS DOCE MESES NO SON UN NÚMERO ELEGIDO AQUÍ: es la revisión ordinaria que
+ * fija PROTOCOLO_JUICIO_EDITORIAL.md §7. Si allí cambia, cambia aquí.
+ *
+ * @param {string} mediaId
+ * @param {string} [hoy] ISO (AAAA-MM-DD); inyectable para poder probarlo
+ * @returns {{fecha: string|null, meses: number|null, caducada: boolean}}
+ */
+export function vigenciaDeFicha(mediaId, hoy = new Date().toISOString().slice(0, 10)) {
+    const perfil = getOwnership(mediaId);
+    // La ausencia declarada ya publica su propia fecha (`consultadoEl`) y su
+    // propio bloque; aquí interesa la de quien SÍ afirma un dueño.
+    const fecha = perfil?.verifiedAt ?? null;
+    if (!fecha) return { fecha: null, meses: null, caducada: false };
+
+    const dias = (Date.parse(hoy) - Date.parse(fecha)) / 86_400_000;
+    const meses = Math.floor(dias / 30.44);
+    return { fecha, meses, caducada: meses >= MESES_REVISION_FICHA };
+}
+
+/** Cada cuántos meses toca revisar una ficha. Ver PROTOCOLO_JUICIO_EDITORIAL.md §7. */
+export const MESES_REVISION_FICHA = 12;
 export function hasDocumentedOwnership(mediaId) {
     const profile = getOwnership(mediaId);
     if (!profile) return false;

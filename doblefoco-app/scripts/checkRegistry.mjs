@@ -354,6 +354,17 @@ for (const media of MEDIA_REGISTRY) {
         }
     }
 
+    /*
+     * AFIRMAR UN DUEÑO SIN DECIR CUÁNDO SE COMPROBÓ (2026-09-02). No es un
+     * error —la ficha puede ser correcta— pero sí una deuda: quien la lea no
+     * puede calcular cuánto confiar. La pantalla ya lo declara al lector; esto
+     * lo pone delante de quien mantiene el catálogo. Las de ausencia declarada
+     * quedan fuera: esas publican su `consultadoEl`.
+     */
+    if (profile.ownerType !== null && !profile.verifiedAt) {
+        warn(`${media.id}: la ficha afirma un dueño y NO dice cuándo se comprobó (falta "verifiedAt")`);
+    }
+
     const claims = (profile.holdings?.length ?? 0) + (profile.notes?.length ?? 0);
 
     if (claims > 0) {

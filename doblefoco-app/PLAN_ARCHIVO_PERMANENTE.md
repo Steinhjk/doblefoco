@@ -94,7 +94,12 @@ opción 2 parece intermedia y es la peor de las tres: duplica sin resolver, y el
 día que se corrija un error en una ficha habría que reescribir las
 instantáneas ya guardadas, que es justo lo que un archivo no debe permitir.
 
-**Decisión pendiente de Jose: cuál de las tres.**
+**DECIDIDA por Jose el 2026-09-02: la 1, avisar con la fecha.** Hecha ese mismo
+día en su parte aplicable —la ficha del mapa dice siempre cuándo se comprobó, y
+cuando no consta lo declara en vez de callarlo—. Lo que queda para la etapa B es
+enseñar en la página archivada las dos fechas juntas: la de la ficha y la de la
+cobertura. La opción 3 sigue en pie para cuando cambie la propiedad de un medio
+de verdad.
 
 ### D · El buscador
 
@@ -164,8 +169,7 @@ ha medido nunca.
 
 ## Orden propuesto
 
-1. **C.1** — el aviso de ficha fechada. Medio día, y desbloquea todo lo demás
-   sin comprometer nada.
+1. ~~**C.1** — el aviso de ficha fechada.~~ **HECHO el 2026-09-02.**
 2. **A** — congelar en vez de borrar, con la prueba del filtro.
 3. **B** — la página archivada.
 4. **D** — el buscador.

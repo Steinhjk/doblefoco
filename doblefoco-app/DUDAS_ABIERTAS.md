@@ -55,6 +55,11 @@ fabricación que se retiró el 2026-07-30.
 miramos 15. Subirlo daría más cobertura y más volumen de ingesta.
 *La pregunta:* ¿cuánto volumen es aceptable? Afecta al coste de la base y al
 tráfico que generamos a terceros.
+**RESUELTA el 2026-09-02** (sesión de decisiones, punto 4, opción B): 15 sigue
+siendo el techo general; un feed que publique más de 15 piezas en media hora
+declara `techo` propio en el registro. Hoy solo Infobae (60; publica 42 cada
+media hora). Semana, el siguiente, publica 8: no lo necesita. Declarado en
+`/transparencia/sobre-nosotros`, leído del registro.
 
 **5. La cifra de patrocinio.** Se quitó de /transparencia por decisión de Jose,
 pero sigue en `src/docs/plantilla_solicitud_patrocinio.md` y en la copia de la

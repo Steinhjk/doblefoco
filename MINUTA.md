@@ -219,7 +219,12 @@ naturaleza: no hay nada roto que arreglar, hay algo que **nadie ha decidido**.
 - **Y hay un riesgo puro:** su margen contra la red de seguridad de 2 h es
   **0,09**. El día que el motor se caiga y solo quede el cron de Actions,
   perdemos el 91 % de Infobae sin que nada avise.
-- **Estado:** ABIERTO. **Decisión de producto de Jose**, no de código.
+- **Estado:** **HECHO el 2026-09-02.** Jose decidió (punto 4, opción B): techo
+  general de 15 y techo propio por feed para quien publique más de 15 en media
+  hora. Infobae lleva 60 (publica 42 cada media hora, medido ese día). Lo que
+  cambia en el corpus está en la entrada de CERRADO de esa fecha. El riesgo de
+  la red de 2 h sigue —60 de las ~170 que publica en dos horas— pero desde el
+  1/09 la vigilancia acusa cuando el motor calla (I-8).
 
 ### Permanencia: una noticia dura 72 h y se borra
 
@@ -527,6 +532,30 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · El techo por feed: Infobae deja de muestrearse a escondidas (3.3)
+
+**Decisión de Jose, punto 4, opción B.** `ITEMS_PER_FEED` sigue en 15 como
+techo general; un feed puede declarar `techo` en el registro y el motor,
+la auditoría y `check:feeds` miden sobre ese mismo número (`techoDelFeed`).
+`check:registry` rechaza un techo por debajo del general —sería un muestreo
+escondido con nombre propio— o por encima de 100.
+
+**Lo medido el 2026-09-02, antes de fijar el número:** Infobae, 100 ítems que
+cubren 1,18 h, **42 piezas cada media hora**; Semana, 100 ítems en 6,55 h,
+8 cada media hora; El Tiempo, 1,3. Solo Infobae supera el techo general.
+**Infobae queda en 60:** cubre media hora de su producción con margen para un
+ciclo que llegue tarde.
+
+**La consecuencia que conviene tener presente:** Infobae pasa de ~720 a
+~1 900 piezas al día en el corpus, y ya era el medio más voluminoso (32,5 %
+antes de esto). Las cifras del espacio mediático —la cuota de la izquierda, los
+tres dueños que son la mitad— se moverán en su contra al recalcularse. No es
+un defecto del cambio: es que el muestreo las estaba suavizando. Si el peso
+resulta excesivo, el techo se baja en una línea del registro, con esta fecha
+como referencia.
+
+La frase de la metodología que lo declara se lee del registro: si mañana otro
+medio necesita techo, aparece sola.
 ## 2026-09-02 · Un medio ya tiene a dónde escribir, y sabe qué pasa después (3.8)
 
 **La única ausencia que se notaba desde fuera** (duda 12). Decisión de Jose del

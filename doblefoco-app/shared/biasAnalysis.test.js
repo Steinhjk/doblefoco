@@ -12,6 +12,7 @@
 
 import { describe, it, expect } from 'vitest';
 import {
+    ramaNoMedible,
     analyzeCoverage,
     averageFactuality,
     catalogoDelModelo,
@@ -164,16 +165,31 @@ describe('analyzeCoverage — el umbral de F1-03', () => {
         expect(result.blindspot).toBeNull();
     });
 
-    it('detecta el punto ciego de la izquierda cuando la ausencia es improbable', () => {
-        // ESTO ES NUEVO Y ES EL CAMBIO DE FONDO. Con la fórmula vieja la rama
-        // de la izquierda exigía 90 medios en una sola historia y la mayor del
-        // corpus tiene 16: era inalcanzable. Con la nula de catálogo el umbral
-        // es alcanzable, y por eso ahora hay que probar que dispara.
+    it('la rama de la izquierda está declarada NO MEDIBLE: aunque la nula sorprenda, no es punto ciego', () => {
+        // Hasta el 2026-09-02 esta prueba exigía lo contrario: que con MIN_IZQ
+        // medios y ninguno de izquierda saltara «Punto ciego de la izquierda».
+        // La aritmética lo permite —MIN_IZQ cabe en el catálogo— y la decisión
+        // de Jose (opción D) es que aun así no se afirme: la izquierda falta en
+        // el 84 % de las historias evaluables, y una señal que dispara sobre la
+        // norma no es un hallazgo. Lo que sí se publica es el HECHO, con su
+        // etiqueta de hecho y nunca la de veredicto.
         const result = analyzeCoverage(seguidas(1, MIN_IZQ));
 
         expect(MIN_IZQ).toBeLessThanOrEqual(CAT.total);
-        expect(result.blindspot?.spectrum).toBe('left');
-        expect(result.blindspot.description).toContain(String(MIN_IZQ));
+        expect(ramaNoMedible('left')).toBe(true);
+        // Con todos los medios en la derecha salta la tercera rama —«solo
+        // medios del eje»—, que es medible y dice otra cosa. Lo que aquí se
+        // fija es que el veredicto NUNCA sea el de la izquierda.
+        expect(result.blindspot?.spectrum).not.toBe('left');
+        expect(result.ausencia?.spectrum).toBe('left');
+        expect(result.ausencia.label).toBe('Sin medios de izquierda');
+        expect(result.ausencia.label).not.toContain('Punto ciego');
+    });
+
+    it('la derecha sigue siendo medible, y por eso el modelo no es simétrico a propósito', () => {
+        expect(ramaNoMedible('right')).toBe(false);
+        expect(ramaNoMedible('center')).toBe(false);
+        expect(analyzeCoverage(seguidas(-1, MIN_DER)).blindspot?.spectrum).toBe('right');
     });
 });
 
@@ -436,10 +452,28 @@ describe('analyzeCoverage — puntos de énfasis', () => {
         // señal necesite más pruebas que la otra es correcto —el énfasis
         // describe lo que hay, el punto ciego acusa de lo que falta— y es
         // justamente por qué conviene no confundirlas.
-        const result = analyzeCoverage(seguidas(1, MIN_IZQ));
+        // Con la izquierda declarada no medible (2026-09-02), el caso que lo
+        // demuestra es el espejo: medios de izquierda copándolo todo, y la
+        // derecha —rama medible— ausente.
+        const result = analyzeCoverage(seguidas(-1, MIN_DER));
 
-        expect(result.enfasis?.spectrum).toBe('right');
-        expect(result.blindspot?.spectrum).toBe('left');
+        expect(result.enfasis?.spectrum).toBe('left');
+        expect(result.blindspot?.spectrum).toBe('right');
+    });
+
+    it('la ausencia se mide por un número fijo de medios, no por el 15 % de n (2026-09-02)', () => {
+        // Con 20 medios el 15 % permitía hasta tres presentes; el número fijo
+        // permite uno. Dos medios de izquierda entre veinte NO es ausencia.
+        // Dieciséis de derecha, dos de orientación mixta y dos de izquierda:
+        // ningún lado queda con «como mucho uno», así que no hay ausencia.
+        const veinte = sources(...Array.from({ length: 16 }, (_, i) => 0.3 + (i % 5) * 0.05), 0, 0.1, -0.5, -0.6);
+        expect(veinte.length).toBe(20);
+        expect(analyzeCoverage(veinte).ausencia).toBeNull();
+
+        // Y uno entre siete sí lo es: «Apenas 1 medio de izquierda», igual que
+        // con el 15 %. El cambio solo mueve las historias grandes.
+        const siete = sources(0.3, 0.35, 0.4, 0.45, 0.5, 0, -0.5);
+        expect(analyzeCoverage(siete).ausencia?.label).toBe('Apenas 1 medio de izquierda');
     });
 });
 
@@ -499,9 +533,13 @@ describe('las dos señales: sin medios, y apenas unos pocos', () => {
         expect(c.blindspot).toBeNull();
     });
 
-    it('sigue llamando punto ciego a la ausencia de verdad, con los mismos medios', () => {
+    it('la ausencia de verdad se nombra como hecho, nunca como punto ciego: la rama no es medible (2026-09-02)', () => {
+        // Hasta el 2026-09-02 aquí se exigía «Punto ciego de la izquierda». Con
+        // quince medios y ninguno de izquierda la nula sí sorprende; la
+        // decisión (opción D) es que aun así no se afirme. Ver RAMAS_NO_MEDIBLES.
         const c = analyzeCoverage(historia(15, 0));
-        expect(c.blindspot?.label).toBe('Punto ciego de la izquierda');
+        expect(c.blindspot).toBeNull();
+        expect(c.ausencia?.label).toBe('Sin medios de izquierda');
     });
 
     it('la sorpresa se mide sobre lo que se afirma, no sobre «ninguno»', () => {

@@ -532,6 +532,33 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · El punto ciego dice la verdad de sí mismo (3.2)
+
+**Decisión de Jose, punto 3 (D, E y número fijo para 1-D).** Tres cosas en
+`shared/biasAnalysis.js`, y cada una con su prueba:
+
+- **La rama de la izquierda se declara no medible** (`RAMAS_NO_MEDIBLES`):
+  aunque la nula sorprenda, una ausencia de la izquierda nunca se llama «punto
+  ciego»; se publica como hecho, con la frecuencia viva al lado. El número en
+  pantalla sale de la medida del día, no de una cifra escrita: hoy, 84 % de las
+  113 historias evaluables. La caja del feed lo dice con esas palabras, y la
+  página de limitaciones también.
+- **El énfasis se adopta con su ceguera direccional escrita**: el panel lateral
+  cuenta hacia qué lado apunta hoy (28 a la derecha, 0 a la izquierda al
+  medirlo) y dice que no es un hallazgo sobre las noticias. El documento del
+  modelo lo mide también (`modelo_medido.json`, campo `enfasis`).
+- **El «15 % de n» se sustituye por «como mucho un medio»**
+  (`BLINDSPOT_MAX_PRESENTES = 1`). Medido antes de elegir el número, sobre la
+  base viva (tabla en el comentario de la constante): cero apagaba la tercera
+  rama, dos vaciaba la de la izquierda a la mitad, uno coincide con la
+  etiqueta que el lector lee y quita los saltos. Efecto principal: la rama
+  «solo medios del eje» pasa de 1 a 5 disparos, todos con la nula a favor.
+
+**Lo que se descartó, otra vez:** bajar `UMBRAL_SORPRESA` hasta que algo salga.
+Y lo que queda abierto con fecha: revisar `RAMAS_NO_MEDIBLES` cuando entren
+medios de izquierda al catálogo (tarea 3.5, las 11 fichas) o cuando la tasa
+medida baje de la mitad.
+
 ## 2026-09-02 · La base conserva 30 días; el motor sigue agrupando 72 h (3.1)
 
 **Decisión de Jose, punto 1, opción C.** Dos ventanas con nombre en el motor:

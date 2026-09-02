@@ -7,7 +7,7 @@ para decidir, o se deriva de ella y del catálogo. Si los dos pudieran
 divergir, esta página no serviría de nada — y ya divergió dos veces
 este mes, que es la razón de que exista.
 
-Generado: 2026-08-25
+Generado: 2026-09-01
 
 
 1. QUÉ MIDE ESTE MODELO, Y QUÉ NO
@@ -66,7 +66,7 @@ no se evalúa nada: con dos o tres medios, que falte una orientación
 no dice más que quién madrugó.
 
     Medios mínimos para evaluar .................  4
-    Un lado se considera ausente si tiene .......  15,0 % o menos
+    Un lado se considera ausente si lo cubren ...  1 medio(s) o menos
     Y el otro lado tiene que aportar ............  2 medios o más
     «Solo medios del eje» pide, además ..........  6 medios
 
@@ -140,27 +140,44 @@ fechada contra la API pública, y por eso lleva la fecha delante. Los
 apartados anteriores describen la regla; este dice qué pasa cuando se
 aplica.
 
-    Medido el ...................................  2026-08-25
+    Medido el ...................................  2026-09-01
     Historias en la ventana .....................  100
-    De ellas, evaluables (4+ medios) ............  71
+    De ellas, evaluables (4+ medios) ............  73
     Historia más cubierta .......................  14 medios
 
-    Con un lado por debajo del umbral ...........  46
-      de esas, sin ningún medio .................  41
-      de esas, con alguno suelto ................  5
-    Puntos ciegos declarados ....................  0
+    Con un lado por debajo del umbral ...........  57
+      de esas, sin ningún medio .................  53
+      de esas, con alguno suelto ................  4
+    Puntos ciegos declarados ....................  1
 
     Cada cuánto falta cada lado, en las evaluables:
 
-      Izquierda              58 de 71    81,7 %
-      Orientación mixta       1 de 71     1,4 %
-      Derecha                 4 de 71     5,6 %
+      Izquierda              60 de 73    82,2 %
+      Orientación mixta       1 de 73     1,4 %
+      Derecha                 3 de 73     4,1 %
 
 La columna de la derecha es la que impide que el veredicto mienta.
 Una ausencia que ocurre en la mayoría de las historias no es un
 hallazgo sobre la noticia: es el estado por defecto de este catálogo,
 y enseñarla sin decir cada cuánto pasa sería convertir la norma en
 titular.
+
+RAMAS DECLARADAS NO MEDIBLES: Izquierda. Desde el 2026-09-02 la
+ausencia de ese lado nunca se llama «punto ciego», aunque la nula la
+declare improbable: con la frecuencia de arriba, señalar una historia
+concreta sería acusarla de lo que hace el catálogo. Se publica el
+hecho —«sin medios de»— con su frecuencia al lado, y el desequilibrio
+se cuenta donde está, en el mapa de medios. Se revisa si entran
+medios de ese lado o si la frecuencia baja de la mitad.
+
+    Énfasis hacia la derecha ....................  16
+    Énfasis hacia la izquierda ..................  0
+El énfasis es la señal que sí funciona en un corpus asimétrico, y
+tiene una ceguera direccional que conviene tener a la vista: en este
+catálogo apunta casi siempre a la derecha y casi nunca a la
+izquierda. No es un hallazgo sobre las noticias; es que la izquierda
+es una parte pequeña del catálogo. Se adopta con eso escrito
+(2026-09-02).
 
 
 ======================================================================

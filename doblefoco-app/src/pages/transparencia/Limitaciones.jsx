@@ -48,6 +48,16 @@ const TrLimitaciones = () => (
                 <Link to="/mapa-medios">mapa mediático</Link>.
             </li>
             <li>
+                <strong>El punto ciego de la izquierda no se afirma, y es una decisión.</strong>{' '}
+                La izquierda falta en la gran mayoría de las historias con cobertura
+                suficiente, así que señalar una concreta no diría nada sobre ella: diría lo
+                que hace el catálogo. Por eso, desde el 2 de septiembre de 2026, una ausencia
+                de la izquierda se publica como hecho —«sin medios de izquierda», con la
+                frecuencia al lado— y nunca como veredicto. El énfasis, la señal que sí
+                funciona, apunta casi siempre a la derecha por la misma razón, y lo decimos
+                donde aparece.
+            </li>
+            <li>
                 <strong>No verificamos si una noticia es cierta.</strong> No somos un
                 verificador de datos. Mostramos quién publica qué; la veracidad de cada
                 pieza es otro oficio.

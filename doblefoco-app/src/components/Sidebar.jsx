@@ -38,6 +38,20 @@ const Sidebar = () => {
         [stories]
     );
 
+    /*
+     * EL ÉNFASIS, CON SU CEGUERA ESCRITA (2026-09-02, decisión de Jose, opción
+     * E). La señal es correcta y en este catálogo dispara casi siempre hacia
+     * un solo lado —23 veces para la derecha y 0 para la izquierda, medido el
+     * 2026-08-25; 28 y 0 el 2026-09-02—. Adoptarla callando eso dejaría al
+     * producto afirmando cosas sobre un lado y nada, nunca, sobre el otro. Se
+     * cuenta sobre las historias cargadas, así que el número es el de hoy.
+     */
+    const enfasisPorLado = useMemo(() => {
+        const n = { left: 0, right: 0 };
+        for (const s of stories) if (s.coverage?.enfasis?.spectrum) n[s.coverage.enfasis.spectrum] += 1;
+        return n;
+    }, [stories]);
+
     const diet = useMemo(() => summarizeDiet(history), [history]);
 
     return (
@@ -190,6 +204,17 @@ const Sidebar = () => {
                             )}
                         </p>
                     </div>
+                )}
+                {(enfasisPorLado.left > 0 || enfasisPorLado.right > 0) && (
+                    <p className="blindspot-enfasis-nota">
+                        El <strong>énfasis</strong> —cuando un solo lado concentra la cobertura—
+                        se ve hoy en {enfasisPorLado.right} {enfasisPorLado.right === 1 ? 'historia' : 'historias'} hacia
+                        la derecha y {enfasisPorLado.left} hacia la izquierda.
+                        {enfasisPorLado.left === 0 && enfasisPorLado.right > 0 && (
+                            <> Que nunca apunte a la izquierda no es un hallazgo sobre las
+                            noticias: es que la izquierda es una parte pequeña de este catálogo.</>
+                        )}
+                    </p>
                 )}
             </div>
 

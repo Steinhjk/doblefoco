@@ -12,8 +12,9 @@ import EmptyState from './EmptyState';
 import { EsqueletoTarjetas } from './Esqueleto';
 import {
     mediosParaAfirmarAusencia,
+    ramaNoMedible,
     BLINDSPOT_MIN_SOURCES,
-    BLINDSPOT_MAX_RATIO,
+    BLINDSPOT_MAX_PRESENTES,
     SPECTRUM_LABEL_SHORT,
 } from '../../shared/biasAnalysis.js';
 import { DEPARTAMENTO_POR_SLUG, slugDepartamento } from '../../shared/geografia.js';
@@ -425,8 +426,12 @@ const NewsFeed = () => {
                         Esto no es una lista de omisiones deliberadas
                     </p>
                     <p>
-                        Son las historias donde un lado del espectro{' '}
-                        <strong>no llega al {decimal(BLINDSPOT_MAX_RATIO * 100, 0)} % de la cobertura</strong>
+                        Son las historias donde a un lado del espectro{' '}
+                        <strong>
+                            {BLINDSPOT_MAX_PRESENTES === 1
+                                ? 'lo cubre como mucho un medio'
+                                : `lo cubren como mucho ${BLINDSPOT_MAX_PRESENTES} medios`}
+                        </strong>
                         {sinNingunMedio < blindspotCount ? (
                             <> — en {sinNingunMedio} de las {blindspotCount} no aparece ninguno, y en el
                             resto aparece alguno suelto</>
@@ -440,12 +445,32 @@ const NewsFeed = () => {
                         o más. Con esa frecuencia, señalar una historia concreta no dice nada
                         sobre ella.
                     </p>
-                    <p className="ausencia-aviso-nota">
-                        Lo que sí se puede leer aquí es <strong>cuáles son</strong> y de qué
-                        hablan. Para afirmar que una ausencia sorprende harían falta{' '}
-                        {mediosParaAfirmarAusencia(espectroQueFalta)} medios en una sola historia, y la más cubierta
-                        de ahora tiene {maxMedios}.
-                    </p>
+                    {/*
+                      * LA RAMA NO MEDIBLE SE DECLARA CON EL NÚMERO (2026-09-02,
+                      * decisión de Jose, opción D). No es que no se alcance el
+                      * umbral: es que, aunque se alcanzara, no se afirmaría. La
+                      * frecuencia es la medida viva, no una cifra escrita.
+                      */}
+                    {ramaNoMedible(espectroQueFalta) ? (
+                        <p className="ausencia-aviso-nota">
+                            Por eso ninguna de estas historias se llama{' '}
+                            <strong>«punto ciego de la {SPECTRUM_LABEL_SHORT[espectroQueFalta]?.toLowerCase()}»</strong>,
+                            y no se llamará mientras el catálogo sea este: una ausencia que ocurre en
+                            el {decimal(contextoAusencia.frecuencia * 100, 0)} % de los casos es la
+                            norma, y llamarla hallazgo sería acusar a una noticia de lo que hace el
+                            catálogo. La aritmética lo permitiría desde{' '}
+                            {mediosParaAfirmarAusencia(espectroQueFalta)} medios en una sola historia;
+                            la decisión es no hacerlo. Lo que sí se puede leer aquí es{' '}
+                            <strong>cuáles son</strong> y de qué hablan.
+                        </p>
+                    ) : (
+                        <p className="ausencia-aviso-nota">
+                            Lo que sí se puede leer aquí es <strong>cuáles son</strong> y de qué
+                            hablan. Para afirmar que una ausencia sorprende harían falta{' '}
+                            {mediosParaAfirmarAusencia(espectroQueFalta)} medios en una sola historia, y la más cubierta
+                            de ahora tiene {maxMedios}.
+                        </p>
+                    )}
                 </div>
             )}
 

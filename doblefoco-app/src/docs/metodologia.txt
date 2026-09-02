@@ -1,6 +1,6 @@
 ﻿METODOLOGÍA DE ANÁLISIS DE COBERTURA — DobleFoco.co
 
-Ãšltima revisión: 2026-07-27
+Última revisión: 2026-07-27
 Este documento describe lo que el sistema hace HOY. Cuando una parte del
 método todavía no existe, se dice que no existe en lugar de describirla en
 futuro. La versión anterior de esta página explicaba una fórmula que el motor
@@ -8,7 +8,7 @@ ya no usaba y clasificaba a Semana en la banda [+0.6, +1.0] mientras el código
 le asignaba +0.45.
 
 --------------------------------------------------------------------------
-1. QUÃ‰ HACE DobleFoco Y QUÃ‰ NO HACE
+1. QUÉ HACE DobleFoco Y QUÉ NO HACE
 --------------------------------------------------------------------------
 DobleFoco agrupa la cobertura de un mismo hecho publicada por medios de
 distinta línea editorial y muestra quién lo cubrió, quién no, y con qué
@@ -28,7 +28,7 @@ calidad de un artículo concreto y no mide el sesgo de una noticia individual.
 Clasifica organizaciones, no piezas.
 
 --------------------------------------------------------------------------
-2. EL ESPECTRO DE CLASIFICACIÃ“N
+2. EL ESPECTRO DE CLASIFICACIÓN
 --------------------------------------------------------------------------
 Cada medio recibe un valor entre -1.0 y +1.0. Las bandas son:
 
@@ -64,7 +64,7 @@ el mismo archivo que usa el motor. No hay una clasificación para el público y
 otra para el sistema: es la misma.
 
 --------------------------------------------------------------------------
-3. CÃ“MO SE ASIGNA EL SESGO DE UN MEDIO
+3. CÓMO SE ASIGNA EL SESGO DE UN MEDIO
 --------------------------------------------------------------------------
 El valor de cada medio es un JUICIO EDITORIAL DOCUMENTADO, no el resultado de
 un cálculo automático. Conviene ser claro en esto: no existe un modelo que
@@ -97,7 +97,7 @@ ha firmado todavía. Mientras siga así, léalos como lo que son: una propuesta
 argumentada y discutible.
 
 --------------------------------------------------------------------------
-4. QUÃ‰ SE CALCULA SOBRE UNA HISTORIA
+4. QUÉ SE CALCULA SOBRE UNA HISTORIA
 --------------------------------------------------------------------------
 Una "historia" es un conjunto de artículos de medios distintos sobre el mismo
 hecho. Sobre ese conjunto se calculan cuatro cosas, todas a partir de los
@@ -143,14 +143,14 @@ mueve la cobertura de un bloque del 0% al 33%: cualquier conclusión sería
 ruido presentado como hallazgo. Por debajo de ese mínimo el sistema dice que
 no tiene datos suficientes, en vez de mostrar un punto ciego vacío.
 
-LIMITACIÃ“N CONOCIDA: la detección de puntos ciegos depende de tener suficientes
+LIMITACIÓN CONOCIDA: la detección de puntos ciegos depende de tener suficientes
 medios de cada bloque cubriendo el mismo hecho. Hoy el catálogo tiene muchos
 más medios de centro y centro-derecha que de izquierda, así que los puntos
 ciegos hacia la izquierda son más difíciles de detectar que los del otro lado.
 Es una limitación del catálogo, no del método, y está en el plan corregirla.
 
 --------------------------------------------------------------------------
-6. DE DÃ“NDE SALEN LAS NOTICIAS
+6. DE DÓNDE SALEN LAS NOTICIAS
 --------------------------------------------------------------------------
 El sistema lee los canales RSS públicos de los medios del catálogo. Cuando un
 medio no publica RSS accesible, se usa la búsqueda de Google News restringida
@@ -169,7 +169,7 @@ portada y sus páginas dejan de existir. Los artículos se conservan en la base
 poder medir sobre ventanas más largas que tres días (decisión del 2026-09-02).
 
 --------------------------------------------------------------------------
-7. REVISIÃ“N Y CONTROL
+7. REVISIÓN Y CONTROL
 --------------------------------------------------------------------------
 Lo que hoy está automatizado:
 

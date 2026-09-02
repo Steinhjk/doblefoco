@@ -1,5 +1,5 @@
 ﻿====================================================================
-CRITERIOS DE CLASIFICACIÃ“N DE MEDIOS — NOTA HISTÃ“RICA
+CRITERIOS DE CLASIFICACIÓN DE MEDIOS — NOTA HISTÓRICA
 ====================================================================
 
 ESTE DOCUMENTO YA NO CONTIENE CLASIFICACIONES.
@@ -28,7 +28,7 @@ una severidad que no aplicaba.
 La divergencia equivalente entre el catálogo de logos y los datos de las
 noticias está documentada en la cabecera de shared/mediaRegistry.js.
 
-DÃ“NDE ESTÁN AHORA LOS VALORES
+DÓNDE ESTÁN AHORA LOS VALORES
 --------------------------------------------------------------------
 En un único archivo: shared/mediaRegistry.js. Todo lo demás —el motor de
 ingesta, los logos, los filtros de la interfaz y el catálogo público— deriva

@@ -527,6 +527,25 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · `aceptado` se estrena con Vorágine (3.6)
+
+**Primer uso del estado desde que existe** (2026-08-19). `voragine/feed` pasa
+de `abierto` a `aceptado`, y la nota, copiada aquí como manda la regla del
+cruce:
+
+> Decisión de Jose, 2026-09-02 (sesión de decisiones, punto 7): es
+> investigación y publica despacio; es su oficio, no una avería. Medido en
+> `cadencia_piezas` el 2026-09-02: una pieza cada 3,3 días, la última del
+> 2026-09-01, feed 200. Estreno del estado «aceptado». Se revisa si la cadencia
+> grabada muestra más de 30 días sin publicar: eso ya no sería cadencia, sería
+> parón.
+
+Lo que cambia: sigue apareciendo y contándose, pero deja de ser pendiente y de
+abrir aviso; el libro pasa de 22 abiertos a 21. Lo que NO cambió: el umbral. Si
+la cadencia grabada enseña un parón, la conciliación lo mantiene en
+`aceptado` igual —el estado lo pone una persona y lo quita una persona—, así
+que la revisión de los 30 días es de la minuta, no de la máquina.
+
 ## 2026-09-02 · La sesión de decisiones: los ocho puntos, en una sesión
 
 **El cuello de botella del proyecto, vaciado.** Jose contestó los ocho puntos

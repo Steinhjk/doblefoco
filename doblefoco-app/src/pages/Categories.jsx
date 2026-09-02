@@ -1,5 +1,5 @@
 // @ts-check
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { categories } from '../data/categories';
 import { useStories } from '../hooks/useStories';
 import EmptyState from '../components/EmptyState';
@@ -11,8 +11,53 @@ import './Categories.css';
 
 const Categories = () => {
     const [active, setActive] = useState(null);
+    const resultados = useRef(null);
+    const titulo = useRef(null);
 
     const { stories, counts, status, reason } = useStories();
+
+    /**
+     * AL ELEGIR UNA SECCIÓN, LLEVAR LA VISTA A LOS RESULTADOS.
+     *
+     * QUÉ PASABA (medido en producción el 2026-08-31, y lo reportó Jose como
+     * «al clickear cualquier categoría no lleva a ningún lado»). El clic
+     * funcionaba: la tarjeta quedaba con `aria-pressed="true"` y la lista se
+     * pintaba con sus historias reales. Solo que se pintaba DEBAJO de una
+     * rejilla de diecisiete tarjetas, y la página no se movía.
+     *
+     *     escritorio (1280×900)  → los resultados en y=1474: 1,6 pantallas
+     *     móvil      (390×844)   → los resultados en y=4456: 5,3 pantallas
+     *
+     * Es decir que en un teléfono el visitante tocaba una sección y tenía que
+     * adivinar que había que bajar cinco pantallas. Desde su lado eso no es una
+     * lista lejana: es un botón que no hace nada. Nada fallaba —ni consola, ni
+     * pruebas, ni el build—, que es la misma clase de defecto que la costura de
+     * Tendencias del 21 de agosto: la página se pinta, solo que no sirve.
+     *
+     * POR QUÉ TAMBIÉN SE MUEVE EL FOCO Y NO SOLO EL SCROLL. Un desplazamiento
+     * no le dice nada a quien navega con teclado o con lector de pantalla: el
+     * foco se quedaría en la tarjeta y el contenido nuevo pasaría inadvertido,
+     * que es exactamente el problema que se está arreglando, solo que para otra
+     * persona. Se lleva el foco al encabezado de los resultados, que además es
+     * lo que un lector de pantalla anuncia.
+     *
+     * `preventScroll` está puesto a propósito: `focus()` desplaza de golpe y
+     * aquí ya desplaza `scrollIntoView`, que sí puede hacerlo suave.
+     *
+     * Y SE RESPETA `prefers-reduced-motion`. Un salto suave de cinco pantallas
+     * es mucho movimiento para quien ha pedido que no lo haya.
+     *
+     * Al deseleccionar NO se mueve nada: `active` vuelve a `null`, no hay
+     * resultados a los que ir, y arrastrar la vista sin motivo sería peor que
+     * dejarla quieta.
+     */
+    useEffect(() => {
+        if (!active || !resultados.current) return;
+
+        const quieto = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        resultados.current.scrollIntoView({ behavior: quieto ? 'auto' : 'smooth', block: 'start' });
+        titulo.current?.focus({ preventScroll: true });
+    }, [active]);
 
     /**
      * Recuento por sección en UNA pasada sobre las historias, no catorce.
@@ -149,9 +194,12 @@ const Categories = () => {
             </div>
 
             {active && (
-                <div className="category-results">
+                <div className="category-results" ref={resultados}>
                     <div className="category-results-header">
-                        <h2>{active.name}</h2>
+                        {/* `tabIndex={-1}` para poder recibir el foco sin entrar
+                            en el orden de tabulación: es un destino al que se
+                            llega tras elegir, no una parada más del recorrido. */}
+                        <h2 ref={titulo} tabIndex={-1}>{active.name}</h2>
                         <span className="category-results-count">
                             {filtered.length} {filtered.length === 1 ? 'historia' : 'historias'}
                         </span>

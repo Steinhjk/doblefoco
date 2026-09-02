@@ -532,6 +532,47 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-02 · Dos defectos que Jose ve y las pruebas no: la categoría que no lleva a ningún lado y el número pegado al titular
+
+**Los dos son de la misma familia:** la página se pinta, no falla nada —ni la
+consola, ni el build, ni 789 pruebas— y aun así no sirve.
+
+### Elegir una categoría no llevaba a ningún lado
+
+**El arreglo estaba escrito desde el 31 de agosto y nunca se fusionó.** Vivía en
+la rama `arreglo/categorias-no-llevan-a-ningun-lado`, que quedó atrás de `main`
+por casi 5 000 líneas. Se trajo el commit suelto, no la rama.
+
+**Qué pasaba, medido de nuevo hoy:** el clic funcionaba —la tarjeta quedaba
+marcada y la lista se pintaba con sus historias— pero debajo de una rejilla de
+diecisiete tarjetas, y la página no se movía. En escritorio los resultados
+caían a 1 474 px (1,6 pantallas) y en móvil a 4 679 px (5,5 pantallas). Desde
+el lado del visitante eso no es una lista lejana: es un botón que no hace nada.
+
+Ahora la vista va a los resultados **y el foco también** —un desplazamiento no
+le dice nada a quien navega con teclado o lector de pantalla—, respetando
+`prefers-reduced-motion`. Comprobado en las dos anchuras: el encabezado de
+resultados queda arriba de la pantalla y el foco en su `h2`.
+
+### Los números de tendencias, pegados al titular
+
+**Reportado por Jose como «se sobreponen».** Medido: no se solapaban en
+píxeles —el número acababa en la x 967 y el titular empezaba en la 967— y por
+eso ninguna comprobación geométrica lo habría visto. **Pero sin un solo píxel
+entre los dos se leen como una palabra: «#1Corte Constitucional».** Y con
+`align-items: center` el número flotaba a media altura de un titular de tres
+líneas, metido entre la segunda y la tercera.
+
+Arreglado en los dos paneles, el de escritorio y el móvil, que llevaban el
+mismo patrón y el mismo defecto: separación explícita, el número alineado con
+la primera línea del titular, y ni el número ni el conteo se encogen —`width`
+a secas es una sugerencia dentro de un contenedor flex, así que un «#10» habría
+empujado el titular—. Ahora hay 10 px de aire y la diferencia de altura entre
+cifra y titular es 0.
+
+**La lección, y ya van tres:** lo que este proyecto no ve son las costuras y lo
+que se ve con los ojos. `npm run mirar` existe para eso y no cubre estas dos
+pantallas.
 ## 2026-09-02 · Etapa A del archivo: las historias multifuente se congelan (ya no se borran)
 
 **La pieza que convierte los 30 días en archivo.** Hasta hoy una historia que

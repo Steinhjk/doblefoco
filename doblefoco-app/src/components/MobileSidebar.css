@@ -66,7 +66,8 @@
 
     .mobile-trend-link {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
+        gap: 10px;
         padding: 10px 4px;
         border-bottom: 1px solid var(--border-light);
         transition: background-color 0.2s;
@@ -81,11 +82,15 @@
         border-bottom: none;
     }
 
+    /* Mismo arreglo que en el panel de escritorio (2026-09-02): el número no
+       se encoge, no se pega al titular y se alinea con su primera línea. */
     .mobile-trend-rank {
         font-size: 0.85rem;
         font-weight: 700;
         color: var(--accent);
-        width: 30px;
+        flex: 0 0 auto;
+        min-width: 24px;
+        line-height: 1.5;
     }
 
     .mobile-trend-name {

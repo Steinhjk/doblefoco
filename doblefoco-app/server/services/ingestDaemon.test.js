@@ -468,3 +468,52 @@ describe('las dos ventanas de retención', () => {
         expect(FUENTE).toMatch(/hydrateArticles\(\{ retentionMs: RETENTION_MS/);
     });
 });
+
+
+/**
+ * LA FECHA EN MINÚSCULAS (2026-09-02). Telecafé emite `<pubdate>`, XML
+ * distingue la caja y el parser la descartaba: sus diez piezas entraban sin
+ * fecha y se ordenaban por el momento en que las vimos, o sea publicando como
+ * de hoy piezas de hace tres días. Estas pruebas fijan el respaldo y, sobre
+ * todo, que no se cuela por delante de la fecha buena.
+ */
+describe('parsePublishedAt con la fecha en minúsculas', () => {
+    const AHORA = Date.parse('2026-09-02T12:00:00.000Z');
+
+    it('lee el pubdate en minúsculas cuando no hay otra cosa', () => {
+        expect(parsePublishedAt({ pubDateEnMinusculas: 'Sun, 30 Aug 2026 05:47:34 +0000' }, AHORA))
+            .toBe('2026-08-30T05:47:34.000Z');
+    });
+
+    it('la fecha estándar manda sobre la rara', () => {
+        const item = {
+            isoDate: '2026-09-02T10:00:00.000Z',
+            pubDateEnMinusculas: 'Sun, 30 Aug 2026 05:47:34 +0000',
+        };
+        expect(parsePublishedAt(item, AHORA)).toBe('2026-09-02T10:00:00.000Z');
+    });
+
+    it('sigue descartando una fecha en el futuro, venga como venga', () => {
+        expect(parsePublishedAt({ pubDateEnMinusculas: 'Fri, 04 Sep 2026 09:00:00 +0000' }, AHORA))
+            .toBeNull();
+    });
+});
+
+/**
+ * Y LOS TRES PARSERS PIDEN LO MISMO. Cuando cada uno llevaba su lista a mano,
+ * la auditoría podía estar midiendo un feed distinto del que se ingiere.
+ */
+describe('los campos del ítem RSS se piden en un solo sitio', () => {
+    const fuentes = [
+        'ingestDaemon.js',
+        '../../scripts/auditoria.mjs',
+        '../../scripts/verifyFeeds.mjs',
+    ].map((r) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), r), 'utf8'));
+
+    it('los tres importan CAMPOS_ITEM_RSS y ninguno repite la lista', () => {
+        for (const fuente of fuentes) {
+            expect(fuente).toMatch(/CAMPOS_ITEM_RSS/);
+            expect(fuente).not.toMatch(/'media:thumbnail', 'mediaThumbnail'/);
+        }
+    });
+});

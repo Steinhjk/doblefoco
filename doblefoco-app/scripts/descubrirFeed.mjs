@@ -84,6 +84,15 @@ function analizarFeed(texto) {
         (texto.match(/<item[\s>]/gi) || []).length + (texto.match(/<entry[\s>]/gi) || []).length;
     if (articulos === 0) return null;
 
+    /*
+     * LA BANDERA `i` NO ES UN DESCUIDO, Y EL 2026-09-02 SE COBRÓ SU PRIMER
+     * ACIERTO. Aquí se lee el XML como texto, sin parser, así que una fecha
+     * escrita `<pubdate>` se ve igual. Telecafé la emite así, y durante
+     * semanas este script dijo «último hace 70 h» mientras la auditoría decía
+     * «ninguna pieza trae fecha»: las dos tenían razón sobre su propio método.
+     * El motor ya lee las dos cajas (shared/rssItems.js); esto se queda como
+     * está, que es lo que descubrió la diferencia.
+     */
     const fechas = [...texto.matchAll(/<(pubDate|updated|published|dc:date)>([^<]+)</gi)]
         .map((coincidencia) => Date.parse(coincidencia[2].trim()))
         .filter(Number.isFinite);

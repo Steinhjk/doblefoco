@@ -22,6 +22,7 @@
 import Parser from 'rss-parser';
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getIngestFeeds, getBand } from '../shared/mediaRegistry.js';
 import { ITEMS_PER_FEED, RETENTION_MS, techoDelFeed } from '../server/services/ingestDaemon.js';
+import { CAMPOS_ITEM_RSS, fechaDeclarada } from '../shared/rssItems.js';
 
 const STRICT = process.argv.includes('--strict');
 
@@ -40,14 +41,10 @@ import { USER_AGENT } from '../shared/userAgent.js';
 const parser = new Parser({
     headers: { 'User-Agent': USER_AGENT },
     timeout: TIMEOUT_MS,
-    // Los mismos campos que pide el motor. Sin esto, `media:*` no llega y todos
-    // los feeds parecerían no traer imagen.
+    // Los mismos campos que pide el motor, y del mismo sitio: sin esto,
+    // `media:*` no llega y todos los feeds parecerían no traer imagen.
     customFields: {
-        item: [
-            ['media:content', 'mediaContent', { keepArray: true }],
-            ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
-            ['content:encoded', 'contentEncoded'],
-        ],
+        item: [...CAMPOS_ITEM_RSS],
     },
 });
 
@@ -81,7 +78,7 @@ const parser = new Parser({
  *             pierde la URL canónica y el lector acaba en un intermediario.
  */
 const edadMs = (item, ahora) => {
-    const fecha = item.isoDate ?? item.pubDate;
+    const fecha = fechaDeclarada(item);
     const t = fecha ? new Date(fecha).getTime() : NaN;
     return Number.isFinite(t) ? ahora - t : NaN;
 };

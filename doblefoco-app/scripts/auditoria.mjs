@@ -68,6 +68,7 @@ import { MEDIA_REGISTRY, getIngestFeeds } from '../shared/mediaRegistry.js';
 import { OWNERSHIP_PROFILES } from '../shared/mediaOwnership.js';
 import { USER_AGENT } from '../shared/userAgent.js';
 import { RETENTION_MS, techoDelFeed } from '../server/services/ingestDaemon.js';
+import { CAMPOS_ITEM_RSS, fechaDeclarada } from '../shared/rssItems.js';
 import {
     RED_HORAS,
     VERSION_AUDITORIA,
@@ -203,13 +204,9 @@ function veredictoDeUrl(r) {
 const parser = new Parser({
     headers: { 'User-Agent': USER_AGENT },
     timeout: TIMEOUT_MS,
-    customFields: {
-        item: [
-            ['media:content', 'mediaContent', { keepArray: true }],
-            ['media:thumbnail', 'mediaThumbnail', { keepArray: true }],
-            ['content:encoded', 'contentEncoded'],
-        ],
-    },
+    // Los mismos campos que pide el motor, del mismo sitio: si esta lista y la
+    // suya divergen, la auditoría mide un feed distinto del que se ingiere.
+    customFields: { item: [...CAMPOS_ITEM_RSS] },
 });
 
 /** ¿Vienen de más nuevo a más viejo? Con menos de cuatro fechas no se afirma. */
@@ -260,7 +257,7 @@ async function auditarFeed(feeds) {
             const ahora = Date.now();
 
             const fechas = items
-                .map((i) => Date.parse(i.isoDate ?? i.pubDate ?? ''))
+                .map((i) => Date.parse(fechaDeclarada(i) ?? ''))
                 .filter(Number.isFinite);
 
             // La ventana se mide sobre el feed ENTERO: es el ritmo del medio.
@@ -269,7 +266,7 @@ async function auditarFeed(feeds) {
             // Lo fresco, en cambio, se mide sobre lo que el motor toma.
             const tomados = items.slice(0, techoDelFeed(feed));
             const edades = tomados
-                .map((i) => ahora - Date.parse(i.isoDate ?? i.pubDate ?? ''))
+                .map((i) => ahora - Date.parse(fechaDeclarada(i) ?? ''))
                 .filter(Number.isFinite);
 
             /*

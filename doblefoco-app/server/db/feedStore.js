@@ -69,7 +69,7 @@ async function leerHistorias({ where = '', params = [], limit = 20, offset = 0, 
     const historias = await safeQuery(
         `
         SELECT s.id, s.title, s.category, s.topics, s.ambito, s.departamento,
-               s.published_at, s.first_seen_at,
+               s.published_at, s.first_seen_at, s.archivada_el,
                s.title_source_id, s.title_url,
                src.name AS title_outlet,
                count(DISTINCT a.source_id)::int AS medios,
@@ -312,6 +312,16 @@ function componerHistoria(fila, articulos, tasasDeAusencia = null) {
 
         publishedAt: fila.published_at,
         firstSeenAt: fila.first_seen_at,
+        /*
+         * CUÁNDO DEJÓ DE ESTAR VIVA, o null si sigue estándolo.
+         *
+         * Solo la sirve `readStory`: es la única consulta que devuelve historias
+         * archivadas, así que en el feed este campo es siempre null. Va hasta la
+         * pantalla porque una página de archivo tiene que decir que lo es —hasta
+         * hoy se servía idéntica a una viva, y eso presenta como noticia del día
+         * un hecho de hace semanas—.
+         */
+        archivadaEl: fila.archivada_el ?? null,
 
         meanBias: coverage.meanBias,
         polarization: coverage.polarization,

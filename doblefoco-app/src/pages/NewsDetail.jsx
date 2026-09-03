@@ -1,7 +1,7 @@
 // @ts-check
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX, TrendingUp } from 'lucide-react';
+import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX, TrendingUp, Archive } from 'lucide-react';
 import { getMediaByName } from '../data/mediaLogos';
 import StoryImage from '../components/StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
@@ -272,6 +272,39 @@ const NewsDetail = () => {
                                 <Share2 size={14} aria-hidden="true" /> Compartir
                             </button>
                         </div>
+
+                        {/*
+                          * ESTO ES ARCHIVO, Y HAY QUE DECIRLO (2026-09-02).
+                          *
+                          * Desde que las historias multifuente se congelan en vez
+                          * de borrarse, esta página sirve tanto lo de hoy como lo
+                          * de hace semanas —y hasta este aviso las servía
+                          * IDÉNTICAS—. Un hecho de hace un mes presentado con la
+                          * misma cara que la noticia del día es la clase de
+                          * afirmación silenciosa que este sitio no hace.
+                          *
+                          * Va ARRIBA del titular a propósito: quien llega desde un
+                          * buscador tiene que saber qué está leyendo antes de
+                          * leerlo, no después.
+                          *
+                          * Lo que el aviso NO dice: que la información sea falsa o
+                          * que esté desactualizada. Dice cuándo dejó de seguirse,
+                          * que es un hecho, y deja el juicio a quien lee.
+                          */}
+                        {story.archivadaEl && (
+                            <p className="detail-archivo">
+                                <Archive size={15} aria-hidden="true" />
+                                <span>
+                                    <strong>Esta historia está archivada.</strong> Se dejó de
+                                    seguir el{' '}
+                                    <time dateTime={story.archivadaEl}>
+                                        {formatAbsoluteTime(story.archivadaEl) ?? story.archivadaEl.slice(0, 10)}
+                                    </time>
+                                    , así que su cobertura es la que tenía ese día y no se
+                                    actualiza. Los enlaces llevan a los medios que la publicaron.
+                                </span>
+                            </p>
+                        )}
 
                         <h1 className="detail-title">{story.title}</h1>
                         {story.summary && <p className="detail-summary">{story.summary}</p>}

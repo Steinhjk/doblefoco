@@ -251,6 +251,9 @@ export function normalizeStory(raw) {
         summary: raw.summary ?? null,
 
         publishedAt: raw.publishedAt ?? null,
+        // Cuándo se selló, o null si está viva. Ver el aviso de NewsDetail: sin
+        // esto la página de archivo se leería como la noticia de hoy.
+        archivadaEl: raw.archivadaEl ?? null,
 
         /**
          * Imagen que publicó el medio, con el medio al lado para acreditarla.

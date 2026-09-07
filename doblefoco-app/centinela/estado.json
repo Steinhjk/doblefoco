@@ -2,7 +2,7 @@
     "version": 1,
     "medios": {
         "diario-la-libertad": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -83,7 +83,7 @@
             }
         },
         "la-nacion-neiva": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -96,6 +96,7 @@
                         "https://www.lanacion.com.co/el-empresario-felipe-olave-plantea-seis-acciones-para-recuperar-el-rio-del-oro/",
                         "https://www.lanacion.com.co/oficial-sic-otorgo-marcas-del-atletico-huila-al-empresario-felipe-olave/",
                         "https://www.lanacion.com.co/definida-ruta-de-navegacion-para-viabilidad-del-estadio-del-empresario-felipe-olave/",
+                        "https://www.lanacion.com.co/empresario-olave-en-los-microfonos-de-la-nacion-stereo/",
                         "https://www.lanacion.com.co/olave-y-el-concejo-en-el-divan/",
                         "https://www.lanacion.com.co/me-tope-con-la-politiqueria-empresario-olave/",
                         "https://www.lanacion.com.co/empresario-olave-recibe-apoyo-de-inversionistas-nacionales-e-internacionales/",
@@ -112,7 +113,7 @@
             }
         },
         "cablenoticias": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": null,
             "htmlValidado": false,
             "consultas": {
@@ -122,7 +123,7 @@
             }
         },
         "telecafe": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -132,7 +133,7 @@
             }
         },
         "diario-del-huila": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -142,7 +143,7 @@
             }
         },
         "diario-del-norte": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -161,7 +162,7 @@
             }
         },
         "el-diario-pereira": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -180,7 +181,7 @@
             }
         },
         "proclama-del-pacifico": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -190,8 +191,8 @@
             }
         },
         "choco-7-dias": {
-            "ultimaComprobacion": "2026-08-31",
-            "canal": "rest",
+            "ultimaComprobacion": "2026-09-07",
+            "canal": "html",
             "htmlValidado": true,
             "consultas": {
                 "Cañadas": {
@@ -203,6 +204,7 @@
                         "https://choco7dias.com/inmigrante-cronicas-y-anecdotas-de-alvaro-paz-canadas-viii/",
                         "https://choco7dias.com/atrato-oro-y-platino-cronicas-y-anecdotas-de-alvaro-paz-canadas-vii/",
                         "https://choco7dias.com/colera-cronicas-y-anecdotas-de-alvaro-paz-canadas-vi/",
+                        "https://choco7dias.com/fallecio-yenny-canadas/",
                         "https://choco7dias.com/edicto-gabriela-garrido-de-canadas/",
                         "https://choco7dias.com/primer-aniversario-ivan-canadas-garrido/",
                         "https://choco7dias.com/feliz-ano-nuevo-cronicas-y-anecdotas-de-alvaro-paz-canadas-x/",
@@ -216,7 +218,7 @@
             }
         },
         "el-manduco": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -249,8 +251,8 @@
             }
         },
         "miputumayo": {
-            "ultimaComprobacion": "2026-08-31",
-            "canal": "rest",
+            "ultimaComprobacion": "2026-09-07",
+            "canal": "html",
             "htmlValidado": true,
             "consultas": {
                 "Chamorro Burbano": {
@@ -262,7 +264,7 @@
             }
         },
         "el-morichal": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -275,8 +277,8 @@
             }
         },
         "vive-el-meta": {
-            "ultimaComprobacion": "2026-08-31",
-            "canal": "html",
+            "ultimaComprobacion": "2026-09-07",
+            "canal": "rest",
             "htmlValidado": true,
             "consultas": {
                 "Grupo La Independencia": {
@@ -285,7 +287,7 @@
             }
         },
         "lente-regional": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -298,7 +300,7 @@
             }
         },
         "periodismo-publico": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -311,7 +313,7 @@
             }
         },
         "archipielago-press": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -321,7 +323,7 @@
             }
         },
         "al-aire-noticias": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -334,7 +336,7 @@
             }
         },
         "noticias-uno": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -361,7 +363,7 @@
             }
         },
         "valora-analitik": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -374,7 +376,7 @@
             }
         },
         "casa-macondo": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -387,7 +389,7 @@
             }
         },
         "volcanicas": {
-            "ultimaComprobacion": "2026-08-31",
+            "ultimaComprobacion": "2026-09-07",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {

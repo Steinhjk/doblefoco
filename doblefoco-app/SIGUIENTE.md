@@ -1,5 +1,66 @@
 # Por dónde seguir
 
+## 2026-09-08, cierre · Seis PRs en verde, y un orden de fusión que importa
+
+**Ninguna la pude fusionar yo** (el clasificador bloquea `gh pr merge`). El
+orden no es cosmético: tres de ellas tocan `persistStories` o el contrato de la
+historia, así que se fusionan encadenadas.
+
+| Orden | PR | Qué es | Base |
+|---|---|---|---|
+| 1 | **#24** | El archivo solo guarda lo que envejeció + la red del archivo | `main` |
+| 2 | **#28** | El contrato motor↔interfaz y su prueba de ida y vuelta | #24 |
+| 3 | **#29** | H4: escribir solo lo que cambió | #28 |
+| — | **#25** | El timbre de los vigilantes + `aceptado` con caducidad | `main` |
+| — | **#26** | `/sobre-nosotros` la contestan los dos | `main` |
+| — | **#27** | La cadencia por mediana de huecos | `main` |
+
+Las tres de abajo son independientes entre sí y de las de arriba.
+
+**Y en cuanto Fly sirva la #24:**
+
+```
+npm run archivo:huerfanas                 (en seco, la lista a la vista)
+npm run archivo:huerfanas -- --apply      (borra las 1 554)
+```
+
+Antes no: el ciclo volvería a llenar el archivo con el criterio viejo.
+
+### Lo que hay que mirar el día del despliegue, y es una sola línea
+
+El ciclo informa ahora de dos cifras — **«1 512 hist. (43 escritas)»**. Si las
+dos siguen siendo iguales después de la #29, el `WHERE` no está filtrando nada y
+hay que averiguar por qué. Es la prueba de que H4 funcionó, y se lee sola.
+
+### Lo que queda abierto y es decisión de Jose
+
+- **El buscador promete un resumen que el motor no manda** (entrada de hoy en
+  `MINUTA.md`). O el motor manda el `snippet` del artículo que pone el titular
+  —con su medio al lado, como la imagen— o la interfaz deja de prometerlo.
+- Las fichas de los 11 medios de izquierda (3.5), el issue #4 del centinela y
+  sacar el repositorio de OneDrive.
+
+### Lo siguiente de código, por si se retoma mañana
+
+- **2.3**, la consulta compartida de portada, que es lo único gordo que queda
+  del plan de continuidad.
+- **`story_articles`**: la otra mitad de H4. Hoy se borra y se reescribe entera
+  para las historias producidas; comparar conjuntos de enlaces es otro diseño.
+- **RTVC Noticias** pasa a `roto` con la #27 y lleva 185 h sin publicar. Es uno
+  de los 14 medios de izquierda, así que su silencio se paga dos veces.
+
+### Dos trampas de esta sesión, para quien edite con scripts
+
+1. **Un heredoc de Bash hacia Python se come niveles de barra invertida.** Un
+   `\b` de una expresión regular llegó al fichero como el carácter 0x08 y la
+   prueba dejó de encontrar nada sin fallar. Si el parche lleva barras
+   invertidas, va en un `.py` aparte.
+2. **Una comilla invertida dentro de una plantilla SQL la parte por la mitad.**
+   Pasó dos veces hoy, y el error que da (`Unexpected token`) señala a una línea
+   que no tiene nada que ver.
+
+---
+
 ## 2026-09-02, fin de la sesión · Dónde quedamos exactamente
 
 **Lo primero al volver: la PR #16 está abierta y sin fusionar.** Es la primera

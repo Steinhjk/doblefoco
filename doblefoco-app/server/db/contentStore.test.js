@@ -249,3 +249,81 @@ describe('la respuesta nombra todo lo que el cliente trasplanta', () => {
         });
     }
 });
+
+/**
+ * H4: SOLO SE ESCRIBE LO QUE CAMBIÓ, Y ESO CREA UNA LISTA QUE PUEDE ENVEJECER.
+ *
+ * El `ON CONFLICT DO UPDATE` de `stories` lleva desde el 2026-09-08 un `WHERE`
+ * que compara los valores viejos con los nuevos y se salta la fila si son
+ * iguales. El ahorro está medido —unas 1 010 000 filas escritas al día para un
+ * corpus que se mueve en los bordes— pero abre una puerta nueva:
+ *
+ *   **una columna que se añada al SET y no al WHERE deja de actualizarse.** Sin
+ *   error, sin aviso: la fila se considera igual, no se escribe, y el valor
+ *   viejo se queda. Es el mismo fallo silencioso que `topics` y `ambito`, con
+ *   el añadido de que esta vez lo habríamos construido nosotros.
+ *
+ * Así que las dos listas tienen que decir lo mismo, y esto lo obliga. Las dos
+ * excepciones van nombradas y con motivo:
+ *
+ *   `computed_at`  cambia siempre (now()); compararla haría que ninguna fila
+ *                  se considerara nunca igual y el WHERE no serviría de nada.
+ *   `first_seen_at` en el SET va con `LEAST(...)`, así que en el WHERE se
+ *                  compara contra ese mismo `LEAST` y no contra EXCLUDED a
+ *                  secas: si no, una historia recompuesta con una fecha más
+ *                  nueva se escribiría para no cambiar nada.
+ */
+describe('el WHERE que evita reescribir lo idéntico', () => {
+    const FUENTE = readFileSync(fileURLToPath(new URL('./contentStore.js', import.meta.url)), 'utf8');
+
+    /*
+     * Los dos trozos se recortan DESDE el `ON CONFLICT` de `stories` y no desde
+     * el principio del fichero: hay otros `WHERE (` antes —la poda, sin ir más
+     * lejos— y anclar en el primero hacía que esta prueba mirara una consulta
+     * que no es la suya. Acusaba a dieciséis columnas inocentes.
+     */
+    const conflicto = FUENTE.indexOf('ON CONFLICT (id) DO UPDATE SET');
+    const inicioWhere = FUENTE.indexOf('WHERE (', conflicto);
+    // Después del WHERE, no después del ON CONFLICT: el comentario que hay en
+    // medio explica por qué se usa `IS DISTINCT FROM`, y anclar en él dejaba
+    // los dos recortes cruzados.
+    const distinto = FUENTE.indexOf('IS DISTINCT FROM', inicioWhere);
+
+    /** El cuerpo del SET: del DO UPDATE al WHERE. */
+    const bloque = FUENTE.slice(conflicto, inicioWhere);
+    /** El WHERE entero: las columnas viejas y las nuevas, que hacen falta las dos. */
+    const where = FUENTE.slice(inicioWhere, distinto + 1200);
+
+    const SIN_COMPARAR = ['computed_at'];
+
+    it('cada columna del SET se compara también en el WHERE', () => {
+        const delSet = [...bloque.matchAll(/^\s{24}(\w+)\s+=\s+EXCLUDED\./gm)].map((m) => m[1]);
+        expect(delSet.length, 'no se encontraron columnas en el SET').toBeGreaterThan(10);
+
+        const olvidadas = delSet
+            .filter((col) => !SIN_COMPARAR.includes(col))
+            .filter((col) => !where.includes(`stories.${col}`));
+
+        expect(
+            olvidadas,
+            'columnas que se actualizarían pero no se comparan: la fila se daría por igual y el valor viejo se quedaría'
+        ).toEqual([]);
+    });
+
+    it('`first_seen_at` se compara contra su LEAST, no contra EXCLUDED a secas', () => {
+        expect(where).toMatch(/LEAST\(stories\.first_seen_at, EXCLUDED\.first_seen_at\)/);
+    });
+
+    it('`computed_at` queda fuera de la comparación, o el WHERE no serviría de nada', () => {
+        expect(where).not.toContain('stories.computed_at');
+    });
+
+    it('el ciclo informa de cuántas escribió de verdad, no solo de cuántas produjo', () => {
+        const DAEMON = readFileSync(
+            fileURLToPath(new URL('../services/ingestDaemon.js', import.meta.url)),
+            'utf8'
+        );
+        expect(FUENTE).toMatch(/return \{ stories: stories\.length, escritas,/);
+        expect(DAEMON).toContain('escritas)`');
+    });
+});

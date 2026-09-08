@@ -30,8 +30,9 @@ describe('la copia de las constantes del motor', () => {
 
 describe('ventanaYRitmo', () => {
     it('no afirma nada con menos de dos fechas', () => {
-        expect(ventanaYRitmo([])).toEqual({ ventanaHoras: null, piezasPorDia: null });
-        expect(ventanaYRitmo([Date.now()])).toEqual({ ventanaHoras: null, piezasPorDia: null });
+        const nada = { ventanaHoras: null, piezasPorDia: null, huecoTipicoHoras: null };
+        expect(ventanaYRitmo([])).toEqual(nada);
+        expect(ventanaYRitmo([Date.now()])).toEqual(nada);
     });
 
     it('ignora las fechas que no lo son', () => {
@@ -39,6 +40,7 @@ describe('ventanaYRitmo', () => {
         expect(ventanaYRitmo([t, NaN, Number.POSITIVE_INFINITY])).toEqual({
             ventanaHoras: null,
             piezasPorDia: null,
+            huecoTipicoHoras: null,
         });
     });
 
@@ -54,9 +56,88 @@ describe('ventanaYRitmo', () => {
         expect(piezasPorDia).toBeLessThan(125);
     });
 
+    it('el caso de La Patria: un ancla vieja no puede decidir la cadencia', () => {
+        /*
+         * Medido contra el feed real el 2026-09-08. Nueve huecos: ocho por
+         * debajo de 24 h y uno de 3 246 h, un ítem de abril que el feed sigue
+         * arrastrando. La ventana repartida daba «una pieza cada 367 h», y con
+         * ese número la auditoría le escribía «publica despacio, es su cadencia
+         * y no una avería» a un medio que publica cada siete horas.
+         */
+        const fin = Date.parse('2026-09-07T05:00:00Z');
+        const huecos = [0.8, 23.2, 2.9, 11.4, 9.7, 0.0, 1.8, 7.1, 3246.6];
+        const fechas = [fin];
+        for (const h of huecos) fechas.push(fechas[fechas.length - 1] - h * HORA);
+
+        const { ventanaHoras, piezasPorDia, huecoTipicoHoras } = ventanaYRitmo(fechas);
+
+        expect(ventanaHoras).toBeCloseTo(3303.5, 0);
+        expect(huecoTipicoHoras).toBeCloseTo(7.1, 1);
+
+        // El VOLUMEN sigue siendo el reparto por la ventana, y sigue diciendo
+        // que publica poquísimo: son dos preguntas distintas y solo una de las
+        // dos se arruinaba con el ancla vieja.
+        expect(24 / piezasPorDia).toBeCloseTo(367.1, 0);
+    });
+
+    it('sin ancla vieja las dos medidas coinciden', () => {
+        // La Libertad de la prueba de arriba: 50 ítems repartidos por igual.
+        const fin = Date.parse('2026-08-17T12:00:00Z');
+        const fechas = Array.from({ length: 50 }, (_, i) => fin - (i * 9.8 * HORA) / 49);
+        const { piezasPorDia, huecoTipicoHoras } = ventanaYRitmo(fechas);
+        expect(piezasPorDia).toBeGreaterThan(115);
+        expect(piezasPorDia).toBeLessThan(125);
+        expect(huecoTipicoHoras).toBeCloseTo(24 / piezasPorDia, 5);
+    });
+
+    it('el volumen no se deja arrastrar por las ráfagas: el caso de Caracol Radio', () => {
+        /*
+         * Medido sobre el catálogo el 2026-09-08, antes de separar las dos
+         * medidas: usar la mediana también para el volumen cambiaba el
+         * diagnóstico de nueve medios y lo empeoraba en los nueve. Caracol Radio
+         * publica en ráfagas —varias piezas en el mismo minuto y luego horas de
+         * silencio—, así que su hueco mediano es de segundos y el margen de
+         * sondeo salía «estrecho» en un feed que está sano.
+         */
+        const fin = Date.parse('2026-09-08T12:00:00Z');
+        const fechas = [];
+        // Cuatro ráfagas de cinco piezas, separadas por seis horas.
+        for (let rafaga = 0; rafaga < 4; rafaga++) {
+            for (let i = 0; i < 5; i++) {
+                fechas.push(fin - rafaga * 6 * HORA - i * 0.01 * HORA);
+            }
+        }
+
+        const { piezasPorDia, huecoTipicoHoras } = ventanaYRitmo(fechas);
+
+        expect(huecoTipicoHoras).toBeCloseTo(0.01, 2);
+        // 19 huecos en 18,04 h: unas 25 piezas al día, que es lo que publica.
+        expect(piezasPorDia).toBeGreaterThan(20);
+        expect(piezasPorDia).toBeLessThan(30);
+    });
+
+    it('con la mediana en cero vuelve a la ventana: el caso de Noticias Uno', () => {
+        /*
+         * Publica sus diez ítems en el mismo cuarto de hora, así que su hueco
+         * típico es 0 y no se puede dividir por él. Sin este rescate, un feed
+         * que hoy se ve «roto» pasaría a «no comprobable», que es peor.
+         */
+        const fin = Date.parse('2026-09-08T12:00:00Z');
+        const fechas = [fin, fin, fin, fin, fin, fin, fin, fin, fin, fin - 0.3 * HORA];
+        const { ventanaHoras, piezasPorDia, huecoTipicoHoras } = ventanaYRitmo(fechas);
+
+        expect(ventanaHoras).toBeCloseTo(0.3, 5);
+        expect(piezasPorDia).toBeCloseTo((9 / 0.3) * 24, 5);
+        expect(huecoTipicoHoras).toBeCloseTo(24 / piezasPorDia, 5);
+    });
+
     it('con todo publicado en el mismo instante da ventana cero y ningún ritmo', () => {
         const t = Date.now();
-        expect(ventanaYRitmo([t, t, t])).toEqual({ ventanaHoras: 0, piezasPorDia: null });
+        expect(ventanaYRitmo([t, t, t])).toEqual({
+            ventanaHoras: 0,
+            piezasPorDia: null,
+            huecoTipicoHoras: null,
+        });
     });
 });
 

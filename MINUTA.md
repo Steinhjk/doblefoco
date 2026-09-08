@@ -47,6 +47,90 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-08 · El filtro de opinión es ciego para 22 medios, y seis son de la izquierda (ABIERTO)
+
+**Salió al preparar el nivel 2 de las fichas**, comprobando un confusor antes de
+escribirlo en un CONTRA.
+
+`detectarOpinion` es una **función pura de la URL** —tres expresiones sobre la
+ruta— y eso se eligió a propósito: no analizar el texto de la pieza es una
+decisión escrita del proyecto, y una revisión externa la señaló como acierto.
+El precio es que **un medio cuyas URL no digan de qué sección es queda fuera del
+filtro**, y sus columnas entran al corpus y al agrupamiento sin marcar.
+
+El registro ya lo anotaba **para Las2Orillas**, con la frase «queda MEDIDO como
+riesgo, no descubierto después». Lo que no estaba medido es el tamaño:
+
+> **22 de los 70 medios con datos publican en la raíz** —`medio.co/titulo`, sin
+> sección—, y son **2 179 piezas, el 6,3 % del corpus**.
+
+**Y el reparto no es neutro.** Seis de esos 22 son de la banda de izquierda:
+Las2Orillas, Razón Pública, Semanario VOZ, Volcánicas, Colombia Informa y
+Cuestión Pública. O sea que **la opinión de un tercio de la banda entra sin
+marcar mientras la de El Tiempo o Vanguardia se filtra antes de entrar.**
+
+Las consecuencias, en orden:
+
+1. **Invalida el nivel 2 de esas seis fichas mientras no se separe.** El
+   aislamiento medido —Las2Orillas coincide con 13 medios donde sus pares
+   coinciden con 30— puede ser el filtro y no su agenda: una columna no coincide
+   con la cobertura de nadie porque no cubre un hecho, opina sobre él.
+2. **Toca la `q` del modelo de puntos ciegos.** La tasa de la izquierda se
+   calcula sobre apariciones, y las de estos seis incluyen columnas que en los
+   demás medios no cuentan. La tasa está inflada por una asimetría nuestra, en la
+   banda que sostiene el modelo.
+3. **Y es el mismo defecto que «regionales sin sección en la URL»**, que ya cuesta
+   2,5 puntos de clasificación temática. La causa es una sola: la ruta plana.
+
+**Lo que NO se propone:** analizar el texto de la pieza. Eso cambiaría una
+decisión de diseño del proyecto entero por un problema de seis medios.
+
+**Salidas posibles, sin decidir:** marcar la opinión por el feed —muchos medios
+publican sus columnas en un feed aparte—, por la categoría declarada del ítem
+RSS, o declarar el hueco en la metodología y descontar esos medios del cálculo de
+la tasa. La tercera es la única que no requiere tocar la ingesta.
+
+**Estado: ABIERTO.** Bloquea la firma de las fichas de Las2Orillas y —por lo
+menos— de las otras cinco de raíz plana.
+
+## 2026-09-08 · Las fichas de la izquierda: la herramienta y la primera tanda
+
+**Decisión de Jose de hoy:** que yo prepare el expediente y él firme. La regla no
+cambia —el número lo pone y lo firma Jose— pero el trabajo que no es juicio
+—contar, comparar y citar— deja de costar una tarde por ficha.
+
+**`npm run expediente -- --medio=<id>`** produce el nivel 2 que el protocolo pide
+y que no producía nada: volumen y cadencia, temas contra la agenda común,
+co-cobertura con elevación, aislamiento **con su confusor al lado** —un medio
+pequeño coincide poco porque publica poco, y sin esa comparación la cifra
+acusaría a los pequeños de ser raros— y sus titulares literales para leer.
+
+**Lo primero que dijo, y no lo esperaba:** los nueve medios de izquierda sin
+ficha **están publicando**, todos, con piezas de esta semana. El diagnóstico de
+agosto —«5 de sus 13 medios aportan cero»— era de la ventana de 72 h; con los 30
+días de retención el panorama es otro.
+
+**Primera tanda, escrita y sin firmar:**
+
+| Ficha | Propuesta | Por qué |
+|---|---|---|
+| `semanario-voz.md` | **firmar −0,80** | Único medio cuyo nivel 1 fija la orientación solo: es el órgano del PCC, que hoy lo posee. Cero socios de cobertura donde sus pares tienen entre 2 y 14 |
+| `las2orillas.md` | **no firmar** | Su nivel 2 está contaminado por el filtro de opinión ciego (entrada de arriba) |
+| `cambio.md` | **no firmar −0,40, y revisarlo hacia la mixta** | Ver abajo |
+
+**Lo de Cambio es lo gordo de la tanda.** Es el medio con más peso de la banda
+—381 de las ~644 piezas de toda la izquierda en el corpus— y la evidencia del
+presente no sostiene su −0,40: fiscaliza a los dos gobiernos (lo que la regla del
+polo fijo excluye expresamente como evidencia), no tiene agenda propia medible
+—38 socios, la mediana de su volumen— y **sus siete socios de mayor elevación son
+de la mixta o de la derecha, ninguno de la izquierda**: El Nuevo Siglo (+0,55) a
+4,3×, La FM (+0,35) a 3,4×.
+
+**Y eso mueve el modelo.** Si Cambio pasa a la mixta, la tasa base de la
+izquierda baja de golpe y cambia qué historias se marcan como punto ciego. No es
+motivo para dejar el número donde está: es motivo para no decidirlo deprisa y
+para volver a medir la 3.2 el día que se firme.
+
 ## De la auditoría de integración del 2026-09-01
 
 Pedida por Jose: una auditoría de la integración entre sistemas, con sus

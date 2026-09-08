@@ -9,6 +9,9 @@ import {
     idDeHallazgo,
     pendientes,
     resumirHallazgos,
+    aceptadoVigente,
+    aceptadosCaducados,
+    aceptadosSinPlazo,
 } from './hallazgos.js';
 
 const DIA = 24 * 60 * 60 * 1000;
@@ -176,5 +179,42 @@ describe('la edad se mide en días de verdad', () => {
         const ahora = Date.parse('2026-08-19T00:00:00Z');
         expect(diasAbierto({ primeraVez: '2026-08-10' }, ahora)).toBe(9);
         expect(diasAbierto({ primeraVez: '2026-08-19' }, ahora + 3 * DIA)).toBe(3);
+    });
+});
+
+describe('la caducidad de un «aceptado»', () => {
+    const hoy = new Date('2026-09-08T12:00:00Z');
+
+    it('un aceptado con plazo por delante sigue callando', () => {
+        expect(aceptadoVigente({ estado: 'aceptado', revisarEl: '2026-10-13' }, hoy)).toBe(true);
+    });
+
+    it('el día del plazo todavía vale: se revisa ESE día, no el anterior', () => {
+        expect(aceptadoVigente({ estado: 'aceptado', revisarEl: '2026-09-08' }, hoy)).toBe(true);
+        expect(aceptadoVigente({ estado: 'aceptado', revisarEl: '2026-09-07' }, hoy)).toBe(false);
+    });
+
+    it('sin plazo sigue valiendo, porque hay motivos que no caducan', () => {
+        // W Radio: su feed expone dos ítems y eso no cambia con el calendario.
+        expect(aceptadoVigente({ estado: 'aceptado', revisarEl: null }, hoy)).toBe(true);
+        expect(aceptadoVigente({ estado: 'aceptado' }, hoy)).toBe(true);
+    });
+
+    it('lo que no está aceptado nunca está vigente, ni siquiera con fecha', () => {
+        expect(aceptadoVigente({ estado: 'abierto', revisarEl: '2027-01-01' }, hoy)).toBe(false);
+        expect(aceptadoVigente(undefined, hoy)).toBe(false);
+    });
+
+    it('separa los caducados de los que no tienen plazo, que son cosas distintas', () => {
+        const libro = {
+            hallazgos: {
+                vigente: { id: 'vigente', estado: 'aceptado', revisarEl: '2026-12-01' },
+                vencido: { id: 'vencido', estado: 'aceptado', revisarEl: '2026-08-01' },
+                eterno: { id: 'eterno', estado: 'aceptado', revisarEl: null },
+                abierto: { id: 'abierto', estado: 'abierto', revisarEl: null },
+            },
+        };
+        expect(aceptadosCaducados(libro, hoy).map((h) => h.id)).toEqual(['vencido']);
+        expect(aceptadosSinPlazo(libro).map((h) => h.id)).toEqual(['eterno']);
     });
 });

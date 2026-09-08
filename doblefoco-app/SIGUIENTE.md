@@ -1,5 +1,71 @@
 # Por dónde seguir
 
+## 2026-09-08 · Dos PRs listas y sin fusionar, y una limpieza que espera al despliegue
+
+**Lo primero al volver: las PRs #24 y #25 están abiertas, en verde y sin
+fusionar.** No las pude fusionar yo. Todo lo demás de la sesión está dentro de
+ellas.
+
+**Y en cuanto Fly sirva la #24, hay un mandato que ejecutar a mano:**
+
+```
+npm run archivo:huerfanas                 (en seco, para ver la lista)
+npm run archivo:huerfanas -- --apply      (borra las 1 554)
+```
+
+**Antes no**, porque el ciclo volvería a llenar el archivo con el criterio
+viejo. Decisión de Jose del 2026-09-08, en `DECISIONES.md`.
+
+### Lo que se encontró al volver, y ninguna de las dos cosas se veía
+
+1. **El archivo llevaba seis días llenándose de páginas huérfanas.** 1 975
+   selladas, de las que 1 554 (79 %) no habían envejecido: el agrupamiento las
+   recompuso y quedaron con URL propia en el sitemap. El arreglo llevaba desde
+   el 2 de septiembre **escrito y sin comprometer en la copia de trabajo**.
+2. **Ninguno de los cuatro vigilantes que deciden por el código de salida podía
+   ponerse en rojo.** `programa | tee fichero` devuelve el código de `tee`, que
+   es 0. El mismo cambio del 31/08 que les puso timbre les quitó el fallo. La
+   vigilancia llevaba doce días acusando a Telecaribe en verde.
+
+Las dos entradas completas, con sus números, en `MINUTA.md` (2026-09-08).
+
+### Lo que sigue del plan, sin orden obligado
+
+- El **404 de `/sobre-nosotros`**, abierto desde antes del 2026-09-02.
+- **La cadencia de la auditoría**, que se calcula entre la pieza más nueva y la
+  más vieja del feed: un ancla de 2022 produce números absurdos. Debería ser la
+  mediana de los intervalos. Media hora.
+- **H4**: escribir solo lo que cambió en cada ciclo.
+- **2.3 y 2.4** del plan de continuidad (consulta compartida de portada;
+  serializador único de rehidratación).
+- **La D del archivo**: el buscador. Con la B hecha, es lo que queda para que el
+  archivo no sea un cementerio.
+
+### Lo que es de Jose
+
+- **Fusionar #24 y #25**, y correr la limpieza después del despliegue.
+- **Las fichas de los 11 medios de izquierda** (3.5), por tandas.
+- **El issue #4 del centinela** y **sacar el repositorio de OneDrive**.
+- **Una fecha para el `revisarEl` de Vorágine**: su nota dice «más de 30 días
+  sin publicar», que es una regla y no una fecha que ninguna máquina comprueba.
+
+### Dos fechas que no dependen de nadie
+
+Hacia el **2 de octubre**, medir el tamaño de la base (30 días de retención más
+Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla
+por cadencia con 30 días de serie. Hacia **diciembre**, revisar la opción B del
+archivo permanente.
+
+### Una trampa que costó tiempo, para quien edite con scripts
+
+Además del CRLF ya conocido: **un heredoc de Bash hacia Python se come niveles
+de barra invertida**. Un `\b` escrito en una expresión regular llegó al fichero
+como el carácter de retroceso (0x08), y la prueba pasó a no encontrar nada sin
+fallar. Si el parche lleva barras invertidas, va en un fichero `.py` aparte, no
+en un heredoc.
+
+---
+
 ## 2026-09-02, fin de la sesión · Dónde quedamos exactamente
 
 **Lo primero al volver: la PR #16 está abierta y sin fusionar.** Es la primera

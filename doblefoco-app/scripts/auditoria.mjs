@@ -81,7 +81,9 @@ import {
     ventanaYRitmo,
 } from '../shared/auditoria.js';
 import {
+    aceptadosCaducados,
     aceptadosSinNota,
+    aceptadosSinPlazo,
     conciliarHallazgos,
     hallazgosDeLaPasada,
     pendientes,
@@ -668,6 +670,25 @@ if (sinNota.length) {
     console.log(`  ${sinNota.length} hallazgo(s) están en «aceptado» SIN motivo escrito.`);
     console.log('  Aceptar sin decir por qué no es aceptar: es esconder, y dentro de tres');
     console.log('  meses nadie sabrá cuál de las dos cosas fue. Ponles `nota` en el libro.');
+    console.log();
+}
+
+const caducados = aceptadosCaducados(libro);
+if (caducados.length) {
+    console.log(`  ${caducados.length} hallazgo(s) aceptados han CADUCADO: su plazo ya pasó.`);
+    console.log('  Un aceptado con fecha es una decisión con revisión, no un silencio');
+    console.log('  permanente. Vuelven a pedir decisión, y la vigilancia ya los acusa:');
+    for (const h of caducados) {
+        console.log(`      ${h.id}  (revisar el ${h.revisarEl})`);
+    }
+    console.log();
+}
+
+const sinPlazo = aceptadosSinPlazo(libro);
+if (sinPlazo.length) {
+    console.log(`  ${sinPlazo.length} aceptado(s) no caducan nunca: ${sinPlazo.map((h) => h.id).join(', ')}.`);
+    console.log('  Vale cuando el motivo es estructural y no cambia con el calendario. Si el');
+    console.log('  motivo era «a ver si vuelve», lo que falta es `revisarEl` con una fecha.');
     console.log();
 }
 

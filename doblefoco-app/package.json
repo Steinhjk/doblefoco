@@ -37,6 +37,7 @@
         "check:esquema": "node scripts/comprobarEsquemaVacio.mjs",
         "admin:create": "node scripts/createAdmin.mjs",
         "clean:filtered": "node scripts/cleanFiltered.mjs",
+        "archivo:huerfanas": "node scripts/limpiarArchivoHuerfano.mjs",
         "analyze:cocoverage": "node scripts/coCoverage.mjs",
         "eval:clustering": "node scripts/evalClustering.mjs",
         "eval:sucesos": "node scripts/evalSucesos.mjs",

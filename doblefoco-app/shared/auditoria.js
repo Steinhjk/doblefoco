@@ -96,6 +96,13 @@ export function peorEstado(estados) {
 
 const HORA_MS = 3_600_000;
 
+/** La mediana de una lista de números. La lista se copia: no se ordena la ajena. */
+function mediana(xs) {
+    const s = [...xs].sort((a, b) => a - b);
+    const m = Math.floor(s.length / 2);
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
 /**
  * LA VENTANA REAL DE UN FEED, que es la medida que faltaba.
  *
@@ -108,21 +115,58 @@ const HORA_MS = 3_600_000;
  * nada, se devuelve `null`—, y con todos los ítems publicados en el mismo minuto
  * tampoco: una ventana de cero no permite dividir.
  *
+ * DOS PREGUNTAS DISTINTAS QUE COMPARTÍAN UN NÚMERO (2026-09-08).
+ *
+ * `piezasPorDia` responde CUÁNTO PUBLICA en un rato, y eso decide si cabe en un
+ * sondeo. Para eso el reparto por la ventana es lo correcto: da igual que las
+ * piezas lleguen a ráfagas, lo que desborda el sondeo es el volumen.
+ *
+ * `huecoTipicoHoras` responde CADA CUÁNTO PUBLICA, y eso decide si un feed sin
+ * nada fresco está parado o solo es lento. Ahí el reparto por la ventana miente
+ * en cuanto hay una sola fecha rara, y no es hipotético: La Patria, medida ese
+ * día, trae diez ítems con nueve huecos —ocho por debajo de 24 h y uno de
+ * **3 246 h**, un ancla de abril que el feed arrastra—. El reparto decía «una
+ * pieza cada 367 h» y con ese número la auditoría le escribía «publica despacio,
+ * es su cadencia y no una avería» a un medio que publica cada siete horas: la
+ * medida decidía la frase, y la frase era falsa. La MEDIANA de los huecos no se
+ * deja arrastrar por un dato.
+ *
+ * MEDIDO SOBRE EL CATÁLOGO ENTERO antes de separarlas: usar la mediana también
+ * para el volumen cambiaba el diagnóstico de nueve medios y lo empeoraba en los
+ * nueve —Caracol Radio pasaba de sano a «margen estrecho» porque publica en
+ * ráfagas y su hueco mediano es de segundos—. Son dos preguntas, y necesitan dos
+ * números.
+ *
+ * SI LA MEDIANA ES CERO SE USA EL REPARTO: Noticias Uno publica sus diez ítems
+ * en el mismo cuarto de hora y no se puede dividir por cero huecos.
+ *
  * @param {number[]} fechasMs Marcas de tiempo de los ítems, en cualquier orden.
  */
 export function ventanaYRitmo(fechasMs) {
     const validas = fechasMs.filter((t) => Number.isFinite(t));
-    if (validas.length < 2) return { ventanaHoras: null, piezasPorDia: null };
+    if (validas.length < 2)
+        return { ventanaHoras: null, piezasPorDia: null, huecoTipicoHoras: null };
 
     const ventanaHoras = (Math.max(...validas) - Math.min(...validas)) / HORA_MS;
-    if (ventanaHoras <= 0) return { ventanaHoras: 0, piezasPorDia: null };
+    if (ventanaHoras <= 0)
+        return { ventanaHoras: 0, piezasPorDia: null, huecoTipicoHoras: null };
 
     /*
      * `n - 1` y no `n`: entre cincuenta ítems hay cuarenta y nueve huecos. Con
      * `n` el ritmo sale inflado justo en los feeds cortos, que son los que peor
      * se miden y de los que más se sospecha.
      */
-    return { ventanaHoras, piezasPorDia: ((validas.length - 1) / ventanaHoras) * 24 };
+    const piezasPorDia = ((validas.length - 1) / ventanaHoras) * 24;
+
+    const orden = [...validas].sort((a, b) => a - b);
+    const huecos = orden.slice(1).map((t, i) => (t - orden[i]) / HORA_MS);
+    const medianaDeHuecos = mediana(huecos);
+
+    return {
+        ventanaHoras,
+        piezasPorDia,
+        huecoTipicoHoras: medianaDeHuecos > 0 ? medianaDeHuecos : 24 / piezasPorDia,
+    };
 }
 
 /**
@@ -233,7 +277,14 @@ function sinNadaFresco(v) {
             motivo: `nada entra en la ventana y no se le puede medir el ritmo (lo más nuevo, de hace ${Math.round(v.edadMasNuevoHoras)} h)`,
         };
 
-    const huecoHoras = 24 / v.piezasPorDia;
+    /*
+     * EL HUECO TÍPICO, NO EL REPARTO. La diferencia está escrita en
+     * `ventanaYRitmo`, y aquí es donde importa: esta rama es la que decide si un
+     * feed sin nada fresco está parado o es lento, y un ancla vieja en el feed
+     * la volcaba entera hacia «es su cadencia». `piezasPorDia` sigue de reserva
+     * para lo que se auditara antes de que existiera la medida.
+     */
+    const huecoHoras = v.huecoTipicoHoras ?? 24 / v.piezasPorDia;
     const huecos = v.edadMasNuevoHoras / huecoHoras;
 
     if (huecos > HUECOS_ANTES_DE_PARADO)
@@ -259,7 +310,8 @@ function sinNadaFresco(v) {
  * @param {{
  *   respondio: boolean, items: number, frescos: number, tomados: number,
  *   margen: number|null, cronologico: boolean|null, error?: string|null,
- *   piezasPorDia?: number|null, edadMasNuevoHoras?: number|null
+ *   piezasPorDia?: number|null, huecoTipicoHoras?: number|null,
+ *   edadMasNuevoHoras?: number|null
  * }} v
  */
 export function clasificarFeed(v) {

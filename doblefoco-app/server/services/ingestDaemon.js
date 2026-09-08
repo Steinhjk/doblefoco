@@ -724,7 +724,9 @@ async function persistToDatabase(fresh) {
     // conserva más de lo que el motor agrupa. La memoria sigue en 72 h.
     const expired = await pruneExpiredArticles(RETENCION_BASE_MS);
     const saved = await persistArticles(fresh);
-    const stories = await persistStories(storiesFeed);
+    // La ventana de AGRUPAMIENTO, no la de la base: es la que decide si una
+    // historia dejó de producirse porque envejeció o porque se recompuso.
+    const stories = await persistStories(storiesFeed, RETENTION_MS);
     await refreshModeration();
 
     const parts = [`db: +${saved} art.`];

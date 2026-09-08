@@ -6,7 +6,7 @@ import { getMediaByName } from '../data/mediaLogos';
 import StoryImage from '../components/StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
 import { fetchStory, isApiConfigured } from '../services/apiClient';
-import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
+import { normalizeStory, storyTimeLabel, formatAbsoluteTime, formatAbsoluteDate } from '../lib/story';
 import { useStories } from '../hooks/useStories';
 import { recordRead } from '../lib/readingHistory';
 import { useHistoriaInicial } from '../hooks/datosInicialesContext';
@@ -298,7 +298,7 @@ const NewsDetail = () => {
                                     <strong>Esta historia está archivada.</strong> Se dejó de
                                     seguir el{' '}
                                     <time dateTime={story.archivadaEl}>
-                                        {formatAbsoluteTime(story.archivadaEl) ?? story.archivadaEl.slice(0, 10)}
+                                        {formatAbsoluteDate(story.archivadaEl) ?? story.archivadaEl.slice(0, 10)}
                                     </time>
                                     , así que su cobertura es la que tenía ese día y no se
                                     actualiza. Los enlaces llevan a los medios que la publicaron.

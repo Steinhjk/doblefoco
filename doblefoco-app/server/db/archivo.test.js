@@ -85,6 +85,30 @@ describe('el archivo de historias', () => {
         expect(CONTENT).toMatch(/DELETE FROM stories[\s\S]*NOT IN \(SELECT story_id FROM moderation\)/);
     });
 
+    it('solo sella lo que envejeció: una historia con artículos frescos se borra, no se archiva', () => {
+        /*
+         * Es la corrección del 2026-09-02, y sin esta prueba se pierde: una
+         * historia deja de producirse porque su hecho envejeció (archivo) o
+         * porque el agrupamiento la recompuso con otro id (basura con URL).
+         * Medido en producción el 2026-09-08: de 1 975 archivadas, 1 554
+         * tenían artículos de menos de 48 h, o sea que eran huérfanas.
+         */
+        expect(CONTENT).toMatch(
+            /UPDATE stories s[\s\S]*SET archivada_el = now\(\)[\s\S]*NOT EXISTS[\s\S]*story_articles sa[\s\S]*COALESCE\(a\.published_at, a\.ingested_at\)[\s\S]*now\(\) - /
+        );
+        // La madurez es una FRACCIÓN de la ventana, no un número de horas: si
+        // la ventana cambia, el corte sigue significando lo mismo.
+        expect(CONTENT).toMatch(/export const MADUREZ_PARA_ARCHIVAR = 2 \/ 3;/);
+        expect(CONTENT).toMatch(/ventanaMs \* MADUREZ_PARA_ARCHIVAR/);
+    });
+
+    it('el ciclo le pasa la ventana de agrupamiento, no la de la base', () => {
+        // `RETENCION_BASE_MS` son 30 días: usarla aquí archivaría solo lo que
+        // ya no existe, y el archivo se quedaría vacío para siempre.
+        const DAEMON = readFileSync(resolve(AQUI, '../services/ingestDaemon.js'), 'utf8');
+        expect(DAEMON).toMatch(/persistStories\(storiesFeed, RETENTION_MS\)/);
+    });
+
     it('la poda no se lleva por delante los artículos de una historia archivada', () => {
         // `story_articles` cae en cascada con el artículo: sin esto, una
         // historia sellada perdería todos sus enlaces al cumplir los 30 días.

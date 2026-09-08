@@ -115,6 +115,21 @@ export function formatAbsoluteTime(isoDate) {
     }).format(date);
 }
 
+/**
+ * La misma fecha, SIN HORA. Para un archivo la hora sobra: nadie necesita
+ * saber que una historia se selló a las 8:10 de la noche, y el minuto de más
+ * hace ruido justo donde se pide leer despacio.
+ *
+ * @param {string | null | undefined} isoDate
+ */
+export function formatAbsoluteDate(isoDate) {
+    if (!isoDate) return null;
+    const date = new Date(isoDate);
+    if (Number.isNaN(date.getTime())) return null;
+
+    return new Intl.DateTimeFormat("es-CO", { dateStyle: "long" }).format(date);
+}
+
 /** Normaliza una perspectiva a `{outlet, headline, snippet, url, bias}` o null. */
 function normalizePerspective(raw) {
     if (!raw) return null;

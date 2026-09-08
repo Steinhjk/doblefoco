@@ -47,6 +47,34 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-08 · El buscador dice buscar en el resumen, y el resumen no existe (ABIERTO)
+
+**Lo encontró la prueba de ida y vuelta del contrato en su primera pasada**, que
+es exactamente para lo que la revisión externa la pedía.
+
+`componerHistoria` no manda `summary`. La interfaz lo lee en **seis sitios**:
+
+- `CompactHeroGrid.jsx`, `NewsCard.jsx` y `NewsDetail.jsx` tienen un bloque
+  `{story.summary && …}` que **no puede pintarse nunca**.
+- **Y el buscador del sitio dice buscar dentro del resumen** —`Navbar.jsx` y
+  `SearchResults.jsx` incluyen `summary` en lo que comparan— cuando en realidad
+  solo busca en el titular. Nadie lo nota: la búsqueda funciona, solo que
+  encuentra menos de lo que su código promete.
+
+**No se arregló en la PR del contrato a propósito, porque no es un defecto de la
+costura: es una decisión de producto.** Las dos salidas:
+
+1. **Que el motor mande un resumen.** Y entonces hay que decidir de quién es ese
+   texto. En este proyecto nunca es de la casa —«el titular de referencia no lo
+   escribimos»—, así que el candidato natural es el `snippet` del artículo que
+   pone el titular, con su medio al lado, igual que la imagen.
+2. **Que la interfaz deje de prometerlo.** Se quitan los tres bloques muertos y
+   el buscador dice lo que hace.
+
+**Estado: ABIERTO, decisión de Jose.** La 1 hace mejor el buscador —dos párrafos
+de texto por historia en vez de un titular— y cuesta un campo en la consulta; la
+2 es media hora y deja el sitio diciendo la verdad sobre sí mismo.
+
 ## De la auditoría de integración del 2026-09-01
 
 Pedida por Jose: una auditoría de la integración entre sistemas, con sus

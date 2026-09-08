@@ -47,6 +47,9 @@ export async function recordReport(storyId, kind) {
         throw new Error(`Tipo de reporte no válido: ${kind}`);
     }
 
+    // ARCHIVO A PROPÓSITO: quien llega a una historia archivada desde un
+    // buscador ve la misma página y el mismo botón; negarle el reporte sería
+    // pedirle que distinga entre dos cosas que se ven igual.
     const exists = await query('SELECT 1 FROM stories WHERE id = $1', [storyId]);
     if (!exists.rowCount) return false;
 
@@ -83,6 +86,8 @@ export async function storiesNeedingReview({ days = 14, limit = 20 } = {}) {
                    max(r.created_at) FILTER (WHERE r.kind <> 'preciso') -
                    min(r.created_at) FILTER (WHERE r.kind <> 'preciso')
                ))::int / 60 AS "minutosDeRafaga"
+          -- ARCHIVO A PROPÓSITO: el panel parte de los reportes, no de las
+          -- historias. Si alguien reportó una archivada, hay que verlo.
           FROM reader_reports r
           JOIN stories s ON s.id = r.story_id
          WHERE r.created_at > now() - ($1::int * interval '1 day')

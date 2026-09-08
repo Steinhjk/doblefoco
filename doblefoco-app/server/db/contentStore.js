@@ -423,6 +423,15 @@ export async function pruneExpiredArticles(retentionMs) {
 // ---------------------------------------------------------------------------
 
 /**
+ * Qué parte de la ventana de agrupamiento tiene que haber pasado para que una
+ * historia que desaparece cuente como envejecida y no como recompuesta.
+ *
+ * Dos tercios: con la ventana en 72 h son 48. El porqué —y por qué no vale
+ * «sin artículos en la ventana»— está en el comentario del UPDATE.
+ */
+export const MADUREZ_PARA_ARCHIVAR = 2 / 3;
+
+/**
  * Reemplaza el conjunto de historias por el que acaba de calcular el motor.
  *
  * Las historias son una PROYECCIÓN de los artículos vigentes: cada ciclo las
@@ -437,9 +446,12 @@ export async function pruneExpiredArticles(retentionMs) {
  * Todo va en una transacción. Un fallo a mitad dejaría historias sin sus
  * artículos, que es peor que no haber guardado nada.
  *
+ * @param {any[]} entrada
+ * @param {number} [ventanaMs] la ventana de AGRUPAMIENTO, que es la que decide
+ *   si una historia que desaparece envejeció o se recompuso.
  * @returns {Promise<{stories:number, links:number, removed:number, archived:number}|null>}
  */
-export async function persistStories(entrada) {
+export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
     let stories = entrada;
     try {
         /**
@@ -651,15 +663,63 @@ export async function persistStories(entrada) {
              * editorial de alguien. Ahora hay una segunda red, además, porque
              * casi todo lo moderado es multifuente y por tanto se archiva.
              */
+            /*
+             * SOLO SE ARCHIVA LO QUE MURIÓ DE VIEJO, NO LO QUE SE RECOMPUSO
+             * (2026-09-02, el mismo día que se estrenó el archivo).
+             *
+             * Una historia deja de producirse por dos motivos muy distintos, y
+             * la primera versión de esto los confundía:
+             *
+             *   1. SUS ARTÍCULOS SALIERON DE LA VENTANA. El hecho envejeció y
+             *      nadie lo cubre ya. Eso es archivo.
+             *   2. EL AGRUPAMIENTO LA RECOMPUSO. Sus artículos siguen vivos,
+             *      pero ahora cuelgan de otra historia con otro id, porque un
+             *      artículo nuevo unió dos grupos que estaban separados. Eso no
+             *      es archivo: es la misma noticia con otro nombre.
+             *
+             * Medido a las pocas horas de estrenarlo: de 141 archivadas, **9
+             * habían vivido más de 60 h** y 28 menos de doce. O sea que el
+             * archivo se estaba llenando de páginas huérfanas que duplican una
+             * historia viva —con su URL, y anunciadas en el sitemap—.
+             *
+             * CÓMO SE DISTINGUEN, Y POR QUÉ NO ES «SIN ARTÍCULOS EN LA VENTANA».
+             * Ese era el criterio evidente y **está medido que no funciona**: el
+             * techo de `MAX_ARTICLES` expulsa artículos por comparabilidad antes
+             * de que cumplan la edad, así que la ventana efectiva va recortada y
+             * **ninguna historia del corpus llega a quedarse sin artículos
+             * recientes**. Medido el 2026-09-02 sobre las 628 vivas multifuente
+             * y las 141 archivadas: el artículo más nuevo de la más vieja tenía
+             * 58 h, y ni una sola pasaba de 60. Con aquel criterio el archivo se
+             * habría quedado vacío para siempre, que es el error contrario y
+             * más difícil de notar.
+             *
+             * Se usa la MADUREZ del hecho: se archiva cuando su artículo más
+             * reciente ya pasó de dos tercios de la ventana —48 h de 72—. Una
+             * historia que desaparece con artículos de hace horas se recompuso;
+             * una que desaparece cuando lo más nuevo que tiene son dos días es
+             * un hecho que dejó de cubrirse. Sobre las 141 de hoy, el corte
+             * habría archivado 58 y borrado 83.
+             *
+             * La fracción, y no un número de horas, para que siga significando
+             * lo mismo si la ventana cambia.
+             */
             const { rowCount: archived } = await client.query(
                 `
-                UPDATE stories
+                UPDATE stories s
                    SET archivada_el = now()
-                 WHERE id <> ALL($1::text[])
-                   AND archivada_el IS NULL
-                   AND source_count > 1
+                 WHERE s.id <> ALL($1::text[])
+                   AND s.archivada_el IS NULL
+                   AND s.source_count > 1
+                   AND NOT EXISTS (
+                       SELECT 1
+                         FROM story_articles sa
+                         JOIN articles a ON a.id = sa.article_id
+                        WHERE sa.story_id = s.id
+                          AND COALESCE(a.published_at, a.ingested_at)
+                              > now() - ($2::bigint * interval '1 millisecond')
+                   )
                 `,
-                [ids]
+                [ids, Math.round(ventanaMs * MADUREZ_PARA_ARCHIVAR)]
             );
 
             const { rowCount: removed } = await client.query(

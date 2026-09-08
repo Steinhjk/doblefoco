@@ -97,11 +97,48 @@ const { rows } = await pool.query(
 const { getIngestFeeds } = await import(
     new URL('../shared/mediaRegistry.js', import.meta.url).href
 );
-const conFeed = new Set(getIngestFeeds().map((f) => f.name));
+const feeds = getIngestFeeds();
+const conFeed = new Set(feeds.map((f) => f.name));
+const idPorNombre = new Map(feeds.map((f) => [f.name, f.mediaId]));
+
+/*
+ * EL LIBRO DE HALLAZGOS TAMBIEN MANDA AQUI (2026-09-08).
+ *
+ * `aceptado` significa que una persona miro el caso, escribio por que se queda
+ * asi y decidio que deje de avisar «sin desaparecer». Esta vigilancia no leia
+ * el libro, asi que Telecaribe --aceptado el 2026-09-02 por ser un canal
+ * publico con cadencia lenta-- seguia saliendo en rojo cada seis horas. Dos
+ * vigilantes que se contradicen sobre el mismo medio no son el doble de
+ * vigilancia: son uno al que se le empieza a hacer caso y otro al que no.
+ *
+ * CON CADUCIDAD, que es lo que impide que esto sea un boton de silencio: si el
+ * hallazgo lleva `revisarEl` y esa fecha ya paso, se acusa igual y se dice que
+ * el plazo vencio. La fecha de Telecaribe la escribio Jose en su propia nota.
+ *
+ * Si el libro no se puede leer NO se calla a nadie: se sigue acusando. Un
+ * fichero ausente no puede volverse una excusa para no avisar.
+ */
+const { aceptadoVigente } = await import(
+    new URL('../shared/hallazgos.js', import.meta.url).href
+);
+
+let libro = { hallazgos: {} };
+try {
+    const { readFileSync } = await import('node:fs');
+    libro = JSON.parse(
+        readFileSync(new URL('../auditoria/hallazgos.json', import.meta.url), 'utf8'),
+    );
+} catch (error) {
+    console.log(`  ? no se pudo leer el libro de hallazgos (${error.message}): no se calla a nadie`);
+}
+
+const aceptadoDe = (nombre) => libro.hallazgos?.[`${idPorNombre.get(nombre)}/feed`];
 
 const mudos = rows.filter((r) => conFeed.has(r.name) && (r.dias === null || r.dias >= DIAS_MUDO));
 const nunca = mudos.filter((r) => !r.last_article_at);
-const callados = mudos.filter((r) => r.last_article_at);
+const todosCallados = mudos.filter((r) => r.last_article_at);
+const aceptados = todosCallados.filter((m) => aceptadoVigente(aceptadoDe(m.name)));
+const callados = todosCallados.filter((m) => !aceptadoVigente(aceptadoDe(m.name)));
 
 console.log(`\n  MEDIOS CON FEED SIN APORTAR EN ${DIAS_MUDO} DÍAS\n`);
 if (!mudos.length) {
@@ -109,12 +146,23 @@ if (!mudos.length) {
 } else {
     for (const m of callados) console.log(`  ✗ ${m.name.padEnd(24)} ${m.dias} días`);
     for (const m of nunca) console.log(`  ? ${m.name.padEnd(24)} sin registro todavía`);
+    for (const m of aceptados) {
+        const h = aceptadoDe(m.name);
+        const plazo = h?.revisarEl ? `hasta el ${h.revisarEl}` : 'sin plazo de revisión';
+        console.log(`  · ${m.name.padEnd(24)} ${m.dias} días — aceptado ${plazo}`);
+    }
 }
 
 if (callados.length) {
     problemas.push(
         `${callados.length} medio(s) con feed llevan ${DIAS_MUDO}+ días sin aportar: ` +
-        callados.map((m) => `${m.name} (${m.dias}d)`).join(', ')
+        callados
+            .map((m) => {
+                const h = aceptadoDe(m.name);
+                const vencido = h?.estado === 'aceptado' ? ` (su «aceptado» venció el ${h.revisarEl})` : '';
+                return `${m.name} (${m.dias}d)${vencido}`;
+            })
+            .join(', ')
     );
 }
 

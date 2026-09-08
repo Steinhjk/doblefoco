@@ -94,7 +94,12 @@ jobs:
       - name: Exportar
         id: exportar
         continue-on-error: true
-        run: npm run backup 2>&1 | tee "$RUNNER_TEMP/copia.txt"
+        run: |
+          # El `exit` de abajo NO es adorno: sin el, el codigo que llega es
+          # el de `tee` --siempre 0-- y el paso queda en verde aunque el
+          # programa falle. Ver la cabecera de este fichero.
+          npm run backup 2>&1 | tee "$RUNNER_TEMP/copia.txt"
+          exit "${PIPESTATUS[0]}"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 

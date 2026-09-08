@@ -47,6 +47,52 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-08 · Segunda tanda de fichas, y una pregunta de catálogo que no es de ficha (ABIERTO)
+
+Razón Pública, Cuestión Pública y Revista RAYA. **Ninguna se propone firmar**, y
+los motivos son tres y distintos:
+
+| Ficha | Por qué no |
+|---|---|
+| `razon-publica.md` | Todo lo que publica es análisis, y el filtro no puede verlo |
+| `cuestion-publica.md` | Ocho piezas en treinta días: no hay nivel 2 |
+| `revista-raya.md` | Ocho piezas, y su orden relativo con Vorágine y Cuestión Pública no está medido |
+
+### Lo nuevo, y no es de ficha: hay opinión sirviéndose como cobertura
+
+**Razón Pública es el caso extremo del filtro ciego, y lo enseña sin discusión.**
+Sus siete titulares del 7 y 8 de septiembre son siete análisis, y **uno es
+literalmente una caricatura** —«Caricatura Muertos en bolsas Abelardo»—, que es
+una de las tres cosas que `detectarOpinion` nombra por su nombre.
+
+Publica en la raíz, así que el filtro no ve ninguna. **Y 15 de sus historias
+están hoy en el feed como si fueran cobertura.**
+
+Comprobado el mismo día contra el corpus: de las **631 piezas** que el filtro ha
+marcado como opinión, **cero están dentro de una historia** —funciona
+exactamente como promete— y **cero son de los seis medios de raíz plana**, que
+entre ellos tienen **96 de sus 267 artículos dentro de historias**.
+
+> **LA PREGUNTA ES DE CATÁLOGO Y ES DE JOSE:** ¿un medio cuyo contenido es
+> íntegramente análisis debe entrar al agrupamiento de noticias? Si la respuesta
+> es no, la salida no es bajarle el número: es lo que ya se hizo con El Manduco
+> por otra razón —se le retira el feed y se queda como medio de referencia, con
+> su ficha y su sitio en el mapa—. Eso no es silenciar a nadie: es no presentar
+> una columna como cobertura.
+
+### Y un hallazgo sobre nuestro propio catálogo, no sobre los medios
+
+**Vorágine (−0,50), Cuestión Pública (−0,45) y Revista RAYA (−0,55) son el mismo
+perfil**: fundación de periodistas, investigación, poco volumen, ninguna con
+nivel 2 suficiente. Llevan tres números distintos y **nada de lo medido justifica
+la distancia entre ellos**: el orden es una colocación nuestra dentro de nuestra
+propia escala, como el −0,35 de Las2Orillas que se propuso «por comparación con
+CasaMacondo».
+
+O se mide lo que las separa, o se declara que el catálogo no distingue entre
+ellas y llevan el mismo valor. Las dos son defendibles; tres decimales distintos
+sin evidencia, no.
+
 ## 2026-09-08 · El filtro de opinión es ciego para 22 medios, y seis son de la izquierda (ABIERTO)
 
 **Salió al preparar el nivel 2 de las fichas**, comprobando un confusor antes de
@@ -56,7 +102,14 @@ escribirlo en un CONTRA.
 ruta— y eso se eligió a propósito: no analizar el texto de la pieza es una
 decisión escrita del proyecto, y una revisión externa la señaló como acierto.
 El precio es que **un medio cuyas URL no digan de qué sección es queda fuera del
-filtro**, y sus columnas entran al corpus y al agrupamiento sin marcar.
+filtro**, y sus columnas entran al agrupamiento sin marcar.
+
+> **CÓMO FUNCIONA DE VERDAD, porque la primera versión de esta entrada lo dijo
+> mal.** La opinión NO se filtra al entrar: los artículos de opinión se guardan
+> en `articles` como los demás —el `opinion` se deriva de la URL— y de lo que se
+> excluye es del AGRUPAMIENTO. Medido el 2026-09-08: **631 piezas del corpus
+> están marcadas como opinión y CERO de ellas está dentro de una historia.** El
+> filtro funciona exactamente como promete, para quien puede ver.
 
 El registro ya lo anotaba **para Las2Orillas**, con la frase «queda MEDIDO como
 riesgo, no descubierto después». Lo que no estaba medido es el tamaño:
@@ -66,8 +119,24 @@ riesgo, no descubierto después». Lo que no estaba medido es el tamaño:
 
 **Y el reparto no es neutro.** Seis de esos 22 son de la banda de izquierda:
 Las2Orillas, Razón Pública, Semanario VOZ, Volcánicas, Colombia Informa y
-Cuestión Pública. O sea que **la opinión de un tercio de la banda entra sin
-marcar mientras la de El Tiempo o Vanguardia se filtra antes de entrar.**
+Cuestión Pública.
+
+**La cifra que lo dice todo:** de las 631 piezas de opinión que el filtro ha
+marcado en el corpus, **cero son de esos seis medios** — y 96 de sus 267
+artículos están dentro de una historia. No es que no publiquen opinión: Razón
+Pública es una revista de análisis y el 08-09-2026 tenía una **caricatura** en el
+corpus, que es una de las tres cosas que el filtro nombra por su nombre. Es que
+no se la puede ver.
+
+Comparación directa, del mismo día:
+
+| Medio | Piezas | Opinión detectada | En historias |
+|---|---:|---:|---:|
+| El Espectador | 1 342 | 177 | 0 de las 177 |
+| Vanguardia | 751 | 69 | 0 de las 69 |
+| **Las2Orillas** | 177 | **0** | 59 |
+| **Razón Pública** | 28 | **0** | 15 |
+| **Semanario VOZ** | 27 | **0** | 7 |
 
 Las consecuencias, en orden:
 

@@ -90,9 +90,20 @@ que esta ficha no puede dar hoy.
 
 `detectarOpinion` es una función pura de la URL —tres expresiones sobre la ruta—
 y las URL de Las2Orillas son planas: `las2orillas.co/titulo-de-la-pieza`, sin
-`/opinion/` ni `/columnistas/`. **Así que sus columnas entran al corpus sin
-marcar, mientras que las de El Tiempo o Vanguardia se filtran antes de entrar.**
-El registro ya lo anotaba para este medio; lo que no estaba medido es el tamaño:
+`/opinion/` ni `/columnistas/`. **Así que sus columnas entran al
+agrupamiento sin marcar, mientras que las de El Espectador o Vanguardia se
+quedan fuera.** El registro ya lo anotaba para este medio; lo que no estaba
+medido es el tamaño:
+
+| Medio | Piezas | Opinión detectada | En historias |
+|---|---:|---:|---:|
+| El Espectador | 1 342 | 177 | **0** de las 177 |
+| Vanguardia | 751 | 69 | **0** de las 69 |
+| **Las2Orillas** | 177 | **0** | 59 |
+
+De las 631 piezas de opinión que el filtro ha marcado en todo el corpus,
+**ninguna es suya**. No es que no publique columnas —es «un portal de análisis y
+columna» por su propia descripción—: es que no se las puede ver.
 
 > **Medido el 2026-09-08: 22 de los 70 medios con datos publican en la raíz —
 > 2 179 piezas, el 6,3 % del corpus— y SEIS de ellos son de la banda de

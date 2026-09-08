@@ -513,8 +513,9 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
              * Mismo patrón que ya usaba `persistArticles`. Aquí importa más,
              * porque estas filas se reescriben ENTERAS en cada ciclo.
              */
+            let escritas = 0;
             if (stories.length) {
-                await client.query(
+                const { rowCount } = await client.query(
                     `
                     INSERT INTO stories
                         (id, title, title_source_id, title_url, category, published_at,
@@ -567,6 +568,55 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
                         ambito                = EXCLUDED.ambito,
                         departamento          = EXCLUDED.departamento,
                         computed_at           = now()
+                    /*
+                     * SOLO SE ESCRIBE LO QUE CAMBIO (H4, 2026-09-08).
+                     *
+                     * Cada ciclo recalcula las historias enteras y las volvia a
+                     * escribir todas, cambiaran o no. Medido ese dia: unas
+                     * 1 010 000 filas escritas al dia entre stories y
+                     * story_articles, para un corpus que se mueve en los
+                     * bordes. Postgres no ahorra nada por su cuenta: un UPDATE
+                     * que deja los mismos valores escribe igualmente una
+                     * version nueva de la fila, y a esa version la tiene que
+                     * pasar el recolector despues.
+                     *
+                     * IS DISTINCT FROM y no <>: con <>, un NULL a cada
+                     * lado da NULL --que no es cierto-- y la fila se saltaria
+                     * la escritura o la haria segun el humor de la columna. La
+                     * mitad de estas son NULL a menudo.
+                     *
+                     * computed_at NO ENTRA EN LA COMPARACION, y con eso pasa
+                     * a significar algo: hasta hoy era «cuando corrio el ultimo
+                     * ciclo» --always now()-- y ahora es «cuando cambiaron los
+                     * numeros de esta historia», que es lo que su nombre decia.
+                     * No lo lee nadie todavia; ese es justamente el motivo de
+                     * que se pudiera arreglar sin romper nada.
+                     *
+                     * contentStore.test.js obliga a que esta lista y la del
+                     * SET digan lo mismo: una columna nueva en el SET que no
+                     * este aqui dejaria de actualizarse en silencio, que es
+                     * peor que el gasto que se quita.
+                     */
+                    WHERE (
+                        stories.title, stories.title_source_id, stories.title_url,
+                        stories.category, stories.published_at, stories.mean_bias,
+                        stories.polarization, stories.coverage_left,
+                        stories.coverage_center, stories.coverage_right,
+                        stories.dominant_spectrum, stories.insufficient_coverage,
+                        stories.blindspot_spectrum, stories.factuality,
+                        stories.source_count, stories.topics, stories.ambito,
+                        stories.departamento, stories.first_seen_at
+                    ) IS DISTINCT FROM (
+                        EXCLUDED.title, EXCLUDED.title_source_id, EXCLUDED.title_url,
+                        EXCLUDED.category, EXCLUDED.published_at, EXCLUDED.mean_bias,
+                        EXCLUDED.polarization, EXCLUDED.coverage_left,
+                        EXCLUDED.coverage_center, EXCLUDED.coverage_right,
+                        EXCLUDED.dominant_spectrum, EXCLUDED.insufficient_coverage,
+                        EXCLUDED.blindspot_spectrum, EXCLUDED.factuality,
+                        EXCLUDED.source_count, EXCLUDED.topics, EXCLUDED.ambito,
+                        EXCLUDED.departamento,
+                        LEAST(stories.first_seen_at, EXCLUDED.first_seen_at)
+                    )
                     `,
                     [
                         stories.map((s) => s.id),
@@ -596,6 +646,7 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
                         stories.map((s) => s.departamento ?? null),
                     ]
                 );
+                escritas = rowCount ?? 0;
             }
 
             // Se reconstruyen los vínculos de las historias de este ciclo: un
@@ -733,7 +784,13 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
                 [ids]
             );
 
-            return { stories: stories.length, links, removed, archived };
+            /*
+             * `stories` es lo que el ciclo PRODUJO y `escritas` lo que de
+             * verdad toco la base. La diferencia es la medida de H4, y va en el
+             * registro de cada ciclo para que el ahorro se vea el mismo dia que
+             * se despliegue en vez de tener que fiarse de este comentario.
+             */
+            return { stories: stories.length, escritas, links, removed, archived };
         });
     } catch (error) {
         console.warn(`[db] guardado de historias falló: ${error.message}`);

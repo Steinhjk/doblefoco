@@ -254,7 +254,16 @@ async function tasasDeAusenciaDelCorpus() {
 }
 
 /** Arma la historia con la misma forma que producía el motor en memoria. */
-function componerHistoria(fila, articulos, tasasDeAusencia = null) {
+/*
+ * SE EXPORTA PARA PODER PROBAR LA IDA Y LA VUELTA (2026-09-08).
+ *
+ * No la usa nadie más: es una función pura sobre filas, y exportarla es lo que
+ * permite que `contratoDeHistoria.test.js` la llame con una fila inventada y
+ * compruebe que ningún campo se pierde entre aquí y `normalizeStory`. La
+ * alternativa era leer este fichero como texto y adivinar sus claves, que es
+ * comprobar la forma del código en vez de su resultado.
+ */
+export function componerHistoria(fila, articulos, tasasDeAusencia = null) {
     // Un medio, una entrada: si publicó tres notas, no cuenta triple.
     const porMedio = new Map();
     for (const a of articulos) {

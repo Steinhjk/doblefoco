@@ -47,6 +47,285 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-09 · Tercera tanda: la izquierda queda cubierta, y la herramienta contaba de más (ABIERTO)
+
+Colombia Informa, Vorágine y RTVC. **Con estas tres, los nueve medios de
+izquierda que estaban sin ficha desde el 2026-08-26 ya tienen expediente.** La
+banda pasa de las **3 fichas de 14 medios** que se midieron aquel día a **12 de
+13**, y el único que queda sin ficha es The New York Times, que es internacional.
+
+| Ficha | Propuesta | Por qué |
+|---|---|---|
+| `colombia-informa.md` | **FIRMAR −0,65** | Es la segunda de la banda cuyo número no es una colocación relativa: el medio declara su posición hoy —«agencia de comunicación de los pueblos», articulada con la ALBA de los Movimientos Sociales— y el léxico de sus titulares la acompaña |
+| `voragine.md` | **no firmar** | Su nivel 2 no es débil: es inexistente, y una parte medible de la ausencia es nuestra |
+| `rtvc.md` | **no firmar, y el −0,35 está caducado** | Lo dice su propia ficha de propiedad, no esta |
+
+### Colombia Informa es la primera propuesta de firma desde Semanario VOZ
+
+Y el argumento tiene la misma forma con un escalón menos: en VOZ la posición
+está en la **propiedad** —el partido que lo posee—, aquí está en la **misión
+declarada**, que es nivel 4. Sostiene la banda con firmeza y la magnitud peor, y
+la ficha lo dice en su CONTRA en vez de esconderlo.
+
+**La decisión es de banda, no de decimales:** la frontera está en −0,60, así que
+firmar −0,65 o bajar a −0,55 son dos cosas distintas y las dos son defendibles.
+Lo que no lo es —y es lo único que la ficha descarta— es dejarlo en −0,65 sin
+decir cuál de las dos se hizo.
+
+**Un aviso sobre esa ficha, porque el número engaña y el confusor está al lado:**
+el expediente le da **7 socios de cobertura**, más que casi todos los de su
+volumen. Comprobado historia por historia, **los siete salen de UNA historia** —el
+asesinato de dos líderes sociales en Cajibío, que cubrieron ocho medios— y esa
+historia ya está archivada. Las otras tres son de fuente única. No participa de
+la conversación general: coincidió una vez.
+
+### La pregunta del trío, que dejó abierta la ficha de Revista RAYA, tiene respuesta
+
+Se preguntaba si Vorágine (−0,50), Cuestión Pública (−0,45) y Revista RAYA
+(−0,55) pueden llevar tres números distintos sin nada que los separe. Medido ya
+el tercero: **el que está en medio es el que menos evidencia tiene de los tres.**
+Vorágine aporta 5 piezas, de las cuales una es un cómic en inglés y otra la
+convocatoria a un taller. **Quedan tres reportajes**, y sobre tres reportajes no
+se afirma una línea.
+
+Las tres salidas están escritas en `fichas/voragine.md` con su precio. La que
+menos inventa es marcar las tres «sin medir», como ya se hizo con el
+`factuality: null` de los nueve regionales.
+
+### RTVC es la ficha que la regla del polo fijo tenía calendarizada, y la cita no se pudo cumplir
+
+El protocolo escribió que «la transición de agosto de 2026 es la ocasión más
+limpia que va a tener este catálogo en años». Un mes después: **6 piezas, ninguna
+de política, y la última del 2026-09-01**. Sus tres historias están archivadas,
+así que **hoy el medio público no aparece por ninguna parte del sitio.**
+
+La previsión que Jose dejó escrita el 2026-08-08 —que el medio pasaría a cubrir
+desde una posición oficialista con el nuevo gobierno— **no se puede ni confirmar
+ni desmentir**, y no por culpa del medio: entra por Google News, que rinde unas
+ocho veces menos, y su `rss.xml` propio sigue abandonado. Antes de darlo por
+callado hay que probarle otra ruta, como enseñó Cambio.
+
+**La tensión que hay que resolver, y es de Jose:** la regla 3 dice «sin evidencia
+de nivel 1-3 no se mueve el número» y la ficha de propiedad dice «esto caduca el
+7 de agosto». Las dos no pueden tener razón a la vez. Tres salidas, en la ficha.
+La que propone es marcarlo **sin medir**.
+
+**Y falta un nivel 1 que sí se puede tener hoy: quién lo dirige.** El período
+presidencial terminó el 7 de agosto y la ficha no nombra al director actual. El
+catálogo nombra a los accionistas de los grandes; callar a quien dirige el medio
+público sería escrutinio desigual.
+
+### HALLAZGO · El expediente contaba artículos de más, y ya está corregido
+
+`expedienteDeMedio.mjs` usaba `count(*)` sobre un `LEFT JOIN` con
+`story_articles`, que devuelve **una fila por cada historia en la que el artículo
+aparece**. Y un artículo aparece en varias: el agrupamiento se rehace en cada
+ciclo y las historias que envejecen **se congelan en vez de borrarse**, así que
+una misma pieza queda dentro de la historia archivada de ayer y de la de hoy.
+
+**Lo primero que había que comprobar, y salió bien:** de los **1 589 artículos del
+corpus que están en más de una historia, NINGUNO está en más de una historia
+VIVA**. Eso habría sido un defecto del producto —la misma pieza contada dos veces
+en portada— y no lo es: es el archivo funcionando como se diseñó.
+
+Inflación medida el 2026-09-09, y no es despreciable:
+
+| Medio | Limpio | Con el conteo viejo | |
+|---|---:|---:|---:|
+| RTVC | 6 | 7 | **+16,7 %** |
+| Cuestión Pública | 7 | 8 | **+14,3 %** |
+| Vanguardia | 737 | 810 | +9,9 % |
+| Cambio | 398 | 435 | +9,3 % |
+| El Espectador | 1 398 | 1 441 | +3,1 % |
+| Las2Orillas | 186 | 189 | +1,6 % |
+
+**Consecuencia sobre lo ya escrito:** las cifras de artículos y de cadencia de la
+primera y la segunda tanda salieron del conteo viejo. Semanario VOZ, Razón
+Pública y Revista RAYA no se mueven —su inflación es cero—; **Cambio, Las2Orillas
+y Cuestión Pública sí**, y llevan ya la nota. Al firmar cualquiera de ellas hay
+que volver a correr el expediente, que además mide sobre un corpus distinto.
+
+De paso, el expediente ahora dice **cuántas de esas historias siguen vivas**, que
+en RTVC era la diferencia entre «entra en 3 historias» y «no está en el sitio».
+
+### HALLAZGO · Vorágine es el medio peor clasificado del corpus, y hay una causa concreta
+
+**5 de 5 piezas sin tema, el 100 %**, contra el 39,9 % del corpus. Es el primero
+de la lista, por delante de La Patria (88,2 %) y El Morichal (75 %).
+
+La causa se puede señalar con el dedo: el clasificador lee titular y resumen, y
+**dos de sus cinco resúmenes son la plantilla de WordPress** —«The post … appeared
+first on Voragine.»—, es decir, el titular repetido en inglés y nada más. Un
+tercero es la nota de financiación del patrocinador, también en inglés.
+
+**Tamaño real, para no inflarlo:** esa plantilla aparece en **8 piezas de todo el
+corpus** —6 de Chocó 7 Días y 2 de Vorágine— y **las 8 están sin tema**. Es
+diminuto y con puntería: cero excepciones. Arreglarlo es descartar ese resumen
+cuando encaja con el patrón, para que el clasificador se quede con el titular en
+vez de con ruido en otro idioma.
+
+Y hay un segundo tapón, más ancho: **la categoría declarada del feed se estampa
+en bloque**. Las cinco piezas de Vorágine entran como «Judicial», incluidos el
+cómic y la convocatoria del taller. No clasifica; solo tapa.
+
+> **Es la misma enfermedad que la ruta plana** —2,5 puntos de clasificación
+> temática en los regionales, y el filtro de opinión ciego para 22 medios—: el
+> sistema falla siempre del mismo lado, el de los medios pequeños, y los pequeños
+> de este catálogo son casi todos de la banda peor documentada. **ABIERTO.**
+
+## 2026-09-08 · Segunda tanda de fichas, y una pregunta de catálogo que no es de ficha (ABIERTO)
+
+Razón Pública, Cuestión Pública y Revista RAYA. **Ninguna se propone firmar**, y
+los motivos son tres y distintos:
+
+| Ficha | Por qué no |
+|---|---|
+| `razon-publica.md` | Todo lo que publica es análisis, y el filtro no puede verlo |
+| `cuestion-publica.md` | Ocho piezas en treinta días: no hay nivel 2 |
+| `revista-raya.md` | Ocho piezas, y su orden relativo con Vorágine y Cuestión Pública no está medido |
+
+### Lo nuevo, y no es de ficha: hay opinión sirviéndose como cobertura
+
+**Razón Pública es el caso extremo del filtro ciego, y lo enseña sin discusión.**
+Sus siete titulares del 7 y 8 de septiembre son siete análisis, y **uno es
+literalmente una caricatura** —«Caricatura Muertos en bolsas Abelardo»—, que es
+una de las tres cosas que `detectarOpinion` nombra por su nombre.
+
+Publica en la raíz, así que el filtro no ve ninguna. **Y 15 de sus historias
+están hoy en el feed como si fueran cobertura.**
+
+Comprobado el mismo día contra el corpus: de las **631 piezas** que el filtro ha
+marcado como opinión, **cero están dentro de una historia** —funciona
+exactamente como promete— y **cero son de los seis medios de raíz plana**, que
+entre ellos tienen **96 de sus 267 artículos dentro de historias**.
+
+> **LA PREGUNTA ES DE CATÁLOGO Y ES DE JOSE:** ¿un medio cuyo contenido es
+> íntegramente análisis debe entrar al agrupamiento de noticias? Si la respuesta
+> es no, la salida no es bajarle el número: es lo que ya se hizo con El Manduco
+> por otra razón —se le retira el feed y se queda como medio de referencia, con
+> su ficha y su sitio en el mapa—. Eso no es silenciar a nadie: es no presentar
+> una columna como cobertura.
+
+### Y un hallazgo sobre nuestro propio catálogo, no sobre los medios
+
+**Vorágine (−0,50), Cuestión Pública (−0,45) y Revista RAYA (−0,55) son el mismo
+perfil**: fundación de periodistas, investigación, poco volumen, ninguna con
+nivel 2 suficiente. Llevan tres números distintos y **nada de lo medido justifica
+la distancia entre ellos**: el orden es una colocación nuestra dentro de nuestra
+propia escala, como el −0,35 de Las2Orillas que se propuso «por comparación con
+CasaMacondo».
+
+O se mide lo que las separa, o se declara que el catálogo no distingue entre
+ellas y llevan el mismo valor. Las dos son defendibles; tres decimales distintos
+sin evidencia, no.
+
+## 2026-09-08 · El filtro de opinión es ciego para 22 medios, y seis son de la izquierda (ABIERTO)
+
+**Salió al preparar el nivel 2 de las fichas**, comprobando un confusor antes de
+escribirlo en un CONTRA.
+
+`detectarOpinion` es una **función pura de la URL** —tres expresiones sobre la
+ruta— y eso se eligió a propósito: no analizar el texto de la pieza es una
+decisión escrita del proyecto, y una revisión externa la señaló como acierto.
+El precio es que **un medio cuyas URL no digan de qué sección es queda fuera del
+filtro**, y sus columnas entran al agrupamiento sin marcar.
+
+> **CÓMO FUNCIONA DE VERDAD, porque la primera versión de esta entrada lo dijo
+> mal.** La opinión NO se filtra al entrar: los artículos de opinión se guardan
+> en `articles` como los demás —el `opinion` se deriva de la URL— y de lo que se
+> excluye es del AGRUPAMIENTO. Medido el 2026-09-08: **631 piezas del corpus
+> están marcadas como opinión y CERO de ellas está dentro de una historia.** El
+> filtro funciona exactamente como promete, para quien puede ver.
+
+El registro ya lo anotaba **para Las2Orillas**, con la frase «queda MEDIDO como
+riesgo, no descubierto después». Lo que no estaba medido es el tamaño:
+
+> **22 de los 70 medios con datos publican en la raíz** —`medio.co/titulo`, sin
+> sección—, y son **2 179 piezas, el 6,3 % del corpus**.
+
+**Y el reparto no es neutro.** Seis de esos 22 son de la banda de izquierda:
+Las2Orillas, Razón Pública, Semanario VOZ, Volcánicas, Colombia Informa y
+Cuestión Pública.
+
+**La cifra que lo dice todo:** de las 631 piezas de opinión que el filtro ha
+marcado en el corpus, **cero son de esos seis medios** — y 96 de sus 267
+artículos están dentro de una historia. No es que no publiquen opinión: Razón
+Pública es una revista de análisis y el 08-09-2026 tenía una **caricatura** en el
+corpus, que es una de las tres cosas que el filtro nombra por su nombre. Es que
+no se la puede ver.
+
+Comparación directa, del mismo día:
+
+| Medio | Piezas | Opinión detectada | En historias |
+|---|---:|---:|---:|
+| El Espectador | 1 342 | 177 | 0 de las 177 |
+| Vanguardia | 751 | 69 | 0 de las 69 |
+| **Las2Orillas** | 177 | **0** | 59 |
+| **Razón Pública** | 28 | **0** | 15 |
+| **Semanario VOZ** | 27 | **0** | 7 |
+
+Las consecuencias, en orden:
+
+1. **Invalida el nivel 2 de esas seis fichas mientras no se separe.** El
+   aislamiento medido —Las2Orillas coincide con 13 medios donde sus pares
+   coinciden con 30— puede ser el filtro y no su agenda: una columna no coincide
+   con la cobertura de nadie porque no cubre un hecho, opina sobre él.
+2. **Toca la `q` del modelo de puntos ciegos.** La tasa de la izquierda se
+   calcula sobre apariciones, y las de estos seis incluyen columnas que en los
+   demás medios no cuentan. La tasa está inflada por una asimetría nuestra, en la
+   banda que sostiene el modelo.
+3. **Y es el mismo defecto que «regionales sin sección en la URL»**, que ya cuesta
+   2,5 puntos de clasificación temática. La causa es una sola: la ruta plana.
+
+**Lo que NO se propone:** analizar el texto de la pieza. Eso cambiaría una
+decisión de diseño del proyecto entero por un problema de seis medios.
+
+**Salidas posibles, sin decidir:** marcar la opinión por el feed —muchos medios
+publican sus columnas en un feed aparte—, por la categoría declarada del ítem
+RSS, o declarar el hueco en la metodología y descontar esos medios del cálculo de
+la tasa. La tercera es la única que no requiere tocar la ingesta.
+
+**Estado: ABIERTO.** Bloquea la firma de las fichas de Las2Orillas y —por lo
+menos— de las otras cinco de raíz plana.
+
+## 2026-09-08 · Las fichas de la izquierda: la herramienta y la primera tanda
+
+**Decisión de Jose de hoy:** que yo prepare el expediente y él firme. La regla no
+cambia —el número lo pone y lo firma Jose— pero el trabajo que no es juicio
+—contar, comparar y citar— deja de costar una tarde por ficha.
+
+**`npm run expediente -- --medio=<id>`** produce el nivel 2 que el protocolo pide
+y que no producía nada: volumen y cadencia, temas contra la agenda común,
+co-cobertura con elevación, aislamiento **con su confusor al lado** —un medio
+pequeño coincide poco porque publica poco, y sin esa comparación la cifra
+acusaría a los pequeños de ser raros— y sus titulares literales para leer.
+
+**Lo primero que dijo, y no lo esperaba:** los nueve medios de izquierda sin
+ficha **están publicando**, todos, con piezas de esta semana. El diagnóstico de
+agosto —«5 de sus 13 medios aportan cero»— era de la ventana de 72 h; con los 30
+días de retención el panorama es otro.
+
+**Primera tanda, escrita y sin firmar:**
+
+| Ficha | Propuesta | Por qué |
+|---|---|---|
+| `semanario-voz.md` | **firmar −0,80** | Único medio cuyo nivel 1 fija la orientación solo: es el órgano del PCC, que hoy lo posee. Cero socios de cobertura donde sus pares tienen entre 2 y 14 |
+| `las2orillas.md` | **no firmar** | Su nivel 2 está contaminado por el filtro de opinión ciego (entrada de arriba) |
+| `cambio.md` | **no firmar −0,40, y revisarlo hacia la mixta** | Ver abajo |
+
+**Lo de Cambio es lo gordo de la tanda.** Es el medio con más peso de la banda
+—381 de las ~644 piezas de toda la izquierda en el corpus— y la evidencia del
+presente no sostiene su −0,40: fiscaliza a los dos gobiernos (lo que la regla del
+polo fijo excluye expresamente como evidencia), no tiene agenda propia medible
+—38 socios, la mediana de su volumen— y **sus siete socios de mayor elevación son
+de la mixta o de la derecha, ninguno de la izquierda**: El Nuevo Siglo (+0,55) a
+4,3×, La FM (+0,35) a 3,4×.
+
+**Y eso mueve el modelo.** Si Cambio pasa a la mixta, la tasa base de la
+izquierda baja de golpe y cambia qué historias se marcan como punto ciego. No es
+motivo para dejar el número donde está: es motivo para no decidirlo deprisa y
+para volver a medir la 3.2 el día que se firme.
+
 ## De la auditoría de integración del 2026-09-01
 
 Pedida por Jose: una auditoría de la integración entre sistemas, con sus

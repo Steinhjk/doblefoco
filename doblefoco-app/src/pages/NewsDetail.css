@@ -916,3 +916,27 @@
         padding: 20px;
     }
 }
+
+
+/*
+ * El aviso de archivo. Discreto y en el tono de los demás avisos del
+ * sitio —el de ausencia declarada, el de quien dirige—: no es una alarma
+ * sobre la noticia, es un dato sobre lo que se está leyendo.
+ */
+.detail-archivo {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0 0 0.9rem;
+    padding: 0.6rem 0.8rem;
+    border-left: 3px solid var(--text-muted);
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+.detail-archivo strong { color: var(--text-main); }
+
+.detail-archivo svg { flex: 0 0 auto; margin-top: 0.15rem; }

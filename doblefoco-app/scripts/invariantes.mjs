@@ -258,10 +258,29 @@ async function invarianteDeLaUnion() {
     });
 
     try {
+        /*
+         * SOLO LAS VIVAS, Y ESO HAY QUE DECIRLO (2026-09-08).
+         *
+         * Desde el 2026-09-02 `stories` guarda además lo archivado, que está
+         * CONGELADO: ningún ciclo lo vuelve a componer. Una historia sellada a
+         * la que le faltara un tema no se puede arreglar —ni debe arreglarse,
+         * porque su página afirma lo que afirmaba ese día—, así que acusarla
+         * sería un aviso permanente que nadie puede cerrar. Y un aviso que no
+         * se puede cerrar es como se estropea un vigilante.
+         *
+         * El invariante habla de lo que el motor produce AHORA, y eso son las
+         * vivas.
+         *
+         * Y SE DEVUELVEN LOS IDS, no solo el conteo. Esto acusó a «1 historia»
+         * el 2026-09-07 y el 2026-09-08, y las dos veces había vuelto a estar
+         * limpio cuando alguien fue a mirar: un número suelto convierte un
+         * fallo intermitente en algo indiagnosticable.
+         */
         const { rows } = await pool.query(`
-            SELECT count(*)::int AS rotas
+            SELECT s.id, s.title, s.published_at
               FROM stories s
-             WHERE cardinality(coalesce(s.topics, '{}')) = 0
+             WHERE s.archivada_el IS NULL
+               AND cardinality(coalesce(s.topics, '{}')) = 0
                AND EXISTS (
                    SELECT 1
                      FROM story_articles sa
@@ -269,16 +288,22 @@ async function invarianteDeLaUnion() {
                     WHERE sa.story_id = s.id
                       AND cardinality(coalesce(a.topics, '{}')) > 0
                )
+             ORDER BY s.published_at DESC NULLS LAST
+             LIMIT 10
         `);
 
-        const rotas = rows[0]?.rotas ?? 0;
+        const rotas = rows.length;
+        const muestra = rows
+            .map((r) => `${r.id} «${String(r.title ?? '').slice(0, 60)}»`)
+            .join('; ');
+
         return rotas === 0
-            ? { ok: true, detalle: 'ninguna historia pierde los temas de sus artículos' }
+            ? { ok: true, detalle: 'ninguna historia viva pierde los temas de sus artículos' }
             : {
                   ok: false,
                   detalle:
                       `${rotas} historia(s) no tienen ningún tema aunque alguno de sus ` +
-                      'artículos sí lo tiene. Los temas se escriben y no se leen',
+                      `artículos sí lo tiene. Los temas se escriben y no se leen — ${muestra}`,
               };
     } catch (error) {
         return { ok: null, detalle: `no se pudo consultar la base: ${error?.message}` };

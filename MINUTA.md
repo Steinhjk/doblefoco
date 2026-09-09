@@ -532,6 +532,70 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 
 # CERRADO
 
+## 2026-09-08 · El archivo se llenó de huérfanas, y la red que lo vigilaba tenía agujeros (PR #24)
+
+**Seis días después de estrenar el archivo, cuatro de cada cinco páginas
+archivadas no debían estar ahí.** Salió de mirar `/api/health` al volver:
+`historiasArchivadas: 1975` en seis días, para un corpus de 6 234 vivas.
+
+### Se archivaba lo que el agrupamiento recomponía, no solo lo que envejecía
+
+Una historia deja de producirse por dos motivos que no se parecen en nada: sus
+artículos salieron de la ventana —el hecho envejeció, y eso es archivo— o un
+artículo nuevo unió dos grupos y ahora cuelgan de otro id, que no es archivo
+sino la misma noticia con otro nombre, con su URL y anunciada en el sitemap.
+
+**Medido contra producción:** de 1 975 archivadas, **1 554 (79 %)** tenían su
+artículo más nuevo con menos de 48 h y 695 con menos de doce. Solo 421 son
+archivo de verdad. De las 1 554, **864 comparten artículo con otra historia**
+—recomposición demostrada— y las otras 690 dejaron de producirse con sus piezas
+frescas, que tampoco es envejecer.
+
+Se archiva ahora por **madurez**: cuando el artículo más reciente ya pasó de dos
+tercios de la ventana de agrupamiento —48 h de 72—. Es una fracción y no un
+número de horas, para que siga significando lo mismo si la ventana cambia. El
+criterio evidente —«sin artículos en la ventana»— **está medido y no funciona**:
+el techo de `MAX_ARTICLES` expulsa por comparabilidad antes de que cumplan la
+edad, así que con él el archivo se habría quedado vacío para siempre.
+
+- **El arreglo estaba escrito desde el 2026-09-02 y sin comprometer**, en la
+  copia de trabajo, junto al commit de la Etapa B. Seis días a un `git checkout`
+  de distancia.
+
+### La red que vigila el archivo miraba dos ficheros de los ocho
+
+`archivo.test.js` nació mirando `feedStore` y `contentStore`, que son los que
+sirven la portada. **Seis consultas de fuera de esos dos** seguían tratando
+`stories` como «lo que hay ahora», y ninguna fallaba nada:
+
+- **`recategorizar` REESCRIBÍA historias congeladas.** Volver a clasificarlas
+  con el léxico de hoy cambia una página que el lector cree fija.
+- **El invariante de la unión acusaba historias archivadas**, que nadie puede
+  arreglar porque ningún ciclo las recompone. Un aviso que no se puede cerrar es
+  como se estropea un vigilante. Y ahora devuelve **los ids**: acusó «1
+  historia» el 7 y el 8 de septiembre y las dos veces estaba limpio cuando
+  alguien fue a mirar.
+- **`evalSucesos` y `cleanFiltered`** prometían del archivo cosas que no ocurren.
+- **Moderación, reportes y el informe de migración SÍ deben verlo**, y ahora lo
+  declaran: una historia sellada sigue siendo pública, así que tiene que poder
+  retirarse y reportarse.
+
+El barrido es ahora todo `server/**` y `scripts/**`: un fichero nuevo entra en
+la red sin que nadie se acuerde de añadirlo. Comprobado con un fichero de
+mentira, que lo acusa.
+
+- **Estado: HECHO, en la PR #24.** Se cierra al fusionar.
+
+### Lo que queda por hacer A MANO, y en este orden
+
+`npm run archivo:huerfanas` aplica el mismo criterio hacia atrás —en seco por
+defecto, con la lista a la vista y respetando la salvaguarda de moderación—.
+Hoy borraría 1 554. **Se ejecuta DESPUÉS de que Fly sirva la PR #24**, no antes:
+si no, el ciclo siguiente vuelve a llenar el archivo. Decisión de Jose del
+2026-09-08, con las otras dos opciones —dejarlas o desarchivarlas— medidas y
+descartadas: desarchivar no sirve porque sus artículos acabarán madurando y el
+ciclo las archivaría igual, duplicando la historia viva que las absorbió.
+
 ## 2026-09-02 · Dos defectos que Jose ve y las pruebas no: la categoría que no lleva a ningún lado y el número pegado al titular
 
 **Los dos son de la misma familia:** la página se pinta, no falla nada —ni la

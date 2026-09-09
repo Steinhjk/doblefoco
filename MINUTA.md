@@ -623,6 +623,58 @@ si no, el ciclo siguiente vuelve a llenar el archivo. Decisión de Jose del
 2026-09-08, con las otras dos opciones —dejarlas o desarchivarlas— medidas y
 descartadas: desarchivar no sirve porque sus artículos acabarán madurando y el
 ciclo las archivaría igual, duplicando la historia viva que las absorbió.
+## 2026-09-08 · El timbre de los vigilantes no podía sonar: la tubería se comía el fallo (PR #25)
+
+**El 31 de agosto y el 1 de septiembre se les puso timbre a los cinco
+vigilantes. El mismo cambio se lo quitó.** Para meter la salida completa dentro
+del issue, cada paso pasó a escribirse `programa 2>&1 | tee fichero`. El shell
+por defecto de Actions es `bash -e {0}` —sin `pipefail`—, así que el código de
+una tubería es el de `tee`, que es 0 siempre. El paso queda en verde, y con él
+`steps.<id>.outcome`, que es lo que deciden los `if:` que abren el issue y los
+que ponen el job en rojo.
+
+**La prueba está en Actions y no hace falta razonar sobre ella:** la vigilancia
+del 2026-09-08 a las 15:45 UTC imprimió «✗ HAY QUE MIRAR ESTO · 1 medio(s) con
+feed llevan 14+ días sin aportar: Telecaribe (26d)» y GitHub la marcó como
+exitosa. **Doce días acusando a un medio mudo sin que naciera un solo aviso**, y
+no por falta de detección —la detección funcionaba— sino porque el aviso no
+llegaba a nacer. Los dos aspas del 7 y el 8 las causó el invariante de la unión,
+que es uno de los dos pasos que sí rescataban `PIPESTATUS`.
+
+Es la enfermedad de siempre —un vigilante que detecta y nadie que se entere—
+pero un escalón más abajo que las otras veces: aquí ni siquiera había una
+acusación que ignorar.
+
+- **Arreglados los cinco pasos** que deciden por el código de salida:
+  vigilancia, desfase, copia y los dos del archivo.
+- **La auditoría y el centinela deciden por su resumen en JSON**, no por el
+  código. Eso era verdad y estaba escrito en prosa; ahora está DECLARADO con una
+  frase que la prueba reconoce, en vez de parecerse por casualidad al fallo.
+- **`server/flujos.test.js`** vigila el patrón en todos los flujos. Comprobado
+  quitándole el rescate a la copia: la acusa por su nombre.
+- **Estado: HECHO, en la PR #25.** Se cierra al fusionar.
+
+### Y la vigilancia lee ya el libro de hallazgos, con caducidad
+
+`aceptado` significa desde que se escribió que una persona miró el caso y
+decidió que deje de avisar «sin desaparecer». La vigilancia no leía el libro, así
+que Telecaribe —aceptado el 2026-09-02— seguía saliendo en rojo cada seis horas.
+Dos vigilantes que se contradicen sobre el mismo medio no son el doble de
+vigilancia: son uno al que se le empieza a hacer caso y otro al que no.
+
+**Decisión de Jose (2026-09-08): respetarlo, pero con caducidad.** Se añade
+`revisarEl` al libro; pasada esa fecha la vigilancia vuelve a acusar y dice que
+el plazo venció. **La fecha no se inventó**: Telecaribe ya la tenía escrita en su
+propia nota —«si el 13 de octubre de 2026 sigue sin publicar, deja de ser un
+silencio y pasa a ser una baja que hay que decidir»—, solo que en prosa, donde
+ninguna máquina la lee.
+
+**Los otros tres aceptados se quedan sin plazo** porque su motivo es estructural
+—el feed de W Radio expone dos ítems y eso no cambia con el calendario— y la
+auditoría los lista aparte para que se vea cuáles son. **Vorágine es el que
+conviene mirar**: su nota dice «se revisa si la cadencia grabada muestra más de
+30 días sin publicar», que es una regla y no una fecha, y hoy no la comprueba
+nadie. Convertirla en `revisarEl` es una línea, pero la fecha la pone Jose.
 
 ## 2026-09-02 · Dos defectos que Jose ve y las pruebas no: la categoría que no lleva a ningún lado y el número pegado al titular
 

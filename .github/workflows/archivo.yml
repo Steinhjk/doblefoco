@@ -86,7 +86,12 @@ jobs:
       - name: Aplicar migraciones
         id: migrar
         continue-on-error: true
-        run: npm run db:migrate 2>&1 | tee "$RUNNER_TEMP/archivo.txt"
+        run: |
+          # El `exit` de abajo NO es adorno: sin el, el codigo que llega es
+          # el de `tee` --siempre 0-- y el paso queda en verde aunque el
+          # programa falle. Ver la cabecera de este fichero.
+          npm run db:migrate 2>&1 | tee "$RUNNER_TEMP/archivo.txt"
+          exit "${PIPESTATUS[0]}"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
@@ -94,7 +99,12 @@ jobs:
         id: archivar
         if: steps.migrar.outcome == 'success'
         continue-on-error: true
-        run: npm run archivo:conducta 2>&1 | tee -a "$RUNNER_TEMP/archivo.txt"
+        run: |
+          # El `exit` de abajo NO es adorno: sin el, el codigo que llega es
+          # el de `tee` --siempre 0-- y el paso queda en verde aunque el
+          # programa falle. Ver la cabecera de este fichero.
+          npm run archivo:conducta 2>&1 | tee -a "$RUNNER_TEMP/archivo.txt"
+          exit "${PIPESTATUS[0]}"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 

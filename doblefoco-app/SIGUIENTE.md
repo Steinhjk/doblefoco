@@ -1,5 +1,53 @@
 # Por dónde seguir
 
+## 2026-09-09, cierre · Las siete están integradas y verificadas juntas; falta fusionar
+
+**Lo primero al volver: `integracion/tanda-del-8-de-septiembre` es la rama que
+hay que fusionar**, y una sola fusión cierra las siete PR (#24 a #30). No la
+pude fusionar yo: el clasificador bloquea `gh pr merge`.
+
+Se armó desde `main` con el orden del traspaso anterior —#24 → #28 → #29
+encadenadas; #25, #26, #27 y #30 sueltas— y se verificó el resultado **junto**,
+que es lo que exige el precedente del 2026-08-21 y lo que esta vez se pagó solo:
+
+> **Una prueba falla solo cuando las ramas se juntan.** `archivo.test.js` (#24)
+> caza a `expedienteDeMedio.mjs` (#30). Por separado las dos están en verde.
+> **El arreglo está en la rama de la #30 (`a99e283`)**, no solo en la de
+> integración, para que fusionar una detrás de otra tampoco deje `main` en rojo.
+
+Verificado sobre el resultado fusionado: lint limpio, `tsc` sin errores,
+**828/828 pruebas**, build correcto, `check:comentarios` y `check:registry` en
+verde, y **7/7 invariantes** contra producción.
+
+**Lo que NO está verificado:** nadie ha abierto el sitio con esto dentro. La rama
+no está desplegada y `npm run mirar` no se ha corrido contra ella.
+
+### La lista completa de lo pendiente está en `MINUTA.md`
+
+Entrada del 2026-09-09, «Lo que queda pendiente, en una sola lista»: 23 puntos
+ordenados por de quién son —gestos de Jose, decisiones editoriales medidas, lo
+que hay que ejecutar el día del despliegue, código, y lo que tiene fecha—. Aquí
+solo lo que no puede esperar:
+
+1. **Fusionar la rama de integración.**
+2. **En cuanto Fly sirva la #24**, y no antes:
+   ```
+   npm run archivo:huerfanas                 (en seco, la lista a la vista)
+   npm run archivo:huerfanas -- --apply      (borra las 1 554)
+   ```
+3. **Mirar una línea del ciclo tras la #29** — «1 512 hist. (43 escritas)». Si
+   las dos cifras siguen iguales, el `WHERE` de H4 no filtra nada.
+
+### La banda de izquierda quedó cubierta, y ninguna ficha está firmada
+
+Las nueve fichas que faltaban se escribieron en tres tandas. La banda pasa de
+3 de 14 a **12 de 13** —el único sin ficha es The New York Times, internacional—
+y el catálogo entero a 59 de 78. **Solo dos llevan propuesta de firma**:
+Semanario VOZ (−0,80) y Colombia Informa (−0,65). Las tres decisiones que
+esperan están en la lista de la minuta, puntos 4 a 6.
+
+---
+
 ## 2026-09-08, cierre · Seis PRs en verde, y un orden de fusión que importa
 
 **Ninguna la pude fusionar yo** (el clasificador bloquea `gh pr merge`). El

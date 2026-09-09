@@ -47,6 +47,107 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-09 · Las siete ramas, verificadas juntas — y una prueba que solo falla junta (ABIERTO)
+
+Se armó `integracion/tanda-del-8-de-septiembre` desde `main` y se fusionaron las
+siete en el orden que dejó escrito el traspaso del 08-09: **#24 → #28 → #29**
+encadenadas, y **#25, #26, #27 y #30** sueltas. Es el procedimiento del
+2026-08-21 —fusionar a una rama de integración, verificar el resultado **junto**
+y no rama por rama—, y esta vez el procedimiento se pagó solo.
+
+### La prueba que solo falla junta
+
+**`archivo.test.js`, la red que trae la #24, cazó a `expedienteDeMedio.mjs`, que
+trae la #30.** Por separado las dos ramas están en verde; juntas, no. La red
+barre todo `server/` y `scripts/` buscando consultas que lean `stories` sin
+filtrar lo archivado ni declararlo, y el expediente tiene una: el denominador de
+la elevación.
+
+**La respuesta correcta no era filtrarla, era declararla.** Ese denominador
+cuenta todas las historias porque el numerador también las cuenta todas: una
+ficha mide **treinta días de conducta**, no la portada de hoy. Filtrar solo el
+denominador le daría el doble de elevación a un medio con la mitad de sus
+historias congeladas, que es un artefacto de la fecha en que se corrió el
+expediente y no un hecho sobre el medio.
+
+> **Y el arreglo se llevó a la rama de la #30 (`a99e283`), no solo a la de
+> integración.** Si se fusionan una detrás de otra sin él, `main` se queda en
+> rojo aunque las dos PR pasen por separado. Es la trampa exacta de fusionar en
+> cadena sin probar el resultado.
+
+### Los conflictos fueron tres, y ninguno de código
+
+| Fichero | Qué pasaba | Cómo se resolvió |
+|---|---|---|
+| `MINUTA.md` (×2) | Dos entradas nuevas al principio de la misma sección | Se quedan las dos |
+| `SIGUIENTE.md` | Dos versiones del **mismo** traspaso del mismo día | Se queda la de seis PR, que es posterior y cubre a la otra |
+| `package.json` | Dos entradas distintas de `scripts` en la misma línea | Se quedan las dos, con la sangría alineada |
+
+### Verificado sobre el resultado fusionado
+
+Lint limpio · `tsc` sin errores · **828/828 pruebas** · build correcto ·
+`check:comentarios` y `check:registry` en verde · **7/7 invariantes** contra
+producción.
+
+**Lo que NO está verificado, y conviene decirlo:** nadie ha abierto el sitio con
+esto dentro. La rama no está desplegada y `npm run mirar` no se ha corrido contra
+ella.
+
+---
+
+## 2026-09-09 · Lo que queda pendiente, en una sola lista
+
+Escrito a petición de Jose, para que no haya que reconstruirlo leyendo la minuta
+entera. Lo que no está aquí no está pendiente: está olvidado.
+
+### Gestos que solo puede hacer Jose
+
+| | Qué | Desde |
+|---|---|---|
+| 1 | **Fusionar.** `gh pr merge` lo bloquea el clasificador. La vía recomendada es una sola fusión de la rama de integración, que cierra las siete a la vez | 2026-09-08 |
+| 2 | **Issue #4 del centinela** | 2026-09-02 |
+| 3 | **Sacar el repositorio de OneDrive** (I-9; locks y sync de `node_modules` y `.git`) | 2026-09-01 |
+
+### Decisiones editoriales medidas y esperando firma
+
+| | Qué se decide | Dónde está la evidencia |
+|---|---|---|
+| 4 | **Colombia Informa: firmar −0,65 o bajar a −0,55.** Es de banda, no de decimales: la frontera está en −0,60 | `fichas/colombia-informa.md` |
+| 5 | **El trío Vorágine / Cuestión Pública / Revista RAYA:** un solo valor, tres justificados, o las tres «sin medir» | `fichas/voragine.md` |
+| 6 | **RTVC:** la regla 3 dice «no lo muevas» y su ficha de propiedad dice «esto caduca el 7 de agosto». Las dos no pueden tener razón | `fichas/rtvc.md` |
+| 7 | **¿Un medio que solo publica análisis debe entrar al agrupamiento?** (Razón Pública) | `MINUTA.md`, 2026-09-08 |
+| 8 | **El buscador promete un resumen que el motor no manda:** o el motor manda el `snippet`, o la interfaz deja de prometerlo | `MINUTA.md`, 2026-09-08 |
+| 9 | **El único `aceptado` sin plazo es W Radio**, y su motivo es estructural —su feed expone dos ítems, y eso no cambia con el calendario—. O se le pone `revisarEl` o se escribe que no lo lleva a propósito | `auditoria/hallazgos.json` |
+
+### A ejecutar el día del despliegue, en este orden
+
+| | Qué | Por qué no antes |
+|---|---|---|
+| 10 | `npm run archivo:huerfanas` en seco, y luego `-- --apply` (borra 1 554) | Antes de que Fly sirva la #24, el ciclo vuelve a llenar el archivo con el criterio viejo |
+| 11 | Mirar una línea del ciclo: **«1 512 hist. (43 escritas)»**. Si las dos cifras siguen iguales tras la #29, el `WHERE` no filtra nada | Es la prueba de que H4 funcionó, y se lee sola |
+| 12 | Abrir el sitio y correr `npm run mirar` | Nadie lo ha mirado con las siete dentro |
+
+### Código, sin orden obligado
+
+| | Qué |
+|---|---|
+| 13 | **2.3**, la consulta compartida de portada — lo único gordo que queda del plan de continuidad |
+| 14 | **2.4**, el serializador de rehidratación |
+| 15 | **`story_articles`, la otra mitad de H4**: hoy se borra y se reescribe entera; comparar conjuntos de enlaces es otro diseño |
+| 16 | **La plantilla de WordPress en el resumen** —«The post … appeared first on …»—: 8 piezas del corpus, **las 8 sin tema**. Descartar ese resumen deja al clasificador con el titular en vez de con ruido |
+| 17 | **La categoría del feed se estampa en bloque**: las cinco piezas de Vorágine entran como «Judicial», cómic incluido |
+| 18 | **El filtro de opinión, ciego para 22 medios de ruta plana**, seis de ellos de la izquierda. Las tres salidas están escritas y ninguna elegida |
+| 19 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
+
+### Con fecha, y no dependen de nadie
+
+| | Cuándo | Qué |
+|---|---|---|
+| 20 | **2 de octubre** | Medir el tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla por cadencia (3.9) con 30 días de serie |
+| 21 | **1 de octubre** | Se revisa Vorágine: su hallazgo está `resuelto` con esa fecha de vuelta |
+| 22 | **13 de octubre** | Caduca el `aceptado` de Telecaribe — 26 días sin publicar el 08-09, y es canal público |
+| 23 | **Diciembre** | Revisar la opción B del archivo permanente |
+
 ## 2026-09-08 · El buscador dice buscar en el resumen, y el resumen no existe (ABIERTO)
 
 **Lo encontró la prueba de ida y vuelta del contrato en su primera pasada**, que

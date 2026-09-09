@@ -237,6 +237,7 @@ const fichaDeFeed = (parcial) => ({
     conImagen: 0,
     ventanaHoras: null,
     piezasPorDia: null,
+    huecoTipicoHoras: null,
     edadMasNuevoHoras: null,
     margen: null,
     margenRed: null,
@@ -263,7 +264,7 @@ async function auditarFeed(feeds) {
                 .filter(Number.isFinite);
 
             // La ventana se mide sobre el feed ENTERO: es el ritmo del medio.
-            const { ventanaHoras, piezasPorDia } = ventanaYRitmo(fechas);
+            const { ventanaHoras, piezasPorDia, huecoTipicoHoras } = ventanaYRitmo(fechas);
 
             // Lo fresco, en cambio, se mide sobre lo que el motor toma.
             const tomados = items.slice(0, techoDelFeed(feed));
@@ -291,6 +292,8 @@ async function auditarFeed(feeds) {
                     .length,
                 ventanaHoras: ventanaHoras === null ? null : Number(ventanaHoras.toFixed(1)),
                 piezasPorDia: piezasPorDia === null ? null : Number(piezasPorDia.toFixed(1)),
+                huecoTipicoHoras:
+                    huecoTipicoHoras === null ? null : Number(huecoTipicoHoras.toFixed(1)),
                 edadMasNuevoHoras:
                     edadMasNuevoHoras === null ? null : Number(edadMasNuevoHoras.toFixed(1)),
                 /*
@@ -302,7 +305,7 @@ async function auditarFeed(feeds) {
                  * «ritmo desconocido». Y no lo es: su feed sirve piezas de hace
                  * diez meses, que es el hallazgo que el redondeo tapaba.
                  */
-                crudo: { piezasPorDia, edadMasNuevoHoras },
+                crudo: { piezasPorDia, huecoTipicoHoras, edadMasNuevoHoras },
                 cronologico: esCronologico(edades),
                 ms: Date.now() - inicio,
                 respondio: true,
@@ -318,8 +321,9 @@ async function auditarFeed(feeds) {
                 conImagen: 0,
                 ventanaHoras: null,
                 piezasPorDia: null,
+                huecoTipicoHoras: null,
                 edadMasNuevoHoras: null,
-                crudo: { piezasPorDia: null, edadMasNuevoHoras: null },
+                crudo: { piezasPorDia: null, huecoTipicoHoras: null, edadMasNuevoHoras: null },
                 cronologico: null,
                 ms: Date.now() - inicio,
                 respondio: false,
@@ -358,6 +362,7 @@ async function auditarFeed(feeds) {
         conImagen: mejor.conImagen,
         ventanaHoras: mejor.ventanaHoras,
         piezasPorDia: mejor.piezasPorDia,
+        huecoTipicoHoras: mejor.huecoTipicoHoras ?? null,
         edadMasNuevoHoras: mejor.edadMasNuevoHoras,
         margen: mejor.margen,
         margenRed: mejor.margenRed,

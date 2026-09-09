@@ -19,8 +19,21 @@ Verificado sobre el resultado fusionado: lint limpio, `tsc` sin errores,
 **828/828 pruebas**, build correcto, `check:comentarios` y `check:registry` en
 verde, y **7/7 invariantes** contra producción.
 
-**Lo que NO está verificado:** nadie ha abierto el sitio con esto dentro. La rama
-no está desplegada y `npm run mirar` no se ha corrido contra ella.
+**Y se ha mirado:** `npm run mirar` sobre las diez páginas con la rama montada.
+`/transparencia/sobre-nosotros` responde —el 404 que arregla la #26— y la portada
+sale entera. Lo que sigue sin verificarse es el motor: la rama no está desplegada
+en Fly.
+
+> **Ojo con `mirar`, porque la primera pasada mintió.** Dijo «Nada que reprochar
+> a lo que se ve» sobre una portada con cero historias. La causa es local —este
+> `.env.local` lleva `VITE_API_URL=http://localhost:5000` y `.env.example` dice
+> `same-origin`— pero el defecto de verdad es que **el ritual de publicación no
+> distingue una portada llena de una vacía**. Mientras no se arregle, hay que
+> correrlo así:
+>
+> ```
+> VITE_API_URL=same-origin npm run mirar
+> ```
 
 ### La lista completa de lo pendiente está en `MINUTA.md`
 

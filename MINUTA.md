@@ -89,9 +89,27 @@ Lint limpio · `tsc` sin errores · **828/828 pruebas** · build correcto ·
 `check:comentarios` y `check:registry` en verde · **7/7 invariantes** contra
 producción.
 
-**Lo que NO está verificado, y conviene decirlo:** nadie ha abierto el sitio con
-esto dentro. La rama no está desplegada y `npm run mirar` no se ha corrido contra
-ella.
+**Y sí se ha mirado**, que es la parte que faltaba: `npm run mirar` sobre las
+diez páginas de escritorio con la rama montada. `/transparencia/sobre-nosotros`
+responde —era el 404 que arregla la #26— y la portada sale entera. Lo que sigue
+sin verificarse es el motor: la rama no está desplegada en Fly.
+
+### Y mirar de verdad destapó que el que mira no mira
+
+**`npm run mirar` dijo «Nada que reprochar a lo que se ve» sobre una portada
+completamente vacía.** Cero historias, los esqueletos de carga sin resolver,
+«Mostrando 0 de 0 cargadas», y aun así las diez páginas salieron con su ✓.
+
+La causa inmediata es local y no del repositorio: este `.env.local` lleva
+`VITE_API_URL=http://localhost:5000`, un puerto donde no hay nada, mientras
+`.env.example` dice `same-origin` y la cabecera de `vite.config.js` dice que la
+variable **tiene que quedar vacía** para que el proxy de desarrollo funcione.
+Corriendo `VITE_API_URL=same-origin npm run mirar` la portada se llena.
+
+> **Pero el defecto que importa no es ese, es el otro:** el ritual que este
+> proyecto usa antes de publicar **no distingue una portada llena de una vacía**.
+> Es la enfermedad de siempre —un vigilante que no puede fallar— y esta vez le
+> tocaba al que se supone que mira. Queda **ABIERTO** en la lista de abajo.
 
 ---
 
@@ -137,16 +155,17 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | 16 | **La plantilla de WordPress en el resumen** —«The post … appeared first on …»—: 8 piezas del corpus, **las 8 sin tema**. Descartar ese resumen deja al clasificador con el titular en vez de con ruido |
 | 17 | **La categoría del feed se estampa en bloque**: las cinco piezas de Vorágine entran como «Judicial», cómic incluido |
 | 18 | **El filtro de opinión, ciego para 22 medios de ruta plana**, seis de ellos de la izquierda. Las tres salidas están escritas y ninguna elegida |
-| 19 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
+| 19 | **`mirar` no distingue una portada llena de una vacía** y dice «nada que reprochar» sobre cero historias. Negarse a dar el ✓ de `/` sin historias es la red que faltaba, y es el propio ritual de publicación el que la necesita |
+| 20 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
 
 ### Con fecha, y no dependen de nadie
 
 | | Cuándo | Qué |
 |---|---|---|
-| 20 | **2 de octubre** | Medir el tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla por cadencia (3.9) con 30 días de serie |
-| 21 | **1 de octubre** | Se revisa Vorágine: su hallazgo está `resuelto` con esa fecha de vuelta |
-| 22 | **13 de octubre** | Caduca el `aceptado` de Telecaribe — 26 días sin publicar el 08-09, y es canal público |
-| 23 | **Diciembre** | Revisar la opción B del archivo permanente |
+| 21 | **2 de octubre** | Medir el tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla por cadencia (3.9) con 30 días de serie |
+| 22 | **1 de octubre** | Se revisa Vorágine: su hallazgo está `resuelto` con esa fecha de vuelta |
+| 23 | **13 de octubre** | Caduca el `aceptado` de Telecaribe — 26 días sin publicar el 08-09, y es canal público |
+| 24 | **Diciembre** | Revisar la opción B del archivo permanente |
 
 ## 2026-09-08 · El buscador dice buscar en el resumen, y el resumen no existe (ABIERTO)
 

@@ -198,6 +198,13 @@ if (!totalSuyos) {
 }
 
 // ── Co-cobertura ──────────────────────────────────────────────────────────
+// ARCHIVO A PROPÓSITO. Este denominador cuenta TODAS las historias, vivas y
+// archivadas, y tiene que hacerlo para que la elevación signifique algo: el
+// numerador —las historias de cada medio— también las cuenta todas, porque una
+// ficha mide treinta días de conducta y no la portada de hoy. Filtrar solo aquí
+// haría que un medio con la mitad de sus historias congeladas saliera con el
+// doble de elevación, que es un artefacto de la fecha en que se corrió el
+// expediente. Medido el 2026-09-09: 8 674 vivas y 2 370 archivadas.
 const { rows: totalHistorias } = await query(`SELECT count(*)::int AS n FROM stories`);
 const historiasDelCorpus = totalHistorias[0].n || 1;
 

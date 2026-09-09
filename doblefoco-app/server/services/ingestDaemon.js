@@ -730,7 +730,19 @@ async function persistToDatabase(fresh) {
     await refreshModeration();
 
     const parts = [`db: +${saved} art.`];
-    if (stories) parts.push(`${stories.stories} hist.`);
+    /*
+     * PRODUCIDAS Y ESCRITAS, las dos. Desde H4 el ciclo solo escribe las
+     * historias cuyos números cambiaron, y esa diferencia es lo único que
+     * demuestra que el ahorro existe: «1 512 hist. (43 escritas)» se lee de un
+     * vistazo y no hay que creerse ningún comentario.
+     */
+    if (stories) {
+        parts.push(
+            stories.escritas === stories.stories
+                ? `${stories.stories} hist.`
+                : `${stories.stories} hist. (${stories.escritas} escritas)`
+        );
+    }
     if (stories?.removed) parts.push(`−${stories.removed} obsoletas`);
     // Lo archivado se informa aparte de lo borrado: son cosas distintas y la
     // diferencia es el producto entero. Ver el bloque del archivo en schema.sql.

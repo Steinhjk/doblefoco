@@ -47,6 +47,132 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-09 · Tercera tanda: la izquierda queda cubierta, y la herramienta contaba de más (ABIERTO)
+
+Colombia Informa, Vorágine y RTVC. **Con estas tres, los nueve medios de
+izquierda que estaban sin ficha desde el 2026-08-26 ya tienen expediente.** La
+banda pasa de las **3 fichas de 14 medios** que se midieron aquel día a **12 de
+13**, y el único que queda sin ficha es The New York Times, que es internacional.
+
+| Ficha | Propuesta | Por qué |
+|---|---|---|
+| `colombia-informa.md` | **FIRMAR −0,65** | Es la segunda de la banda cuyo número no es una colocación relativa: el medio declara su posición hoy —«agencia de comunicación de los pueblos», articulada con la ALBA de los Movimientos Sociales— y el léxico de sus titulares la acompaña |
+| `voragine.md` | **no firmar** | Su nivel 2 no es débil: es inexistente, y una parte medible de la ausencia es nuestra |
+| `rtvc.md` | **no firmar, y el −0,35 está caducado** | Lo dice su propia ficha de propiedad, no esta |
+
+### Colombia Informa es la primera propuesta de firma desde Semanario VOZ
+
+Y el argumento tiene la misma forma con un escalón menos: en VOZ la posición
+está en la **propiedad** —el partido que lo posee—, aquí está en la **misión
+declarada**, que es nivel 4. Sostiene la banda con firmeza y la magnitud peor, y
+la ficha lo dice en su CONTRA en vez de esconderlo.
+
+**La decisión es de banda, no de decimales:** la frontera está en −0,60, así que
+firmar −0,65 o bajar a −0,55 son dos cosas distintas y las dos son defendibles.
+Lo que no lo es —y es lo único que la ficha descarta— es dejarlo en −0,65 sin
+decir cuál de las dos se hizo.
+
+**Un aviso sobre esa ficha, porque el número engaña y el confusor está al lado:**
+el expediente le da **7 socios de cobertura**, más que casi todos los de su
+volumen. Comprobado historia por historia, **los siete salen de UNA historia** —el
+asesinato de dos líderes sociales en Cajibío, que cubrieron ocho medios— y esa
+historia ya está archivada. Las otras tres son de fuente única. No participa de
+la conversación general: coincidió una vez.
+
+### La pregunta del trío, que dejó abierta la ficha de Revista RAYA, tiene respuesta
+
+Se preguntaba si Vorágine (−0,50), Cuestión Pública (−0,45) y Revista RAYA
+(−0,55) pueden llevar tres números distintos sin nada que los separe. Medido ya
+el tercero: **el que está en medio es el que menos evidencia tiene de los tres.**
+Vorágine aporta 5 piezas, de las cuales una es un cómic en inglés y otra la
+convocatoria a un taller. **Quedan tres reportajes**, y sobre tres reportajes no
+se afirma una línea.
+
+Las tres salidas están escritas en `fichas/voragine.md` con su precio. La que
+menos inventa es marcar las tres «sin medir», como ya se hizo con el
+`factuality: null` de los nueve regionales.
+
+### RTVC es la ficha que la regla del polo fijo tenía calendarizada, y la cita no se pudo cumplir
+
+El protocolo escribió que «la transición de agosto de 2026 es la ocasión más
+limpia que va a tener este catálogo en años». Un mes después: **6 piezas, ninguna
+de política, y la última del 2026-09-01**. Sus tres historias están archivadas,
+así que **hoy el medio público no aparece por ninguna parte del sitio.**
+
+La previsión que Jose dejó escrita el 2026-08-08 —que el medio pasaría a cubrir
+desde una posición oficialista con el nuevo gobierno— **no se puede ni confirmar
+ni desmentir**, y no por culpa del medio: entra por Google News, que rinde unas
+ocho veces menos, y su `rss.xml` propio sigue abandonado. Antes de darlo por
+callado hay que probarle otra ruta, como enseñó Cambio.
+
+**La tensión que hay que resolver, y es de Jose:** la regla 3 dice «sin evidencia
+de nivel 1-3 no se mueve el número» y la ficha de propiedad dice «esto caduca el
+7 de agosto». Las dos no pueden tener razón a la vez. Tres salidas, en la ficha.
+La que propone es marcarlo **sin medir**.
+
+**Y falta un nivel 1 que sí se puede tener hoy: quién lo dirige.** El período
+presidencial terminó el 7 de agosto y la ficha no nombra al director actual. El
+catálogo nombra a los accionistas de los grandes; callar a quien dirige el medio
+público sería escrutinio desigual.
+
+### HALLAZGO · El expediente contaba artículos de más, y ya está corregido
+
+`expedienteDeMedio.mjs` usaba `count(*)` sobre un `LEFT JOIN` con
+`story_articles`, que devuelve **una fila por cada historia en la que el artículo
+aparece**. Y un artículo aparece en varias: el agrupamiento se rehace en cada
+ciclo y las historias que envejecen **se congelan en vez de borrarse**, así que
+una misma pieza queda dentro de la historia archivada de ayer y de la de hoy.
+
+**Lo primero que había que comprobar, y salió bien:** de los **1 589 artículos del
+corpus que están en más de una historia, NINGUNO está en más de una historia
+VIVA**. Eso habría sido un defecto del producto —la misma pieza contada dos veces
+en portada— y no lo es: es el archivo funcionando como se diseñó.
+
+Inflación medida el 2026-09-09, y no es despreciable:
+
+| Medio | Limpio | Con el conteo viejo | |
+|---|---:|---:|---:|
+| RTVC | 6 | 7 | **+16,7 %** |
+| Cuestión Pública | 7 | 8 | **+14,3 %** |
+| Vanguardia | 737 | 810 | +9,9 % |
+| Cambio | 398 | 435 | +9,3 % |
+| El Espectador | 1 398 | 1 441 | +3,1 % |
+| Las2Orillas | 186 | 189 | +1,6 % |
+
+**Consecuencia sobre lo ya escrito:** las cifras de artículos y de cadencia de la
+primera y la segunda tanda salieron del conteo viejo. Semanario VOZ, Razón
+Pública y Revista RAYA no se mueven —su inflación es cero—; **Cambio, Las2Orillas
+y Cuestión Pública sí**, y llevan ya la nota. Al firmar cualquiera de ellas hay
+que volver a correr el expediente, que además mide sobre un corpus distinto.
+
+De paso, el expediente ahora dice **cuántas de esas historias siguen vivas**, que
+en RTVC era la diferencia entre «entra en 3 historias» y «no está en el sitio».
+
+### HALLAZGO · Vorágine es el medio peor clasificado del corpus, y hay una causa concreta
+
+**5 de 5 piezas sin tema, el 100 %**, contra el 39,9 % del corpus. Es el primero
+de la lista, por delante de La Patria (88,2 %) y El Morichal (75 %).
+
+La causa se puede señalar con el dedo: el clasificador lee titular y resumen, y
+**dos de sus cinco resúmenes son la plantilla de WordPress** —«The post … appeared
+first on Voragine.»—, es decir, el titular repetido en inglés y nada más. Un
+tercero es la nota de financiación del patrocinador, también en inglés.
+
+**Tamaño real, para no inflarlo:** esa plantilla aparece en **8 piezas de todo el
+corpus** —6 de Chocó 7 Días y 2 de Vorágine— y **las 8 están sin tema**. Es
+diminuto y con puntería: cero excepciones. Arreglarlo es descartar ese resumen
+cuando encaja con el patrón, para que el clasificador se quede con el titular en
+vez de con ruido en otro idioma.
+
+Y hay un segundo tapón, más ancho: **la categoría declarada del feed se estampa
+en bloque**. Las cinco piezas de Vorágine entran como «Judicial», incluidos el
+cómic y la convocatoria del taller. No clasifica; solo tapa.
+
+> **Es la misma enfermedad que la ruta plana** —2,5 puntos de clasificación
+> temática en los regionales, y el filtro de opinión ciego para 22 medios—: el
+> sistema falla siempre del mismo lado, el de los medios pequeños, y los pequeños
+> de este catálogo son casi todos de la banda peor documentada. **ABIERTO.**
+
 ## 2026-09-08 · Segunda tanda de fichas, y una pregunta de catálogo que no es de ficha (ABIERTO)
 
 Razón Pública, Cuestión Pública y Revista RAYA. **Ninguna se propone firmar**, y

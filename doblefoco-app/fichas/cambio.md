@@ -8,6 +8,7 @@
 | **Fecha** | 2026-09-08 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Nivel 2** | `npm run expediente -- --medio=cambio`, medido el 2026-09-08 |
+| **Corrección** | El conteo de artículos de este expediente salió inflado un 9,3 %: `expedienteDeMedio.mjs` contaba una fila por historia. Corregido el 2026-09-09; al firmar hay que volver a correrlo |
 
 > **Es el medio de la banda de izquierda con más peso en el corpus:** 381
 > artículos y 116 historias en 30 días, tres veces Las2Orillas y quince veces

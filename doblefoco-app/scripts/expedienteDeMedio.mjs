@@ -122,9 +122,20 @@ if (propiedad) {
 }
 
 // ── Volumen y cadencia ────────────────────────────────────────────────────
+//
+// `count(DISTINCT a.id)` Y NO `count(*)`, y la diferencia no es cosmética. El
+// LEFT JOIN con `story_articles` devuelve una fila por cada historia en la que
+// el artículo aparece, y un artículo APARECE EN VARIAS: el agrupamiento se
+// rehace en cada ciclo y las historias que envejecen se congelan en vez de
+// borrarse, así que una misma pieza queda dentro de la historia archivada de
+// ayer y de la de hoy. Medido el 2026-09-09: 1 589 artículos del corpus están
+// en más de una historia —y NINGUNO en más de una VIVA, que es lo que habría
+// sido un defecto del producto—. Con `count(*)` el conteo se inflaba hasta un
+// 17 % (RTVC daba 7 piezas por 6) y la cadencia salía de un divisor falso.
 const { rows: vol } = await query(
-    `SELECT count(*)::int AS articulos,
+    `SELECT count(DISTINCT a.id)::int AS articulos,
             count(DISTINCT sa.story_id)::int AS historias,
+            count(DISTINCT sa.story_id) FILTER (WHERE st.archivada_el IS NULL)::int AS vivas,
             count(DISTINCT sa.story_id) FILTER (WHERE st.source_count > 1)::int AS multifuente,
             min(a.published_at) AS primera,
             max(a.published_at) AS ultima
@@ -141,6 +152,7 @@ console.log('\n  NIVEL 2 — VOLUMEN Y CADENCIA');
 linea();
 console.log(`  artículos en la base ....... ${v.articulos}`);
 console.log(`  historias en las que entra . ${v.historias}  (${v.multifuente} compartidas con otro medio)`);
+console.log(`  de ellas, hoy en el sitio .. ${v.vivas}  (el resto están archivadas)`);
 console.log(`  última pieza ............... ${v.ultima ? new Date(v.ultima).toISOString().slice(0, 16).replace('T', ' ') : '—'}`);
 if (horasDeSerie > 0 && v.articulos > 1) {
     console.log(`  una pieza cada ............. ${(horasDeSerie / (v.articulos - 1)).toFixed(1)} h`);

@@ -8,6 +8,7 @@
 | **Fecha** | 2026-09-08 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
 | **Nivel 2** | `npm run expediente -- --medio=las2orillas`, medido el 2026-09-08 |
+| **Corrección** | El conteo de artículos de este expediente salió inflado un 1,6 %: `expedienteDeMedio.mjs` contaba una fila por historia. Corregido el 2026-09-09; al firmar hay que volver a correrlo |
 
 ---
 

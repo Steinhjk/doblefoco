@@ -1079,6 +1079,16 @@ sin errores, `check:comentarios` en verde, build correcto y `npm run mirar`
 importada**, no con una reimplementación, que es lo que dio las cifras de
 arriba.
 
+> **Y una observación sobre el CI, que no es de este cambio pero se vio aquí.**
+> `ci.yml` se dispara con `pull_request: branches: [main]`, así que **una PR
+> contra la rama de integración no pasa `verify` ni `esquema`**: la #33 solo
+> tiene los dos checks de Vercel. No es grave hoy —lo que se fusiona a `main`
+> es la #32, y esa sí los pasa con todo dentro—, pero significa que **el CI no
+> vigila el escalón intermedio**, que es justo donde se resuelven los
+> conflictos. Los tres pasos se corrieron a mano y en verde; `esquema` no,
+> porque exige `DATABASE_URL_PRUEBA` y borra el esquema que apunta —el
+> guardarraíl hizo su trabajo—, y este cambio no toca SQL.
+
 ## 2026-09-09 · Los vínculos también dejan de reescribirse enteros (punto 15 · la otra mitad de H4)
 
 H4 quitó el 8 de septiembre el despilfarro de `stories`. **`story_articles`

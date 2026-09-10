@@ -1,5 +1,26 @@
 # Por dónde seguir
 
+## 2026-09-09, tarde · El que mira ya sabe cuándo no hay nada que mirar
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32, una fusión cierra las siete—. Nada de eso ha cambiado; lo de abajo sigue
+vigente.
+
+Lo hecho después: **el punto 19 de la minuta**, que era el defecto que destapó la
+propia sesión anterior. `npm run mirar` daba «Nada que reprochar a lo que se ve»
+sobre una portada con cero historias, porque sus tres comprobaciones miran la
+forma y **una página en blanco las pasa todas**. Ahora hay una cuarta: no quedan
+esqueletos de carga, hay un suelo de texto, y **las cuatro páginas que sirve el
+motor tienen que traer dentro lo que prometen**.
+
+Comprobado en los dos sentidos: 20/20 rutas en verde (escritorio y móvil) contra
+el motor de producción, y ✗ con el motor muerto. Lint y `check:comentarios`
+limpios. El commit va **sobre la rama de integración**, así que no añade una
+fusión más.
+
+**El resto del punto 19 ya no aplica:** el prefijo `VITE_API_URL=same-origin` no
+hacía falta, y la razón está en la minuta.
+
 ## 2026-09-09, cierre · Las siete están integradas y verificadas juntas; falta fusionar
 
 **Lo primero al volver: `integracion/tanda-del-8-de-septiembre` es la rama que
@@ -25,15 +46,13 @@ sale entera. Lo que sigue sin verificarse es el motor: la rama no está desplega
 en Fly.
 
 > **Ojo con `mirar`, porque la primera pasada mintió.** Dijo «Nada que reprochar
-> a lo que se ve» sobre una portada con cero historias. La causa es local —este
-> `.env.local` lleva `VITE_API_URL=http://localhost:5000` y `.env.example` dice
-> `same-origin`— pero el defecto de verdad es que **el ritual de publicación no
-> distingue una portada llena de una vacía**. Mientras no se arregle, hay que
-> correrlo así:
+> a lo que se ve» sobre una portada con cero historias. **Arreglado el
+> 2026-09-09**, entrada en `MINUTA.md`: ahora hay una cuarta comprobación y esa
+> misma portada sale ✗.
 >
-> ```
-> VITE_API_URL=same-origin npm run mirar
-> ```
+> Y el prefijo `VITE_API_URL=same-origin` **no hace falta**: `arrancarVite()` ya
+> se lo mete a Vite, y la variable inline gana a la del `.env.local`. `npm run
+> mirar` a secas trae la portada llena.
 
 ### La lista completa de lo pendiente está en `MINUTA.md`
 

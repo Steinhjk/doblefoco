@@ -1,5 +1,5 @@
 /**
- * MIRAR LAS PÁGINAS CON UN NAVEGADOR, Y AFIRMAR TRES COSAS SOBRE LO QUE SE VE.
+ * MIRAR LAS PÁGINAS CON UN NAVEGADOR, Y AFIRMAR CUATRO COSAS SOBRE LO QUE SE VE.
  *
  *     npm run mirar                    todas las rutas
  *     npm run mirar -- /categorias     solo una
@@ -26,8 +26,9 @@
  * comiéndose un tercio del ancho. Ninguno rompía un test. Los tres se veían.
  *
  * QUÉ NO ES. No prueba lógica ni sustituye al e2e con base de prueba. Comprueba
- * que lo que se pinta se puede leer. Es el 10 % del coste y cubre la clase de
- * fallo que más veces ha mordido aquí.
+ * que lo que se pinta se puede leer, y —desde el 2026-09-09— que hay algo que
+ * leer. Es el 10 % del coste y cubre la clase de fallo que más veces ha mordido
+ * aquí.
  *
  * DÓNDE VA. De momento a mano. En CI solo cuando esté demostrado que no da
  * falsos positivos: un vigilante que parpadea se ignora, y entonces sobra.
@@ -63,6 +64,49 @@ const RUTAS_POR_DEFECTO = [
     '/transparencia/datos',
     '/transparencia/limitaciones',
 ];
+/**
+ * LO QUE CADA PÁGINA TIENE QUE TRAER DENTRO, Y NO SOLO PINTAR BIEN.
+ *
+ * El 2026-09-09 esta herramienta dio ✓ a las diez rutas con la PORTADA VACÍA:
+ * cero historias, los esqueletos de carga sin resolver y «Mostrando 0 de 0
+ * cargadas» a la vista. Y tenía razón en lo suyo —nada se salía, nada se
+ * recortaba, nada pisaba a nadie— porque las tres comprobaciones de abajo miran
+ * la FORMA y ninguna mira si hay algo dentro. Una página en blanco es la que
+ * mejor las pasa todas.
+ *
+ * Eso importa más aquí que en otro sitio, porque `npm run mirar` es el último
+ * paso del ritual de publicación: si no distingue una portada llena de una
+ * vacía, el ritual no protege de nada.
+ *
+ * QUÉ SE DECLARA Y QUÉ NO. Solo las cuatro páginas cuyo contenido lo sirve el
+ * motor, que son las que pueden salir vacías sin que nada falle: si la API no
+ * contesta, se pintan enteras y sin una sola historia. Las seis de
+ * Transparencia son prosa escrita en el repositorio —o sale con la página, o no
+ * hay página— y solo se les exige el suelo de texto de la comprobación 4.
+ *
+ * Los mínimos son deliberadamente bajos. Esto no mide cuántas historias hay:
+ * separa «hay» de «no hay». Un vigilante que parpadea se acaba ignorando, y
+ * entonces sobra.
+ */
+const SENALES = {
+    '/': [
+        { que: 'la historia destacada', selector: '.hero-spotlight-card', minimo: 1 },
+        { que: 'las tarjetas del feed', selector: '.news-card', minimo: 3 },
+    ],
+    '/categorias': [
+        { que: 'las secciones', selector: '.category-name', minimo: 5 },
+    ],
+    '/tendencias': [
+        { que: 'las historias en tendencia', selector: '.trend-item', minimo: 3 },
+    ],
+    // El mapa se puede estar viendo como gráfico o como tabla, y el botón de la
+    // vista lo recuerda el navegador. Se acepta cualquiera de las dos: lo que se
+    // afirma es que hay medios pintados, no en qué forma.
+    '/mapa-medios': [
+        { que: 'los medios del mapa', selector: '.map-point-group, .map-table-link', minimo: 10 },
+    ],
+};
+
 const CAPTURAS = 'capturas';
 /** Puerto de partida. Si está ocupado, Vite coge el siguiente y lo dice. */
 const PUERTO = 5390;
@@ -122,9 +166,13 @@ function arrancarVite() {
 }
 
 /**
- * Lo que se comprueba en cada página. Tres cosas, y ninguna es de gusto.
+ * Lo que se comprueba en cada página. Cuatro cosas, y ninguna es de gusto.
+ *
+ * Las tres primeras miran la forma; la cuarta, que haya algo dentro. Recibe las
+ * señales de SU ruta, porque esta función se ejecuta dentro del navegador y no
+ * ve nada de aquí fuera.
  */
-const COMPROBACIONES = () => {
+const COMPROBACIONES = (senales) => {
     const fallos = [];
 
     // 1. La página no puede desplazarse en horizontal. Es el síntoma que deja
@@ -176,6 +224,40 @@ const COMPROBACIONES = () => {
         }
     }
 
+    // 4. La página trae dentro lo que promete. Tres afirmaciones, de la más
+    //    barata a la más concreta, y las tres dicen «aquí no hay nada» de una
+    //    forma distinta.
+
+    //    a) Los esqueletos de carga se han resuelto. Se dibujan mientras llega
+    //       la primera respuesta; si siguen ahí después de la espera, la página
+    //       no ha terminado de cargar y lo que se ve no es lo que se publica.
+    const esqueletos = document.querySelectorAll('[class^="esqueleto-"], [class*=" esqueleto-"]');
+    if (esqueletos.length) {
+        fallos.push(
+            `${esqueletos.length} esqueleto${esqueletos.length === 1 ? '' : 's'} de carga sin resolver: ` +
+            `la página no terminó de cargar, así que no se ha mirado lo que se publica`
+        );
+    }
+
+    //    b) El suelo de texto, que es lo único que se le exige a las páginas de
+    //       prosa. Una página en blanco o un error de arranque no lo pasan.
+    const contenido = document.querySelector('#main-content') ?? document.body;
+    const texto = (contenido.innerText ?? '').trim();
+    if (texto.length < 400) {
+        fallos.push(`la página está prácticamente vacía: ${texto.length} caracteres de texto en el contenido`);
+    }
+
+    //    c) Las señales declaradas para esta ruta.
+    for (const senal of senales) {
+        const cuantos = document.querySelectorAll(senal.selector).length;
+        if (cuantos < senal.minimo) {
+            fallos.push(
+                `sin ${senal.que}: ${cuantos} en la página y se esperaban ${senal.minimo} ` +
+                `como mínimo («${senal.selector}»)`
+            );
+        }
+    }
+
     return [...new Set(fallos)];
 };
 
@@ -206,7 +288,7 @@ for (const vista of vistas) {
             .catch((e) => consola.push(`no cargó: ${e.message.slice(0, 90)}`));
         await pagina.waitForTimeout(ESPERA_MS);
 
-        const fallos = await pagina.evaluate(COMPROBACIONES);
+        const fallos = await pagina.evaluate(COMPROBACIONES, SENALES[ruta] ?? []);
         const nombre = `${vista.nombre}${ruta.replace(/\//g, '-') || '-inicio'}`;
         await pagina.screenshot({ path: `${CAPTURAS}/${nombre}.png` });
 

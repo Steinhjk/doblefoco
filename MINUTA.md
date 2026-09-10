@@ -155,7 +155,7 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | 16 | **La plantilla de WordPress en el resumen** —«The post … appeared first on …»—: 8 piezas del corpus, **las 8 sin tema**. Descartar ese resumen deja al clasificador con el titular en vez de con ruido |
 | 17 | **La categoría del feed se estampa en bloque**: las cinco piezas de Vorágine entran como «Judicial», cómic incluido |
 | 18 | **El filtro de opinión, ciego para 22 medios de ruta plana**, seis de ellos de la izquierda. Las tres salidas están escritas y ninguna elegida |
-| 19 | **`mirar` no distingue una portada llena de una vacía** y dice «nada que reprochar» sobre cero historias. Negarse a dar el ✓ de `/` sin historias es la red que faltaba, y es el propio ritual de publicación el que la necesita |
+| 19 | ~~**`mirar` no distingue una portada llena de una vacía**~~ · **HECHO el 2026-09-09**, entrada en CERRADO |
 | 20 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
 
 ### Con fecha, y no dependen de nadie
@@ -957,6 +957,60 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · `mirar` ya no da el ✓ a una página vacía (punto 19)
+
+**El vigilante que mira antes de publicar no distinguía una portada llena de una
+vacía.** Sus tres comprobaciones miran la FORMA —que nada se salga, que nada se
+recorte, que nadie pise al vecino— y **una página en blanco las pasa todas**. Es
+la enfermedad de siempre de este proyecto, un vigilante que no puede fallar, y
+esta vez le tocaba al último paso del ritual de publicación.
+
+### Lo que se le añadió: una cuarta comprobación, en tres afirmaciones
+
+| | Qué afirma | Qué caza |
+|---|---|---|
+| a | No quedan esqueletos de carga sin resolver | La página que nunca terminó de cargar: lo que se ve no es lo que se publica |
+| b | El contenido tiene al menos 400 caracteres de texto | La página en blanco y el error de arranque |
+| c | Las **señales declaradas** de esa ruta están ahí | La portada entera y sin una sola historia |
+
+Las señales solo se declaran para **las cuatro páginas cuyo contenido lo sirve el
+motor** —`/`, `/categorias`, `/tendencias`, `/mapa-medios`—, que son las únicas
+que pueden salir vacías sin que nada falle. Las seis de Transparencia son prosa
+del repositorio: o sale con la página, o no hay página, y solo se les exige el
+suelo de texto.
+
+**Los mínimos son deliberadamente bajos** —1 destacada, 3 tarjetas, 5 secciones,
+3 tendencias, 10 medios en el mapa—. Esto no mide cuántas historias hay: separa
+«hay» de «no hay». Un vigilante que parpadea se acaba ignorando, y entonces
+sobra.
+
+### Comprobado en los dos sentidos, que es lo que faltaba la vez pasada
+
+- **Con el motor de producción**: 10/10 rutas en verde en escritorio, y 20/20
+  añadiendo móvil. Ningún falso positivo.
+- **Con el motor muerto** (`API_DEV=http://127.0.0.1:5999 npm run mirar -- /`):
+  la portada sale ✗ y dice por qué —«sin la historia destacada: 0 en la página»,
+  «sin las tarjetas del feed: 0 en la página»—. **Antes ese mismo caso daba
+  «Nada que reprochar a lo que se ve».**
+
+Lint limpio y `check:comentarios` en verde. No toca nada que importe a las
+pruebas: `scripts/mirar.mjs` solo lo nombran `package.json` y la configuración
+de ESLint.
+
+### Y una corrección sobre la causa que se escribió ayer
+
+Se dejó escrito que había que correrlo como `VITE_API_URL=same-origin npm run
+mirar` porque este `.env.local` apunta a `http://localhost:5000`. **Hoy no hace
+falta, y conviene saber por qué**: `arrancarVite()` ya le mete
+`VITE_API_URL: 'same-origin'` al proceso de Vite, y Vite da **prioridad a la
+variable inline sobre la del fichero `.env.local`**. Corriendo `npm run mirar` a
+secas, sin prefijo, la portada sale llena — y la captura lo enseña.
+
+Así que el `.env.local` no es la causa que se le atribuyó. La portada vacía de
+ayer tuvo otra —la más probable, que la API no contestara en ese momento—, que
+es exactamente el caso que la comprobación de arriba ahora sí caza. **El defecto
+que importaba era el segundo, y ese era real y está arreglado.**
 
 ## 2026-09-08 · El archivo se llenó de huérfanas, y la red que lo vigilaba tenía agujeros (PR #24)
 

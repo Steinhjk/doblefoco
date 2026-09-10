@@ -151,7 +151,7 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 |---|---|
 | 13 | ~~**2.3**, la consulta compartida de portada~~ · **HECHO el 2026-09-09**: de cinco peticiones a una. Entrada en CERRADO |
 | 14 | ~~**2.4**, el serializador de rehidratación~~ · **HECHO el 2026-09-09**: el `INSERT` y la lectura salen de una sola lista. Entrada en CERRADO |
-| 15 | **`story_articles`, la otra mitad de H4**: hoy se borra y se reescribe entera; comparar conjuntos de enlaces es otro diseño |
+| 15 | ~~**`story_articles`, la otra mitad de H4**~~ · **HECHO el 2026-09-09**: 386 886 filas al día a solo las que cambian. Entrada en CERRADO |
 | 16 | ~~**La plantilla de WordPress en el resumen**~~ · **HECHO el 2026-09-09**, y la premisa era falsa: no rinde nada en clasificación. Entrada en CERRADO |
 | 17 | ~~**La categoría del feed se estampa en bloque**~~ · **HECHO el 2026-09-09**, y era el 37,4 % de la portada, no cinco piezas. Entrada en CERRADO |
 | 18 | ~~**El filtro de opinión, ciego para 22 medios de ruta plana**~~ · **HECHO el 2026-09-09**: Jose eligió la etiqueta del RSS. Entrada en CERRADO |
@@ -959,6 +959,68 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · Los vínculos también dejan de reescribirse enteros (punto 15 · la otra mitad de H4)
+
+H4 quitó el 8 de septiembre el despilfarro de `stories`. **`story_articles`
+seguía borrándose y reinsertándose completa en cada ciclo**, y esa era la mitad
+que quedaba.
+
+**Medido antes de tocar nada:** 7 586 enlaces de historias vivas × **51 ciclos en
+las últimas 24 h** = **386 886 filas escritas al día**. Y esa cifra se queda
+corta: cada `DELETE` deja además su propia versión muerta de la fila para que la
+recoja el recolector después.
+
+El argumento es el mismo que el de H4, y sigue siendo cierto: **el corpus se
+mueve en los bordes.** Un artículo entra o sale de una historia de vez en cuando;
+los otros siete mil quinientos vínculos son exactamente los mismos que hace media
+hora.
+
+### Cómo quedó: una sola sentencia con tres partes
+
+| | Qué hace |
+|---|---|
+| `deseado` | los vínculos que este ciclo quiere, filtrados por que el artículo exista de verdad |
+| `sobran` | borra los que la historia tenía y ya no quiere |
+| `faltan` | inserta los que quiere y no tenía |
+
+Van juntas en una sentencia para que las tres vean el mismo estado de la base.
+
+**`faltan` usa `NOT EXISTS`, y no solo `ON CONFLICT DO NOTHING`, y esa es la
+diferencia entre ahorrar y creer que se ahorra:** Postgres resuelve el conflicto
+insertando una fila especulativa y matándola después, así que «no hacer nada» al
+chocar **sigue costando escritura**. Con el `ON CONFLICT` a secas, los 7 586
+enlaces se habrían escrito igual y el ahorro habría sido imaginario. El
+`ON CONFLICT` se queda para el único caso que el `NOT EXISTS` no cubre: que el
+mismo par venga dos veces dentro del propio lote.
+
+### Comprobado contra la base, mirando el `xmin` de cada fila
+
+`xmin` es la transacción que escribió la fila: si no cambia, Postgres no la
+reescribió. Todo dentro de una transacción terminada en `ROLLBACK`, sobre una
+historia real de seis enlaces:
+
+| Escenario | Resultado |
+|---|---|
+| **Nada cambia** —el caso de casi todos los ciclos— | `borrados: 0, insertados: 0` · **0 filas reescritas de 6** |
+| Entra un artículo y sale otro | `borrados: 1, insertados: 1` · las **5 restantes con el mismo `xmin`**, intactas |
+
+No es una estimación: es la base diciendo qué filas tocó.
+
+### Y se lee desde el ciclo, como la de H4
+
+La línea del ciclo añade **`enlaces +N −M`** cuando hay algo que decir. Antes se
+reescribían los 7 586 en cada pasada; si vuelven a salir números de ese orden, el
+diferencial dejó de filtrar y se ve de un vistazo, sin creerse ningún comentario.
+
+### Verificado
+
+**847/847 pruebas** —4 nuevas, y vigilan la forma, que es lo que puede volver
+atrás sin que nadie se entere: que ya no exista el `DELETE ... WHERE story_id =
+ANY`, que la sentencia calcule deseado/sobran/faltan, que `faltan` lleve su
+`NOT EXISTS`, y que el ciclo informe de las dos cifras—. Lint limpio, `tsc` sin
+errores, `check:comentarios` en verde y build correcto. No se corre `mirar`: esto
+no toca una línea de la interfaz.
 
 ## 2026-09-09 · La costura base↔memoria deja de estar escrita dos veces (punto 14 · 2.4)
 

@@ -296,3 +296,56 @@ describe('el WHERE que evita reescribir lo idéntico', () => {
         expect(DAEMON).toContain('escritas)`');
     });
 });
+
+/**
+ * LA OTRA MITAD DE H4: LOS VÍNCULOS (2026-09-09).
+ *
+ * `stories` dejó de reescribirse entera el 08-09, pero `story_articles` seguía
+ * borrándose y reinsertándose completa en cada ciclo: **7 586 enlaces de
+ * historias vivas × 51 ciclos = 386 886 filas al día**, sin contar la versión
+ * muerta que deja cada `DELETE`.
+ *
+ * Comprobado contra la base el 2026-09-09, dentro de una transacción con
+ * `ROLLBACK` y mirando el `xmin` de cada fila, que es lo que dice si Postgres la
+ * reescribió: **cuando nada cambia se escriben 0 filas de 6**, y cuando entra un
+ * artículo y sale otro se escriben exactamente esas dos, con las cinco restantes
+ * intactas.
+ *
+ * Esta prueba vigila la forma, que es lo que puede volver atrás sin que nadie se
+ * entere: el día que alguien «simplifique» esto a un DELETE + INSERT, la cuenta
+ * vuelve a dispararse y el sitio sigue funcionando igual de bien.
+ */
+describe('los vínculos solo se escriben si cambiaron', () => {
+    const FUENTE = readFileSync(fileURLToPath(new URL('./contentStore.js', import.meta.url)), 'utf8');
+
+    it('ya no se borran todos los del ciclo para volver a insertarlos', () => {
+        expect(FUENTE).not.toContain('DELETE FROM story_articles WHERE story_id = ANY');
+    });
+
+    it('la sentencia calcula el deseado, lo que sobra y lo que falta', () => {
+        expect(FUENTE).toContain('WITH deseado AS (');
+        expect(FUENTE).toContain('sobran AS (');
+        expect(FUENTE).toContain('faltan AS (');
+    });
+
+    /*
+     * `NOT EXISTS` y no solo `ON CONFLICT DO NOTHING`: Postgres resuelve el
+     * conflicto insertando una fila especulativa y matándola después, así que
+     * «no hacer nada» al chocar sigue costando escritura. Sin el `NOT EXISTS`,
+     * los 7 586 enlaces se escribirían igual y el ahorro sería imaginario.
+     */
+    it('lo que ya existe no se intenta insertar', () => {
+        const faltan = FUENTE.slice(FUENTE.indexOf('faltan AS ('), FUENTE.indexOf('SELECT (SELECT count(*) FROM sobran)'));
+        expect(faltan).toContain('WHERE NOT EXISTS');
+        expect(faltan).toContain('ON CONFLICT DO NOTHING');
+    });
+
+    it('el ciclo informa de cuántos enlaces tocó de verdad', () => {
+        const DAEMON = readFileSync(
+            fileURLToPath(new URL('../services/ingestDaemon.js', import.meta.url)),
+            'utf8'
+        );
+        expect(FUENTE).toContain('enlacesBorrados');
+        expect(DAEMON).toContain('enlaces +${stories.links} −${stories.enlacesBorrados}');
+    });
+});

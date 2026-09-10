@@ -1,5 +1,34 @@
 # Por dónde seguir
 
+## 2026-09-09, cierre de la jornada · La lista de código queda vacía
+
+**Lo primero al volver: fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—, que ya lleva **siete** puntos dentro además de las siete PR originales.
+
+Hecho el **punto 15**, la otra mitad de H4. `story_articles` se borraba y se
+reinsertaba entera en cada ciclo: **7 586 enlaces × 51 ciclos = 386 886 filas al
+día**, sin contar la versión muerta que deja cada `DELETE`. Ahora una sola
+sentencia calcula lo deseado, borra lo que sobra e inserta lo que falta.
+
+> **El detalle que decide si esto ahorra de verdad:** `faltan` usa `NOT EXISTS` y
+> no solo `ON CONFLICT DO NOTHING`. Postgres resuelve el conflicto insertando una
+> fila especulativa y matándola después, así que «no hacer nada» al chocar sigue
+> costando escritura.
+
+Comprobado contra la base mirando el `xmin` de cada fila, que es lo que dice si
+Postgres la reescribió: **cuando nada cambia se escriben 0 filas de 6**; cuando
+entra un artículo y sale otro, exactamente esas dos y las cinco restantes
+intactas. La línea del ciclo añade `enlaces +N −M` para poder leerlo en
+producción.
+
+**Con esto la parte de código de la lista queda vacía.** Lo que sigue abierto es
+tuyo: fusionar, los puntos 2 y 3 —el issue #4 del centinela y sacar el
+repositorio de OneDrive—, las decisiones editoriales 4 a 9, lo que hay que
+ejecutar el día del despliegue (10 a 12), lo que tiene fecha (21 a 24) y los dos
+que abrió el trabajo de hoy: el **25** —volver a medir el aislamiento de los seis
+medios de izquierda de raíz plana cuando entren sus marcas— y el **26** —el
+resumen que es el titular repetido más el usuario del gestor—.
+
 ## 2026-09-09, y ya el último · El artículo baja y vuelve por una sola lista
 
 **Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,

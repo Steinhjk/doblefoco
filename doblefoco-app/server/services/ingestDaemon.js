@@ -808,6 +808,16 @@ async function persistToDatabase(fresh) {
                 : `${stories.stories} hist. (${stories.escritas} escritas)`
         );
     }
+    /*
+     * Y LOS ENLACES, por lo mismo. Desde el 2026-09-09 los vínculos
+     * historia↔artículo también se escriben solo si cambiaron, y estas dos
+     * cifras son lo único que lo demuestra: antes se reescribían los 7 586 en
+     * cada ciclo. Si vuelven a salir números de ese orden, el diferencial dejó
+     * de filtrar.
+     */
+    if (stories?.links || stories?.enlacesBorrados) {
+        parts.push(`enlaces +${stories.links} −${stories.enlacesBorrados}`);
+    }
     if (stories?.removed) parts.push(`−${stories.removed} obsoletas`);
     // Lo archivado se informa aparte de lo borrado: son cosas distintas y la
     // diferencia es el producto entero. Ver el bloque del archivo en schema.sql.

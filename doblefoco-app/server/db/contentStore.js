@@ -425,7 +425,7 @@ export const MADUREZ_PARA_ARCHIVAR = 2 / 3;
  * @param {any[]} entrada
  * @param {number} [ventanaMs] la ventana de AGRUPAMIENTO, que es la que decide
  *   si una historia que desaparece envejeció o se recompuso.
- * @returns {Promise<{stories:number, links:number, removed:number, archived:number}|null>}
+ * @returns {Promise<{stories:number, escritas:number, links:number, enlacesBorrados:number, removed:number, archived:number}|null>}
  */
 export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
     let stories = entrada;
@@ -625,12 +625,46 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
                 escritas = rowCount ?? 0;
             }
 
-            // Se reconstruyen los vínculos de las historias de este ciclo: un
-            // artículo puede haber cambiado de grupo desde la última vez.
-            if (ids.length) {
-                await client.query(`DELETE FROM story_articles WHERE story_id = ANY($1::text[])`, [ids]);
-            }
-
+            /*
+             * LOS VÍNCULOS TAMBIÉN SE ESCRIBEN SOLO SI CAMBIARON (la otra mitad
+             * de H4, 2026-09-09).
+             *
+             * Antes esto era un `DELETE` de todos los vínculos del ciclo y un
+             * `INSERT` de todos otra vez. Medido el 2026-09-09: **7 586 enlaces
+             * de historias vivas × 51 ciclos al día = 386 886 filas escritas
+             * cada día**, y eso contando el `INSERT` una vez; el `DELETE` deja
+             * además su propia versión muerta de cada fila para el recolector.
+             *
+             * Es el mismo despilfarro que H4 quitó de `stories`, con el mismo
+             * argumento: **el corpus se mueve en los bordes**. Un artículo entra
+             * o sale de una historia de vez en cuando; los otros siete mil
+             * quinientos vínculos son exactamente los mismos que hace media
+             * hora.
+             *
+             * LAS TRES PARTES, en una sola sentencia para que vean el mismo
+             * estado de la base:
+             *
+             *   `deseado`  los vínculos que este ciclo quiere, filtrados por que
+             *              el artículo exista de verdad (ver abajo).
+             *   `sobran`   se borran los que la historia tenía y ya no quiere.
+             *   `faltan`   se insertan los que quiere y no tenía. Con `NOT
+             *              EXISTS` y no solo con `ON CONFLICT DO NOTHING`:
+             *              Postgres resuelve el conflicto insertando primero una
+             *              fila especulativa y matándola después, así que
+             *              «no hacer nada» al chocar sigue costando escritura.
+             *              El `ON CONFLICT` se queda para el único caso que el
+             *              `NOT EXISTS` no cubre: que el mismo par venga dos
+             *              veces dentro del propio lote.
+             *
+             * SOLO SE ENLAZA LO QUE EXISTE DE VERDAD EN `articles`. Sin ese
+             * filtro hay una carrera real: la memoria y la base aplican la
+             * ventana de 72 horas con relojes distintos, así que un artículo
+             * justo en el límite puede seguir en el Map —y por tanto dentro de
+             * una historia— y estar ya borrado de la base. La clave foránea
+             * rechazaría ese vínculo y, como todo esto va en una transacción, un
+             * solo artículo caducado tiraría el guardado de las 350 historias
+             * del ciclo. Se pierde un vínculo en vez de perderlo todo.
+             */
             const storyIds = [];
             const articleIds = [];
 
@@ -642,32 +676,46 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
             }
 
             let links = 0;
+            let enlacesBorrados = 0;
 
-            if (storyIds.length) {
-                /**
-                 * Solo se enlaza lo que existe de verdad en `articles`.
-                 *
-                 * Sin este filtro hay una carrera real: la memoria y la base
-                 * aplican la ventana de 72 horas con relojes distintos, así que
-                 * un artículo justo en el límite puede seguir en el Map —y por
-                 * tanto dentro de una historia— y estar ya borrado de la base.
-                 * La clave foránea rechazaría ese vínculo, y como todo esto va
-                 * en una transacción, un solo artículo caducado tiraría el
-                 * guardado de las 350 historias del ciclo.
-                 *
-                 * Se pierde un vínculo en vez de perderlo todo.
-                 */
-                const { rowCount } = await client.query(
+            if (ids.length) {
+                const { rows } = await client.query(
                     `
-                    INSERT INTO story_articles (story_id, article_id)
-                    SELECT t.story_id, t.article_id
-                      FROM unnest($1::text[], $2::text[]) AS t(story_id, article_id)
-                     WHERE EXISTS (SELECT 1 FROM articles a WHERE a.id = t.article_id)
-                    ON CONFLICT DO NOTHING
+                    WITH deseado AS (
+                        SELECT t.story_id, t.article_id
+                          FROM unnest($1::text[], $2::text[]) AS t(story_id, article_id)
+                         WHERE EXISTS (SELECT 1 FROM articles a WHERE a.id = t.article_id)
+                    ),
+                    sobran AS (
+                        DELETE FROM story_articles sa
+                         WHERE sa.story_id = ANY($3::text[])
+                           AND NOT EXISTS (
+                               SELECT 1 FROM deseado d
+                                WHERE d.story_id = sa.story_id
+                                  AND d.article_id = sa.article_id
+                           )
+                        RETURNING 1
+                    ),
+                    faltan AS (
+                        INSERT INTO story_articles (story_id, article_id)
+                        SELECT d.story_id, d.article_id
+                          FROM deseado d
+                         WHERE NOT EXISTS (
+                               SELECT 1 FROM story_articles sa
+                                WHERE sa.story_id = d.story_id
+                                  AND sa.article_id = d.article_id
+                           )
+                        ON CONFLICT DO NOTHING
+                        RETURNING 1
+                    )
+                    SELECT (SELECT count(*) FROM sobran) AS borrados,
+                           (SELECT count(*) FROM faltan) AS insertados
                     `,
-                    [storyIds, articleIds]
+                    [storyIds, articleIds, ids]
                 );
-                links = rowCount;
+
+                links = Number(rows[0]?.insertados ?? 0);
+                enlacesBorrados = Number(rows[0]?.borrados ?? 0);
             }
 
             /**
@@ -766,7 +814,7 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
              * registro de cada ciclo para que el ahorro se vea el mismo dia que
              * se despliegue en vez de tener que fiarse de este comentario.
              */
-            return { stories: stories.length, escritas, links, removed, archived };
+            return { stories: stories.length, escritas, links, enlacesBorrados, removed, archived };
         });
     } catch (error) {
         console.warn(`[db] guardado de historias falló: ${error.message}`);

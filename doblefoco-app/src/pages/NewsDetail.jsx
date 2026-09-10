@@ -7,7 +7,7 @@ import StoryImage from '../components/StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
 import { fetchStory, isApiConfigured } from '../services/apiClient';
 import { normalizeStory, storyTimeLabel, formatAbsoluteTime, formatAbsoluteDate } from '../lib/story';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import { recordRead } from '../lib/readingHistory';
 import { useHistoriaInicial } from '../hooks/datosInicialesContext';
 import { idDesdeRuta } from '../../shared/storyPath.js';
@@ -168,7 +168,7 @@ const NewsDetail = () => {
     // ningún aviso. Era el peor sitio donde podía ocurrir, porque es la pantalla
     // donde la cita fabricada se lee a tamaño completo con el nombre del medio
     // al lado. Ese respaldo se eliminó: si la API no la tiene, no existe.
-    const { stories: pool } = useStories({ limit: 60 });
+    const { stories: pool } = useHistorias({ limit: 60 });
 
     /**
      * Qué id tenemos ya cargado.

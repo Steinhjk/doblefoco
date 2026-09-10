@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../hooks/themeContext';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import { rutaDeHistoria } from '../../shared/storyPath';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
@@ -26,7 +26,7 @@ const Navbar = () => {
     const inputRef = useRef(null);
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
-    const { stories } = useStories({ limit: 60 });
+    const { stories } = useHistorias({ limit: 60 });
 
     const toggleMenu = () => setMenuOpen((prev) => !prev);
     const closeMenu = () => {

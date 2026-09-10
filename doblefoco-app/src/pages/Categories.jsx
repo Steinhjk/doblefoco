@@ -1,7 +1,7 @@
 // @ts-check
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { categories } from '../data/categories';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import EmptyState from '../components/EmptyState';
 import NewsCard from '../components/NewsCard';
 import AnimateIn from '../components/AnimateIn';
@@ -14,7 +14,7 @@ const Categories = () => {
     const resultados = useRef(null);
     const titulo = useRef(null);
 
-    const { stories, counts, status, reason } = useStories();
+    const { stories, counts, status, reason } = useHistorias();
 
     /**
      * AL ELEGIR UNA SECCIÓN, LLEVAR LA VISTA A LOS RESULTADOS.

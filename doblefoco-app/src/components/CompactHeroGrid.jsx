@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Layers, Sparkles } from 'lucide-react';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import { getMediaByName, getBiasSpectrumColor } from '../data/mediaLogos';
 import StoryImage from './StoryImage';
 import MarcadorSinImagen from './MarcadorSinImagen';
@@ -64,7 +64,7 @@ function mediosDeSuceso(suceso) {
 const CompactHeroGrid = () => {
     // La portada es un destacado: si no hay cobertura real no se pinta nada, y
     // el aviso de ausencia lo da el feed de debajo una sola vez.
-    const { stories, status } = useStories({ limit: 40 });
+    const { stories, status } = useHistorias({ limit: 40 });
     const { sucesos } = usePortada({ limit: 100 });
 
     const featured = useMemo(() => {

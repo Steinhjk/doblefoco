@@ -149,7 +149,7 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 
 | | Qué |
 |---|---|
-| 13 | **2.3**, la consulta compartida de portada — lo único gordo que queda del plan de continuidad |
+| 13 | ~~**2.3**, la consulta compartida de portada~~ · **HECHO el 2026-09-09**: de cinco peticiones a una. Entrada en CERRADO |
 | 14 | **2.4**, el serializador de rehidratación |
 | 15 | **`story_articles`, la otra mitad de H4**: hoy se borra y se reescribe entera; comparar conjuntos de enlaces es otro diseño |
 | 16 | ~~**La plantilla de WordPress en el resumen**~~ · **HECHO el 2026-09-09**, y la premisa era falsa: no rinde nada en clasificación. Entrada en CERRADO |
@@ -959,6 +959,98 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · La portada dejó de pedir las mismas historias cinco veces (punto 13 · T2-2)
+
+**Medido sobre el sitio publicado, antes de tocar nada: la portada hace cinco
+peticiones a `/api/feed`** —`limit=60`, `limit=40`, `limit=60`, `limit=100` y
+`limit=60`—, una por cada componente que se traía los datos por su cuenta: la
+barra de navegación, el destacado, las dos barras laterales y el feed.
+
+**Lo que importa no es el número de peticiones, es que son cinco fotografías de
+cinco instantes distintos.** El ciclo de ingesta entra cada 30 minutos y
+reordena la portada; si cae entre dos de esas peticiones, la página enseña dos
+mundos a la vez y nadie se entera.
+
+Y hay un caso peor que el del relevo, que es el que se ve todos los días: **la
+barra de navegación dura toda la sesión y las páginas se montan debajo**. Su
+buscador seguía respondiendo con la lista del primer minuto mientras la página
+que estabas mirando ya tenía otra.
+
+### Cómo quedó: un proveedor, y dos tuberías solo cuando hacen falta
+
+`ProveedorDeHistorias` envuelve el árbol de `Shell` —por encima de la barra y de
+las rutas— y es **el único sitio del proyecto que llama a `useStories`**. Los
+componentes leen con `useHistorias({ limit })` o, el feed, con
+`useFeedDeHistorias()`.
+
+Hay dos tuberías porque el feed tiene un filtro de ÁMBITO que el resto de la
+página no tiene:
+
+| | Qué pide | Quién la lee |
+|---|---|---|
+| **ambiente** | `ambito: 'all'` | destacado, laterales, buscador de la barra, secciones, tendencias, búsqueda |
+| **feed** | la misma, salvo que el lector filtre | el feed |
+
+Si todo colgara de una sola, filtrar el feed a «internacional» cambiaría también
+el destacado. **Eso no era la incoherencia que había que arreglar**: es una
+pregunta distinta y deliberada del lector.
+
+**El ámbito no hizo falta levantarlo a estado: ya vive en la URL** desde F3-06,
+así que el proveedor y el feed leen la misma fuente sin pasarse nada.
+
+### Medido después
+
+| | `/api/feed` | |
+|---|---:|---|
+| Publicado (portada) | **5** | 60, 40, 60, 100, 60 |
+| Esta rama (portada) | **1** | 100 |
+| Esta rama (portada filtrada) | **2** | la de ambiente y la del ámbito |
+| Esta rama (`/tendencias`) | **1** | antes eran 2, con la barra aparte |
+
+*(En desarrollo cada una sale duplicada: es `StrictMode`, que monta los efectos
+dos veces. Las cifras de arriba son las reales.)*
+
+### El recorte no es un detalle
+
+`useHistorias({ limit: 40 })` devuelve **las primeras 40**, no las que haya. Sin
+eso, un componente que pide 40 vería 200 en cuanto el lector hubiera pulsado
+«cargar más» en el feed, y las cifras que se calculan sobre lo descargado
+—«reparto sobre las 100 historias con más cobertura»— cambiarían según por dónde
+hubiera navegado antes. Con el recorte, cada uno ve exactamente lo que veía
+cuando se traía sus propios datos.
+
+### Lo que costó, dicho para que nadie lo eche de menos
+
+**La propiedad de que «cada componente es autosuficiente».** Un componente ya no
+se puede montar suelto: necesita el proveedor encima. Era el precio que el plan
+de continuidad ya había aceptado, y por eso los hooks fallan ruidosamente
+—`throw`— si alguien los usa fuera: un estado vacío de mentira dejaría la página
+diciendo «sin datos» sin que nadie supiera por qué.
+
+### Y una trampa que ninguna prueba vio, y que cazó abrir el navegador
+
+El interruptor nuevo de `useStories` se llamó `activo`… y dentro de su efecto ya
+había un `let activo` que es la bandera de cancelación. **La página entera se
+caía con «Cannot access 'activo' before initialization»** y salía el cortafuegos
+del `ErrorBoundary`.
+
+**Lint, `tsc` y las 851 pruebas pasaron con el fallo dentro.** Lo encontró contar
+las peticiones con un navegador de verdad. Se renombró a `encendido`, y hay
+prueba de que no se vuelvan a llamar igual.
+
+> Es la tercera vez este mes que el defecto está en la costura y las pruebas
+> pasan por encima. Justifica sola el ritual de mirar antes de publicar — y esta
+> vez `npm run mirar` sí lo habría cazado, porque desde esta mañana se niega a
+> dar el ✓ sobre una portada sin historias.
+
+### Verificado
+
+**854/854 pruebas** —3 nuevas, y son de invariante: que nadie más llame a
+`useStories`, que el proveedor siga por encima de la barra y de las rutas, y que
+el interruptor no se llame como la bandera—, lint limpio, `tsc` sin errores,
+`check:comentarios` en verde, build correcto y **`npm run mirar --movil`: 20/20
+rutas**.
 
 ## 2026-09-09 · RTVC no estaba mudo: tenía feed propio y nadie lo había encontrado (punto 20)
 

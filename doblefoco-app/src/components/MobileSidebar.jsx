@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RotateCcw, Award, EyeOff, Info } from 'lucide-react';
 import { topCoveredStories } from '../lib/story';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import './MobileSidebar.css';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
@@ -22,7 +22,7 @@ const MobileSidebar = () => {
 
     useEffect(() => subscribeToHistory(() => setHistory(getHistory())), []);
 
-    const { stories } = useStories({ limit: 60 });
+    const { stories } = useHistorias({ limit: 60 });
     const trending = useMemo(() => topCoveredStories(stories, 8), [stories]);
 
     const blindspots = useMemo(

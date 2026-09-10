@@ -1,5 +1,37 @@
 # Por dónde seguir
 
+## 2026-09-09, cierre · La portada pedía las mismas historias cinco veces
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—.
+
+Hecho el **punto 13 (T2-2)**, que era el gordo del plan de continuidad. Medido
+sobre el sitio publicado: la portada hacía **cinco peticiones a `/api/feed`**
+—60, 40, 60, 100 y 60—, una por componente. No es el número lo que importaba,
+son **cinco fotografías de cinco instantes**; y la barra de navegación, que dura
+toda la sesión, se quedaba con la del primer minuto mientras la página ya tenía
+otra.
+
+Ahora `ProveedorDeHistorias` envuelve el árbol de `Shell` y es el único sitio que
+llama a `useStories`. **Portada: 1 petición. Filtrada por ámbito: 2**, porque el
+filtro del feed es una pregunta del lector y no debe arrastrar al destacado ni a
+las laterales.
+
+> **Lo que costó:** «cada componente es autosuficiente». Ya no se puede montar
+> uno suelto. Los hooks fallan ruidosamente fuera del proveedor a propósito.
+
+**Y la trampa de la sesión, que merece recordarse:** el interruptor nuevo se
+llamó `activo`, igual que la bandera de cancelación que ya vivía dentro del
+efecto. La página entera se caía —«Cannot access 'activo' before
+initialization»— y **lint, `tsc` y las 851 pruebas pasaron con el fallo dentro**.
+Lo cazó abrir el navegador a contar peticiones. Hay prueba para que no se repita.
+
+Verificado: **854/854**, lint, `tsc`, `check:comentarios`, build y
+`npm run mirar --movil` con **20/20 rutas** en verde.
+
+**De la lista quedan 14 y 15** —el serializador de rehidratación y la otra mitad
+de H4— más lo que es tuyo.
+
 ## 2026-09-09, último · RTVC tenía feed propio, y su `http` llevaba a Coljuegos
 
 **Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,

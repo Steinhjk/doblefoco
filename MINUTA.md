@@ -126,6 +126,13 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 > con las siete PR originales, y **nada de eso está en el aire hasta que se
 > fusione**, que es el punto 1.
 
+> **Puesta al día del 2026-09-10.** Se cerró el **punto 26** —el resumen que es
+> el titular repetido—, que sale en la rama
+> `resumen/el-titular-repetido-no-es-resumen`, hija de la de integración porque
+> toca la firma del gestor del punto 16. **De código solo queda abierto el 25**,
+> y ese espera a que el corpus tenga las marcas de opinión, o sea a la fusión y
+> a unos días de ciclo. El punto 1 sigue siendo el que desbloquea todo.
+
 ### Gestos que solo puede hacer Jose
 
 | | Qué | Desde |
@@ -142,7 +149,7 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | 5 | **El trío Vorágine / Cuestión Pública / Revista RAYA:** un solo valor, tres justificados, o las tres «sin medir» | `fichas/voragine.md` |
 | 6 | **RTVC:** la regla 3 dice «no lo muevas» y su ficha de propiedad dice «esto caduca el 7 de agosto». Las dos no pueden tener razón | `fichas/rtvc.md` |
 | 7 | **¿Un medio que solo publica análisis debe entrar al agrupamiento?** (Razón Pública) | `MINUTA.md`, 2026-09-08 |
-| 8 | **El buscador promete un resumen que el motor no manda:** o el motor manda el `snippet`, o la interfaz deja de prometerlo | `MINUTA.md`, 2026-09-08 |
+| 8 | **El buscador promete un resumen que el motor no manda:** o el motor manda el `snippet`, o la interfaz deja de prometerlo. **Dato nuevo del 10-09:** el resumen que se mandaría ya no incluye 1 106 piezas que solo repetían el titular, así que la opción de mandarlo es hoy menos mala que cuando se escribió | `MINUTA.md`, 2026-09-08 |
 | 9 | **El único `aceptado` sin plazo es W Radio**, y su motivo es estructural —su feed expone dos ítems, y eso no cambia con el calendario—. O se le pone `revisarEl` o se escribe que no lo lleva a propósito | `auditoria/hallazgos.json` |
 
 ### A ejecutar el día del despliegue, en este orden
@@ -169,7 +176,7 @@ queda abierto de código es lo que abrió ese mismo trabajo:
 | | Qué |
 |---|---|
 | 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
-| 26 | **El resumen que es el titular repetido más el usuario del gestor**: RTVC sirve «…wfvasquez@cont… Mar, 01/09/2026». Es el caso hermano de la plantilla de WordPress (punto 16), y una regla honesta sería descartar el resumen que, quitado el titular, no dice nada |
+| 26 | ~~**El resumen que es el titular repetido más el usuario del gestor**~~ · **HECHO el 2026-09-10**: eran 1 018, la causa principal era Google News y no el gestor, y de paso apareció la firma de WordPress en español, que nadie quitaba. Entrada en CERRADO |
 
 ### Con fecha, y no dependen de nadie
 
@@ -970,6 +977,117 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-10 · El resumen que es el titular repetido, y la firma del gestor en español (punto 26)
+
+**El campo estaba lleno y no decía nada.** El punto lo abrió el caso de RTVC
+—«…wfvasquez@cont… Mar, 01/09/2026»—, y al medirlo la causa principal resultó
+ser otra y mucho más grande: **Google News no tiene el resumen del medio**, así
+que sirve el titular seguido del nombre de la fuente. «<titular> Blu Radio»,
+«<titular> ntn24.com».
+
+### Cuánto era, medido pasando el corpus por la función de verdad
+
+**1 018 artículos, el 3,42 % de los 29 737 que tienen resumen**, en 17 medios.
+La cifra que aguanta es **la proporción**: repetida una hora después, con la
+ingesta corriendo y 88 artículos más en la base, daba 1 020 de 29 825 y el
+mismo 3,42 %.
+
+| Medio | | Medio | |
+|---|---|---|---|
+| La FM | 290 | Revista RAYA | 10 |
+| Blu Radio | 279 | RTVC | 6 |
+| NTN24 | 162 | Diario La Libertad | 6 |
+| Noticias Caracol | 88 | Pulzo | 11 |
+| Noticias RCN | 80 | y otros siete | 1 cada uno |
+| EFE | 79 | | |
+
+### Por qué se quita, y NO es por la clasificación
+
+Se reclasificaron los 1 018 con y sin resumen: **cero cambian de tema**. Es el
+mismo resultado del punto 16 y por la misma razón —lo que el resumen repite ya
+puntúa por el titular—, y se comprobó antes de escribir la regla justamente
+porque el 16 enseñó lo que cuesta suponerlo.
+
+**Lo que sí arregla son dos afirmaciones falsas sobre nuestro propio trabajo:**
+
+1. `analyzeArticleTone` devolvía **`analizoEntradilla: true` en los 1 018**.
+   Decíamos haber analizado una entradilla que no existe.
+2. En **25** de ellos un término cargado quedaba anotado en el titular **y** en
+   la entradilla —«brutal», «impactante», «contundente»—. Y ese `donde` no es
+   un detalle: el producto defiende que en el titular es una decisión de
+   portada y en la entradilla una de redacción. Contar la misma palabra dos
+   veces convierte una decisión en dos.
+
+Más el motivo del 16, que sigue valiendo: es texto que se guarda y que un día
+se enseña, porque el buscador ya dice buscar dentro del resumen (punto 8).
+
+### La regla no tiene listón, y eso costó decidirlo
+
+«No dice nada» significa **que no queda nada**, no que quede poco. De los 2 187
+resúmenes que repiten el titular, los que quedan exactamente vacíos —quitados
+el titular, el nombre del medio, su dominio, el correo del gestor, la fecha y
+la hora— son los 1 018, y **el siguiente ya dice algo de verdad**: «Rosa
+Angélica Tarazona», el nombre completo de quien el titular llama 'La Bebesita'.
+
+Un umbral de palabras parecía lo natural y habría sido peor: se probó, y con
+«menos de 4 palabras» se llevaba por delante entradillas cortas que informan
+—«Estos son los riegos», «El 52,8 % de los votantes votaron por el no»—. La
+medición de dónde ponerlo es lo que enseñó que no hacía falta ponerlo.
+
+**Se queda fuera un caso conocido**, el de La Patria —«Grados Alejandro
+Calderin Mié, 09/09/2026 - 00:00»—, porque para cazarlo hay que reconocer el
+nombre de un autor suelto, y eso es adivinar. Prefiero perder ese uno a meter
+una regla que no sé medir.
+
+### Y un hallazgo que nadie había anotado: la firma del gestor en español
+
+El punto 16 quitó «The post … appeared first on …» y **solo miró el inglés**.
+WordPress emite la misma firma en castellano —«La entrada … se publicó primero
+en …»— cuando el sitio está en español, y en número de medios es **más ancha
+que la inglesa**: 218 artículos de **doce** medios —72 de MiPutumayo, 36 de
+Noticias Uno, 29 de Razón Pública, 22 del Diario del Huila, 17 de Lente
+Regional, y el resto repartido—.
+
+De esos 218: en **80 el artículo se queda sin resumen** (en 70 la firma era el
+resumen entero, en 10 lo que sobra no llega al suelo de 30 caracteres) y a los
+**138 restantes solo se les corta la coleta**.
+
+> Con los dos cambios juntos, **1 106 resúmenes pasan a `null` y 591 se
+> acortan**. Los 8 que caen por la firma inglesa ya los arreglaba el punto 16.
+
+### Dónde quedó, y qué se reutilizó
+
+En `extractSnippet`, que ahora recibe también el titular y el nombre y dominio
+del medio: **el resumen no se puede juzgar solo**. Los tres son opcionales, así
+que una llamada de un argumento sigue valiendo y no aplica la regla.
+
+«Cómo se nombra el medio a sí mismo» es **la misma lista que usa
+`cleanHeadline`** —nombre, dominio, `www.` más dominio— porque es el mismo
+fenómeno por el otro extremo del ítem: Google News le pega la marca al titular
+por un lado y al resumen por el otro. Tener dos nociones distintas de «cómo se
+llama este medio» sería pedir que se separen algún día.
+
+### Verificado
+
+**859/859 pruebas** —11 nuevas, y las que importan son las cinco de lo que
+**no** se toca: la entradilla corta que sí informa, el nombre propio que el
+titular no da, la entradilla que empieza repitiendo el titular, el resumen que
+nombra al medio sin repetirlo, y la llamada sin titular—. Lint limpio, `tsc`
+sin errores, `check:comentarios` en verde, build correcto y `npm run mirar`
+10/10 en verde. La comprobación contra el corpus se hizo **con la función real
+importada**, no con una reimplementación, que es lo que dio las cifras de
+arriba.
+
+> **Y una observación sobre el CI, que no es de este cambio pero se vio aquí.**
+> `ci.yml` se dispara con `pull_request: branches: [main]`, así que **una PR
+> contra la rama de integración no pasa `verify` ni `esquema`**: la #33 solo
+> tiene los dos checks de Vercel. No es grave hoy —lo que se fusiona a `main`
+> es la #32, y esa sí los pasa con todo dentro—, pero significa que **el CI no
+> vigila el escalón intermedio**, que es justo donde se resuelven los
+> conflictos. Los tres pasos se corrieron a mano y en verde; `esquema` no,
+> porque exige `DATABASE_URL_PRUEBA` y borra el esquema que apunta —el
+> guardarraíl hizo su trabajo—, y este cambio no toca SQL.
 
 ## 2026-09-09 · Los vínculos también dejan de reescribirse enteros (punto 15 · la otra mitad de H4)
 

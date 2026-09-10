@@ -118,6 +118,14 @@ Corriendo `VITE_API_URL=same-origin npm run mirar` la portada se llena.
 Escrito a petición de Jose, para que no haya que reconstruirlo leyendo la minuta
 entera. Lo que no está aquí no está pendiente: está olvidado.
 
+> **Puesta al día del 2026-09-09, al cerrar la jornada.** Se cerraron **ocho
+> puntos de código** —13, 14, 15, 16, 17, 18, 19 y 20— y se abrieron dos, el 25 y
+> el 26. **Con eso la parte de código de esta lista queda vacía**: todo lo que
+> sigue abierto o es un gesto de Jose, o es una decisión editorial, o tiene fecha.
+> Los ocho van dentro de `integracion/tanda-del-8-de-septiembre` (PR #32), junto
+> con las siete PR originales, y **nada de eso está en el aire hasta que se
+> fusione**, que es el punto 1.
+
 ### Gestos que solo puede hacer Jose
 
 | | Qué | Desde |
@@ -143,21 +151,24 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 |---|---|---|
 | 10 | `npm run archivo:huerfanas` en seco, y luego `-- --apply` (borra 1 554) | Antes de que Fly sirva la #24, el ciclo vuelve a llenar el archivo con el criterio viejo |
 | 11 | Mirar una línea del ciclo: **«1 512 hist. (43 escritas)»**. Si las dos cifras siguen iguales tras la #29, el `WHERE` no filtra nada | Es la prueba de que H4 funcionó, y se lee sola |
-| 12 | Abrir el sitio y correr `npm run mirar` | Nadie lo ha mirado con las siete dentro |
+| 11b | **Y la línea de al lado: `enlaces +N −M`.** Si sale un número del orden de 7 500, el diferencial de `story_articles` dejó de filtrar | Misma idea, para la otra mitad de H4 |
+| 12 | Abrir el sitio y correr `npm run mirar` | Nadie lo ha mirado con todo desplegado. En local está en verde, pero el motor de la rama no está en Fly |
+| 12b | `npm run db:contrato` | La ida y vuelta del artículo contra la base. No hace falta antes, pero es lo que caza un SQL roto sin esperar a que falle una ingesta |
+
+> **La migración YA está aplicada** (`npm run db:migrate`, 2026-09-09), y el orden
+> importaba: los dos despliegues salen solos con el push a `main`, así que si el
+> motor nuevo hubiera arrancado antes que la columna `feed_categories`,
+> `persistArticles` habría fallado en cada ciclo y en silencio.
 
 ### Código, sin orden obligado
 
+**Los ocho puntos de código de esta lista se cerraron el 2026-09-09** —13, 14,
+15, 16, 17, 18, 19 y 20—, cada uno con su entrada en CERRADO y su número. Lo que
+queda abierto de código es lo que abrió ese mismo trabajo:
+
 | | Qué |
 |---|---|
-| 13 | ~~**2.3**, la consulta compartida de portada~~ · **HECHO el 2026-09-09**: de cinco peticiones a una. Entrada en CERRADO |
-| 14 | ~~**2.4**, el serializador de rehidratación~~ · **HECHO el 2026-09-09**: el `INSERT` y la lectura salen de una sola lista. Entrada en CERRADO |
-| 15 | ~~**`story_articles`, la otra mitad de H4**~~ · **HECHO el 2026-09-09**: 386 886 filas al día a solo las que cambian. Entrada en CERRADO |
-| 16 | ~~**La plantilla de WordPress en el resumen**~~ · **HECHO el 2026-09-09**, y la premisa era falsa: no rinde nada en clasificación. Entrada en CERRADO |
-| 17 | ~~**La categoría del feed se estampa en bloque**~~ · **HECHO el 2026-09-09**, y era el 37,4 % de la portada, no cinco piezas. Entrada en CERRADO |
-| 18 | ~~**El filtro de opinión, ciego para 22 medios de ruta plana**~~ · **HECHO el 2026-09-09**: Jose eligió la etiqueta del RSS. Entrada en CERRADO |
-| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
-| 19 | ~~**`mirar` no distingue una portada llena de una vacía**~~ · **HECHO el 2026-09-09**, entrada en CERRADO |
-| 20 | ~~**Otra vía de feed para RTVC**~~ · **HECHO el 2026-09-09**: tenía feed propio y vivo. Entrada en CERRADO |
+| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
 | 26 | **El resumen que es el titular repetido más el usuario del gestor**: RTVC sirve «…wfvasquez@cont… Mar, 01/09/2026». Es el caso hermano de la plantilla de WordPress (punto 16), y una regla honesta sería descartar el resumen que, quitado el titular, no dice nada |
 
 ### Con fecha, y no dependen de nadie

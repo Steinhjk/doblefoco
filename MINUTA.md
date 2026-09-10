@@ -157,7 +157,8 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | 18 | ~~**El filtro de opinión, ciego para 22 medios de ruta plana**~~ · **HECHO el 2026-09-09**: Jose eligió la etiqueta del RSS. Entrada en CERRADO |
 | 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
 | 19 | ~~**`mirar` no distingue una portada llena de una vacía**~~ · **HECHO el 2026-09-09**, entrada en CERRADO |
-| 20 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
+| 20 | ~~**Otra vía de feed para RTVC**~~ · **HECHO el 2026-09-09**: tenía feed propio y vivo. Entrada en CERRADO |
+| 26 | **El resumen que es el titular repetido más el usuario del gestor**: RTVC sirve «…wfvasquez@cont… Mar, 01/09/2026». Es el caso hermano de la plantilla de WordPress (punto 16), y una regla honesta sería descartar el resumen que, quitado el titular, no dice nada |
 
 ### Con fecha, y no dependen de nadie
 
@@ -958,6 +959,85 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · RTVC no estaba mudo: tenía feed propio y nadie lo había encontrado (punto 20)
+
+**`https://www.rtvcnoticias.com/noticias/rss.xml` — RSS 2.0, diez ítems, el más
+reciente de hace tres horas.** Por Google News el medio llevaba «sin publicar
+desde el 2026-09-01», sus tres historias estaban archivadas y **hoy el canal
+público no aparecía por ninguna parte del sitio**. La ventana era nuestra, no
+suya.
+
+`/rss.xml` sigue siendo el abandonado que se midió en julio —ítem más nuevo del
+30 de mayo, luego un salto a junio de 2024, uno titulado «sitio en
+mantenimiento»—, así que aquella conclusión era correcta **sobre la ruta que se
+probó**. La viva estaba una carpeta más adentro.
+
+### Por qué no la encontró el descubridor, que es lo que hay que arreglar
+
+`descubrirFeed` prueba `/rss/noticias` y `/noticias/feed`, pero no
+`/noticias/rss.xml`. **Es el caso de El Pilón otra vez**: aquella vez la lección
+se anotó como «añadir `/api/rss`», cuando la lección de verdad era que **la ruta
+puede colgar de una sección**. Añadidas `/noticias/rss.xml` y
+`/actualidad/rss.xml`, con el porqué escrito al lado de la lista.
+
+### Lo que gana el medio al salir de Google News
+
+**Sus URL llevan sección** —`/justicia/`, `/actualidad/cultura/`,
+`/actualidad/educacion/`—, mientras que las de Google News son redirecciones sin
+ruta. Nueve de los diez ítems se clasifican con tema, contra el 39,6 % del corpus
+que se queda sin ninguno, y `detectarOpinion` vuelve a poder verlo. Pasadas las
+diez piezas por las reglas de ingesta —`cleanHeadline`, `assessArticle`,
+`parsePublishedAt`—, **entran las diez**.
+
+### HALLAZGO · El `http` del feed lleva a Coljuegos
+
+El feed declara `xml:base="http://www.rtvcnoticias.com/"`, así que todos sus
+enlaces salen en `http`. Y ese `http` **no lleva al artículo**: responde `302`
+hacia `https://www.coljuegos.gov.co/publicaciones/301824`, el regulador del
+juego. En `https` el mismo enlace responde `200`.
+
+**Sin verlo a tiempo, cada noticia de RTVC habría mandado al lector a Coljuegos**,
+y el enlace verificable es la mitad de este producto. Lo arregla
+`canonicalizeLink`, que ahora sube a `https` los enlaces **del propio medio**,
+decidiendo «del propio medio» con la misma regla que ya usaba
+`urlDeImagenValida` para las imágenes. Un enlace a un tercero se queda como
+viene: no sabemos si ese tercero sirve `https`, y promocionarlo a ciegas
+convertiría un enlace que funciona en uno roto.
+
+De paso alcanza a los **667 enlaces `http` que ya había en el corpus, todos de
+Euronews**, que redirigen con `301` a su propio `https`: ahí solo ahorra un
+salto.
+
+### Dos cosas que se vieron y no se tocaron
+
+1. **El resumen es el titular repetido más el usuario del gestor**
+   —«…wfvasquez@cont… Mar, 01/09/2026»—. Es el caso hermano de la plantilla de
+   WordPress del punto 16. Queda anotado como punto 26.
+2. **El medio publica la misma pieza dos veces**, con dos slugs
+   (`…-cuatro` y `…-cuatro-0`). Las dos entran como artículos distintos del mismo
+   medio. Es un duplicado suyo, no nuestro, y el agrupamiento cuenta medios
+   distintos, no piezas; queda dicho por si aparece en una cifra.
+
+### Y una observación editorial que no es de código, y es de Jose
+
+**El medio se llama a sí mismo «Inravisión, Sistema de Medios Públicos»** en sus
+titulares, y tiene una sección `/actualidad/inravision/`. En el catálogo sigue
+como «RTVC Noticias». Además, tres de sus diez piezas son sobre sus propios
+conflictos institucionales —una tutela de Iván Cepeda por las Emisoras de Paz, el
+cese de emisión de cuatro emisoras de paz, y una rectificación a La Silla Vacía—.
+
+Eso es **conducta observable del presente**, que es justo lo que la ficha de RTVC
+decía no tener: la previsión escrita el 2026-08-08 ya se puede empezar a
+contrastar. La ficha sigue sin firmar y el número sigue siendo de Jose.
+
+### Verificado
+
+**851/851 pruebas** —6 nuevas sobre `canonicalizeLink`, incluida la del dominio
+que solo *se parece*—, lint limpio, `tsc` sin errores, `check:registry` sin
+errores tras regenerar `catalogo_medios.txt`, `check:comentarios` en verde y
+build correcto. `npm run mirar` no alcanza a este cambio: es del motor, y la rama
+no está desplegada en Fly.
 
 ## 2026-09-09 · El filtro de opinión deja de ser ciego para 22 medios (punto 18)
 

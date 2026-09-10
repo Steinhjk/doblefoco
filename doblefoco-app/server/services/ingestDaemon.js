@@ -319,8 +319,35 @@ export function cleanHeadline(rawTitle, outletName, outletDomain) {
     return clean;
 }
 
-/** Normaliza el enlace para deduplicar: quita parámetros de campaña y hash. */
-function canonicalizeLink(link) {
+/**
+ * Normaliza el enlace para deduplicar: quita parámetros de campaña y hash, y
+ * sube a `https` los enlaces que el propio medio publica en `http`.
+ *
+ * LO DE `https` NO ES COSMÉTICA, Y COSTÓ ENCONTRARLO (2026-09-09). El feed de
+ * RTVC declara `xml:base="http://www.rtvcnoticias.com/"`, así que todos sus
+ * enlaces salen en `http`. Y ese `http` **no lleva al artículo**: el servidor
+ * responde `302` hacia `https://www.coljuegos.gov.co/publicaciones/301824` —el
+ * regulador del juego—, que es lo que pasa cuando un sitio de gobierno comparte
+ * el vhost sin TLS con otro. En `https` el mismo enlace responde `200`. Sin esto,
+ * cada noticia de RTVC habría mandado al lector a Coljuegos, y el enlace
+ * verificable es la mitad del producto.
+ *
+ * SOLO SE SUBE EL ENLACE DEL PROPIO MEDIO, y «del medio» se decide con la MISMA
+ * regla que `urlDeImagenValida` usa para las imágenes —dominio igual, subdominio
+ * suyo, o al revés—, que es lo que hace que `es.euronews.com` cuente como
+ * `euronews.com`. Un enlace a otro sitio se queda como viene: no sabemos si
+ * ese tercero sirve `https`, y una promoción a ciegas convertiría un enlace que
+ * funciona en uno roto. Las redirecciones de Google News tampoco se tocan, que
+ * es lo que hace el caso `via: 'gnews'`.
+ *
+ * Lo que ya había en el corpus cuando se escribió: 667 enlaces `http`, todos de
+ * Euronews, que redirigen con `301` a su propio `https`. Ahí esto solo ahorra un
+ * salto; en RTVC evita un destino equivocado.
+ *
+ * @param {string|null|undefined} link
+ * @param {string|null|undefined} dominioDelMedio dominio del registro, sin `www.`
+ */
+export function canonicalizeLink(link, dominioDelMedio = null) {
     if (!link || typeof link !== 'string') return '';
     try {
         const url = new URL(link);
@@ -328,6 +355,17 @@ function canonicalizeLink(link) {
             if (/^(utm_|fbclid|gclid|mc_|ref)/i.test(key)) url.searchParams.delete(key);
         }
         url.hash = '';
+
+        if (url.protocol === 'http:' && dominioDelMedio) {
+            const host = url.hostname.replace(/^www\./, '').toLowerCase();
+            const dominio = String(dominioDelMedio).replace(/^www\./, '').toLowerCase();
+            const delMedio =
+                host === dominio ||
+                host.endsWith(`.${dominio}`) ||
+                dominio.endsWith(`.${host}`);
+            if (delMedio) url.protocol = 'https:';
+        }
+
         return url.toString();
     } catch {
         return link.trim();
@@ -890,7 +928,7 @@ export async function runIngestionBatch() {
                 const imagenesRecuperadas = [];
 
                 for (const item of result.items.slice(0, techoDelFeed(feedConfig))) {
-                    const link = canonicalizeLink(item?.link);
+                    const link = canonicalizeLink(item?.link, feedConfig.domain);
                     if (!link) continue;
 
                     const headline = cleanHeadline(item?.title, feedConfig.name, feedConfig.domain);

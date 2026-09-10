@@ -37,12 +37,19 @@ const CONCURRENCIA = 4;
  * Rutas convencionales, de la más probable a la más rara. Las últimas no son
  * relleno: `/api/rss` es la de El Pilón y `/index.php?format=feed` la de los
  * Joomla, que en la prensa regional colombiana siguen siendo muchos.
+ *
+ * `/noticias/rss.xml` se añadió el 2026-09-09 y es el mismo error otra vez. RTVC
+ * figuraba como sin feed propio desde julio y entraba por Google News, que rinde
+ * ocho veces menos; su feed vivo estaba ahí, una carpeta más adentro. La lección
+ * de El Pilón no era «añadir `/api/rss`», era que **la ruta puede colgar de una
+ * sección**, y por eso ahora se prueban también las dos formas de esa idea.
  */
 const RUTAS = [
     '/feed', '/feed/', '/rss', '/rss.xml', '/feed.xml', '/index.xml',
     '/atom.xml', '/?feed=rss2', '/feeds/posts/default?alt=rss',
     '/index.php?format=feed&type=rss', '/?format=feed&type=rss',
     '/rss/noticias', '/rss/portada', '/noticias/feed', '/feed/rss',
+    '/noticias/rss.xml', '/actualidad/rss.xml',
     '/rssfeed', '/es/rss', '/rss/news', '/api/rss', '/api/feed',
     '/blog/feed', '/blog-feed.xml', '/feed/atom',
 ];

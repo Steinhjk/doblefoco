@@ -1,5 +1,39 @@
 # Por dónde seguir
 
+## 2026-09-09, último · RTVC tenía feed propio, y su `http` llevaba a Coljuegos
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—.
+
+Hecho el **punto 20**. `https://www.rtvcnoticias.com/noticias/rss.xml` está vivo:
+diez ítems, el más reciente de hace tres horas. **El canal público no estaba
+mudo; era nuestra ventana la que no lo veía.** `descubrirFeed` no lo encontraba
+porque `/noticias/rss.xml` no estaba en su lista —el caso de El Pilón otra vez—,
+y ya está añadida.
+
+Con su feed propio sus URL llevan sección, así que nueve de los diez ítems se
+clasifican con tema y `detectarOpinion` vuelve a verlo. Pasadas por las reglas de
+ingesta, entran las diez.
+
+> **El hallazgo feo:** el feed declara `xml:base` en `http`, y ese `http`
+> responde 302 hacia **coljuegos.gov.co**. Sin verlo, cada noticia de RTVC habría
+> mandado al lector al regulador del juego. `canonicalizeLink` sube ahora a
+> `https` los enlaces del propio medio, con la misma regla de «es del medio» que
+> ya usaban las imágenes.
+
+**Y algo que es tuyo, no de código:** el medio se llama a sí mismo **«Inravisión,
+Sistema de Medios Públicos»** y tiene sección `/actualidad/inravision/`; en el
+catálogo sigue como «RTVC Noticias». Tres de sus diez piezas son sobre sus
+propios conflictos institucionales. Eso es conducta observable del presente, que
+es lo que su ficha decía no tener.
+
+Quedan anotados dos puntos nuevos: el **26** (su resumen es el titular repetido
+más el usuario del gestor, hermano del punto 16) y el **25** de la tanda
+anterior.
+
+Verificado: **851/851**, lint, `tsc`, `check:registry` —tras regenerar
+`catalogo_medios.txt`—, `check:comentarios` y build en verde.
+
 ## 2026-09-09, cierre de la noche · El filtro de opinión ya ve a los 22 de raíz plana
 
 **Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,

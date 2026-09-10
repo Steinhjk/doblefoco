@@ -4,6 +4,7 @@ import {
     parsePublishedAt,
     extractImage,
     extractSnippet,
+    canonicalizeLink,
     cleanHeadline,
     elegirTitularReciente,
     observarPieza,
@@ -559,5 +560,40 @@ describe('extractSnippet quita la firma de WordPress', () => {
     it('no toca un resumen que solo menciona la palabra post', () => {
         const item = { contentSnippet: 'El post del ministro en X desato la controversia de la semana.' };
         expect(extractSnippet(item)).toBe('El post del ministro en X desato la controversia de la semana.');
+    });
+});
+
+/**
+ * EL PROTOCOLO DEL ENLACE NO ES COSMETICA. El feed de RTVC declara su `xml:base`
+ * en `http`, y ese `http` responde 302 hacia coljuegos.gov.co —el regulador del
+ * juego—: sin subirlo, cada noticia suya habria mandado al lector alli.
+ */
+describe('canonicalizeLink', () => {
+    it('sube a https el enlace del propio medio', () => {
+        expect(canonicalizeLink('http://www.rtvcnoticias.com/justicia/x', 'rtvcnoticias.com'))
+            .toBe('https://www.rtvcnoticias.com/justicia/x');
+    });
+
+    it('cuenta como del medio un subdominio suyo, igual que la regla de las imagenes', () => {
+        expect(canonicalizeLink('http://es.euronews.com/2026/x', 'euronews.com'))
+            .toBe('https://es.euronews.com/2026/x');
+    });
+
+    it('no toca el enlace de un tercero: no sabemos si sirve https', () => {
+        expect(canonicalizeLink('http://otro.com/x', 'rtvcnoticias.com')).toBe('http://otro.com/x');
+    });
+
+    it('un dominio que solo SE PARECE no es del medio', () => {
+        expect(canonicalizeLink('http://rtvcnoticias.com.malo.co/x', 'rtvcnoticias.com'))
+            .toBe('http://rtvcnoticias.com.malo.co/x');
+    });
+
+    it('sin dominio declarado no promociona nada', () => {
+        expect(canonicalizeLink('http://www.rtvcnoticias.com/x')).toBe('http://www.rtvcnoticias.com/x');
+    });
+
+    it('sigue quitando los parametros de campana y el hash', () => {
+        expect(canonicalizeLink('https://medio.co/nota?utm_source=x&id=7#abajo', 'medio.co'))
+            .toBe('https://medio.co/nota?id=7');
     });
 });

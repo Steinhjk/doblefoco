@@ -1,5 +1,35 @@
 # Por dónde seguir
 
+## 2026-09-09, y ya el último · El artículo baja y vuelve por una sola lista
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—, que ya lleva seis puntos dentro.
+
+Hecho el **punto 14 (2.4)**. `persistArticles` escribía columnas a mano y
+`articuloDesdeFila` las leía a mano: dos serializadores para la misma costura, y
+de ahí salieron `topics` y `ambito` escritos y nunca leídos, la marca de opinión
+perdida al rehidratar, y **el `$14` que faltaba esta misma mañana**, con lint,
+`tsc` y 845 pruebas en verde.
+
+Ahora `server/db/contratoDeArticulo.js` **genera** el `INSERT`, sus parámetros,
+las columnas de la rehidratación y el objeto que vuelve. Un campo nuevo es una
+línea ahí y nada más.
+
+**Hay un comando nuevo y conviene conocerlo:**
+
+```
+npm run db:contrato
+```
+
+Hace la ida y vuelta **contra la base de verdad**, dentro de una transacción que
+termina en `ROLLBACK` —así que puede correrse contra producción sin pensárselo—.
+Es lo que las pruebas no pueden hacer: comprobar que el SQL es válido. Vale la
+pena correrlo el día del despliegue si el cambio toca columnas.
+
+De la lista queda el **15** —`story_articles`, la otra mitad de H4: hoy se borra
+y se reescribe entera, y comparar conjuntos de enlaces es otro diseño— más lo que
+es tuyo.
+
 ## 2026-09-09, cierre · La portada pedía las mismas historias cinco veces
 
 **Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,

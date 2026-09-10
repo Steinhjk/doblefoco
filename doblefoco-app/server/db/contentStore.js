@@ -28,6 +28,9 @@
 
 import { classifySpectrum } from '../../shared/biasAnalysis.js';
 import { detectarOpinionDelArticulo } from '../../shared/opinion.js';
+import {
+    camposDesdeFila, columnasParaLeer, sqlDeInsercion, valoresDeInsercion,
+} from './contratoDeArticulo.js';
 import { safeQuery, withTransaction } from './pool.js';
 
 // ---------------------------------------------------------------------------
@@ -79,25 +82,20 @@ import { safeQuery, withTransaction } from './pool.js';
  * @param {Record<string, any>} row
  */
 export function articuloDesdeFila(row) {
+    /*
+     * LOS CAMPOS DE LA FILA SALEN DEL CONTRATO (2.4), no de una lista escrita
+     * aquí a mano. Eran dos serializadores separados para la misma costura, y de
+     * ahí salieron los tres fallos que `contratoDeArticulo.js` enumera: `topics`
+     * y `ambito` escritos y nunca leídos, la marca de opinión perdida al
+     * rehidratar, y un `$14` que faltaba. Ahora la misma lista escribe y lee.
+     *
+     * `sourceId` se saca aparte: en la base es una columna y en memoria es
+     * `outlet.id`, así que no se queda suelto en el objeto.
+     */
+    const { sourceId, ...campos } = camposDesdeFila(row);
+
     return {
-        id: row.id,
-        headline: row.headline,
-        rawTitle: row.raw_title ?? row.headline,
-        link: row.canonical_url,
-        snippet: row.snippet,
-        tone: row.tone,
-        publishedAt: row.published_at,
-        ingestedAtMs: Date.parse(row.ingested_at),
-        // Sin esto la memoria no sabría qué artículos ya tienen foto y el relleno
-        // de imágenes intentaría rellenar los 4 000 en cada ciclo.
-        imageUrl: row.image_url,
-        /*
-         * `?? []` y no `?? null`: aguas abajo esto se recorre con `flatMap`, y un
-         * artículo viejo de antes de que existiera la columna tiene que aportar
-         * cero temas, no reventar la construcción de su historia.
-         */
-        topics: row.topics ?? [],
-        ambito: row.ambito ?? null,
+        ...campos,
         /*
          * LA OPINIÓN SE DERIVA, NO SE GUARDA (2026-08-21), y conviene decir por
          * qué no es un atajo.
@@ -113,59 +111,43 @@ export function articuloDesdeFila(row) {
          * La cura del hermano fue una columna. Aquí NO hace falta, y no por
          * ahorrar trabajo:
          *
-         *   1. `detectarOpinion` es función PURA de la URL —tres expresiones
-         *      regulares sobre el pathname, sin registro ni estado— y la URL ya
-         *      es permanente: `canonical_url` es la clave del ON CONFLICT y no
-         *      se reescribe nunca. Guardar el veredicto sería duplicar un dato
-         *      que ya está, no conservar uno que se perdería.
+         *   1. Sus entradas —`canonical_url` y, desde el 2026-09-09,
+         *      `feed_categories`— ya están guardadas, así que guardar el
+         *      veredicto sería duplicar un dato que ya está, no conservar uno
+         *      que se perdería.
          *   2. Por eso NO se cierra ninguna puerta. El día que haga falta
          *      consultarlo en SQL —el índice de columnistas, que hoy los
          *      comentarios prometen y no existe— la columna se puede añadir y
-         *      rellenar entera desde `canonical_url`, sin haber perdido nada por
-         *      el camino.
+         *      rellenar entera desde lo guardado, sin haber perdido nada por el
+         *      camino.
          *   3. Y se cura sola. La detección está declarada incompleta: el día
-         *      que se añada un patrón, un valor guardado seguiría mintiendo
-         *      sobre los artículos viejos, mientras que este se corrige en el
-         *      siguiente arranque.
+         *      que se añada un patrón o una etiqueta, un valor guardado seguiría
+         *      mintiendo sobre los artículos viejos, mientras que este se
+         *      corrige en el siguiente arranque.
          *
          * Cuesta 6,3 ms para los 4 000, medido, contra una consulta que tarda
          * órdenes de magnitud más.
-         */
-        /*
-         * Y DESDE EL 2026-09-09 LA DERIVACIÓN TIENE DOS ENTRADAS, no una.
-         *
-         * La ruta no ve a los 22 medios que publican en la raíz, así que la
-         * etiqueta que el propio medio le puso al ítem entra como segunda
-         * señal. Lo que cambia respecto de lo escrito arriba es solo esto: esa
-         * entrada no estaba guardada en ninguna parte, y ahora sí —en
-         * `feed_categories`—. El veredicto se sigue sin guardar, y por eso los
-         * tres motivos de arriba siguen valiendo enteros: el punto 3, «se cura
-         * sola», es justo lo que permite cambiar la lista de etiquetas y que el
-         * corpus entero se vuelva a marcar en el siguiente arranque.
          */
         opinion: detectarOpinionDelArticulo({
             url: row.canonical_url,
             categorias: row.feed_categories,
         }),
         outlet: {
-            id: row.source_id,
+            id: sourceId,
             name: row.source_name,
             domain: row.source_domain,
             bias: row.bias,
             factuality: row.factuality,
             spectrum: classifySpectrum(row.bias),
         },
-        category: row.category,
     };
 }
 
 export async function hydrateArticles({ retentionMs, max }) {
     const result = await safeQuery(
         `
-        SELECT a.id, a.canonical_url, a.headline, a.raw_title, a.snippet,
-               a.category, a.tone, a.published_at, a.ingested_at, a.image_url,
-               a.topics, a.ambito, a.feed_categories,
-               s.id AS source_id, s.name AS source_name, s.domain AS source_domain,
+        SELECT ${columnasParaLeer('a')},
+               s.name AS source_name, s.domain AS source_domain,
                s.bias, s.factuality
           FROM articles a
           JOIN sources s ON s.id = a.source_id
@@ -340,69 +322,29 @@ export async function persistArticles(articles) {
      */
     const result = await safeQuery(
         `
-        INSERT INTO articles
-            (id, canonical_url, source_id, headline, raw_title, snippet,
-             category, tone, published_at, ingested_at, image_url, topics, ambito,
-             feed_categories)
-        -- Los temas llegan como cadena separada por comas y se parten aquí.
-        -- unnest no admite un array de arrays irregulares: aplana los
-        -- multidimensionales y exigiría el mismo número de temas en cada fila,
-        -- que es justo lo que la clasificación multietiqueta no garantiza.
-        SELECT id, url, src, titular, crudo, extracto, categoria, tono, publicado,
-               ingerido, imagen,
-               CASE WHEN temas = '' THEN '{}'::text[] ELSE string_to_array(temas, ',') END,
-               ambito,
-               -- Igual que los temas, y por el mismo motivo: viajan como una
-               -- cadena y se parten aquí. El separador es el tabulador porque
-               -- una etiqueta de medio SÍ puede llevar comas —«Bogotá, D.C.» es
-               -- una sección de verdad— y ninguna lleva tabuladores.
-               CASE WHEN etiquetas = '' THEN '{}'::text[] ELSE string_to_array(etiquetas, E'\t') END
-          FROM unnest(
-            $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
-            $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[],
-            $11::text[], $12::text[], $13::text[], $14::text[]
-        ) AS t(id, url, src, titular, crudo, extracto, categoria, tono, publicado,
-               ingerido, imagen, temas, ambito, etiquetas)
+        ${sqlDeInsercion()}
         -- Ver el comentario de arriba: se rellena la imagen, y desde el
         -- 2026-09-09 también las etiquetas del feed en las filas que se
         -- guardaron antes de que existiera la columna. Es lo que hace que los
         -- 22 medios de raíz plana no tengan que esperar a que su corpus entero
         -- se renueve: lo que siga apareciendo en su feed se completa solo.
+        --
+        -- El ON CONFLICT NO sale del contrato a propósito: qué se rellena al
+        -- reencontrar una fila es política de escritura, se decide caso por caso
+        -- y se lee mejor aquí que en una lista de campos.
         ON CONFLICT (canonical_url) DO UPDATE
             SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url),
                 feed_categories = COALESCE(articles.feed_categories, EXCLUDED.feed_categories)
           WHERE (articles.image_url IS NULL AND EXCLUDED.image_url IS NOT NULL)
              OR (articles.feed_categories IS NULL AND EXCLUDED.feed_categories IS NOT NULL)
         `,
-        [
-            usable.map((a) => a.id),
-            usable.map((a) => a.link),
-            usable.map((a) => a.outlet.id),
-            usable.map((a) => a.headline),
-            usable.map((a) => a.rawTitle ?? null),
-            usable.map((a) => a.snippet ?? null),
-            usable.map((a) => a.category ?? null),
-            usable.map((a) => (a.tone ? JSON.stringify(a.tone) : null)),
-            usable.map((a) => a.publishedAt ?? null),
-            usable.map((a) => new Date(a.ingestedAtMs ?? Date.now()).toISOString()),
-            // null cuando el feed no trae imagen, que es lo más frecuente. No se
-            // sustituye por nada: o es la del medio, o no hay.
-            usable.map((a) => a.imageUrl ?? null),
-            // Array vacío y NULL no son lo mismo aquí, y la diferencia la usa
-            // el recategorizador: NULL es «nunca se clasificó» y `{}` es «se
-            // clasificó y no dio tema». Sin distinguirlas, cada pasada volvería
-            // a intentar los mismos artículos inclasificables para siempre.
-            usable.map((a) => (a.topics ?? []).join(',')),
-            usable.map((a) => a.ambito ?? null),
-            /*
-             * Las etiquetas que el medio le puso al ítem, separadas por
-             * tabulador. Nunca NULL desde aquí: una pieza sin etiquetas guarda
-             * `{}`, y así NULL sigue significando lo único que significa —«esta
-             * fila se escribió antes de que existiera la columna»—, que es lo
-             * que mira el relleno del ON CONFLICT de arriba.
-             */
-            usable.map((a) => (a.feedCategories ?? []).join('\t')),
-        ],
+        /*
+         * Los valores, en el mismo orden que los `$n` que genera el contrato.
+         * Ya nadie los numera a mano, que es de donde salió el `$14` que faltaba
+         * el 2026-09-09: el `INSERT` declaraba catorce columnas y la lista traía
+         * trece valores.
+         */
+        valoresDeInsercion(usable),
         'guardado de artículos'
     );
 

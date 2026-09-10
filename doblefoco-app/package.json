@@ -30,6 +30,7 @@
         "check:sources": "node scripts/verifySources.mjs",
         "recategorizar": "node scripts/recategorizar.mjs",
         "report:ingest": "node scripts/ingestReport.mjs",
+        "db:contrato": "node scripts/idaYVueltaDelArticulo.mjs",
         "db:migrate": "node scripts/migrate.mjs",
         "ingest:once": "node scripts/ingestOnce.mjs",
         "worker": "node scripts/ingestWorker.mjs",

@@ -150,7 +150,7 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | | Qué |
 |---|---|
 | 13 | ~~**2.3**, la consulta compartida de portada~~ · **HECHO el 2026-09-09**: de cinco peticiones a una. Entrada en CERRADO |
-| 14 | **2.4**, el serializador de rehidratación |
+| 14 | ~~**2.4**, el serializador de rehidratación~~ · **HECHO el 2026-09-09**: el `INSERT` y la lectura salen de una sola lista. Entrada en CERRADO |
 | 15 | **`story_articles`, la otra mitad de H4**: hoy se borra y se reescribe entera; comparar conjuntos de enlaces es otro diseño |
 | 16 | ~~**La plantilla de WordPress en el resumen**~~ · **HECHO el 2026-09-09**, y la premisa era falsa: no rinde nada en clasificación. Entrada en CERRADO |
 | 17 | ~~**La categoría del feed se estampa en bloque**~~ · **HECHO el 2026-09-09**, y era el 37,4 % de la portada, no cinco piezas. Entrada en CERRADO |
@@ -959,6 +959,85 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · La costura base↔memoria deja de estar escrita dos veces (punto 14 · 2.4)
+
+`persistArticles` escribía columnas a mano y `articuloDesdeFila` las leía a mano:
+**dos serializadores escritos por separado para la misma costura**. Cuando se
+separan no falla nada —la fila se guarda, el artículo vuelve— y solo falta un
+campo que nadie echa de menos hasta que una pantalla enseña un cero.
+
+Ha pasado tres veces, y la tercera fue **hoy mismo, escribiendo esta misma
+costura**:
+
+| Cuándo | Qué se perdió | Qué se vio |
+|---|---|---|
+| 2026-08-19 | `topics` y `ambito`: se escribían y no se leían | 99 de las 100 historias de portada sin tema, y Categorías con catorce ceros |
+| 2026-08-21 | La marca de opinión al rehidratar | 71 columnas reentrando al agrupamiento en cada arranque |
+| **2026-09-09** | El parámetro **`$14`** de `feed_categories` | Nada: lint, `tsc` y **845 pruebas en verde** con el fallo dentro |
+
+### Qué se hizo: una lista que se USA, no que se comprueba
+
+`server/db/contratoDeArticulo.js`, con la misma forma que `contratoDeHistoria`
+tiene para la otra costura. De esa lista salen, generados:
+
+- la lista de columnas del `INSERT`,
+- las expresiones de su `SELECT` —incluidos los dos `CASE WHEN` que parten los
+  arrays que viajan como cadena—,
+- los `$n::tipo[]` del `unnest` **y sus valores en el mismo orden**,
+- las columnas que pide la rehidratación,
+- y el objeto que vuelve a memoria.
+
+**Un campo nuevo es una línea ahí y nada más.** Olvidarse de un parámetro deja de
+ser posible porque ya nadie los numera a mano: era, literalmente, el fallo de
+esta mañana.
+
+Lo que NO sale del contrato, a propósito: el `ON CONFLICT`. Qué se rellena al
+reencontrar una fila es política de escritura, se decide caso por caso y se lee
+mejor donde se toma.
+
+### Y una lista para lo que no se guarda, con el motivo escrito
+
+`CAMPOS_QUE_NO_SE_GUARDAN` explica por qué `outlet` sale del JOIN y por qué la
+marca de `opinion` se deriva en vez de guardarse. Existe para que la prueba pueda
+exigir que **todo campo esté decidido**: hay una que lee el literal
+`const article = {…}` de la ingesta y exige que cada uno de sus campos tenga
+columna o motivo. Añadir un campo sin decidir qué pasa con él deja de ser posible
+en silencio.
+
+### Las dos pruebas, y la diferencia entre ellas importa
+
+1. **`contratoDeArticulo.test.js` (12 pruebas, sin base).** La ida y vuelta que
+   la revisión externa pedía por su nombre: un artículo baja, vuelve y se compara
+   campo a campo. Incluye los casos que costaron dinero —«Bogotá, D.C.» como
+   etiqueta, que es la razón de que el separador sea el tabulador; vacío contra
+   NULL en `topics`— y **el fallo del `$14` convertido en prueba**: tantos
+   valores como parámetros, tantos parámetros como columnas.
+2. **`npm run db:contrato` (nuevo).** La misma ida y vuelta **contra la base de
+   verdad**, dentro de una transacción que termina en `ROLLBACK`. Es lo que las
+   pruebas no pueden hacer: comprobar que el SQL es válido. Los 14 campos vuelven
+   enteros, incluidos los tres que Postgres transforma.
+
+> Se probó también el camino del fallo, rompiendo un campo a propósito: dice
+> «1 campo(s) no sobreviven el viaje» y sale con código 1. Un vigilante que nunca
+> se ha visto fallar no está comprobado.
+
+### Una prueba vieja cambió de forma, y no se borró en silencio
+
+`contentStore.test.js` tenía tres comprobaciones que leían el texto del archivo
+para verificar que el mapeo, la consulta y el `INSERT` coincidían. Existían
+porque eran tres listas a mano que podían separarse. **Ahora salen de una sola,
+así que comprobar que coinciden es comprobar que `map` funciona.** Se sustituyen
+por lo que el contrato no puede saber: que las columnas del medio —las del
+JOIN— siguen pidiéndose. El motivo queda escrito ahí mismo.
+
+### Verificado
+
+**843/843 pruebas**, lint limpio, `tsc` sin errores —el contrato lleva su
+`@typedef` porque el compilador no infiere claves de un bucle, y hay prueba de
+que el typedef y la lista dicen lo mismo—, `check:comentarios` en verde, build
+correcto y `npm run db:contrato` con los 14 campos enteros. No se corre `mirar`:
+esto no toca una línea de la interfaz.
 
 ## 2026-09-09 · La portada dejó de pedir las mismas historias cinco veces (punto 13 · T2-2)
 

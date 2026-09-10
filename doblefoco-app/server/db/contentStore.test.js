@@ -92,12 +92,23 @@ describe('articuloDesdeFila', () => {
 
 describe('la consulta trae todo lo que el mapeo lee', () => {
     /*
-     * EL OTRO SENTIDO DEL MISMO FALLO. La prueba de arriba comprueba que el
-     * mapeo devuelve los campos; esta comprueba que la CONSULTA los pide. Leer
-     * `row.topics` de una fila que nunca seleccionó `a.topics` da `undefined` sin
-     * quejarse, y ese silencio es exactamente lo que costó la pantalla de
-     * Categorías. Se lee el archivo porque el defecto vive en el texto del SQL,
-     * no en ningún valor que se pueda inspeccionar en tiempo de ejecución.
+     * ESTA PRUEBA CAMBIÓ DE FORMA EL 2026-09-09, Y CONVIENE DECIR POR QUÉ.
+     *
+     * Comprobaba, leyendo el texto del archivo, tres cosas: que el mapeo
+     * devolviera campos, que la consulta los pidiera y que el `INSERT` los
+     * escribiera. Eran tres listas escritas a mano en tres sitios, y la prueba
+     * existía justamente porque podían separarse —así se perdieron `topics` y
+     * `ambito`, y con ellos la pantalla de Categorías—.
+     *
+     * Desde 2.4 las tres salen de una sola lista, `contratoDeArticulo.js`, que
+     * GENERA el `INSERT`, sus parámetros, las columnas que pide la
+     * rehidratación y el objeto que vuelve. Ya no se pueden separar, así que
+     * comprobar que coinciden es comprobar que `map` funciona.
+     *
+     * Lo que sí sigue haciendo falta es que contentStore USE el contrato en vez
+     * de volver a escribir el SQL a mano, y de eso se encarga
+     * `contratoDeArticulo.test.js`. Aquí queda el otro sentido, que el contrato
+     * no puede saber: que las columnas del JOIN —las del medio— siguen pedidas.
      */
     const fuente = readFileSync(fileURLToPath(new URL('./contentStore.js', import.meta.url)), 'utf8');
 
@@ -105,57 +116,15 @@ describe('la consulta trae todo lo que el mapeo lee', () => {
         .slice(fuente.indexOf('export async function hydrateArticles'))
         .slice(0, fuente.slice(fuente.indexOf('export async function hydrateArticles')).indexOf('`,'));
 
-    const mapeo = fuente.slice(
-        fuente.indexOf('export function articuloDesdeFila'),
-        fuente.indexOf('export async function hydrateArticles'),
+    it.each(['source_name', 'source_domain', 'bias', 'factuality'])(
+        'la consulta sigue trayendo «%s», que viene del medio y no del contrato',
+        (columna) => {
+            expect(consulta).toContain(columna);
+        },
     );
 
-    /** Las columnas de `articles` que el mapeo lee, sin las que trae el JOIN. */
-    const DEL_JOIN = new Set(['source_id', 'source_name', 'source_domain', 'bias', 'factuality']);
-    const leidas = [...new Set([...mapeo.matchAll(/row\.(\w+)/g)].map((m) => m[1]))].filter(
-        (c) => !DEL_JOIN.has(c),
-    );
-
-    it('el mapeo lee columnas de verdad, no está vacío', () => {
-        expect(leidas.length).toBeGreaterThan(8);
-    });
-
-    it.each(leidas)('la consulta selecciona «%s»', (columna) => {
-        expect(consulta).toContain(`a.${columna}`);
-    });
-
-    /*
-     * EL TERCER SENTIDO, Y EL QUE FALTABA: que la ESCRITURA guarde todo lo que
-     * la lectura pide.
-     *
-     * Las dos pruebas de arriba cierran el camino base -> memoria: el mapeo
-     * devuelve los campos, y la consulta los selecciona. Pero las dos dan por
-     * bueno que la columna EXISTE con algo dentro. Si el INSERT nunca la
-     * escribe, la consulta la selecciona vacía, el mapeo la mapea a null y las
-     * tres pruebas pasan mientras el producto enseña un hueco.
-     *
-     * Es la misma forma del fallo de `topics` —se escribía y no se leía—, vista
-     * desde el otro lado. Hoy no falta ninguna: 12 leídas, 13 escritas, cero
-     * huecos. Lo que no había era nada que lo vigilara, así que el día que
-     * alguien añada un campo al mapeo y olvide el INSERT, vuelve la pantalla de
-     * Categorías con sus ceros y nadie se entera hasta mirarla.
-     *
-     * Se lee el texto del SQL por el mismo motivo que la prueba de arriba: el
-     * defecto vive en la lista de columnas, no en ningún valor inspeccionable.
-     */
-    const insert = fuente.slice(fuente.indexOf('INSERT INTO articles'));
-    const columnasEscritas = insert
-        .slice(insert.indexOf('(') + 1, insert.indexOf(')'))
-        .split(',')
-        .map((c) => c.trim())
-        .filter(Boolean);
-
-    it('el INSERT declara columnas de verdad, no está vacío', () => {
-        expect(columnasEscritas.length).toBeGreaterThan(8);
-    });
-
-    it.each(leidas)('el INSERT escribe «%s», que el mapeo lee', (columna) => {
-        expect(columnasEscritas).toContain(columna);
+    it('las columnas del artículo las pone el contrato', () => {
+        expect(consulta).toContain("columnasParaLeer('a')");
     });
 });
 

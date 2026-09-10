@@ -459,25 +459,181 @@ export function parsePublishedAt(item, ahoraMs = Date.now()) {
  * que no sea el titular repetido en otro idioma.
  *
  * Va ANTES del recorte a 400 caracteres, para que el corte no deje media firma.
+ *
+ * Y LA MISMA FIRMA EXISTE EN ESPAÑOL —«La entrada <titular> se publicó primero
+ * en <sitio>.»—, que es la que emite WordPress cuando el sitio está en
+ * castellano. Al medirla el 2026-09-10 resultó ser un caso MÁS ancho que el
+ * inglés en número de medios: **218 artículos de doce** —72 de MiPutumayo, 36
+ * de Noticias Uno, 29 de Razón Pública, 22 del Diario del Huila, 17 de Lente
+ * Regional, y el resto repartido—. En **80 de ellos el artículo se queda sin
+ * resumen**, que es la verdad: en 70 la firma era el resumen entero y en 10 lo
+ * que sobra no llega al suelo de 30 caracteres. A los otros 138 solo se les
+ * corta la coleta. Nadie la estaba quitando: el punto 16 solo miró el inglés.
  */
-const FIRMA_DEL_GESTOR = /\s*The post\b[\s\S]*?\bappeared first on\b[\s\S]*$/i;
+const FIRMAS_DEL_GESTOR = [
+    /\s*The post\b[\s\S]*?\bappeared first on\b[\s\S]*$/i,
+    /\s*La entrada\b[\s\S]*?\bse public[oó] primero en\b[\s\S]*$/i,
+];
+
+/**
+ * EL RESUMEN QUE ES EL TITULAR REPETIDO Y NADA MÁS (punto 26).
+ *
+ * DE DÓNDE SALE. Google News no tiene el resumen del medio, así que sirve como
+ * `contentSnippet` el titular seguido del nombre de la fuente: «<titular> Blu
+ * Radio», «<titular> ntn24.com». Los gestores de contenido hacen lo suyo por
+ * otra vía —RTVC sirve el titular, el usuario que lo publicó y la fecha:
+ * «…wfvasquez@cont… Mar, 01/09/2026»—. En los dos casos el campo está lleno y
+ * no dice nada que el titular no diga ya.
+ *
+ * CUÁNTO ES. Medido sobre el corpus del 2026-09-10 pasándolo por esta misma
+ * función: **1 018 artículos, el 3,42 % de los 29 737 que tienen resumen**,
+ * repartidos en 17 medios y concentrados en los que llegan por Google News
+ * —290 de La FM, 279 de Blu Radio, 162 de NTN24, 88 de Noticias Caracol, 80 de
+ * Noticias RCN, 79 de EFE—. Lo que aguanta es la PROPORCIÓN: repetida una hora
+ * después, con 88 artículos más en la base, daba 1 020 de 29 825 y el mismo
+ * 3,42 %. El absoluto envejece porque el ciclo no para.
+ *
+ * POR QUÉ SE QUITA, Y NO ES POR LA CLASIFICACIÓN. Se reclasificaron los 1 018
+ * con y sin resumen: **cero cambian de tema**, igual que en el punto 16 y por
+ * la misma razón —lo que el resumen repite ya puntúa por el titular—. Lo que sí
+ * arregla son dos afirmaciones falsas que hacíamos sobre nuestro propio
+ * trabajo:
+ *
+ *   1. `analyzeArticleTone` devolvía `analizoEntradilla: true` para los 1 018.
+ *      Decíamos haber analizado una entradilla que no existe.
+ *   2. En 25 de ellos un término cargado quedaba anotado en el titular Y en la
+ *      entradilla —«brutal», «impactante», «contundente»—. Ese `donde` es una
+ *      distinción que el producto defiende como interesante: en el titular es
+ *      una decisión de portada, en la entradilla una de redacción. Contar la
+ *      misma palabra dos veces convierte una decisión en dos.
+ *
+ * Y está el motivo del punto 16, que sigue valiendo: es texto que se guarda y
+ * que un día se enseña, porque el buscador ya dice buscar dentro del resumen.
+ *
+ * DÓNDE ESTÁ EL LISTÓN: no hay listón, y eso es deliberado. «No dice nada»
+ * significa que **no queda nada**, no que quede poco. Al medirlo el corte
+ * resultó ser limpio: de los 2 187 resúmenes que repiten el titular, los que
+ * quedan exactamente vacíos son casi todos, y el siguiente ya dice algo —«Rosa
+ * Angélica Tarazona», el nombre completo de quien el titular llama 'La
+ * Bebesita'—. Un umbral de palabras habría borrado entradillas cortas que sí
+ * informan: «Estos son los riegos», «El 52,8 % de los votantes votaron por el
+ * no». Se queda fuera un caso conocido, el de La Patria —«Grados Alejandro
+ * Calderin Mié, 09/09/2026»—, porque reconocer el nombre de un autor suelto
+ * pide adivinar, y prefiero perder ese uno a inventar una regla que no sé
+ * medir.
+ *
+ * QUÉ CUENTA COMO «EL MEDIO NOMBRÁNDOSE»: su nombre, su dominio y `www.` más
+ * su dominio — la MISMA lista que `cleanHeadline` usa para quitar el sufijo que
+ * Google News le pega al titular. Es el mismo fenómeno por el otro extremo del
+ * ítem, y tener dos nociones distintas de «cómo se llama este medio» sería
+ * pedir que se separen algún día.
+ *
+ * @returns {boolean} true si, quitado el titular, el resumen no dice nada.
+ */
+function noDiceNadaMasQueElTitular(texto, headline, outletName, outletDomain) {
+    if (!headline) return false;
+
+    /**
+     * Los metadatos del gestor: el correo del usuario que publicó, la fecha y
+     * la hora. No son texto del artículo, y son justo lo que RTVC deja en el
+     * campo. Se quitan ANTES de aplanar, porque una vez aplanado ya no se
+     * distingue una fecha de tres números sueltos.
+     *
+     * Se le pasan igual al titular y al resumen: si el titular llevara una
+     * fecha, tratarlos distinto haría que dejaran de coincidir.
+     */
+    const sinMetadatos = (s) =>
+        String(s ?? '')
+            .replace(/\b[\w.+-]+@[\w.-]+\b/g, ' ')              // wfvasquez@cont…
+            .replace(/\b\d{1,4}[/-]\d{1,2}[/-]\d{1,4}\b/g, ' ') // 01/09/2026
+            .replace(/\b\d{1,2}:\d{2}(?::\d{2})?\b/g, ' ');     // 00:00
+
+    /**
+     * Comparar sin tildes, sin puntuación y sin cajas. El medio no repite el
+     * titular carácter a carácter: Google News normaliza comillas y guiones, y
+     * un resumen que difiere en una comilla curva es el mismo texto repetido.
+     */
+    const aplanar = (s) =>
+        String(s ?? '')
+            .toLowerCase()
+            .normalize('NFD')
+            // Por nombre y no por rango, como en `slugDepartamento`: un
+            // `[̀-ͯ]` escrito con los caracteres literales es invisible en
+            // el editor y nadie puede revisarlo.
+            .replace(/\p{Diacritic}/gu, '')
+            .replace(/[^a-z0-9]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+    const titular = aplanar(sinMetadatos(headline));
+    let resto = aplanar(sinMetadatos(texto));
+    if (!titular || !resto.includes(titular)) return false;
+
+    resto = resto.replace(titular, ' ');
+
+    /**
+     * El día abreviado, que es lo que queda de «Mar, 01/09/2026» cuando la
+     * fecha ya se fue. Se aplica solo aquí, sobre lo que sobra una vez fuera el
+     * titular: «mar» es también una palabra, y en el resumen entero no se
+     * podría borrar sin riesgo.
+     */
+    resto = resto.replace(/\b(lun|mar|mie|jue|vie|sab|dom)\b/g, ' ');
+
+    /**
+     * Cómo se nombra el medio a sí mismo: su nombre y su dominio, igual que en
+     * `cleanHeadline`, más el dominio partido —cuando el nombre ya se llevó
+     * «NTN24» de «ntn24.com» queda un «com» suelto que tampoco dice nada—.
+     *
+     * Se construye a partir de los que EXISTEN. Interpolar un dominio ausente
+     * daría la cadena «www.null», que no es falsa y acabaría borrando «www» y
+     * «null» de cualquier resumen.
+     */
+    const comoSeLlama = new Set();
+    if (outletName) comoSeLlama.add(String(outletName));
+    if (outletDomain) {
+        const dominio = String(outletDomain);
+        comoSeLlama.add(dominio);
+        comoSeLlama.add(`www.${dominio}`);
+        comoSeLlama.add(dominio.replace(/\.[a-z.]+$/i, ''));  // bluradio
+        for (const terminacion of dominio.split('.').slice(1)) comoSeLlama.add(terminacion);
+    }
+
+    const marcas = [...comoSeLlama]
+        .map(aplanar)
+        .filter(Boolean)
+        // El más largo primero: si «ntn24» se aplica antes, deja un «com»
+        // suelto que ya no coincide con «ntn24 com».
+        .sort((a, b) => b.length - a.length);
+
+    for (const marca of marcas) {
+        while (resto.includes(marca)) resto = resto.replace(marca, ' ');
+    }
+
+    return resto.replace(/\s+/g, ' ').trim().length === 0;
+}
 
 /**
  * Extracto real del feed. Devuelve null si no hay contenido, en lugar de
  * inventar una frase de relleno.
+ *
+ * El titular y el medio son opcionales: sin ellos se hace todo menos la
+ * comprobación del punto 26, que necesita saber qué se estaría repitiendo.
  */
-export function extractSnippet(item) {
+export function extractSnippet(item, headline = null, outletName = null, outletDomain = null) {
     const raw = item?.contentSnippet || item?.summary || item?.content || '';
     if (typeof raw !== 'string') return null;
 
-    const text = raw
+    let text = raw
         .replace(/<[^>]*>/g, ' ')
         .replace(/\s+/g, ' ')
-        .trim()
-        .replace(FIRMA_DEL_GESTOR, '')
         .trim();
 
+    for (const firma of FIRMAS_DEL_GESTOR) text = text.replace(firma, '');
+    text = text.trim();
+
     if (text.length < 30) return null;
+    if (noDiceNadaMasQueElTitular(text, headline, outletName, outletDomain)) return null;
+
     return text.length > 400 ? `${text.slice(0, 397)}…` : text;
 }
 
@@ -985,7 +1141,18 @@ export async function runIngestionBatch() {
                         continue;
                     }
 
-                    const snippet = extractSnippet(item);
+                    /*
+                     * El titular y el medio van con el ítem porque el resumen
+                     * no se puede juzgar solo: el que sirve Google News es el
+                     * titular más el nombre de la fuente, y para verlo hay que
+                     * saber cuál era el titular y cómo se llama el medio.
+                     */
+                    const snippet = extractSnippet(
+                        item,
+                        headline,
+                        feedConfig.name,
+                        feedConfig.domain,
+                    );
 
                     /**
                      * El tema sale del CONTENIDO, no del feed.

@@ -36,6 +36,15 @@ const NewsCard = ({ story: rawStory }) => {
      */
     const muestraImagen = tieneImagen(story);
 
+    /*
+     * Puede venir vacío, y entonces NO se pinta la baldosa. Una historia sin
+     * tema y sin ámbito con sección no tiene sección que enseñar; antes se
+     * caía al `category` heredado del feed y la tarjeta acababa marcada
+     * «Política» porque así configuramos la ingesta, no porque la noticia lo
+     * fuera.
+     */
+    const seccion = seccionDe(story);
+
     return (
         <article className="news-card">
             {/* El punto ciego solo se afirma cuando hay fuentes suficientes
@@ -74,7 +83,7 @@ const NewsCard = ({ story: rawStory }) => {
                         aria-hidden="true"
                     >
                         <StoryImage story={story} className="news-card-img">
-                            <span className="news-card-category-badge">{seccionDe(story)}</span>
+                            {seccion && <span className="news-card-category-badge">{seccion}</span>}
                         </StoryImage>
                     </Link>
                 ) : (
@@ -92,8 +101,8 @@ const NewsCard = ({ story: rawStory }) => {
                 <div className="news-card-info">
                     <div className="news-card-top-meta">
                         <div className="news-card-meta-left">
-                            {story.category && (
-                                <span className="news-card-category-inline">{seccionDe(story)}</span>
+                            {seccion && (
+                                <span className="news-card-category-inline">{seccion}</span>
                             )}
                             {timeLabel && (
                                 <time

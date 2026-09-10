@@ -3,6 +3,8 @@ import { describe, it, expect } from 'vitest';
 import {
     parsePublishedAt,
     extractImage,
+    extractSnippet,
+    canonicalizeLink,
     cleanHeadline,
     elegirTitularReciente,
     observarPieza,
@@ -515,5 +517,83 @@ describe('los campos del ítem RSS se piden en un solo sitio', () => {
             expect(fuente).toMatch(/CAMPOS_ITEM_RSS/);
             expect(fuente).not.toMatch(/'media:thumbnail', 'mediaThumbnail'/);
         }
+    });
+});
+
+/**
+ * LA FIRMA DEL GESTOR DE CONTENIDOS, que no la escribe el medio.
+ *
+ * «The post <titular> appeared first on <sitio>.» la pega WordPress al final
+ * del resumen: es el titular repetido en ingles y el nombre del sitio. La
+ * llevan 452 articulos de cuatro medios del corpus, y en 8 de ellos el resumen
+ * entero es eso y nada mas.
+ */
+describe('extractSnippet quita la firma de WordPress', () => {
+    it('conserva el texto del medio y se lleva solo la firma', () => {
+        const item = {
+            contentSnippet:
+                'Las carceles no incapacitan, coordinan. El diagnostico del gobierno es correcto, ' +
+                'pero el buque no resuelve el mecanismo. The post Una carcel en el mar appeared ' +
+                'first on La Silla Vacia.',
+        };
+        expect(extractSnippet(item)).toBe(
+            'Las carceles no incapacitan, coordinan. El diagnostico del gobierno es correcto, ' +
+            'pero el buque no resuelve el mecanismo.'
+        );
+    });
+
+    it('devuelve null cuando el resumen ENTERO era la firma', () => {
+        const item = {
+            contentSnippet: 'The post Edicto Victoria Elena Hurtado Murillo appeared first on Choco7dias.com.',
+        };
+        expect(extractSnippet(item)).toBeNull();
+    });
+
+    it('el recorte a 400 se hace DESPUES, para que no quede media firma', () => {
+        const cuerpo = 'a'.repeat(500);
+        const item = { contentSnippet: `${cuerpo} The post X appeared first on Y.` };
+        const salida = extractSnippet(item);
+        expect(salida).not.toMatch(/appeared/);
+        expect(salida).toBe(`${'a'.repeat(397)}…`);
+    });
+
+    it('no toca un resumen que solo menciona la palabra post', () => {
+        const item = { contentSnippet: 'El post del ministro en X desato la controversia de la semana.' };
+        expect(extractSnippet(item)).toBe('El post del ministro en X desato la controversia de la semana.');
+    });
+});
+
+/**
+ * EL PROTOCOLO DEL ENLACE NO ES COSMETICA. El feed de RTVC declara su `xml:base`
+ * en `http`, y ese `http` responde 302 hacia coljuegos.gov.co —el regulador del
+ * juego—: sin subirlo, cada noticia suya habria mandado al lector alli.
+ */
+describe('canonicalizeLink', () => {
+    it('sube a https el enlace del propio medio', () => {
+        expect(canonicalizeLink('http://www.rtvcnoticias.com/justicia/x', 'rtvcnoticias.com'))
+            .toBe('https://www.rtvcnoticias.com/justicia/x');
+    });
+
+    it('cuenta como del medio un subdominio suyo, igual que la regla de las imagenes', () => {
+        expect(canonicalizeLink('http://es.euronews.com/2026/x', 'euronews.com'))
+            .toBe('https://es.euronews.com/2026/x');
+    });
+
+    it('no toca el enlace de un tercero: no sabemos si sirve https', () => {
+        expect(canonicalizeLink('http://otro.com/x', 'rtvcnoticias.com')).toBe('http://otro.com/x');
+    });
+
+    it('un dominio que solo SE PARECE no es del medio', () => {
+        expect(canonicalizeLink('http://rtvcnoticias.com.malo.co/x', 'rtvcnoticias.com'))
+            .toBe('http://rtvcnoticias.com.malo.co/x');
+    });
+
+    it('sin dominio declarado no promociona nada', () => {
+        expect(canonicalizeLink('http://www.rtvcnoticias.com/x')).toBe('http://www.rtvcnoticias.com/x');
+    });
+
+    it('sigue quitando los parametros de campana y el hash', () => {
+        expect(canonicalizeLink('https://medio.co/nota?utm_source=x&id=7#abajo', 'medio.co'))
+            .toBe('https://medio.co/nota?id=7');
     });
 });

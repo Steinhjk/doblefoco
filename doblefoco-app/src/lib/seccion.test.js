@@ -146,11 +146,47 @@ describe('catálogo de secciones', () => {
         });
 
         /** Mientras la API vigente no mande `topics`, el respaldo sigue siendo el feed. */
-        it('cae a la categoría del feed cuando no hay temas', () => {
+        it('cae a la categoría del feed cuando la API no manda `topics`', () => {
             expect(nombreDeSeccion({ category: 'Política', topics: null }, categories))
                 .toBe('Política');
-            expect(nombreDeSeccion({ category: 'Política', topics: [] }, categories))
+            expect(nombreDeSeccion({ category: 'Política' }, categories))
                 .toBe('Política');
+        });
+
+        /**
+         * `[]` NO ES `null`, Y ESTA ES LA PRUEBA DEL DEFECTO DEL 2026-09-09.
+         *
+         * Vacío significa «se miró y no hay tema», y entonces la etiqueta del
+         * feed no es un respaldo: es nuestra configuración de ingesta pintada
+         * como si fuera el tema de la noticia. Eran 2 364 de las 6 313
+         * historias vivas —el 37,4 %—, con un contrato de fútbol de James y una
+         * alerta por infecciones respiratorias marcados los dos «Política».
+         */
+        it('clasificada y sin tema no enseña la etiqueta del feed', () => {
+            expect(nombreDeSeccion({ category: 'Política', topics: [], ambito: 'nacional' }, categories))
+                .toBe('');
+        });
+
+        /**
+         * El ámbito sí se puede enseñar: no lo hereda del feed, lo calcula el
+         * clasificador sobre el texto. De las 2 364 de arriba, 1 358 son
+         * internacionales de verdad y conservan su etiqueta.
+         */
+        it('sin tema, la etiqueta es el ámbito cuando tiene sección', () => {
+            expect(nombreDeSeccion({ category: 'Política', topics: [], ambito: 'internacional' }, categories))
+                .toBe('Internacional');
+        });
+
+        it('el tema manda sobre el ámbito', () => {
+            expect(nombreDeSeccion({ topics: ['deportes'], ambito: 'internacional' }, categories))
+                .toBe('Deportes');
+        });
+
+        /** Y la etiqueta que se enseña sigue siendo una sección a la que pertenece. */
+        it('la etiqueta del ámbito coincide con su pertenencia', () => {
+            const s = { category: 'Política', topics: [], ambito: 'internacional' };
+            const nombre = nombreDeSeccion(s, categories);
+            expect(perteneceA(s, categories.find((c) => c.name === nombre))).toBe(true);
         });
 
         it('no inventa nada si no hay ni temas ni categoría', () => {
@@ -158,10 +194,14 @@ describe('catálogo de secciones', () => {
             expect(nombreDeSeccion(null, categories)).toBe('');
         });
 
-        /** Un tema que el clasificador escribe pero que no tiene baldosa no se enseña. */
+        /**
+         * Un tema que el clasificador escribe pero que no tiene baldosa tampoco
+         * cae al feed: el clasificador miró la pieza, y lo que falta es una
+         * sección nuestra, no una etiqueta suya.
+         */
         it('ignora un tema sin sección declarada', () => {
             expect(nombreDeSeccion({ category: 'Política', topics: ['inventado'] }, categories))
-                .toBe('Política');
+                .toBe('');
         });
     });
 

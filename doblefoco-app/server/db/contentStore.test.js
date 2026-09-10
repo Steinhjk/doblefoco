@@ -92,12 +92,23 @@ describe('articuloDesdeFila', () => {
 
 describe('la consulta trae todo lo que el mapeo lee', () => {
     /*
-     * EL OTRO SENTIDO DEL MISMO FALLO. La prueba de arriba comprueba que el
-     * mapeo devuelve los campos; esta comprueba que la CONSULTA los pide. Leer
-     * `row.topics` de una fila que nunca seleccionó `a.topics` da `undefined` sin
-     * quejarse, y ese silencio es exactamente lo que costó la pantalla de
-     * Categorías. Se lee el archivo porque el defecto vive en el texto del SQL,
-     * no en ningún valor que se pueda inspeccionar en tiempo de ejecución.
+     * ESTA PRUEBA CAMBIÓ DE FORMA EL 2026-09-09, Y CONVIENE DECIR POR QUÉ.
+     *
+     * Comprobaba, leyendo el texto del archivo, tres cosas: que el mapeo
+     * devolviera campos, que la consulta los pidiera y que el `INSERT` los
+     * escribiera. Eran tres listas escritas a mano en tres sitios, y la prueba
+     * existía justamente porque podían separarse —así se perdieron `topics` y
+     * `ambito`, y con ellos la pantalla de Categorías—.
+     *
+     * Desde 2.4 las tres salen de una sola lista, `contratoDeArticulo.js`, que
+     * GENERA el `INSERT`, sus parámetros, las columnas que pide la
+     * rehidratación y el objeto que vuelve. Ya no se pueden separar, así que
+     * comprobar que coinciden es comprobar que `map` funciona.
+     *
+     * Lo que sí sigue haciendo falta es que contentStore USE el contrato en vez
+     * de volver a escribir el SQL a mano, y de eso se encarga
+     * `contratoDeArticulo.test.js`. Aquí queda el otro sentido, que el contrato
+     * no puede saber: que las columnas del JOIN —las del medio— siguen pedidas.
      */
     const fuente = readFileSync(fileURLToPath(new URL('./contentStore.js', import.meta.url)), 'utf8');
 
@@ -105,57 +116,15 @@ describe('la consulta trae todo lo que el mapeo lee', () => {
         .slice(fuente.indexOf('export async function hydrateArticles'))
         .slice(0, fuente.slice(fuente.indexOf('export async function hydrateArticles')).indexOf('`,'));
 
-    const mapeo = fuente.slice(
-        fuente.indexOf('export function articuloDesdeFila'),
-        fuente.indexOf('export async function hydrateArticles'),
+    it.each(['source_name', 'source_domain', 'bias', 'factuality'])(
+        'la consulta sigue trayendo «%s», que viene del medio y no del contrato',
+        (columna) => {
+            expect(consulta).toContain(columna);
+        },
     );
 
-    /** Las columnas de `articles` que el mapeo lee, sin las que trae el JOIN. */
-    const DEL_JOIN = new Set(['source_id', 'source_name', 'source_domain', 'bias', 'factuality']);
-    const leidas = [...new Set([...mapeo.matchAll(/row\.(\w+)/g)].map((m) => m[1]))].filter(
-        (c) => !DEL_JOIN.has(c),
-    );
-
-    it('el mapeo lee columnas de verdad, no está vacío', () => {
-        expect(leidas.length).toBeGreaterThan(8);
-    });
-
-    it.each(leidas)('la consulta selecciona «%s»', (columna) => {
-        expect(consulta).toContain(`a.${columna}`);
-    });
-
-    /*
-     * EL TERCER SENTIDO, Y EL QUE FALTABA: que la ESCRITURA guarde todo lo que
-     * la lectura pide.
-     *
-     * Las dos pruebas de arriba cierran el camino base -> memoria: el mapeo
-     * devuelve los campos, y la consulta los selecciona. Pero las dos dan por
-     * bueno que la columna EXISTE con algo dentro. Si el INSERT nunca la
-     * escribe, la consulta la selecciona vacía, el mapeo la mapea a null y las
-     * tres pruebas pasan mientras el producto enseña un hueco.
-     *
-     * Es la misma forma del fallo de `topics` —se escribía y no se leía—, vista
-     * desde el otro lado. Hoy no falta ninguna: 12 leídas, 13 escritas, cero
-     * huecos. Lo que no había era nada que lo vigilara, así que el día que
-     * alguien añada un campo al mapeo y olvide el INSERT, vuelve la pantalla de
-     * Categorías con sus ceros y nadie se entera hasta mirarla.
-     *
-     * Se lee el texto del SQL por el mismo motivo que la prueba de arriba: el
-     * defecto vive en la lista de columnas, no en ningún valor inspeccionable.
-     */
-    const insert = fuente.slice(fuente.indexOf('INSERT INTO articles'));
-    const columnasEscritas = insert
-        .slice(insert.indexOf('(') + 1, insert.indexOf(')'))
-        .split(',')
-        .map((c) => c.trim())
-        .filter(Boolean);
-
-    it('el INSERT declara columnas de verdad, no está vacío', () => {
-        expect(columnasEscritas.length).toBeGreaterThan(8);
-    });
-
-    it.each(leidas)('el INSERT escribe «%s», que el mapeo lee', (columna) => {
-        expect(columnasEscritas).toContain(columna);
+    it('las columnas del artículo las pone el contrato', () => {
+        expect(consulta).toContain("columnasParaLeer('a')");
     });
 });
 
@@ -248,4 +217,135 @@ describe('la respuesta nombra todo lo que el cliente trasplanta', () => {
             expect(fuente).toContain(`${campo}: coverage.${campo},`);
         });
     }
+});
+
+/**
+ * H4: SOLO SE ESCRIBE LO QUE CAMBIÓ, Y ESO CREA UNA LISTA QUE PUEDE ENVEJECER.
+ *
+ * El `ON CONFLICT DO UPDATE` de `stories` lleva desde el 2026-09-08 un `WHERE`
+ * que compara los valores viejos con los nuevos y se salta la fila si son
+ * iguales. El ahorro está medido —unas 1 010 000 filas escritas al día para un
+ * corpus que se mueve en los bordes— pero abre una puerta nueva:
+ *
+ *   **una columna que se añada al SET y no al WHERE deja de actualizarse.** Sin
+ *   error, sin aviso: la fila se considera igual, no se escribe, y el valor
+ *   viejo se queda. Es el mismo fallo silencioso que `topics` y `ambito`, con
+ *   el añadido de que esta vez lo habríamos construido nosotros.
+ *
+ * Así que las dos listas tienen que decir lo mismo, y esto lo obliga. Las dos
+ * excepciones van nombradas y con motivo:
+ *
+ *   `computed_at`  cambia siempre (now()); compararla haría que ninguna fila
+ *                  se considerara nunca igual y el WHERE no serviría de nada.
+ *   `first_seen_at` en el SET va con `LEAST(...)`, así que en el WHERE se
+ *                  compara contra ese mismo `LEAST` y no contra EXCLUDED a
+ *                  secas: si no, una historia recompuesta con una fecha más
+ *                  nueva se escribiría para no cambiar nada.
+ */
+describe('el WHERE que evita reescribir lo idéntico', () => {
+    const FUENTE = readFileSync(fileURLToPath(new URL('./contentStore.js', import.meta.url)), 'utf8');
+
+    /*
+     * Los dos trozos se recortan DESDE el `ON CONFLICT` de `stories` y no desde
+     * el principio del fichero: hay otros `WHERE (` antes —la poda, sin ir más
+     * lejos— y anclar en el primero hacía que esta prueba mirara una consulta
+     * que no es la suya. Acusaba a dieciséis columnas inocentes.
+     */
+    const conflicto = FUENTE.indexOf('ON CONFLICT (id) DO UPDATE SET');
+    const inicioWhere = FUENTE.indexOf('WHERE (', conflicto);
+    // Después del WHERE, no después del ON CONFLICT: el comentario que hay en
+    // medio explica por qué se usa `IS DISTINCT FROM`, y anclar en él dejaba
+    // los dos recortes cruzados.
+    const distinto = FUENTE.indexOf('IS DISTINCT FROM', inicioWhere);
+
+    /** El cuerpo del SET: del DO UPDATE al WHERE. */
+    const bloque = FUENTE.slice(conflicto, inicioWhere);
+    /** El WHERE entero: las columnas viejas y las nuevas, que hacen falta las dos. */
+    const where = FUENTE.slice(inicioWhere, distinto + 1200);
+
+    const SIN_COMPARAR = ['computed_at'];
+
+    it('cada columna del SET se compara también en el WHERE', () => {
+        const delSet = [...bloque.matchAll(/^\s{24}(\w+)\s+=\s+EXCLUDED\./gm)].map((m) => m[1]);
+        expect(delSet.length, 'no se encontraron columnas en el SET').toBeGreaterThan(10);
+
+        const olvidadas = delSet
+            .filter((col) => !SIN_COMPARAR.includes(col))
+            .filter((col) => !where.includes(`stories.${col}`));
+
+        expect(
+            olvidadas,
+            'columnas que se actualizarían pero no se comparan: la fila se daría por igual y el valor viejo se quedaría'
+        ).toEqual([]);
+    });
+
+    it('`first_seen_at` se compara contra su LEAST, no contra EXCLUDED a secas', () => {
+        expect(where).toMatch(/LEAST\(stories\.first_seen_at, EXCLUDED\.first_seen_at\)/);
+    });
+
+    it('`computed_at` queda fuera de la comparación, o el WHERE no serviría de nada', () => {
+        expect(where).not.toContain('stories.computed_at');
+    });
+
+    it('el ciclo informa de cuántas escribió de verdad, no solo de cuántas produjo', () => {
+        const DAEMON = readFileSync(
+            fileURLToPath(new URL('../services/ingestDaemon.js', import.meta.url)),
+            'utf8'
+        );
+        expect(FUENTE).toMatch(/return \{ stories: stories\.length, escritas,/);
+        expect(DAEMON).toContain('escritas)`');
+    });
+});
+
+/**
+ * LA OTRA MITAD DE H4: LOS VÍNCULOS (2026-09-09).
+ *
+ * `stories` dejó de reescribirse entera el 08-09, pero `story_articles` seguía
+ * borrándose y reinsertándose completa en cada ciclo: **7 586 enlaces de
+ * historias vivas × 51 ciclos = 386 886 filas al día**, sin contar la versión
+ * muerta que deja cada `DELETE`.
+ *
+ * Comprobado contra la base el 2026-09-09, dentro de una transacción con
+ * `ROLLBACK` y mirando el `xmin` de cada fila, que es lo que dice si Postgres la
+ * reescribió: **cuando nada cambia se escriben 0 filas de 6**, y cuando entra un
+ * artículo y sale otro se escriben exactamente esas dos, con las cinco restantes
+ * intactas.
+ *
+ * Esta prueba vigila la forma, que es lo que puede volver atrás sin que nadie se
+ * entere: el día que alguien «simplifique» esto a un DELETE + INSERT, la cuenta
+ * vuelve a dispararse y el sitio sigue funcionando igual de bien.
+ */
+describe('los vínculos solo se escriben si cambiaron', () => {
+    const FUENTE = readFileSync(fileURLToPath(new URL('./contentStore.js', import.meta.url)), 'utf8');
+
+    it('ya no se borran todos los del ciclo para volver a insertarlos', () => {
+        expect(FUENTE).not.toContain('DELETE FROM story_articles WHERE story_id = ANY');
+    });
+
+    it('la sentencia calcula el deseado, lo que sobra y lo que falta', () => {
+        expect(FUENTE).toContain('WITH deseado AS (');
+        expect(FUENTE).toContain('sobran AS (');
+        expect(FUENTE).toContain('faltan AS (');
+    });
+
+    /*
+     * `NOT EXISTS` y no solo `ON CONFLICT DO NOTHING`: Postgres resuelve el
+     * conflicto insertando una fila especulativa y matándola después, así que
+     * «no hacer nada» al chocar sigue costando escritura. Sin el `NOT EXISTS`,
+     * los 7 586 enlaces se escribirían igual y el ahorro sería imaginario.
+     */
+    it('lo que ya existe no se intenta insertar', () => {
+        const faltan = FUENTE.slice(FUENTE.indexOf('faltan AS ('), FUENTE.indexOf('SELECT (SELECT count(*) FROM sobran)'));
+        expect(faltan).toContain('WHERE NOT EXISTS');
+        expect(faltan).toContain('ON CONFLICT DO NOTHING');
+    });
+
+    it('el ciclo informa de cuántos enlaces tocó de verdad', () => {
+        const DAEMON = readFileSync(
+            fileURLToPath(new URL('../services/ingestDaemon.js', import.meta.url)),
+            'utf8'
+        );
+        expect(FUENTE).toContain('enlacesBorrados');
+        expect(DAEMON).toContain('enlaces +${stories.links} −${stories.enlacesBorrados}');
+    });
 });

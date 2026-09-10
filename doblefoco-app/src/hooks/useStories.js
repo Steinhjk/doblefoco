@@ -39,11 +39,21 @@ import { normalizeStories } from '../lib/story';
  * `counts` SON DEL CATÁLOGO, `stories` ES LO DESCARGADO. Confundirlos ya produjo
  * un error en la portada: contaba `stories.length` y lo presentaba como total.
  *
+ * QUIÉN LO LLAMA HOY (2026-09-09). Desde T2-2 esto es la TUBERÍA, no el punto de
+ * entrada: quien lo usa es `ProveedorDeHistorias`, y los componentes leen de él
+ * con `useHistorias` o `useFeedDeHistorias`. Cinco componentes de la portada
+ * llamaban aquí por su cuenta y se traían cinco fotografías de instantes
+ * distintos; el porqué de que eso importe está escrito en `historiasContext`.
+ *
+ * `encendido: false` deja el hook montado y sin pedir nada. Existe para que el
+ * proveedor pueda tener dos tuberías —la de ambiente y la del feed filtrado— y
+ * encender solo la que hace falta, sin llamar a un hook dentro de un `if`.
+ *
  * @returns {{stories: Array, counts: {total: number, multifuente: number, nacional: number, internacional: number}, status: 'cargando'|'listo'|'sin-datos', reason: string|null, cargarMas: () => void, hayMas: boolean, cargandoMas: boolean}}
  */
 const SIN_CONTEO = { total: 0, multifuente: 0, nacional: 0, internacional: 0 };
 
-export function useStories({ limit = 100, ambito = 'all' } = {}) {
+export function useStories({ limit = 100, ambito = 'all', encendido = true } = {}) {
     const [state, setState] = useState(() => ({
         stories: [],
         counts: SIN_CONTEO,
@@ -61,7 +71,12 @@ export function useStories({ limit = 100, ambito = 'all' } = {}) {
     const offset = useRef(0);
 
     useEffect(() => {
-        if (!isApiConfigured) return undefined;
+        // OJO CON EL NOMBRE: el interruptor se llama `encendido` y no `activo`
+        // porque tres líneas más abajo hay un `let activo` que es la bandera de
+        // cancelación de este mismo efecto. Llamarlos igual dejaba la página en
+        // blanco con «Cannot access 'activo' before initialization», y ninguna
+        // prueba lo veía porque ninguna monta el árbol.
+        if (!isApiConfigured || !encendido) return undefined;
 
         let activo = true;
         offset.current = 0;
@@ -104,7 +119,7 @@ export function useStories({ limit = 100, ambito = 'all' } = {}) {
         return () => {
             activo = false;
         };
-    }, [limit, ambito]);
+    }, [limit, ambito, encendido]);
 
     /**
      * Siguiente página, añadida a lo que ya hay.
@@ -114,7 +129,7 @@ export function useStories({ limit = 100, ambito = 'all' } = {}) {
      * lo pintaría duplicado.
      */
     const cargarMas = useCallback(() => {
-        if (cargandoMas || !hayMas || !isApiConfigured) return;
+        if (cargandoMas || !hayMas || !isApiConfigured || !encendido) return;
 
         setCargandoMas(true);
 
@@ -133,7 +148,7 @@ export function useStories({ limit = 100, ambito = 'all' } = {}) {
                 }));
             })
             .finally(() => setCargandoMas(false));
-    }, [ambito, cargandoMas, hayMas, limit]);
+    }, [ambito, cargandoMas, encendido, hayMas, limit]);
 
     return { ...state, cargarMas, hayMas, cargandoMas };
 }

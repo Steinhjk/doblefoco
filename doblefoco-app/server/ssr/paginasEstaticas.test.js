@@ -4,7 +4,12 @@ import { MEDIA_REGISTRY } from '../../shared/mediaRegistry.js';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PAGINAS_ESTATICAS, RUTAS_RENDERIZADAS, metadatosDePagina } from './paginasEstaticas.js';
+import {
+    PAGINAS_ESTATICAS,
+    REDIRECCIONES_PERMANENTES,
+    RUTAS_RENDERIZADAS,
+    metadatosDePagina,
+} from './paginasEstaticas.js';
 
 const SITIO = 'https://doblefoco.co';
 const COLOMBIANOS = MEDIA_REGISTRY.filter((m) => m.country === 'CO');
@@ -145,18 +150,47 @@ describe('el enrutamiento de Vercel y las rutas que el servidor renderiza', () =
         expect(ultimo.destination).toBe('/index.html');
     });
 
-    it('«/sobre-nosotros» redirige de forma permanente y NO se reescribe al motor', () => {
+    it('cada dirección vieja redirige de forma permanente y NO se reescribe al motor', () => {
         // Se retiró de las páginas renderizadas el 2026-08-09 y el rewrite se
         // quedó apuntando al motor: el visitante recibía un 404 mientras el
         // cliente creía estar redirigiendo. La redirección la tiene que hacer
         // quien atiende la petición, no el JavaScript que nunca llega a correr.
-        expect(RUTAS_RENDERIZADAS).not.toContain('/sobre-nosotros');
-        expect(destinoDe('/sobre-nosotros')).toBe('/index.html');
+        //
+        // Se recorre la TABLA y no una ruta escrita a mano: la lista de
+        // direcciones viejas solo crece, y una prueba que nombra una sola deja
+        // de vigilar en cuanto se añada la segunda.
+        for (const [vieja, nueva] of Object.entries(REDIRECCIONES_PERMANENTES)) {
+            expect(RUTAS_RENDERIZADAS).not.toContain(vieja);
+            expect(destinoDe(vieja)).toBe('/index.html');
 
-        const redir = (vercel.redirects ?? []).find((r) => r.source === '/sobre-nosotros');
-        expect(redir, 'falta la redirección de /sobre-nosotros').toBeDefined();
-        expect(redir.destination).toBe('/transparencia/sobre-nosotros');
-        expect(redir.permanent).toBe(true);
+            const redir = (vercel.redirects ?? []).find((r) => r.source === vieja);
+            expect(redir, `falta la redirección de ${vieja} en vercel.json`).toBeDefined();
+            expect(redir.destination).toBe(nueva);
+            expect(redir.permanent).toBe(true);
+        }
+    });
+
+    it('el motor contesta lo mismo que Vercel, y no un 404', () => {
+        /*
+         * MEDIDO EL 2026-09-08, y la minuta lo contaba peor de lo que era: la
+         * ruta del lector —`doblefoco.co/sobre-nosotros`— nunca estuvo rota,
+         * daba 308 y luego 200. El 404 era del hostname del motor,
+         * `api.doblefoco.co/sobre-nosotros`, que es público desde que existe.
+         *
+         * Dos artefactos nuestros no pueden contestar cosas distintas a la
+         * misma pregunta, así que ahora la tabla la sirven los dos.
+         */
+        const servidor = readFileSync(
+            resolve(dirname(fileURLToPath(import.meta.url)), '../index.js'),
+            'utf8'
+        );
+        expect(servidor).toMatch(/REDIRECCIONES_PERMANENTES/);
+        expect(servidor).toMatch(/res\.redirect\(308, nueva\)/);
+
+        // Delante de las renderizadas: si una dirección vieja volviera a la
+        // tabla de páginas, la redirección tiene que seguir mandando.
+        expect(servidor.indexOf('REDIRECCIONES_PERMANENTES)) {'))
+            .toBeLessThan(servidor.indexOf('app.get(RUTAS_RENDERIZADAS'));
     });
 
     it('una sub-página inventada la atiende el motor, que responde 404 con la aplicación', () => {

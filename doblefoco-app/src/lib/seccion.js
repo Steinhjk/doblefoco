@@ -49,6 +49,55 @@ export function perteneceA(story, categoria) {
 }
 
 /**
+ * LA SECCIÓN A LA QUE PERTENECE UNA HISTORIA, o `null` si no hay ninguna.
+ *
+ * `[]` NO ES LO MISMO QUE `null`, Y AQUÍ ESTABA EL DEFECTO (2026-09-09).
+ * `topics` ausente significa «esta API todavía no manda el campo»; `topics`
+ * vacío significa «se miró y esta historia no tiene tema». Las dos cosas caían
+ * en la misma rama y las dos acababan enseñando `category`, la sección heredada
+ * del feed.
+ *
+ * Lo que eso producía, medido sobre las 6 313 historias vivas del 2026-09-09:
+ * **2 364 (el 37,4 %) llevaban una etiqueta que no era suya sino nuestra** —1 369
+ * «Internacional» y 940 «Política»—. Entre ellas, un contrato de fútbol de James
+ * marcado «Política» y una alerta por infecciones respiratorias marcada
+ * «Política», las dos porque entraron por un feed que configuramos así. Y 80 de
+ * ellas decían «Internacional» mientras nuestro propio clasificador las tenía
+ * por nacionales: dos respuestas contrarias en la misma tarjeta.
+ *
+ * EL ÁMBITO SÍ SE PUEDE ENSEÑAR, y por eso está en el medio de la escalera: no
+ * es una herencia del feed, lo calcula el clasificador sobre el texto. De las
+ * 2 364 de arriba, 1 358 son internacionales de verdad y conservan su etiqueta;
+ * las otras 1 006 se quedan sin ninguna, que es lo honesto.
+ *
+ * El orden, entonces: tema → ámbito → (solo si la API no manda `topics`) la
+ * etiqueta del feed → nada.
+ *
+ * @param {{category?: string, topics?: string[]|null, ambito?: string|null}} story
+ * @param {Array<{id: string, name: string, tipo: 'todo'|'tema'|'ambito'}>} categorias
+ * @returns {{id: string, name: string, tipo: 'todo'|'tema'|'ambito'}|null}
+ */
+export function seccionDeLaHistoria(story, categorias) {
+    const temas = story?.topics;
+
+    // Respaldo de despliegue: el cliente va en Vercel y la API en Fly, así que
+    // hay ratos en que la API vigente no manda `topics`. Ahí, y solo ahí, la
+    // etiqueta del feed es mejor que nada.
+    if (!Array.isArray(temas)) {
+        return categorias.find((c) => c.tipo !== 'todo' && c.name === story?.category) ?? null;
+    }
+
+    if (temas.length) {
+        // El primero es el de mayor puntaje: el clasificador los devuelve
+        // ordenados y la base conserva ese orden.
+        const principal = categorias.find((c) => c.tipo === 'tema' && c.id === temas[0]);
+        if (principal) return principal;
+    }
+
+    return categorias.find((c) => c.tipo === 'ambito' && c.id === story?.ambito) ?? null;
+}
+
+/**
  * El nombre de sección que se le enseña al lector en una tarjeta.
  *
  * POR QUÉ NO SIRVE `category` A SECAS (2026-08-10). Es la sección heredada del
@@ -65,19 +114,20 @@ export function perteneceA(story, categoria) {
  * `topics` cuando la API los manda, `category` mientras no. Así la etiqueta y la
  * pertenencia no pueden divergir.
  *
- * @param {{category?: string, topics?: string[]|null}} story
- * @param {Array<{id: string, name: string, tipo: string}>} categorias
+ * DEVUELVE CADENA VACÍA, Y QUIEN LA PINTA TIENE QUE MIRARLA. Una historia sin
+ * tema y sin ámbito con sección no tiene nada honesto que decir de sí misma, y
+ * una etiqueta vacía es una baldosa vacía en la tarjeta.
+ *
+ * @param {{category?: string, topics?: string[]|null, ambito?: string|null}} story
+ * @param {Array<{id: string, name: string, tipo: 'todo'|'tema'|'ambito'}>} categorias
  * @returns {string} Cadena vacía si no hay nada honesto que decir.
  */
 export function nombreDeSeccion(story, categorias) {
-    const temas = story?.topics;
+    const seccion = seccionDeLaHistoria(story, categorias);
+    if (seccion) return seccion.name;
 
-    if (Array.isArray(temas) && temas.length) {
-        // El primero es el de mayor puntaje: el clasificador los devuelve
-        // ordenados y la base conserva ese orden.
-        const principal = categorias.find((c) => c.tipo === 'tema' && c.id === temas[0]);
-        if (principal) return principal.name;
-    }
-
-    return story?.category ?? '';
+    // La API antigua puede mandar una etiqueta que no es ninguna sección
+    // nuestra —`Judicial` es el caso conocido—. Se enseña igual mientras siga
+    // siendo lo único que hay.
+    return Array.isArray(story?.topics) ? '' : story?.category ?? '';
 }

@@ -47,6 +47,445 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-09 · Las siete ramas, verificadas juntas — y una prueba que solo falla junta (ABIERTO)
+
+Se armó `integracion/tanda-del-8-de-septiembre` desde `main` y se fusionaron las
+siete en el orden que dejó escrito el traspaso del 08-09: **#24 → #28 → #29**
+encadenadas, y **#25, #26, #27 y #30** sueltas. Es el procedimiento del
+2026-08-21 —fusionar a una rama de integración, verificar el resultado **junto**
+y no rama por rama—, y esta vez el procedimiento se pagó solo.
+
+### La prueba que solo falla junta
+
+**`archivo.test.js`, la red que trae la #24, cazó a `expedienteDeMedio.mjs`, que
+trae la #30.** Por separado las dos ramas están en verde; juntas, no. La red
+barre todo `server/` y `scripts/` buscando consultas que lean `stories` sin
+filtrar lo archivado ni declararlo, y el expediente tiene una: el denominador de
+la elevación.
+
+**La respuesta correcta no era filtrarla, era declararla.** Ese denominador
+cuenta todas las historias porque el numerador también las cuenta todas: una
+ficha mide **treinta días de conducta**, no la portada de hoy. Filtrar solo el
+denominador le daría el doble de elevación a un medio con la mitad de sus
+historias congeladas, que es un artefacto de la fecha en que se corrió el
+expediente y no un hecho sobre el medio.
+
+> **Y el arreglo se llevó a la rama de la #30 (`a99e283`), no solo a la de
+> integración.** Si se fusionan una detrás de otra sin él, `main` se queda en
+> rojo aunque las dos PR pasen por separado. Es la trampa exacta de fusionar en
+> cadena sin probar el resultado.
+
+### Los conflictos fueron tres, y ninguno de código
+
+| Fichero | Qué pasaba | Cómo se resolvió |
+|---|---|---|
+| `MINUTA.md` (×2) | Dos entradas nuevas al principio de la misma sección | Se quedan las dos |
+| `SIGUIENTE.md` | Dos versiones del **mismo** traspaso del mismo día | Se queda la de seis PR, que es posterior y cubre a la otra |
+| `package.json` | Dos entradas distintas de `scripts` en la misma línea | Se quedan las dos, con la sangría alineada |
+
+### Verificado sobre el resultado fusionado
+
+Lint limpio · `tsc` sin errores · **828/828 pruebas** · build correcto ·
+`check:comentarios` y `check:registry` en verde · **7/7 invariantes** contra
+producción.
+
+**Y sí se ha mirado**, que es la parte que faltaba: `npm run mirar` sobre las
+diez páginas de escritorio con la rama montada. `/transparencia/sobre-nosotros`
+responde —era el 404 que arregla la #26— y la portada sale entera. Lo que sigue
+sin verificarse es el motor: la rama no está desplegada en Fly.
+
+### Y mirar de verdad destapó que el que mira no mira
+
+**`npm run mirar` dijo «Nada que reprochar a lo que se ve» sobre una portada
+completamente vacía.** Cero historias, los esqueletos de carga sin resolver,
+«Mostrando 0 de 0 cargadas», y aun así las diez páginas salieron con su ✓.
+
+La causa inmediata es local y no del repositorio: este `.env.local` lleva
+`VITE_API_URL=http://localhost:5000`, un puerto donde no hay nada, mientras
+`.env.example` dice `same-origin` y la cabecera de `vite.config.js` dice que la
+variable **tiene que quedar vacía** para que el proxy de desarrollo funcione.
+Corriendo `VITE_API_URL=same-origin npm run mirar` la portada se llena.
+
+> **Pero el defecto que importa no es ese, es el otro:** el ritual que este
+> proyecto usa antes de publicar **no distingue una portada llena de una vacía**.
+> Es la enfermedad de siempre —un vigilante que no puede fallar— y esta vez le
+> tocaba al que se supone que mira. Queda **ABIERTO** en la lista de abajo.
+
+---
+
+## 2026-09-09 · Lo que queda pendiente, en una sola lista
+
+Escrito a petición de Jose, para que no haya que reconstruirlo leyendo la minuta
+entera. Lo que no está aquí no está pendiente: está olvidado.
+
+> **Puesta al día del 2026-09-09, al cerrar la jornada.** Se cerraron **ocho
+> puntos de código** —13, 14, 15, 16, 17, 18, 19 y 20— y se abrieron dos, el 25 y
+> el 26. **Con eso la parte de código de esta lista queda vacía**: todo lo que
+> sigue abierto o es un gesto de Jose, o es una decisión editorial, o tiene fecha.
+> Los ocho van dentro de `integracion/tanda-del-8-de-septiembre` (PR #32), junto
+> con las siete PR originales, y **nada de eso está en el aire hasta que se
+> fusione**, que es el punto 1.
+
+### Gestos que solo puede hacer Jose
+
+| | Qué | Desde |
+|---|---|---|
+| 1 | **Fusionar.** `gh pr merge` lo bloquea el clasificador. La vía recomendada es una sola fusión de la rama de integración, que cierra las siete a la vez | 2026-09-08 |
+| 2 | **Issue #4 del centinela** | 2026-09-02 |
+| 3 | **Sacar el repositorio de OneDrive** (I-9; locks y sync de `node_modules` y `.git`) | 2026-09-01 |
+
+### Decisiones editoriales medidas y esperando firma
+
+| | Qué se decide | Dónde está la evidencia |
+|---|---|---|
+| 4 | **Colombia Informa: firmar −0,65 o bajar a −0,55.** Es de banda, no de decimales: la frontera está en −0,60 | `fichas/colombia-informa.md` |
+| 5 | **El trío Vorágine / Cuestión Pública / Revista RAYA:** un solo valor, tres justificados, o las tres «sin medir» | `fichas/voragine.md` |
+| 6 | **RTVC:** la regla 3 dice «no lo muevas» y su ficha de propiedad dice «esto caduca el 7 de agosto». Las dos no pueden tener razón | `fichas/rtvc.md` |
+| 7 | **¿Un medio que solo publica análisis debe entrar al agrupamiento?** (Razón Pública) | `MINUTA.md`, 2026-09-08 |
+| 8 | **El buscador promete un resumen que el motor no manda:** o el motor manda el `snippet`, o la interfaz deja de prometerlo | `MINUTA.md`, 2026-09-08 |
+| 9 | **El único `aceptado` sin plazo es W Radio**, y su motivo es estructural —su feed expone dos ítems, y eso no cambia con el calendario—. O se le pone `revisarEl` o se escribe que no lo lleva a propósito | `auditoria/hallazgos.json` |
+
+### A ejecutar el día del despliegue, en este orden
+
+| | Qué | Por qué no antes |
+|---|---|---|
+| 10 | `npm run archivo:huerfanas` en seco, y luego `-- --apply` (borra 1 554) | Antes de que Fly sirva la #24, el ciclo vuelve a llenar el archivo con el criterio viejo |
+| 11 | Mirar una línea del ciclo: **«1 512 hist. (43 escritas)»**. Si las dos cifras siguen iguales tras la #29, el `WHERE` no filtra nada | Es la prueba de que H4 funcionó, y se lee sola |
+| 11b | **Y la línea de al lado: `enlaces +N −M`.** Si sale un número del orden de 7 500, el diferencial de `story_articles` dejó de filtrar | Misma idea, para la otra mitad de H4 |
+| 12 | Abrir el sitio y correr `npm run mirar` | Nadie lo ha mirado con todo desplegado. En local está en verde, pero el motor de la rama no está en Fly |
+| 12b | `npm run db:contrato` | La ida y vuelta del artículo contra la base. No hace falta antes, pero es lo que caza un SQL roto sin esperar a que falle una ingesta |
+
+> **La migración YA está aplicada** (`npm run db:migrate`, 2026-09-09), y el orden
+> importaba: los dos despliegues salen solos con el push a `main`, así que si el
+> motor nuevo hubiera arrancado antes que la columna `feed_categories`,
+> `persistArticles` habría fallado en cada ciclo y en silencio.
+
+### Código, sin orden obligado
+
+**Los ocho puntos de código de esta lista se cerraron el 2026-09-09** —13, 14,
+15, 16, 17, 18, 19 y 20—, cada uno con su entrada en CERRADO y su número. Lo que
+queda abierto de código es lo que abrió ese mismo trabajo:
+
+| | Qué |
+|---|---|
+| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
+| 26 | **El resumen que es el titular repetido más el usuario del gestor**: RTVC sirve «…wfvasquez@cont… Mar, 01/09/2026». Es el caso hermano de la plantilla de WordPress (punto 16), y una regla honesta sería descartar el resumen que, quitado el titular, no dice nada |
+
+### Con fecha, y no dependen de nadie
+
+| | Cuándo | Qué |
+|---|---|---|
+| 21 | **2 de octubre** | Medir el tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla por cadencia (3.9) con 30 días de serie |
+| 22 | **1 de octubre** | Se revisa Vorágine: su hallazgo está `resuelto` con esa fecha de vuelta |
+| 23 | **13 de octubre** | Caduca el `aceptado` de Telecaribe — 26 días sin publicar el 08-09, y es canal público |
+| 24 | **Diciembre** | Revisar la opción B del archivo permanente |
+
+## 2026-09-08 · El buscador dice buscar en el resumen, y el resumen no existe (ABIERTO)
+
+**Lo encontró la prueba de ida y vuelta del contrato en su primera pasada**, que
+es exactamente para lo que la revisión externa la pedía.
+
+`componerHistoria` no manda `summary`. La interfaz lo lee en **seis sitios**:
+
+- `CompactHeroGrid.jsx`, `NewsCard.jsx` y `NewsDetail.jsx` tienen un bloque
+  `{story.summary && …}` que **no puede pintarse nunca**.
+- **Y el buscador del sitio dice buscar dentro del resumen** —`Navbar.jsx` y
+  `SearchResults.jsx` incluyen `summary` en lo que comparan— cuando en realidad
+  solo busca en el titular. Nadie lo nota: la búsqueda funciona, solo que
+  encuentra menos de lo que su código promete.
+
+**No se arregló en la PR del contrato a propósito, porque no es un defecto de la
+costura: es una decisión de producto.** Las dos salidas:
+
+1. **Que el motor mande un resumen.** Y entonces hay que decidir de quién es ese
+   texto. En este proyecto nunca es de la casa —«el titular de referencia no lo
+   escribimos»—, así que el candidato natural es el `snippet` del artículo que
+   pone el titular, con su medio al lado, igual que la imagen.
+2. **Que la interfaz deje de prometerlo.** Se quitan los tres bloques muertos y
+   el buscador dice lo que hace.
+
+**Estado: ABIERTO, decisión de Jose.** La 1 hace mejor el buscador —dos párrafos
+de texto por historia en vez de un titular— y cuesta un campo en la consulta; la
+2 es media hora y deja el sitio diciendo la verdad sobre sí mismo.
+## 2026-09-09 · Tercera tanda: la izquierda queda cubierta, y la herramienta contaba de más (ABIERTO)
+
+Colombia Informa, Vorágine y RTVC. **Con estas tres, los nueve medios de
+izquierda que estaban sin ficha desde el 2026-08-26 ya tienen expediente.** La
+banda pasa de las **3 fichas de 14 medios** que se midieron aquel día a **12 de
+13**, y el único que queda sin ficha es The New York Times, que es internacional.
+
+| Ficha | Propuesta | Por qué |
+|---|---|---|
+| `colombia-informa.md` | **FIRMAR −0,65** | Es la segunda de la banda cuyo número no es una colocación relativa: el medio declara su posición hoy —«agencia de comunicación de los pueblos», articulada con la ALBA de los Movimientos Sociales— y el léxico de sus titulares la acompaña |
+| `voragine.md` | **no firmar** | Su nivel 2 no es débil: es inexistente, y una parte medible de la ausencia es nuestra |
+| `rtvc.md` | **no firmar, y el −0,35 está caducado** | Lo dice su propia ficha de propiedad, no esta |
+
+### Colombia Informa es la primera propuesta de firma desde Semanario VOZ
+
+Y el argumento tiene la misma forma con un escalón menos: en VOZ la posición
+está en la **propiedad** —el partido que lo posee—, aquí está en la **misión
+declarada**, que es nivel 4. Sostiene la banda con firmeza y la magnitud peor, y
+la ficha lo dice en su CONTRA en vez de esconderlo.
+
+**La decisión es de banda, no de decimales:** la frontera está en −0,60, así que
+firmar −0,65 o bajar a −0,55 son dos cosas distintas y las dos son defendibles.
+Lo que no lo es —y es lo único que la ficha descarta— es dejarlo en −0,65 sin
+decir cuál de las dos se hizo.
+
+**Un aviso sobre esa ficha, porque el número engaña y el confusor está al lado:**
+el expediente le da **7 socios de cobertura**, más que casi todos los de su
+volumen. Comprobado historia por historia, **los siete salen de UNA historia** —el
+asesinato de dos líderes sociales en Cajibío, que cubrieron ocho medios— y esa
+historia ya está archivada. Las otras tres son de fuente única. No participa de
+la conversación general: coincidió una vez.
+
+### La pregunta del trío, que dejó abierta la ficha de Revista RAYA, tiene respuesta
+
+Se preguntaba si Vorágine (−0,50), Cuestión Pública (−0,45) y Revista RAYA
+(−0,55) pueden llevar tres números distintos sin nada que los separe. Medido ya
+el tercero: **el que está en medio es el que menos evidencia tiene de los tres.**
+Vorágine aporta 5 piezas, de las cuales una es un cómic en inglés y otra la
+convocatoria a un taller. **Quedan tres reportajes**, y sobre tres reportajes no
+se afirma una línea.
+
+Las tres salidas están escritas en `fichas/voragine.md` con su precio. La que
+menos inventa es marcar las tres «sin medir», como ya se hizo con el
+`factuality: null` de los nueve regionales.
+
+### RTVC es la ficha que la regla del polo fijo tenía calendarizada, y la cita no se pudo cumplir
+
+El protocolo escribió que «la transición de agosto de 2026 es la ocasión más
+limpia que va a tener este catálogo en años». Un mes después: **6 piezas, ninguna
+de política, y la última del 2026-09-01**. Sus tres historias están archivadas,
+así que **hoy el medio público no aparece por ninguna parte del sitio.**
+
+La previsión que Jose dejó escrita el 2026-08-08 —que el medio pasaría a cubrir
+desde una posición oficialista con el nuevo gobierno— **no se puede ni confirmar
+ni desmentir**, y no por culpa del medio: entra por Google News, que rinde unas
+ocho veces menos, y su `rss.xml` propio sigue abandonado. Antes de darlo por
+callado hay que probarle otra ruta, como enseñó Cambio.
+
+**La tensión que hay que resolver, y es de Jose:** la regla 3 dice «sin evidencia
+de nivel 1-3 no se mueve el número» y la ficha de propiedad dice «esto caduca el
+7 de agosto». Las dos no pueden tener razón a la vez. Tres salidas, en la ficha.
+La que propone es marcarlo **sin medir**.
+
+**Y falta un nivel 1 que sí se puede tener hoy: quién lo dirige.** El período
+presidencial terminó el 7 de agosto y la ficha no nombra al director actual. El
+catálogo nombra a los accionistas de los grandes; callar a quien dirige el medio
+público sería escrutinio desigual.
+
+### HALLAZGO · El expediente contaba artículos de más, y ya está corregido
+
+`expedienteDeMedio.mjs` usaba `count(*)` sobre un `LEFT JOIN` con
+`story_articles`, que devuelve **una fila por cada historia en la que el artículo
+aparece**. Y un artículo aparece en varias: el agrupamiento se rehace en cada
+ciclo y las historias que envejecen **se congelan en vez de borrarse**, así que
+una misma pieza queda dentro de la historia archivada de ayer y de la de hoy.
+
+**Lo primero que había que comprobar, y salió bien:** de los **1 589 artículos del
+corpus que están en más de una historia, NINGUNO está en más de una historia
+VIVA**. Eso habría sido un defecto del producto —la misma pieza contada dos veces
+en portada— y no lo es: es el archivo funcionando como se diseñó.
+
+Inflación medida el 2026-09-09, y no es despreciable:
+
+| Medio | Limpio | Con el conteo viejo | |
+|---|---:|---:|---:|
+| RTVC | 6 | 7 | **+16,7 %** |
+| Cuestión Pública | 7 | 8 | **+14,3 %** |
+| Vanguardia | 737 | 810 | +9,9 % |
+| Cambio | 398 | 435 | +9,3 % |
+| El Espectador | 1 398 | 1 441 | +3,1 % |
+| Las2Orillas | 186 | 189 | +1,6 % |
+
+**Consecuencia sobre lo ya escrito:** las cifras de artículos y de cadencia de la
+primera y la segunda tanda salieron del conteo viejo. Semanario VOZ, Razón
+Pública y Revista RAYA no se mueven —su inflación es cero—; **Cambio, Las2Orillas
+y Cuestión Pública sí**, y llevan ya la nota. Al firmar cualquiera de ellas hay
+que volver a correr el expediente, que además mide sobre un corpus distinto.
+
+De paso, el expediente ahora dice **cuántas de esas historias siguen vivas**, que
+en RTVC era la diferencia entre «entra en 3 historias» y «no está en el sitio».
+
+### HALLAZGO · Vorágine es el medio peor clasificado del corpus, y hay una causa concreta
+
+**5 de 5 piezas sin tema, el 100 %**, contra el 39,9 % del corpus. Es el primero
+de la lista, por delante de La Patria (88,2 %) y El Morichal (75 %).
+
+La causa se puede señalar con el dedo: el clasificador lee titular y resumen, y
+**dos de sus cinco resúmenes son la plantilla de WordPress** —«The post … appeared
+first on Voragine.»—, es decir, el titular repetido en inglés y nada más. Un
+tercero es la nota de financiación del patrocinador, también en inglés.
+
+**Tamaño real, para no inflarlo:** esa plantilla aparece en **8 piezas de todo el
+corpus** —6 de Chocó 7 Días y 2 de Vorágine— y **las 8 están sin tema**. Es
+diminuto y con puntería: cero excepciones. Arreglarlo es descartar ese resumen
+cuando encaja con el patrón, para que el clasificador se quede con el titular en
+vez de con ruido en otro idioma.
+
+Y hay un segundo tapón, más ancho: **la categoría declarada del feed se estampa
+en bloque**. Las cinco piezas de Vorágine entran como «Judicial», incluidos el
+cómic y la convocatoria del taller. No clasifica; solo tapa.
+
+> **Es la misma enfermedad que la ruta plana** —2,5 puntos de clasificación
+> temática en los regionales, y el filtro de opinión ciego para 22 medios—: el
+> sistema falla siempre del mismo lado, el de los medios pequeños, y los pequeños
+> de este catálogo son casi todos de la banda peor documentada. **ABIERTO.**
+
+## 2026-09-08 · Segunda tanda de fichas, y una pregunta de catálogo que no es de ficha (ABIERTO)
+
+Razón Pública, Cuestión Pública y Revista RAYA. **Ninguna se propone firmar**, y
+los motivos son tres y distintos:
+
+| Ficha | Por qué no |
+|---|---|
+| `razon-publica.md` | Todo lo que publica es análisis, y el filtro no puede verlo |
+| `cuestion-publica.md` | Ocho piezas en treinta días: no hay nivel 2 |
+| `revista-raya.md` | Ocho piezas, y su orden relativo con Vorágine y Cuestión Pública no está medido |
+
+### Lo nuevo, y no es de ficha: hay opinión sirviéndose como cobertura
+
+**Razón Pública es el caso extremo del filtro ciego, y lo enseña sin discusión.**
+Sus siete titulares del 7 y 8 de septiembre son siete análisis, y **uno es
+literalmente una caricatura** —«Caricatura Muertos en bolsas Abelardo»—, que es
+una de las tres cosas que `detectarOpinion` nombra por su nombre.
+
+Publica en la raíz, así que el filtro no ve ninguna. **Y 15 de sus historias
+están hoy en el feed como si fueran cobertura.**
+
+Comprobado el mismo día contra el corpus: de las **631 piezas** que el filtro ha
+marcado como opinión, **cero están dentro de una historia** —funciona
+exactamente como promete— y **cero son de los seis medios de raíz plana**, que
+entre ellos tienen **96 de sus 267 artículos dentro de historias**.
+
+> **LA PREGUNTA ES DE CATÁLOGO Y ES DE JOSE:** ¿un medio cuyo contenido es
+> íntegramente análisis debe entrar al agrupamiento de noticias? Si la respuesta
+> es no, la salida no es bajarle el número: es lo que ya se hizo con El Manduco
+> por otra razón —se le retira el feed y se queda como medio de referencia, con
+> su ficha y su sitio en el mapa—. Eso no es silenciar a nadie: es no presentar
+> una columna como cobertura.
+
+### Y un hallazgo sobre nuestro propio catálogo, no sobre los medios
+
+**Vorágine (−0,50), Cuestión Pública (−0,45) y Revista RAYA (−0,55) son el mismo
+perfil**: fundación de periodistas, investigación, poco volumen, ninguna con
+nivel 2 suficiente. Llevan tres números distintos y **nada de lo medido justifica
+la distancia entre ellos**: el orden es una colocación nuestra dentro de nuestra
+propia escala, como el −0,35 de Las2Orillas que se propuso «por comparación con
+CasaMacondo».
+
+O se mide lo que las separa, o se declara que el catálogo no distingue entre
+ellas y llevan el mismo valor. Las dos son defendibles; tres decimales distintos
+sin evidencia, no.
+
+## 2026-09-08 · El filtro de opinión es ciego para 22 medios, y seis son de la izquierda (ABIERTO)
+
+**Salió al preparar el nivel 2 de las fichas**, comprobando un confusor antes de
+escribirlo en un CONTRA.
+
+`detectarOpinion` es una **función pura de la URL** —tres expresiones sobre la
+ruta— y eso se eligió a propósito: no analizar el texto de la pieza es una
+decisión escrita del proyecto, y una revisión externa la señaló como acierto.
+El precio es que **un medio cuyas URL no digan de qué sección es queda fuera del
+filtro**, y sus columnas entran al agrupamiento sin marcar.
+
+> **CÓMO FUNCIONA DE VERDAD, porque la primera versión de esta entrada lo dijo
+> mal.** La opinión NO se filtra al entrar: los artículos de opinión se guardan
+> en `articles` como los demás —el `opinion` se deriva de la URL— y de lo que se
+> excluye es del AGRUPAMIENTO. Medido el 2026-09-08: **631 piezas del corpus
+> están marcadas como opinión y CERO de ellas está dentro de una historia.** El
+> filtro funciona exactamente como promete, para quien puede ver.
+
+El registro ya lo anotaba **para Las2Orillas**, con la frase «queda MEDIDO como
+riesgo, no descubierto después». Lo que no estaba medido es el tamaño:
+
+> **22 de los 70 medios con datos publican en la raíz** —`medio.co/titulo`, sin
+> sección—, y son **2 179 piezas, el 6,3 % del corpus**.
+
+**Y el reparto no es neutro.** Seis de esos 22 son de la banda de izquierda:
+Las2Orillas, Razón Pública, Semanario VOZ, Volcánicas, Colombia Informa y
+Cuestión Pública.
+
+**La cifra que lo dice todo:** de las 631 piezas de opinión que el filtro ha
+marcado en el corpus, **cero son de esos seis medios** — y 96 de sus 267
+artículos están dentro de una historia. No es que no publiquen opinión: Razón
+Pública es una revista de análisis y el 08-09-2026 tenía una **caricatura** en el
+corpus, que es una de las tres cosas que el filtro nombra por su nombre. Es que
+no se la puede ver.
+
+Comparación directa, del mismo día:
+
+| Medio | Piezas | Opinión detectada | En historias |
+|---|---:|---:|---:|
+| El Espectador | 1 342 | 177 | 0 de las 177 |
+| Vanguardia | 751 | 69 | 0 de las 69 |
+| **Las2Orillas** | 177 | **0** | 59 |
+| **Razón Pública** | 28 | **0** | 15 |
+| **Semanario VOZ** | 27 | **0** | 7 |
+
+Las consecuencias, en orden:
+
+1. **Invalida el nivel 2 de esas seis fichas mientras no se separe.** El
+   aislamiento medido —Las2Orillas coincide con 13 medios donde sus pares
+   coinciden con 30— puede ser el filtro y no su agenda: una columna no coincide
+   con la cobertura de nadie porque no cubre un hecho, opina sobre él.
+2. **Toca la `q` del modelo de puntos ciegos.** La tasa de la izquierda se
+   calcula sobre apariciones, y las de estos seis incluyen columnas que en los
+   demás medios no cuentan. La tasa está inflada por una asimetría nuestra, en la
+   banda que sostiene el modelo.
+3. **Y es el mismo defecto que «regionales sin sección en la URL»**, que ya cuesta
+   2,5 puntos de clasificación temática. La causa es una sola: la ruta plana.
+
+**Lo que NO se propone:** analizar el texto de la pieza. Eso cambiaría una
+decisión de diseño del proyecto entero por un problema de seis medios.
+
+**Salidas posibles, sin decidir:** marcar la opinión por el feed —muchos medios
+publican sus columnas en un feed aparte—, por la categoría declarada del ítem
+RSS, o declarar el hueco en la metodología y descontar esos medios del cálculo de
+la tasa. La tercera es la única que no requiere tocar la ingesta.
+
+**Estado: ABIERTO.** Bloquea la firma de las fichas de Las2Orillas y —por lo
+menos— de las otras cinco de raíz plana.
+
+## 2026-09-08 · Las fichas de la izquierda: la herramienta y la primera tanda
+
+**Decisión de Jose de hoy:** que yo prepare el expediente y él firme. La regla no
+cambia —el número lo pone y lo firma Jose— pero el trabajo que no es juicio
+—contar, comparar y citar— deja de costar una tarde por ficha.
+
+**`npm run expediente -- --medio=<id>`** produce el nivel 2 que el protocolo pide
+y que no producía nada: volumen y cadencia, temas contra la agenda común,
+co-cobertura con elevación, aislamiento **con su confusor al lado** —un medio
+pequeño coincide poco porque publica poco, y sin esa comparación la cifra
+acusaría a los pequeños de ser raros— y sus titulares literales para leer.
+
+**Lo primero que dijo, y no lo esperaba:** los nueve medios de izquierda sin
+ficha **están publicando**, todos, con piezas de esta semana. El diagnóstico de
+agosto —«5 de sus 13 medios aportan cero»— era de la ventana de 72 h; con los 30
+días de retención el panorama es otro.
+
+**Primera tanda, escrita y sin firmar:**
+
+| Ficha | Propuesta | Por qué |
+|---|---|---|
+| `semanario-voz.md` | **firmar −0,80** | Único medio cuyo nivel 1 fija la orientación solo: es el órgano del PCC, que hoy lo posee. Cero socios de cobertura donde sus pares tienen entre 2 y 14 |
+| `las2orillas.md` | **no firmar** | Su nivel 2 está contaminado por el filtro de opinión ciego (entrada de arriba) |
+| `cambio.md` | **no firmar −0,40, y revisarlo hacia la mixta** | Ver abajo |
+
+**Lo de Cambio es lo gordo de la tanda.** Es el medio con más peso de la banda
+—381 de las ~644 piezas de toda la izquierda en el corpus— y la evidencia del
+presente no sostiene su −0,40: fiscaliza a los dos gobiernos (lo que la regla del
+polo fijo excluye expresamente como evidencia), no tiene agenda propia medible
+—38 socios, la mediana de su volumen— y **sus siete socios de mayor elevación son
+de la mixta o de la derecha, ninguno de la izquierda**: El Nuevo Siglo (+0,55) a
+4,3×, La FM (+0,35) a 3,4×.
+
+**Y eso mueve el modelo.** Si Cambio pasa a la mixta, la tasa base de la
+izquierda baja de golpe y cambia qué historias se marcan como punto ciego. No es
+motivo para dejar el número donde está: es motivo para no decidirlo deprisa y
+para volver a medir la 3.2 el día que se firme.
+
 ## De la auditoría de integración del 2026-09-01
 
 Pedida por Jose: una auditoría de la integración entre sistemas, con sus
@@ -531,6 +970,679 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · Los vínculos también dejan de reescribirse enteros (punto 15 · la otra mitad de H4)
+
+H4 quitó el 8 de septiembre el despilfarro de `stories`. **`story_articles`
+seguía borrándose y reinsertándose completa en cada ciclo**, y esa era la mitad
+que quedaba.
+
+**Medido antes de tocar nada:** 7 586 enlaces de historias vivas × **51 ciclos en
+las últimas 24 h** = **386 886 filas escritas al día**. Y esa cifra se queda
+corta: cada `DELETE` deja además su propia versión muerta de la fila para que la
+recoja el recolector después.
+
+El argumento es el mismo que el de H4, y sigue siendo cierto: **el corpus se
+mueve en los bordes.** Un artículo entra o sale de una historia de vez en cuando;
+los otros siete mil quinientos vínculos son exactamente los mismos que hace media
+hora.
+
+### Cómo quedó: una sola sentencia con tres partes
+
+| | Qué hace |
+|---|---|
+| `deseado` | los vínculos que este ciclo quiere, filtrados por que el artículo exista de verdad |
+| `sobran` | borra los que la historia tenía y ya no quiere |
+| `faltan` | inserta los que quiere y no tenía |
+
+Van juntas en una sentencia para que las tres vean el mismo estado de la base.
+
+**`faltan` usa `NOT EXISTS`, y no solo `ON CONFLICT DO NOTHING`, y esa es la
+diferencia entre ahorrar y creer que se ahorra:** Postgres resuelve el conflicto
+insertando una fila especulativa y matándola después, así que «no hacer nada» al
+chocar **sigue costando escritura**. Con el `ON CONFLICT` a secas, los 7 586
+enlaces se habrían escrito igual y el ahorro habría sido imaginario. El
+`ON CONFLICT` se queda para el único caso que el `NOT EXISTS` no cubre: que el
+mismo par venga dos veces dentro del propio lote.
+
+### Comprobado contra la base, mirando el `xmin` de cada fila
+
+`xmin` es la transacción que escribió la fila: si no cambia, Postgres no la
+reescribió. Todo dentro de una transacción terminada en `ROLLBACK`, sobre una
+historia real de seis enlaces:
+
+| Escenario | Resultado |
+|---|---|
+| **Nada cambia** —el caso de casi todos los ciclos— | `borrados: 0, insertados: 0` · **0 filas reescritas de 6** |
+| Entra un artículo y sale otro | `borrados: 1, insertados: 1` · las **5 restantes con el mismo `xmin`**, intactas |
+
+No es una estimación: es la base diciendo qué filas tocó.
+
+### Y se lee desde el ciclo, como la de H4
+
+La línea del ciclo añade **`enlaces +N −M`** cuando hay algo que decir. Antes se
+reescribían los 7 586 en cada pasada; si vuelven a salir números de ese orden, el
+diferencial dejó de filtrar y se ve de un vistazo, sin creerse ningún comentario.
+
+### Verificado
+
+**847/847 pruebas** —4 nuevas, y vigilan la forma, que es lo que puede volver
+atrás sin que nadie se entere: que ya no exista el `DELETE ... WHERE story_id =
+ANY`, que la sentencia calcule deseado/sobran/faltan, que `faltan` lleve su
+`NOT EXISTS`, y que el ciclo informe de las dos cifras—. Lint limpio, `tsc` sin
+errores, `check:comentarios` en verde y build correcto. No se corre `mirar`: esto
+no toca una línea de la interfaz.
+
+## 2026-09-09 · La costura base↔memoria deja de estar escrita dos veces (punto 14 · 2.4)
+
+`persistArticles` escribía columnas a mano y `articuloDesdeFila` las leía a mano:
+**dos serializadores escritos por separado para la misma costura**. Cuando se
+separan no falla nada —la fila se guarda, el artículo vuelve— y solo falta un
+campo que nadie echa de menos hasta que una pantalla enseña un cero.
+
+Ha pasado tres veces, y la tercera fue **hoy mismo, escribiendo esta misma
+costura**:
+
+| Cuándo | Qué se perdió | Qué se vio |
+|---|---|---|
+| 2026-08-19 | `topics` y `ambito`: se escribían y no se leían | 99 de las 100 historias de portada sin tema, y Categorías con catorce ceros |
+| 2026-08-21 | La marca de opinión al rehidratar | 71 columnas reentrando al agrupamiento en cada arranque |
+| **2026-09-09** | El parámetro **`$14`** de `feed_categories` | Nada: lint, `tsc` y **845 pruebas en verde** con el fallo dentro |
+
+### Qué se hizo: una lista que se USA, no que se comprueba
+
+`server/db/contratoDeArticulo.js`, con la misma forma que `contratoDeHistoria`
+tiene para la otra costura. De esa lista salen, generados:
+
+- la lista de columnas del `INSERT`,
+- las expresiones de su `SELECT` —incluidos los dos `CASE WHEN` que parten los
+  arrays que viajan como cadena—,
+- los `$n::tipo[]` del `unnest` **y sus valores en el mismo orden**,
+- las columnas que pide la rehidratación,
+- y el objeto que vuelve a memoria.
+
+**Un campo nuevo es una línea ahí y nada más.** Olvidarse de un parámetro deja de
+ser posible porque ya nadie los numera a mano: era, literalmente, el fallo de
+esta mañana.
+
+Lo que NO sale del contrato, a propósito: el `ON CONFLICT`. Qué se rellena al
+reencontrar una fila es política de escritura, se decide caso por caso y se lee
+mejor donde se toma.
+
+### Y una lista para lo que no se guarda, con el motivo escrito
+
+`CAMPOS_QUE_NO_SE_GUARDAN` explica por qué `outlet` sale del JOIN y por qué la
+marca de `opinion` se deriva en vez de guardarse. Existe para que la prueba pueda
+exigir que **todo campo esté decidido**: hay una que lee el literal
+`const article = {…}` de la ingesta y exige que cada uno de sus campos tenga
+columna o motivo. Añadir un campo sin decidir qué pasa con él deja de ser posible
+en silencio.
+
+### Las dos pruebas, y la diferencia entre ellas importa
+
+1. **`contratoDeArticulo.test.js` (12 pruebas, sin base).** La ida y vuelta que
+   la revisión externa pedía por su nombre: un artículo baja, vuelve y se compara
+   campo a campo. Incluye los casos que costaron dinero —«Bogotá, D.C.» como
+   etiqueta, que es la razón de que el separador sea el tabulador; vacío contra
+   NULL en `topics`— y **el fallo del `$14` convertido en prueba**: tantos
+   valores como parámetros, tantos parámetros como columnas.
+2. **`npm run db:contrato` (nuevo).** La misma ida y vuelta **contra la base de
+   verdad**, dentro de una transacción que termina en `ROLLBACK`. Es lo que las
+   pruebas no pueden hacer: comprobar que el SQL es válido. Los 14 campos vuelven
+   enteros, incluidos los tres que Postgres transforma.
+
+> Se probó también el camino del fallo, rompiendo un campo a propósito: dice
+> «1 campo(s) no sobreviven el viaje» y sale con código 1. Un vigilante que nunca
+> se ha visto fallar no está comprobado.
+
+### Una prueba vieja cambió de forma, y no se borró en silencio
+
+`contentStore.test.js` tenía tres comprobaciones que leían el texto del archivo
+para verificar que el mapeo, la consulta y el `INSERT` coincidían. Existían
+porque eran tres listas a mano que podían separarse. **Ahora salen de una sola,
+así que comprobar que coinciden es comprobar que `map` funciona.** Se sustituyen
+por lo que el contrato no puede saber: que las columnas del medio —las del
+JOIN— siguen pidiéndose. El motivo queda escrito ahí mismo.
+
+### Verificado
+
+**843/843 pruebas**, lint limpio, `tsc` sin errores —el contrato lleva su
+`@typedef` porque el compilador no infiere claves de un bucle, y hay prueba de
+que el typedef y la lista dicen lo mismo—, `check:comentarios` en verde, build
+correcto y `npm run db:contrato` con los 14 campos enteros. No se corre `mirar`:
+esto no toca una línea de la interfaz.
+
+## 2026-09-09 · La portada dejó de pedir las mismas historias cinco veces (punto 13 · T2-2)
+
+**Medido sobre el sitio publicado, antes de tocar nada: la portada hace cinco
+peticiones a `/api/feed`** —`limit=60`, `limit=40`, `limit=60`, `limit=100` y
+`limit=60`—, una por cada componente que se traía los datos por su cuenta: la
+barra de navegación, el destacado, las dos barras laterales y el feed.
+
+**Lo que importa no es el número de peticiones, es que son cinco fotografías de
+cinco instantes distintos.** El ciclo de ingesta entra cada 30 minutos y
+reordena la portada; si cae entre dos de esas peticiones, la página enseña dos
+mundos a la vez y nadie se entera.
+
+Y hay un caso peor que el del relevo, que es el que se ve todos los días: **la
+barra de navegación dura toda la sesión y las páginas se montan debajo**. Su
+buscador seguía respondiendo con la lista del primer minuto mientras la página
+que estabas mirando ya tenía otra.
+
+### Cómo quedó: un proveedor, y dos tuberías solo cuando hacen falta
+
+`ProveedorDeHistorias` envuelve el árbol de `Shell` —por encima de la barra y de
+las rutas— y es **el único sitio del proyecto que llama a `useStories`**. Los
+componentes leen con `useHistorias({ limit })` o, el feed, con
+`useFeedDeHistorias()`.
+
+Hay dos tuberías porque el feed tiene un filtro de ÁMBITO que el resto de la
+página no tiene:
+
+| | Qué pide | Quién la lee |
+|---|---|---|
+| **ambiente** | `ambito: 'all'` | destacado, laterales, buscador de la barra, secciones, tendencias, búsqueda |
+| **feed** | la misma, salvo que el lector filtre | el feed |
+
+Si todo colgara de una sola, filtrar el feed a «internacional» cambiaría también
+el destacado. **Eso no era la incoherencia que había que arreglar**: es una
+pregunta distinta y deliberada del lector.
+
+**El ámbito no hizo falta levantarlo a estado: ya vive en la URL** desde F3-06,
+así que el proveedor y el feed leen la misma fuente sin pasarse nada.
+
+### Medido después
+
+| | `/api/feed` | |
+|---|---:|---|
+| Publicado (portada) | **5** | 60, 40, 60, 100, 60 |
+| Esta rama (portada) | **1** | 100 |
+| Esta rama (portada filtrada) | **2** | la de ambiente y la del ámbito |
+| Esta rama (`/tendencias`) | **1** | antes eran 2, con la barra aparte |
+
+*(En desarrollo cada una sale duplicada: es `StrictMode`, que monta los efectos
+dos veces. Las cifras de arriba son las reales.)*
+
+### El recorte no es un detalle
+
+`useHistorias({ limit: 40 })` devuelve **las primeras 40**, no las que haya. Sin
+eso, un componente que pide 40 vería 200 en cuanto el lector hubiera pulsado
+«cargar más» en el feed, y las cifras que se calculan sobre lo descargado
+—«reparto sobre las 100 historias con más cobertura»— cambiarían según por dónde
+hubiera navegado antes. Con el recorte, cada uno ve exactamente lo que veía
+cuando se traía sus propios datos.
+
+### Lo que costó, dicho para que nadie lo eche de menos
+
+**La propiedad de que «cada componente es autosuficiente».** Un componente ya no
+se puede montar suelto: necesita el proveedor encima. Era el precio que el plan
+de continuidad ya había aceptado, y por eso los hooks fallan ruidosamente
+—`throw`— si alguien los usa fuera: un estado vacío de mentira dejaría la página
+diciendo «sin datos» sin que nadie supiera por qué.
+
+### Y una trampa que ninguna prueba vio, y que cazó abrir el navegador
+
+El interruptor nuevo de `useStories` se llamó `activo`… y dentro de su efecto ya
+había un `let activo` que es la bandera de cancelación. **La página entera se
+caía con «Cannot access 'activo' before initialization»** y salía el cortafuegos
+del `ErrorBoundary`.
+
+**Lint, `tsc` y las 851 pruebas pasaron con el fallo dentro.** Lo encontró contar
+las peticiones con un navegador de verdad. Se renombró a `encendido`, y hay
+prueba de que no se vuelvan a llamar igual.
+
+> Es la tercera vez este mes que el defecto está en la costura y las pruebas
+> pasan por encima. Justifica sola el ritual de mirar antes de publicar — y esta
+> vez `npm run mirar` sí lo habría cazado, porque desde esta mañana se niega a
+> dar el ✓ sobre una portada sin historias.
+
+### Verificado
+
+**854/854 pruebas** —3 nuevas, y son de invariante: que nadie más llame a
+`useStories`, que el proveedor siga por encima de la barra y de las rutas, y que
+el interruptor no se llame como la bandera—, lint limpio, `tsc` sin errores,
+`check:comentarios` en verde, build correcto y **`npm run mirar --movil`: 20/20
+rutas**.
+
+## 2026-09-09 · RTVC no estaba mudo: tenía feed propio y nadie lo había encontrado (punto 20)
+
+**`https://www.rtvcnoticias.com/noticias/rss.xml` — RSS 2.0, diez ítems, el más
+reciente de hace tres horas.** Por Google News el medio llevaba «sin publicar
+desde el 2026-09-01», sus tres historias estaban archivadas y **hoy el canal
+público no aparecía por ninguna parte del sitio**. La ventana era nuestra, no
+suya.
+
+`/rss.xml` sigue siendo el abandonado que se midió en julio —ítem más nuevo del
+30 de mayo, luego un salto a junio de 2024, uno titulado «sitio en
+mantenimiento»—, así que aquella conclusión era correcta **sobre la ruta que se
+probó**. La viva estaba una carpeta más adentro.
+
+### Por qué no la encontró el descubridor, que es lo que hay que arreglar
+
+`descubrirFeed` prueba `/rss/noticias` y `/noticias/feed`, pero no
+`/noticias/rss.xml`. **Es el caso de El Pilón otra vez**: aquella vez la lección
+se anotó como «añadir `/api/rss`», cuando la lección de verdad era que **la ruta
+puede colgar de una sección**. Añadidas `/noticias/rss.xml` y
+`/actualidad/rss.xml`, con el porqué escrito al lado de la lista.
+
+### Lo que gana el medio al salir de Google News
+
+**Sus URL llevan sección** —`/justicia/`, `/actualidad/cultura/`,
+`/actualidad/educacion/`—, mientras que las de Google News son redirecciones sin
+ruta. Nueve de los diez ítems se clasifican con tema, contra el 39,6 % del corpus
+que se queda sin ninguno, y `detectarOpinion` vuelve a poder verlo. Pasadas las
+diez piezas por las reglas de ingesta —`cleanHeadline`, `assessArticle`,
+`parsePublishedAt`—, **entran las diez**.
+
+### HALLAZGO · El `http` del feed lleva a Coljuegos
+
+El feed declara `xml:base="http://www.rtvcnoticias.com/"`, así que todos sus
+enlaces salen en `http`. Y ese `http` **no lleva al artículo**: responde `302`
+hacia `https://www.coljuegos.gov.co/publicaciones/301824`, el regulador del
+juego. En `https` el mismo enlace responde `200`.
+
+**Sin verlo a tiempo, cada noticia de RTVC habría mandado al lector a Coljuegos**,
+y el enlace verificable es la mitad de este producto. Lo arregla
+`canonicalizeLink`, que ahora sube a `https` los enlaces **del propio medio**,
+decidiendo «del propio medio» con la misma regla que ya usaba
+`urlDeImagenValida` para las imágenes. Un enlace a un tercero se queda como
+viene: no sabemos si ese tercero sirve `https`, y promocionarlo a ciegas
+convertiría un enlace que funciona en uno roto.
+
+De paso alcanza a los **667 enlaces `http` que ya había en el corpus, todos de
+Euronews**, que redirigen con `301` a su propio `https`: ahí solo ahorra un
+salto.
+
+### Dos cosas que se vieron y no se tocaron
+
+1. **El resumen es el titular repetido más el usuario del gestor**
+   —«…wfvasquez@cont… Mar, 01/09/2026»—. Es el caso hermano de la plantilla de
+   WordPress del punto 16. Queda anotado como punto 26.
+2. **El medio publica la misma pieza dos veces**, con dos slugs
+   (`…-cuatro` y `…-cuatro-0`). Las dos entran como artículos distintos del mismo
+   medio. Es un duplicado suyo, no nuestro, y el agrupamiento cuenta medios
+   distintos, no piezas; queda dicho por si aparece en una cifra.
+
+### Y una observación editorial que no es de código, y es de Jose
+
+**El medio se llama a sí mismo «Inravisión, Sistema de Medios Públicos»** en sus
+titulares, y tiene una sección `/actualidad/inravision/`. En el catálogo sigue
+como «RTVC Noticias». Además, tres de sus diez piezas son sobre sus propios
+conflictos institucionales —una tutela de Iván Cepeda por las Emisoras de Paz, el
+cese de emisión de cuatro emisoras de paz, y una rectificación a La Silla Vacía—.
+
+Eso es **conducta observable del presente**, que es justo lo que la ficha de RTVC
+decía no tener: la previsión escrita el 2026-08-08 ya se puede empezar a
+contrastar. La ficha sigue sin firmar y el número sigue siendo de Jose.
+
+### Verificado
+
+**851/851 pruebas** —6 nuevas sobre `canonicalizeLink`, incluida la del dominio
+que solo *se parece*—, lint limpio, `tsc` sin errores, `check:registry` sin
+errores tras regenerar `catalogo_medios.txt`, `check:comentarios` en verde y
+build correcto. `npm run mirar` no alcanza a este cambio: es del motor, y la rama
+no está desplegada en Fly.
+
+## 2026-09-09 · El filtro de opinión deja de ser ciego para 22 medios (punto 18)
+
+**Decisión de Jose el 2026-09-09, entre las tres salidas que la entrada del 08-09
+dejó escritas: la etiqueta que el propio medio le pone al ítem en su RSS.**
+
+### Lo que se midió antes de proponer, que es lo que decidió
+
+Los 22 medios que publican en la raíz **son los 22 WordPress**, y **el 100 % de
+sus ítems trae `<category>`**. No es una señal que haya que ir a buscar: ya
+viaja en el mismo ítem que se parsea, y ya se usaba como refuerzo del
+clasificador de temas.
+
+Aplicando la lista de etiquetas a lo que publicaban ese día:
+
+| Medio | Marcaría | Marca hoy |
+|---|---:|---:|
+| Las2Orillas | **38 de 150 ítems** | 0 de 177 piezas del corpus |
+| Volcánicas | **6 de 40** | 0 |
+| Razón Pública | **3 de 10** —la caricatura incluida— | 0 |
+
+Y los titulares no dejan lugar a duda: «Caricatura: Impuesto saludable», «Si para
+estar seguros necesitamos armarnos, el Estado ya perdió», «Cepeda y De la
+Espriella: dos maneras de construir una mayoría».
+
+**Es la misma clase de señal que la ruta**, y por eso es admisible con el mismo
+argumento: la escribe el medio al publicar. No se analiza el texto de la pieza
+—eso sigue fuera de este proyecto—, se lee cómo la clasificó quien la publicó.
+
+### La decisión de diseño que evita el daño peor
+
+**Coincidencia EXACTA de la etiqueta entera, nunca subcadena.** Marcar como
+opinión una noticia real la saca del agrupamiento, y ese es el daño que
+`shared/opinion.js` lleva declarando desde agosto —«se prefiere quedarse
+corto»—. El precedente está en contentQuality: un patrón de lotería descartó
+«obras de rehabilitación del CDI El Dorado» por buscar la subcadena. Con
+coincidencia exacta, `Editorial Planeta` y `Opinión pública en Colombia` no son
+opinión, y hay prueba de las dos.
+
+Las tildes sí se ignoran, porque en el catálogo real conviven «Opinión»,
+«Opinion» y «opiniòn» con acento grave —Proclama del Pacífico— y las tres son la
+misma sección de la misma casa.
+
+**Lo que se dejó fuera a propósito, y conviene que esté escrito:**
+
+- **`Nota Ciudadana`** (Las2Orillas, 18 ítems): es contenido de lectores, que no
+  es lo mismo que una columna. Se decide mirándolo, no de paso.
+- **`Análisis`**: Razón Pública publica análisis y solo análisis, y si eso debe
+  entrar al agrupamiento es el punto 7, que sigue abierto. Meterlo aquí sería
+  contestarlo de tapadillo.
+
+### Y el hallazgo de arquitectura: se guarda la ENTRADA, nunca el veredicto
+
+La marca de opinión **no se guarda**: `articuloDesdeFila` la deriva de la URL en
+cada rehidratación, y el comentario del 2026-08-21 explica por qué —la URL ya
+está guardada, así que el veredicto sería un duplicado, y el día que se afine la
+detección los valores viejos seguirían mintiendo—.
+
+**La segunda señal no estaba guardada en ninguna parte**, así que la respuesta no
+era guardar el veredicto sino guardar **la otra entrada**: la columna nueva
+`articles.feed_categories`. Con eso la propiedad se conserva entera: **cambiar la
+lista de etiquetas vuelve a marcar bien el corpus en el siguiente arranque, sin
+una sola escritura.**
+
+Y el `ON CONFLICT` rellena las etiquetas de las filas que se guardaron antes de
+que existiera la columna, igual que ya hacía con la imagen. Es lo que evita que
+los 22 tengan que esperar a que su corpus entero se renueve: **lo que siga
+apareciendo en su feed se completa solo.**
+
+### Los límites, dichos ahora y no cuando se noten
+
+- **La marca no llega de golpe.** Hoy las 40 793 filas tienen `feed_categories`
+  en NULL. Se van llenando conforme cada feed reexpone sus piezas, así que el
+  techo del primer ciclo es lo que quepa en el feed: ~38 de Las2Orillas, 6 de
+  Volcánicas, 3 de Razón Pública.
+- **Lo que ya salió del feed y no vuelva se queda sin etiqueta y sin marcar.**
+  Se cura al caer de la ventana de 30 días.
+- **El nivel 2 de las seis fichas sigue sin valer hasta que el corpus esté
+  marcado.** Queda anotado como punto 25.
+
+### Verificado
+
+**845/845 pruebas** —9 nuevas, con etiquetas reales leídas de los feeds ese
+día—, lint limpio, `tsc` sin errores, `check:comentarios` en verde y build
+correcto.
+
+**Y el SQL nuevo se probó contra la base de verdad sin dejar nada**: el `ALTER`
+y el `INSERT` de 14 parámetros dentro de una transacción terminada en `ROLLBACK`
+—el DDL de Postgres es transaccional—, comprobando además que el relleno del
+`ON CONFLICT` completa una fila que tenía NULL.
+
+> **La migración ya está aplicada en producción** (`npm run db:migrate`,
+> 2026-09-09). Importaba el orden: los dos despliegues salen solos con el push a
+> `main`, y si el motor nuevo hubiera arrancado antes que la columna,
+> `persistArticles` habría fallado en cada ciclo —en silencio, porque pasa por
+> `safeQuery`—. Añadir una columna que nadie lee todavía no le hace nada al motor
+> vigente.
+
+## 2026-09-09 · La etiqueta de la mitad de la portada era nuestra, no de la noticia (puntos 16 y 17)
+
+Los dos puntos venían del mismo hallazgo de la tercera tanda de fichas —«el
+sistema falla siempre del mismo lado»— y los dos se midieron antes de tocar
+nada. **Uno era mucho más grande de lo escrito y el otro no existía.**
+
+### El 17 · `[]` y `null` significaban lo mismo, y no lo son
+
+`nombreDeSeccion` tenía una sola rama para las dos cosas: `topics` **ausente**
+—«esta API todavía no manda el campo»— y `topics` **vacío** —«se miró y esta
+historia no tiene tema»—. Las dos caían a `category`, la sección heredada del
+feed por el que entró la pieza, que es un registro de archivo y no un campo de
+presentación.
+
+**Medido sobre las 6 313 historias vivas del 2026-09-09: 2 364, el 37,4 %,
+llevaban una etiqueta que no era suya sino nuestra.** No cinco piezas de
+Vorágine: la mitad larga de lo que se ve.
+
+| Lo que decía la tarjeta | Cuántas |
+|---|---:|
+| «Internacional» | 1 369 |
+| «Política» | 940 |
+| «Economía» | 34 |
+| «Politica» (sin tilde, del registro) | 19 |
+| «Judicial» | 2 |
+
+Dos ejemplos de portada, los dos marcados **«Política»**: el contrato
+«salvavidas» que le proponen a James en la B de Italia, y una alerta de que El
+Niño puede aumentar las consultas por infecciones respiratorias. Ninguna de las
+dos es política; las dos entraron por un feed que configuramos así.
+
+**Y 80 decían «Internacional» mientras nuestro propio clasificador las tenía por
+nacionales**: dos respuestas contrarias a la misma pregunta en la misma tarjeta.
+
+#### El arreglo: tema → ámbito → (solo si la API no manda `topics`) el feed → nada
+
+**El ámbito sí se puede enseñar**, y por eso entra en medio de la escalera: no se
+hereda del feed, lo calcula el clasificador sobre el texto. El reparto que deja:
+
+- **1 358** conservan «Internacional», que ahora es verdad medida y no una
+  herencia.
+- **1 006** se quedan **sin etiqueta**, que es lo honesto. Quien la pinta
+  comprueba que no esté vacía, así que no queda una baldosa hueca en la tarjeta.
+- **80** dejan de contradecir al clasificador.
+
+El respaldo de despliegue —Vercel y Fly se publican por separado, y hay ratos en
+que la API vigente no manda `topics`— **sigue exactamente igual**, y ahora tiene
+prueba propia que lo distingue del caso vacío.
+
+#### De paso, dos fugas más de la misma columna
+
+1. **«Más en X»** en la página de la noticia agrupaba con
+   `s.category === story.category`: juntaba piezas cuyo único parentesco era
+   haber entrado por la misma cañería nuestra. Ahora pregunta con `perteneceA`,
+   igual que la pantalla de secciones, y si la historia no tiene sección el
+   bloque no se pinta.
+2. **La sugerencia del buscador** pintaba `story.category` en crudo.
+
+**Lo que se deja a propósito:** `SearchResults` sigue buscando dentro de
+`story.category`. Ahí no es una etiqueta que se le enseñe a nadie sino un pajar
+donde se busca, y quitarlo es parte de la decisión del resumen (punto 8).
+
+### El 16 · La plantilla de WordPress es cuatro veces más común, y no rinde nada
+
+**Lo escrito decía 8 piezas de 2 medios. Son 452 de cuatro**: 360 de La Silla
+Vacía, 74 de Canal Capital, 16 de Chocó 7 Días y 2 de Vorágine. En 8 de ellas el
+resumen entero es la firma y nada más; en las demás va pegada al final de un
+resumen de verdad.
+
+**Y la premisa del punto era falsa, que es lo que importa.** Se reclasificaron
+las 452 con y sin firma: **cero cambian de tema**. Visto de cerca tiene sentido
+—el titular que la firma repite ya puntúa por el titular de verdad, y «appeared
+first on» no está en ningún léxico—, así que **las que no tienen tema no lo
+tienen por esto**. La causa de que Vorágine sea el peor clasificado del corpus
+sigue estando en otro sitio.
+
+> Es el mismo error de forma que «rinde 102»: una observación cierta —la firma
+> está ahí, y las piezas que la llevan están sin tema— convertida en una causa
+> que no se había comprobado.
+
+Se limpia igual, y ahora por el motivo correcto: **es texto que se guarda y que
+un día se enseña**. El buscador ya dice buscar dentro del resumen, y si el motor
+acaba mandándolo (punto 8), 452 piezas le enseñarían al lector su propio titular
+repetido en inglés. Se quita en `extractSnippet`, antes del recorte a 400, para
+que el corte no deje media firma.
+
+### Verificado
+
+**836/836 pruebas** —8 nuevas—, lint limpio, `tsc` sin errores,
+`check:comentarios` en verde, build correcto y `npm run mirar` en verde sobre las
+diez rutas. Y se ha mirado una historia de las que se quedan sin etiqueta
+—«Cartagena fortalece su alumbrado público», hoy marcada «Política»—: la
+cabecera queda entera sin la baldosa.
+
+## 2026-09-09 · `mirar` ya no da el ✓ a una página vacía (punto 19)
+
+**El vigilante que mira antes de publicar no distinguía una portada llena de una
+vacía.** Sus tres comprobaciones miran la FORMA —que nada se salga, que nada se
+recorte, que nadie pise al vecino— y **una página en blanco las pasa todas**. Es
+la enfermedad de siempre de este proyecto, un vigilante que no puede fallar, y
+esta vez le tocaba al último paso del ritual de publicación.
+
+### Lo que se le añadió: una cuarta comprobación, en tres afirmaciones
+
+| | Qué afirma | Qué caza |
+|---|---|---|
+| a | No quedan esqueletos de carga sin resolver | La página que nunca terminó de cargar: lo que se ve no es lo que se publica |
+| b | El contenido tiene al menos 400 caracteres de texto | La página en blanco y el error de arranque |
+| c | Las **señales declaradas** de esa ruta están ahí | La portada entera y sin una sola historia |
+
+Las señales solo se declaran para **las cuatro páginas cuyo contenido lo sirve el
+motor** —`/`, `/categorias`, `/tendencias`, `/mapa-medios`—, que son las únicas
+que pueden salir vacías sin que nada falle. Las seis de Transparencia son prosa
+del repositorio: o sale con la página, o no hay página, y solo se les exige el
+suelo de texto.
+
+**Los mínimos son deliberadamente bajos** —1 destacada, 3 tarjetas, 5 secciones,
+3 tendencias, 10 medios en el mapa—. Esto no mide cuántas historias hay: separa
+«hay» de «no hay». Un vigilante que parpadea se acaba ignorando, y entonces
+sobra.
+
+### Comprobado en los dos sentidos, que es lo que faltaba la vez pasada
+
+- **Con el motor de producción**: 10/10 rutas en verde en escritorio, y 20/20
+  añadiendo móvil. Ningún falso positivo.
+- **Con el motor muerto** (`API_DEV=http://127.0.0.1:5999 npm run mirar -- /`):
+  la portada sale ✗ y dice por qué —«sin la historia destacada: 0 en la página»,
+  «sin las tarjetas del feed: 0 en la página»—. **Antes ese mismo caso daba
+  «Nada que reprochar a lo que se ve».**
+
+Lint limpio y `check:comentarios` en verde. No toca nada que importe a las
+pruebas: `scripts/mirar.mjs` solo lo nombran `package.json` y la configuración
+de ESLint.
+
+### Y una corrección sobre la causa que se escribió ayer
+
+Se dejó escrito que había que correrlo como `VITE_API_URL=same-origin npm run
+mirar` porque este `.env.local` apunta a `http://localhost:5000`. **Hoy no hace
+falta, y conviene saber por qué**: `arrancarVite()` ya le mete
+`VITE_API_URL: 'same-origin'` al proceso de Vite, y Vite da **prioridad a la
+variable inline sobre la del fichero `.env.local`**. Corriendo `npm run mirar` a
+secas, sin prefijo, la portada sale llena — y la captura lo enseña.
+
+Así que el `.env.local` no es la causa que se le atribuyó. La portada vacía de
+ayer tuvo otra —la más probable, que la API no contestara en ese momento—, que
+es exactamente el caso que la comprobación de arriba ahora sí caza. **El defecto
+que importaba era el segundo, y ese era real y está arreglado.**
+
+## 2026-09-08 · El archivo se llenó de huérfanas, y la red que lo vigilaba tenía agujeros (PR #24)
+
+**Seis días después de estrenar el archivo, cuatro de cada cinco páginas
+archivadas no debían estar ahí.** Salió de mirar `/api/health` al volver:
+`historiasArchivadas: 1975` en seis días, para un corpus de 6 234 vivas.
+
+### Se archivaba lo que el agrupamiento recomponía, no solo lo que envejecía
+
+Una historia deja de producirse por dos motivos que no se parecen en nada: sus
+artículos salieron de la ventana —el hecho envejeció, y eso es archivo— o un
+artículo nuevo unió dos grupos y ahora cuelgan de otro id, que no es archivo
+sino la misma noticia con otro nombre, con su URL y anunciada en el sitemap.
+
+**Medido contra producción:** de 1 975 archivadas, **1 554 (79 %)** tenían su
+artículo más nuevo con menos de 48 h y 695 con menos de doce. Solo 421 son
+archivo de verdad. De las 1 554, **864 comparten artículo con otra historia**
+—recomposición demostrada— y las otras 690 dejaron de producirse con sus piezas
+frescas, que tampoco es envejecer.
+
+Se archiva ahora por **madurez**: cuando el artículo más reciente ya pasó de dos
+tercios de la ventana de agrupamiento —48 h de 72—. Es una fracción y no un
+número de horas, para que siga significando lo mismo si la ventana cambia. El
+criterio evidente —«sin artículos en la ventana»— **está medido y no funciona**:
+el techo de `MAX_ARTICLES` expulsa por comparabilidad antes de que cumplan la
+edad, así que con él el archivo se habría quedado vacío para siempre.
+
+- **El arreglo estaba escrito desde el 2026-09-02 y sin comprometer**, en la
+  copia de trabajo, junto al commit de la Etapa B. Seis días a un `git checkout`
+  de distancia.
+
+### La red que vigila el archivo miraba dos ficheros de los ocho
+
+`archivo.test.js` nació mirando `feedStore` y `contentStore`, que son los que
+sirven la portada. **Seis consultas de fuera de esos dos** seguían tratando
+`stories` como «lo que hay ahora», y ninguna fallaba nada:
+
+- **`recategorizar` REESCRIBÍA historias congeladas.** Volver a clasificarlas
+  con el léxico de hoy cambia una página que el lector cree fija.
+- **El invariante de la unión acusaba historias archivadas**, que nadie puede
+  arreglar porque ningún ciclo las recompone. Un aviso que no se puede cerrar es
+  como se estropea un vigilante. Y ahora devuelve **los ids**: acusó «1
+  historia» el 7 y el 8 de septiembre y las dos veces estaba limpio cuando
+  alguien fue a mirar.
+- **`evalSucesos` y `cleanFiltered`** prometían del archivo cosas que no ocurren.
+- **Moderación, reportes y el informe de migración SÍ deben verlo**, y ahora lo
+  declaran: una historia sellada sigue siendo pública, así que tiene que poder
+  retirarse y reportarse.
+
+El barrido es ahora todo `server/**` y `scripts/**`: un fichero nuevo entra en
+la red sin que nadie se acuerde de añadirlo. Comprobado con un fichero de
+mentira, que lo acusa.
+
+- **Estado: HECHO, en la PR #24.** Se cierra al fusionar.
+
+### Lo que queda por hacer A MANO, y en este orden
+
+`npm run archivo:huerfanas` aplica el mismo criterio hacia atrás —en seco por
+defecto, con la lista a la vista y respetando la salvaguarda de moderación—.
+Hoy borraría 1 554. **Se ejecuta DESPUÉS de que Fly sirva la PR #24**, no antes:
+si no, el ciclo siguiente vuelve a llenar el archivo. Decisión de Jose del
+2026-09-08, con las otras dos opciones —dejarlas o desarchivarlas— medidas y
+descartadas: desarchivar no sirve porque sus artículos acabarán madurando y el
+ciclo las archivaría igual, duplicando la historia viva que las absorbió.
+## 2026-09-08 · El timbre de los vigilantes no podía sonar: la tubería se comía el fallo (PR #25)
+
+**El 31 de agosto y el 1 de septiembre se les puso timbre a los cinco
+vigilantes. El mismo cambio se lo quitó.** Para meter la salida completa dentro
+del issue, cada paso pasó a escribirse `programa 2>&1 | tee fichero`. El shell
+por defecto de Actions es `bash -e {0}` —sin `pipefail`—, así que el código de
+una tubería es el de `tee`, que es 0 siempre. El paso queda en verde, y con él
+`steps.<id>.outcome`, que es lo que deciden los `if:` que abren el issue y los
+que ponen el job en rojo.
+
+**La prueba está en Actions y no hace falta razonar sobre ella:** la vigilancia
+del 2026-09-08 a las 15:45 UTC imprimió «✗ HAY QUE MIRAR ESTO · 1 medio(s) con
+feed llevan 14+ días sin aportar: Telecaribe (26d)» y GitHub la marcó como
+exitosa. **Doce días acusando a un medio mudo sin que naciera un solo aviso**, y
+no por falta de detección —la detección funcionaba— sino porque el aviso no
+llegaba a nacer. Los dos aspas del 7 y el 8 las causó el invariante de la unión,
+que es uno de los dos pasos que sí rescataban `PIPESTATUS`.
+
+Es la enfermedad de siempre —un vigilante que detecta y nadie que se entere—
+pero un escalón más abajo que las otras veces: aquí ni siquiera había una
+acusación que ignorar.
+
+- **Arreglados los cinco pasos** que deciden por el código de salida:
+  vigilancia, desfase, copia y los dos del archivo.
+- **La auditoría y el centinela deciden por su resumen en JSON**, no por el
+  código. Eso era verdad y estaba escrito en prosa; ahora está DECLARADO con una
+  frase que la prueba reconoce, en vez de parecerse por casualidad al fallo.
+- **`server/flujos.test.js`** vigila el patrón en todos los flujos. Comprobado
+  quitándole el rescate a la copia: la acusa por su nombre.
+- **Estado: HECHO, en la PR #25.** Se cierra al fusionar.
+
+### Y la vigilancia lee ya el libro de hallazgos, con caducidad
+
+`aceptado` significa desde que se escribió que una persona miró el caso y
+decidió que deje de avisar «sin desaparecer». La vigilancia no leía el libro, así
+que Telecaribe —aceptado el 2026-09-02— seguía saliendo en rojo cada seis horas.
+Dos vigilantes que se contradicen sobre el mismo medio no son el doble de
+vigilancia: son uno al que se le empieza a hacer caso y otro al que no.
+
+**Decisión de Jose (2026-09-08): respetarlo, pero con caducidad.** Se añade
+`revisarEl` al libro; pasada esa fecha la vigilancia vuelve a acusar y dice que
+el plazo venció. **La fecha no se inventó**: Telecaribe ya la tenía escrita en su
+propia nota —«si el 13 de octubre de 2026 sigue sin publicar, deja de ser un
+silencio y pasa a ser una baja que hay que decidir»—, solo que en prosa, donde
+ninguna máquina la lee.
+
+**Los otros tres aceptados se quedan sin plazo** porque su motivo es estructural
+—el feed de W Radio expone dos ítems y eso no cambia con el calendario— y la
+auditoría los lista aparte para que se vea cuáles son. **Vorágine es el que
+conviene mirar**: su nota dice «se revisa si la cadencia grabada muestra más de
+30 días sin publicar», que es una regla y no una fecha, y hoy no la comprueba
+nadie. Convertirla en `revisarEl` es una línea, pero la fecha la pone Jose.
 
 ## 2026-09-02 · Dos defectos que Jose ve y las pruebas no: la categoría que no lleva a ningún lado y el número pegado al titular
 

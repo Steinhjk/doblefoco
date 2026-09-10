@@ -156,6 +156,8 @@ async function main() {
     if (APLICAR) {
         await query(`
             UPDATE stories s
+               -- Solo las vivas: el filtro archivada_el IS NULL va al final de
+               -- esta misma consulta, con su motivo. Lo congelado no se toca.
                SET topics = COALESCE(agg.topics, '{}'),
                    ambito = agg.ambito
               FROM (
@@ -175,15 +177,25 @@ async function main() {
                  GROUP BY sa.story_id
               ) AS agg
              WHERE s.id = agg.story_id
+               -- LO ARCHIVADO NO SE TOCA (2026-09-08). Una historia sellada
+               -- afirma lo que afirmaba el día que se dejó de seguir; volver a
+               -- clasificarla con el léxico de hoy cambiaría una página que el
+               -- lector cree fija. Es la misma razón por la que la ficha del
+               -- medio se muestra con la fecha en que se comprobó.
+               AND s.archivada_el IS NULL
         `);
     }
 
+    // Las vivas: es la salud de lo que el motor produce hoy. Mezclar el
+    // archivo diluiría la cifra con historias que ya no se recalculan y que
+    // nadie va a arreglar.
     const { rows: historias } = await query(`
         SELECT count(*)::int                                          AS total,
                count(*) FILTER (WHERE topics IS NOT NULL
                                   AND cardinality(topics) > 0)::int   AS con_tema,
                count(*) FILTER (WHERE ambito = 'internacional')::int  AS internacional
           FROM stories
+         WHERE archivada_el IS NULL
     `);
 
     // ── Informe ──────────────────────────────────────────────────────────────

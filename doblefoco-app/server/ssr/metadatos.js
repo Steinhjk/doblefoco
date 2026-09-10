@@ -89,6 +89,21 @@ export function describirCobertura(story) {
     }
 
     const medios = total === 1 ? '1 medio cubre' : `${total} medios cubren`;
+    /*
+     * SI ESTÁ ARCHIVADA, EL RESULTADO DEL BUSCADOR LO DICE (2026-09-02). Para
+     * mucha gente esa línea es lo único que va a leer de esta página, y una
+     * historia de hace semanas descrita en presente se lee como la noticia de
+     * hoy. El verbo cambia con ella: «cubrieron», no «cubren».
+     */
+    if (story?.archivadaEl) {
+        const cuando = String(story.archivadaEl).slice(0, 10);
+        const cubrieron = total === 1 ? '1 medio cubrió' : `${total} medios cubrieron`;
+        return (
+            `Archivada el ${cuando}. ${cubrieron} este hecho: ${izquierda} de izquierda, ` +
+            `${centro} de centro, ${derecha} de derecha. Compara las coberturas en DobleFoco.co.`
+        );
+    }
+
     return (
         `${medios} este hecho: ${izquierda} de izquierda, ${centro} de centro, ` +
         `${derecha} de derecha. Compara las coberturas en DobleFoco.co.`
@@ -112,6 +127,20 @@ export function describirCobertura(story) {
  * y sus enlaces. Lo único que cambia es que dejamos de pedirle a un buscador que
  * la valore como obra propia.
  */
+/**
+ * ¿ESTA HISTORIA ESTÁ ARCHIVADA?
+ *
+ * Desde el 2026-09-02 las multifuente se congelan en vez de borrarse, así que
+ * la misma ruta sirve lo de hoy y lo de hace semanas. Se indexa igual —el
+ * archivo existe para ser encontrado— pero la descripción lo dice, porque el
+ * resultado de un buscador es lo único que mucha gente va a leer.
+ *
+ * @param {any} story
+ */
+export function estaArchivada(story) {
+    return Boolean(story?.archivadaEl);
+}
+
 export function esIndexable(story) {
     // Se cuenta con el mismo reparto que describe la página, no con sources.length:
     // la cobertura es la única definición del recuento (F1-04) y contar por otro

@@ -81,7 +81,9 @@ import {
     ventanaYRitmo,
 } from '../shared/auditoria.js';
 import {
+    aceptadosCaducados,
     aceptadosSinNota,
+    aceptadosSinPlazo,
     conciliarHallazgos,
     hallazgosDeLaPasada,
     pendientes,
@@ -235,6 +237,7 @@ const fichaDeFeed = (parcial) => ({
     conImagen: 0,
     ventanaHoras: null,
     piezasPorDia: null,
+    huecoTipicoHoras: null,
     edadMasNuevoHoras: null,
     margen: null,
     margenRed: null,
@@ -261,7 +264,7 @@ async function auditarFeed(feeds) {
                 .filter(Number.isFinite);
 
             // La ventana se mide sobre el feed ENTERO: es el ritmo del medio.
-            const { ventanaHoras, piezasPorDia } = ventanaYRitmo(fechas);
+            const { ventanaHoras, piezasPorDia, huecoTipicoHoras } = ventanaYRitmo(fechas);
 
             // Lo fresco, en cambio, se mide sobre lo que el motor toma.
             const tomados = items.slice(0, techoDelFeed(feed));
@@ -289,6 +292,8 @@ async function auditarFeed(feeds) {
                     .length,
                 ventanaHoras: ventanaHoras === null ? null : Number(ventanaHoras.toFixed(1)),
                 piezasPorDia: piezasPorDia === null ? null : Number(piezasPorDia.toFixed(1)),
+                huecoTipicoHoras:
+                    huecoTipicoHoras === null ? null : Number(huecoTipicoHoras.toFixed(1)),
                 edadMasNuevoHoras:
                     edadMasNuevoHoras === null ? null : Number(edadMasNuevoHoras.toFixed(1)),
                 /*
@@ -300,7 +305,7 @@ async function auditarFeed(feeds) {
                  * «ritmo desconocido». Y no lo es: su feed sirve piezas de hace
                  * diez meses, que es el hallazgo que el redondeo tapaba.
                  */
-                crudo: { piezasPorDia, edadMasNuevoHoras },
+                crudo: { piezasPorDia, huecoTipicoHoras, edadMasNuevoHoras },
                 cronologico: esCronologico(edades),
                 ms: Date.now() - inicio,
                 respondio: true,
@@ -316,8 +321,9 @@ async function auditarFeed(feeds) {
                 conImagen: 0,
                 ventanaHoras: null,
                 piezasPorDia: null,
+                huecoTipicoHoras: null,
                 edadMasNuevoHoras: null,
-                crudo: { piezasPorDia: null, edadMasNuevoHoras: null },
+                crudo: { piezasPorDia: null, huecoTipicoHoras: null, edadMasNuevoHoras: null },
                 cronologico: null,
                 ms: Date.now() - inicio,
                 respondio: false,
@@ -356,6 +362,7 @@ async function auditarFeed(feeds) {
         conImagen: mejor.conImagen,
         ventanaHoras: mejor.ventanaHoras,
         piezasPorDia: mejor.piezasPorDia,
+        huecoTipicoHoras: mejor.huecoTipicoHoras ?? null,
         edadMasNuevoHoras: mejor.edadMasNuevoHoras,
         margen: mejor.margen,
         margenRed: mejor.margenRed,
@@ -668,6 +675,25 @@ if (sinNota.length) {
     console.log(`  ${sinNota.length} hallazgo(s) están en «aceptado» SIN motivo escrito.`);
     console.log('  Aceptar sin decir por qué no es aceptar: es esconder, y dentro de tres');
     console.log('  meses nadie sabrá cuál de las dos cosas fue. Ponles `nota` en el libro.');
+    console.log();
+}
+
+const caducados = aceptadosCaducados(libro);
+if (caducados.length) {
+    console.log(`  ${caducados.length} hallazgo(s) aceptados han CADUCADO: su plazo ya pasó.`);
+    console.log('  Un aceptado con fecha es una decisión con revisión, no un silencio');
+    console.log('  permanente. Vuelven a pedir decisión, y la vigilancia ya los acusa:');
+    for (const h of caducados) {
+        console.log(`      ${h.id}  (revisar el ${h.revisarEl})`);
+    }
+    console.log();
+}
+
+const sinPlazo = aceptadosSinPlazo(libro);
+if (sinPlazo.length) {
+    console.log(`  ${sinPlazo.length} aceptado(s) no caducan nunca: ${sinPlazo.map((h) => h.id).join(', ')}.`);
+    console.log('  Vale cuando el motivo es estructural y no cambia con el calendario. Si el');
+    console.log('  motivo era «a ver si vuelve», lo que falta es `revisarEl` con una fecha.');
     console.log();
 }
 

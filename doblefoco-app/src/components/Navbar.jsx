@@ -5,6 +5,8 @@ import { useStories } from '../hooks/useStories';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import { rutaDeHistoria } from '../../shared/storyPath';
 import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
+import { nombreDeSeccion } from '../lib/seccion';
+import { categories } from '../data/categories';
 import { Sun, Moon, Search, Newspaper, Radio, CornerDownLeft } from 'lucide-react';
 import './Navbar.css';
 
@@ -84,7 +86,11 @@ const Navbar = () => {
                 type: 'story',
                 id: s.id,
                 title: s.title,
-                category: s.category,
+                // La sección de la historia, no la etiqueta del feed por el que
+                // entró: la sugerencia decía «Política» de cualquier cosa que
+                // hubiera llegado por un feed que configuramos así. Vacía
+                // cuando la historia no tiene sección, y entonces no se pinta.
+                category: nombreDeSeccion(s, categories),
                 url: rutaDeHistoria(s),
             }));
 

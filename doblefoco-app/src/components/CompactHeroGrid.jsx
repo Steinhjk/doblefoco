@@ -109,6 +109,13 @@ const CompactHeroGrid = () => {
     const cobertura = suceso ? analyzeCoverage(fuentes) : main.coverage;
     const medios = suceso ? suceso.medios : main.coverage.total;
 
+    /*
+     * Puede venir vacía, y entonces no se pinta: una historia sin tema y sin
+     * ámbito con sección no tiene sección. Antes caía al `category` del feed y
+     * el destacado salía marcado con nuestra configuración de ingesta.
+     */
+    const seccionPrincipal = seccionDe(main);
+
     return (
         <section className="compact-hero-section">
             <div className="compact-hero-header-row">
@@ -150,7 +157,9 @@ const CompactHeroGrid = () => {
                                 height={450}
                                 eager
                             >
-                                <span className="spotlight-category-tag">{seccionDe(main)}</span>
+                                {seccionPrincipal && (
+                                    <span className="spotlight-category-tag">{seccionPrincipal}</span>
+                                )}
                             </StoryImage>
                         </Link>
                     ) : (
@@ -162,8 +171,8 @@ const CompactHeroGrid = () => {
                     <div className="spotlight-body">
                         <div className="spotlight-meta">
                             <div className="spotlight-meta-left">
-                                {!tieneImagen(main) && main.category && (
-                                    <span className="spotlight-category-inline">{seccionDe(main)}</span>
+                                {!tieneImagen(main) && seccionPrincipal && (
+                                    <span className="spotlight-category-inline">{seccionPrincipal}</span>
                                 )}
                                 <span className="meta-time">{storyTimeLabel(main)}</span>
                             </div>
@@ -259,7 +268,9 @@ const CompactHeroGrid = () => {
 
                             <div className="secondary-content">
                                 <div className="secondary-meta">
-                                    <span className="secondary-cat">{seccionDe(story)}</span>
+                                    {seccionDe(story) && (
+                                        <span className="secondary-cat">{seccionDe(story)}</span>
+                                    )}
                                     <span className="secondary-time">{storyTimeLabel(story)}</span>
                                 </div>
 

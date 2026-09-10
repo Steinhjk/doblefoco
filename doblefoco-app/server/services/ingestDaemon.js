@@ -400,16 +400,43 @@ export function parsePublishedAt(item, ahoraMs = Date.now()) {
 }
 
 /**
+ * LA FIRMA QUE WORDPRESS LE PEGA AL RESUMEN: «The post <titular> appeared first
+ * on <sitio>.»
+ *
+ * No la escribe el medio, la escribe su gestor de contenidos, y no dice nada
+ * que no esté ya: es el titular repetido en inglés más el nombre del sitio. En
+ * el corpus del 2026-09-09 la llevan **452 artículos de cuatro medios** —360 de
+ * La Silla Vacía, 74 de Canal Capital, 16 de Chocó 7 Días y 2 de Vorágine—, y
+ * en 8 de ellos el resumen ENTERO es la firma y nada más.
+ *
+ * SE QUITA POR LO QUE SE GUARDA, NO POR LO QUE CLASIFICA, y conviene tenerlo
+ * escrito porque la minuta lo apuntó al revés. Se midió reclasificando los 452
+ * con y sin firma: **cero cambian de tema**. Tiene sentido visto de cerca —el
+ * titular que la firma repite ya puntúa por el titular de verdad, y «appeared
+ * first on» no está en ningún léxico—, así que los que no tienen tema no lo
+ * tienen por esto.
+ *
+ * Lo que sí arregla es el texto que se guarda y que un día se enseña: el
+ * buscador ya dice buscar dentro del resumen, y el motor tendría que mandar uno
+ * que no sea el titular repetido en otro idioma.
+ *
+ * Va ANTES del recorte a 400 caracteres, para que el corte no deje media firma.
+ */
+const FIRMA_DEL_GESTOR = /\s*The post\b[\s\S]*?\bappeared first on\b[\s\S]*$/i;
+
+/**
  * Extracto real del feed. Devuelve null si no hay contenido, en lugar de
  * inventar una frase de relleno.
  */
-function extractSnippet(item) {
+export function extractSnippet(item) {
     const raw = item?.contentSnippet || item?.summary || item?.content || '';
     if (typeof raw !== 'string') return null;
 
     const text = raw
         .replace(/<[^>]*>/g, ' ')
         .replace(/\s+/g, ' ')
+        .trim()
+        .replace(FIRMA_DEL_GESTOR, '')
         .trim();
 
     if (text.length < 30) return null;

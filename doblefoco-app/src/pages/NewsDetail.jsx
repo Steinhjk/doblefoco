@@ -23,7 +23,7 @@ import MediaLogo from '../components/MediaLogo';
 import UserFeedbackWidget from '../components/UserFeedbackWidget';
 import ShareModal from '../components/ShareModal';
 import './NewsDetail.css';
-import { nombreDeSeccion } from '../lib/seccion';
+import { nombreDeSeccion, perteneceA, seccionDeLaHistoria } from '../lib/seccion';
 import { categories } from '../data/categories';
 import { decimal } from '../../shared/numeros.js';
 
@@ -217,12 +217,27 @@ const NewsDetail = () => {
         if (story) recordRead(story);
     }, [story?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    /*
+     * «MÁS EN X» SE AGRUPA POR LA SECCIÓN DE LA HISTORIA, NO POR EL FEED.
+     *
+     * Comparaba `s.category === story.category`, que es la etiqueta heredada
+     * del feed por el que entró cada pieza: con 24 de los feeds declarados como
+     * «Política», el bloque juntaba noticias que no tienen nada que ver salvo
+     * haber entrado por la misma cañería nuestra. Ahora se pregunta lo mismo
+     * que la pantalla de secciones, con `perteneceA`, y si la historia no tiene
+     * sección el bloque no se pinta.
+     */
+    const seccion = useMemo(
+        () => (story ? seccionDeLaHistoria(story, categories) : null),
+        [story]
+    );
+
     const related = useMemo(() => {
-        if (!story) return [];
+        if (!story || !seccion) return [];
         return pool
-            .filter((s) => s.category === story.category && s.id !== story.id)
+            .filter((s) => s.id !== story.id && perteneceA(s, seccion))
             .slice(0, 3);
-    }, [story, pool]);
+    }, [story, seccion, pool]);
 
     if (loading) {
         return (
@@ -252,7 +267,9 @@ const NewsDetail = () => {
         <div className="news-detail-page">
             <div className="detail-header">
                 <Link to="/" className="back-link">← Volver al feed</Link>
-                <span className="detail-category-badge">{seccionDe(story)}</span>
+                {seccionDe(story) && (
+                    <span className="detail-category-badge">{seccionDe(story)}</span>
+                )}
             </div>
 
             <article className="detail-article detail-split-layout">
@@ -533,7 +550,7 @@ const NewsDetail = () => {
 
             {related.length > 0 && (
                 <section className="detail-related">
-                    <h2>Más en {seccionDe(story)}</h2>
+                    <h2>Más en {seccion?.name}</h2>
                     <div className="detail-related-grid">
                         {related.map((s) => <NewsCard key={s.id} story={s} />)}
                     </div>

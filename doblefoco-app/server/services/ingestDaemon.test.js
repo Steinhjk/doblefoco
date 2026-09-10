@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import {
     parsePublishedAt,
     extractImage,
+    extractSnippet,
     cleanHeadline,
     elegirTitularReciente,
     observarPieza,
@@ -515,5 +516,48 @@ describe('los campos del ítem RSS se piden en un solo sitio', () => {
             expect(fuente).toMatch(/CAMPOS_ITEM_RSS/);
             expect(fuente).not.toMatch(/'media:thumbnail', 'mediaThumbnail'/);
         }
+    });
+});
+
+/**
+ * LA FIRMA DEL GESTOR DE CONTENIDOS, que no la escribe el medio.
+ *
+ * «The post <titular> appeared first on <sitio>.» la pega WordPress al final
+ * del resumen: es el titular repetido en ingles y el nombre del sitio. La
+ * llevan 452 articulos de cuatro medios del corpus, y en 8 de ellos el resumen
+ * entero es eso y nada mas.
+ */
+describe('extractSnippet quita la firma de WordPress', () => {
+    it('conserva el texto del medio y se lleva solo la firma', () => {
+        const item = {
+            contentSnippet:
+                'Las carceles no incapacitan, coordinan. El diagnostico del gobierno es correcto, ' +
+                'pero el buque no resuelve el mecanismo. The post Una carcel en el mar appeared ' +
+                'first on La Silla Vacia.',
+        };
+        expect(extractSnippet(item)).toBe(
+            'Las carceles no incapacitan, coordinan. El diagnostico del gobierno es correcto, ' +
+            'pero el buque no resuelve el mecanismo.'
+        );
+    });
+
+    it('devuelve null cuando el resumen ENTERO era la firma', () => {
+        const item = {
+            contentSnippet: 'The post Edicto Victoria Elena Hurtado Murillo appeared first on Choco7dias.com.',
+        };
+        expect(extractSnippet(item)).toBeNull();
+    });
+
+    it('el recorte a 400 se hace DESPUES, para que no quede media firma', () => {
+        const cuerpo = 'a'.repeat(500);
+        const item = { contentSnippet: `${cuerpo} The post X appeared first on Y.` };
+        const salida = extractSnippet(item);
+        expect(salida).not.toMatch(/appeared/);
+        expect(salida).toBe(`${'a'.repeat(397)}…`);
+    });
+
+    it('no toca un resumen que solo menciona la palabra post', () => {
+        const item = { contentSnippet: 'El post del ministro en X desato la controversia de la semana.' };
+        expect(extractSnippet(item)).toBe('El post del ministro en X desato la controversia de la semana.');
     });
 });

@@ -152,8 +152,8 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | 13 | **2.3**, la consulta compartida de portada — lo único gordo que queda del plan de continuidad |
 | 14 | **2.4**, el serializador de rehidratación |
 | 15 | **`story_articles`, la otra mitad de H4**: hoy se borra y se reescribe entera; comparar conjuntos de enlaces es otro diseño |
-| 16 | **La plantilla de WordPress en el resumen** —«The post … appeared first on …»—: 8 piezas del corpus, **las 8 sin tema**. Descartar ese resumen deja al clasificador con el titular en vez de con ruido |
-| 17 | **La categoría del feed se estampa en bloque**: las cinco piezas de Vorágine entran como «Judicial», cómic incluido |
+| 16 | ~~**La plantilla de WordPress en el resumen**~~ · **HECHO el 2026-09-09**, y la premisa era falsa: no rinde nada en clasificación. Entrada en CERRADO |
+| 17 | ~~**La categoría del feed se estampa en bloque**~~ · **HECHO el 2026-09-09**, y era el 37,4 % de la portada, no cinco piezas. Entrada en CERRADO |
 | 18 | **El filtro de opinión, ciego para 22 medios de ruta plana**, seis de ellos de la izquierda. Las tres salidas están escritas y ninguna elegida |
 | 19 | ~~**`mirar` no distingue una portada llena de una vacía**~~ · **HECHO el 2026-09-09**, entrada en CERRADO |
 | 20 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
@@ -957,6 +957,100 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · La etiqueta de la mitad de la portada era nuestra, no de la noticia (puntos 16 y 17)
+
+Los dos puntos venían del mismo hallazgo de la tercera tanda de fichas —«el
+sistema falla siempre del mismo lado»— y los dos se midieron antes de tocar
+nada. **Uno era mucho más grande de lo escrito y el otro no existía.**
+
+### El 17 · `[]` y `null` significaban lo mismo, y no lo son
+
+`nombreDeSeccion` tenía una sola rama para las dos cosas: `topics` **ausente**
+—«esta API todavía no manda el campo»— y `topics` **vacío** —«se miró y esta
+historia no tiene tema»—. Las dos caían a `category`, la sección heredada del
+feed por el que entró la pieza, que es un registro de archivo y no un campo de
+presentación.
+
+**Medido sobre las 6 313 historias vivas del 2026-09-09: 2 364, el 37,4 %,
+llevaban una etiqueta que no era suya sino nuestra.** No cinco piezas de
+Vorágine: la mitad larga de lo que se ve.
+
+| Lo que decía la tarjeta | Cuántas |
+|---|---:|
+| «Internacional» | 1 369 |
+| «Política» | 940 |
+| «Economía» | 34 |
+| «Politica» (sin tilde, del registro) | 19 |
+| «Judicial» | 2 |
+
+Dos ejemplos de portada, los dos marcados **«Política»**: el contrato
+«salvavidas» que le proponen a James en la B de Italia, y una alerta de que El
+Niño puede aumentar las consultas por infecciones respiratorias. Ninguna de las
+dos es política; las dos entraron por un feed que configuramos así.
+
+**Y 80 decían «Internacional» mientras nuestro propio clasificador las tenía por
+nacionales**: dos respuestas contrarias a la misma pregunta en la misma tarjeta.
+
+#### El arreglo: tema → ámbito → (solo si la API no manda `topics`) el feed → nada
+
+**El ámbito sí se puede enseñar**, y por eso entra en medio de la escalera: no se
+hereda del feed, lo calcula el clasificador sobre el texto. El reparto que deja:
+
+- **1 358** conservan «Internacional», que ahora es verdad medida y no una
+  herencia.
+- **1 006** se quedan **sin etiqueta**, que es lo honesto. Quien la pinta
+  comprueba que no esté vacía, así que no queda una baldosa hueca en la tarjeta.
+- **80** dejan de contradecir al clasificador.
+
+El respaldo de despliegue —Vercel y Fly se publican por separado, y hay ratos en
+que la API vigente no manda `topics`— **sigue exactamente igual**, y ahora tiene
+prueba propia que lo distingue del caso vacío.
+
+#### De paso, dos fugas más de la misma columna
+
+1. **«Más en X»** en la página de la noticia agrupaba con
+   `s.category === story.category`: juntaba piezas cuyo único parentesco era
+   haber entrado por la misma cañería nuestra. Ahora pregunta con `perteneceA`,
+   igual que la pantalla de secciones, y si la historia no tiene sección el
+   bloque no se pinta.
+2. **La sugerencia del buscador** pintaba `story.category` en crudo.
+
+**Lo que se deja a propósito:** `SearchResults` sigue buscando dentro de
+`story.category`. Ahí no es una etiqueta que se le enseñe a nadie sino un pajar
+donde se busca, y quitarlo es parte de la decisión del resumen (punto 8).
+
+### El 16 · La plantilla de WordPress es cuatro veces más común, y no rinde nada
+
+**Lo escrito decía 8 piezas de 2 medios. Son 452 de cuatro**: 360 de La Silla
+Vacía, 74 de Canal Capital, 16 de Chocó 7 Días y 2 de Vorágine. En 8 de ellas el
+resumen entero es la firma y nada más; en las demás va pegada al final de un
+resumen de verdad.
+
+**Y la premisa del punto era falsa, que es lo que importa.** Se reclasificaron
+las 452 con y sin firma: **cero cambian de tema**. Visto de cerca tiene sentido
+—el titular que la firma repite ya puntúa por el titular de verdad, y «appeared
+first on» no está en ningún léxico—, así que **las que no tienen tema no lo
+tienen por esto**. La causa de que Vorágine sea el peor clasificado del corpus
+sigue estando en otro sitio.
+
+> Es el mismo error de forma que «rinde 102»: una observación cierta —la firma
+> está ahí, y las piezas que la llevan están sin tema— convertida en una causa
+> que no se había comprobado.
+
+Se limpia igual, y ahora por el motivo correcto: **es texto que se guarda y que
+un día se enseña**. El buscador ya dice buscar dentro del resumen, y si el motor
+acaba mandándolo (punto 8), 452 piezas le enseñarían al lector su propio titular
+repetido en inglés. Se quita en `extractSnippet`, antes del recorte a 400, para
+que el corte no deje media firma.
+
+### Verificado
+
+**836/836 pruebas** —8 nuevas—, lint limpio, `tsc` sin errores,
+`check:comentarios` en verde, build correcto y `npm run mirar` en verde sobre las
+diez rutas. Y se ha mirado una historia de las que se quedan sin etiqueta
+—«Cartagena fortalece su alumbrado público», hoy marcada «Política»—: la
+cabecera queda entera sin la baldosa.
 
 ## 2026-09-09 · `mirar` ya no da el ✓ a una página vacía (punto 19)
 

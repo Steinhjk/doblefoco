@@ -1,5 +1,32 @@
 # Por dónde seguir
 
+## 2026-09-09, noche · La etiqueta de la mitad de la portada era nuestra
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—. Todo lo de abajo sigue vigente.
+
+Hechos los **puntos 16 y 17** de la minuta, y los dos cambiaron de tamaño al
+medirlos:
+
+- **17 (el gordo).** `nombreDeSeccion` trataba `topics: []` igual que
+  `topics: null`, así que una historia clasificada y sin tema acababa enseñando
+  la categoría del feed. **Eran 2 364 de las 6 313 historias vivas, el 37,4 %**,
+  no las cinco piezas de Vorágine que decía la nota. Ahora el orden es tema →
+  ámbito → (solo si la API no manda `topics`) el feed → nada: 1 358 conservan
+  «Internacional» porque lo son, 1 006 se quedan sin etiqueta y 80 dejan de
+  contradecir al clasificador. De paso, «Más en X» ya no agrupa por el feed.
+- **16.** La firma de WordPress la llevan **452 piezas de cuatro medios**, no 8
+  de dos. Pero se midió y **no cambia ni un tema**: la premisa del punto era
+  falsa. Se limpia igual, por el texto que se guarda y que el punto 8 querría
+  enseñar.
+
+Verificado: **836/836**, lint, `tsc`, `check:comentarios`, build y `mirar` en
+verde, y mirada una historia de las que se quedan sin etiqueta.
+
+**Lo que sigue abierto de esta familia** es el punto 18, el filtro de opinión
+ciego para 22 medios de ruta plana, que es decisión de Jose y tiene tres salidas
+escritas.
+
 ## 2026-09-09, tarde · El que mira ya sabe cuándo no hay nada que mirar
 
 **Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,

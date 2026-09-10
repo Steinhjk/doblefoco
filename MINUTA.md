@@ -154,7 +154,8 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 | 15 | **`story_articles`, la otra mitad de H4**: hoy se borra y se reescribe entera; comparar conjuntos de enlaces es otro diseño |
 | 16 | ~~**La plantilla de WordPress en el resumen**~~ · **HECHO el 2026-09-09**, y la premisa era falsa: no rinde nada en clasificación. Entrada en CERRADO |
 | 17 | ~~**La categoría del feed se estampa en bloque**~~ · **HECHO el 2026-09-09**, y era el 37,4 % de la portada, no cinco piezas. Entrada en CERRADO |
-| 18 | **El filtro de opinión, ciego para 22 medios de ruta plana**, seis de ellos de la izquierda. Las tres salidas están escritas y ninguna elegida |
+| 18 | ~~**El filtro de opinión, ciego para 22 medios de ruta plana**~~ · **HECHO el 2026-09-09**: Jose eligió la etiqueta del RSS. Entrada en CERRADO |
+| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
 | 19 | ~~**`mirar` no distingue una portada llena de una vacía**~~ · **HECHO el 2026-09-09**, entrada en CERRADO |
 | 20 | **Otra vía de feed para RTVC**: entra por Google News, que rinde ocho veces menos, y lleva sin publicar desde el 2026-09-01. Con la #27 pasa a `roto` |
 
@@ -957,6 +958,103 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-09 · El filtro de opinión deja de ser ciego para 22 medios (punto 18)
+
+**Decisión de Jose el 2026-09-09, entre las tres salidas que la entrada del 08-09
+dejó escritas: la etiqueta que el propio medio le pone al ítem en su RSS.**
+
+### Lo que se midió antes de proponer, que es lo que decidió
+
+Los 22 medios que publican en la raíz **son los 22 WordPress**, y **el 100 % de
+sus ítems trae `<category>`**. No es una señal que haya que ir a buscar: ya
+viaja en el mismo ítem que se parsea, y ya se usaba como refuerzo del
+clasificador de temas.
+
+Aplicando la lista de etiquetas a lo que publicaban ese día:
+
+| Medio | Marcaría | Marca hoy |
+|---|---:|---:|
+| Las2Orillas | **38 de 150 ítems** | 0 de 177 piezas del corpus |
+| Volcánicas | **6 de 40** | 0 |
+| Razón Pública | **3 de 10** —la caricatura incluida— | 0 |
+
+Y los titulares no dejan lugar a duda: «Caricatura: Impuesto saludable», «Si para
+estar seguros necesitamos armarnos, el Estado ya perdió», «Cepeda y De la
+Espriella: dos maneras de construir una mayoría».
+
+**Es la misma clase de señal que la ruta**, y por eso es admisible con el mismo
+argumento: la escribe el medio al publicar. No se analiza el texto de la pieza
+—eso sigue fuera de este proyecto—, se lee cómo la clasificó quien la publicó.
+
+### La decisión de diseño que evita el daño peor
+
+**Coincidencia EXACTA de la etiqueta entera, nunca subcadena.** Marcar como
+opinión una noticia real la saca del agrupamiento, y ese es el daño que
+`shared/opinion.js` lleva declarando desde agosto —«se prefiere quedarse
+corto»—. El precedente está en contentQuality: un patrón de lotería descartó
+«obras de rehabilitación del CDI El Dorado» por buscar la subcadena. Con
+coincidencia exacta, `Editorial Planeta` y `Opinión pública en Colombia` no son
+opinión, y hay prueba de las dos.
+
+Las tildes sí se ignoran, porque en el catálogo real conviven «Opinión»,
+«Opinion» y «opiniòn» con acento grave —Proclama del Pacífico— y las tres son la
+misma sección de la misma casa.
+
+**Lo que se dejó fuera a propósito, y conviene que esté escrito:**
+
+- **`Nota Ciudadana`** (Las2Orillas, 18 ítems): es contenido de lectores, que no
+  es lo mismo que una columna. Se decide mirándolo, no de paso.
+- **`Análisis`**: Razón Pública publica análisis y solo análisis, y si eso debe
+  entrar al agrupamiento es el punto 7, que sigue abierto. Meterlo aquí sería
+  contestarlo de tapadillo.
+
+### Y el hallazgo de arquitectura: se guarda la ENTRADA, nunca el veredicto
+
+La marca de opinión **no se guarda**: `articuloDesdeFila` la deriva de la URL en
+cada rehidratación, y el comentario del 2026-08-21 explica por qué —la URL ya
+está guardada, así que el veredicto sería un duplicado, y el día que se afine la
+detección los valores viejos seguirían mintiendo—.
+
+**La segunda señal no estaba guardada en ninguna parte**, así que la respuesta no
+era guardar el veredicto sino guardar **la otra entrada**: la columna nueva
+`articles.feed_categories`. Con eso la propiedad se conserva entera: **cambiar la
+lista de etiquetas vuelve a marcar bien el corpus en el siguiente arranque, sin
+una sola escritura.**
+
+Y el `ON CONFLICT` rellena las etiquetas de las filas que se guardaron antes de
+que existiera la columna, igual que ya hacía con la imagen. Es lo que evita que
+los 22 tengan que esperar a que su corpus entero se renueve: **lo que siga
+apareciendo en su feed se completa solo.**
+
+### Los límites, dichos ahora y no cuando se noten
+
+- **La marca no llega de golpe.** Hoy las 40 793 filas tienen `feed_categories`
+  en NULL. Se van llenando conforme cada feed reexpone sus piezas, así que el
+  techo del primer ciclo es lo que quepa en el feed: ~38 de Las2Orillas, 6 de
+  Volcánicas, 3 de Razón Pública.
+- **Lo que ya salió del feed y no vuelva se queda sin etiqueta y sin marcar.**
+  Se cura al caer de la ventana de 30 días.
+- **El nivel 2 de las seis fichas sigue sin valer hasta que el corpus esté
+  marcado.** Queda anotado como punto 25.
+
+### Verificado
+
+**845/845 pruebas** —9 nuevas, con etiquetas reales leídas de los feeds ese
+día—, lint limpio, `tsc` sin errores, `check:comentarios` en verde y build
+correcto.
+
+**Y el SQL nuevo se probó contra la base de verdad sin dejar nada**: el `ALTER`
+y el `INSERT` de 14 parámetros dentro de una transacción terminada en `ROLLBACK`
+—el DDL de Postgres es transaccional—, comprobando además que el relleno del
+`ON CONFLICT` completa una fila que tenía NULL.
+
+> **La migración ya está aplicada en producción** (`npm run db:migrate`,
+> 2026-09-09). Importaba el orden: los dos despliegues salen solos con el push a
+> `main`, y si el motor nuevo hubiera arrancado antes que la columna,
+> `persistArticles` habría fallado en cada ciclo —en silencio, porque pasa por
+> `safeQuery`—. Añadir una columna que nadie lee todavía no le hace nada al motor
+> vigente.
 
 ## 2026-09-09 · La etiqueta de la mitad de la portada era nuestra, no de la noticia (puntos 16 y 17)
 

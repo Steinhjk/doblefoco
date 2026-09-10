@@ -33,7 +33,7 @@ import {
 } from '../../shared/clustering.js';
 import { analyzeHeadlineTone } from '../../shared/headlineTone.js';
 import { assessArticle } from '../../shared/contentQuality.js';
-import { detectarOpinion } from '../../shared/opinion.js';
+import { detectarOpinionDelArticulo } from '../../shared/opinion.js';
 import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { porRelevancia } from '../../shared/relevancia.js';
@@ -956,13 +956,21 @@ export async function runIngestionBatch() {
                      * fuente: lo son el titular y la entradilla, que existen
                      * siempre.
                      */
+                    /*
+                     * Las etiquetas que el MEDIO le puso al ítem, en un solo
+                     * sitio porque ahora las miran dos cosas: el clasificador de
+                     * temas, como refuerzo, y la detección de opinión, que sin
+                     * ellas es ciega para los 22 medios que publican en la raíz.
+                     */
+                    const etiquetasDelItem = (item?.categories ?? [])
+                        .map((c) => (typeof c === 'string' ? c : c?._ ?? ''))
+                        .filter(Boolean);
+
                     const clasificacion = classifyTopics({
                         headline,
                         snippet,
                         link,
-                        feedCategories: (item?.categories ?? []).map((c) =>
-                            typeof c === 'string' ? c : c?._ ?? ''
-                        ),
+                        feedCategories: etiquetasDelItem,
                         paisDelMedio: feedConfig.country,
                     });
 
@@ -994,7 +1002,18 @@ export async function runIngestionBatch() {
                          * hoy con la marca: no hay ningún agregado detrás. El
                          * detalle, en `shared/opinion.js`.
                          */
-                        opinion: detectarOpinion(link),
+                        opinion: detectarOpinionDelArticulo({
+                            url: link,
+                            categorias: etiquetasDelItem,
+                        }),
+                        /*
+                         * Y las etiquetas se GUARDAN, que es lo que permite que
+                         * la marca se siga derivando en cada rehidratación en
+                         * vez de quedarse congelada. El razonamiento entero está
+                         * en `articuloDesdeFila`: se guarda la entrada, nunca el
+                         * veredicto.
+                         */
+                        feedCategories: etiquetasDelItem,
                         outlet: {
                             // El id del registro es lo que enlaza el artículo
                             // con su medio en la base (articles.source_id).

@@ -27,7 +27,7 @@
  */
 
 import { classifySpectrum } from '../../shared/biasAnalysis.js';
-import { detectarOpinion } from '../../shared/opinion.js';
+import { detectarOpinionDelArticulo } from '../../shared/opinion.js';
 import { safeQuery, withTransaction } from './pool.js';
 
 // ---------------------------------------------------------------------------
@@ -131,7 +131,22 @@ export function articuloDesdeFila(row) {
          * Cuesta 6,3 ms para los 4 000, medido, contra una consulta que tarda
          * órdenes de magnitud más.
          */
-        opinion: detectarOpinion(row.canonical_url),
+        /*
+         * Y DESDE EL 2026-09-09 LA DERIVACIÓN TIENE DOS ENTRADAS, no una.
+         *
+         * La ruta no ve a los 22 medios que publican en la raíz, así que la
+         * etiqueta que el propio medio le puso al ítem entra como segunda
+         * señal. Lo que cambia respecto de lo escrito arriba es solo esto: esa
+         * entrada no estaba guardada en ninguna parte, y ahora sí —en
+         * `feed_categories`—. El veredicto se sigue sin guardar, y por eso los
+         * tres motivos de arriba siguen valiendo enteros: el punto 3, «se cura
+         * sola», es justo lo que permite cambiar la lista de etiquetas y que el
+         * corpus entero se vuelva a marcar en el siguiente arranque.
+         */
+        opinion: detectarOpinionDelArticulo({
+            url: row.canonical_url,
+            categorias: row.feed_categories,
+        }),
         outlet: {
             id: row.source_id,
             name: row.source_name,
@@ -149,7 +164,7 @@ export async function hydrateArticles({ retentionMs, max }) {
         `
         SELECT a.id, a.canonical_url, a.headline, a.raw_title, a.snippet,
                a.category, a.tone, a.published_at, a.ingested_at, a.image_url,
-               a.topics, a.ambito,
+               a.topics, a.ambito, a.feed_categories,
                s.id AS source_id, s.name AS source_name, s.domain AS source_domain,
                s.bias, s.factuality
           FROM articles a
@@ -327,7 +342,8 @@ export async function persistArticles(articles) {
         `
         INSERT INTO articles
             (id, canonical_url, source_id, headline, raw_title, snippet,
-             category, tone, published_at, ingested_at, image_url, topics, ambito)
+             category, tone, published_at, ingested_at, image_url, topics, ambito,
+             feed_categories)
         -- Los temas llegan como cadena separada por comas y se parten aquí.
         -- unnest no admite un array de arrays irregulares: aplana los
         -- multidimensionales y exigiría el mismo número de temas en cada fila,
@@ -335,18 +351,28 @@ export async function persistArticles(articles) {
         SELECT id, url, src, titular, crudo, extracto, categoria, tono, publicado,
                ingerido, imagen,
                CASE WHEN temas = '' THEN '{}'::text[] ELSE string_to_array(temas, ',') END,
-               ambito
+               ambito,
+               -- Igual que los temas, y por el mismo motivo: viajan como una
+               -- cadena y se parten aquí. El separador es el tabulador porque
+               -- una etiqueta de medio SÍ puede llevar comas —«Bogotá, D.C.» es
+               -- una sección de verdad— y ninguna lleva tabuladores.
+               CASE WHEN etiquetas = '' THEN '{}'::text[] ELSE string_to_array(etiquetas, E'\t') END
           FROM unnest(
             $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
             $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[],
-            $11::text[], $12::text[], $13::text[]
+            $11::text[], $12::text[], $13::text[], $14::text[]
         ) AS t(id, url, src, titular, crudo, extracto, categoria, tono, publicado,
-               ingerido, imagen, temas, ambito)
-        -- Ver el comentario de arriba: se rellena la imagen y nada más.
+               ingerido, imagen, temas, ambito, etiquetas)
+        -- Ver el comentario de arriba: se rellena la imagen, y desde el
+        -- 2026-09-09 también las etiquetas del feed en las filas que se
+        -- guardaron antes de que existiera la columna. Es lo que hace que los
+        -- 22 medios de raíz plana no tengan que esperar a que su corpus entero
+        -- se renueve: lo que siga apareciendo en su feed se completa solo.
         ON CONFLICT (canonical_url) DO UPDATE
-            SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url)
-          WHERE articles.image_url IS NULL
-            AND EXCLUDED.image_url IS NOT NULL
+            SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url),
+                feed_categories = COALESCE(articles.feed_categories, EXCLUDED.feed_categories)
+          WHERE (articles.image_url IS NULL AND EXCLUDED.image_url IS NOT NULL)
+             OR (articles.feed_categories IS NULL AND EXCLUDED.feed_categories IS NOT NULL)
         `,
         [
             usable.map((a) => a.id),
@@ -368,6 +394,14 @@ export async function persistArticles(articles) {
             // a intentar los mismos artículos inclasificables para siempre.
             usable.map((a) => (a.topics ?? []).join(',')),
             usable.map((a) => a.ambito ?? null),
+            /*
+             * Las etiquetas que el medio le puso al ítem, separadas por
+             * tabulador. Nunca NULL desde aquí: una pieza sin etiquetas guarda
+             * `{}`, y así NULL sigue significando lo único que significa —«esta
+             * fila se escribió antes de que existiera la columna»—, que es lo
+             * que mira el relleno del ON CONFLICT de arriba.
+             */
+            usable.map((a) => (a.feedCategories ?? []).join('\t')),
         ],
         'guardado de artículos'
     );

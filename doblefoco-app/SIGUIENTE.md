@@ -1,5 +1,40 @@
 # Por dónde seguir
 
+## 2026-09-09, cierre de la noche · El filtro de opinión ya ve a los 22 de raíz plana
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—.
+
+Hecho el **punto 18**, con la salida que eligió Jose: **la opinión se marca
+también por la etiqueta `<category>` que el propio medio le pone al ítem**. Los
+22 medios de raíz plana son los 22 WordPress y el 100 % de sus ítems la trae.
+Sobre lo que publicaban ese día marcaría 38 de 150 ítems de Las2Orillas, 6 de 40
+de Volcánicas y 3 de 10 de Razón Pública —la caricatura incluida—; hoy los tres
+marcan cero.
+
+Coincidencia **exacta**, nunca subcadena, que es lo que impide sacar del
+agrupamiento una noticia real. `Nota Ciudadana` y `Análisis` se dejaron fuera a
+propósito y la minuta dice por qué.
+
+> **Lo importante de arquitectura:** la marca de opinión se sigue **derivando**,
+> no guardando. Lo que se guarda es la ENTRADA que faltaba, en la columna nueva
+> `articles.feed_categories`. Así cambiar la lista de etiquetas vuelve a marcar
+> el corpus entero en el siguiente arranque, sin escribir una sola fila.
+
+**La migración ya está aplicada en producción**, y eso hay que tenerlo claro
+antes de fusionar: los dos despliegues salen solos con el push a `main`, así que
+si el motor nuevo hubiera arrancado antes que la columna, `persistArticles`
+habría fallado en cada ciclo y en silencio.
+
+**La marca no llega de golpe:** las etiquetas se rellenan conforme cada feed
+reexpone sus piezas. El punto 25 de la minuta anota lo que queda: volver a medir
+el aislamiento de los seis medios de izquierda de raíz plana cuando sus marcas
+hayan entrado, porque hasta entonces su nivel 2 sigue sin valer.
+
+Verificado: **845/845**, lint, `tsc`, `check:comentarios` y build en verde, y el
+SQL nuevo probado contra la base de verdad dentro de una transacción con
+`ROLLBACK`.
+
 ## 2026-09-09, noche · La etiqueta de la mitad de la portada era nuestra
 
 **Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,

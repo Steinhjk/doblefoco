@@ -89,6 +89,127 @@ export function nombreDesdeRanura(ranura) {
 }
 
 /**
+ * LA SEGUNDA SEÑAL: LA ETIQUETA QUE EL MEDIO LE PONE AL ÍTEM EN SU RSS.
+ *
+ * POR QUÉ HIZO FALTA (2026-09-09, decisión de Jose)
+ * -------------------------------------------------
+ * `detectarOpinion` lee la ruta, y **22 de los 70 medios con datos publican en
+ * la raíz** —`medio.co/titulo`, sin sección—: 2 179 piezas, el 6,3 % del corpus.
+ * Para ellos el filtro no es incompleto, es ciego. La cifra que lo cerraba:
+ * **de las 631 piezas marcadas como opinión en todo el corpus, CERO eran de los
+ * seis medios de raíz plana de la banda de izquierda**, y 96 de sus 267
+ * artículos estaban dentro de una historia. No es que no publiquen opinión —el
+ * 08-09-2026 Razón Pública tenía una caricatura en el corpus—: es que no se la
+ * podía ver.
+ *
+ * ES LA MISMA CLASE DE SEÑAL, y por eso es admisible con el mismo argumento: la
+ * etiqueta la escribe **el propio medio** al publicar. No se analiza el texto de
+ * la pieza —eso seguiría estando fuera de este proyecto—, se lee cómo la
+ * clasificó quien la publicó, igual que con la ruta.
+ *
+ * MEDIDO ANTES DE ESCRIBIRLO (2026-09-09): los 22 son WordPress y **el 100 % de
+ * sus ítems trae `<category>`**. Sobre lo que publicaban ese día, esta lista
+ * marca 38 de los 150 ítems de Las2Orillas, 3 de los 10 de Razón Pública —la
+ * caricatura incluida— y 6 de los 40 de Volcánicas. Hoy los tres marcan cero.
+ *
+ * COINCIDENCIA EXACTA, NUNCA SUBCADENA, y esta es la decisión que evita el daño
+ * peor. Marcar como opinión una noticia real la saca del agrupamiento, así que
+ * se compara la etiqueta ENTERA contra esta lista. El precedente está en
+ * contentQuality: un patrón de lotería descartó «obras de rehabilitación del CDI
+ * El Dorado» por buscar la subcadena.
+ *
+ * LO QUE SE DEJÓ FUERA A PROPÓSITO, con su motivo:
+ *
+ *   · `nota ciudadana` (Las2Orillas, 18 ítems) — es contenido de lectores, y eso
+ *     no es lo mismo que una columna. Habría que decidirlo mirándolo.
+ *   · `analisis` — Razón Pública publica análisis y solo análisis, y si eso debe
+ *     entrar al agrupamiento es otra pregunta abierta (punto 7 de la minuta).
+ *     Meterlo aquí sería contestarla de tapadillo.
+ */
+const ETIQUETAS_DE_OPINION = new Map([
+    ['editorial', 'editorial'],
+    ['editoriales', 'editorial'],
+    ['caricatura', 'caricatura'],
+    ['caricaturas', 'caricatura'],
+    ['caricatura politica', 'caricatura'],
+    ['humor grafico', 'caricatura'],
+    ['opinion', 'columna'],
+    ['opiniones', 'columna'],
+    ['columna', 'columna'],
+    ['columnas', 'columna'],
+    ['columna de opinion', 'columna'],
+    ['columnista', 'columna'],
+    ['columnistas', 'columna'],
+    ['columnista invitado', 'columna'],
+    ['columnista invitada', 'columna'],
+    ['tribuna', 'columna'],
+    ['la tribuna', 'columna'],
+    // Los mismos que la ruta ya trata como columna, para que las dos señales no
+    // se contradigan.
+    ['blog', 'columna'],
+    ['blogs', 'columna'],
+]);
+
+/**
+ * Normaliza una etiqueta para compararla: sin tildes, en minúsculas y sin
+ * espacios de sobra.
+ *
+ * Las tildes se quitan porque en el catálogo real conviven «Opinión», «Opinion»
+ * y hasta «opiniòn» con acento grave —Proclama del Pacífico—, y las tres son la
+ * misma sección de la misma casa.
+ */
+function normalizarEtiqueta(texto) {
+    return String(texto ?? '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/**
+ * ¿Declara el propio medio que este ítem es opinión?
+ *
+ * @param {Array<string|{_?: string}>|null|undefined} categorias
+ * @returns {{ esOpinion: boolean, tipo: string|null, etiqueta: string|null }}
+ */
+export function detectarOpinionDeclarada(categorias) {
+    if (!Array.isArray(categorias)) return { esOpinion: false, tipo: null, etiqueta: null };
+
+    for (const cruda of categorias) {
+        const texto = typeof cruda === 'string' ? cruda : cruda?._ ?? '';
+        const tipo = ETIQUETAS_DE_OPINION.get(normalizarEtiqueta(texto));
+        // El primero que encaja manda, y el orden de la lista de arriba va de
+        // más específico a más general por el mismo motivo que en PATRONES.
+        if (tipo) return { esOpinion: true, tipo, etiqueta: texto };
+    }
+
+    return { esOpinion: false, tipo: null, etiqueta: null };
+}
+
+/**
+ * LAS DOS SEÑALES JUNTAS, que es lo que se le pregunta a un artículo.
+ *
+ * La ruta va primero porque dice más: es la única que puede nombrar al
+ * columnista. La etiqueta entra donde la ruta no llega, que es exactamente el
+ * caso de los 22 medios que publican en la raíz.
+ *
+ * @param {{ url?: string|null, categorias?: Array<string|{_?: string}>|null }} articulo
+ * @returns {{ esOpinion: boolean, tipo: string|null, columnista: string|null }}
+ */
+export function detectarOpinionDelArticulo({ url, categorias } = {}) {
+    const porRuta = detectarOpinion(url);
+    if (porRuta.esOpinion) return porRuta;
+
+    const porEtiqueta = detectarOpinionDeclarada(categorias);
+    if (!porEtiqueta.esOpinion) return porRuta;
+
+    // La etiqueta no trae columnista: el nombre solo está cuando la URL lo pone,
+    // y aquí la URL no dice nada. No se deduce del titular ni del texto.
+    return { esOpinion: true, tipo: porEtiqueta.tipo, columnista: null };
+}
+
+/**
  * ¿Es opinión esta URL, y de quién?
  *
  * @param {string|null|undefined} url

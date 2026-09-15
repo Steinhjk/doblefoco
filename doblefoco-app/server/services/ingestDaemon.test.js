@@ -561,6 +561,136 @@ describe('extractSnippet quita la firma de WordPress', () => {
         const item = { contentSnippet: 'El post del ministro en X desato la controversia de la semana.' };
         expect(extractSnippet(item)).toBe('El post del ministro en X desato la controversia de la semana.');
     });
+
+    /**
+     * La MISMA firma en castellano, que es la que emite WordPress cuando el
+     * sitio esta en español y que nadie estaba quitando: el punto 16 solo miro
+     * el ingles. Son 218 articulos de doce medios, y en 70 el resumen entero es
+     * la firma.
+     */
+    it('tambien se lleva la firma en español, y solo la firma', () => {
+        const item = {
+            contentSnippet:
+                'Tres tesis sobre la frontera con Venezuela y el papel del ELN en los ultimos dos años. ' +
+                'La entrada ¿Se fortalecio el ELN con la Paz Total? se publico primero en Razon Publica.',
+        };
+        expect(extractSnippet(item)).toBe(
+            'Tres tesis sobre la frontera con Venezuela y el papel del ELN en los ultimos dos años.'
+        );
+    });
+
+    it('devuelve null cuando el resumen entero era la firma en español', () => {
+        const item = {
+            contentSnippet: 'La entrada Edicto se publicó primero en El Morichal.',
+        };
+        expect(extractSnippet(item)).toBeNull();
+    });
+});
+
+/**
+ * EL RESUMEN QUE ES EL TITULAR REPETIDO Y NADA MAS (punto 26).
+ *
+ * Google News no tiene el resumen del medio, asi que sirve el titular seguido
+ * del nombre de la fuente; los gestores de contenido dejan ahi el usuario que
+ * publico y la fecha. Son 1 003 articulos del corpus, el 3,37 % de los que
+ * tienen resumen.
+ *
+ * LAS PRUEBAS QUE IMPORTAN SON LAS DE ABAJO, las de lo que NO se toca: la regla
+ * borra texto, y un resumen corto pero real es exactamente lo que no puede
+ * perderse.
+ */
+describe('extractSnippet descarta el resumen que, quitado el titular, no dice nada', () => {
+    it('el titular mas el nombre del medio, que es lo que sirve Google News', () => {
+        const titular = 'Atacan con explosivos base de operaciones de empresa de aseo de Popayán';
+        const item = { contentSnippet: `${titular} Blu Radio` };
+        expect(extractSnippet(item, titular, 'Blu Radio', 'bluradio.com')).toBeNull();
+    });
+
+    it('el titular mas el dominio del medio', () => {
+        const titular = 'Golpe al microtráfico en Piedecuesta y Girón: seis capturados y droga incautada';
+        const item = { contentSnippet: `${titular} bluradio.com` };
+        expect(extractSnippet(item, titular, 'Blu Radio', 'bluradio.com')).toBeNull();
+    });
+
+    it('el titular solo, repetido tal cual', () => {
+        const titular = 'Expertos advierten que porte de armas no autoriza su uso ante cualquier amenaza';
+        expect(extractSnippet({ contentSnippet: titular }, titular, 'Infobae', 'infobae.com')).toBeNull();
+    });
+
+    /**
+     * EL CASO QUE ABRIO EL PUNTO. RTVC sirve el titular, el correo del usuario
+     * que lo publico en el gestor y la fecha de publicacion.
+     */
+    it('el titular mas el usuario del gestor y la fecha', () => {
+        const titular = 'El volcán Puracé no da tregua: 472 sismos y caída de ceniza mantienen la alerta Naranja';
+        const item = {
+            contentSnippet: `${titular} wfvasquez@contenidos.rtvc.gov.co Mar, 01/09/2026 - 10:23`,
+        };
+        expect(extractSnippet(item, titular, 'RTVC Noticias', 'rtvcnoticias.com')).toBeNull();
+    });
+
+    it('la comparacion no se rompe por una tilde ni por una comilla curva', () => {
+        const titular = '“No vamos a permitir que mandatarios locales terminen aliados con bandidos”: Abelardo de la Espriella';
+        const item = {
+            contentSnippet: '"No vamos a permitir que mandatarios locales terminen aliados con bandidos": Abelardo de la Espriella La FM',
+        };
+        expect(extractSnippet(item, titular, 'La FM', 'lafm.com.co')).toBeNull();
+    });
+
+    // ---- Y AHORA LO QUE NO SE TOCA -------------------------------------
+
+    it('NO toca una entradilla corta que si dice algo', () => {
+        const titular = '¿Qué es una bichectomía? El procedimiento estético al que se sometió mujer que murió en Bogotá';
+        const item = { contentSnippet: `${titular}. Estos son los riegos.` };
+        expect(extractSnippet(item, titular, 'Pulzo', 'pulzo.com')).toBe(
+            `${titular}. Estos son los riegos.`
+        );
+    });
+
+    it('NO toca el resumen que añade un nombre propio que el titular no da', () => {
+        const titular = "Rosa Angélica Tarazona, ‘La Bebesita’, aceptó cargos por concierto para delinquir";
+        const item = {
+            contentSnippet: `${titular} antes de morir en operativo policial en Riohacha`,
+        };
+        expect(extractSnippet(item, titular, 'Pulzo', 'pulzo.com')).not.toBeNull();
+    });
+
+    it('NO toca una entradilla de verdad que empieza repitiendo el titular', () => {
+        const titular = 'Islandia rechaza reanudar las negociaciones de adhesión a la Unión Europea';
+        const item = {
+            contentSnippet: `${titular} El 52,8 % de los votantes del referéndum votaron por el “no”`,
+        };
+        expect(extractSnippet(item, titular, 'El Nuevo Siglo', 'elnuevosiglo.com.co')).not.toBeNull();
+    });
+
+    it('NO toca un resumen que no repite el titular, aunque nombre al medio', () => {
+        const titular = 'Petro responde a las criticas de la oposicion sobre el presupuesto';
+        const item = {
+            contentSnippet: 'El presidente hablo desde Cali y anuncio que no retirara el proyecto. Blu Radio',
+        };
+        expect(extractSnippet(item, titular, 'Blu Radio', 'bluradio.com')).not.toBeNull();
+    });
+
+    /**
+     * Sin titular no hay nada contra lo que comparar, y la regla se calla. Es
+     * lo que mantiene validas las llamadas de un solo argumento.
+     */
+    it('sin titular no aplica la regla', () => {
+        const item = { contentSnippet: 'Un resumen cualquiera que tiene mas de treinta caracteres.' };
+        expect(extractSnippet(item)).toBe('Un resumen cualquiera que tiene mas de treinta caracteres.');
+    });
+
+    /**
+     * UN MEDIO SIN DOMINIO NO DEBE BORRAR LA PALABRA «null». Interpolar un
+     * dominio ausente da la cadena «www.null», que no es falsa, y con ella en
+     * la lista de marcas cualquier resumen perderia «www» y «null».
+     */
+    it('un medio sin dominio no inventa la marca «www.null»', () => {
+        const titular = 'Como configurar un servidor para que no devuelva null en la respuesta';
+        const item = { contentSnippet: `${titular} www null` };
+        // Sin dominio, «www null» no es marca de nadie: el resumen dice algo.
+        expect(extractSnippet(item, titular, 'Un Medio', null)).not.toBeNull();
+    });
 });
 
 /**

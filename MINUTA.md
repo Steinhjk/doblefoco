@@ -1029,6 +1029,44 @@ es lo que estuvo a punto de bastar aquí.
 recuperables: `git checkout 78c8628` las trae de vuelta mientras el recolector de
 basura no pase.
 
+### Y al ir a por el remoto, la misma rama escondía 154 líneas de planeación
+
+Con lo local ya podado quedaban **46 ramas remotas, 44 de ellas dentro de
+`main`**. Jose pidió podarlas «si no tiene ningún efecto de fondo», y considerar
+los escenarios. Los cinco que podían morder:
+
+| Escenario | Comprobación | Resultado |
+|---|---|---|
+| Borrar la rama de una PR **abierta** la cierra | `gh pr list --state open` | Ninguna abierta |
+| Una PR **cerrada sin fusionar** deja su código solo en la rama | `mergedAt == null` | Solo la #28 y la #29, y sus commits son antepasados de `main` |
+| Un **flujo** que apunte a una rama deja de disparar | `grep branches:` en `.github/workflows` | Los tres dicen `[main]` |
+| Una **URL de preview** citada en el repo se muere | `grep vercel.app` | Una sola, y es el alias del proyecto, no de una rama |
+| **Commits que solo viven ahí** | `git diff main...<rama>` fichero a fichero | **Aquí estaba el problema** |
+
+`78c8628` llevaba dentro **154 líneas de `PLANEACION.md` que no estaban en
+ningún `.md` de `main`**: el estudio de «Salir a hacer mercadeo» que Jose pidió
+el 2026-08-31 —qué mirar antes de rotar la página por ahí—. `main` tenía 455
+líneas de ese fichero; la rama, 609.
+
+> **La regla de este proyecto es que lo que no está en `PLANEACION.md` se
+> pierde.** Estaba escrito, medido contra producción, y a un `git branch -D` de
+> distancia. Y no lo salvó ninguna red: lo salvó abrir la rama antes de borrarla.
+
+Rescatado a `main` **sin retocar el texto** —es una medición con fecha— y con una
+tabla encima que dice cuál de sus premisas sigue en pie. De sus nueve puntos,
+**cinco ya se arreglaron** (los dos de `/limitaciones`, la tarjeta social, la
+retención y T2-2) y **cuatro siguen vivos**: no hay analítica de ninguna clase
+—comprobado hoy contra producción—, no se sabe qué número rompe la máquina de
+Fly, no hay procedimiento para cuando un medio objete, y los puntos ciegos siguen
+sin calibrar para prometerlos como función insignia.
+
+**Y de camino, un desfase más:** `PLAN_CONTINUIDAD.md` seguía diciendo que si un
+flujo programado dejara de correr «nadie se enteraría». Falso desde el 31 de
+agosto — `vigilancia.yml` pregunta por la última ejecución con éxito de
+`backup.yml` y `archivo.yml` y falla a las 48 h. El texto no se actualizó por lo
+mismo: vivía en la rama sin fusionar. Corregido, y dicho lo que **sí** sigue
+descubierto (los demás flujos: ingesta, centinela, auditoría, desfase).
+
 ---
 
 ## 2026-09-15 · La tanda del 8 de septiembre entra a `main`, y el día del despliegue se ejecuta el mismo día (punto 1 y puntos 10 a 12b)

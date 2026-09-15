@@ -48,8 +48,16 @@ puede costar algo irreversible.
 > tablas entran en `TABLAS` con su motivo, `backup.yml` ya abre issue con
 > etiqueta `copia`, y al hacerlo salió un tercer agujero que nadie buscaba —
 > `restore.mjs` tenía su propia lista y las habría dejado fuera en silencio—.
-> El detalle, en `MINUTA.md`. **Lo que sigue sin cubrir:** el aviso avisa del
-> fallo, no de la ausencia; si el flujo dejara de correr, nadie se enteraría.
+> El detalle, en `MINUTA.md`. **Y el hueco que dejaba —avisar del fallo pero no
+> de la ausencia— está cerrado**: el paso «¿Siguen corriendo la copia y el
+> archivo?» de `vigilancia.yml` le pregunta a Actions por la última ejecución
+> con éxito de `backup.yml` y de `archivo.yml`, y falla si alguna pasa de 48 h.
+> **Lo que sigue descubierto es la ausencia de los demás flujos programados**
+> —ingesta, centinela, auditoría, desfase—, que no están en esa lista.
+>
+> (Este párrafo decía hasta el 2026-09-15 que la ausencia no la vería nadie. Era
+> falso desde el 31 de agosto: la comprobación existía y el texto no se actualizó
+> porque vivía en una rama sin fusionar.)
 
 `backup.yml` falla desde el 2026-08-19: `conducta_archivo` y
 `conducta_archivo_runs` no están clasificadas en `backup.mjs`. Los artículos se

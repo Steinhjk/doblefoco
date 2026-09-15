@@ -133,11 +133,18 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 > y ese espera a que el corpus tenga las marcas de opinión, o sea a la fusión y
 > a unos días de ciclo. El punto 1 sigue siendo el que desbloquea todo.
 
+> **Puesta al día del 2026-09-15.** **El punto 1 está hecho: la tanda entró a
+> `main`** —#33 al escalón intermedio, luego #32 de una sola fusión— y con ella
+> los dos despliegues salieron solos. **Y la lista del día del despliegue se
+> ejecutó entera el mismo día**: 10, 11, 11b, 12 y 12b. De los gestos de Jose
+> quedan el 2 y el 3; de código sigue abierto solo el 25, que ya no espera a la
+> fusión sino a unos días de ciclo con las marcas de opinión puestas.
+
 ### Gestos que solo puede hacer Jose
 
 | | Qué | Desde |
 |---|---|---|
-| 1 | **Fusionar.** `gh pr merge` lo bloquea el clasificador. La vía recomendada es una sola fusión de la rama de integración, que cierra las siete a la vez | 2026-09-08 |
+| 1 | ~~**Fusionar**~~ · **HECHO el 2026-09-15.** La vía recomendada resultó ser la buena: #33 a la rama de integración y una sola fusión de esta a `main` (`d6deb1c`). Cinco PR se cerraron solas; la #28 y la #29 hubo que cerrarlas a mano porque iban encadenadas | 2026-09-08 |
 | 2 | **Issue #4 del centinela** | 2026-09-02 |
 | 3 | **Sacar el repositorio de OneDrive** (I-9; locks y sync de `node_modules` y `.git`) | 2026-09-01 |
 
@@ -156,11 +163,11 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 
 | | Qué | Por qué no antes |
 |---|---|---|
-| 10 | `npm run archivo:huerfanas` en seco, y luego `-- --apply` (borra 1 554) | Antes de que Fly sirva la #24, el ciclo vuelve a llenar el archivo con el criterio viejo |
-| 11 | Mirar una línea del ciclo: **«1 512 hist. (43 escritas)»**. Si las dos cifras siguen iguales tras la #29, el `WHERE` no filtra nada | Es la prueba de que H4 funcionó, y se lee sola |
-| 11b | **Y la línea de al lado: `enlaces +N −M`.** Si sale un número del orden de 7 500, el diferencial de `story_articles` dejó de filtrar | Misma idea, para la otra mitad de H4 |
-| 12 | Abrir el sitio y correr `npm run mirar` | Nadie lo ha mirado con todo desplegado. En local está en verde, pero el motor de la rama no está en Fly |
-| 12b | `npm run db:contrato` | La ida y vuelta del artículo contra la base. No hace falta antes, pero es lo que caza un SQL roto sin esperar a que falle una ingesta |
+| 10 | ~~`npm run archivo:huerfanas`~~ · **HECHO el 2026-09-15**: no eran 1 554 sino **3 392 de 4 253**, porque el criterio viejo siguió sellando seis días más. La proporción no cambió (79 % el 08-09, 80 % hoy), que es lo que dice que el diagnóstico era correcto y solo se aplazó | Antes de que Fly sirva la #24, el ciclo vuelve a llenar el archivo con el criterio viejo |
+| 11 | ~~Mirar una línea del ciclo~~ · **HECHO**: `6367 hist. (620 escritas)`. Las dos cifras ya no son iguales, así que el `WHERE` filtra | Es la prueba de que H4 funcionó, y se lee sola |
+| 11b | ~~`enlaces +N −M`~~ · **HECHO**: `enlaces +676 −122`, un orden por debajo de los 7 500 que habrían delatado el borrado entero. Y es el ciclo de **arranque**, el que más escribe | Misma idea, para la otra mitad de H4 |
+| 12 | ~~Abrir el sitio y correr `npm run mirar`~~ · **HECHO**: 10/10 rutas de escritorio en verde con `VITE_API_URL=same-origin`, `/transparencia/sobre-nosotros` incluida, y **mirada la captura**: la portada sale llena, con destacado de 22 medios. El sitio publicado responde 200 en las seis rutas | Nadie lo ha mirado con todo desplegado. En local está en verde, pero el motor de la rama no está en Fly |
+| 12b | ~~`npm run db:contrato`~~ · **HECHO**: el artículo baja y vuelve entero, `feedCategories` incluido, y deja `ROLLBACK` | La ida y vuelta del artículo contra la base. No hace falta antes, pero es lo que caza un SQL roto sin esperar a que falle una ingesta |
 
 > **La migración YA está aplicada** (`npm run db:migrate`, 2026-09-09), y el orden
 > importaba: los dos despliegues salen solos con el push a `main`, así que si el
@@ -175,7 +182,7 @@ queda abierto de código es lo que abrió ese mismo trabajo:
 
 | | Qué |
 |---|---|
-| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer |
+| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer. **Desde el 2026-09-15 ya no espera a la fusión: el motor que pone las marcas está sirviendo, así que lo único que falta es ciclo** |
 | 26 | ~~**El resumen que es el titular repetido más el usuario del gestor**~~ · **HECHO el 2026-09-10**: eran 1 018, la causa principal era Google News y no el gestor, y de paso apareció la firma de WordPress en español, que nadie quitaba. Entrada en CERRADO |
 
 ### Con fecha, y no dependen de nadie
@@ -977,6 +984,91 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-15 · La tanda del 8 de septiembre entra a `main`, y el día del despliegue se ejecuta el mismo día (punto 1 y puntos 10 a 12b)
+
+Ocho días parada, y con eso basta para que el aplazamiento se note en las
+cifras. Lo que se hizo, en orden, y lo que cada paso enseñó.
+
+### El escalón intermedio no lo vigila nadie, así que se vigiló a mano
+
+La #33 —el punto 26— apuntaba a la rama de integración, no a `main`, y el CI
+solo se dispara en `push` a `main` y en `pull_request` contra `main`. **Su
+código nunca había pasado por CI**, que es exactamente lo que quedó anotado en
+`c0af7a5`. Antes de fusionarla se verificó en local sobre el resultado exacto de
+la fusión —la rama del 26 es descendiente directa de la de integración, así que
+el resultado era su propio `HEAD`—: lint, `tsc`, **860/860 pruebas**, build,
+`check:comentarios` y `check:registry`.
+
+> **Y el escalón se cubrió solo después:** fusionada la #33, la #32 sí apunta a
+> `main`, así que su CI volvió a correr con el punto 26 dentro. Verde: lint,
+> tipos, pruebas, build, integridad del catálogo, comentarios y esquema. Esa es
+> la forma barata de dar CI a una PR intermedia — fusionarla hacia arriba antes
+> de tocar `main`.
+
+### La fusión, y las dos que no se cerraron solas
+
+`gh pr merge 33 --merge` y luego `gh pr merge 32 --merge` (`d6deb1c`). De las
+siete originales, **cinco se cerraron solas**; la **#28** y la **#29** se
+quedaron abiertas porque iban encadenadas (#24 → #28 → #29) y GitHub no siempre
+reconoce el encadenado. Se comprobó que sus commits de cabeza son antepasados de
+`main` —`c536dfa` y `8919581`— y se cerraron a mano con el motivo escrito. **Una
+PR cerrada a mano sin decir por dónde entró su código se lee igual que una
+descartada**, y eso es lo que había que evitar.
+
+### Los despliegues, y la comprobación que sí hace el motor
+
+Los dos salieron solos con el push. El de Fly incluye un paso que conviene
+recordar porque es el que evita la mentira más cara —«se desplegó» sin que lo
+desplegado sea lo empujado—: **«Comprobar que lo que corre es lo que se
+empujó»**, y pasó.
+
+### Las 1 554 huérfanas eran 3 392
+
+| | El 2026-09-08 | El 2026-09-15 |
+|---|---|---|
+| Archivo sellado | 1 975 | 4 253 |
+| A borrar | 1 554 | **3 392** |
+| Proporción | 79 % | 80 % |
+
+**La proporción no se movió, y eso es lo que importa.** El criterio viejo siguió
+sellando ocho días más, así que el número creció con el calendario; si la
+proporción hubiera cambiado, el diagnóstico del 08-09 habría sido otra cosa.
+Borradas las 3 392, el sitemap deja de anunciarlas en la próxima petición.
+
+> **Lo que se leyó antes de borrar**, porque el informe enseña horas negativas y
+> eso asusta sin el contexto: **negativo significa que el artículo más nuevo de
+> la historia es posterior al sello.** Sus piezas siguieron vivas después de
+> archivarla, que es la forma más limpia de no haber envejecido. La más joven de
+> la muestra iba a −47,8 h.
+
+### Las dos cifras de H4, leídas en producción
+
+Primer ciclo del motor nuevo, el de arranque —el que más escribe—:
+
+```
+6367 hist. (620 escritas) · enlaces +676 −122
+```
+
+**Punto 11:** las dos cifras ya no son iguales; el `WHERE` filtra. **Punto 11b:**
+676 altas y 122 bajas de enlace, no los ~7 500 que habrían significado que
+`story_articles` se sigue borrando y reescribiendo entera.
+
+### Y lo que se miró, de verdad
+
+`npm run db:contrato` en verde: el artículo baja y vuelve entero —`feedCategories`
+incluido— y deja `ROLLBACK`. `npm run mirar` con `VITE_API_URL=same-origin`:
+**10/10 rutas de escritorio**, `/transparencia/sobre-nosotros` entre ellas, que
+era el 404 de la #26. **Y se abrió la captura**, que es la parte que el 09-09 se
+descubrió que faltaba: la portada sale llena, destacado de 22 medios, el aviso
+de «aquí falta un lado» en su sitio. El sitio publicado responde 200 en las seis
+rutas probadas.
+
+**7/7 invariantes contra producción** con el motor nuevo sirviendo: 6 333
+historias, 507 multifuente, 86/100 con tema, ninguna vacía, ningún contrasentido
+de espectro.
+
+---
 
 ## 2026-09-10 · El resumen que es el titular repetido, y la firma del gestor en español (punto 26)
 

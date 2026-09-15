@@ -1,5 +1,52 @@
 # Por dónde seguir
 
+## 2026-09-15 · La tanda está en el aire, y el día del despliegue ya se ejecutó
+
+**Lo primero al volver ya no es fusionar.** La tanda del 8 de septiembre entró a
+`main` (`d6deb1c`), los dos despliegues salieron solos, y **la lista del día del
+despliegue se hizo entera el mismo día**: 10, 11, 11b, 12 y 12b. Lo que trae la
+minuta con detalle; aquí lo que hace falta saber para seguir.
+
+**Lo que está sirviendo ahora:** el archivo que solo guarda lo que envejeció, H4
+por sus dos mitades, la costura del artículo por una sola lista, `/sobre-nosotros`
+en el motor, el timbre de los vigilantes, la cadencia por mediana, las fichas de
+nivel 2 y el resumen que ya no repite el titular.
+
+**Las tres cifras que quedaron medidas, por si hay que compararlas luego:**
+
+| | |
+|---|---|
+| Huérfanas borradas | **3 392 de 4 253** — no 1 554: el criterio viejo siguió sellando ocho días. La proporción sí aguantó (79 % → 80 %) |
+| H4, historias | `6367 hist. (620 escritas)` — ya no coinciden |
+| H4, enlaces | `enlaces +676 −122` — no los ~7 500 del borrado entero |
+
+7/7 invariantes contra producción con el motor nuevo, y `mirar` en 10/10 con la
+captura abierta: la portada sale llena.
+
+**Dos avisos para quien siga:**
+
+> **El CI no mira las PR que apuntan a una rama de integración**, solo las que
+> apuntan a `main`. La #33 llegó sin CI ninguno. La salida barata es fusionarla
+> hacia la rama de integración y dejar que el CI de la PR grande la cubra —pero
+> verificando en local antes, que es lo que se hizo.
+
+> **Una PR encadenada puede quedarse abierta después de la fusión.** La #28 y la
+> #29 se quedaron; sus commits sí estaban en `main`. Antes de cerrar una a mano,
+> comprobar `git branch -r --contains <head>` y escribir en el cierre por dónde
+> entró.
+
+**Qué queda, en orden de quién lo puede hacer:**
+
+1. **Tuyo:** el issue #4 del centinela (punto 2) y sacar el repositorio de
+   OneDrive (punto 3).
+2. **Tuyo, editorial:** las decisiones 4 a 9. La 8 —el resumen del buscador—
+   está hoy más fácil que cuando se escribió.
+3. **De código, solo el 25:** volver a medir el aislamiento de los seis medios de
+   izquierda de raíz plana. **Ya no espera a la fusión, espera a ciclo:** el
+   motor que pone las marcas de opinión lleva sirviendo desde hoy.
+4. **Con fecha:** 1 de octubre (Vorágine), 2 de octubre (tamaño de la base y
+   cadencia), 13 de octubre (Telecaribe), diciembre (opción B del archivo).
+
 ## 2026-09-09, cierre de la jornada · La lista de código queda vacía
 
 **Lo primero al volver: fusionar** —`integracion/tanda-del-8-de-septiembre`,

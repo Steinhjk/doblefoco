@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { topCoveredStories, storyTimeLabel } from '../lib/story';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import EmptyState from '../components/EmptyState';
 import CoverageBar from '../components/CoverageBar';
 import AnimateIn from '../components/AnimateIn';
@@ -54,7 +54,7 @@ import { categories } from '../data/categories';
 const CUANTAS = 12;
 
 const Trending = () => {
-    const { stories, status, reason } = useStories();
+    const { stories, status, reason } = useHistorias();
 
     /*
      * `topCoveredStories` ya exige más de un medio, que es lo que convierte una

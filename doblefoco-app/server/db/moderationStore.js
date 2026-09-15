@@ -30,11 +30,19 @@ import { safeQuery, query } from './pool.js';
 export async function listPending({ limit = 50, offset = 0 } = {}) {
     const result = await safeQuery(
         `
+        -- ARCHIVO A PROPÓSITO: la cola incluye lo archivado.
+        --
+        -- Una historia sellada CONSERVA su página, su URL y su sitio en el
+        -- sitemap: sigue siendo pública. Filtrarla aquí dejaría páginas vivas
+        -- que nadie puede retirar, y retirar es lo único que hace la
+        -- moderación (F2-02). El precio está medido y se acepta: la cola crece
+        -- con el archivo, así que «sin revisar» es un número que sube solo.
         SELECT s.id, s.title, s.category, s.published_at, s.factuality,
                s.coverage_left, s.coverage_center, s.coverage_right,
                s.dominant_spectrum, s.insufficient_coverage, s.blindspot_spectrum,
                src.name AS title_source,
                (SELECT count(*)::int FROM story_articles sa WHERE sa.story_id = s.id) AS article_count
+          -- ARCHIVO A PROPÓSITO (el motivo, arriba).
           FROM stories s
           LEFT JOIN moderation m ON m.story_id = s.id
           LEFT JOIN sources   src ON src.id = s.title_source_id
@@ -62,6 +70,9 @@ export async function listDecided({ state = null, limit = 50, offset = 0 } = {})
                (SELECT count(*)::int FROM story_articles sa WHERE sa.story_id = s.id) AS article_count,
                m.state, m.reason, m.decided_at,
                u.email AS reviewer_email, u.display_name AS reviewer_name
+          -- ARCHIVO A PROPÓSITO: esto parte de las decisiones ya tomadas, no
+          -- de las historias. Una decisión sobre una historia que después se
+          -- archivó tiene que seguir apareciendo en su historial.
           FROM moderation m
           JOIN stories     s ON s.id = m.story_id
           JOIN admin_users u ON u.id = m.reviewer_id
@@ -101,6 +112,8 @@ export async function decide({ storyId, state, reviewerId, reason = null }) {
 
     // Se comprueba antes para poder responder 404 en vez de dejar que salte la
     // clave foránea y devolver un 500 que no le dice nada a nadie.
+    // ARCHIVO A PROPÓSITO: una historia archivada se puede retirar, porque su
+    // página sigue publicada.
     const exists = await query('SELECT 1 FROM stories WHERE id = $1', [storyId]);
     if (!exists.rowCount) return null;
 
@@ -175,6 +188,9 @@ export async function counts() {
     const result = await safeQuery(
         `
         SELECT
+            -- ARCHIVO A PROPÓSITO: cuenta lo archivado, por lo mismo que
+            -- listPending. Si algún día esta cifra se usa para otra cosa que
+            -- para saber cuánto falta por revisar, hay que separarlas.
             (SELECT count(*)::int FROM stories s
               LEFT JOIN moderation m ON m.story_id = s.id
              WHERE m.story_id IS NULL)                                  AS sin_revisar,

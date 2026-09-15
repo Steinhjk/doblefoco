@@ -53,6 +53,9 @@ try {
 
     if (status.enabled) {
         // Vocabulario: TODO lo que la base conozca. Es lo que se quiere medir.
+        // ARCHIVO A PROPÓSITO: entra también lo archivado. Esto mide con qué
+        // frecuencia aparece cada término en los titulares que ha visto el
+        // proyecto, y un titular archivado se escribió igual que los demás.
         const todos = await query('SELECT title FROM stories WHERE title IS NOT NULL');
         vocabulario = todos.rows.map((r) => r.title);
 
@@ -71,7 +74,8 @@ try {
               JOIN story_articles sa ON sa.story_id = s.id
               JOIN articles a        ON a.id = sa.article_id
               JOIN sources src       ON src.id = a.source_id
-             WHERE s.published_at > now() - interval '72 hours'
+             WHERE s.archivada_el IS NULL
+               AND s.published_at > now() - interval '72 hours'
              GROUP BY s.id
              ORDER BY count(DISTINCT a.source_id) DESC, s.published_at DESC
              LIMIT $1`, [cuantas]);

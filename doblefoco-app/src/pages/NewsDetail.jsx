@@ -1,13 +1,13 @@
 // @ts-check
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX, TrendingUp } from 'lucide-react';
+import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX, TrendingUp, Archive } from 'lucide-react';
 import { getMediaByName } from '../data/mediaLogos';
 import StoryImage from '../components/StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
 import { fetchStory, isApiConfigured } from '../services/apiClient';
-import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
-import { useStories } from '../hooks/useStories';
+import { normalizeStory, storyTimeLabel, formatAbsoluteTime, formatAbsoluteDate } from '../lib/story';
+import { useHistorias } from '../hooks/historiasContext';
 import { recordRead } from '../lib/readingHistory';
 import { useHistoriaInicial } from '../hooks/datosInicialesContext';
 import { idDesdeRuta } from '../../shared/storyPath.js';
@@ -23,7 +23,7 @@ import MediaLogo from '../components/MediaLogo';
 import UserFeedbackWidget from '../components/UserFeedbackWidget';
 import ShareModal from '../components/ShareModal';
 import './NewsDetail.css';
-import { nombreDeSeccion } from '../lib/seccion';
+import { nombreDeSeccion, perteneceA, seccionDeLaHistoria } from '../lib/seccion';
 import { categories } from '../data/categories';
 import { decimal } from '../../shared/numeros.js';
 
@@ -168,7 +168,7 @@ const NewsDetail = () => {
     // ningún aviso. Era el peor sitio donde podía ocurrir, porque es la pantalla
     // donde la cita fabricada se lee a tamaño completo con el nombre del medio
     // al lado. Ese respaldo se eliminó: si la API no la tiene, no existe.
-    const { stories: pool } = useStories({ limit: 60 });
+    const { stories: pool } = useHistorias({ limit: 60 });
 
     /**
      * Qué id tenemos ya cargado.
@@ -217,12 +217,27 @@ const NewsDetail = () => {
         if (story) recordRead(story);
     }, [story?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    /*
+     * «MÁS EN X» SE AGRUPA POR LA SECCIÓN DE LA HISTORIA, NO POR EL FEED.
+     *
+     * Comparaba `s.category === story.category`, que es la etiqueta heredada
+     * del feed por el que entró cada pieza: con 24 de los feeds declarados como
+     * «Política», el bloque juntaba noticias que no tienen nada que ver salvo
+     * haber entrado por la misma cañería nuestra. Ahora se pregunta lo mismo
+     * que la pantalla de secciones, con `perteneceA`, y si la historia no tiene
+     * sección el bloque no se pinta.
+     */
+    const seccion = useMemo(
+        () => (story ? seccionDeLaHistoria(story, categories) : null),
+        [story]
+    );
+
     const related = useMemo(() => {
-        if (!story) return [];
+        if (!story || !seccion) return [];
         return pool
-            .filter((s) => s.category === story.category && s.id !== story.id)
+            .filter((s) => s.id !== story.id && perteneceA(s, seccion))
             .slice(0, 3);
-    }, [story, pool]);
+    }, [story, seccion, pool]);
 
     if (loading) {
         return (
@@ -252,7 +267,9 @@ const NewsDetail = () => {
         <div className="news-detail-page">
             <div className="detail-header">
                 <Link to="/" className="back-link">← Volver al feed</Link>
-                <span className="detail-category-badge">{seccionDe(story)}</span>
+                {seccionDe(story) && (
+                    <span className="detail-category-badge">{seccionDe(story)}</span>
+                )}
             </div>
 
             <article className="detail-article detail-split-layout">
@@ -272,6 +289,39 @@ const NewsDetail = () => {
                                 <Share2 size={14} aria-hidden="true" /> Compartir
                             </button>
                         </div>
+
+                        {/*
+                          * ESTO ES ARCHIVO, Y HAY QUE DECIRLO (2026-09-02).
+                          *
+                          * Desde que las historias multifuente se congelan en vez
+                          * de borrarse, esta página sirve tanto lo de hoy como lo
+                          * de hace semanas —y hasta este aviso las servía
+                          * IDÉNTICAS—. Un hecho de hace un mes presentado con la
+                          * misma cara que la noticia del día es la clase de
+                          * afirmación silenciosa que este sitio no hace.
+                          *
+                          * Va ARRIBA del titular a propósito: quien llega desde un
+                          * buscador tiene que saber qué está leyendo antes de
+                          * leerlo, no después.
+                          *
+                          * Lo que el aviso NO dice: que la información sea falsa o
+                          * que esté desactualizada. Dice cuándo dejó de seguirse,
+                          * que es un hecho, y deja el juicio a quien lee.
+                          */}
+                        {story.archivadaEl && (
+                            <p className="detail-archivo">
+                                <Archive size={15} aria-hidden="true" />
+                                <span>
+                                    <strong>Esta historia está archivada.</strong> Se dejó de
+                                    seguir el{' '}
+                                    <time dateTime={story.archivadaEl}>
+                                        {formatAbsoluteDate(story.archivadaEl) ?? story.archivadaEl.slice(0, 10)}
+                                    </time>
+                                    , así que su cobertura es la que tenía ese día y no se
+                                    actualiza. Los enlaces llevan a los medios que la publicaron.
+                                </span>
+                            </p>
+                        )}
 
                         <h1 className="detail-title">{story.title}</h1>
                         {story.summary && <p className="detail-summary">{story.summary}</p>}
@@ -500,7 +550,7 @@ const NewsDetail = () => {
 
             {related.length > 0 && (
                 <section className="detail-related">
-                    <h2>Más en {seccionDe(story)}</h2>
+                    <h2>Más en {seccion?.name}</h2>
                     <div className="detail-related-grid">
                         {related.map((s) => <NewsCard key={s.id} story={s} />)}
                     </div>

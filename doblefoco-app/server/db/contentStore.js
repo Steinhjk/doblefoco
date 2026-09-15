@@ -27,7 +27,10 @@
  */
 
 import { classifySpectrum } from '../../shared/biasAnalysis.js';
-import { detectarOpinion } from '../../shared/opinion.js';
+import { detectarOpinionDelArticulo } from '../../shared/opinion.js';
+import {
+    camposDesdeFila, columnasParaLeer, sqlDeInsercion, valoresDeInsercion,
+} from './contratoDeArticulo.js';
 import { safeQuery, withTransaction } from './pool.js';
 
 // ---------------------------------------------------------------------------
@@ -79,25 +82,20 @@ import { safeQuery, withTransaction } from './pool.js';
  * @param {Record<string, any>} row
  */
 export function articuloDesdeFila(row) {
+    /*
+     * LOS CAMPOS DE LA FILA SALEN DEL CONTRATO (2.4), no de una lista escrita
+     * aquí a mano. Eran dos serializadores separados para la misma costura, y de
+     * ahí salieron los tres fallos que `contratoDeArticulo.js` enumera: `topics`
+     * y `ambito` escritos y nunca leídos, la marca de opinión perdida al
+     * rehidratar, y un `$14` que faltaba. Ahora la misma lista escribe y lee.
+     *
+     * `sourceId` se saca aparte: en la base es una columna y en memoria es
+     * `outlet.id`, así que no se queda suelto en el objeto.
+     */
+    const { sourceId, ...campos } = camposDesdeFila(row);
+
     return {
-        id: row.id,
-        headline: row.headline,
-        rawTitle: row.raw_title ?? row.headline,
-        link: row.canonical_url,
-        snippet: row.snippet,
-        tone: row.tone,
-        publishedAt: row.published_at,
-        ingestedAtMs: Date.parse(row.ingested_at),
-        // Sin esto la memoria no sabría qué artículos ya tienen foto y el relleno
-        // de imágenes intentaría rellenar los 4 000 en cada ciclo.
-        imageUrl: row.image_url,
-        /*
-         * `?? []` y no `?? null`: aguas abajo esto se recorre con `flatMap`, y un
-         * artículo viejo de antes de que existiera la columna tiene que aportar
-         * cero temas, no reventar la construcción de su historia.
-         */
-        topics: row.topics ?? [],
-        ambito: row.ambito ?? null,
+        ...campos,
         /*
          * LA OPINIÓN SE DERIVA, NO SE GUARDA (2026-08-21), y conviene decir por
          * qué no es un atajo.
@@ -113,44 +111,43 @@ export function articuloDesdeFila(row) {
          * La cura del hermano fue una columna. Aquí NO hace falta, y no por
          * ahorrar trabajo:
          *
-         *   1. `detectarOpinion` es función PURA de la URL —tres expresiones
-         *      regulares sobre el pathname, sin registro ni estado— y la URL ya
-         *      es permanente: `canonical_url` es la clave del ON CONFLICT y no
-         *      se reescribe nunca. Guardar el veredicto sería duplicar un dato
-         *      que ya está, no conservar uno que se perdería.
+         *   1. Sus entradas —`canonical_url` y, desde el 2026-09-09,
+         *      `feed_categories`— ya están guardadas, así que guardar el
+         *      veredicto sería duplicar un dato que ya está, no conservar uno
+         *      que se perdería.
          *   2. Por eso NO se cierra ninguna puerta. El día que haga falta
          *      consultarlo en SQL —el índice de columnistas, que hoy los
          *      comentarios prometen y no existe— la columna se puede añadir y
-         *      rellenar entera desde `canonical_url`, sin haber perdido nada por
-         *      el camino.
+         *      rellenar entera desde lo guardado, sin haber perdido nada por el
+         *      camino.
          *   3. Y se cura sola. La detección está declarada incompleta: el día
-         *      que se añada un patrón, un valor guardado seguiría mintiendo
-         *      sobre los artículos viejos, mientras que este se corrige en el
-         *      siguiente arranque.
+         *      que se añada un patrón o una etiqueta, un valor guardado seguiría
+         *      mintiendo sobre los artículos viejos, mientras que este se
+         *      corrige en el siguiente arranque.
          *
          * Cuesta 6,3 ms para los 4 000, medido, contra una consulta que tarda
          * órdenes de magnitud más.
          */
-        opinion: detectarOpinion(row.canonical_url),
+        opinion: detectarOpinionDelArticulo({
+            url: row.canonical_url,
+            categorias: row.feed_categories,
+        }),
         outlet: {
-            id: row.source_id,
+            id: sourceId,
             name: row.source_name,
             domain: row.source_domain,
             bias: row.bias,
             factuality: row.factuality,
             spectrum: classifySpectrum(row.bias),
         },
-        category: row.category,
     };
 }
 
 export async function hydrateArticles({ retentionMs, max }) {
     const result = await safeQuery(
         `
-        SELECT a.id, a.canonical_url, a.headline, a.raw_title, a.snippet,
-               a.category, a.tone, a.published_at, a.ingested_at, a.image_url,
-               a.topics, a.ambito,
-               s.id AS source_id, s.name AS source_name, s.domain AS source_domain,
+        SELECT ${columnasParaLeer('a')},
+               s.name AS source_name, s.domain AS source_domain,
                s.bias, s.factuality
           FROM articles a
           JOIN sources s ON s.id = a.source_id
@@ -325,50 +322,29 @@ export async function persistArticles(articles) {
      */
     const result = await safeQuery(
         `
-        INSERT INTO articles
-            (id, canonical_url, source_id, headline, raw_title, snippet,
-             category, tone, published_at, ingested_at, image_url, topics, ambito)
-        -- Los temas llegan como cadena separada por comas y se parten aquí.
-        -- unnest no admite un array de arrays irregulares: aplana los
-        -- multidimensionales y exigiría el mismo número de temas en cada fila,
-        -- que es justo lo que la clasificación multietiqueta no garantiza.
-        SELECT id, url, src, titular, crudo, extracto, categoria, tono, publicado,
-               ingerido, imagen,
-               CASE WHEN temas = '' THEN '{}'::text[] ELSE string_to_array(temas, ',') END,
-               ambito
-          FROM unnest(
-            $1::text[], $2::text[], $3::text[], $4::text[], $5::text[],
-            $6::text[], $7::text[], $8::jsonb[], $9::timestamptz[], $10::timestamptz[],
-            $11::text[], $12::text[], $13::text[]
-        ) AS t(id, url, src, titular, crudo, extracto, categoria, tono, publicado,
-               ingerido, imagen, temas, ambito)
-        -- Ver el comentario de arriba: se rellena la imagen y nada más.
+        ${sqlDeInsercion()}
+        -- Ver el comentario de arriba: se rellena la imagen, y desde el
+        -- 2026-09-09 también las etiquetas del feed en las filas que se
+        -- guardaron antes de que existiera la columna. Es lo que hace que los
+        -- 22 medios de raíz plana no tengan que esperar a que su corpus entero
+        -- se renueve: lo que siga apareciendo en su feed se completa solo.
+        --
+        -- El ON CONFLICT NO sale del contrato a propósito: qué se rellena al
+        -- reencontrar una fila es política de escritura, se decide caso por caso
+        -- y se lee mejor aquí que en una lista de campos.
         ON CONFLICT (canonical_url) DO UPDATE
-            SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url)
-          WHERE articles.image_url IS NULL
-            AND EXCLUDED.image_url IS NOT NULL
+            SET image_url = COALESCE(articles.image_url, EXCLUDED.image_url),
+                feed_categories = COALESCE(articles.feed_categories, EXCLUDED.feed_categories)
+          WHERE (articles.image_url IS NULL AND EXCLUDED.image_url IS NOT NULL)
+             OR (articles.feed_categories IS NULL AND EXCLUDED.feed_categories IS NOT NULL)
         `,
-        [
-            usable.map((a) => a.id),
-            usable.map((a) => a.link),
-            usable.map((a) => a.outlet.id),
-            usable.map((a) => a.headline),
-            usable.map((a) => a.rawTitle ?? null),
-            usable.map((a) => a.snippet ?? null),
-            usable.map((a) => a.category ?? null),
-            usable.map((a) => (a.tone ? JSON.stringify(a.tone) : null)),
-            usable.map((a) => a.publishedAt ?? null),
-            usable.map((a) => new Date(a.ingestedAtMs ?? Date.now()).toISOString()),
-            // null cuando el feed no trae imagen, que es lo más frecuente. No se
-            // sustituye por nada: o es la del medio, o no hay.
-            usable.map((a) => a.imageUrl ?? null),
-            // Array vacío y NULL no son lo mismo aquí, y la diferencia la usa
-            // el recategorizador: NULL es «nunca se clasificó» y `{}` es «se
-            // clasificó y no dio tema». Sin distinguirlas, cada pasada volvería
-            // a intentar los mismos artículos inclasificables para siempre.
-            usable.map((a) => (a.topics ?? []).join(',')),
-            usable.map((a) => a.ambito ?? null),
-        ],
+        /*
+         * Los valores, en el mismo orden que los `$n` que genera el contrato.
+         * Ya nadie los numera a mano, que es de donde salió el `$14` que faltaba
+         * el 2026-09-09: el `INSERT` declaraba catorce columnas y la lista traía
+         * trece valores.
+         */
+        valoresDeInsercion(usable),
         'guardado de artículos'
     );
 
@@ -423,6 +399,15 @@ export async function pruneExpiredArticles(retentionMs) {
 // ---------------------------------------------------------------------------
 
 /**
+ * Qué parte de la ventana de agrupamiento tiene que haber pasado para que una
+ * historia que desaparece cuente como envejecida y no como recompuesta.
+ *
+ * Dos tercios: con la ventana en 72 h son 48. El porqué —y por qué no vale
+ * «sin artículos en la ventana»— está en el comentario del UPDATE.
+ */
+export const MADUREZ_PARA_ARCHIVAR = 2 / 3;
+
+/**
  * Reemplaza el conjunto de historias por el que acaba de calcular el motor.
  *
  * Las historias son una PROYECCIÓN de los artículos vigentes: cada ciclo las
@@ -437,9 +422,12 @@ export async function pruneExpiredArticles(retentionMs) {
  * Todo va en una transacción. Un fallo a mitad dejaría historias sin sus
  * artículos, que es peor que no haber guardado nada.
  *
- * @returns {Promise<{stories:number, links:number, removed:number, archived:number}|null>}
+ * @param {any[]} entrada
+ * @param {number} [ventanaMs] la ventana de AGRUPAMIENTO, que es la que decide
+ *   si una historia que desaparece envejeció o se recompuso.
+ * @returns {Promise<{stories:number, escritas:number, links:number, enlacesBorrados:number, removed:number, archived:number}|null>}
  */
-export async function persistStories(entrada) {
+export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
     let stories = entrada;
     try {
         /**
@@ -501,8 +489,9 @@ export async function persistStories(entrada) {
              * Mismo patrón que ya usaba `persistArticles`. Aquí importa más,
              * porque estas filas se reescriben ENTERAS en cada ciclo.
              */
+            let escritas = 0;
             if (stories.length) {
-                await client.query(
+                const { rowCount } = await client.query(
                     `
                     INSERT INTO stories
                         (id, title, title_source_id, title_url, category, published_at,
@@ -555,6 +544,55 @@ export async function persistStories(entrada) {
                         ambito                = EXCLUDED.ambito,
                         departamento          = EXCLUDED.departamento,
                         computed_at           = now()
+                    /*
+                     * SOLO SE ESCRIBE LO QUE CAMBIO (H4, 2026-09-08).
+                     *
+                     * Cada ciclo recalcula las historias enteras y las volvia a
+                     * escribir todas, cambiaran o no. Medido ese dia: unas
+                     * 1 010 000 filas escritas al dia entre stories y
+                     * story_articles, para un corpus que se mueve en los
+                     * bordes. Postgres no ahorra nada por su cuenta: un UPDATE
+                     * que deja los mismos valores escribe igualmente una
+                     * version nueva de la fila, y a esa version la tiene que
+                     * pasar el recolector despues.
+                     *
+                     * IS DISTINCT FROM y no <>: con <>, un NULL a cada
+                     * lado da NULL --que no es cierto-- y la fila se saltaria
+                     * la escritura o la haria segun el humor de la columna. La
+                     * mitad de estas son NULL a menudo.
+                     *
+                     * computed_at NO ENTRA EN LA COMPARACION, y con eso pasa
+                     * a significar algo: hasta hoy era «cuando corrio el ultimo
+                     * ciclo» --always now()-- y ahora es «cuando cambiaron los
+                     * numeros de esta historia», que es lo que su nombre decia.
+                     * No lo lee nadie todavia; ese es justamente el motivo de
+                     * que se pudiera arreglar sin romper nada.
+                     *
+                     * contentStore.test.js obliga a que esta lista y la del
+                     * SET digan lo mismo: una columna nueva en el SET que no
+                     * este aqui dejaria de actualizarse en silencio, que es
+                     * peor que el gasto que se quita.
+                     */
+                    WHERE (
+                        stories.title, stories.title_source_id, stories.title_url,
+                        stories.category, stories.published_at, stories.mean_bias,
+                        stories.polarization, stories.coverage_left,
+                        stories.coverage_center, stories.coverage_right,
+                        stories.dominant_spectrum, stories.insufficient_coverage,
+                        stories.blindspot_spectrum, stories.factuality,
+                        stories.source_count, stories.topics, stories.ambito,
+                        stories.departamento, stories.first_seen_at
+                    ) IS DISTINCT FROM (
+                        EXCLUDED.title, EXCLUDED.title_source_id, EXCLUDED.title_url,
+                        EXCLUDED.category, EXCLUDED.published_at, EXCLUDED.mean_bias,
+                        EXCLUDED.polarization, EXCLUDED.coverage_left,
+                        EXCLUDED.coverage_center, EXCLUDED.coverage_right,
+                        EXCLUDED.dominant_spectrum, EXCLUDED.insufficient_coverage,
+                        EXCLUDED.blindspot_spectrum, EXCLUDED.factuality,
+                        EXCLUDED.source_count, EXCLUDED.topics, EXCLUDED.ambito,
+                        EXCLUDED.departamento,
+                        LEAST(stories.first_seen_at, EXCLUDED.first_seen_at)
+                    )
                     `,
                     [
                         stories.map((s) => s.id),
@@ -584,14 +622,49 @@ export async function persistStories(entrada) {
                         stories.map((s) => s.departamento ?? null),
                     ]
                 );
+                escritas = rowCount ?? 0;
             }
 
-            // Se reconstruyen los vínculos de las historias de este ciclo: un
-            // artículo puede haber cambiado de grupo desde la última vez.
-            if (ids.length) {
-                await client.query(`DELETE FROM story_articles WHERE story_id = ANY($1::text[])`, [ids]);
-            }
-
+            /*
+             * LOS VÍNCULOS TAMBIÉN SE ESCRIBEN SOLO SI CAMBIARON (la otra mitad
+             * de H4, 2026-09-09).
+             *
+             * Antes esto era un `DELETE` de todos los vínculos del ciclo y un
+             * `INSERT` de todos otra vez. Medido el 2026-09-09: **7 586 enlaces
+             * de historias vivas × 51 ciclos al día = 386 886 filas escritas
+             * cada día**, y eso contando el `INSERT` una vez; el `DELETE` deja
+             * además su propia versión muerta de cada fila para el recolector.
+             *
+             * Es el mismo despilfarro que H4 quitó de `stories`, con el mismo
+             * argumento: **el corpus se mueve en los bordes**. Un artículo entra
+             * o sale de una historia de vez en cuando; los otros siete mil
+             * quinientos vínculos son exactamente los mismos que hace media
+             * hora.
+             *
+             * LAS TRES PARTES, en una sola sentencia para que vean el mismo
+             * estado de la base:
+             *
+             *   `deseado`  los vínculos que este ciclo quiere, filtrados por que
+             *              el artículo exista de verdad (ver abajo).
+             *   `sobran`   se borran los que la historia tenía y ya no quiere.
+             *   `faltan`   se insertan los que quiere y no tenía. Con `NOT
+             *              EXISTS` y no solo con `ON CONFLICT DO NOTHING`:
+             *              Postgres resuelve el conflicto insertando primero una
+             *              fila especulativa y matándola después, así que
+             *              «no hacer nada» al chocar sigue costando escritura.
+             *              El `ON CONFLICT` se queda para el único caso que el
+             *              `NOT EXISTS` no cubre: que el mismo par venga dos
+             *              veces dentro del propio lote.
+             *
+             * SOLO SE ENLAZA LO QUE EXISTE DE VERDAD EN `articles`. Sin ese
+             * filtro hay una carrera real: la memoria y la base aplican la
+             * ventana de 72 horas con relojes distintos, así que un artículo
+             * justo en el límite puede seguir en el Map —y por tanto dentro de
+             * una historia— y estar ya borrado de la base. La clave foránea
+             * rechazaría ese vínculo y, como todo esto va en una transacción, un
+             * solo artículo caducado tiraría el guardado de las 350 historias
+             * del ciclo. Se pierde un vínculo en vez de perderlo todo.
+             */
             const storyIds = [];
             const articleIds = [];
 
@@ -603,32 +676,46 @@ export async function persistStories(entrada) {
             }
 
             let links = 0;
+            let enlacesBorrados = 0;
 
-            if (storyIds.length) {
-                /**
-                 * Solo se enlaza lo que existe de verdad en `articles`.
-                 *
-                 * Sin este filtro hay una carrera real: la memoria y la base
-                 * aplican la ventana de 72 horas con relojes distintos, así que
-                 * un artículo justo en el límite puede seguir en el Map —y por
-                 * tanto dentro de una historia— y estar ya borrado de la base.
-                 * La clave foránea rechazaría ese vínculo, y como todo esto va
-                 * en una transacción, un solo artículo caducado tiraría el
-                 * guardado de las 350 historias del ciclo.
-                 *
-                 * Se pierde un vínculo en vez de perderlo todo.
-                 */
-                const { rowCount } = await client.query(
+            if (ids.length) {
+                const { rows } = await client.query(
                     `
-                    INSERT INTO story_articles (story_id, article_id)
-                    SELECT t.story_id, t.article_id
-                      FROM unnest($1::text[], $2::text[]) AS t(story_id, article_id)
-                     WHERE EXISTS (SELECT 1 FROM articles a WHERE a.id = t.article_id)
-                    ON CONFLICT DO NOTHING
+                    WITH deseado AS (
+                        SELECT t.story_id, t.article_id
+                          FROM unnest($1::text[], $2::text[]) AS t(story_id, article_id)
+                         WHERE EXISTS (SELECT 1 FROM articles a WHERE a.id = t.article_id)
+                    ),
+                    sobran AS (
+                        DELETE FROM story_articles sa
+                         WHERE sa.story_id = ANY($3::text[])
+                           AND NOT EXISTS (
+                               SELECT 1 FROM deseado d
+                                WHERE d.story_id = sa.story_id
+                                  AND d.article_id = sa.article_id
+                           )
+                        RETURNING 1
+                    ),
+                    faltan AS (
+                        INSERT INTO story_articles (story_id, article_id)
+                        SELECT d.story_id, d.article_id
+                          FROM deseado d
+                         WHERE NOT EXISTS (
+                               SELECT 1 FROM story_articles sa
+                                WHERE sa.story_id = d.story_id
+                                  AND sa.article_id = d.article_id
+                           )
+                        ON CONFLICT DO NOTHING
+                        RETURNING 1
+                    )
+                    SELECT (SELECT count(*) FROM sobran) AS borrados,
+                           (SELECT count(*) FROM faltan) AS insertados
                     `,
-                    [storyIds, articleIds]
+                    [storyIds, articleIds, ids]
                 );
-                links = rowCount;
+
+                links = Number(rows[0]?.insertados ?? 0);
+                enlacesBorrados = Number(rows[0]?.borrados ?? 0);
             }
 
             /**
@@ -651,15 +738,63 @@ export async function persistStories(entrada) {
              * editorial de alguien. Ahora hay una segunda red, además, porque
              * casi todo lo moderado es multifuente y por tanto se archiva.
              */
+            /*
+             * SOLO SE ARCHIVA LO QUE MURIÓ DE VIEJO, NO LO QUE SE RECOMPUSO
+             * (2026-09-02, el mismo día que se estrenó el archivo).
+             *
+             * Una historia deja de producirse por dos motivos muy distintos, y
+             * la primera versión de esto los confundía:
+             *
+             *   1. SUS ARTÍCULOS SALIERON DE LA VENTANA. El hecho envejeció y
+             *      nadie lo cubre ya. Eso es archivo.
+             *   2. EL AGRUPAMIENTO LA RECOMPUSO. Sus artículos siguen vivos,
+             *      pero ahora cuelgan de otra historia con otro id, porque un
+             *      artículo nuevo unió dos grupos que estaban separados. Eso no
+             *      es archivo: es la misma noticia con otro nombre.
+             *
+             * Medido a las pocas horas de estrenarlo: de 141 archivadas, **9
+             * habían vivido más de 60 h** y 28 menos de doce. O sea que el
+             * archivo se estaba llenando de páginas huérfanas que duplican una
+             * historia viva —con su URL, y anunciadas en el sitemap—.
+             *
+             * CÓMO SE DISTINGUEN, Y POR QUÉ NO ES «SIN ARTÍCULOS EN LA VENTANA».
+             * Ese era el criterio evidente y **está medido que no funciona**: el
+             * techo de `MAX_ARTICLES` expulsa artículos por comparabilidad antes
+             * de que cumplan la edad, así que la ventana efectiva va recortada y
+             * **ninguna historia del corpus llega a quedarse sin artículos
+             * recientes**. Medido el 2026-09-02 sobre las 628 vivas multifuente
+             * y las 141 archivadas: el artículo más nuevo de la más vieja tenía
+             * 58 h, y ni una sola pasaba de 60. Con aquel criterio el archivo se
+             * habría quedado vacío para siempre, que es el error contrario y
+             * más difícil de notar.
+             *
+             * Se usa la MADUREZ del hecho: se archiva cuando su artículo más
+             * reciente ya pasó de dos tercios de la ventana —48 h de 72—. Una
+             * historia que desaparece con artículos de hace horas se recompuso;
+             * una que desaparece cuando lo más nuevo que tiene son dos días es
+             * un hecho que dejó de cubrirse. Sobre las 141 de hoy, el corte
+             * habría archivado 58 y borrado 83.
+             *
+             * La fracción, y no un número de horas, para que siga significando
+             * lo mismo si la ventana cambia.
+             */
             const { rowCount: archived } = await client.query(
                 `
-                UPDATE stories
+                UPDATE stories s
                    SET archivada_el = now()
-                 WHERE id <> ALL($1::text[])
-                   AND archivada_el IS NULL
-                   AND source_count > 1
+                 WHERE s.id <> ALL($1::text[])
+                   AND s.archivada_el IS NULL
+                   AND s.source_count > 1
+                   AND NOT EXISTS (
+                       SELECT 1
+                         FROM story_articles sa
+                         JOIN articles a ON a.id = sa.article_id
+                        WHERE sa.story_id = s.id
+                          AND COALESCE(a.published_at, a.ingested_at)
+                              > now() - ($2::bigint * interval '1 millisecond')
+                   )
                 `,
-                [ids]
+                [ids, Math.round(ventanaMs * MADUREZ_PARA_ARCHIVAR)]
             );
 
             const { rowCount: removed } = await client.query(
@@ -673,7 +808,13 @@ export async function persistStories(entrada) {
                 [ids]
             );
 
-            return { stories: stories.length, links, removed, archived };
+            /*
+             * `stories` es lo que el ciclo PRODUJO y `escritas` lo que de
+             * verdad toco la base. La diferencia es la medida de H4, y va en el
+             * registro de cada ciclo para que el ahorro se vea el mismo dia que
+             * se despliegue en vez de tener que fiarse de este comentario.
+             */
+            return { stories: stories.length, escritas, links, enlacesBorrados, removed, archived };
         });
     } catch (error) {
         console.warn(`[db] guardado de historias falló: ${error.message}`);

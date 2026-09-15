@@ -33,7 +33,7 @@ import {
 } from '../../shared/clustering.js';
 import { analyzeHeadlineTone } from '../../shared/headlineTone.js';
 import { assessArticle } from '../../shared/contentQuality.js';
-import { detectarOpinion } from '../../shared/opinion.js';
+import { detectarOpinionDelArticulo } from '../../shared/opinion.js';
 import { classifyTopics } from '../../shared/topicClassifier.js';
 import { getIngestFeeds } from '../../shared/mediaRegistry.js';
 import { porRelevancia } from '../../shared/relevancia.js';
@@ -319,8 +319,35 @@ export function cleanHeadline(rawTitle, outletName, outletDomain) {
     return clean;
 }
 
-/** Normaliza el enlace para deduplicar: quita parámetros de campaña y hash. */
-function canonicalizeLink(link) {
+/**
+ * Normaliza el enlace para deduplicar: quita parámetros de campaña y hash, y
+ * sube a `https` los enlaces que el propio medio publica en `http`.
+ *
+ * LO DE `https` NO ES COSMÉTICA, Y COSTÓ ENCONTRARLO (2026-09-09). El feed de
+ * RTVC declara `xml:base="http://www.rtvcnoticias.com/"`, así que todos sus
+ * enlaces salen en `http`. Y ese `http` **no lleva al artículo**: el servidor
+ * responde `302` hacia `https://www.coljuegos.gov.co/publicaciones/301824` —el
+ * regulador del juego—, que es lo que pasa cuando un sitio de gobierno comparte
+ * el vhost sin TLS con otro. En `https` el mismo enlace responde `200`. Sin esto,
+ * cada noticia de RTVC habría mandado al lector a Coljuegos, y el enlace
+ * verificable es la mitad del producto.
+ *
+ * SOLO SE SUBE EL ENLACE DEL PROPIO MEDIO, y «del medio» se decide con la MISMA
+ * regla que `urlDeImagenValida` usa para las imágenes —dominio igual, subdominio
+ * suyo, o al revés—, que es lo que hace que `es.euronews.com` cuente como
+ * `euronews.com`. Un enlace a otro sitio se queda como viene: no sabemos si
+ * ese tercero sirve `https`, y una promoción a ciegas convertiría un enlace que
+ * funciona en uno roto. Las redirecciones de Google News tampoco se tocan, que
+ * es lo que hace el caso `via: 'gnews'`.
+ *
+ * Lo que ya había en el corpus cuando se escribió: 667 enlaces `http`, todos de
+ * Euronews, que redirigen con `301` a su propio `https`. Ahí esto solo ahorra un
+ * salto; en RTVC evita un destino equivocado.
+ *
+ * @param {string|null|undefined} link
+ * @param {string|null|undefined} dominioDelMedio dominio del registro, sin `www.`
+ */
+export function canonicalizeLink(link, dominioDelMedio = null) {
     if (!link || typeof link !== 'string') return '';
     try {
         const url = new URL(link);
@@ -328,6 +355,17 @@ function canonicalizeLink(link) {
             if (/^(utm_|fbclid|gclid|mc_|ref)/i.test(key)) url.searchParams.delete(key);
         }
         url.hash = '';
+
+        if (url.protocol === 'http:' && dominioDelMedio) {
+            const host = url.hostname.replace(/^www\./, '').toLowerCase();
+            const dominio = String(dominioDelMedio).replace(/^www\./, '').toLowerCase();
+            const delMedio =
+                host === dominio ||
+                host.endsWith(`.${dominio}`) ||
+                dominio.endsWith(`.${host}`);
+            if (delMedio) url.protocol = 'https:';
+        }
+
         return url.toString();
     } catch {
         return link.trim();
@@ -400,19 +438,202 @@ export function parsePublishedAt(item, ahoraMs = Date.now()) {
 }
 
 /**
+ * LA FIRMA QUE WORDPRESS LE PEGA AL RESUMEN: «The post <titular> appeared first
+ * on <sitio>.»
+ *
+ * No la escribe el medio, la escribe su gestor de contenidos, y no dice nada
+ * que no esté ya: es el titular repetido en inglés más el nombre del sitio. En
+ * el corpus del 2026-09-09 la llevan **452 artículos de cuatro medios** —360 de
+ * La Silla Vacía, 74 de Canal Capital, 16 de Chocó 7 Días y 2 de Vorágine—, y
+ * en 8 de ellos el resumen ENTERO es la firma y nada más.
+ *
+ * SE QUITA POR LO QUE SE GUARDA, NO POR LO QUE CLASIFICA, y conviene tenerlo
+ * escrito porque la minuta lo apuntó al revés. Se midió reclasificando los 452
+ * con y sin firma: **cero cambian de tema**. Tiene sentido visto de cerca —el
+ * titular que la firma repite ya puntúa por el titular de verdad, y «appeared
+ * first on» no está en ningún léxico—, así que los que no tienen tema no lo
+ * tienen por esto.
+ *
+ * Lo que sí arregla es el texto que se guarda y que un día se enseña: el
+ * buscador ya dice buscar dentro del resumen, y el motor tendría que mandar uno
+ * que no sea el titular repetido en otro idioma.
+ *
+ * Va ANTES del recorte a 400 caracteres, para que el corte no deje media firma.
+ *
+ * Y LA MISMA FIRMA EXISTE EN ESPAÑOL —«La entrada <titular> se publicó primero
+ * en <sitio>.»—, que es la que emite WordPress cuando el sitio está en
+ * castellano. Al medirla el 2026-09-10 resultó ser un caso MÁS ancho que el
+ * inglés en número de medios: **218 artículos de doce** —72 de MiPutumayo, 36
+ * de Noticias Uno, 29 de Razón Pública, 22 del Diario del Huila, 17 de Lente
+ * Regional, y el resto repartido—. En **80 de ellos el artículo se queda sin
+ * resumen**, que es la verdad: en 70 la firma era el resumen entero y en 10 lo
+ * que sobra no llega al suelo de 30 caracteres. A los otros 138 solo se les
+ * corta la coleta. Nadie la estaba quitando: el punto 16 solo miró el inglés.
+ */
+const FIRMAS_DEL_GESTOR = [
+    /\s*The post\b[\s\S]*?\bappeared first on\b[\s\S]*$/i,
+    /\s*La entrada\b[\s\S]*?\bse public[oó] primero en\b[\s\S]*$/i,
+];
+
+/**
+ * EL RESUMEN QUE ES EL TITULAR REPETIDO Y NADA MÁS (punto 26).
+ *
+ * DE DÓNDE SALE. Google News no tiene el resumen del medio, así que sirve como
+ * `contentSnippet` el titular seguido del nombre de la fuente: «<titular> Blu
+ * Radio», «<titular> ntn24.com». Los gestores de contenido hacen lo suyo por
+ * otra vía —RTVC sirve el titular, el usuario que lo publicó y la fecha:
+ * «…wfvasquez@cont… Mar, 01/09/2026»—. En los dos casos el campo está lleno y
+ * no dice nada que el titular no diga ya.
+ *
+ * CUÁNTO ES. Medido sobre el corpus del 2026-09-10 pasándolo por esta misma
+ * función: **1 018 artículos, el 3,42 % de los 29 737 que tienen resumen**,
+ * repartidos en 17 medios y concentrados en los que llegan por Google News
+ * —290 de La FM, 279 de Blu Radio, 162 de NTN24, 88 de Noticias Caracol, 80 de
+ * Noticias RCN, 79 de EFE—. Lo que aguanta es la PROPORCIÓN: repetida una hora
+ * después, con 88 artículos más en la base, daba 1 020 de 29 825 y el mismo
+ * 3,42 %. El absoluto envejece porque el ciclo no para.
+ *
+ * POR QUÉ SE QUITA, Y NO ES POR LA CLASIFICACIÓN. Se reclasificaron los 1 018
+ * con y sin resumen: **cero cambian de tema**, igual que en el punto 16 y por
+ * la misma razón —lo que el resumen repite ya puntúa por el titular—. Lo que sí
+ * arregla son dos afirmaciones falsas que hacíamos sobre nuestro propio
+ * trabajo:
+ *
+ *   1. `analyzeArticleTone` devolvía `analizoEntradilla: true` para los 1 018.
+ *      Decíamos haber analizado una entradilla que no existe.
+ *   2. En 25 de ellos un término cargado quedaba anotado en el titular Y en la
+ *      entradilla —«brutal», «impactante», «contundente»—. Ese `donde` es una
+ *      distinción que el producto defiende como interesante: en el titular es
+ *      una decisión de portada, en la entradilla una de redacción. Contar la
+ *      misma palabra dos veces convierte una decisión en dos.
+ *
+ * Y está el motivo del punto 16, que sigue valiendo: es texto que se guarda y
+ * que un día se enseña, porque el buscador ya dice buscar dentro del resumen.
+ *
+ * DÓNDE ESTÁ EL LISTÓN: no hay listón, y eso es deliberado. «No dice nada»
+ * significa que **no queda nada**, no que quede poco. Al medirlo el corte
+ * resultó ser limpio: de los 2 187 resúmenes que repiten el titular, los que
+ * quedan exactamente vacíos son casi todos, y el siguiente ya dice algo —«Rosa
+ * Angélica Tarazona», el nombre completo de quien el titular llama 'La
+ * Bebesita'—. Un umbral de palabras habría borrado entradillas cortas que sí
+ * informan: «Estos son los riegos», «El 52,8 % de los votantes votaron por el
+ * no». Se queda fuera un caso conocido, el de La Patria —«Grados Alejandro
+ * Calderin Mié, 09/09/2026»—, porque reconocer el nombre de un autor suelto
+ * pide adivinar, y prefiero perder ese uno a inventar una regla que no sé
+ * medir.
+ *
+ * QUÉ CUENTA COMO «EL MEDIO NOMBRÁNDOSE»: su nombre, su dominio y `www.` más
+ * su dominio — la MISMA lista que `cleanHeadline` usa para quitar el sufijo que
+ * Google News le pega al titular. Es el mismo fenómeno por el otro extremo del
+ * ítem, y tener dos nociones distintas de «cómo se llama este medio» sería
+ * pedir que se separen algún día.
+ *
+ * @returns {boolean} true si, quitado el titular, el resumen no dice nada.
+ */
+function noDiceNadaMasQueElTitular(texto, headline, outletName, outletDomain) {
+    if (!headline) return false;
+
+    /**
+     * Los metadatos del gestor: el correo del usuario que publicó, la fecha y
+     * la hora. No son texto del artículo, y son justo lo que RTVC deja en el
+     * campo. Se quitan ANTES de aplanar, porque una vez aplanado ya no se
+     * distingue una fecha de tres números sueltos.
+     *
+     * Se le pasan igual al titular y al resumen: si el titular llevara una
+     * fecha, tratarlos distinto haría que dejaran de coincidir.
+     */
+    const sinMetadatos = (s) =>
+        String(s ?? '')
+            .replace(/\b[\w.+-]+@[\w.-]+\b/g, ' ')              // wfvasquez@cont…
+            .replace(/\b\d{1,4}[/-]\d{1,2}[/-]\d{1,4}\b/g, ' ') // 01/09/2026
+            .replace(/\b\d{1,2}:\d{2}(?::\d{2})?\b/g, ' ');     // 00:00
+
+    /**
+     * Comparar sin tildes, sin puntuación y sin cajas. El medio no repite el
+     * titular carácter a carácter: Google News normaliza comillas y guiones, y
+     * un resumen que difiere en una comilla curva es el mismo texto repetido.
+     */
+    const aplanar = (s) =>
+        String(s ?? '')
+            .toLowerCase()
+            .normalize('NFD')
+            // Por nombre y no por rango, como en `slugDepartamento`: un
+            // `[̀-ͯ]` escrito con los caracteres literales es invisible en
+            // el editor y nadie puede revisarlo.
+            .replace(/\p{Diacritic}/gu, '')
+            .replace(/[^a-z0-9]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+    const titular = aplanar(sinMetadatos(headline));
+    let resto = aplanar(sinMetadatos(texto));
+    if (!titular || !resto.includes(titular)) return false;
+
+    resto = resto.replace(titular, ' ');
+
+    /**
+     * El día abreviado, que es lo que queda de «Mar, 01/09/2026» cuando la
+     * fecha ya se fue. Se aplica solo aquí, sobre lo que sobra una vez fuera el
+     * titular: «mar» es también una palabra, y en el resumen entero no se
+     * podría borrar sin riesgo.
+     */
+    resto = resto.replace(/\b(lun|mar|mie|jue|vie|sab|dom)\b/g, ' ');
+
+    /**
+     * Cómo se nombra el medio a sí mismo: su nombre y su dominio, igual que en
+     * `cleanHeadline`, más el dominio partido —cuando el nombre ya se llevó
+     * «NTN24» de «ntn24.com» queda un «com» suelto que tampoco dice nada—.
+     *
+     * Se construye a partir de los que EXISTEN. Interpolar un dominio ausente
+     * daría la cadena «www.null», que no es falsa y acabaría borrando «www» y
+     * «null» de cualquier resumen.
+     */
+    const comoSeLlama = new Set();
+    if (outletName) comoSeLlama.add(String(outletName));
+    if (outletDomain) {
+        const dominio = String(outletDomain);
+        comoSeLlama.add(dominio);
+        comoSeLlama.add(`www.${dominio}`);
+        comoSeLlama.add(dominio.replace(/\.[a-z.]+$/i, ''));  // bluradio
+        for (const terminacion of dominio.split('.').slice(1)) comoSeLlama.add(terminacion);
+    }
+
+    const marcas = [...comoSeLlama]
+        .map(aplanar)
+        .filter(Boolean)
+        // El más largo primero: si «ntn24» se aplica antes, deja un «com»
+        // suelto que ya no coincide con «ntn24 com».
+        .sort((a, b) => b.length - a.length);
+
+    for (const marca of marcas) {
+        while (resto.includes(marca)) resto = resto.replace(marca, ' ');
+    }
+
+    return resto.replace(/\s+/g, ' ').trim().length === 0;
+}
+
+/**
  * Extracto real del feed. Devuelve null si no hay contenido, en lugar de
  * inventar una frase de relleno.
+ *
+ * El titular y el medio son opcionales: sin ellos se hace todo menos la
+ * comprobación del punto 26, que necesita saber qué se estaría repitiendo.
  */
-function extractSnippet(item) {
+export function extractSnippet(item, headline = null, outletName = null, outletDomain = null) {
     const raw = item?.contentSnippet || item?.summary || item?.content || '';
     if (typeof raw !== 'string') return null;
 
-    const text = raw
+    let text = raw
         .replace(/<[^>]*>/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
 
+    for (const firma of FIRMAS_DEL_GESTOR) text = text.replace(firma, '');
+    text = text.trim();
+
     if (text.length < 30) return null;
+    if (noDiceNadaMasQueElTitular(text, headline, outletName, outletDomain)) return null;
+
     return text.length > 400 ? `${text.slice(0, 397)}…` : text;
 }
 
@@ -724,11 +945,35 @@ async function persistToDatabase(fresh) {
     // conserva más de lo que el motor agrupa. La memoria sigue en 72 h.
     const expired = await pruneExpiredArticles(RETENCION_BASE_MS);
     const saved = await persistArticles(fresh);
-    const stories = await persistStories(storiesFeed);
+    // La ventana de AGRUPAMIENTO, no la de la base: es la que decide si una
+    // historia dejó de producirse porque envejeció o porque se recompuso.
+    const stories = await persistStories(storiesFeed, RETENTION_MS);
     await refreshModeration();
 
     const parts = [`db: +${saved} art.`];
-    if (stories) parts.push(`${stories.stories} hist.`);
+    /*
+     * PRODUCIDAS Y ESCRITAS, las dos. Desde H4 el ciclo solo escribe las
+     * historias cuyos números cambiaron, y esa diferencia es lo único que
+     * demuestra que el ahorro existe: «1 512 hist. (43 escritas)» se lee de un
+     * vistazo y no hay que creerse ningún comentario.
+     */
+    if (stories) {
+        parts.push(
+            stories.escritas === stories.stories
+                ? `${stories.stories} hist.`
+                : `${stories.stories} hist. (${stories.escritas} escritas)`
+        );
+    }
+    /*
+     * Y LOS ENLACES, por lo mismo. Desde el 2026-09-09 los vínculos
+     * historia↔artículo también se escriben solo si cambiaron, y estas dos
+     * cifras son lo único que lo demuestra: antes se reescribían los 7 586 en
+     * cada ciclo. Si vuelven a salir números de ese orden, el diferencial dejó
+     * de filtrar.
+     */
+    if (stories?.links || stories?.enlacesBorrados) {
+        parts.push(`enlaces +${stories.links} −${stories.enlacesBorrados}`);
+    }
     if (stories?.removed) parts.push(`−${stories.removed} obsoletas`);
     // Lo archivado se informa aparte de lo borrado: son cosas distintas y la
     // diferencia es el producto entero. Ver el bloque del archivo en schema.sql.
@@ -849,7 +1094,7 @@ export async function runIngestionBatch() {
                 const imagenesRecuperadas = [];
 
                 for (const item of result.items.slice(0, techoDelFeed(feedConfig))) {
-                    const link = canonicalizeLink(item?.link);
+                    const link = canonicalizeLink(item?.link, feedConfig.domain);
                     if (!link) continue;
 
                     const headline = cleanHeadline(item?.title, feedConfig.name, feedConfig.domain);
@@ -896,7 +1141,18 @@ export async function runIngestionBatch() {
                         continue;
                     }
 
-                    const snippet = extractSnippet(item);
+                    /*
+                     * El titular y el medio van con el ítem porque el resumen
+                     * no se puede juzgar solo: el que sirve Google News es el
+                     * titular más el nombre de la fuente, y para verlo hay que
+                     * saber cuál era el titular y cómo se llama el medio.
+                     */
+                    const snippet = extractSnippet(
+                        item,
+                        headline,
+                        feedConfig.name,
+                        feedConfig.domain,
+                    );
 
                     /**
                      * El tema sale del CONTENIDO, no del feed.
@@ -915,13 +1171,21 @@ export async function runIngestionBatch() {
                      * fuente: lo son el titular y la entradilla, que existen
                      * siempre.
                      */
+                    /*
+                     * Las etiquetas que el MEDIO le puso al ítem, en un solo
+                     * sitio porque ahora las miran dos cosas: el clasificador de
+                     * temas, como refuerzo, y la detección de opinión, que sin
+                     * ellas es ciega para los 22 medios que publican en la raíz.
+                     */
+                    const etiquetasDelItem = (item?.categories ?? [])
+                        .map((c) => (typeof c === 'string' ? c : c?._ ?? ''))
+                        .filter(Boolean);
+
                     const clasificacion = classifyTopics({
                         headline,
                         snippet,
                         link,
-                        feedCategories: (item?.categories ?? []).map((c) =>
-                            typeof c === 'string' ? c : c?._ ?? ''
-                        ),
+                        feedCategories: etiquetasDelItem,
                         paisDelMedio: feedConfig.country,
                     });
 
@@ -953,7 +1217,18 @@ export async function runIngestionBatch() {
                          * hoy con la marca: no hay ningún agregado detrás. El
                          * detalle, en `shared/opinion.js`.
                          */
-                        opinion: detectarOpinion(link),
+                        opinion: detectarOpinionDelArticulo({
+                            url: link,
+                            categorias: etiquetasDelItem,
+                        }),
+                        /*
+                         * Y las etiquetas se GUARDAN, que es lo que permite que
+                         * la marca se siga derivando en cada rehidratación en
+                         * vez de quedarse congelada. El razonamiento entero está
+                         * en `articuloDesdeFila`: se guarda la entrada, nunca el
+                         * veredicto.
+                         */
+                        feedCategories: etiquetasDelItem,
                         outlet: {
                             // El id del registro es lo que enlaza el artículo
                             // con su medio en la base (articles.source_id).

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import AvisoDesfase from './components/AvisoDesfase';
 import ErrorBoundary from './components/ErrorBoundary';
 import Rutas from './Rutas';
+import { ProveedorDeHistorias } from './components/ProveedorDeHistorias';
 
 /**
  * El árbol de la aplicación por DENTRO del enrutador.
@@ -22,10 +23,18 @@ import Rutas from './Rutas';
  * pierde su beneficio, sin que nada falle de forma visible.
  *
  * Teniendo una sola definición, esa clase de error deja de ser posible.
+ *
+ * AQUÍ VIVE LA CONSULTA DE HISTORIAS (T2-2, 2026-09-09), envolviendo a la barra
+ * de navegación y a las rutas. Tiene que estar por encima de las dos: la barra
+ * dura toda la sesión y las páginas se montan y desmontan debajo, así que
+ * mientras cada una traía sus datos por su cuenta, el buscador de la barra
+ * seguía respondiendo con la fotografía del primer minuto mientras la página
+ * enseñaba otra. El porqué completo está en `historiasContext`.
  */
 export default function Shell() {
     return (
         <ErrorBoundary>
+          <ProveedorDeHistorias>
             <div className="App">
                 <a href="#main-content" className="skip-link">Ir al contenido principal</a>
                 <Navbar />
@@ -60,6 +69,7 @@ export default function Shell() {
                     </div>
                 </footer>
             </div>
+          </ProveedorDeHistorias>
         </ErrorBoundary>
     );
 }

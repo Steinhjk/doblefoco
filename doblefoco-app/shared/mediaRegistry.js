@@ -420,8 +420,41 @@ export const MEDIA_REGISTRY = [
          *
          * Importa que esté: es el único medio público del catálogo y uno de los
          * pocos de centro-izquierda (F1-06 pide 6 y hay 5).
+         *
+         * ─────────────────────────────────────────────────────────────────────
+         * 2026-09-09 · SALE DE GOOGLE NEWS: TENÍA FEED PROPIO Y NADIE LO HABÍA
+         * ENCONTRADO
+         * ─────────────────────────────────────────────────────────────────────
+         *
+         * `https://www.rtvcnoticias.com/noticias/rss.xml` — RSS 2.0, diez ítems,
+         * el más reciente de hace tres horas. **RTVC no estaba mudo: era nuestra
+         * ventana la que no lo veía.** Por Google News llevaba «sin publicar
+         * desde el 2026-09-01» y sus tres historias estaban archivadas.
+         *
+         * `/rss.xml` sigue siendo el abandonado de siempre —su ítem más nuevo es
+         * del 30 de mayo y de ahí salta a junio de 2024, con uno titulado «sitio
+         * en mantenimiento»—, así que la conclusión de julio era correcta sobre
+         * la ruta que se probó. La que faltaba estaba una carpeta más adentro, y
+         * `descubrirFeed` no la encontraba porque `/noticias/rss.xml` no estaba
+         * en su lista: es el caso de El Pilón otra vez, y ya está corregido ahí.
+         *
+         * LO QUE GANA, además de existir: sus URL LLEVAN SECCIÓN
+         * —`/justicia/`, `/actualidad/cultura/`, `/actualidad/educacion/`—,
+         * mientras que las de Google News son redirecciones sin ruta. Nueve de
+         * los diez ítems se clasifican con tema, contra el 39,6 % del corpus que
+         * se queda sin ninguno, y `detectarOpinion` puede volver a verlo.
+         *
+         * LO QUE NO TRAE: ninguna imagen —lleva marcador— y su `<description>`
+         * es el titular repetido más el usuario del gestor («…wfvasquez@cont…»).
+         * Eso último está anotado en la minuta como caso hermano de la plantilla
+         * de WordPress.
+         *
+         * Y OJO CON EL PROTOCOLO, que es lo único peligroso: el feed declara
+         * `xml:base` en `http`, y ese `http` redirige a **Coljuegos**. Lo
+         * arregla `canonicalizeLink`, que sube a `https` los enlaces del propio
+         * medio; el porqué está escrito ahí.
          */
-        feed: { url: gnews('rtvcnoticias.com'), via: 'gnews', category: 'Política' },
+        feed: { url: 'https://www.rtvcnoticias.com/noticias/rss.xml', via: 'direct', category: 'Política' },
     },
     {
         id: 'el-espectador', name: 'El Espectador', shortName: 'El Espectador',

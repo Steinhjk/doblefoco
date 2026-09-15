@@ -17,6 +17,60 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-08 · Las historias archivadas por recomposición se borran, y un «aceptado» caduca
+
+Dos decisiones de Jose, tomadas con lo medido delante y anotadas el mismo día.
+
+### 1 · Qué se hace con las 1 554 páginas huérfanas del archivo
+
+**Se borran, aplicando hacia atrás el mismo criterio de madurez que usa el
+motor desde hoy.** `npm run archivo:huerfanas`, en seco primero.
+
+**La evidencia:** de las 1 975 historias archivadas entre el 2 y el 8 de
+septiembre, 1 554 (79 %) se sellaron con su artículo más nuevo por debajo de las
+48 h. De esas, 864 comparten artículo con otra historia —recomposición
+demostrada, el mismo artículo colgando de dos páginas— y las otras 690 dejaron
+de producirse con sus piezas frescas, que tampoco es haber envejecido.
+
+**Lo que se descartó, y por qué:**
+
+- **Dejarlas.** El archivo arrancaría con cuatro de cada cinco páginas
+  duplicando una historia viva, cada una con su URL y anunciada en el sitemap.
+- **Desarchivarlas y que el ciclo las vuelva a juzgar.** Está medido que no
+  sirve: sus artículos acabarán madurando y entonces el ciclo las archivaría
+  igual, duplicando otra vez la historia que las absorbió.
+
+**El precio, dicho:** lo que Google haya indexado en estos seis días pasará a
+404. Se acepta: son páginas que no debían existir.
+
+### 2 · Un «aceptado» del libro de hallazgos calla a la vigilancia, pero caduca
+
+**La vigilancia respeta `aceptado`** —es lo que esa palabra significa desde que
+se escribió: «se marca en el libro con el motivo escrito y deja de avisar, sin
+desaparecer»— **y deja de respetarlo cuando pasa su fecha de revisión.**
+
+**Por qué hacía falta decidirlo:** Telecaribe lleva 26 días sin publicar y está
+aceptado desde el 2026-09-02, pero la vigilancia no leía el libro y lo acusaba
+cada seis horas. Dos vigilantes que se contradicen sobre el mismo medio no son
+el doble de vigilancia.
+
+**La caducidad es lo que impide que esto sea un botón de silencio.** El campo
+`revisarEl` en `hallazgos.json`; pasada esa fecha se vuelve a acusar diciendo
+que el plazo venció.
+
+**La fecha no se inventó:** Telecaribe ya la tenía escrita en su propia nota
+—«si el 13 de octubre de 2026 sigue sin publicar, deja de ser un silencio y pasa
+a ser una baja que hay que decidir»—, solo que en prosa. Vorágine, W Radio y El
+Manduco se quedan sin plazo porque su motivo es estructural, y la auditoría los
+lista aparte. **Queda una fecha por poner:** la nota de Vorágine dice «se revisa
+si la cadencia grabada muestra más de 30 días sin publicar», que es una regla y
+no una fecha, y hoy no la comprueba nadie.
+
+**Lo que se descartó:** seguir acusando pese al aceptado —dejaría la vigilancia
+en rojo permanente y enseña a ignorar el aspa, que es como muere un vigilante—.
+
+---
+
 ## 2026-09-02 · El aviso de dueño compartido sale de la página de la noticia
 
 **Decisión de Jose.** El bloque que avisaba de que dos medios de una historia

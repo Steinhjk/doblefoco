@@ -181,6 +181,9 @@ async function main() {
             (SELECT count(*) FROM sources)        AS sources,
             (SELECT count(*) FROM ingest_runs)    AS ingest_runs,
             (SELECT count(*) FROM articles)       AS articles,
+            -- ARCHIVO A PROPÓSITO: el informe de la migración cuenta filas de
+            -- la tabla, no historias en portada. Aquí «cuántas hay» es
+            -- literalmente cuántas filas hay.
             (SELECT count(*) FROM stories)        AS stories
     `);
 

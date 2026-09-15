@@ -77,10 +77,14 @@ if (!status.enabled) {
             doomed.map((d) => d.id),
         ]);
 
+        // Solo las vivas: una archivada sin artículos no la «retira el próximo
+        // ciclo», porque el ciclo ya no la mira. Contarlas aquí prometería una
+        // limpieza que no va a ocurrir.
         const { rows: huerfanas } = await query(`
             SELECT count(*)::int AS n
               FROM stories s
-             WHERE NOT EXISTS (SELECT 1 FROM story_articles sa WHERE sa.story_id = s.id)
+             WHERE s.archivada_el IS NULL
+               AND NOT EXISTS (SELECT 1 FROM story_articles sa WHERE sa.story_id = s.id)
         `);
 
         console.log(`  ${rowCount} artículos borrados.`);

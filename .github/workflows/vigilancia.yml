@@ -94,7 +94,12 @@ jobs:
       - name: Sitio, API y medios mudos
         id: comprobacion
         continue-on-error: true
-        run: node scripts/comprobarMedios.mjs 2>&1 | tee "$RUNNER_TEMP/vigilancia.txt"
+        run: |
+          # El `exit` de abajo NO es adorno: sin el, el codigo que llega es
+          # el de `tee` --siempre 0-- y el paso queda en verde aunque el
+          # programa falle. Ver la cabecera de este fichero.
+          node scripts/comprobarMedios.mjs 2>&1 | tee "$RUNNER_TEMP/vigilancia.txt"
+          exit "${PIPESTATUS[0]}"
         working-directory: doblefoco-app
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

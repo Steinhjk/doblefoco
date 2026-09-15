@@ -109,7 +109,7 @@ const ShareModal = ({ story, isOpen, onClose }) => {
                 </div>
 
                 <div className="share-preview-card">
-                    <span className="preview-tag">{seccionDe(story)}</span>
+                    {seccionDe(story) && <span className="preview-tag">{seccionDe(story)}</span>}
                     <h3 className="preview-title">{story.title}</h3>
                     <p className="preview-sources-summary">
                         {story.coverage?.total ?? story.sources?.length ?? 0} medios cubriendo el hecho

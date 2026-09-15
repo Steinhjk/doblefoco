@@ -1,7 +1,7 @@
 // @ts-check
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { globSync, readFileSync } from 'node:fs';
+import { dirname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /**
@@ -31,6 +31,25 @@ const CONTENT = readFileSync(resolve(AQUI, 'contentStore.js'), 'utf8');
 const SCHEMA = readFileSync(resolve(AQUI, 'schema.sql'), 'utf8');
 
 /**
+ * LA RED TENÍA AGUJEROS, Y SE VIERON EL 2026-09-08.
+ *
+ * Esta prueba nació mirando dos ficheros —`feedStore` y `contentStore`—, que
+ * eran los que sirven la portada. Seis días después del estreno del archivo,
+ * seis consultas de FUERA de esos dos seguían leyendo `stories` como si la
+ * tabla siguiera significando «lo que hay ahora»: el invariante de la unión,
+ * que acusaba, la recategorización, que REESCRIBÍA historias congeladas, y
+ * cuatro más. Ninguna falló ninguna prueba.
+ *
+ * Así que el barrido es ahora de todo el servidor y de todos los programas.
+ * Un fichero nuevo que consulte `stories` entra en la red sin que nadie se
+ * acuerde de añadirlo, que es la única forma de que una red aguante.
+ */
+const RAIZ = resolve(AQUI, '..', '..');
+const FUENTES = [...globSync('server/**/*.js', { cwd: RAIZ }), ...globSync('scripts/**/*.mjs', { cwd: RAIZ })]
+    .filter((f) => !/\.test\.[jm]s$/.test(f))
+    .map((f) => ({ fichero: f.split(sep).join('/'), texto: readFileSync(resolve(RAIZ, f), 'utf8') }));
+
+/**
  * Cada consulta del fuente que toca `stories`, con el texto que la rodea.
  *
  * VENTANA FIJA, y no los límites del literal: los comentarios de estas
@@ -44,7 +63,7 @@ function consultasSobreStories(fuente) {
     const re = /(FROM|JOIN|UPDATE)\s+stories\b/g;
     let m;
     while ((m = re.exec(fuente))) {
-        trozos.push(fuente.slice(Math.max(0, m.index - 200), m.index + 1000));
+        trozos.push(fuente.slice(Math.max(0, m.index - 800), m.index + 1000));
     }
     return trozos;
 }
@@ -72,6 +91,32 @@ describe('el archivo de historias', () => {
         expect(FEED).toMatch(/ARCHIVO A PROPÓSITO/);
     });
 
+    it('ninguna consulta del proyecto lee `stories` sin filtrar el archivo o declararlo', () => {
+        const culpables = [];
+        for (const { fichero, texto } of FUENTES) {
+            for (const q of consultasSobreStories(texto)) {
+                if (q.includes('archivada_el') || q.includes('ARCHIVO A PROPÓSITO')) continue;
+                culpables.push(`${fichero}: ${q.replace(/\s+/g, ' ').slice(0, 100)}`);
+            }
+        }
+
+        expect(
+            culpables,
+            'una consulta sobre `stories` sin filtro de archivo ni excepción declarada'
+        ).toEqual([]);
+    });
+
+    it('el barrido mira de verdad todo el proyecto, y no una lista corta', () => {
+        // Sin esto, un `globSync` que dejara de encontrar ficheros haría que la
+        // prueba de arriba pasara siempre: cero consultas, cero culpables.
+        const ficheros = FUENTES.map((f) => f.fichero);
+        expect(ficheros).toContain('server/db/feedStore.js');
+        expect(ficheros).toContain('scripts/invariantes.mjs');
+        expect(ficheros).toContain('scripts/recategorizar.mjs');
+        expect(FUENTES.filter((f) => /(FROM|JOIN|UPDATE)\s+stories\b/.test(f.texto)).length)
+            .toBeGreaterThanOrEqual(8);
+    });
+
     it('solo `readStory` pide ver lo archivado', () => {
         expect((FEED.match(/incluirArchivadas: true/g) ?? []).length).toBe(1);
         const antes = FEED.slice(0, FEED.indexOf('incluirArchivadas: true'));
@@ -83,6 +128,30 @@ describe('el archivo de historias', () => {
         expect(CONTENT).toMatch(/DELETE FROM stories[\s\S]*source_count <= 1/);
         // La salvaguarda de moderación sigue en el borrado.
         expect(CONTENT).toMatch(/DELETE FROM stories[\s\S]*NOT IN \(SELECT story_id FROM moderation\)/);
+    });
+
+    it('solo sella lo que envejeció: una historia con artículos frescos se borra, no se archiva', () => {
+        /*
+         * Es la corrección del 2026-09-02, y sin esta prueba se pierde: una
+         * historia deja de producirse porque su hecho envejeció (archivo) o
+         * porque el agrupamiento la recompuso con otro id (basura con URL).
+         * Medido en producción el 2026-09-08: de 1 975 archivadas, 1 554
+         * tenían artículos de menos de 48 h, o sea que eran huérfanas.
+         */
+        expect(CONTENT).toMatch(
+            /UPDATE stories s[\s\S]*SET archivada_el = now\(\)[\s\S]*NOT EXISTS[\s\S]*story_articles sa[\s\S]*COALESCE\(a\.published_at, a\.ingested_at\)[\s\S]*now\(\) - /
+        );
+        // La madurez es una FRACCIÓN de la ventana, no un número de horas: si
+        // la ventana cambia, el corte sigue significando lo mismo.
+        expect(CONTENT).toMatch(/export const MADUREZ_PARA_ARCHIVAR = 2 \/ 3;/);
+        expect(CONTENT).toMatch(/ventanaMs \* MADUREZ_PARA_ARCHIVAR/);
+    });
+
+    it('el ciclo le pasa la ventana de agrupamiento, no la de la base', () => {
+        // `RETENCION_BASE_MS` son 30 días: usarla aquí archivaría solo lo que
+        // ya no existe, y el archivo se quedaría vacío para siempre.
+        const DAEMON = readFileSync(resolve(AQUI, '../services/ingestDaemon.js'), 'utf8');
+        expect(DAEMON).toMatch(/persistStories\(storiesFeed, RETENTION_MS\)/);
     });
 
     it('la poda no se lleva por delante los artículos de una historia archivada', () => {

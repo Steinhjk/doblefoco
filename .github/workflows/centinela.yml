@@ -85,8 +85,9 @@ jobs:
       - run: npm ci
         working-directory: doblefoco-app
 
-      # `continue-on-error` porque `--strict` sale 1 cuando HAY novedades, que
-      # es el caso bueno. Lo que decide si algo se rompió es el resumen.
+      # EL CODIGO DE SALIDA NO IMPORTA AQUI: `--strict` sale 1 cuando HAY
+      # novedades, que es el caso bueno. Lo que decide si algo se rompió es el
+      # resumen, así que esta tubería no lleva `PIPESTATUS` a propósito.
       - name: Preguntar a los medios
         id: centinela
         continue-on-error: true

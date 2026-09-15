@@ -47,7 +47,11 @@ import {
 import { hit, sweep } from './db/rateLimitStore.js';
 import { recentRequests, requestCycle } from './db/requestStore.js';
 import { construirMetadatos, montarPagina } from './ssr/metadatos.js';
-import { RUTAS_RENDERIZADAS, metadatosDePagina } from './ssr/paginasEstaticas.js';
+import {
+    REDIRECCIONES_PERMANENTES,
+    RUTAS_RENDERIZADAS,
+    metadatosDePagina,
+} from './ssr/paginasEstaticas.js';
 import { esRutaCanonica, idDesdeRuta, rutaDeHistoria } from '../shared/storyPath.js';
 import { MEDIA_REGISTRY } from '../shared/mediaRegistry.js';
 import { hashDelRegistro } from '../shared/registroHash.js';
@@ -1050,6 +1054,17 @@ app.get('/noticia/:id', async (req, res) => {
  * `datos: null` porque no hay nada que precargar: el navegador hidrata con lo
  * mismo que el servidor ya usó, que viaja en el bundle.
  */
+/*
+ * LAS DIRECCIONES VIEJAS, ANTES QUE LAS RENDERIZADAS.
+ *
+ * Va delante a propósito: si `/sobre-nosotros` volviera algún día a la tabla de
+ * páginas, esto seguiría mandando y el buscador no vería el mismo texto en dos
+ * direcciones. La tabla y el motivo, en `paginasEstaticas.js`.
+ */
+for (const [vieja, nueva] of Object.entries(REDIRECCIONES_PERMANENTES)) {
+    app.get(vieja, (_req, res) => res.redirect(308, nueva));
+}
+
 app.get(RUTAS_RENDERIZADAS, async (req, res) => {
     // `req.path` y no `req.originalUrl`: la cadena de consulta no cambia lo que
     // se renderiza, y usarla en la canónica crearía una dirección distinta por

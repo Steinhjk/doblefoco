@@ -1,5 +1,333 @@
 # Por dónde seguir
 
+## 2026-09-09, cierre de la jornada · La lista de código queda vacía
+
+**Lo primero al volver: fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—, que ya lleva **siete** puntos dentro además de las siete PR originales.
+
+Hecho el **punto 15**, la otra mitad de H4. `story_articles` se borraba y se
+reinsertaba entera en cada ciclo: **7 586 enlaces × 51 ciclos = 386 886 filas al
+día**, sin contar la versión muerta que deja cada `DELETE`. Ahora una sola
+sentencia calcula lo deseado, borra lo que sobra e inserta lo que falta.
+
+> **El detalle que decide si esto ahorra de verdad:** `faltan` usa `NOT EXISTS` y
+> no solo `ON CONFLICT DO NOTHING`. Postgres resuelve el conflicto insertando una
+> fila especulativa y matándola después, así que «no hacer nada» al chocar sigue
+> costando escritura.
+
+Comprobado contra la base mirando el `xmin` de cada fila, que es lo que dice si
+Postgres la reescribió: **cuando nada cambia se escriben 0 filas de 6**; cuando
+entra un artículo y sale otro, exactamente esas dos y las cinco restantes
+intactas. La línea del ciclo añade `enlaces +N −M` para poder leerlo en
+producción.
+
+**Con esto la parte de código de la lista queda vacía.** Lo que sigue abierto es
+tuyo: fusionar, los puntos 2 y 3 —el issue #4 del centinela y sacar el
+repositorio de OneDrive—, las decisiones editoriales 4 a 9, lo que hay que
+ejecutar el día del despliegue (10 a 12), lo que tiene fecha (21 a 24) y los dos
+que abrió el trabajo de hoy: el **25** —volver a medir el aislamiento de los seis
+medios de izquierda de raíz plana cuando entren sus marcas— y el **26** —el
+resumen que es el titular repetido más el usuario del gestor—.
+
+## 2026-09-09, y ya el último · El artículo baja y vuelve por una sola lista
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—, que ya lleva seis puntos dentro.
+
+Hecho el **punto 14 (2.4)**. `persistArticles` escribía columnas a mano y
+`articuloDesdeFila` las leía a mano: dos serializadores para la misma costura, y
+de ahí salieron `topics` y `ambito` escritos y nunca leídos, la marca de opinión
+perdida al rehidratar, y **el `$14` que faltaba esta misma mañana**, con lint,
+`tsc` y 845 pruebas en verde.
+
+Ahora `server/db/contratoDeArticulo.js` **genera** el `INSERT`, sus parámetros,
+las columnas de la rehidratación y el objeto que vuelve. Un campo nuevo es una
+línea ahí y nada más.
+
+**Hay un comando nuevo y conviene conocerlo:**
+
+```
+npm run db:contrato
+```
+
+Hace la ida y vuelta **contra la base de verdad**, dentro de una transacción que
+termina en `ROLLBACK` —así que puede correrse contra producción sin pensárselo—.
+Es lo que las pruebas no pueden hacer: comprobar que el SQL es válido. Vale la
+pena correrlo el día del despliegue si el cambio toca columnas.
+
+De la lista queda el **15** —`story_articles`, la otra mitad de H4: hoy se borra
+y se reescribe entera, y comparar conjuntos de enlaces es otro diseño— más lo que
+es tuyo.
+
+## 2026-09-09, cierre · La portada pedía las mismas historias cinco veces
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—.
+
+Hecho el **punto 13 (T2-2)**, que era el gordo del plan de continuidad. Medido
+sobre el sitio publicado: la portada hacía **cinco peticiones a `/api/feed`**
+—60, 40, 60, 100 y 60—, una por componente. No es el número lo que importaba,
+son **cinco fotografías de cinco instantes**; y la barra de navegación, que dura
+toda la sesión, se quedaba con la del primer minuto mientras la página ya tenía
+otra.
+
+Ahora `ProveedorDeHistorias` envuelve el árbol de `Shell` y es el único sitio que
+llama a `useStories`. **Portada: 1 petición. Filtrada por ámbito: 2**, porque el
+filtro del feed es una pregunta del lector y no debe arrastrar al destacado ni a
+las laterales.
+
+> **Lo que costó:** «cada componente es autosuficiente». Ya no se puede montar
+> uno suelto. Los hooks fallan ruidosamente fuera del proveedor a propósito.
+
+**Y la trampa de la sesión, que merece recordarse:** el interruptor nuevo se
+llamó `activo`, igual que la bandera de cancelación que ya vivía dentro del
+efecto. La página entera se caía —«Cannot access 'activo' before
+initialization»— y **lint, `tsc` y las 851 pruebas pasaron con el fallo dentro**.
+Lo cazó abrir el navegador a contar peticiones. Hay prueba para que no se repita.
+
+Verificado: **854/854**, lint, `tsc`, `check:comentarios`, build y
+`npm run mirar --movil` con **20/20 rutas** en verde.
+
+**De la lista quedan 14 y 15** —el serializador de rehidratación y la otra mitad
+de H4— más lo que es tuyo.
+
+## 2026-09-09, último · RTVC tenía feed propio, y su `http` llevaba a Coljuegos
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—.
+
+Hecho el **punto 20**. `https://www.rtvcnoticias.com/noticias/rss.xml` está vivo:
+diez ítems, el más reciente de hace tres horas. **El canal público no estaba
+mudo; era nuestra ventana la que no lo veía.** `descubrirFeed` no lo encontraba
+porque `/noticias/rss.xml` no estaba en su lista —el caso de El Pilón otra vez—,
+y ya está añadida.
+
+Con su feed propio sus URL llevan sección, así que nueve de los diez ítems se
+clasifican con tema y `detectarOpinion` vuelve a verlo. Pasadas por las reglas de
+ingesta, entran las diez.
+
+> **El hallazgo feo:** el feed declara `xml:base` en `http`, y ese `http`
+> responde 302 hacia **coljuegos.gov.co**. Sin verlo, cada noticia de RTVC habría
+> mandado al lector al regulador del juego. `canonicalizeLink` sube ahora a
+> `https` los enlaces del propio medio, con la misma regla de «es del medio» que
+> ya usaban las imágenes.
+
+**Y algo que es tuyo, no de código:** el medio se llama a sí mismo **«Inravisión,
+Sistema de Medios Públicos»** y tiene sección `/actualidad/inravision/`; en el
+catálogo sigue como «RTVC Noticias». Tres de sus diez piezas son sobre sus
+propios conflictos institucionales. Eso es conducta observable del presente, que
+es lo que su ficha decía no tener.
+
+Quedan anotados dos puntos nuevos: el **26** (su resumen es el titular repetido
+más el usuario del gestor, hermano del punto 16) y el **25** de la tanda
+anterior.
+
+Verificado: **851/851**, lint, `tsc`, `check:registry` —tras regenerar
+`catalogo_medios.txt`—, `check:comentarios` y build en verde.
+
+## 2026-09-09, cierre de la noche · El filtro de opinión ya ve a los 22 de raíz plana
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—.
+
+Hecho el **punto 18**, con la salida que eligió Jose: **la opinión se marca
+también por la etiqueta `<category>` que el propio medio le pone al ítem**. Los
+22 medios de raíz plana son los 22 WordPress y el 100 % de sus ítems la trae.
+Sobre lo que publicaban ese día marcaría 38 de 150 ítems de Las2Orillas, 6 de 40
+de Volcánicas y 3 de 10 de Razón Pública —la caricatura incluida—; hoy los tres
+marcan cero.
+
+Coincidencia **exacta**, nunca subcadena, que es lo que impide sacar del
+agrupamiento una noticia real. `Nota Ciudadana` y `Análisis` se dejaron fuera a
+propósito y la minuta dice por qué.
+
+> **Lo importante de arquitectura:** la marca de opinión se sigue **derivando**,
+> no guardando. Lo que se guarda es la ENTRADA que faltaba, en la columna nueva
+> `articles.feed_categories`. Así cambiar la lista de etiquetas vuelve a marcar
+> el corpus entero en el siguiente arranque, sin escribir una sola fila.
+
+**La migración ya está aplicada en producción**, y eso hay que tenerlo claro
+antes de fusionar: los dos despliegues salen solos con el push a `main`, así que
+si el motor nuevo hubiera arrancado antes que la columna, `persistArticles`
+habría fallado en cada ciclo y en silencio.
+
+**La marca no llega de golpe:** las etiquetas se rellenan conforme cada feed
+reexpone sus piezas. El punto 25 de la minuta anota lo que queda: volver a medir
+el aislamiento de los seis medios de izquierda de raíz plana cuando sus marcas
+hayan entrado, porque hasta entonces su nivel 2 sigue sin valer.
+
+Verificado: **845/845**, lint, `tsc`, `check:comentarios` y build en verde, y el
+SQL nuevo probado contra la base de verdad dentro de una transacción con
+`ROLLBACK`.
+
+## 2026-09-09, noche · La etiqueta de la mitad de la portada era nuestra
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32—. Todo lo de abajo sigue vigente.
+
+Hechos los **puntos 16 y 17** de la minuta, y los dos cambiaron de tamaño al
+medirlos:
+
+- **17 (el gordo).** `nombreDeSeccion` trataba `topics: []` igual que
+  `topics: null`, así que una historia clasificada y sin tema acababa enseñando
+  la categoría del feed. **Eran 2 364 de las 6 313 historias vivas, el 37,4 %**,
+  no las cinco piezas de Vorágine que decía la nota. Ahora el orden es tema →
+  ámbito → (solo si la API no manda `topics`) el feed → nada: 1 358 conservan
+  «Internacional» porque lo son, 1 006 se quedan sin etiqueta y 80 dejan de
+  contradecir al clasificador. De paso, «Más en X» ya no agrupa por el feed.
+- **16.** La firma de WordPress la llevan **452 piezas de cuatro medios**, no 8
+  de dos. Pero se midió y **no cambia ni un tema**: la premisa del punto era
+  falsa. Se limpia igual, por el texto que se guarda y que el punto 8 querría
+  enseñar.
+
+Verificado: **836/836**, lint, `tsc`, `check:comentarios`, build y `mirar` en
+verde, y mirada una historia de las que se quedan sin etiqueta.
+
+**Lo que sigue abierto de esta familia** es el punto 18, el filtro de opinión
+ciego para 22 medios de ruta plana, que es decisión de Jose y tiene tres salidas
+escritas.
+
+## 2026-09-09, tarde · El que mira ya sabe cuándo no hay nada que mirar
+
+**Lo primero al volver sigue siendo fusionar** —`integracion/tanda-del-8-de-septiembre`,
+PR #32, una fusión cierra las siete—. Nada de eso ha cambiado; lo de abajo sigue
+vigente.
+
+Lo hecho después: **el punto 19 de la minuta**, que era el defecto que destapó la
+propia sesión anterior. `npm run mirar` daba «Nada que reprochar a lo que se ve»
+sobre una portada con cero historias, porque sus tres comprobaciones miran la
+forma y **una página en blanco las pasa todas**. Ahora hay una cuarta: no quedan
+esqueletos de carga, hay un suelo de texto, y **las cuatro páginas que sirve el
+motor tienen que traer dentro lo que prometen**.
+
+Comprobado en los dos sentidos: 20/20 rutas en verde (escritorio y móvil) contra
+el motor de producción, y ✗ con el motor muerto. Lint y `check:comentarios`
+limpios. El commit va **sobre la rama de integración**, así que no añade una
+fusión más.
+
+**El resto del punto 19 ya no aplica:** el prefijo `VITE_API_URL=same-origin` no
+hacía falta, y la razón está en la minuta.
+
+## 2026-09-09, cierre · Las siete están integradas y verificadas juntas; falta fusionar
+
+**Lo primero al volver: `integracion/tanda-del-8-de-septiembre` es la rama que
+hay que fusionar**, y una sola fusión cierra las siete PR (#24 a #30). No la
+pude fusionar yo: el clasificador bloquea `gh pr merge`.
+
+Se armó desde `main` con el orden del traspaso anterior —#24 → #28 → #29
+encadenadas; #25, #26, #27 y #30 sueltas— y se verificó el resultado **junto**,
+que es lo que exige el precedente del 2026-08-21 y lo que esta vez se pagó solo:
+
+> **Una prueba falla solo cuando las ramas se juntan.** `archivo.test.js` (#24)
+> caza a `expedienteDeMedio.mjs` (#30). Por separado las dos están en verde.
+> **El arreglo está en la rama de la #30 (`a99e283`)**, no solo en la de
+> integración, para que fusionar una detrás de otra tampoco deje `main` en rojo.
+
+Verificado sobre el resultado fusionado: lint limpio, `tsc` sin errores,
+**828/828 pruebas**, build correcto, `check:comentarios` y `check:registry` en
+verde, y **7/7 invariantes** contra producción.
+
+**Y se ha mirado:** `npm run mirar` sobre las diez páginas con la rama montada.
+`/transparencia/sobre-nosotros` responde —el 404 que arregla la #26— y la portada
+sale entera. Lo que sigue sin verificarse es el motor: la rama no está desplegada
+en Fly.
+
+> **Ojo con `mirar`, porque la primera pasada mintió.** Dijo «Nada que reprochar
+> a lo que se ve» sobre una portada con cero historias. **Arreglado el
+> 2026-09-09**, entrada en `MINUTA.md`: ahora hay una cuarta comprobación y esa
+> misma portada sale ✗.
+>
+> Y el prefijo `VITE_API_URL=same-origin` **no hace falta**: `arrancarVite()` ya
+> se lo mete a Vite, y la variable inline gana a la del `.env.local`. `npm run
+> mirar` a secas trae la portada llena.
+
+### La lista completa de lo pendiente está en `MINUTA.md`
+
+Entrada del 2026-09-09, «Lo que queda pendiente, en una sola lista»: 23 puntos
+ordenados por de quién son —gestos de Jose, decisiones editoriales medidas, lo
+que hay que ejecutar el día del despliegue, código, y lo que tiene fecha—. Aquí
+solo lo que no puede esperar:
+
+1. **Fusionar la rama de integración.**
+2. **En cuanto Fly sirva la #24**, y no antes:
+   ```
+   npm run archivo:huerfanas                 (en seco, la lista a la vista)
+   npm run archivo:huerfanas -- --apply      (borra las 1 554)
+   ```
+3. **Mirar una línea del ciclo tras la #29** — «1 512 hist. (43 escritas)». Si
+   las dos cifras siguen iguales, el `WHERE` de H4 no filtra nada.
+
+### La banda de izquierda quedó cubierta, y ninguna ficha está firmada
+
+Las nueve fichas que faltaban se escribieron en tres tandas. La banda pasa de
+3 de 14 a **12 de 13** —el único sin ficha es The New York Times, internacional—
+y el catálogo entero a 59 de 78. **Solo dos llevan propuesta de firma**:
+Semanario VOZ (−0,80) y Colombia Informa (−0,65). Las tres decisiones que
+esperan están en la lista de la minuta, puntos 4 a 6.
+
+---
+
+## 2026-09-08, cierre · Seis PRs en verde, y un orden de fusión que importa
+
+**Ninguna la pude fusionar yo** (el clasificador bloquea `gh pr merge`). El
+orden no es cosmético: tres de ellas tocan `persistStories` o el contrato de la
+historia, así que se fusionan encadenadas.
+
+| Orden | PR | Qué es | Base |
+|---|---|---|---|
+| 1 | **#24** | El archivo solo guarda lo que envejeció + la red del archivo | `main` |
+| 2 | **#28** | El contrato motor↔interfaz y su prueba de ida y vuelta | #24 |
+| 3 | **#29** | H4: escribir solo lo que cambió | #28 |
+| — | **#25** | El timbre de los vigilantes + `aceptado` con caducidad | `main` |
+| — | **#26** | `/sobre-nosotros` la contestan los dos | `main` |
+| — | **#27** | La cadencia por mediana de huecos | `main` |
+
+Las tres de abajo son independientes entre sí y de las de arriba.
+
+**Y en cuanto Fly sirva la #24:**
+
+```
+npm run archivo:huerfanas                 (en seco, la lista a la vista)
+npm run archivo:huerfanas -- --apply      (borra las 1 554)
+```
+
+Antes no: el ciclo volvería a llenar el archivo con el criterio viejo.
+
+### Lo que hay que mirar el día del despliegue, y es una sola línea
+
+El ciclo informa ahora de dos cifras — **«1 512 hist. (43 escritas)»**. Si las
+dos siguen siendo iguales después de la #29, el `WHERE` no está filtrando nada y
+hay que averiguar por qué. Es la prueba de que H4 funcionó, y se lee sola.
+
+### Lo que queda abierto y es decisión de Jose
+
+- **El buscador promete un resumen que el motor no manda** (entrada de hoy en
+  `MINUTA.md`). O el motor manda el `snippet` del artículo que pone el titular
+  —con su medio al lado, como la imagen— o la interfaz deja de prometerlo.
+- Las fichas de los 11 medios de izquierda (3.5), el issue #4 del centinela y
+  sacar el repositorio de OneDrive.
+
+### Lo siguiente de código, por si se retoma mañana
+
+- **2.3**, la consulta compartida de portada, que es lo único gordo que queda
+  del plan de continuidad.
+- **`story_articles`**: la otra mitad de H4. Hoy se borra y se reescribe entera
+  para las historias producidas; comparar conjuntos de enlaces es otro diseño.
+- **RTVC Noticias** pasa a `roto` con la #27 y lleva 185 h sin publicar. Es uno
+  de los 14 medios de izquierda, así que su silencio se paga dos veces.
+
+### Dos trampas de esta sesión, para quien edite con scripts
+
+1. **Un heredoc de Bash hacia Python se come niveles de barra invertida.** Un
+   `\b` de una expresión regular llegó al fichero como el carácter 0x08 y la
+   prueba dejó de encontrar nada sin fallar. Si el parche lleva barras
+   invertidas, va en un `.py` aparte.
+2. **Una comilla invertida dentro de una plantilla SQL la parte por la mitad.**
+   Pasó dos veces hoy, y el error que da (`Unexpected token`) señala a una línea
+   que no tiene nada que ver.
+
+---
+
 ## 2026-09-02, fin de la sesión · Dónde quedamos exactamente
 
 **Lo primero al volver: la PR #16 está abierta y sin fusionar.** Es la primera

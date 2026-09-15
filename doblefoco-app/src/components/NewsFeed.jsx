@@ -3,7 +3,7 @@ import { lazy, Suspense, useId, useMemo, useState } from 'react';
 import { SlidersHorizontal, EyeOff, Globe, Flag, ChevronDown, Info, Map as MapaIcono } from 'lucide-react';
 import NewsCard from './NewsCard';
 import AnimateIn from './AnimateIn';
-import { useStories } from '../hooks/useStories';
+import { useFeedDeHistorias } from '../hooks/historiasContext';
 import { useFiltrosDeFeed, TAMANO_PAGINA } from '../hooks/useFiltrosDeFeed';
 import { resumenDelFeed } from '../lib/resumenDelFeed.js';
 import { repartoGeografico } from '../lib/geografiaDelFeed.js';
@@ -74,7 +74,7 @@ const NewsFeed = () => {
         cargarMas,
         hayMas,
         cargandoMas,
-    } = useStories({ limit: 100, ambito: scopeFilter });
+    } = useFeedDeHistorias();
 
     /**
      * LAS CIFRAS DE LAS PESTAÑAS SON DEL CATÁLOGO, y ahora pueden serlo.

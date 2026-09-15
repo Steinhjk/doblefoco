@@ -1,7 +1,7 @@
 // @ts-check
 import { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import EmptyState from '../components/EmptyState';
 import NewsCard from '../components/NewsCard';
 import './SearchResults.css';
@@ -25,7 +25,7 @@ const SearchResults = () => {
     const query = (searchParams.get('q') ?? '').trim();
     const normalizedQuery = query.toLowerCase();
 
-    const { stories, status, reason } = useStories();
+    const { stories, status, reason } = useHistorias();
 
     const results = useMemo(() => {
         if (normalizedQuery.length < 2) return [];

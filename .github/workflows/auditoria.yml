@@ -90,8 +90,9 @@ jobs:
       - run: npm ci
         working-directory: doblefoco-app
 
-      # `continue-on-error` porque lo que decide si esto funcionó es el resumen,
-      # no el código de salida. Ver la decisión 2 de la cabecera.
+      # EL CODIGO DE SALIDA NO IMPORTA AQUI: `continue-on-error` porque lo que
+      # decide si esto funcionó es el resumen, no el código de salida. Ver la
+      # decisión 2 de la cabecera. Por eso esta tubería no lleva `PIPESTATUS`.
       - name: Correr la auditoría
         id: auditoria
         continue-on-error: true

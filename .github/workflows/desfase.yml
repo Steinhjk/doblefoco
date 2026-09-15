@@ -49,7 +49,12 @@ jobs:
       - name: Comparar lo desplegado con main
         id: comprobacion
         continue-on-error: true
-        run: node .github/scripts/comprobarDesfase.mjs 2>&1 | tee "$RUNNER_TEMP/desfase.txt"
+        run: |
+          # El `exit` de abajo NO es adorno: sin el, el codigo que llega es
+          # el de `tee` --siempre 0-- y el paso queda en verde aunque el
+          # programa falle. Ver la cabecera de este fichero.
+          node .github/scripts/comprobarDesfase.mjs 2>&1 | tee "$RUNNER_TEMP/desfase.txt"
+          exit "${PIPESTATUS[0]}"
         env:
           SALUD_URL: https://doblefoco.fly.dev/api/health
 

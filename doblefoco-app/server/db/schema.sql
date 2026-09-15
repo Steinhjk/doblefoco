@@ -198,6 +198,23 @@ ALTER TABLE articles ADD COLUMN IF NOT EXISTS topics TEXT[];
 ALTER TABLE articles ADD COLUMN IF NOT EXISTS ambito TEXT
     CHECK (ambito IS NULL OR ambito IN ('nacional', 'internacional'));
 
+-- LAS ETIQUETAS QUE EL MEDIO LE PUSO AL ÍTEM EN SU RSS. NULL = nunca se
+-- guardaron; `{}` = el ítem no traía ninguna.
+--
+-- SE GUARDA LA ENTRADA, NO EL VEREDICTO, y ese es todo el diseño. La marca de
+-- opinión NO se guarda: `articuloDesdeFila` la deriva de `canonical_url` en cada
+-- rehidratación, y el comentario de contentStore explica por qué —la URL
+-- ya está guardada, así que guardar el veredicto sería duplicar un dato, y el
+-- día que se afine la detección los valores viejos seguirían mintiendo—.
+--
+-- Desde el 2026-09-09 la detección tiene una segunda entrada: la etiqueta que el
+-- propio medio declara, que es lo único que ve a los 22 medios que publican en
+-- la raíz. Esa entrada NO estaba guardada en ninguna parte, así que se guarda
+-- ella —no su conclusión— y la propiedad se conserva entera: cambiar la lista de
+-- etiquetas vuelve a marcar bien todo el corpus en el siguiente arranque, sin
+-- una sola escritura.
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS feed_categories TEXT[];
+
 CREATE INDEX IF NOT EXISTS articles_published_idx ON articles (published_at DESC NULLS LAST);
 CREATE INDEX IF NOT EXISTS articles_source_idx    ON articles (source_id);
 

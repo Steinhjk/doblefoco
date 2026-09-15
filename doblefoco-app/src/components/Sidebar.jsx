@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PieChart, EyeOff, RotateCcw, Award, Layers, Mail, Info } from 'lucide-react';
 import { topCoveredStories } from '../lib/story';
-import { useStories } from '../hooks/useStories';
+import { useHistorias } from '../hooks/historiasContext';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsletterWidget from './NewsletterWidget';
@@ -16,7 +16,7 @@ const Sidebar = () => {
 
     // Ya no se mezclan las historias "aprobadas" del localStorage (F2-02):
     // solo existían en el navegador de quien las aprobó.
-    const { stories } = useStories({ limit: 60 });
+    const { stories } = useHistorias({ limit: 60 });
     const trending = useMemo(() => topCoveredStories(stories, 8), [stories]);
 
     const blindspots = useMemo(

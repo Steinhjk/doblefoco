@@ -137,6 +137,31 @@ export const PAGINAS_ESTATICAS = {
 export const RUTAS_RENDERIZADAS = Object.keys(PAGINAS_ESTATICAS);
 
 /**
+ * LAS DIRECCIONES VIEJAS, Y QUIEN TIENE QUE CONTESTARLES.
+ *
+ * Una dirección que se publicó una vez no deja de existir porque nosotros la
+ * movamos: sigue en los enlaces de quien nos citó y en el índice del buscador.
+ * `/sobre-nosotros` se partió el 2026-08-09 y su destino de hoy es
+ * `/transparencia/sobre-nosotros`.
+ *
+ * ESTO SE ESCRIBE UNA VEZ Y LO REPITEN DOS, que es lo que obligaba a mantener
+ * dos verdades. La redirección la hace quien atienda la petición, y hoy hay dos
+ * que pueden atenderla:
+ *
+ *   · Vercel, para el lector — `doblefoco.co/sobre-nosotros`. Medido el
+ *     2026-09-08: 308 y luego 200. Esa ruta nunca estuvo rota.
+ *   · el motor, para su propio hostname — `api.doblefoco.co/sobre-nosotros`,
+ *     que respondía 404. Nadie enlaza ahí a propósito, pero es una dirección
+ *     pública desde que el hostname existe, y dos artefactos nuestros no pueden
+ *     contestar cosas distintas a la misma pregunta.
+ *
+ * `paginasEstaticas.test.js` obliga a que `vercel.json` diga exactamente esto.
+ */
+export const REDIRECCIONES_PERMANENTES = /** @type {const} */ ({
+    '/sobre-nosotros': '/transparencia/sobre-nosotros',
+});
+
+/**
  * Construye el bloque de metadatos que se inyecta en el `<head>`.
  *
  * Mismo contrato que `construirMetadatos` para las noticias: devuelve una

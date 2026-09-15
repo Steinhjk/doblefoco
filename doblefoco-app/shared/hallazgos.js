@@ -249,6 +249,44 @@ export function resumirHallazgos(libro, ahora = Date.now()) {
  * siga significando algo. En cuanto se pueda silenciar un hallazgo sin escribir
  * por qué, «aceptado» pasa a querer decir «me molestaba».
  */
+/**
+ * LA CADUCIDAD DE UN «ACEPTADO» (decisión de Jose, 2026-09-08).
+ *
+ * Aceptar un hallazgo lo calla, y callarlo para siempre es como se pierde un
+ * medio. Los dos aceptados del 2026-09-02 ya venían con su plazo escrito en la
+ * nota —Telecaribe: «si el 13 de octubre de 2026 sigue sin publicar, deja de
+ * ser un silencio y pasa a ser una baja que hay que decidir»—, pero en prosa,
+ * donde ninguna máquina lo lee. `revisarEl` es esa misma frase en una fecha.
+ *
+ * SIN FECHA SIGUE VALIENDO, y es deliberado: hay aceptados que no caducan
+ * porque su motivo es estructural —el feed de W Radio expone dos ítems y eso no
+ * cambia con el calendario—. Lo que no puede pasar es que nadie sepa cuáles
+ * son, así que el informe los lista aparte.
+ *
+ * @param {{estado?: string, revisarEl?: string|null}} hallazgo
+ * @param {Date} [hoy]
+ */
+export function aceptadoVigente(hallazgo, hoy = new Date()) {
+    if (hallazgo?.estado !== 'aceptado') return false;
+    const fecha = String(hallazgo.revisarEl ?? '').trim();
+    if (!fecha) return true;
+    return hoy.toISOString().slice(0, 10) <= fecha;
+}
+
+/** Los aceptados cuyo plazo ya pasó: vuelven a pedir decisión. */
+export function aceptadosCaducados(libro, hoy = new Date()) {
+    return Object.values(libro?.hallazgos ?? {}).filter(
+        (h) => h.estado === 'aceptado' && !aceptadoVigente(h, hoy),
+    );
+}
+
+/** Los aceptados que no caducan nunca, para que la lista exista y se mire. */
+export function aceptadosSinPlazo(libro) {
+    return Object.values(libro?.hallazgos ?? {}).filter(
+        (h) => h.estado === 'aceptado' && !String(h.revisarEl ?? '').trim(),
+    );
+}
+
 export function aceptadosSinNota(libro) {
     return Object.values(libro?.hallazgos ?? {}).filter(
         (h) => h.estado === 'aceptado' && !String(h.nota ?? '').trim(),

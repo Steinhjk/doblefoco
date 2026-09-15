@@ -183,6 +183,7 @@ queda abierto de código es lo que abrió ese mismo trabajo:
 | | Qué |
 |---|---|
 | 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer. **Desde el 2026-09-15 ya no espera a la fusión: el motor que pone las marcas está sirviendo, así que lo único que falta es ciclo** |
+| 27 | **El aviso `⚠ RECORTADA POR EL TECHO` parpadea.** Salta cuando la ventana efectiva baja de 71 h, y el 2026-09-15 los ciclos iban entre **70,4 y 71,9 h**: se enciende y se apaga solo. No es el estrechamiento a ~62 h para el que se escribió —ese sí importaba—, es el margen de una hora quedándose corto. **Un vigilante que parpadea se ignora, y entonces sobra**, que es la regla que este proyecto ya se aplicó a `mirar` en el CI. O el umbral se mueve donde signifique algo, o el aviso pasa a la serie y deja de gritar en cada ciclo |
 | 26 | ~~**El resumen que es el titular repetido más el usuario del gestor**~~ · **HECHO el 2026-09-10**: eran 1 018, la causa principal era Google News y no el gestor, y de paso apareció la firma de WordPress en español, que nadie quitaba. Entrada en CERRADO |
 
 ### Con fecha, y no dependen de nadie
@@ -984,6 +985,51 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-15 · Podar ramas destapó un comentario que llevaba quince días mintiendo
+
+La poda era cosmética: veintisiete ramas locales de PR ya fusionadas. Veinticinco
+se borraron con `-d` sin discusión —`git` mismo certifica que su contenido está en
+`main`—. **Las otras dos pedían `-D`, o sea forzar, y ahí es donde había que
+mirar en vez de teclear.**
+
+| Rama | Qué llevaba | Veredicto |
+|---|---|---|
+| `arreglo/categorias-no-llevan-a-ningun-lado` (`78c8628`) | El arreglo de Categorías **y** la corrección del comentario del proxy | El arreglo entró por la #21; **la corrección no entró nunca** |
+| `copia/avisar-de-la-ausencia` (`8b0dc1c`) | Vigilar que `backup.yml` se ejecute | Entró **mejorado**: `main` vigila la copia *y* el archivo |
+
+### Lo que se había quedado fuera
+
+`vite.config.js` decía, sobre el proxy de desarrollo, que **`VITE_API_URL` debe
+quedar VACÍA**. Y `src/services/apiBase.js`, tres ficheros más allá, declara lo
+contrario en su propia cabecera: el vacío está **reservado para el MODO
+DEMOSTRACIÓN**, en el que no se intenta ninguna petición; lo que produce rutas
+relativas es `same-origin`.
+
+> **El comentario se corrigió el 2026-08-31 y la corrección se quedó en la rama.**
+> Así que siguió mintiendo en `main` nueve días más, y el **2026-09-09 mordió**:
+> `npm run mirar` dio el visto bueno a una portada completamente vacía, y hubo
+> que averiguar por qué desde cero. La causa se anotó aquel día como «local y no
+> del repositorio». **Era del repositorio**: el comentario que mandaba hacerlo
+> mal estaba en `main`, y su arreglo estaba escrito desde hacía nueve días en
+> una rama que nadie fusionó.
+
+Corregido ahora en `main`, y el comentario nuevo dice además que estuvo mal, que
+es lo único que impide que alguien lo «arregle» de vuelta.
+
+### La lección, que es de procedimiento
+
+**Una rama sin fusionar no es basura por defecto, y el estado de la PR no lo
+dice.** Las dos de hoy estaban igual de abandonadas y una llevaba dentro un
+arreglo vivo. Antes de `git branch -D`, `git diff main...<rama>` fichero a
+fichero — no basta con comprobar que *algún* fichero suyo ya está en `main`, que
+es lo que estuvo a punto de bastar aquí.
+
+**Y las dos ramas se borraron con su SHA escrito arriba**, que es lo que las hace
+recuperables: `git checkout 78c8628` las trae de vuelta mientras el recolector de
+basura no pase.
+
+---
 
 ## 2026-09-15 · La tanda del 8 de septiembre entra a `main`, y el día del despliegue se ejecuta el mismo día (punto 1 y puntos 10 a 12b)
 

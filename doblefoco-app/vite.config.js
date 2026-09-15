@@ -46,9 +46,27 @@ export default defineConfig({
      *
      * Con este proxy el cliente pide a `/api/...` —su propio origen— y Vite
      * reenvía. No hay cross-origin, así que no hay nada que permitir. Para que
-     * funcione, `VITE_API_URL` debe quedar VACÍA en desarrollo: así
+     * funcione, **`VITE_API_URL` tiene que valer `same-origin`**: así
      * `apiClient` construye rutas relativas. En Vercel sigue viniendo de
      * `vercel.json`, que no pasa por aquí.
+     *
+     * ESTE COMENTARIO DECÍA «VACÍA», Y VACÍA ES OTRA COSA. `apiBase.js`
+     * declara tres estados y reserva el vacío para el MODO DEMOSTRACIÓN, en el
+     * que no se intenta ninguna petición. Seguir la instrucción producía
+     * exactamente la pantalla que este proxy existe para evitar —la página con
+     * los contadores en cero— y sin una sola petición fallida en la consola
+     * que delatara por qué.
+     *
+     * Se corrigió el 2026-08-31 en una rama que nunca se fusionó, así que el
+     * comentario siguió mintiendo aquí, y volvió a morder el 2026-09-09:
+     * `npm run mirar` dio el visto bueno a una portada completamente vacía. Un
+     * comentario equivocado no es una molestia de estilo — es una trampa que
+     * espera, y esta esperó nueve días y pilló a quien la había arreglado.
+     *
+     * Y no es que el valor de `.env.local` esté mal. `http://localhost:5000`
+     * es lo correcto cuando se levanta también `npm run dev:server`, que es
+     * full-stack de verdad. Este proxy es la OTRA forma: mirar el cliente
+     * contra los datos de producción sin levantar nada más.
      *
      * `changeOrigin` es obligatorio: sin él viaja `Host: localhost:5173` y Fly
      * no sabe a qué aplicación enrutar.

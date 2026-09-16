@@ -279,7 +279,21 @@ for (const vista of vistas) {
 
     for (const ruta of aRevisar) {
         const consola = [];
-        const onMsg = (m) => { if (m.type() === 'error') consola.push(m.text().slice(0, 120)); };
+        const onMsg = (m) => {
+            if (m.type() !== 'error') return;
+            /*
+             * LA IMAGEN ROTA DE UN TERCERO NO ES REPROCHE (2026-09-16). Los
+             * medios sirven sus fotos desde sus propios CDN y a veces una
+             * viene rota — ese día, una de Quindío Noticias que i0.wp.com
+             * respondía con 400, también en producción—. No es defecto
+             * nuestro ni tenemos arreglo, y como la portada rota cada hora,
+             * contarlo hace parpadear a este vigilante. Lo que falle en
+             * NUESTRO origen sigue contando entero.
+             */
+            const recurso = m.location()?.url ?? '';
+            if (m.text().startsWith('Failed to load resource') && recurso && !recurso.startsWith(url)) return;
+            consola.push(m.text().slice(0, 120));
+        };
         const onErr = (e) => consola.push(`excepción: ${String(e).slice(0, 120)}`);
         pagina.on('console', onMsg);
         pagina.on('pageerror', onErr);
@@ -287,6 +301,27 @@ for (const vista of vistas) {
         await pagina.goto(url + ruta, { waitUntil: 'networkidle', timeout: 60_000 })
             .catch((e) => consola.push(`no cargó: ${e.message.slice(0, 90)}`));
         await pagina.waitForTimeout(ESPERA_MS);
+
+        /*
+         * SE ESPERA A LA SEÑAL, NO SOLO UN TIEMPO FIJO (2026-09-16). Con la
+         * pausa fija, este vigilante parpadeaba: el 16-09 pasó en verde a
+         * media tarde y falló al anochecer con el MISMO árbol, porque
+         * /api/portada tardaba 2,3 s y la cuenta llegaba antes que las
+         * tarjetas. Un vigilante que parpadea se ignora — la regla de la
+         * casa—, así que la lentitud se convierte en paciencia: hasta 30 s
+         * a que los esqueletos se resuelvan y las señales de la ruta
+         * aparezcan. La ausencia de verdad sigue fallando igual: pasado el
+         * plazo, COMPROBACIONES da el veredicto con su mensaje de siempre.
+         */
+        await pagina.waitForFunction(
+            (senales) => {
+                const esqueletos = document.querySelectorAll('[class^="esqueleto-"], [class*=" esqueleto-"]');
+                if (esqueletos.length) return false;
+                return senales.every((s) => document.querySelectorAll(s.selector).length >= s.minimo);
+            },
+            SENALES[ruta] ?? [],
+            { timeout: 30_000 }
+        ).catch(() => { /* el fallo lo reporta COMPROBACIONES, con detalle */ });
 
         const fallos = await pagina.evaluate(COMPROBACIONES, SENALES[ruta] ?? []);
         const nombre = `${vista.nombre}${ruta.replace(/\//g, '-') || '-inicio'}`;

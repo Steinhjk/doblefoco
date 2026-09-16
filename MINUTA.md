@@ -47,6 +47,40 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-16 · La sesión de decisiones: seis dictadas en una sentada, y un tipo nuevo de medio
+
+Jose pidió pasar las decisiones pendientes una por una, con su evidencia
+delante. Las seis quedaron dictadas el mismo día; lo que cada una mueve está
+en la rama `decisiones/sesion-del-16-de-septiembre` y en las dos tareas de
+código que abre (abajo).
+
+| # | Decisión | Qué se dictó |
+|---|---|---|
+| 4 | Colombia Informa | **Baja a −0,55.** La banda fuerte la empujaba la misión declarada sobre un mes con catástrofe. **Se re-mide con un mes limpio** (~mediados de octubre) |
+| 5+7 | El trío y Razón Pública | **Nace el tipo «no noticioso»**: Vorágine, Cuestión Pública, RAYA, CasaMacondo, Volcánicas y Razón Pública. Siguen en ingesta y agrupamiento, **salen del mapa mediático** (con nota visible que lo explica), y el trío queda «sin medir». Las2Orillas y Cambio se quedan en el mapa: son mucho más frecuentes. Resuelve de paso la pregunta de Razón Pública |
+| 6 | RTVC | **«Sin medir»**, re-medición a principios de octubre con ~30 días de su feed propio. La previsión del 08-08 queda como contraste — Jose espera oficialismo, y el número se moverá solo si las piezas lo dicen |
+| 8 | El buscador | **Opción A: el motor manda el resumen** — el `snippet` del artículo que pone el titular, acreditado a su medio, como la foto |
+| 9 | W Radio | **`revisarEl: 2026-10-13`** (con Telecaribe). Y al ir a asegurar el flujo apareció el hallazgo: **dejó de publicar noticias escritas ~01-09** — feed de Arc en 0, Google News sin nada suyo desde esa fecha, portada solo de programas; Caracol (misma casa) entrega 100. El texto parece haber quedado en caracol.com.co, que ya ingerimos. Nota completa en `hallazgos.json` |
+| — | Los internacionales en inglés | **Opción C: esperan** la capa de equivalencia de titulares entre idiomas. NYT, FT y Reuters quedan como cita; los datos de feeds, en el registro |
+
+### Lo que la sesión deja pendiente, con dueño
+
+1. **Panel de acceso a los no noticiosos en el inicio** — decidido que existirá,
+   decidido que **todavía no se construye**. Espera al frente estético de Jose.
+2. **`bias: null` de verdad** para el trío y RTVC — el «sin medir» del sesgo no
+   existía en el código (la convención vieja era «0 con nota»), y `bias`
+   alimenta mapa, reparto por espectro, panorama y puntos ciegos: se hace como
+   tarea propia, con cada consumidor decidido a conciencia, no con un default
+   silencioso que convierta `null` en «mixta».
+3. **El motor manda `summary`** (decisión 8) — toca el contrato de historia y
+   su lista de costura (2.4), así que va con su prueba de ida y vuelta.
+
+> Del lado de compartir: **Jose ya comprobó en vivo** que la tarjeta en X sale
+> con su imagen (la caché cedió con la URL versionada) y que WhatsApp lleva el
+> texto del reparto. Los pasos 3 y 4 de esa entrada quedan HECHOS el 2026-09-16.
+
+---
+
 ## 2026-09-16 · Los internacionales sin ingesta: dos entran, y los de inglés esperan una decisión (ABIERTA LA DECISIÓN)
 
 A petición de Jose («integremos nuevos medios»), se revisaron los siete medios
@@ -90,7 +124,9 @@ congelado en enero de 2025 — un feed parado no es un feed.**
 la metodología lo dice; (2) se ingieren aceptando que agrupan solos — y es
 medible: contar cuántas historias de un solo medio añaden a portada; (3) una
 capa de equivalencia de titulares entre idiomas antes del agrupamiento, que
-es motor nuevo. **Estado: ABIERTO, decisión de Jose.**
+es motor nuevo. **DECIDIDO el 2026-09-16 (sesión de decisiones): la 3 —
+esperan a esa capa.** Hasta entonces siguen como cita, y los datos de sus
+feeds quedan en el registro para el día que llegue.
 
 El séptimo sin feed es El Manduco, y ese está fuera **a propósito** (decisión
 del 2026-09-02, PR #18): no se toca.
@@ -294,12 +330,15 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 
 | | Qué se decide | Dónde está la evidencia |
 |---|---|---|
-| 4 | **Colombia Informa: firmar −0,65 o bajar a −0,55.** Es de banda, no de decimales: la frontera está en −0,60 | `fichas/colombia-informa.md` |
-| 5 | **El trío Vorágine / Cuestión Pública / Revista RAYA:** un solo valor, tres justificados, o las tres «sin medir» | `fichas/voragine.md` |
-| 6 | **RTVC:** la regla 3 dice «no lo muevas» y su ficha de propiedad dice «esto caduca el 7 de agosto». Las dos no pueden tener razón | `fichas/rtvc.md` |
-| 7 | **¿Un medio que solo publica análisis debe entrar al agrupamiento?** (Razón Pública) | `MINUTA.md`, 2026-09-08 |
-| 8 | **El buscador promete un resumen que el motor no manda:** o el motor manda el `snippet`, o la interfaz deja de prometerlo. **Dato nuevo del 10-09:** el resumen que se mandaría ya no incluye 1 106 piezas que solo repetían el titular, así que la opción de mandarlo es hoy menos mala que cuando se escribió | `MINUTA.md`, 2026-09-08 |
-| 9 | **El único `aceptado` sin plazo es W Radio**, y su motivo es estructural —su feed expone dos ítems, y eso no cambia con el calendario—. O se le pone `revisarEl` o se escribe que no lo lleva a propósito | `auditoria/hallazgos.json` |
+**Las seis se dictaron el 2026-09-16, en una sola sesión** — el detalle, en la
+entrada «La sesión de decisiones» de ese día:
+
+| 4 | ~~Colombia Informa~~ · **DECIDIDO: baja a −0,55**, re-medición con un mes sin catástrofe | `fichas/colombia-informa.md` |
+| 5 | ~~El trío~~ · **DECIDIDO: tipo «no noticioso»**, fuera del mapa, «sin medir» | `fichas/voragine.md` |
+| 6 | ~~RTVC~~ · **DECIDIDO: «sin medir»**, re-medición a principios de octubre | `fichas/rtvc.md` |
+| 7 | ~~Razón Pública~~ · **DECIDIDO: es «no noticioso»** — entra al agrupamiento, no al mapa | `MINUTA.md`, 2026-09-08 |
+| 8 | ~~El buscador~~ · **DECIDIDO: el motor manda el resumen** (snippet acreditado) | `MINUTA.md`, 2026-09-08 |
+| 9 | ~~W Radio~~ · **DECIDIDO: `revisarEl` 2026-10-13** — y el hallazgo: dejó de publicar texto ~01-09 | `auditoria/hallazgos.json` |
 
 ### A ejecutar el día del despliegue, en este orden
 
@@ -334,8 +373,10 @@ queda abierto de código es lo que abrió ese mismo trabajo:
 |---|---|---|
 | 21 | **2 de octubre** | Medir el tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla por cadencia (3.9) con 30 días de serie |
 | 22 | **1 de octubre** | Se revisa Vorágine: su hallazgo está `resuelto` con esa fecha de vuelta |
-| 23 | **13 de octubre** | Caduca el `aceptado` de Telecaribe — 26 días sin publicar el 08-09, y es canal público |
+| 23 | **13 de octubre** | Caducan los `aceptado` de Telecaribe **y de W Radio** (este con hallazgo del 16-09: dejó de publicar texto; se comprueba si volvió a escribir) |
 | 24 | **Diciembre** | Revisar la opción B del archivo permanente |
+| 28 | **Principios de octubre** | Re-medir RTVC con ~30 días de su feed propio y contrastar la previsión del 08-08 (decisión 6 del 16-09) |
+| 29 | **Mediados de octubre** | Re-medir Colombia Informa con un mes sin catástrofe en el corpus (decisión 4 del 16-09) |
 
 ## 2026-09-08 · El buscador dice buscar en el resumen, y el resumen no existe (ABIERTO)
 

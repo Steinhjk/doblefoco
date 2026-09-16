@@ -185,7 +185,18 @@ export const MEDIA_REGISTRY = [
     {
         id: 'colombia-informa', name: 'Colombia Informa', shortName: 'Col. Informa',
         domain: 'colombiainforma.info', country: 'CO', group: 'Comunicación popular',
-        bias: -0.65, factuality: 0.78, reviewedAt: null,
+        /**
+         * DE −0,65 A −0,55, decisión de Jose del 2026-09-16 sobre la ficha
+         * (`fichas/colombia-informa.md`). La duda era de banda, no de decimales:
+         * lo que empujaba a −0,65 era la misión declarada (nivel 4) sobre diez
+         * piezas de un mes con terremoto y Catatumbo — con esa muestra no se
+         * afirma «sostenidamente», y la regla 2 empuja a la banda suave ante la
+         * duda. SE RE-MIDE cuando el corpus tenga un mes sin catástrofe
+         * (orientativo: mediados de octubre de 2026); si el léxico de
+         * movimiento se sostiene sin la agenda del desastre, la ficha vuelve a
+         * proponer la banda fuerte.
+         */
+        bias: -0.55, factuality: 0.78, reviewedAt: null,
         biasRationale: 'Agencia de comunicación popular ligada a procesos sociales y campesinos; encuadre explícito desde movimientos de base.',
         feed: { url: 'https://www.colombiainforma.info/feed/', via: 'direct', category: 'Política' },
     },
@@ -245,6 +256,21 @@ export const MEDIA_REGISTRY = [
     {
         id: 'casa-macondo', name: 'CasaMacondo', shortName: 'CasaMacondo',
         domain: 'casamacondo.co', country: 'CO', group: 'Investigación independiente',
+        /**
+         * NO NOTICIOSO — decisión de Jose del 2026-09-16, y es un TIPO nuevo
+         * del catálogo, no una marca de este medio. Los medios cuyo producto es
+         * la investigación o el análisis —no el ciclo noticioso diario— no
+         * compiten en el mapa mediático, y por eso salen de él: sus números
+         * eran colocaciones relativas que el expediente de Vorágine demostró
+         * insostenibles. SIGUEN en la ingesta y en el agrupamiento: cuando
+         * investigan un hecho que los demás cubren, su presencia en la historia
+         * es valor, no ruido. Tendrán acceso propio en un panel del inicio
+         * (pendiente en la minuta, no construido). Lo llevan seis: este,
+         * Volcánicas, Revista RAYA, Vorágine, Cuestión Pública y Razón
+         * Pública. Las2Orillas y Cambio se quedan en el mapa a propósito:
+         * son mucho más frecuentes en el ciclo diario.
+         */
+        noNoticioso: true,
         bias: -0.35, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Declara HOY como compromiso editorial «promover la justicia social, la divulgación ambiental y la complejidad cultural», con periodismo de investigación y ambiental. Valor derivado de esa declaración vigente, no de su historia.',
         feed: { url: 'https://casamacondo.co/feed/', via: 'direct', category: 'Judicial' },
@@ -262,6 +288,8 @@ export const MEDIA_REGISTRY = [
          */
         id: 'volcanicas', name: 'Volcánicas', shortName: 'Volcánicas',
         domain: 'volcanicas.com', country: 'CO', group: 'Periodismo feminista independiente',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
         bias: -0.50, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Revista de periodismo feminista latinoamericano que declara HOY como misión «usar las herramientas del periodismo para avanzar los derechos de las mujeres». Es periodismo de causa declarada, y el valor se deriva de esa declaración vigente.',
         feed: { url: 'https://volcanicas.com/feed/', via: 'direct', category: 'Política' },
@@ -269,6 +297,8 @@ export const MEDIA_REGISTRY = [
     {
         id: 'revista-raya', name: 'Revista RAYA', shortName: 'Revista RAYA',
         domain: 'revistaraya.com', country: 'CO', group: 'Investigación independiente',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
         bias: -0.55, factuality: 0.89, reviewedAt: null,
         biasRationale: 'Medio de investigación periodística independiente enfocado en derechos humanos, fiscalización del poder político y conflicto armado.',
         feed: { url: gnews('revistaraya.com'), via: 'gnews', category: 'Judicial' },
@@ -276,6 +306,8 @@ export const MEDIA_REGISTRY = [
     {
         id: 'voragine', name: 'Vorágine', shortName: 'Vorágine',
         domain: 'voragine.co', country: 'CO', group: 'Investigación independiente',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
         bias: -0.50, factuality: 0.90, reviewedAt: null,
         biasRationale: 'Periodismo de investigación centrado en poder económico, conflicto armado y derechos humanos.',
         feed: { url: 'https://voragine.co/feed/', via: 'direct', category: 'Judicial' },
@@ -283,6 +315,8 @@ export const MEDIA_REGISTRY = [
     {
         id: 'cuestion-publica', name: 'Cuestión Pública', shortName: 'C. Pública',
         domain: 'cuestionpublica.com', country: 'CO', group: 'Investigación independiente',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
         bias: -0.45, factuality: 0.89, reviewedAt: null,
         biasRationale: 'Investigación sobre corrupción y captura del Estado; enfoque de veeduría al poder establecido.',
         feed: { url: 'https://cuestionpublica.com/feed/', via: 'direct', category: 'Judicial' },
@@ -290,6 +324,10 @@ export const MEDIA_REGISTRY = [
     {
         id: 'razon-publica', name: 'Razón Pública', shortName: 'R. Pública',
         domain: 'razonpublica.com', country: 'CO', group: 'Fundación académica',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        // Resuelve además la pregunta del 08-09 —¿un medio que solo publica
+        // análisis entra al agrupamiento?—: sí entra, y no compite en el mapa.
+        noNoticioso: true,
         bias: -0.40, factuality: 0.92, reviewedAt: null,
         biasRationale: 'Análisis académico con énfasis en política social y crítica al modelo económico vigente.',
         feed: { url: 'https://razonpublica.com/feed/', via: 'direct', category: 'Economía' },

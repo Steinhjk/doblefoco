@@ -18,7 +18,7 @@ PROVISIONALES hasta que ocurra. Lo decimos aquí porque clasificar a un
 medio real es la afirmación más discutible que hace este sitio.
 
 ----------------------------------------------------------------------
-IZQUIERDA  [−1.00 a −0.60)  —  2 medios
+IZQUIERDA  [−1.00 a −0.60)  —  1 medio
 ----------------------------------------------------------------------
 
   Semanario VOZ  ·  sesgo −0.80  ·  factualidad 85%
@@ -27,14 +27,14 @@ IZQUIERDA  [−1.00 a −0.60)  —  2 medios
     Partido Comunista Colombiano (PCC) con línea editorial marxista y
     de izquierda popular.
 
-  Colombia Informa  ·  sesgo −0.65  ·  factualidad 78%
+----------------------------------------------------------------------
+IZQUIERDA MODERADA  [−0.60 a −0.20)  —  12 medios
+----------------------------------------------------------------------
+
+  Colombia Informa  ·  sesgo −0.55  ·  factualidad 78%
     colombiainforma.info · Comunicación popular · CO · RSS propio · PROVISIONAL
     Agencia de comunicación popular ligada a procesos sociales y
     campesinos; encuadre explícito desde movimientos de base.
-
-----------------------------------------------------------------------
-IZQUIERDA MODERADA  [−0.60 a −0.20)  —  11 medios
-----------------------------------------------------------------------
 
   Revista RAYA  ·  sesgo −0.55  ·  factualidad 89%
     revistaraya.com · Investigación independiente · CO · vía Google News · PROVISIONAL

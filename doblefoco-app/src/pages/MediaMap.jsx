@@ -230,7 +230,19 @@ const MarcaPrioritaria = ({ mediaId }) => {
 };
 
 const ES_COLOMBIANO = (medio) => medio.country === 'CO';
-const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY.filter(ES_COLOMBIANO);
+
+/**
+ * Los NO NOTICIOSOS no compiten aquí (decisión de Jose, 2026-09-16). Este mapa
+ * mide el espacio del ciclo noticioso; un medio cuyo producto es la
+ * investigación o el análisis no está en esa carrera, y sus números eran
+ * colocaciones relativas que el expediente de Vorágine demostró insostenibles.
+ * No es silencio: siguen en la ingesta y en las historias, la nota de abajo los
+ * nombra, y tendrán acceso propio en un panel del inicio (pendiente).
+ */
+const NO_NOTICIOSOS = MEDIA_REGISTRY.filter((medio) => medio.noNoticioso);
+const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY
+    .filter(ES_COLOMBIANO)
+    .filter((medio) => !medio.noNoticioso);
 
 /** Cuántos hay de cada alcance. Se calcula una vez: el catálogo no cambia. */
 const CUANTOS_POR_ALCANCE = MEDIOS_COLOMBIANOS.reduce((cuenta, medio) => {
@@ -529,6 +541,20 @@ const MediaMap = () => {
                     </span>
                 </p>
             )}
+
+            {/* Los no noticiosos no aparecen con NINGÚN filtro, así que su
+              * ausencia se explica siempre: un hueco sin explicación se lee
+              * como silenciamiento, y aquí no se silencia a nadie. */}
+            <p className="map-nota-alcance">
+                <Info size={15} aria-hidden="true" />
+                <span>
+                    Tampoco están <strong>{NO_NOTICIOSOS.length} medios de investigación
+                    y análisis</strong> ({NO_NOTICIOSOS.map((m) => m.name).join(', ')}):
+                    su producto no es la noticia diaria, así que no compiten en este
+                    espacio. Siguen en la ingesta y aparecen en las historias que
+                    cubren.
+                </span>
+            </p>
 
             {sinPropiedad.length > 0 && (
                 <p className="map-nota-ausencia">

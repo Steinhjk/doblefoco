@@ -458,3 +458,15 @@
         display: none;
     }
 }
+
+/*
+ * La acción de compartir, alineada a la derecha y separada de la barra de
+ * cobertura: la barra es un dato y esto es un control, y pegados se leen como
+ * una sola cosa.
+ */
+.spotlight-acciones,
+.secondary-acciones {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}

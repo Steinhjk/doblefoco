@@ -177,7 +177,10 @@ export function metadatosDePagina(ruta, siteUrl) {
 
     const base = String(siteUrl).replace(/\/+$/, '');
     const canonica = `${base}${ruta}`;
-    const imagen = `${base}/og-image.png`;
+    // Con versión, por la caché de tarjetas de X: la explicación completa está
+    // en construirMetadatos (server/ssr/metadatos.js), y la versión tiene que
+    // ser la misma en los tres sitios que nombran la imagen.
+    const imagen = `${base}/og-image.png?v=20260901`;
     const titulo = `${ficha.titulo()} · DobleFoco.co`;
     const descripcion = ficha.descripcion();
 

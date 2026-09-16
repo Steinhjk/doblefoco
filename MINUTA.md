@@ -47,13 +47,19 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
-## 2026-09-16 · Los internacionales sin ingesta: dos entran, y los de inglés esperan una decisión (EN RAMA)
+## 2026-09-16 · Los internacionales sin ingesta: dos entran, y los de inglés esperan una decisión (ABIERTA LA DECISIÓN)
 
 A petición de Jose («integremos nuevos medios»), se revisaron los siete medios
 del catálogo que seguían sin feed de ingesta, con la herramienta de la casa
 (`npm run feed:descubrir`) y sondeo manual el 2026-09-16.
 
-### Entran dos, en la rama `catalogo/internacionales-en-espanol`
+### Entraron dos, y ya están en el aire
+
+> **Fusionado a `main` el mismo día (PR #35)** y comprobado en producción: motor
+> y bundle sirven la huella nueva `43dc5ac4296b` con 77 feeds, y el primer ciclo
+> trajo 15 piezas de cada uno — al tope del techo por ciclo. De paso, **el aviso
+> de desfase hizo su primer ciclo de vida real**: encendido con razón en el
+> preview (77 contra 75), apagado solo al desplegar.
 
 | Medio | Vía | Estado al probarlo |
 |---|---|---|
@@ -90,6 +96,98 @@ El séptimo sin feed es El Manduco, y ese está fuera **a propósito** (decisió
 del 2026-09-02, PR #18): no se toca.
 
 ---
+
+## 2026-09-15 · Compartir desde la tarjeta, y el diálogo que solo fallaba al pulsarlo (EN RAMA)
+
+Rama `compartir/desde-la-tarjeta`. **No está en `main`**: espera mirada sobre el
+preview, que es el procedimiento.
+
+### El botón ya existía, y lo que no existía era todo lo demás
+
+`ShareModal` llevaba meses publicado en la página de la noticia. Lo que faltaba
+era compartir **sin entrar**, que es donde se comparte. Ahora lo llevan la
+tarjeta del feed, la destacada y las tres laterales — catorce botones en la
+portada. El `MobileSidebar` se deja fuera a propósito: es una lista de enlaces de
+navegación, y un botón por línea la convierte en otra cosa.
+
+### El defecto que ninguna prueba podía ver
+
+El velo del diálogo es `position: fixed` con las cuatro esquinas a cero. Colgado
+de la tarjeta **no cubría la pantalla**: se encajaba dentro de la tarjeta.
+
+> **La causa no se ve leyendo el componente.** Si un ancestro tiene `transform`,
+> el navegador posiciona el «fijo» respecto a ESE ancestro. Y
+> `.news-card:hover` lleva `transform: translateY(-2px)`.
+
+Y de ahí sale lo peor: como el `transform` solo existe **mientras el puntero está
+encima**, fallaba exactamente cuando alguien pulsa el botón, y no cuando se
+comprueba sin pasar por encima. Lint, `tsc` y 872 pruebas en verde con el fallo
+dentro. Lo cazó abrir la captura. Arreglado con `createPortal` a `document.body`,
+y hay prueba de que el portal siga puesto.
+
+### Y una falsa alarma del propio vigilante, que conviene conocer
+
+La primera pasada de `npm run mirar` dijo **«0 tarjetas en la portada»** y no era
+verdad: Vite reoptimiza las dependencias cuando aparecen ficheros nuevos y fuerza
+un recargue, así que la comprobación miró una página a medio cargar. Comprobado
+con el navegador a mano —10 tarjetas, 14 botones, cero errores de consola— y
+confirmado después con `mirar` en 20/20. **Si `mirar` falla en la primera pasada
+tras crear ficheros nuevos, conviene repetirla antes de creerla.**
+
+### Lo que se arregló de camino, y es lo que más viaja
+
+`server/ssr/metadatos.js` decía **«de centro»** mientras el sitio entero dice
+«orientación mixta» — la barra de cada tarjeta, la página de clasificación, el
+aviso de desequilibrio—. Y esa frase es la `og:description`: **el texto que va en
+cada enlace compartido y el que lee Google**. El renombrado se quedó a medias
+justo en el sitio que sale del sitio.
+
+Ahora las bandas se nombran en `shared/repartoDeCobertura.js` y de ahí beben los
+tres consumidores. Hay una prueba que pone el texto del servidor y el del cliente
+uno al lado del otro: si vuelven a separarse, falla.
+
+También se retiró **«Cobertura contrastada»** del texto que se comparte y
+**«Cobertura periodística contrastada»** de la descripción de respaldo. Es el
+mismo adjetivo de virtud que se quitó del `twitter:title` el 2026-09-01, y había
+vuelto a entrar por la puerta de atrás.
+
+### Decidido con Jose el 2026-09-15
+
+| | |
+|---|---|
+| Qué texto viaja | **El reparto por espectro.** Es el dato que nadie más puede dar y no afirma ninguna virtud |
+| Dónde va el botón | **En todas las tarjetas** |
+| WhatsApp | **Sí**, y primero: es el canal del país. Enlace `wa.me`, no SDK — la CSP es `script-src 'self'` |
+| `utm_*` | **No, todavía.** Sin analítica no miden nada, y la analítica es decisión abierta |
+
+### La tarjeta en X salía sin imagen, y la culpa era de la caché de X (2026-09-16)
+
+Jose lo vio al probar: la página bien, y la tarjeta compartida en X **sin
+imagen**. El servidor estaba impecable —se midió ese día: metadatos correctos
+en portada y noticia, `og-image.png` en 200 y 51 KB también para `Twitterbot`,
+SSR en 381 ms, sin `X-Robots-Tag`—. La causa es que **X guarda su veredicto por
+URL durante días**: la tarjeta se reemplazó el 01-09 (del rectángulo de 3,6 KB
+a la tarjeta real) conservando el nombre, y X siguió sirviendo el veredicto de
+la vieja. Su validador de tarjetas ya no existe para forzar el refresco.
+
+El remedio es el estándar: **la URL de la imagen lleva versión**
+(`og-image.png?v=20260901`) en los tres sitios que la nombran —`index.html`,
+`server/ssr/metadatos.js`, `server/ssr/paginasEstaticas.js`— y la prueba de
+metadatos la exige. Si `og:generar` reescribe la tarjeta, la versión sube.
+Queda en esta misma rama.
+
+### Lo que falta
+
+1. Mirar el preview de Vercel y aprobarlo.
+2. Fusionar.
+3. **Comprobar una tarjeta real en WhatsApp** una vez publicado: es lo único que
+   no se puede verificar desde aquí.
+4. **Reintentar la tarjeta en X un rato después del despliegue** — con la URL
+   versionada X la trata como imagen nueva; si aun así no la trae, el
+   diagnóstico de arriba queda invalidado y hay que volver a mirar.
+
+---
+
 
 ## 2026-09-09 · Las siete ramas, verificadas juntas — y una prueba que solo falla junta (ABIERTO)
 

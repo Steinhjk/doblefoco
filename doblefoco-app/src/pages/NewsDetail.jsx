@@ -1,7 +1,7 @@
 // @ts-check
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShieldCheck, EyeOff, Layers, ExternalLink, Share2, Info, SearchX, TrendingUp, Archive } from 'lucide-react';
+import { ShieldCheck, EyeOff, Layers, ExternalLink, Info, SearchX, TrendingUp, Archive } from 'lucide-react';
 import { getMediaByName } from '../data/mediaLogos';
 import StoryImage from '../components/StoryImage';
 import { tieneImagen } from '../services/imageEngineService';
@@ -21,7 +21,7 @@ import ToneNote from '../components/ToneNote';
 import ToneSummary from '../components/ToneSummary';
 import MediaLogo from '../components/MediaLogo';
 import UserFeedbackWidget from '../components/UserFeedbackWidget';
-import ShareModal from '../components/ShareModal';
+import BotonCompartir from '../components/BotonCompartir';
 import './NewsDetail.css';
 import { nombreDeSeccion, perteneceA, seccionDeLaHistoria } from '../lib/seccion';
 import { categories } from '../data/categories';
@@ -142,7 +142,6 @@ const NewsDetail = () => {
      */
     const { id: parametro } = useParams();
     const id = idDesdeRuta(parametro);
-    const [isShareOpen, setIsShareOpen] = useState(false);
     const [mobileSpectrum, setMobileSpectrum] = useState('all');
 
     /**
@@ -285,9 +284,7 @@ const NewsDetail = () => {
                                     {timeLabel}
                                 </time>
                             )}
-                            <button className="share-detail-btn" onClick={() => setIsShareOpen(true)}>
-                                <Share2 size={14} aria-hidden="true" /> Compartir
-                            </button>
+                            <BotonCompartir story={story} variante="detalle" />
                         </div>
 
                         {/*
@@ -557,7 +554,6 @@ const NewsDetail = () => {
                 </section>
             )}
 
-            <ShareModal story={story} isOpen={isShareOpen} onClose={() => setIsShareOpen(false)} />
         </div>
     );
 };

@@ -10,6 +10,7 @@ import { EsqueletoHero } from './Esqueleto';
 import { tieneImagen } from '../services/imageEngineService';
 import { storyTimeLabel } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
+import BotonCompartir from './BotonCompartir';
 import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './CompactHeroGrid.css';
@@ -198,6 +199,10 @@ const CompactHeroGrid = () => {
 
                         <CoverageBar coverage={cobertura} />
 
+                        <div className="spotlight-acciones">
+                            <BotonCompartir story={main} />
+                        </div>
+
                         {suceso && suceso.historias.length > 0 && (
                             <ul className="spotlight-angulos">
                                 {suceso.historias.slice(0, 4).map((angulo) => (
@@ -281,6 +286,10 @@ const CompactHeroGrid = () => {
                                 </h4>
 
                                 <CoverageBar coverage={story.coverage} compact showLabels={false} />
+
+                                <div className="secondary-acciones">
+                                    <BotonCompartir story={story} />
+                                </div>
 
                                 <div className="secondary-sources-micro">
                                     {story.sources.slice(0, 3).map((source, idx) => {

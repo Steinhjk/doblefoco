@@ -45,7 +45,13 @@
   <!-- La tarjeta la genera `npm run og:generar`. Es la misma que sirven las
        páginas de noticia desde el servidor, para que compartir la portada y
        compartir una historia no den dos identidades distintas. -->
-  <meta property="og:image" content="https://doblefoco.co/og-image.png" />
+  <!-- El «?v=» no es un adorno: X guarda su veredicto POR URL durante días, y
+       cuando la tarjeta se reemplazó el 2026-09-01 conservando el nombre, X
+       siguió sirviendo el veredicto de la imagen vieja — tarjetas sin imagen,
+       visto el 2026-09-16. Si `og:generar` reescribe la tarjeta, hay que subir
+       la versión aquí y en server/ssr/ (metadatos.js y paginasEstaticas.js);
+       la prueba de metadatos vigila que esta página no se quede a medias. -->
+  <meta property="og:image" content="https://doblefoco.co/og-image.png?v=20260901" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="DobleFoco.co — quién está contando esta noticia, y quién no" />
@@ -59,7 +65,7 @@
   <meta name="twitter:title" content="DobleFoco.co — quién está contando esta noticia, y quién no" />
   <meta name="twitter:description"
     content="La cobertura de los medios colombianos sobre un mismo hecho, con quién es dueño de cada uno al lado." />
-  <meta name="twitter:image" content="https://doblefoco.co/og-image.png" />
+  <meta name="twitter:image" content="https://doblefoco.co/og-image.png?v=20260901" />
 
   <!-- Preconnect & Fonts -->
   <!-- Ya no hay preconnect a images.unsplash.com. Abría una conexión a un

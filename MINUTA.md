@@ -47,6 +47,56 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-16 · Los internacionales sin ingesta: dos entran, y los de inglés esperan una decisión (ABIERTA LA DECISIÓN)
+
+A petición de Jose («integremos nuevos medios»), se revisaron los siete medios
+del catálogo que seguían sin feed de ingesta, con la herramienta de la casa
+(`npm run feed:descubrir`) y sondeo manual el 2026-09-16.
+
+### Entraron dos, y ya están en el aire
+
+> **Fusionado a `main` el mismo día (PR #35)** y comprobado en producción: motor
+> y bundle sirven la huella nueva `43dc5ac4296b` con 77 feeds, y el primer ciclo
+> trajo 15 piezas de cada uno — al tope del techo por ciclo. De paso, **el aviso
+> de desfase hizo su primer ciclo de vida real**: encendido con razón en el
+> preview (77 contra 75), apagado solo al desplegar.
+
+| Medio | Vía | Estado al probarlo |
+|---|---|---|
+| La Vanguardia | directa, `rss/home.xml` — el que su HTML declara | 145 ítems, el último de hace 0 h |
+| CNN en Español | Google News, como EFE: no publica RSS por ninguna de las tres vías | 100 ítems, el último de hace minutos |
+
+El catálogo pasa de 75 a 77 feeds. La CSP los admite (`img-src`, y su prueba
+lo vigila), los documentos derivados están regenerados, y las razones de cada
+vía están donde la casa las guarda: en el comentario del registro.
+
+### La decisión abierta: NYT, FT y Reuters publican en inglés
+
+**El feed no es el obstáculo; el idioma sí.** El agrupamiento compara
+titulares con coseno TF-IDF sobre un corpus en español (`shared/sucesos.js`):
+un titular en inglés no comparte tokens con la cobertura nacional del mismo
+hecho, así que cada pieza entraría como historia aislada de un solo medio —
+ruido en portada sin lo único que se les pide, que es verse **junto a** la
+cobertura colombiana del hecho.
+
+Lo comprobado el 2026-09-16, anotado también en el registro para no repetir
+la búsqueda: NYT tiene vivo su feed de Américas (su edición en español cerró
+en 2019); FT tiene dos feeds vivos; Reuters no publica RSS desde 2020 y su
+sitio responde 401 a clientes que no son navegador, así que ni con decisión
+habría hoy vía directa. **WSJ es caso aparte: su RSS existe pero está
+congelado en enero de 2025 — un feed parado no es un feed.**
+
+**Las opciones, de menos a más trabajo:** (1) quedan como cita sin ingesta y
+la metodología lo dice; (2) se ingieren aceptando que agrupan solos — y es
+medible: contar cuántas historias de un solo medio añaden a portada; (3) una
+capa de equivalencia de titulares entre idiomas antes del agrupamiento, que
+es motor nuevo. **Estado: ABIERTO, decisión de Jose.**
+
+El séptimo sin feed es El Manduco, y ese está fuera **a propósito** (decisión
+del 2026-09-02, PR #18): no se toca.
+
+---
+
 ## 2026-09-15 · Compartir desde la tarjeta, y el diálogo que solo fallaba al pulsarlo (EN RAMA)
 
 Rama `compartir/desde-la-tarjeta`. **No está en `main`**: espera mirada sobre el
@@ -219,7 +269,7 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 |---|---|---|
 | 1 | ~~**Fusionar**~~ · **HECHO el 2026-09-15.** La vía recomendada resultó ser la buena: #33 a la rama de integración y una sola fusión de esta a `main` (`d6deb1c`). Cinco PR se cerraron solas; la #28 y la #29 hubo que cerrarlas a mano porque iban encadenadas | 2026-09-08 |
 | 2 | **Issue #4 del centinela** | 2026-09-02 |
-| 3 | **Sacar el repositorio de OneDrive** (I-9; locks y sync de `node_modules` y `.git`) | 2026-09-01 |
+| 3 | ~~**Sacar el repositorio de OneDrive**~~ · **DECIDIDO el 2026-09-16: se queda.** Jose lo prefiere dentro como copia extra («para evitar perder el proyecto»), y el riesgo señalado —locks de la sincronización sobre `.git`— se asume con receta: si git falla con `index.lock` o «unable to write», pausar OneDrive y reintentar, no reparar nada | 2026-09-01 |
 
 ### Decisiones editoriales medidas y esperando firma
 
@@ -633,8 +683,10 @@ midió contra el sistema vivo. Lo nuevo que queda pendiente, con su código:
   mientras otro lo suple —sin acusar mientras la columna no tenga firmas, para
   que el aviso no nazca en rojo—.
 - **I-9 · El repositorio vive dentro de OneDrive** — locks y sync de
-  `node_modules` y `.git`. Excluirlo de la sincronización. **ABIERTO —
-  trámite de Jose, 15 min.**
+  `node_modules` y `.git`. Excluirlo de la sincronización. **DECIDIDO el
+  2026-09-16: se queda dentro, por voluntad de Jose** — lo ve como copia
+  extra. El modo de fallo queda anotado en el gesto 3 de la lista única:
+  ante `index.lock`, pausar la sincronización, no reparar.
 - **I-1 / 0.1 y 0.2 · `FLY_API_TOKEN` y el primer despliegue automático del
   motor: HECHO el 2026-09-02.** Fly sirve `6a4bf31` (el merge de la PR #7),
   el handshake tiene por fin un motor que publica `registroHash`, y el

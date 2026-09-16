@@ -1727,6 +1727,28 @@ export const MEDIA_REGISTRY = [
          */
         feed: { url: gnews('efe.com'), via: 'gnews', category: 'Internacional' },
     },
+    /**
+     * LOS CUATRO EN INGLÉS SIGUEN SIN INGESTA, Y NO ES POR FALTA DE FEED
+     * (2026-09-16). Al dar de alta la tanda de internacionales en español se
+     * comprobaron también estos, y tres tienen feed vivo. Lo que los frena es
+     * el idioma: el agrupamiento compara titulares con coseno TF-IDF sobre un
+     * corpus en español (`shared/sucesos.js`, `shared/clustering.js`), y un
+     * titular en inglés no comparte tokens con la cobertura nacional del mismo
+     * hecho. Entrarían como historias aisladas de un solo medio: ruido en la
+     * portada sin aportar lo único que se les pide, que es verse JUNTO a la
+     * cobertura colombiana. Es decisión de producto y está en la minuta; los
+     * datos de cada uno quedan aquí para no repetir la búsqueda:
+     *
+     *   · reuters: sin RSS público desde 2020, y el sitio responde 401
+     *     (DataDome) a clientes que no son navegador. Ni con decisión de
+     *     idioma habría vía directa hoy; quedaría Google News en inglés.
+     *   · nyt: rss.nytimes.com/services/xml/rss/nyt/Americas.xml VIVO
+     *     (20 ítems, fresco al probarlo). Su edición en español cerró en 2019.
+     *   · wsj: feeds.a.dj.com existe pero está CONGELADO — los 21 ítems de
+     *     RSSWorldNews.xml eran de enero de 2025. Un feed parado no es un feed.
+     *   · financial-times: ft.com/rss/home (10 ítems) y ft.com/world?format=rss
+     *     (25) VIVOS los dos.
+     */
     {
         id: 'reuters', name: 'Reuters', shortName: 'Reuters',
         domain: 'reuters.com', country: 'GB', group: 'Agencia de noticias',
@@ -1739,7 +1761,18 @@ export const MEDIA_REGISTRY = [
         domain: 'cnnespanol.cnn.com', country: 'US', group: 'Warner Bros. Discovery',
         bias: -0.15, factuality: 0.84, reviewedAt: null,
         biasRationale: 'Cadena internacional; encuadre editorial estadounidense de centro-izquierda.',
-        feed: null,
+        /**
+         * PASA DE CITA A INGESTA el 2026-09-16, a petición de Jose, en la
+         * tanda de internacionales en español.
+         *
+         * ENTRA POR GOOGLE NEWS, COMO EFE, y por la misma razón: el medio no
+         * publica RSS. Comprobado ese día por las tres vías de la casa —el
+         * HTML no declara ningún `<link>` de feed, la ruta de Arc da 404, y
+         * `/feed/`, `/rss/` y compañía dan 404 desde que dejó WordPress—.
+         * Tiene `/sitemap/news.xml`, que existe pero no es RSS, la misma
+         * trampa que ya documentó El Espectador.
+         */
+        feed: { url: gnews('cnnespanol.cnn.com'), via: 'gnews', category: 'Internacional' },
     },
     {
         id: 'nyt', name: 'The New York Times', shortName: 'NYT',
@@ -1767,7 +1800,20 @@ export const MEDIA_REGISTRY = [
         domain: 'lavanguardia.com', country: 'ES', group: 'Grupo Godó',
         bias: 0.10, factuality: 0.86, reviewedAt: null,
         biasRationale: 'Diario barcelonés de tradición liberal-conservadora moderada.',
-        feed: null,
+        /**
+         * PASA DE CITA A INGESTA el 2026-09-16, a petición de Jose, en la
+         * tanda de internacionales en español.
+         *
+         * EL FEED ES EL DE PORTADA, como El País (España): es el que el medio
+         * DECLARA en su HTML —así lo encontró `npm run feed:descubrir`, 145
+         * ítems y el último de hacía cero horas—. Se probó también
+         * `/rss/internacional.xml` (100 ítems, vivo): traería menos España
+         * doméstica, pero elegir nosotros la sección sería decidir qué parte
+         * del medio existe, y el precedente de la casa es la portada entera;
+         * el clasificador de ámbito ya reparte por contenido. Si su volumen
+         * doméstico resultara estorbar, la alternativa está probada y anotada.
+         */
+        feed: { url: 'https://www.lavanguardia.com/rss/home.xml', via: 'direct', category: 'Internacional' },
     },
 ];
 

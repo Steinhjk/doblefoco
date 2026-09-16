@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share2, Check, Copy, Linkedin, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Share2, Check, Copy, Linkedin, MessageCircle, X } from 'lucide-react';
 import './ShareModal.css';
 import { nombreDeSeccion } from '../lib/seccion';
 import { categories } from '../data/categories';
+import {
+    fraseDeCoberturaDeHistoria,
+    mensajeConEnlace,
+    textoDeCompartir,
+    urlDeHistoria,
+} from '../lib/compartir';
 
 /** Ver la nota de `nombreDeSeccion`: la etiqueta sale de `topics`, no del feed. */
 const seccionDe = (story) => nombreDeSeccion(story, categories);
@@ -13,6 +20,28 @@ const seccionDe = (story) => nombreDeSeccion(story, categories);
  * Accesibilidad corregida: la versión anterior no tenía role="dialog", no
  * cerraba con Escape, no atrapaba el foco (se podía tabular "detrás" del
  * modal) y no devolvía el foco al abridor al cerrarse.
+ *
+ * ES EL RESPALDO, NO EL CAMINO PRINCIPAL. Donde el navegador tiene
+ * `navigator.share` —o sea en casi todos los móviles— `BotonCompartir` abre la
+ * hoja nativa y este diálogo no llega a verse. Aquí se llega desde un
+ * escritorio, que es donde elegir la red a mano tiene sentido.
+ *
+ * LO QUE SE VE AQUÍ ES LO QUE SE VA A MANDAR. La versión anterior enseñaba una
+ * vista previa con «N medios cubriendo el hecho» y mandaba otra cosa distinta.
+ * Una vista previa que no previsualiza es peor que ninguna. *
+ * SE PINTA EN UN PORTAL, Y ESO NO ES UN DETALLE DE IMPLEMENTACIÓN. El velo es
+ * `position: fixed` con `inset: 0`, que debería cubrir la pantalla — salvo si
+ * algún ancestro tiene `transform`, porque entonces el navegador posiciona el
+ * «fijo» respecto a ESE ancestro y no a la ventana. Y `.news-card:hover` lleva
+ * `transform: translateY(-2px)`.
+ *
+ * O sea que al colgar el diálogo de la tarjeta fallaba **solo cuando el puntero
+ * estaba encima**, que es exactamente cuando alguien pulsa el botón. Una prueba
+ * que haga clic sin pasar por encima lo ve bien; un lector, nunca. Lo cazó mirar
+ * la captura, no las 872 pruebas.
+ *
+ * `document.body` no está dentro de nada, así que ahí `fixed` vuelve a
+ * significar fijo.
  */
 const ShareModal = ({ story, isOpen, onClose }) => {
     const [copied, setCopied] = useState(false);
@@ -73,8 +102,8 @@ const ShareModal = ({ story, isOpen, onClose }) => {
 
     if (!isOpen || !story) return null;
 
-    const shareUrl = window.location.href;
-    const shareText = `Cobertura contrastada: "${story.title}" en DobleFoco.co`;
+    const shareUrl = urlDeHistoria(story);
+    const shareText = textoDeCompartir(story);
 
     const handleCopy = async () => {
         try {
@@ -88,7 +117,9 @@ const ShareModal = ({ story, isOpen, onClose }) => {
 
     const openShare = (url) => window.open(url, '_blank', 'noopener,noreferrer');
 
-    return (
+    if (typeof document === 'undefined') return null;
+
+    return createPortal(
         <div className="share-modal-overlay" onClick={onClose}>
             <div
                 ref={dialogRef}
@@ -111,12 +142,29 @@ const ShareModal = ({ story, isOpen, onClose }) => {
                 <div className="share-preview-card">
                     {seccionDe(story) && <span className="preview-tag">{seccionDe(story)}</span>}
                     <h3 className="preview-title">{story.title}</h3>
-                    <p className="preview-sources-summary">
-                        {story.coverage?.total ?? story.sources?.length ?? 0} medios cubriendo el hecho
-                    </p>
+                    <p className="preview-sources-summary">{fraseDeCoberturaDeHistoria(story)}</p>
+                    <p className="preview-url">{shareUrl}</p>
                 </div>
 
                 <div className="share-options-grid">
+                    {/*
+                      * WHATSAPP VA PRIMERO, Y NO ES UNA PREFERENCIA. En Colombia
+                      * es por donde circula lo que circula; ofrecer X y LinkedIn
+                      * y no WhatsApp era ofrecer las dos redes que menos usa el
+                      * lector de este sitio. Es un enlace `wa.me`, no un SDK: la
+                      * CSP es `script-src 'self'` y no admite otra cosa.
+                      */}
+                    <button
+                        className="social-share-btn whatsapp"
+                        onClick={() =>
+                            openShare(
+                                `https://wa.me/?text=${encodeURIComponent(mensajeConEnlace(story))}`
+                            )
+                        }
+                    >
+                        <MessageCircle size={16} aria-hidden="true" /> Compartir por WhatsApp
+                    </button>
+
                     <button
                         className="social-share-btn twitter"
                         onClick={() =>
@@ -145,7 +193,8 @@ const ShareModal = ({ story, isOpen, onClose }) => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

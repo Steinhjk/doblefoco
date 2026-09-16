@@ -1,0 +1,58 @@
+/*
+ * Acción secundaria, y tiene que seguir pareciéndolo.
+ *
+ * Esta tarjeta sale al lado de la peor noticia del día. El botón no llama la
+ * atención, no cambia de color al aparecer y no dice «¡compártelo!»: hereda la
+ * paleta del sitio y se comporta como el resto de los controles discretos —los
+ * mismos tokens que usa `.share-detail-btn`, que ya existía—.
+ */
+.boton-compartir {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    transition: all 0.2s ease;
+}
+
+.boton-compartir:hover {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    border-color: var(--border-hover);
+}
+
+.boton-compartir:focus-visible {
+    outline: 2px solid var(--text-main);
+    outline-offset: 2px;
+}
+
+.boton-compartir.es-detalle {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+}
+
+/*
+ * A 390 px el texto se va y queda el icono. No es por estética: en la tarjeta
+ * compacta la fila lleva ya la factualidad, y «Compartir» entero la parte en dos
+ * líneas.
+ *
+ * SE OCULTA CON `display: none`, NO CON LA TÉCNICA DE «SOLO PARA LECTORES DE
+ * PANTALLA». La primera versión usaba `clip: rect(0 0 0 0)` sobre un ancho de
+ * 1 px, y `npm run mirar` la acusó —con razón— de texto recortado: desde fuera,
+ * un rótulo de un píxel y un rótulo que se sale de su caja se ven igual. Aquí no
+ * hace falta esconderlo para el lector de pantalla, porque el botón ya lleva
+ * `aria-label` con el titular entero; el rótulo visible es redundante.
+ */
+@media (max-width: 480px) {
+    .boton-compartir.es-tarjeta .boton-compartir-texto {
+        display: none;
+    }
+}

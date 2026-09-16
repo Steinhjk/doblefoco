@@ -7,6 +7,7 @@ import MarcadorSinImagen from './MarcadorSinImagen';
 import { tieneImagen } from '../services/imageEngineService';
 import { normalizeStory, storyTimeLabel, formatAbsoluteTime } from '../lib/story';
 import { recordRead } from '../lib/readingHistory';
+import BotonCompartir from './BotonCompartir';
 import CoverageBar from './CoverageBar';
 import MediaLogo from './MediaLogo';
 import './NewsCard.css';
@@ -114,14 +115,22 @@ const NewsCard = ({ story: rawStory }) => {
                                 </time>
                             )}
                         </div>
-                        {typeof story.factuality === 'number' && (
-                            <span
-                                className="news-card-factuality"
-                                title="Promedio de la factualidad histórica de los medios que cubren el hecho."
-                            >
-                                Factualidad {Math.round(story.factuality * 100)}%
-                            </span>
-                        )}
+                        <div className="news-card-meta-right">
+                            {typeof story.factuality === 'number' && (
+                                <span
+                                    className="news-card-factuality"
+                                    title="Promedio de la factualidad histórica de los medios que cubren el hecho."
+                                >
+                                    Factualidad {Math.round(story.factuality * 100)}%
+                                </span>
+                            )}
+                            {/*
+                              * Compartir vive en la fila de datos, no al pie: el
+                              * pie lo ocupan los medios que cubren el hecho, que
+                              * es lo que el lector vino a ver.
+                              */}
+                            <BotonCompartir story={story} />
+                        </div>
                     </div>
 
                     <h3 className="news-card-title">

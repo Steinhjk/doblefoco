@@ -110,7 +110,12 @@ describe('construirMetadatos', () => {
             SITIO
         );
         expect(etiquetas).toContain('2 medios cubren este hecho');
-        expect(etiquetas).toContain('2 de izquierda, 0 de centro, 0 de derecha');
+        // «orientación mixta», no «centro»: el nombre de la banda sale de
+        // `shared/repartoDeCobertura.js` y es el mismo que enseña la barra de
+        // cada tarjeta. Este metadato decía «de centro» hasta el 2026-09-15, que
+        // es la palabra que el proyecto decidió no usar — y era el texto que
+        // viajaba en cada enlace compartido.
+        expect(etiquetas).toContain('2 de izquierda, 0 de orientación mixta, 0 de derecha');
     });
 
     it('apunta la canónica al sitio público, nunca a la API', () => {

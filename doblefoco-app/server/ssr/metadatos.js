@@ -16,6 +16,7 @@
  */
 
 import { rutaDeHistoria } from '../../shared/storyPath.js';
+import { fraseDeCobertura } from '../../shared/repartoDeCobertura.js';
 
 /**
  * Escapa texto para meterlo dentro de un atributo HTML entre comillas dobles.
@@ -85,10 +86,10 @@ export function describirCobertura(story) {
     const { izquierda, centro, derecha, total } = repartoDeCobertura(story);
 
     if (total === 0) {
-        return 'Cobertura periodística contrastada de la actualidad colombiana en DobleFoco.co.';
+        return 'Quién cubre cada hecho de la actualidad colombiana, y quién no, en DobleFoco.co.';
     }
 
-    const medios = total === 1 ? '1 medio cubre' : `${total} medios cubren`;
+    const conteo = { left: izquierda, center: centro, right: derecha };
     /*
      * SI ESTÁ ARCHIVADA, EL RESULTADO DEL BUSCADOR LO DICE (2026-09-02). Para
      * mucha gente esa línea es lo único que va a leer de esta página, y una
@@ -97,17 +98,13 @@ export function describirCobertura(story) {
      */
     if (story?.archivadaEl) {
         const cuando = String(story.archivadaEl).slice(0, 10);
-        const cubrieron = total === 1 ? '1 medio cubrió' : `${total} medios cubrieron`;
         return (
-            `Archivada el ${cuando}. ${cubrieron} este hecho: ${izquierda} de izquierda, ` +
-            `${centro} de centro, ${derecha} de derecha. Compara las coberturas en DobleFoco.co.`
+            `Archivada el ${cuando}. ${fraseDeCobertura(conteo, { pasado: true })}. ` +
+            'Compara las coberturas en DobleFoco.co.'
         );
     }
 
-    return (
-        `${medios} este hecho: ${izquierda} de izquierda, ${centro} de centro, ` +
-        `${derecha} de derecha. Compara las coberturas en DobleFoco.co.`
-    );
+    return `${fraseDeCobertura(conteo)}. Compara las coberturas en DobleFoco.co.`;
 }
 
 /**

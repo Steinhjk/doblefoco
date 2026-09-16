@@ -47,6 +47,79 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-15 · Compartir desde la tarjeta, y el diálogo que solo fallaba al pulsarlo (EN RAMA)
+
+Rama `compartir/desde-la-tarjeta`. **No está en `main`**: espera mirada sobre el
+preview, que es el procedimiento.
+
+### El botón ya existía, y lo que no existía era todo lo demás
+
+`ShareModal` llevaba meses publicado en la página de la noticia. Lo que faltaba
+era compartir **sin entrar**, que es donde se comparte. Ahora lo llevan la
+tarjeta del feed, la destacada y las tres laterales — catorce botones en la
+portada. El `MobileSidebar` se deja fuera a propósito: es una lista de enlaces de
+navegación, y un botón por línea la convierte en otra cosa.
+
+### El defecto que ninguna prueba podía ver
+
+El velo del diálogo es `position: fixed` con las cuatro esquinas a cero. Colgado
+de la tarjeta **no cubría la pantalla**: se encajaba dentro de la tarjeta.
+
+> **La causa no se ve leyendo el componente.** Si un ancestro tiene `transform`,
+> el navegador posiciona el «fijo» respecto a ESE ancestro. Y
+> `.news-card:hover` lleva `transform: translateY(-2px)`.
+
+Y de ahí sale lo peor: como el `transform` solo existe **mientras el puntero está
+encima**, fallaba exactamente cuando alguien pulsa el botón, y no cuando se
+comprueba sin pasar por encima. Lint, `tsc` y 872 pruebas en verde con el fallo
+dentro. Lo cazó abrir la captura. Arreglado con `createPortal` a `document.body`,
+y hay prueba de que el portal siga puesto.
+
+### Y una falsa alarma del propio vigilante, que conviene conocer
+
+La primera pasada de `npm run mirar` dijo **«0 tarjetas en la portada»** y no era
+verdad: Vite reoptimiza las dependencias cuando aparecen ficheros nuevos y fuerza
+un recargue, así que la comprobación miró una página a medio cargar. Comprobado
+con el navegador a mano —10 tarjetas, 14 botones, cero errores de consola— y
+confirmado después con `mirar` en 20/20. **Si `mirar` falla en la primera pasada
+tras crear ficheros nuevos, conviene repetirla antes de creerla.**
+
+### Lo que se arregló de camino, y es lo que más viaja
+
+`server/ssr/metadatos.js` decía **«de centro»** mientras el sitio entero dice
+«orientación mixta» — la barra de cada tarjeta, la página de clasificación, el
+aviso de desequilibrio—. Y esa frase es la `og:description`: **el texto que va en
+cada enlace compartido y el que lee Google**. El renombrado se quedó a medias
+justo en el sitio que sale del sitio.
+
+Ahora las bandas se nombran en `shared/repartoDeCobertura.js` y de ahí beben los
+tres consumidores. Hay una prueba que pone el texto del servidor y el del cliente
+uno al lado del otro: si vuelven a separarse, falla.
+
+También se retiró **«Cobertura contrastada»** del texto que se comparte y
+**«Cobertura periodística contrastada»** de la descripción de respaldo. Es el
+mismo adjetivo de virtud que se quitó del `twitter:title` el 2026-09-01, y había
+vuelto a entrar por la puerta de atrás.
+
+### Decidido con Jose el 2026-09-15
+
+| | |
+|---|---|
+| Qué texto viaja | **El reparto por espectro.** Es el dato que nadie más puede dar y no afirma ninguna virtud |
+| Dónde va el botón | **En todas las tarjetas** |
+| WhatsApp | **Sí**, y primero: es el canal del país. Enlace `wa.me`, no SDK — la CSP es `script-src 'self'` |
+| `utm_*` | **No, todavía.** Sin analítica no miden nada, y la analítica es decisión abierta |
+
+### Lo que falta
+
+1. Mirar el preview de Vercel y aprobarlo.
+2. Fusionar.
+3. **Comprobar una tarjeta real en WhatsApp** una vez publicado: es lo único que
+   no se puede verificar desde aquí.
+
+---
+
+
 ## 2026-09-09 · Las siete ramas, verificadas juntas — y una prueba que solo falla junta (ABIERTO)
 
 Se armó `integracion/tanda-del-8-de-septiembre` desde `main` y se fusionaron las

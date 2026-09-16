@@ -1,4 +1,5 @@
 import { SPECTRUM_LABEL } from '../../shared/biasAnalysis.js';
+import { repartoEnPalabras } from '../../shared/repartoDeCobertura.js';
 import './CoverageBar.css';
 
 /**
@@ -20,10 +21,14 @@ const CoverageBar = ({ coverage, compact = false, showLabels = true }) => {
 
     // «Mixta» y no «Centro» ni «Sin línea»: esta barra sale en CADA tarjeta, así
     // que es el sitio donde más se nota si un renombrado se queda a medias.
+    //
+    // Y se quedó a medias: el metadato de Open Graph siguió diciendo «de centro»
+    // hasta el 2026-09-15. Por eso el reparto ya no se escribe aquí — sale de
+    // `shared/repartoDeCobertura.js`, que es el único sitio donde se nombran las
+    // bandas.
     const summary =
         `Cobertura de ${total} ${total === 1 ? 'medio' : 'medios'}: ` +
-        `${counts.left} de izquierda, ${counts.center} de orientación mixta, ` +
-        `${counts.right} de derecha.`;
+        `${repartoEnPalabras(counts)}.`;
 
     return (
         <div className={`coverage-bar-box ${compact ? 'is-compact' : ''}`}>

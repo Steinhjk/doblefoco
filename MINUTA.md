@@ -160,12 +160,31 @@ vuelto a entrar por la puerta de atrás.
 | WhatsApp | **Sí**, y primero: es el canal del país. Enlace `wa.me`, no SDK — la CSP es `script-src 'self'` |
 | `utm_*` | **No, todavía.** Sin analítica no miden nada, y la analítica es decisión abierta |
 
+### La tarjeta en X salía sin imagen, y la culpa era de la caché de X (2026-09-16)
+
+Jose lo vio al probar: la página bien, y la tarjeta compartida en X **sin
+imagen**. El servidor estaba impecable —se midió ese día: metadatos correctos
+en portada y noticia, `og-image.png` en 200 y 51 KB también para `Twitterbot`,
+SSR en 381 ms, sin `X-Robots-Tag`—. La causa es que **X guarda su veredicto por
+URL durante días**: la tarjeta se reemplazó el 01-09 (del rectángulo de 3,6 KB
+a la tarjeta real) conservando el nombre, y X siguió sirviendo el veredicto de
+la vieja. Su validador de tarjetas ya no existe para forzar el refresco.
+
+El remedio es el estándar: **la URL de la imagen lleva versión**
+(`og-image.png?v=20260901`) en los tres sitios que la nombran —`index.html`,
+`server/ssr/metadatos.js`, `server/ssr/paginasEstaticas.js`— y la prueba de
+metadatos la exige. Si `og:generar` reescribe la tarjeta, la versión sube.
+Queda en esta misma rama.
+
 ### Lo que falta
 
 1. Mirar el preview de Vercel y aprobarlo.
 2. Fusionar.
 3. **Comprobar una tarjeta real en WhatsApp** una vez publicado: es lo único que
    no se puede verificar desde aquí.
+4. **Reintentar la tarjeta en X un rato después del despliegue** — con la URL
+   versionada X la trata como imagen nueva; si aun así no la trae, el
+   diagnóstico de arriba queda invalidado y hay que volver a mirar.
 
 ---
 

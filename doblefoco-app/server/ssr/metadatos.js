@@ -157,7 +157,10 @@ export function construirMetadatos(story, siteUrl) {
     // La ruta legible, no el id crudo: la canónica tiene que coincidir con la
     // dirección a la que redirige el servidor, o se contradicen entre sí.
     const canonica = `${base}${rutaDeHistoria(story)}`;
-    const imagen = `${base}/og-image.png`;
+    // Con versión en la URL: X cachea su veredicto por URL, y el reemplazo de
+    // la tarjeta del 2026-09-01 con el mismo nombre lo dejó sirviendo tarjetas
+    // sin imagen. La versión vive también en index.html y paginasEstaticas.js.
+    const imagen = `${base}/og-image.png?v=20260901`;
     const titulo = `${story.title} · DobleFoco.co`;
     const descripcion = describirCobertura(story);
     const publicado = story.publishedAt ?? story.firstSeenAt ?? null;

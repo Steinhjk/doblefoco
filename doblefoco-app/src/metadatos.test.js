@@ -91,8 +91,11 @@ describe('Las etiquetas de la portada · lo que el sitio dice de sí mismo', () 
 
     it('promete una imagen grande y la manda', () => {
         expect(etiqueta('twitter:card')).toBe('summary_large_image');
-        expect(etiqueta('og:image')).toBe('https://doblefoco.co/og-image.png');
-        expect(etiqueta('twitter:image')).toBe('https://doblefoco.co/og-image.png');
+        // La URL lleva versión a propósito: X cachea el veredicto por URL y el
+        // reemplazo de la tarjeta del 01-09 con el mismo nombre dejó a X
+        // sirviendo «sin imagen». Si la tarjeta se regenera, la versión sube.
+        expect(etiqueta('og:image')).toBe('https://doblefoco.co/og-image.png?v=20260901');
+        expect(etiqueta('twitter:image')).toBe('https://doblefoco.co/og-image.png?v=20260901');
         // El alt no es un adorno: es lo que lee quien no ve la tarjeta.
         expect(etiqueta('og:image:alt')).toBeTruthy();
     });

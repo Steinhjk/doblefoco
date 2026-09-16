@@ -402,9 +402,11 @@ costura: es una decisión de producto.** Las dos salidas:
 2. **Que la interfaz deje de prometerlo.** Se quitan los tres bloques muertos y
    el buscador dice lo que hace.
 
-**Estado: ABIERTO, decisión de Jose.** La 1 hace mejor el buscador —dos párrafos
-de texto por historia en vez de un titular— y cuesta un campo en la consulta; la
-2 es media hora y deja el sitio diciendo la verdad sobre sí mismo.
+**DECIDIDO el 2026-09-16 (sesión de decisiones, punto 8): la 1.** El motor
+manda `summary` — el `snippet` literal del artículo que pone el titular, sin
+caída a otra pieza, o null si esa no trae entradilla. El contrato de historia
+lo lleva como `copia` con su motivo, los tres bloques muertos se pintan por
+fin, y el buscador hace lo que promete. En la rama de la sesión.
 ## 2026-09-09 · Tercera tanda: la izquierda queda cubierta, y la herramienta contaba de más (ABIERTO)
 
 Colombia Informa, Vorágine y RTVC. **Con estas tres, los nueve medios de

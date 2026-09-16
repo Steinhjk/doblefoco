@@ -30,6 +30,114 @@ idea completa olvidada. Si falta detalle, se escribe qué falta y quién lo sabe
 
 ---
 
+## ABIERTO · Compartir una historia desde la tarjeta
+
+**Planteado por Jose el 2026-09-15:** «hagamos el plan para crear el botón y
+poder compartir los pósts».
+
+Lo primero que hay que decir, porque cambia el trabajo: **el botón ya existe.**
+`ShareModal.jsx` son 152 líneas con diálogo accesible —`role="dialog"`, cierre
+con Escape, foco atrapado y devuelto al abridor— y `NewsDetail.jsx` lo abre con
+`share-detail-btn`. Está vivo en producción, comprobado el 2026-09-15 sobre una
+noticia real. **Lo que no existe es compartir sin entrar en la noticia**, que es
+donde se comparte de verdad: la tarjeta del feed no tiene ninguna acción.
+
+### Lo que ya juega a favor, y no hay que construir
+
+- **`shared/storyPath.js`** da URL legible con titular e identificador, y su
+  propia cabecera ya razona sobre WhatsApp y Telegram.
+- **La tarjeta social está resuelta** desde el 2026-09-01: `og:image` compuesta
+  por noticia, y una `og:description` que dice lo que ningún otro agregador
+  puede decir — *«13 medios cubren este hecho: 2 de izquierda, 6 de centro, 5 de
+  derecha»*.
+- **Las páginas de noticia se renderizan en el servidor**, así que quien reciba
+  el enlace ve la tarjeta aunque su cliente no ejecute JavaScript.
+
+### El riesgo que parecía el gordo, y no aplica
+
+El estudio de mercadeo del 2026-08-31 avisaba de que **el enlace que compartes se
+muere**. Medido hoy, para este caso **no**:
+
+| | |
+|---|---|
+| `/api/feed` con `limit=100` | **100 de 100 son multifuente** |
+| Lo que el ciclo sella en el archivo permanente | exactamente `source_count > 1` |
+
+O sea que **todo lo que se puede compartir desde la interfaz es justo lo que
+sobrevive**. Las de una sola fuente sí se borran, pero no son alcanzables desde
+ninguna tarjeta. Conviene comprobarlo otra vez si algún día el feed deja de
+filtrar por multifuente — ahí el botón empezaría a repartir enlaces que caducan.
+
+### Lo que está mal en lo que ya hay, y hay que arreglar antes de extenderlo
+
+1. **`shareUrl = window.location.href`.** En el detalle acierta por casualidad:
+   es la URL de la historia. Llamado desde una tarjeta compartiría **la portada**,
+   y de paso arrastra los parámetros de filtro que lleve la barra de direcciones.
+   Tiene que salir de `rutaDeHistoria(story)` resuelta contra el origen.
+2. **El texto afirma una virtud.** Hoy dice *«Cobertura contrastada: …»*. Este
+   proyecto ya retiró «Información Objetiva y Moderna» del `twitter:title` por
+   exactamente eso: **un adjetivo que la medición no sostiene**. Lo que sí
+   sostiene es el reparto por espectro, que además es el argumento del producto.
+3. **No hay WhatsApp.** Ofrece X y LinkedIn en un país donde lo que circula
+   circula por WhatsApp. Es un enlace `https://wa.me/?text=`, no un SDK.
+4. **No usa la Web Share API.** En un móvil, `navigator.share` abre la hoja
+   nativa —con WhatsApp, Telegram, correo y lo que el lector tenga— y es una
+   llamada. Debe ser el camino principal donde exista, con el diálogo actual de
+   respaldo.
+5. **La vista previa del diálogo dice menos que el metadato.** Enseña «N medios
+   cubriendo el hecho» mientras la tarjeta que verá el destinatario trae el
+   reparto por espectro. El diálogo debería enseñar lo mismo que se va a mandar.
+
+> **Restricción dura, y no es negociable:** la CSP de `vercel.json` es
+> `script-src 'self'`. Nada de botones oficiales ni SDK de ninguna red. Los
+> `intent` de X, el `wa.me` y el `share-offsite` de LinkedIn funcionan porque son
+> navegación, no script. Cualquier propuesta que pida cargar un script de un
+> tercero se cae sola.
+
+> **Y la regla de los adornos:** lo que se ponga en la tarjeta convive con la
+> peor noticia del día. Nada que lata, nada que arda, ningún «¡compártelo!». La
+> llama de «Temas frecuentes» se quitó por imaginarla al lado de un terremoto de
+> 289 muertos.
+
+### Las cuatro decisiones que no son mías
+
+| | Qué se decide | Lo que recomienda quien lo midió |
+|---|---|---|
+| A | **¿En todas las tarjetas o solo en la destacada?** | En todas, como acción secundaria y discreta — pero es criterio visual, y el visual está delegado |
+| B | **¿Qué texto viaja con el enlace?** | El reparto real por espectro. Es el único dato que nadie más puede dar, y no afirma ninguna virtud |
+| C | **¿Parámetros de rastreo (`utm_*`)?** | **No, todavía.** Sin analítica no miden nada, y ponerle rastreadores al lector es precisamente la decisión de coherencia que este proyecto tiene abierta |
+| D | **¿WhatsApp?** | Sí. Es el canal del país y cuesta un enlace |
+
+### Cómo se haría, en tres fases
+
+**Fase 1 — arreglar lo que ya está publicado.** `ShareModal` recibe la URL de la
+historia en vez de leer la barra de direcciones; el texto pasa a ser el reparto
+por espectro; entra WhatsApp; la vista previa enseña lo que se va a mandar. No
+toca ninguna tarjeta, así que es reversible y se puede mirar en el detalle.
+
+**Fase 2 — la acción en la tarjeta.** Un botón en `NewsCard` que abre el mismo
+diálogo, con `navigator.share` por delante donde exista. Hay cinco sitios que
+pintan tarjetas —`NewsCard`, `CompactHeroGrid`, `MobileSidebar`, `Categories` y
+`SearchResults`— y **el botón no debe escribirse cinco veces**: sale un único
+componente de acción y los demás lo usan. La trampa conocida está en
+`CompactHeroGrid`, donde la tarjeta entera es un `Link`: un botón dentro de un
+enlace necesita `preventDefault` y `stopPropagation` o compartir navegará.
+
+**Fase 3 — la red que lo sostiene.** Pruebas de que la URL compartida es la de la
+historia y no la de la página; de que el texto no contiene adjetivos de virtud
+—se puede comprobar contra una lista, como ya se hace con los titulares—; y una
+pasada de `npm run mirar` mirando la captura, que es donde se ve si el botón se
+come la tarjeta en 390 px.
+
+### Lo que este plan NO propone
+
+- **Contador de veces compartido.** Pide analítica, y la analítica es una
+  decisión abierta de este mismo fichero.
+- **Imagen por historia generada al vuelo para compartir.** La `og:image` de la
+  noticia ya existe y sirve; una imagen distinta por red es trabajo sin lector.
+
+---
+
 > **RESCATADO EL 2026-09-15, Y POR LOS PELOS.** Esta sección se escribió el
 > 2026-08-31 en la rama `arreglo/categorias-no-llevan-a-ningun-lado` (`78c8628`),
 > que **nunca se fusionó**. Al ir a podar ramas remotas se comprobó fichero a

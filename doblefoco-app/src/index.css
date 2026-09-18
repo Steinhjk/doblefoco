@@ -47,6 +47,13 @@
   --bias-objective: #cbd5e1;
   --bias-right: #3b82f6;
 
+  /* «Sin medir» NO es una cuarta posición política: es la ausencia de medición,
+     y por eso es el único gris neutro de esta paleta. No puede parecerse a
+     `--bias-objective` —la banda mixta sí es una medición— ni llevar nada del
+     rojo o del azul, que aquí significan un lado. */
+  --bias-unmeasured: #6b7280;
+  --bias-unmeasured-soft: rgba(107, 114, 128, 0.18);
+
   /* Fondos tenues del espectro, para pastillas y realces de texto.
      Existen como token porque estaban escritos a mano en cada sitio, y así fue
      como la cronología acabó pintando la derecha de ámbar mientras la tarjeta
@@ -138,6 +145,8 @@
   --bias-left: #dc2626;
   --bias-objective: #0f172a;
   --bias-right: #2563eb;
+  --bias-unmeasured: #94a3b8;
+  --bias-unmeasured-soft: rgba(148, 163, 184, 0.18);
   --bias-left-soft: rgba(220, 38, 38, 0.12);
   --bias-objective-soft: rgba(15, 23, 42, 0.08);
   --bias-right-soft: rgba(37, 99, 235, 0.12);

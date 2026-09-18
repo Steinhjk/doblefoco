@@ -42,16 +42,30 @@ export const NOMBRE_DE_BANDA = /** @type {const} */ ({
  * Acepta las dos formas en que el reparto viaja por el proyecto: el servidor lo
  * lleva en `story.coverage.left`, y el cliente en `coverage.counts.left`.
  *
- * @param {{left?: number, center?: number, right?: number}} conteo
+ * @param {{left?: number, center?: number, right?: number, sinMedir?: number}} conteo
  * @returns {string}
  */
 export function repartoEnPalabras(conteo) {
     const n = (valor) => Number(valor ?? 0);
-    return (
+    const tres =
         `${n(conteo?.left)} de ${NOMBRE_DE_BANDA.left}, ` +
         `${n(conteo?.center)} de ${NOMBRE_DE_BANDA.center}, ` +
-        `${n(conteo?.right)} de ${NOMBRE_DE_BANDA.right}`
-    );
+        `${n(conteo?.right)} de ${NOMBRE_DE_BANDA.right}`;
+
+    /**
+     * LOS «SIN MEDIR» SE DICEN, Y SOLO CUANDO LOS HAY (2026-09-18).
+     *
+     * Esta frase la lee quien recibe un enlace por WhatsApp, y es la única
+     * cuenta que va a ver. Si tres de los diez medios que cubren no tienen
+     * orientación medida, callarlos hace que la suma no cuadre con el «10
+     * medios cubren este hecho» que va justo delante — y quien la lea concluirá
+     * lo que le parezca sobre los tres que faltan, que es peor que decírselo.
+     *
+     * Van al final y con su nombre, no repartidos entre las bandas: una cuenta
+     * que se pueda restar es una cuenta que alguien va a restar.
+     */
+    const sinMedir = n(conteo?.sinMedir);
+    return sinMedir > 0 ? `${tres}, ${sinMedir} sin medir` : tres;
 }
 
 /**
@@ -68,13 +82,15 @@ export function repartoEnPalabras(conteo) {
  * como la noticia de hoy, y para mucha gente esa línea es lo único que va a
  * leer de la página. `pasado` es para ellas.
  *
- * @param {{left?: number, center?: number, right?: number}} conteo
+ * @param {{left?: number, center?: number, right?: number, sinMedir?: number}} conteo
  * @param {{pasado?: boolean}} [opciones]
  * @returns {string} frase sin punto final: quien la use decide cómo sigue
  */
 export function fraseDeCobertura(conteo, opciones = {}) {
     const n = (valor) => Number(valor ?? 0);
-    const total = n(conteo?.left) + n(conteo?.center) + n(conteo?.right);
+    // El sujeto cuenta MEDIOS, no bandas: los sin medir cubren igual, así que
+    // suman en «N medios cubren este hecho» aunque no sumen en ninguna banda.
+    const total = n(conteo?.left) + n(conteo?.center) + n(conteo?.right) + n(conteo?.sinMedir);
     const verbo = opciones.pasado ? 'cubrió' : 'cubre';
     const verboPlural = opciones.pasado ? 'cubrieron' : 'cubren';
     const sujeto = total === 1 ? `1 medio ${verbo}` : `${total} medios ${verboPlural}`;

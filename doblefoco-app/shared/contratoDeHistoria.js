@@ -44,18 +44,15 @@
  */
 
 /*
- * LO QUE ESTA LISTA ENCONTRO EN SU PRIMERA PASADA, y esta ABIERTO.
+ * LO QUE ESTA LISTA ENCONTRO EN SU PRIMERA PASADA, RESUELTO EL 2026-09-16.
  *
- * `summary` NO ESTA AQUI porque el motor no lo manda: `componerHistoria` no
- * tiene ese campo. Y la interfaz lo lee en seis sitios —tres bloques
- * `{story.summary && ...}` que no pueden pintarse nunca, y, peor, el buscador
- * del sitio, que dice buscar dentro del resumen (`Navbar.jsx`,
- * `SearchResults.jsx`) cuando en realidad solo busca en el titular—.
- *
- * No se toca aqui porque no es un defecto de la costura sino una decision de
- * producto: o el motor manda un resumen —y entonces hay que decidir de quien es
- * ese texto, que en este proyecto nunca es de la casa— o la interfaz deja de
- * prometerlo. Anotado en MINUTA.md el 2026-09-08.
+ * `summary` no estaba aqui porque el motor no lo mandaba, y la interfaz lo
+ * leia en seis sitios que no podian pintarse nunca — el buscador incluido,
+ * que decia buscar en el resumen y solo buscaba en el titular. Era decision
+ * de producto y Jose la dicto en la sesion del 16-09 (punto 8): el motor lo
+ * manda, y el texto es el `snippet` del articulo que pone el titular — nunca
+ * de la casa. Desde entonces los tres bloques `{story.summary && ...}` se
+ * pintan y el buscador hace lo que promete.
  */
 
 /**
@@ -74,6 +71,14 @@ export const CAMPOS_DE_HISTORIA = {
     toneSummary: { trato: 'copia' },
     articles: { trato: 'copia' },
     archivadaEl: { trato: 'copia' },
+    summary: {
+        trato: 'copia',
+        motivo:
+            'el snippet LITERAL del artículo que pone el titular, o null si esa ' +
+            'pieza no trae entradilla (decisión de Jose, 2026-09-16). Nunca de ' +
+            'la casa, y sin caída a otra pieza: prosa corrida bajo un titular ' +
+            'ajeno sería atribuir texto de otro medio.',
+    },
 
     factuality: {
         trato: 'copia',

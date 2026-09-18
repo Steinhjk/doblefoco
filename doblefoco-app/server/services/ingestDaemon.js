@@ -1807,7 +1807,15 @@ function buildMultisourceStories() {
             // Métricas separadas, no un solo número que las cancela.
             meanBias: coverage.meanBias,
             polarization: coverage.polarization,
-            coverage: coverage.counts,
+            /**
+             * EL REPARTO VIAJA CON SU RESTO (2026-09-18). `counts` solo suma los
+             * medios con orientación medida, así que sin `sinMedir` la
+             * descripción de Open Graph —que arma la frase sumando las tres
+             * bandas— diría «7 medios cubren este hecho» de una historia que
+             * cubren nueve. Es la línea que ve quien recibe el enlace, y no hay
+             * segunda oportunidad de corregirla.
+             */
+            coverage: { ...coverage.counts, sinMedir: coverage.sinMedir },
             coveragePercentages: coverage.percentages,
             dominantSpectrum: coverage.dominantSpectrum,
             insufficientCoverage: coverage.insufficientCoverage,

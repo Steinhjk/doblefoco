@@ -101,8 +101,8 @@
             "estado": "aceptado",
             "resueltoEl": null,
             "reincidencias": 0,
-            "revisarEl": null,
-            "nota": "Decisión de Jose, 2026-09-02. NO está parado: publica a diario. Su feed Arc expone exactamente dos ítems —uno reciente y otro de hace 4,6 años—, y la cadencia de este informe se calcula entre esos dos, de donde sale el número absurdo. Probadas siete rutas (Arc por categoría y sección, /feed/, /rss/, /rss.xml, sitemap de noticias): ninguna otra responde. Google News daría UNA pieza más dentro de la ventana a cambio de que todos sus enlaces dejen de ser canónicos, y eso no compensa. Se acepta: es su feed el que expone poco, no el medio el que calla."
+            "revisarEl": "2026-10-13",
+            "nota": "Decisión de Jose, 2026-09-02. NO está parado: publica a diario. Su feed Arc expone exactamente dos ítems —uno reciente y otro de hace 4,6 años—, y la cadencia de este informe se calcula entre esos dos, de donde sale el número absurdo. Probadas siete rutas (Arc por categoría y sección, /feed/, /rss/, /rss.xml, sitemap de noticias): ninguna otra responde. Google News daría UNA pieza más dentro de la ventana a cambio de que todos sus enlaces dejen de ser canónicos, y eso no compensa. Se acepta: es su feed el que expone poco, no el medio el que calla. ACTUALIZACIÓN del 2026-09-16, decisión de Jose: se le pone plazo (mismo día que Telecaribe) y el cuadro cambió. El sitio DEJÓ de publicar noticias escritas alrededor del 01-09, comprobado por tres vías: su feed de Arc pasó de 2 ítems a 0 (se reconstruye, viene vacío), Google News no indexa nada suyo desde el 01-09, y su portada y su sección de noticias solo enlazan programas de radio. Caracol Radio, misma casa y mismo Arc, entrega 100: la avería no es de PRISA. Parece reestructuración: el texto quedó en caracol.com.co, que ya ingerimos. El 13-10 se comprueba si volvió a escribir; si el silencio es definitivo, es candidata al tipo no noticioso o a quedar como cita sin ingesta."
         },
         "noticias-caracol/feed": {
             "id": "noticias-caracol/feed",

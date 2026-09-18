@@ -13,6 +13,7 @@ import { useHistoriaInicial } from '../hooks/datosInicialesContext';
 import { idDesdeRuta } from '../../shared/storyPath.js';
 import {
     SPECTRUM_LABEL, describirOrientacionMedia, BLINDSPOT_MIN_SOURCES,
+    classifySpectrum, sesgoMedido, etiquetaDeEspectro, claseDeEspectro,
 } from '../../shared/biasAnalysis.js';
 import NewsCard from '../components/NewsCard';
 import CoverageBar from '../components/CoverageBar';
@@ -477,24 +478,47 @@ const NewsDetail = () => {
                         {coverage.insufficientCoverage && (
                             <p className="coverage-caveat">
                                 <Info size={13} aria-hidden="true" />
-                                Con {coverage.total} medios no es posible afirmar que exista una
-                                omisión: hacen falta al menos {BLINDSPOT_MIN_SOURCES}.
+                                Con {coverage.medidos}{' '}
+                                {coverage.sinMedir > 0 ? 'medios de orientación medida' : 'medios'}{' '}
+                                no es posible afirmar que exista una omisión: hacen falta al
+                                menos {BLINDSPOT_MIN_SOURCES}.
+                                {coverage.sinMedir > 0 && (
+                                    <> Otros {coverage.sinMedir} lo cubren sin orientación medida.</>
+                                )}
                             </p>
                         )}
 
                         <div className="media-logos-grouped-grid">
-                            {spectrums.map((spectrum) => {
-                                const group = story.sources.filter((s) => {
-                                    const bias = typeof s.bias === 'number' ? s.bias : 0;
-                                    if (spectrum === 'left') return bias <= -0.2;
-                                    if (spectrum === 'right') return bias >= 0.2;
-                                    return bias > -0.2 && bias < 0.2;
-                                });
+                            {/*
+                              * SE AGRUPA CON `classifySpectrum`, Y NO CON EL
+                              * UMBRAL ESCRITO A MANO (2026-09-18).
+                              *
+                              * Aquí había una cuarta copia del ±0,2 —el defecto
+                              * que `biasAnalysis` existe para no repetir— y con
+                              * ella el default que se está quitando de todo el
+                              * proyecto: `typeof s.bias === 'number' ? s.bias :
+                              * 0` metía en la columna del medio a los medios sin
+                              * orientación medida. El lector veía su logo bajo
+                              * «Orientación mixta», que es una afirmación que
+                              * nadie firmó.
+                              *
+                              * La columna de «sin medir» solo aparece cuando hay
+                              * alguno: una cuarta columna vacía en todas las
+                              * demás historias sería ruido permanente por un
+                              * caso raro.
+                              */}
+                            {/** @type {Array<'left'|'center'|'right'|null>} */ ([
+                                ...spectrums,
+                                ...(story.sources.some((s) => !sesgoMedido(s.bias)) ? [null] : []),
+                            ]).map((spectrum) => {
+                                const group = story.sources.filter(
+                                    (s) => classifySpectrum(s.bias) === spectrum
+                                );
 
                                 return (
-                                    <div key={spectrum} className={`media-group-col ${spectrum}`}>
+                                    <div key={spectrum ?? 'sin-medir'} className={`media-group-col ${claseDeEspectro(spectrum)}`}>
                                         <span className="group-col-title">
-                                            {SPECTRUM_LABEL[spectrum]}
+                                            {etiquetaDeEspectro(spectrum)}
                                             <span className="group-col-count">{group.length}</span>
                                         </span>
                                         <div className="group-logos-list">

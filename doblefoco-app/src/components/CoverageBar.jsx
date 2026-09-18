@@ -19,6 +19,15 @@ const CoverageBar = ({ coverage, compact = false, showLabels = true }) => {
 
     const { percentages, counts, total } = coverage;
 
+    /**
+     * LA BARRA REPARTE LO MEDIDO (2026-09-18). `percentages` suma 100 sobre los
+     * medios con orientación medida, así que con alguno sin medir la barra
+     * describe un subconjunto de la cobertura y hay que decirlo: el resumen lo
+     * dice en palabras —es lo que oye un lector de pantalla— y la nota de
+     * debajo, en pantalla. Sin ellos no cambia nada.
+     */
+    const sinMedir = Number(coverage.sinMedir ?? 0);
+
     // «Mixta» y no «Centro» ni «Sin línea»: esta barra sale en CADA tarjeta, así
     // que es el sitio donde más se nota si un renombrado se queda a medias.
     //
@@ -28,7 +37,7 @@ const CoverageBar = ({ coverage, compact = false, showLabels = true }) => {
     // bandas.
     const summary =
         `Cobertura de ${total} ${total === 1 ? 'medio' : 'medios'}: ` +
-        `${repartoEnPalabras(counts)}.`;
+        `${repartoEnPalabras({ ...counts, sinMedir })}.`;
 
     return (
         <div className={`coverage-bar-box ${compact ? 'is-compact' : ''}`}>
@@ -72,6 +81,11 @@ const CoverageBar = ({ coverage, compact = false, showLabels = true }) => {
                     )}
                     {coverage.isHighlyPolarized && (
                         <span className="coverage-polarized-tag"> · Cobertura polarizada</span>
+                    )}
+                    {sinMedir > 0 && (
+                        <span className="coverage-sin-medir-nota">
+                            {' '}· {sinMedir} sin orientación medida, fuera de la barra
+                        </span>
                     )}
                 </p>
             )}

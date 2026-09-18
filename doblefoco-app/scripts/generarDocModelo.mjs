@@ -277,6 +277,15 @@ export function renderModelo() {
     for (const [clave, etiqueta] of ORDEN) {
         push(fila(etiqueta, `${String(cat[clave]).padStart(3)}   ${pct(cat[clave] / cat.total).padStart(7)}`, 28));
     }
+    /*
+     * LA FILA DE LOS «SIN MEDIR» (2026-09-18). Sin ella las tres bandas sumaban
+     * 94,5 % de un total de 73 y el documento no decía a dónde iba el resto. Va
+     * después de las tres y solo cuando hay alguno: son medios que cuentan en
+     * el denominador de la nula —pueden cubrir— y en ninguna banda.
+     */
+    if (cat.sinMedir > 0) {
+        push(fila('Sin medir', `${String(cat.sinMedir).padStart(3)}   ${pct(cat.sinMedir / cat.total).padStart(7)}`, 28));
+    }
     push(`    ${'-'.repeat(40)}`);
     push(fila('Con feed', String(cat.total).padStart(3), 28));
     push(fila('En el registro', String(MEDIA_REGISTRY.length).padStart(3), 28));

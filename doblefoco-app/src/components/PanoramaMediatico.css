@@ -122,6 +122,11 @@
 .espectro-center { background: var(--bias-objective); }
 .espectro-right { background: var(--bias-right); }
 
+/* La cuarta banda del reparto no es una posición: es lo que todavía no se ha
+   medido. Gris neutro, y con la trama que ya distingue los segmentos sin
+   depender del color. */
+.espectro-sinMedir { background: var(--bias-unmeasured); }
+
 /**
  * Paleta de dueños.
  *

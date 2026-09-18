@@ -1,6 +1,6 @@
 // @ts-check
 import { Highlighter } from 'lucide-react';
-import { SPECTRUM_LABEL } from '../../shared/biasAnalysis.js';
+import { etiquetaDeEspectro, claseDeEspectro } from '../../shared/biasAnalysis.js';
 import './ToneNote.css';
 
 const DONDE = { titular: 'titular', entradilla: 'entradilla' };
@@ -44,8 +44,8 @@ const ToneSummary = ({ resumen }) => {
                     <li key={`${a.outlet}-${i}`} className="tone-summary-item">
                         <div className="tone-summary-head">
                             <span className="tone-summary-outlet">{a.outlet}</span>
-                            <span className={`timeline-spectrum timeline-spectrum-${a.spectrum}`}>
-                                {SPECTRUM_LABEL[a.spectrum]}
+                            <span className={`timeline-spectrum timeline-spectrum-${claseDeEspectro(a.spectrum)}`}>
+                                {etiquetaDeEspectro(a.spectrum)}
                             </span>
                             {a.tone.soloEnEntradilla && (
                                 <span className="tone-summary-flag">titular neutro</span>

@@ -107,14 +107,19 @@ export function repartoPorDueno(conteos, registro) {
  * es el 22,6 % de los medios y el 3,3 % del volumen—.
  *
  * @param {Array<{sourceId: string, articulos: number}>} conteos
- * @param {Array<{id: string, bias: number}>} registro
+ * @param {Array<{id: string, bias: number|null|undefined}>} registro
  */
 export function repartoPorEspectro(conteos, registro) {
     const porMedio = new Map(
         (Array.isArray(conteos) ? conteos : []).map((c) => [c.sourceId, c.articulos ?? 0])
     );
 
-    const bandas = { left: { medios: 0, articulos: 0 }, center: { medios: 0, articulos: 0 }, right: { medios: 0, articulos: 0 } };
+    const bandas = {
+        left: { medios: 0, articulos: 0 },
+        center: { medios: 0, articulos: 0 },
+        right: { medios: 0, articulos: 0 },
+        sinMedir: { medios: 0, articulos: 0 },
+    };
     let totalMedios = 0;
     let totalArticulos = 0;
 
@@ -125,16 +130,28 @@ export function repartoPorEspectro(conteos, registro) {
         // columna dijera algo que la segunda no puede sostener.
         if (articulos <= 0) continue;
 
-        const espectro = classifySpectrum(medio.bias);
+        /**
+         * «SIN MEDIR» ES UNA CUARTA BANDA, Y SE ENSEÑA (2026-09-18).
+         *
+         * Desde la decisión de Jose del 2026-09-16 hay medios que publican y no
+         * tienen orientación medida. Las dos salidas malas eran dejarlos fuera
+         * —el reparto sumaría menos del 100 % de lo que circula sin decir por
+         * qué, y esta vista existe precisamente para que las cuentas no
+         * escondan nada— o meterlos en la banda mixta, que es la afirmación que
+         * el «sin medir» viene a no hacer. Así que se cuentan aparte y se ven:
+         * cuánta de la cobertura que llega a una portada viene de un medio sin
+         * medir es parte del argumento de esta vista, no una nota al pie.
+         */
+        const espectro = classifySpectrum(medio.bias) ?? 'sinMedir';
         bandas[espectro].medios += 1;
         bandas[espectro].articulos += articulos;
         totalMedios += 1;
         totalArticulos += articulos;
     }
 
-    return ['left', 'center', 'right'].map((id) => ({
+    return ['left', 'center', 'right', 'sinMedir'].map((id) => ({
         id,
-        label: SPECTRUM_LABEL[id],
+        label: id === 'sinMedir' ? 'Sin medir' : SPECTRUM_LABEL[id],
         medios: bandas[id].medios,
         articulos: bandas[id].articulos,
         pctMedios: totalMedios > 0 ? (bandas[id].medios / totalMedios) * 100 : 0,

@@ -26,7 +26,7 @@
  * llegar.
  */
 
-import { classifySpectrum, SPECTRUM } from './biasAnalysis.js';
+import { classifySpectrum, SPECTRUM, sesgoMedido } from './biasAnalysis.js';
 
 /** Convierte a milisegundos, o null si no hay fecha utilizable. */
 function aMilis(valor) {
@@ -79,7 +79,13 @@ export function buildCoverageTimeline(articulos) {
                 sourceId: id,
                 outlet: a.outlet ?? a.name ?? id,
                 domain: a.domain ?? null,
-                bias: Number(a.bias ?? 0),
+                /**
+                 * SIN MEDIR SE CONSERVA COMO `null` (2026-09-18). `Number(null)`
+                 * es 0, y 0 aquí no es «no se sabe»: es la banda mixta, así que
+                 * esta línea le ponía orientación a quien no la tiene y la
+                 * cronología lo enseñaba como un medio más del medio.
+                 */
+                bias: sesgoMedido(a.bias) ? Number(a.bias) : null,
                 headline: a.headline ?? null,
                 url: a.canonical_url ?? null,
             });
@@ -121,6 +127,10 @@ export function buildCoverageTimeline(articulos) {
         [SPECTRUM.RIGHT]: /** @type {string|null} */ (null),
     };
     for (const e of entradas) {
+        // Un medio sin sesgo medido no abre ningún espectro: sigue en la lista
+        // de entradas —cubrió, y a qué hora es un hecho— pero no puede sostener
+        // el «entró primero por la derecha», que es una afirmación sobre bandas.
+        if (!e.spectrum) continue;
         if (!porEspectro[e.spectrum]) porEspectro[e.spectrum] = e.at;
     }
 

@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/themeContext';
 import { useHistorias } from '../hooks/historiasContext';
 import { MEDIA_REGISTRY } from '../../shared/mediaRegistry';
 import { rutaDeHistoria } from '../../shared/storyPath';
-import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
+import { classifySpectrum, etiquetaDeEspectro, claseDeEspectro } from '../../shared/biasAnalysis';
 import { nombreDeSeccion } from '../lib/seccion';
 import { categories } from '../data/categories';
 import { Sun, Moon, Search, Newspaper, Radio, CornerDownLeft } from 'lucide-react';
@@ -242,8 +242,8 @@ const Navbar = () => {
                                             >
                                                 <div className="predictive-item-content">
                                                     <span className="predictive-item-title">{item.title}</span>
-                                                    <span className={`predictive-spectrum-badge ${item.spectrum}`}>
-                                                        {SPECTRUM_LABEL[item.spectrum]}
+                                                    <span className={`predictive-spectrum-badge ${claseDeEspectro(item.spectrum)}`}>
+                                                        {etiquetaDeEspectro(item.spectrum)}
                                                     </span>
                                                 </div>
                                             </Link>

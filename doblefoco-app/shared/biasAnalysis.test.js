@@ -47,12 +47,18 @@ describe('classifySpectrum', () => {
         expect(classifySpectrum(SPECTRUM_THRESHOLD - 0.01)).toBe('center');
     });
 
-    it('trata como centro cualquier valor que no sea un número finito', () => {
-        // El catálogo no debería producir estos valores, pero un feed nuevo o
-        // un medio sin clasificar sí. Caer al centro es la degradación
-        // correcta: no atribuye una inclinación que nadie ha establecido.
+    it('devuelve null —«sin medir»— para cualquier valor que no sea un número finito', () => {
+        /**
+         * ESTA PRUEBA DECÍA LO CONTRARIO HASTA EL 2026-09-18, y lo que decía
+         * era el defecto: «caer al centro es la degradación correcta». No lo
+         * es. El centro es una posición —la banda mixta, que este proyecto se
+         * niega a llamar «centro» justamente para no regalarla—, así que caer
+         * ahí atribuye una orientación a quien no la tiene medida. Desde que
+         * el catálogo declara medios «sin medir» (decisión de Jose del
+         * 2026-09-16) el valor que falta tiene su propia respuesta.
+         */
         for (const value of [null, undefined, NaN, Infinity, 'izquierda', {}]) {
-            expect(classifySpectrum(value)).toBe('center');
+            expect(classifySpectrum(value)).toBeNull();
         }
     });
 });
@@ -528,8 +534,16 @@ describe('las dos señales: sin medios, y apenas unos pocos', () => {
         // Es la afirmación que se publicó mal. Con n grande, la ausencia total
         // sí sorprendería —está por debajo del umbral— y aun así aquí no debe
         // haber punto ciego, porque no hay ausencia.
-        const c = analyzeCoverage(historia(15, 1));
-        expect(probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, 15)).toBeLessThan(UMBRAL_SORPRESA);
+        //
+        // EL TAMAÑO SALE DEL CATÁLOGO Y YA NO ESTÁ ESCRITO A MANO (2026-09-18).
+        // Decía 15, que era el caso de Dolly Parton y entonces bastaba. Ese día
+        // cuatro medios pasaron a «sin medir» —el trío de investigación y
+        // RTVC—, la izquierda del catálogo con feed bajó de 13 a 9, y con ella
+        // el tamaño al que una ausencia total sorprende subió de 14 a 20. La
+        // prueba mide la propiedad, no el número: si el catálogo se mueve otra
+        // vez, se mueve con él.
+        const c = analyzeCoverage(historia(MIN_IZQ, 1));
+        expect(probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, MIN_IZQ)).toBeLessThan(UMBRAL_SORPRESA);
         expect(c.blindspot).toBeNull();
     });
 
@@ -543,11 +557,13 @@ describe('las dos señales: sin medios, y apenas unos pocos', () => {
     });
 
     it('la sorpresa se mide sobre lo que se afirma, no sobre «ninguno»', () => {
-        // Si «apenas uno» se juzgara con la nula de «ninguno», con 15 medios
-        // saldría 0,034 —por debajo del 5 %— y volvería el fallo. La nula que
-        // corresponde da 0,18.
-        const conNinguno = probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, 15);
-        const conUno = probabilidadDeComoMuchoEnCatalogo(CAT.left, CAT.total, 15, 1);
+        // Si «apenas uno» se juzgara con la nula de «ninguno», al tamaño en que
+        // esta sí sorprende saldría por debajo del 5 % y volvería el fallo. La
+        // nula que corresponde se queda muy por encima.
+        //
+        // El tamaño sale del catálogo por lo mismo que la prueba de arriba.
+        const conNinguno = probabilidadDeAusenciaEnCatalogo(CAT.left, CAT.total, MIN_IZQ);
+        const conUno = probabilidadDeComoMuchoEnCatalogo(CAT.left, CAT.total, MIN_IZQ, 1);
         expect(conNinguno).toBeLessThan(UMBRAL_SORPRESA);
         expect(conUno).toBeGreaterThan(UMBRAL_SORPRESA);
     });

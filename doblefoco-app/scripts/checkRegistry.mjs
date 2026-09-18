@@ -53,7 +53,21 @@ for (const media of MEDIA_REGISTRY) {
         if (!media[field]) fail(`${media.id}: falta "${field}"`);
     }
 
-    if (typeof media.bias !== 'number' || media.bias < -1 || media.bias > 1) {
+    /**
+     * `bias: null` ES VÁLIDO Y SIGNIFICA «sin medir» (2026-09-18).
+     *
+     * Llega por la misma puerta que el `factuality: null` de aquí abajo y con
+     * el mismo argumento: obligar a que haya número fuerza a inventarlo, y un
+     * número inventado se lee igual que uno medido. Lo estrenan los tres medios
+     * de investigación y RTVC por decisión de Jose del 2026-09-16.
+     *
+     * Se avisa, no se falla, y el aviso dice lo que falta: el «sin medir» es un
+     * estado de tránsito, no un destino. Lo saca de ahí el juicio editorial
+     * firmado, igual que a cualquier otro número de este registro.
+     */
+    if (media.bias === null || media.bias === undefined) {
+        warn(`${media.id}: sesgo SIN MEDIR — no entra en el reparto por espectro`);
+    } else if (typeof media.bias !== 'number' || media.bias < -1 || media.bias > 1) {
         fail(`${media.id}: sesgo fuera de rango (${media.bias})`);
     }
 
@@ -87,7 +101,11 @@ for (const media of MEDIA_REGISTRY) {
      * Mientras no lo esté, el catálogo público lo marca como PROVISIONAL.
      */
     if (!media.reviewedAt) {
-        warn(`${media.id}: sesgo ${media.bias >= 0 ? '+' : ''}${media.bias} SIN revisión editorial`);
+        // Un «sin medir» ya se avisó arriba, y repetirlo aquí como «sesgo null
+        // SIN revisión editorial» diría dos veces lo mismo con peor letra.
+        if (typeof media.bias === 'number') {
+            warn(`${media.id}: sesgo ${media.bias >= 0 ? '+' : ''}${media.bias} SIN revisión editorial`);
+        }
         continue;
     }
 
@@ -176,7 +194,15 @@ for (const file of readdirSync(DOCS_DIR).filter((f) => f.endsWith('.txt'))) {
             );
 
             const declared = numbers.filter((n) => n >= -1 && n <= 1);
-            const matchesRegistry = declared.some((n) => Math.abs(n - media.bias) < 0.001);
+            /**
+             * Un medio SIN MEDIR no tiene número con el que comparar, así que
+             * no se puede decir que un documento lo contradiga: lo que hay que
+             * vigilar entonces es lo contrario —que un documento le atribuya un
+             * número al que el registro ya renunció— y eso lo cubre la prueba
+             * del catálogo público, que se regenera desde el registro.
+             */
+            const matchesRegistry = typeof media.bias !== 'number'
+                || declared.some((n) => Math.abs(n - media.bias) < 0.001);
 
             if (declared.length && !matchesRegistry) {
                 fail(
@@ -421,9 +447,24 @@ for (const feed of feeds) {
 }
 
 const perBand = {};
+let sinMedirConFeed = 0;
 for (const media of ingestedMedia) {
-    const band = getBand(media.bias).id;
+    /**
+     * LOS «SIN MEDIR» NO CUENTAN PARA EL OBJETIVO F1-06 (2026-09-18). El
+     * objetivo es tener seis voces de cada lado, y un medio cuya orientación no
+     * se ha medido no se puede apuntar a ningún lado sin dar por hecho lo que
+     * el catálogo declara que no sabe. Se cuentan aparte y se dicen.
+     */
+    const band = getBand(media.bias)?.id;
+    if (!band) { sinMedirConFeed += 1; continue; }
     perBand[band] = (perBand[band] ?? 0) + 1;
+}
+
+if (sinMedirConFeed > 0) {
+    console.log(
+        `  nota: ${sinMedirConFeed} ${sinMedirConFeed === 1 ? 'medio ingerido está' : 'medios ingeridos están'} ` +
+        'sin sesgo medido, y no cuentan para el objetivo F1-06.'
+    );
 }
 
 const leftish = (perBand.left ?? 0) + (perBand['center-left'] ?? 0);

@@ -354,7 +354,8 @@ export function componerHistoria(fila, articulos, tasasDeAusencia = null) {
 
         meanBias: coverage.meanBias,
         polarization: coverage.polarization,
-        coverage: coverage.counts,
+        // Con su resto, por lo mismo que en el motor: ver la nota de allí.
+        coverage: { ...coverage.counts, sinMedir: coverage.sinMedir },
         coveragePercentages: coverage.percentages,
         dominantSpectrum: coverage.dominantSpectrum,
         insufficientCoverage: coverage.insufficientCoverage,

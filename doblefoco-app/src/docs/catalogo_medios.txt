@@ -7,7 +7,7 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-09-16
+Generado: 2026-09-18
 Medios en el catálogo: 78
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
@@ -28,7 +28,7 @@ IZQUIERDA  [−1.00 a −0.60)  —  1 medio
     de izquierda popular.
 
 ----------------------------------------------------------------------
-IZQUIERDA MODERADA  [−0.60 a −0.20)  —  12 medios
+IZQUIERDA MODERADA  [−0.60 a −0.20)  —  8 medios
 ----------------------------------------------------------------------
 
   Colombia Informa  ·  sesgo −0.55  ·  factualidad 78%
@@ -36,28 +36,12 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  12 medios
     Agencia de comunicación popular ligada a procesos sociales y
     campesinos; encuadre explícito desde movimientos de base.
 
-  Revista RAYA  ·  sesgo −0.55  ·  factualidad 89%
-    revistaraya.com · Investigación independiente · CO · vía Google News · PROVISIONAL
-    Medio de investigación periodística independiente enfocado en
-    derechos humanos, fiscalización del poder político y conflicto
-    armado.
-
   Volcánicas  ·  sesgo −0.50  ·  factualidad 88%
     volcanicas.com · Periodismo feminista independiente · CO · RSS propio · PROVISIONAL
     Revista de periodismo feminista latinoamericano que declara HOY
     como misión «usar las herramientas del periodismo para avanzar los
     derechos de las mujeres». Es periodismo de causa declarada, y el
     valor se deriva de esa declaración vigente.
-
-  Vorágine  ·  sesgo −0.50  ·  factualidad 90%
-    voragine.co · Investigación independiente · CO · RSS propio · PROVISIONAL
-    Periodismo de investigación centrado en poder económico, conflicto
-    armado y derechos humanos.
-
-  Cuestión Pública  ·  sesgo −0.45  ·  factualidad 89%
-    cuestionpublica.com · Investigación independiente · CO · RSS propio · PROVISIONAL
-    Investigación sobre corrupción y captura del Estado; enfoque de
-    veeduría al poder establecido.
 
   Razón Pública  ·  sesgo −0.40  ·  factualidad 92%
     razonpublica.com · Fundación académica · CO · RSS propio · PROVISIONAL
@@ -91,11 +75,6 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  12 medios
     social, la divulgación ambiental y la complejidad cultural», con
     periodismo de investigación y ambiental. Valor derivado de esa
     declaración vigente, no de su historia.
-
-  RTVC Noticias  ·  sesgo −0.35  ·  factualidad 82%
-    rtvcnoticias.com · Medio público nacional · CO · RSS propio · PROVISIONAL
-    Sistema de medios públicos; su línea editorial sigue al gobierno
-    de turno, lo que hace este valor especialmente volátil.
 
   The New York Times  ·  sesgo −0.25  ·  factualidad 90%
     nytimes.com · The New York Times Company · US · sin feed (solo referencia) · PROVISIONAL
@@ -548,6 +527,49 @@ DERECHA  [+0.60 a +1.00)  —  0 medios
   Ningún medio del catálogo cae en esta banda. La ausencia es un
   dato, no un olvido: mientras siga vacía, el sistema no puede
   detectar puntos ciegos que dependan de ella.
+
+----------------------------------------------------------------------
+SIN MEDIR  —  4 medios
+----------------------------------------------------------------------
+
+  Estos medios están en el catálogo y se ingieren como cualquier
+  otro, pero su línea editorial NO tiene valor asignado. No es un
+  olvido ni un valor intermedio: es la constancia de que la
+  evidencia disponible no alcanza para firmar un número. Mientras
+  sigan aquí no cuentan en el reparto por espectro ni pueden
+  sostener —ni desmentir— un punto ciego.
+
+  Revista RAYA  ·  sesgo sin medir  ·  factualidad 89%
+    revistaraya.com · Investigación independiente · CO · vía Google News
+    SIN MEDIR. Medio de investigación periodística independiente
+    enfocado en derechos humanos, fiscalización del poder político y
+    conflicto armado. Eso describe su materia, no sitúa su línea en el
+    eje: el volumen que publica no permite medirla, y el valor que
+    llevaba era una colocación relativa frente a los otros dos medios
+    de investigación.
+
+  Vorágine  ·  sesgo sin medir  ·  factualidad 90%
+    voragine.co · Investigación independiente · CO · RSS propio
+    SIN MEDIR. Periodismo de investigación centrado en poder
+    económico, conflicto armado y derechos humanos. Su materia está
+    clara y su línea no: publica una pieza cada 80 horas, y lo que
+    cabe en la ventana del sitio no alcanza para firmar un número.
+
+  Cuestión Pública  ·  sesgo sin medir  ·  factualidad 89%
+    cuestionpublica.com · Investigación independiente · CO · RSS propio
+    SIN MEDIR. Investigación sobre corrupción y captura del Estado;
+    enfoque de veeduría al poder establecido. Fiscalizar al poder de
+    turno no sitúa a un medio en el eje —lo haga quien lo haga— y su
+    volumen no da para distinguir una cosa de la otra.
+
+  RTVC Noticias  ·  sesgo sin medir  ·  factualidad 82%
+    rtvcnoticias.com · Medio público nacional · CO · RSS propio
+    SIN MEDIR desde el 2026-09-16. Sistema de medios públicos: su
+    línea sigue al gobierno de turno, y el período presidencial cambió
+    el 7 de agosto de 2026. El valor anterior (−0,35) describía la
+    etapa anterior; el nuevo se mide a principios de octubre con un
+    mes de su feed propio, y hasta entonces el catálogo prefiere decir
+    que no lo sabe.
 
 ----------------------------------------------------------------------
 CÓMO LEER ESTOS NÚMEROS

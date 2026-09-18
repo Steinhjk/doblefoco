@@ -271,6 +271,15 @@
     color: var(--bias-right);
 }
 
+/* «Sin medir»: la pastilla existe —callarla dejaría al medio pareciendo medido—
+   pero en gris neutro y con el borde punteado, que es la forma de decir
+   «todavía no» sin usar ninguno de los colores que significan un lado. */
+.predictive-spectrum-badge.sin-medir {
+    background: var(--bias-unmeasured-soft);
+    color: var(--bias-unmeasured);
+    border: 1px dashed var(--bias-unmeasured);
+}
+
 .predictive-footer-link {
     display: flex;
     align-items: center;

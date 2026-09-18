@@ -8,7 +8,7 @@ import {
 import { MEDIA_REGISTRY, SPECTRUM_BANDS, getBand, REDACCIONES, esRedaccionAutomatizada } from '../../shared/mediaRegistry';
 import PanoramaMediatico from '../components/PanoramaMediatico';
 import ReportePropiedad from '../components/ReportePropiedad';
-import { classifySpectrum, SPECTRUM_LABEL } from '../../shared/biasAnalysis';
+import { classifySpectrum, SPECTRUM_LABEL, sesgoMedido } from '../../shared/biasAnalysis';
 import {
     OWNER_TYPES, CONTROL_GROUPS, getOwnership, hasDocumentedOwnership, getOwnerBadge,
     avisosDeDireccion, vigenciaDeFicha, MESES_REVISION_FICHA,
@@ -79,7 +79,13 @@ const SPECTRUM_FILL = {
  * otra cosa.
  */
 
-const fmtBias = (bias) => sesgo(bias, 2);
+/**
+ * `null` es «sin medir», igual que en la factualidad. Devolvía la cadena vacía,
+ * que en la tabla dejaba una celda en blanco y en la ficha un hueco donde
+ * debería ir la línea editorial: los dos se leen como avería del sitio, no como
+ * un estado del catálogo.
+ */
+const fmtBias = (bias) => (sesgoMedido(bias) ? sesgo(bias, 2) : 'sin medir');
 
 /**
  * `null` es «no medida», y se dice. Antes esto devolvía «NaN%» en cuanto
@@ -90,6 +96,18 @@ const fmtPct = (value) => (typeof value === 'number' ? `${Math.round(value * 100
 
 /** ¿Se puede colocar este medio en el eje vertical? */
 const tieneFactualidad = (medio) => typeof medio?.factuality === 'number';
+
+/**
+ * ¿Se puede colocar este medio en el eje horizontal?
+ *
+ * MISMA REGLA QUE EL EJE VERTICAL, Y POR LA MISMA RAZÓN (2026-09-18). Un medio
+ * «sin medir» no tiene orientación que proyectar en el eje, y `xScale(null)`
+ * devolvía `NaN`: el punto desaparecía del SVG sin decirlo, que es peor que
+ * declararlo. Colocarlo en el 0 habría sido todavía peor —el centro del eje es
+ * una posición, la que este proyecto no regala— así que sale del gráfico y se
+ * cuenta en el aviso, con su ficha entera en la tabla.
+ */
+const tieneSesgo = (medio) => sesgoMedido(medio?.bias);
 
 /**
  * Separa puntos que caerían encima. Con 40 medios en un rango estrecho de
@@ -369,8 +387,19 @@ const MediaMap = () => {
      * Siguen en la tabla, con «sin medir» en su columna. Es la misma regla de
      * siempre: el hueco se declara, no se rellena.
      */
-    const puntos = useMemo(() => spread(media.filter(tieneFactualidad)), [media]);
-    const sinFactualidad = media.length - puntos.length;
+    const puntos = useMemo(
+        () => spread(media.filter((m) => tieneFactualidad(m) && tieneSesgo(m))),
+        [media]
+    );
+    /**
+     * DOS AUSENCIAS, DOS CUENTAS. Un medio puede faltar del gráfico por el eje
+     * vertical, por el horizontal o por los dos, y cada motivo se dice con sus
+     * palabras: juntarlos en un «N medios no aparecen» obligaría al lector a
+     * adivinar cuál de los dos datos falta. Se cuenta cada uno por su propia
+     * falta, así que un medio al que le falten los dos sale en los dos avisos.
+     */
+    const sinFactualidad = media.filter((m) => !tieneFactualidad(m)).length;
+    const sinSesgo = media.filter((m) => !tieneSesgo(m)).length;
 
     /** Los que se están viendo y cuya propiedad no se ha podido establecer. */
     const sinPropiedad = useMemo(() => conAusenciaDeclarada(media), [media]);
@@ -702,6 +731,22 @@ const MediaMap = () => {
                 </p>
             )}
 
+            {view === 'mapa' && sinSesgo > 0 && (
+                <p className="map-warning">
+                    <Info size={15} aria-hidden="true" />
+                    <span>
+                        <strong>{sinSesgo}</strong>{' '}
+                        {sinSesgo === 1 ? 'medio no aparece' : 'medios no aparecen'} en el
+                        gráfico porque su <strong>línea editorial está sin medir</strong>: sin
+                        orientación medida no hay sitio que dar{sinSesgo === 1 ? 'le' : 'les'} en
+                        el eje horizontal, y ponerlo{sinSesgo === 1 ? '' : 's'} en el 0 sería
+                        colocar{sinSesgo === 1 ? 'lo' : 'los'} en una posición —la del medio— que
+                        nadie ha medido.{' '}
+                        <strong>Están todos en la tabla</strong>, con «sin medir» en esa columna.
+                    </span>
+                </p>
+            )}
+
             {view === 'mapa' ? (
                 <div className="map-figure">
                     <svg
@@ -911,8 +956,16 @@ const MediaMap = () => {
                                                 ? <span className="sin-medir">sin medir</span>
                                                 : `${alcanceMaximo(item.id)}%`}
                                         </td>
-                                        <td className="num">{fmtBias(item.bias)}</td>
-                                        <td>{getBand(item.bias).label}</td>
+                                        <td className="num">
+                                            {tieneSesgo(item)
+                                                ? fmtBias(item.bias)
+                                                : <span className="sin-medir">sin medir</span>}
+                                        </td>
+                                        <td>
+                                            {getBand(item.bias)?.label ?? (
+                                                <span className="sin-medir">sin medir</span>
+                                            )}
+                                        </td>
                                         <td className="num">{fmtPct(item.factuality)}</td>
                                         <td>{item.group}</td>
                                         <td><Distintivo mediaId={item.id} /> <DistintivoRedaccion medio={item} /></td>
@@ -1084,7 +1137,9 @@ const MediaProfile = ({ media, onClose }) => {
                 <div className="profile-metric">
                     <span className="metric-label">Línea editorial</span>
                     <span className="metric-value">{fmtBias(media.bias)}</span>
-                    <span className="metric-sub">{getBand(media.bias).label}</span>
+                    <span className="metric-sub">
+                        {getBand(media.bias)?.label ?? 'todavía sin clasificar'}
+                    </span>
                 </div>
                 <div className="profile-metric">
                     <span className="metric-label">Factualidad</span>

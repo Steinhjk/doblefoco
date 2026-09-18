@@ -133,12 +133,25 @@ describe('repartoPorEspectro', () => {
         expect(r.find((b) => b.id === 'right').medios).toBe(1);
     });
 
-    it('devuelve siempre las tres bandas, aunque estén vacías', () => {
+    it('devuelve siempre las bandas, aunque estén vacías, y «sin medir» es una de ellas', () => {
         // Una banda que desaparece del gráfico se lee como que no existe, y lo
-        // que hay que mostrar es justamente que está vacía.
+        // que hay que mostrar es justamente que está vacía. Desde el 2026-09-18
+        // son cuatro: los medios sin orientación medida publican, así que tienen
+        // que sumar en algún sitio, y ese sitio no puede ser la banda mixta.
         const r = repartoPorEspectro([], REGISTRO);
-        expect(r.map((b) => b.id)).toEqual(['left', 'center', 'right']);
+        expect(r.map((b) => b.id)).toEqual(['left', 'center', 'right', 'sinMedir']);
         expect(r.every((b) => b.articulos === 0)).toBe(true);
+    });
+
+    it('un medio sin sesgo medido va a «sin medir» y no a la banda mixta', () => {
+        const registro = [...REGISTRO, { id: 'sin-medir-1', bias: null }];
+        const r = repartoPorEspectro([{ sourceId: 'sin-medir-1', articulos: 4 }], registro);
+
+        expect(r.find((b) => b.id === 'sinMedir').medios).toBe(1);
+        expect(r.find((b) => b.id === 'sinMedir').articulos).toBe(4);
+        expect(r.find((b) => b.id === 'center').medios).toBe(0);
+        // Y entra en el denominador: es cobertura que circula.
+        expect(r.find((b) => b.id === 'sinMedir').pctVolumen).toBe(100);
     });
 });
 

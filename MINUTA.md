@@ -67,13 +67,13 @@ código que abre (abajo).
 
 1. **Panel de acceso a los no noticiosos en el inicio** — decidido que existirá,
    decidido que **todavía no se construye**. Espera al frente estético de Jose.
-2. **`bias: null` de verdad** para el trío y RTVC — el «sin medir» del sesgo no
-   existía en el código (la convención vieja era «0 con nota»), y `bias`
-   alimenta mapa, reparto por espectro, panorama y puntos ciegos: se hace como
-   tarea propia, con cada consumidor decidido a conciencia, no con un default
-   silencioso que convierta `null` en «mixta».
-3. **El motor manda `summary`** (decisión 8) — toca el contrato de historia y
-   su lista de costura (2.4), así que va con su prueba de ida y vuelta.
+2. ~~**`bias: null` de verdad** para el trío y RTVC~~ — **HECHO el 2026-09-18**,
+   con los doce consumidores decididos uno a uno. La entrada completa, abajo en
+   CERRADO. **Deja una tarea que NO es de código y es de Jose: correr
+   `npm run db:migrate` contra producción ANTES de fusionar** — la columna
+   `sources.bias` es `NOT NULL` en la base que está corriendo.
+3. ~~**El motor manda `summary`**~~ (decisión 8) — **HECHO el 2026-09-16**, con
+   su prueba de ida y vuelta en el contrato de historia.
 
 > Del lado de compartir: **Jose ya comprobó en vivo** que la tarjeta en X sale
 > con su imagen (la caché cedió con la URL versionada) y que WhatsApp lleva el
@@ -1172,6 +1172,80 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-18 · El «sin medir» del sesgo existe en el código, y la izquierda del catálogo baja de 13 a 9
+
+Punto 2 de la sesión del 16-09. El «sin medir» estaba decidido para cuatro
+medios —Vorágine, Cuestión Pública, Revista RAYA y RTVC— y **no existía en el
+código**: `bias` era obligatorio en el registro, `NOT NULL` en la base, y la
+función que reparte a los medios por espectro leía cualquier cosa que no fuera
+un número como un cero.
+
+> **Un cero no es «no se sabe»: es la banda mixta.** El default silencioso
+> convertía la ausencia de medición en la única afirmación que este proyecto se
+> niega a hacer —que un medio está en el centro—, y lo hacía sin fallar, sin
+> escribir nada en ningún registro y sin que ninguna prueba lo viera.
+
+### Qué se decidió en cada consumidor, que era el encargo
+
+`classifySpectrum` devuelve ahora `null`, y `null` no indexa un objeto de
+conteo: **rompe en voz alta en vez de callar**, así que hubo que decidir los
+doce sitios. En resumen:
+
+| Consumidor | Qué hace con el «sin medir» |
+|---|---|
+| Nula de catálogo (`catalogo()`) | **Cuenta en el total, en ninguna banda.** Puede cubrir, así que es competidor real; sacarlo del universo haría parecer más raro que falte un espectro |
+| `analyzeCoverage` | **Dos tamaños**: `total` son los medios que cubren —lo que ve el lector— y `medidos` es la unidad de todo lo que habla de bandas. `sinMedir` viaja al lado |
+| Media de orientación | `null`, no 0. `describirOrientacionMedia` dice «Orientación sin medir» |
+| Umbral para afirmar una ausencia | Sobre `medidos`: cuatro medios de los que dos no están medidos sostienen lo mismo que dos |
+| «Solo medios de izquierda y derecha» | **Se calla si alguno está sin medir**: ese «solo» sería literalmente falso. Se publica el hecho con la etiqueta que sí es cierta |
+| Frases de los veredictos | Con alguno sin medir, el denominador se nombra: «de 6 medios con orientación medida», no «de 7 medios que cubren el hecho» — una cuenta que se pueda restar es una cuenta que alguien va a restar |
+| Tasas del corpus (base y de ausencia) | Fuera del numerador **y** del denominador |
+| Panorama por espectro | **Cuarta banda visible, «Sin medir».** Publican: dejarlos fuera haría que el reparto no sumara lo que circula, y esta vista existe para que las cuentas no escondan nada |
+| Mapa mediático | **Fuera del gráfico, con su aviso propio** —`xScale(null)` es `NaN` y el punto desaparecía en silencio— y enteros en la tabla, con «sin medir» en su columna. Es la misma regla que ya tenía el eje vertical |
+| Cronología de cobertura | Sigue en la lista —cubrió, y a esa hora— pero no abre ningún espectro, y una historia sin ninguno medido dice que no se puede saber por dónde entró |
+| Compartir y Open Graph | El reparto lleva su resto: «19 medios cubren este hecho: 1 de izquierda, 14 de orientación mixta, 3 de derecha, 1 sin medir» |
+| `getBand` | `null` en vez de la banda del 0, que es lo que ponía el nombre de una banda en la ficha de RTVC |
+
+### Lo que el cambio movió, medido
+
+| | Antes | Ahora |
+|---|---:|---:|
+| Izquierda en el catálogo con feed | 13 de 73 | **9 de 73** |
+| Medios para que una ausencia de la izquierda sorprendiera | 14 | **20** |
+| Sin medir | 0 | 4 |
+
+**La segunda fila es la que importa y conviene no leerla al revés.** La historia
+más cubierta del corpus ronda los 16 medios, así que la rama de la izquierda
+—que ya estaba declarada no medible por decisión de Jose (opción D, 02-09)—
+queda todavía más lejos de poder afirmarse. **Esto no es una pérdida: es que
+cuatro de los medios que sostenían esa cuenta nunca tuvieron con qué
+sostenerla.** El aviso de la portada lo dice ya con los números nuevos: «de los
+73 medios que seguimos, 9 son de izquierda —el 12 % del catálogo— pero publican
+el 3,3 % de los artículos».
+
+Las dos pruebas que fijaban el tamaño **a mano** —el caso de Dolly Parton, 15
+medios— ahora lo toman del catálogo: miden la propiedad, no el número, y si el
+catálogo se mueve otra vez se mueven con él.
+
+### La migración, que es lo único que puede romper el despliegue
+
+`sources.bias` era `NOT NULL`. **Hay que correr `npm run db:migrate` contra
+producción antes de fusionar**, y no después: `prepareStorage` proyecta el
+catálogo en cada arranque, así que sin la migración la primera proyección falla
+entera con «null value in column "bias" violates not-null constraint», el
+servidor arranca declarándose «sin persistencia» y el worker no ingiere.
+
+> **Ya pasó, con la columna de al lado.** El `factuality: null` se decidió el
+> 2026-08-09 y se desplegó sin migrar: **diez horas de feed parado el
+> 2026-08-11, y nada avisó.** El `ALTER` va en `schema.sql` con esa nota
+> encima, y `db:migrate` aplica el esquema y proyecta el catálogo en la misma
+> ejecución, en ese orden.
+
+Comprobado antes de subir: 893 pruebas (12 nuevas, en `shared/sinMedir.test.js`),
+lint, tipos, comentarios, `check:registry` sin errores, los dos documentos
+generados regenerados, y `mirar` en 10/10 con las capturas abiertas — la nota
+del mapa sobre RTVC y la banda gris del panorama se ven en ellas.
 
 ## 2026-09-15 · Podar ramas destapó un comentario que llevaba quince días mintiendo
 

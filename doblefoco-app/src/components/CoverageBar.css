@@ -101,3 +101,10 @@
         transition: none;
     }
 }
+
+/* La cuenta de los que cubren sin orientación medida. Discreta a propósito: es
+   una aclaración de la barra, no una cuarta banda —esos medios no tienen sitio
+   en el reparto porque nadie ha medido dónde ponerlos—. */
+.coverage-sin-medir-nota {
+    color: var(--bias-unmeasured);
+}

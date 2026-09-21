@@ -2,12 +2,13 @@
     "version": 1,
     "medios": {
         "diario-la-libertad": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
                 "Tcherassi": {
                     "vistos": [
+                        "https://diariolalibertad.com/2026/09/16/reabren-proceso-contra-miguel-angel-del-rio-por-senalamientos-contra-samuel-tcherassi/",
                         "https://diariolalibertad.com/2026/07/17/silvia-tcherassi-es-designada-embajadora-ad-honorem-de-la-moda-la-creatividad-y-la-identidad-de-colombia/",
                         "https://diariolalibertad.com/2025/11/14/tcherassi-exige-frenar-proyecto-luna-de-barranquilla-por-presunta-usurpacion-de-obra-y-marca/",
                         "https://diariolalibertad.com/2025/11/13/samuel-tcherassi-habria-activado-acciones-legales-que-buscan-la-suspension-de-luna-del-rio/",
@@ -54,6 +55,7 @@
                 },
                 "Esper": {
                     "vistos": [
+                        "https://diariolalibertad.com/2026/09/19/daniela-esper-deja-de-buscarle-la-quinta-pata-al-gato-y-conviertete-en-una-persona-vitamina/",
                         "https://diariolalibertad.com/2026/07/29/reconocimiento-luz-marina-esper-recibe-el-galardon-hijos-ilustres-de-santa-marta-y-magdalena-501-anos/",
                         "https://diariolalibertad.com/2026/07/29/reconocimiento-luz-marina-esper-recibe-el-galardon-hijos-ilustres-de-santa-marta-y-magdalena-501-anos/"
                     ]
@@ -83,7 +85,7 @@
             }
         },
         "la-nacion-neiva": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -113,7 +115,7 @@
             }
         },
         "cablenoticias": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": null,
             "htmlValidado": false,
             "consultas": {
@@ -123,7 +125,7 @@
             }
         },
         "telecafe": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -133,7 +135,7 @@
             }
         },
         "diario-del-huila": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -143,7 +145,7 @@
             }
         },
         "diario-del-norte": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -162,7 +164,7 @@
             }
         },
         "el-diario-pereira": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -181,7 +183,7 @@
             }
         },
         "proclama-del-pacifico": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -191,7 +193,7 @@
             }
         },
         "choco-7-dias": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -218,7 +220,7 @@
             }
         },
         "el-manduco": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -251,7 +253,7 @@
             }
         },
         "miputumayo": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -264,7 +266,7 @@
             }
         },
         "el-morichal": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -277,7 +279,7 @@
             }
         },
         "vive-el-meta": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": true,
             "consultas": {
@@ -287,7 +289,7 @@
             }
         },
         "lente-regional": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -300,7 +302,7 @@
             }
         },
         "periodismo-publico": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -313,7 +315,7 @@
             }
         },
         "archipielago-press": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -323,7 +325,7 @@
             }
         },
         "al-aire-noticias": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -336,7 +338,7 @@
             }
         },
         "noticias-uno": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -363,7 +365,7 @@
             }
         },
         "valora-analitik": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "html",
             "htmlValidado": true,
             "consultas": {
@@ -376,7 +378,7 @@
             }
         },
         "casa-macondo": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {
@@ -389,7 +391,7 @@
             }
         },
         "volcanicas": {
-            "ultimaComprobacion": "2026-09-14",
+            "ultimaComprobacion": "2026-09-21",
             "canal": "rest",
             "htmlValidado": false,
             "consultas": {

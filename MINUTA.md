@@ -188,6 +188,44 @@ Queda en esta misma rama.
 
 ---
 
+## 2026-09-22 · El estado real, vuelto a medir, y el plan del MVP (ABIERTO)
+
+Jose pidió revisar el estado del proyecto, poner al día las tablas de
+implementación y escribir un plan a mediano plazo para lanzar el MVP. Las
+tablas de `PLAN_PRODUCTO_FINAL.md` llevan ahora una columna «Estado al 22-09»;
+`ROADMAP.txt` queda congelado como histórico, con el estado real al principio y
+una nota bajo cada tarea abierta; y el plan nuevo es
+**`doblefoco-app/PLAN_LANZAMIENTO_MVP.md`**. Todo se comprobó contra
+`origin/main` (`ab60db4`), el código, `gh` y `/api/health`, no contra esta
+minuta.
+
+### Dos cosas que no estaban anotadas en ningún sitio
+
+1. **El desfase ha vuelto, y va a volver cada semana.** Issue #38, abierto
+   desde el 2026-09-17; `desfase.yml` falla a diario desde entonces. Fly sirve
+   `1c892be` y `main` está en `ab60db4`. **La causa es estructural:** los
+   commits de `github-actions[bot]` de la auditoría (jueves) y del centinela
+   (lunes) tocan `auditoria/*.json` y `centinela/estado.json`, que entran en la
+   imagen, y no disparan `desplegar-motor.yml`. El vigilante tiene razón y el
+   arreglo no es callarlo. Es **M0.1** del plan.
+2. **Vorágine volvió a `abierto`/roto** en la pasada del 17-09, con 222 h sin
+   pieza. Había pasado a `resuelto` el 03-09. Su `revisarEl` sigue siendo el
+   1 de octubre. Es **M2.2**.
+
+### Y dos cifras que conviene tener a mano
+
+- Del plan anterior, **21 de 29 filas están cerradas**. De la lista de cierre
+  se cumplen 3 de 6, una a medias y dos no.
+- **Fichas: 65; firmadas, 5**, todas del 18-08 y ninguna de izquierda. Lo
+  dictado el 16-09 sigue sin `reviewedAt`.
+
+### Lo que falta, con dueño
+
+El orden y las fechas están en el plan. Las fechas son una propuesta: puerta el
+27 de octubre y lanzamiento público el 10 de noviembre. **Nada de eso está
+aprobado todavía.**
+
+---
 
 ## 2026-09-09 · Las siete ramas, verificadas juntas — y una prueba que solo falla junta (ABIERTO)
 

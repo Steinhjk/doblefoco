@@ -62,10 +62,13 @@ on:
     - cron: '0 12 * * 4'
   workflow_dispatch:
 
-# `contents: write` para devolver el estado; `issues: write` para el aviso.
+# `contents: write` para devolver el estado; `issues: write` para el aviso;
+# `actions: write` para lanzar el despliegue del motor (ver «Desplegar lo que
+# se acaba de guardar»).
 permissions:
   contents: write
   issues: write
+  actions: write
 
 # Dos pasadas a la vez se pisarían el archivo y duplicarían las peticiones a
 # sitios ajenos, que es lo único de aquí que no se puede deshacer.
@@ -128,6 +131,22 @@ jobs:
           git add doblefoco-app/auditoria/estado.json doblefoco-app/auditoria/hallazgos.json
           git commit -m "Auditoría del $(date -u '+%Y-%m-%d'): $(jq -r '.nuevos' "$RUNNER_TEMP/resumen.json") nuevo(s), $(jq -r '.pendientes' "$RUNNER_TEMP/resumen.json") sin cerrar"
           git push
+          echo "empujado=si" >> "$GITHUB_OUTPUT"
+        id: guardado
+
+      # ── Desplegar lo que se acaba de guardar (añadido el 2026-09-22) ───────
+      # `auditoria/*.json` LLEGA a la imagen: el panel lo importa y Vite lo mete
+      # en `dist/`, así que `rutasDeLaImagen.js` no lo perdona, y con razón.
+      # Pero un empujón hecho con GITHUB_TOKEN no dispara otros flujos (regla de
+      # GitHub), así que `desplegar-motor.yml` no se enteraba, y el vigilante
+      # del desfase gritaba cada jueves con razón. Fue el issue #38, del
+      # 2026-09-17. La excepción de GitHub es `workflow_dispatch`: ese sí crea
+      # la ejecución. El arreglo no es callar al vigilante, es desplegar.
+      - name: Desplegar lo que se acaba de guardar
+        if: steps.guardado.outputs.empujado == 'si'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run desplegar-motor.yml --ref main -f forzar=true
 
       # ── Aviso ──────────────────────────────────────────────────────────────
       # Se busca por etiqueta y no por título, como en vigilancia.yml: el título

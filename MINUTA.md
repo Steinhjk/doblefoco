@@ -224,6 +224,34 @@ Queda en esta misma rama.
 
 ---
 
+## 2026-09-22 · Primera tanda de firma (M1.1): decidida, y en espera de la revisión externa (ABIERTO)
+
+Jose decidió los números con cada ficha delante. El detalle está en
+`DECISIONES.md` (2026-09-22) y en cada ficha. **No hay nada firmado ni se tocó
+el registro**: lo que el sitio muestra cambia al firmar.
+
+| Medio | Lo que va a revisión | Pregunta para el revisor |
+|---|---|---|
+| Semanario VOZ | −0,80, con la magnitud declarada como juicio | — |
+| Colombia Informa | −0,55 (dictado el 16-09); re-medición a mediados de octubre | — |
+| Semana | **+0,70**, banda Derecha (hoy +0,45) | Confirmar o refutar que Semana difundió **133 videos** de campaña sin marcarlos |
+| El Nuevo Siglo | +0,55, ficha nueva: su justificación era historia | ¿Existe hoy un vínculo orgánico con el Partido Conservador? |
+| El Colombiano | +0,35, reabierta como réplica; la firma sigue en pie | ¿Qué lo separa hoy de El Nuevo Siglo? |
+
+**Lo que falta, en orden:**
+1. **Jose pega los cinco envíos en Kimi K3**, con búsqueda web y una
+   conversación por medio. **Se aplazó el 2026-09-22 por decisión suya.** Los
+   envíos se regeneran ese día con `npm run envio -- <medio>`: no valen los de
+   hoy, porque son una foto con fecha.
+2. Se comprueban sus fuentes y se escribe la tabla de objeciones de cada ficha.
+3. Jose firma: `reviewedAt` en el registro y ☑ en la ficha.
+
+**Ojo con Tania Gilinski Bacal**, nombrada embajadora en Israel el 21-09. Hay
+que confirmar su parentesco con el dueño de Semana antes de escribirlo en
+`mediaOwnership.js`.
+
+---
+
 ## 2026-09-22 · El estado real, vuelto a medir, y el plan del MVP (ABIERTO)
 
 Jose pidió revisar el estado del proyecto, poner al día las tablas de

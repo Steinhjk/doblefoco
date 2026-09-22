@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| **Valor actual** | **−0,65** · `reviewedAt: null` |
-| **Propuesta** | **FIRMAR −0,65**, y es la segunda ficha de la banda cuyo número NO es una colocación relativa |
+| **Valor actual** | **−0,55** · `reviewedAt: null` — bajado de −0,65 por Jose el 2026-09-16 |
+| **Propuesta** | ~~FIRMAR −0,65~~ **DECIDIDO: firmar −0,55** (Jose, 2026-09-22), tras la revisión externa. La re-medición de mediados de octubre queda como revisión extraordinaria |
 | **Firma** | ☐ pendiente — Jose Arbeláez |
 | **Fecha** | 2026-09-09 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
@@ -188,9 +188,25 @@ aceptando por escrito que la banda la fija una declaración de la casa y no la
 propiedad, o se baja a −0,55 hasta tener un mes sin catástrofe. Lo que no es
 defensible es dejarlo en −0,65 sin decir cuál de las dos cosas se hizo.
 
+> **DECIDIDO por Jose, en dos tiempos.** El 2026-09-16: **baja a −0,55**. Lo
+> que empujaba a −0,65 era la misión declarada, que es nivel 4, sobre un mes
+> con catástrofe, y el CONTRA 1 y la regla 2 pesan más. El 2026-09-22: **−0,55
+> se firma ya**, tras la revisión externa, sin esperar a octubre. La
+> re-medición con un mes sin catástrofe pasa a ser la primera condición de la
+> REFUTACIÓN, abajo. Ver `DECISIONES.md`, 2026-09-22. El ARGUMENTO de arriba
+> se conserva tal cual: dice por qué se propuso −0,65, y el CONTRA dice por qué
+> no se sostuvo.
+
 ---
 
 ## REFUTACIÓN — qué observación concreta cambiaría el número
+
+- **La re-medición de mediados de octubre de 2026** (decisión del 2026-09-22),
+  con un mes sin catástrofe en el corpus: `npm run expediente --
+  --medio=colombia-informa`. Si con la agenda normal el léxico de movimiento y
+  la sobre-representación de derechos y sociedad se sostienen, el −0,55 es
+  corto y se discute volver a −0,65. Si desaparecen, baja hacia la mixta. En
+  los dos casos es una revisión extraordinaria del §7, con firma nueva.
 
 - **Si en un mes sin catástrofe su cobertura se reparte como la del corpus** y el
   léxico de movimiento desaparece de sus titulares: era especialidad y agenda del
@@ -209,7 +225,7 @@ defensible es dejarlo en −0,65 sin decir cuál de las dos cosas se hizo.
 ## REVISIÓN EXTERNA
 
 ☐ Pendiente. Va al circuito de `revision-externa/` con la instrucción del
-protocolo: **argumentar EN CONTRA de −0,65**, con evidencia, y con dos preguntas
+protocolo: **argumentar EN CONTRA de −0,55** (antes −0,65), con evidencia, y con dos preguntas
 puestas por escrito —si una misión declarada puede fijar banda cuando la
 propiedad no la fija, y si diez piezas de un mes con catástrofe bastan—. Su
 acuerdo no cuenta como aval.

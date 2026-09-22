@@ -139,6 +139,13 @@ mueve a −0,70 y se declara que el catálogo no sabe distinguir por debajo de e
 Las dos son defendibles; lo que no lo es es firmar −0,80 sin decir cuál de las
 dos cosas se está haciendo.
 
+> **DECIDIDO por Jose el 2026-09-22: −0,80, con la magnitud como juicio.** La
+> dirección la fija lo medido: la propiedad del PCC y el aislamiento. **La
+> distancia exacta entre −0,65 y −0,80 es juicio editorial, no medición**, y
+> así se declara. Se descartó −0,70: la regla 2 se escribió para la duda entre
+> bandas, y aquí la banda no está en duda. Ver `DECISIONES.md`, 2026-09-22.
+> Queda la revisión externa antes de firmar.
+
 ---
 
 ## REFUTACIÓN — qué observación concreta cambiaría el número

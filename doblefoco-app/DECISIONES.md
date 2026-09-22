@@ -17,6 +17,39 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-22 · La primera tanda de firma de la izquierda: VOZ en −0,80 y Colombia Informa en −0,55
+
+Jose las decidió el 2026-09-22 con cada ficha delante, al preparar la tarea
+M1.1 del plan del MVP. De 59 fichas, estas eran las únicas dos de izquierda
+cuya propia propuesta es firmar. **Todavía no están firmadas.** Falta la
+revisión externa del §3 del protocolo, y `reviewedAt` se escribe al firmar, no
+antes.
+
+### 1 · Semanario VOZ: −0,80, con la magnitud declarada como juicio
+
+Su ficha dejaba dos salidas defendibles ante su CONTRA: firmar −0,80 aceptando
+por escrito que la magnitud es juicio, o bajar a −0,70 y declarar que el
+catálogo no distingue por debajo de eso. **Jose sostiene −0,80.** La dirección
+es medida: la propiedad declarada del Partido Comunista y el aislamiento de
+cero socios. La distancia exacta entre −0,65 y −0,80 es **juicio editorial**, y
+la ficha lo dice así.
+
+**Descartado:** −0,70. La regla 2 (ante la duda, hacia la mixta) se escribió
+para la duda entre bandas, y aquí la banda no está en duda.
+
+### 2 · Colombia Informa: se firma −0,55 ahora, sin esperar a octubre
+
+El −0,55 lo dictó Jose el 2026-09-16: la banda fuerte la empujaba la misión
+declarada, que es nivel 4, sobre un mes con catástrofe. Hoy se decide
+**firmarlo ya**, y convertir la re-medición de mediados de octubre, con un mes
+sin catástrofe, en la condición de revisión extraordinaria de la ficha.
+
+**Descartado:** esperar a octubre sin firma. Dejaría la banda de izquierda sin
+ninguna ficha firmada hasta noviembre. −0,55 es el valor prudente según la
+regla 2, y la re-medición puede moverlo en cualquier dirección.
+
+---
+
 ## 2026-09-08 · Las historias archivadas por recomposición se borran, y un «aceptado» caduca
 
 Dos decisiones de Jose, tomadas con lo medido delante y anotadas el mismo día.

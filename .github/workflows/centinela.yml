@@ -57,10 +57,13 @@ on:
     - cron: '0 12 * * 1'
   workflow_dispatch:
 
-# `contents: write` es para devolver el estado; `issues: write`, para el aviso.
+# `contents: write` es para devolver el estado; `issues: write`, para el aviso;
+# `actions: write`, para lanzar el despliegue del motor (ver «Desplegar lo que
+# se acaba de guardar»).
 permissions:
   contents: write
   issues: write
+  actions: write
 
 # Dos pasadas a la vez se pisarían el estado y se duplicarían las peticiones a
 # sitios ajenos, que es lo único que aquí no se puede deshacer.
@@ -122,6 +125,21 @@ jobs:
           git add doblefoco-app/centinela/estado.json
           git commit -m "Centinela: estado de la pasada del $(date -u '+%Y-%m-%d') [skip ci]"
           git push
+          echo "empujado=si" >> "$GITHUB_OUTPUT"
+        id: guardado
+
+      # ── Desplegar lo que se acaba de guardar (añadido el 2026-09-22) ───────
+      # `centinela/estado.json` LLEGA a la imagen: el panel lo importa y Vite lo
+      # mete en `dist/`. Ni el `[skip ci]` de arriba ni el GITHUB_TOKEN dejan
+      # que el empujón dispare `desplegar-motor.yml`, así que Fly se quedaba un
+      # commit por detrás cada lunes y el vigilante del desfase lo acusaba
+      # (issue #38, 2026-09-17). `workflow_dispatch` es la excepción que GitHub
+      # sí deja pasar. Ver el mismo paso en `auditoria.yml`.
+      - name: Desplegar lo que se acaba de guardar
+        if: steps.guardado.outputs.empujado == 'si'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run desplegar-motor.yml --ref main -f forzar=true
 
       # ── Aviso ──────────────────────────────────────────────────────────────
       # Igual que en vigilancia.yml, se busca por etiqueta y no por título: el

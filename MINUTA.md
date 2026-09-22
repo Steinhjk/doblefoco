@@ -208,6 +208,15 @@ minuta.
    (lunes) tocan `auditoria/*.json` y `centinela/estado.json`, que entran en la
    imagen, y no disparan `desplegar-motor.yml`. El vigilante tiene razón y el
    arreglo no es callarlo. Es **M0.1** del plan.
+   **Arreglo en la PR #40, el mismo día.** Esos JSON sí llegan a la imagen: el
+   panel los importa y Vite los mete en `dist/`, así que perdonarlos en
+   `rutasDeLaImagen.js` habría sido mentir. En su lugar, tras su `git push`,
+   los dos flujos lanzan `desplegar-motor.yml` por `workflow_dispatch`, la
+   excepción que GitHub deja pasar con `GITHUB_TOKEN`.
+   **Queda por hacer:** (a) la PR solo toca `.github/`, así que al fusionarla
+   no despliega nada, y hay que forzar un despliegue a mano una vez para
+   cerrar el #38; (b) comprobar que se lanza sola el jueves 24-09, con la
+   auditoría, y el lunes 28-09, con el centinela.
 2. **Vorágine volvió a `abierto`/roto** en la pasada del 17-09, con 222 h sin
    pieza. Había pasado a `resuelto` el 03-09. Su `revisarEl` sigue siendo el
    1 de octubre. Es **M2.2**.

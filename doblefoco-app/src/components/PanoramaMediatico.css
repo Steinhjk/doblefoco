@@ -118,9 +118,13 @@
  * etiqueta. De ahí que aquí no haya ningún hex: si algún día cambia la paleta,
  * cambia en un sitio.
  */
-.espectro-left { background: var(--bias-left); }
+.espectro-left { background: var(--bias-left-solid); }
 .espectro-center { background: var(--bias-objective); }
-.espectro-right { background: var(--bias-right); }
+/* La mixta es casi negra en tema claro y casi blanca en oscuro: el blanco de
+   .panorama-seg daba 1,48 en oscuro. El color del fondo de la página contrasta
+   en los dos (axe, 2026-09-22). */
+.panorama-seg.espectro-center { color: var(--bg-main); }
+.espectro-right { background: var(--bias-right-solid); }
 
 /* La cuarta banda del reparto no es una posición: es lo que todavía no se ha
    medido. Gris neutro, y con la trama que ya distingue los segmentos sin

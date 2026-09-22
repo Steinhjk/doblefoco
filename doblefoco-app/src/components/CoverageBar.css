@@ -14,7 +14,7 @@
 }
 
 .coverage-label.left {
-    color: var(--bias-left);
+    color: var(--bias-left-ink);
 }
 
 /* La mixta es un valor del espectro, no texto secundario.
@@ -26,7 +26,7 @@
 }
 
 .coverage-label.right {
-    color: var(--bias-right);
+    color: var(--bias-right-ink);
 }
 
 .coverage-bar {

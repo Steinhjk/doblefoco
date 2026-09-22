@@ -74,9 +74,9 @@
 /* Los del espectro son los MISMOS colores de la tarjeta y de las barras. Aquí
    estaban en violeta y ámbar, así que la cronología pintaba la derecha de un
    color y la tarjeta de arriba la pintaba de otro, en la misma pantalla. */
-.timeline-left   { color: var(--bias-left); }
+.timeline-left   { color: var(--bias-left-ink); }
 .timeline-center { color: var(--text-muted); }
-.timeline-right  { color: var(--bias-right); }
+.timeline-right  { color: var(--bias-right-ink); }
 /* Sin medir: el punto existe —el medio publicó y a esa hora— pero no lleva el
    color de ninguna banda, porque no está en ninguna. */
 .timeline-sin-medir { color: var(--bias-unmeasured); }
@@ -102,9 +102,9 @@
     border-radius: 3px;
 }
 
-.timeline-spectrum-left   { background: var(--bias-left-soft); color: var(--bias-left); }
+.timeline-spectrum-left   { background: var(--bias-left-soft); color: var(--bias-left-ink); }
 .timeline-spectrum-center { background: var(--bias-objective-soft); color: var(--text-muted); }
-.timeline-spectrum-right  { background: var(--bias-right-soft); color: var(--bias-right); }
+.timeline-spectrum-right  { background: var(--bias-right-soft); color: var(--bias-right-ink); }
 .timeline-spectrum-sin-medir {
     background: var(--bias-unmeasured-soft);
     color: var(--bias-unmeasured);

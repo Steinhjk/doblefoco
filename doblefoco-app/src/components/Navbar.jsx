@@ -168,6 +168,11 @@ const Navbar = () => {
                             type="search"
                             placeholder="Buscar noticias o medios..."
                             aria-label="Buscar noticias o medios"
+                            /* role="combobox": sin él, aria-expanded no está permitido en un
+                               input de búsqueda y el lector de pantalla no anuncia la lista de
+                               sugerencias (axe, crítico, en las 22 vistas; 2026-09-22). */
+                            role="combobox"
+                            aria-controls="sugerencias-de-busqueda"
                             aria-autocomplete="list"
                             aria-expanded={isOpenSuggestions && suggestions.allItems.length > 0}
                             value={searchQuery}
@@ -191,7 +196,7 @@ const Navbar = () => {
 
                     {/* Popover de Búsqueda Predictiva */}
                     {isOpenSuggestions && queryNorm.length >= 2 && (
-                        <div className="predictive-search-dropdown" role="listbox" aria-label="Sugerencias de búsqueda">
+                        <div id="sugerencias-de-busqueda" className="predictive-search-dropdown" role="listbox" aria-label="Sugerencias de búsqueda">
                             {suggestions.stories.length > 0 && (
                                 <div className="predictive-section">
                                     <span className="predictive-section-title">

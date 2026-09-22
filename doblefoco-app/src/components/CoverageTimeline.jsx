@@ -1,6 +1,6 @@
 // @ts-check
 import { Clock, AlertCircle } from 'lucide-react';
-import { SPECTRUM_LABEL } from '../../shared/biasAnalysis.js';
+import { SPECTRUM_LABEL, etiquetaDeEspectro, claseDeEspectro } from '../../shared/biasAnalysis.js';
 import { retrasoDelEspectro } from '../../shared/coverageTimeline.js';
 import './CoverageTimeline.css';
 import { decimalCorto } from '../../shared/numeros.js';
@@ -53,7 +53,20 @@ const CoverageTimeline = ({ timeline }) => {
             </h3>
 
             <p className="timeline-summary">
-                {ordenEspectros.length > 1 ? (
+                {/*
+                  * PUEDE NO HABER NINGÚN ESPECTRO (2026-09-18). Si todos los
+                  * medios que han cubierto están «sin medir», `ordenEspectros`
+                  * llega vacío y la frase de siempre decía «Entró primero por
+                  * undefined» —o reventaba al pedirle `.toLowerCase()`—. El
+                  * orden de las entradas sigue siendo cierto y se enseña; lo
+                  * que no se puede es contarlo por bandas.
+                  */}
+                {ordenEspectros.length === 0 ? (
+                    <>
+                        Ninguno de los medios que lo han cubierto tiene la línea editorial
+                        medida, así que <strong>no se puede decir por dónde entró</strong>.
+                    </>
+                ) : ordenEspectros.length > 1 ? (
                     <>
                         Entró primero por <strong>{SPECTRUM_LABEL[primero].toLowerCase()}</strong> y se
                         extendió a{' '}
@@ -93,14 +106,14 @@ const CoverageTimeline = ({ timeline }) => {
                     );
 
                     return (
-                        <li key={e.sourceId} className={`timeline-entry timeline-${e.spectrum}`}>
+                        <li key={e.sourceId} className={`timeline-entry timeline-${claseDeEspectro(e.spectrum)}`}>
                             <span className="timeline-dot" aria-hidden="true" />
 
                             <div className="timeline-entry-body">
                                 <div className="timeline-entry-head">
                                     <span className="timeline-outlet">{e.outlet}</span>
-                                    <span className={`timeline-spectrum timeline-spectrum-${e.spectrum}`}>
-                                        {SPECTRUM_LABEL[e.spectrum]}
+                                    <span className={`timeline-spectrum timeline-spectrum-${claseDeEspectro(e.spectrum)}`}>
+                                        {etiquetaDeEspectro(e.spectrum)}
                                     </span>
                                     <span className="timeline-offset">{retraso}</span>
                                 </div>

@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS sources (
     domain          TEXT NOT NULL UNIQUE,
     country         CHAR(2) NOT NULL,
     media_group     TEXT,
-    bias            REAL NOT NULL CHECK (bias BETWEEN -1 AND 1),
+    bias            REAL CHECK (bias BETWEEN -1 AND 1),              -- NULL = sin medir
     factuality      REAL CHECK (factuality > 0 AND factuality <= 1),  -- NULL = no medida
     bias_rationale  TEXT NOT NULL,
     reviewed_at     DATE,                      -- NULL = clasificación provisional
@@ -115,6 +115,26 @@ CREATE TABLE IF NOT EXISTS sources (
 -- NULL da NULL, que no es falso, así que la restricción sigue rechazando un 0 o
 -- un 1,5 y deja pasar el «no sé».
 ALTER TABLE sources ALTER COLUMN factuality DROP NOT NULL;
+
+-- `bias` PUEDE SER NULL, y significa «sin medir» (2026-09-18).
+--
+-- Llega dos meses después que su hermana de al lado y por el mismo camino: el
+-- catálogo tenía que ponerle número a la línea editorial de todo medio que
+-- diera de alta, así que cuando la evidencia no alcanzaba se firmaba igual. La
+-- decisión de Jose del 2026-09-16 lo declaró al revés para cuatro medios —el
+-- trío de investigación y RTVC—: primero la constancia de que no se sabe, y el
+-- número cuando haya con qué firmarlo.
+--
+-- ESTA LÍNEA ES LA MIGRACIÓN, y hay que correrla ANTES de desplegar el registro
+-- nuevo (`npm run db:migrate`). Sin ella pasa exactamente lo que pasó con
+-- `factuality` el 2026-08-11: la proyección del catálogo falla entera con «null
+-- value in column "bias" violates not-null constraint», el servidor arranca
+-- diciéndose «sin persistencia» y el worker no ingiere. Aquella vez fueron diez
+-- horas de feed parado y nada avisó.
+--
+-- El CHECK se conserva: en SQL una comparación con NULL da NULL, que no es
+-- falso, así que sigue rechazando un 2 o un −3 y deja pasar el «no sé».
+ALTER TABLE sources ALTER COLUMN bias DROP NOT NULL;
 
 -- Última vez que este medio aportó un artículo. Existe porque `articles` retiene
 -- 72 horas: sin esta columna, un medio ausente desde ayer y otro ausente desde

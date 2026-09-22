@@ -47,6 +47,40 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-16 · La sesión de decisiones: seis dictadas en una sentada, y un tipo nuevo de medio
+
+Jose pidió pasar las decisiones pendientes una por una, con su evidencia
+delante. Las seis quedaron dictadas el mismo día; lo que cada una mueve está
+en la rama `decisiones/sesion-del-16-de-septiembre` y en las dos tareas de
+código que abre (abajo).
+
+| # | Decisión | Qué se dictó |
+|---|---|---|
+| 4 | Colombia Informa | **Baja a −0,55.** La banda fuerte la empujaba la misión declarada sobre un mes con catástrofe. **Se re-mide con un mes limpio** (~mediados de octubre) |
+| 5+7 | El trío y Razón Pública | **Nace el tipo «no noticioso»**: Vorágine, Cuestión Pública, RAYA, CasaMacondo, Volcánicas y Razón Pública. Siguen en ingesta y agrupamiento, **salen del mapa mediático** (con nota visible que lo explica), y el trío queda «sin medir». Las2Orillas y Cambio se quedan en el mapa: son mucho más frecuentes. Resuelve de paso la pregunta de Razón Pública |
+| 6 | RTVC | **«Sin medir»**, re-medición a principios de octubre con ~30 días de su feed propio. La previsión del 08-08 queda como contraste — Jose espera oficialismo, y el número se moverá solo si las piezas lo dicen |
+| 8 | El buscador | **Opción A: el motor manda el resumen** — el `snippet` del artículo que pone el titular, acreditado a su medio, como la foto |
+| 9 | W Radio | **`revisarEl: 2026-10-13`** (con Telecaribe). Y al ir a asegurar el flujo apareció el hallazgo: **dejó de publicar noticias escritas ~01-09** — feed de Arc en 0, Google News sin nada suyo desde esa fecha, portada solo de programas; Caracol (misma casa) entrega 100. El texto parece haber quedado en caracol.com.co, que ya ingerimos. Nota completa en `hallazgos.json` |
+| — | Los internacionales en inglés | **Opción C: esperan** la capa de equivalencia de titulares entre idiomas. NYT, FT y Reuters quedan como cita; los datos de feeds, en el registro |
+
+### Lo que la sesión deja pendiente, con dueño
+
+1. **Panel de acceso a los no noticiosos en el inicio** — decidido que existirá,
+   decidido que **todavía no se construye**. Espera al frente estético de Jose.
+2. ~~**`bias: null` de verdad** para el trío y RTVC~~ — **HECHO el 2026-09-18**,
+   con los doce consumidores decididos uno a uno. La entrada completa, abajo en
+   CERRADO. **Deja una tarea que NO es de código y es de Jose: correr
+   `npm run db:migrate` contra producción ANTES de fusionar** — la columna
+   `sources.bias` es `NOT NULL` en la base que está corriendo.
+3. ~~**El motor manda `summary`**~~ (decisión 8) — **HECHO el 2026-09-16**, con
+   su prueba de ida y vuelta en el contrato de historia.
+
+> Del lado de compartir: **Jose ya comprobó en vivo** que la tarjeta en X sale
+> con su imagen (la caché cedió con la URL versionada) y que WhatsApp lleva el
+> texto del reparto. Los pasos 3 y 4 de esa entrada quedan HECHOS el 2026-09-16.
+
+---
+
 ## 2026-09-16 · Los internacionales sin ingesta: dos entran, y los de inglés esperan una decisión (ABIERTA LA DECISIÓN)
 
 A petición de Jose («integremos nuevos medios»), se revisaron los siete medios
@@ -90,7 +124,9 @@ congelado en enero de 2025 — un feed parado no es un feed.**
 la metodología lo dice; (2) se ingieren aceptando que agrupan solos — y es
 medible: contar cuántas historias de un solo medio añaden a portada; (3) una
 capa de equivalencia de titulares entre idiomas antes del agrupamiento, que
-es motor nuevo. **Estado: ABIERTO, decisión de Jose.**
+es motor nuevo. **DECIDIDO el 2026-09-16 (sesión de decisiones): la 3 —
+esperan a esa capa.** Hasta entonces siguen como cita, y los datos de sus
+feeds quedan en el registro para el día que llegue.
 
 El séptimo sin feed es El Manduco, y ese está fuera **a propósito** (decisión
 del 2026-09-02, PR #18): no se toca.
@@ -342,12 +378,15 @@ entera. Lo que no está aquí no está pendiente: está olvidado.
 
 | | Qué se decide | Dónde está la evidencia |
 |---|---|---|
-| 4 | **Colombia Informa: firmar −0,65 o bajar a −0,55.** Es de banda, no de decimales: la frontera está en −0,60 | `fichas/colombia-informa.md` |
-| 5 | **El trío Vorágine / Cuestión Pública / Revista RAYA:** un solo valor, tres justificados, o las tres «sin medir» | `fichas/voragine.md` |
-| 6 | **RTVC:** la regla 3 dice «no lo muevas» y su ficha de propiedad dice «esto caduca el 7 de agosto». Las dos no pueden tener razón | `fichas/rtvc.md` |
-| 7 | **¿Un medio que solo publica análisis debe entrar al agrupamiento?** (Razón Pública) | `MINUTA.md`, 2026-09-08 |
-| 8 | **El buscador promete un resumen que el motor no manda:** o el motor manda el `snippet`, o la interfaz deja de prometerlo. **Dato nuevo del 10-09:** el resumen que se mandaría ya no incluye 1 106 piezas que solo repetían el titular, así que la opción de mandarlo es hoy menos mala que cuando se escribió | `MINUTA.md`, 2026-09-08 |
-| 9 | **El único `aceptado` sin plazo es W Radio**, y su motivo es estructural —su feed expone dos ítems, y eso no cambia con el calendario—. O se le pone `revisarEl` o se escribe que no lo lleva a propósito | `auditoria/hallazgos.json` |
+**Las seis se dictaron el 2026-09-16, en una sola sesión** — el detalle, en la
+entrada «La sesión de decisiones» de ese día:
+
+| 4 | ~~Colombia Informa~~ · **DECIDIDO: baja a −0,55**, re-medición con un mes sin catástrofe | `fichas/colombia-informa.md` |
+| 5 | ~~El trío~~ · **DECIDIDO: tipo «no noticioso»**, fuera del mapa, «sin medir» | `fichas/voragine.md` |
+| 6 | ~~RTVC~~ · **DECIDIDO: «sin medir»**, re-medición a principios de octubre | `fichas/rtvc.md` |
+| 7 | ~~Razón Pública~~ · **DECIDIDO: es «no noticioso»** — entra al agrupamiento, no al mapa | `MINUTA.md`, 2026-09-08 |
+| 8 | ~~El buscador~~ · **DECIDIDO: el motor manda el resumen** (snippet acreditado) | `MINUTA.md`, 2026-09-08 |
+| 9 | ~~W Radio~~ · **DECIDIDO: `revisarEl` 2026-10-13** — y el hallazgo: dejó de publicar texto ~01-09 | `auditoria/hallazgos.json` |
 
 ### A ejecutar el día del despliegue, en este orden
 
@@ -382,8 +421,10 @@ queda abierto de código es lo que abrió ese mismo trabajo:
 |---|---|---|
 | 21 | **2 de octubre** | Medir el tamaño de la base (30 días de retención más Infobae con techo 60; si pasa de ~300 MB hay que decidir) y arrancar la regla por cadencia (3.9) con 30 días de serie |
 | 22 | **1 de octubre** | Se revisa Vorágine: su hallazgo está `resuelto` con esa fecha de vuelta |
-| 23 | **13 de octubre** | Caduca el `aceptado` de Telecaribe — 26 días sin publicar el 08-09, y es canal público |
+| 23 | **13 de octubre** | Caducan los `aceptado` de Telecaribe **y de W Radio** (este con hallazgo del 16-09: dejó de publicar texto; se comprueba si volvió a escribir) |
 | 24 | **Diciembre** | Revisar la opción B del archivo permanente |
+| 28 | **Principios de octubre** | Re-medir RTVC con ~30 días de su feed propio y contrastar la previsión del 08-08 (decisión 6 del 16-09) |
+| 29 | **Mediados de octubre** | Re-medir Colombia Informa con un mes sin catástrofe en el corpus (decisión 4 del 16-09) |
 
 ## 2026-09-08 · El buscador dice buscar en el resumen, y el resumen no existe (ABIERTO)
 
@@ -409,9 +450,11 @@ costura: es una decisión de producto.** Las dos salidas:
 2. **Que la interfaz deje de prometerlo.** Se quitan los tres bloques muertos y
    el buscador dice lo que hace.
 
-**Estado: ABIERTO, decisión de Jose.** La 1 hace mejor el buscador —dos párrafos
-de texto por historia en vez de un titular— y cuesta un campo en la consulta; la
-2 es media hora y deja el sitio diciendo la verdad sobre sí mismo.
+**DECIDIDO el 2026-09-16 (sesión de decisiones, punto 8): la 1.** El motor
+manda `summary` — el `snippet` literal del artículo que pone el titular, sin
+caída a otra pieza, o null si esa no trae entradilla. El contrato de historia
+lo lleva como `copia` con su motivo, los tres bloques muertos se pintan por
+fin, y el buscador hace lo que promete. En la rama de la sesión.
 ## 2026-09-09 · Tercera tanda: la izquierda queda cubierta, y la herramienta contaba de más (ABIERTO)
 
 Colombia Informa, Vorágine y RTVC. **Con estas tres, los nueve medios de
@@ -1177,6 +1220,80 @@ enseñar; la tendrán a partir de la pasada del jueves. El detalle vivo está en
 ---
 
 # CERRADO
+
+## 2026-09-18 · El «sin medir» del sesgo existe en el código, y la izquierda del catálogo baja de 13 a 9
+
+Punto 2 de la sesión del 16-09. El «sin medir» estaba decidido para cuatro
+medios —Vorágine, Cuestión Pública, Revista RAYA y RTVC— y **no existía en el
+código**: `bias` era obligatorio en el registro, `NOT NULL` en la base, y la
+función que reparte a los medios por espectro leía cualquier cosa que no fuera
+un número como un cero.
+
+> **Un cero no es «no se sabe»: es la banda mixta.** El default silencioso
+> convertía la ausencia de medición en la única afirmación que este proyecto se
+> niega a hacer —que un medio está en el centro—, y lo hacía sin fallar, sin
+> escribir nada en ningún registro y sin que ninguna prueba lo viera.
+
+### Qué se decidió en cada consumidor, que era el encargo
+
+`classifySpectrum` devuelve ahora `null`, y `null` no indexa un objeto de
+conteo: **rompe en voz alta en vez de callar**, así que hubo que decidir los
+doce sitios. En resumen:
+
+| Consumidor | Qué hace con el «sin medir» |
+|---|---|
+| Nula de catálogo (`catalogo()`) | **Cuenta en el total, en ninguna banda.** Puede cubrir, así que es competidor real; sacarlo del universo haría parecer más raro que falte un espectro |
+| `analyzeCoverage` | **Dos tamaños**: `total` son los medios que cubren —lo que ve el lector— y `medidos` es la unidad de todo lo que habla de bandas. `sinMedir` viaja al lado |
+| Media de orientación | `null`, no 0. `describirOrientacionMedia` dice «Orientación sin medir» |
+| Umbral para afirmar una ausencia | Sobre `medidos`: cuatro medios de los que dos no están medidos sostienen lo mismo que dos |
+| «Solo medios de izquierda y derecha» | **Se calla si alguno está sin medir**: ese «solo» sería literalmente falso. Se publica el hecho con la etiqueta que sí es cierta |
+| Frases de los veredictos | Con alguno sin medir, el denominador se nombra: «de 6 medios con orientación medida», no «de 7 medios que cubren el hecho» — una cuenta que se pueda restar es una cuenta que alguien va a restar |
+| Tasas del corpus (base y de ausencia) | Fuera del numerador **y** del denominador |
+| Panorama por espectro | **Cuarta banda visible, «Sin medir».** Publican: dejarlos fuera haría que el reparto no sumara lo que circula, y esta vista existe para que las cuentas no escondan nada |
+| Mapa mediático | **Fuera del gráfico, con su aviso propio** —`xScale(null)` es `NaN` y el punto desaparecía en silencio— y enteros en la tabla, con «sin medir» en su columna. Es la misma regla que ya tenía el eje vertical |
+| Cronología de cobertura | Sigue en la lista —cubrió, y a esa hora— pero no abre ningún espectro, y una historia sin ninguno medido dice que no se puede saber por dónde entró |
+| Compartir y Open Graph | El reparto lleva su resto: «19 medios cubren este hecho: 1 de izquierda, 14 de orientación mixta, 3 de derecha, 1 sin medir» |
+| `getBand` | `null` en vez de la banda del 0, que es lo que ponía el nombre de una banda en la ficha de RTVC |
+
+### Lo que el cambio movió, medido
+
+| | Antes | Ahora |
+|---|---:|---:|
+| Izquierda en el catálogo con feed | 13 de 73 | **9 de 73** |
+| Medios para que una ausencia de la izquierda sorprendiera | 14 | **20** |
+| Sin medir | 0 | 4 |
+
+**La segunda fila es la que importa y conviene no leerla al revés.** La historia
+más cubierta del corpus ronda los 16 medios, así que la rama de la izquierda
+—que ya estaba declarada no medible por decisión de Jose (opción D, 02-09)—
+queda todavía más lejos de poder afirmarse. **Esto no es una pérdida: es que
+cuatro de los medios que sostenían esa cuenta nunca tuvieron con qué
+sostenerla.** El aviso de la portada lo dice ya con los números nuevos: «de los
+73 medios que seguimos, 9 son de izquierda —el 12 % del catálogo— pero publican
+el 3,3 % de los artículos».
+
+Las dos pruebas que fijaban el tamaño **a mano** —el caso de Dolly Parton, 15
+medios— ahora lo toman del catálogo: miden la propiedad, no el número, y si el
+catálogo se mueve otra vez se mueven con él.
+
+### La migración, que es lo único que puede romper el despliegue
+
+`sources.bias` era `NOT NULL`. **Hay que correr `npm run db:migrate` contra
+producción antes de fusionar**, y no después: `prepareStorage` proyecta el
+catálogo en cada arranque, así que sin la migración la primera proyección falla
+entera con «null value in column "bias" violates not-null constraint», el
+servidor arranca declarándose «sin persistencia» y el worker no ingiere.
+
+> **Ya pasó, con la columna de al lado.** El `factuality: null` se decidió el
+> 2026-08-09 y se desplegó sin migrar: **diez horas de feed parado el
+> 2026-08-11, y nada avisó.** El `ALTER` va en `schema.sql` con esa nota
+> encima, y `db:migrate` aplica el esquema y proyecta el catálogo en la misma
+> ejecución, en ese orden.
+
+Comprobado antes de subir: 893 pruebas (12 nuevas, en `shared/sinMedir.test.js`),
+lint, tipos, comentarios, `check:registry` sin errores, los dos documentos
+generados regenerados, y `mirar` en 10/10 con las capturas abiertas — la nota
+del mapa sobre RTVC y la banda gris del panorama se ven en ellas.
 
 ## 2026-09-15 · Podar ramas destapó un comentario que llevaba quince días mintiendo
 

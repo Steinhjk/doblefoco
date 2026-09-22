@@ -14,7 +14,7 @@ ninguno de ellos:
     Revista Semana           +0.65               +0.45
     Noticias RCN             +0.45               +0.25
     RTVC Noticias            -0.50               -0.35
-    Colombia Informa         -0.70               -0.65
+    Colombia Informa         -0.70               -0.65   (hoy -0.55, decidido 2026-09-16)
     Cuestión Pública         -0.50               -0.45
     El Colombiano            +0.40               +0.35
     El Espectador            -0.15               -0.20   (hoy 0.00, firmado 2026-08-18)

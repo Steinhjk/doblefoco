@@ -303,6 +303,25 @@ export function componerHistoria(fila, articulos, tasasDeAusencia = null) {
         ? { url: conImagen.image_url, outlet: conImagen.outlet, outletId: conImagen.source_id }
         : null;
 
+    /**
+     * EL RESUMEN ES DEL ARTÍCULO QUE PONE EL TITULAR, O NO HAY (decisión de
+     * Jose, 2026-09-16, sesión de decisiones, punto 8). En este proyecto el
+     * texto nunca es de la casa —«el titular de referencia no lo escribimos»—
+     * así que el resumen es el `snippet` literal de la misma pieza cuyo
+     * titular encabeza la historia: la atribución que ya lleva el titular
+     * cubre también a su entradilla.
+     *
+     * A DIFERENCIA DE LA IMAGEN, AQUÍ NO HAY CAÍDA a otro artículo: la foto
+     * viaja con el nombre de su medio al lado, pero este texto se pinta
+     * corrido bajo el titular, y poner la entradilla de Semana bajo el
+     * titular de El Tiempo sería atribuir prosa ajena. Si la pieza del
+     * titular no trae `snippet`, el resumen es null y la ausencia es el
+     * resultado.
+     */
+    const piezaDelTitular = articulos.find((a) => a.canonical_url === fila.title_url)
+        ?? articulos.find((a) => a.source_id === fila.title_source_id);
+    const summary = piezaDelTitular?.snippet ?? null;
+
     return {
         id: fila.id,
         title: fila.title,
@@ -318,6 +337,7 @@ export function componerHistoria(fila, articulos, tasasDeAusencia = null) {
         // mayoritario y es correcto: el detector es corto de vista a proposito.
         departamento: fila.departamento ?? null,
         image,
+        summary,
 
         publishedAt: fila.published_at,
         firstSeenAt: fila.first_seen_at,
@@ -334,7 +354,8 @@ export function componerHistoria(fila, articulos, tasasDeAusencia = null) {
 
         meanBias: coverage.meanBias,
         polarization: coverage.polarization,
-        coverage: coverage.counts,
+        // Con su resto, por lo mismo que en el motor: ver la nota de allí.
+        coverage: { ...coverage.counts, sinMedir: coverage.sinMedir },
         coveragePercentages: coverage.percentages,
         dominantSpectrum: coverage.dominantSpectrum,
         insufficientCoverage: coverage.insufficientCoverage,

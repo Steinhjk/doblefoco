@@ -214,10 +214,22 @@ function catalogo() {
     // con «Cannot access 'SPECTRUM' before initialization». Se cuenta la
     // primera vez que hace falta y se guarda.
     if (catalogoCache) return catalogoCache;
-    const conteo = { left: 0, center: 0, right: 0, total: 0 };
+    const conteo = { left: 0, center: 0, right: 0, sinMedir: 0, total: 0 };
     for (const medio of MEDIA_REGISTRY) {
         if (!medio?.feed?.url) continue;
-        conteo[classifySpectrum(medio.bias)] += 1;
+        const espectro = classifySpectrum(medio.bias);
+        /**
+         * LOS SIN MEDIR SIGUEN EN `total`, Y NO EN NINGUNA BANDA (2026-09-18).
+         *
+         * `total` es el universo de la nula: «de los medios que PODÍAN cubrir,
+         * n cubrieron». Un medio sin sesgo medido puede cubrir igual que
+         * cualquier otro —tiene feed, ingiere y aparece en historias—, así que
+         * sacarlo del universo encogería el sorteo y haría parecer más
+         * sorprendente de lo que es que falte un espectro. Meterlo en una banda
+         * sería peor todavía: inventaría un competidor de esa orientación.
+         */
+        if (espectro) conteo[espectro] += 1;
+        else conteo.sinMedir += 1;
         conteo.total += 1;
     }
     catalogoCache = conteo;
@@ -370,9 +382,19 @@ export function calcularTasasDeAusencia(historias) {
 
     for (const historia of Array.isArray(historias) ? historias : []) {
         const fuentes = historia?.sources ?? [];
-        if (fuentes.length < BLINDSPOT_MIN_SOURCES) continue;
+        /**
+         * SE CUENTA SOBRE LAS FUENTES CON SESGO MEDIDO (2026-09-18), y tiene
+         * que ser la misma unidad que `insufficientCoverage` en
+         * `analyzeCoverage`: este número es el contexto que acompaña al
+         * veredicto —«la izquierda falta en el 78 % de las historias
+         * evaluables»— y si las dos poblaciones no fueran la misma, la
+         * frecuencia estaría midiendo un conjunto de historias distinto del que
+         * produce los veredictos.
+         */
+        const medidas = fuentes.filter((f) => sesgoMedido(f?.bias));
+        if (medidas.length < BLINDSPOT_MIN_SOURCES) continue;
         evaluables += 1;
-        const presentes = new Set(fuentes.map((f) => classifySpectrum(f?.bias)));
+        const presentes = new Set(medidas.map((f) => classifySpectrum(f?.bias)));
         for (const espectro of ['left', 'center', 'right']) {
             if (!presentes.has(espectro)) ausente[espectro] += 1;
         }
@@ -409,6 +431,14 @@ export function calcularTasasBase(historias) {
     for (const historia of Array.isArray(historias) ? historias : []) {
         for (const fuente of historia?.sources ?? []) {
             const espectro = classifySpectrum(fuente?.bias);
+            /**
+             * Las apariciones sin sesgo medido no entran NI ARRIBA NI ABAJO
+             * (2026-09-18). Lo que esta función produce es la cuota de cada
+             * espectro en el material que circula, y una aparición que no
+             * pertenece a ningún espectro no puede sumar al denominador sin
+             * bajarles la cuota a los tres a la vez.
+             */
+            if (!espectro) continue;
             conteo[espectro] += 1;
             total += 1;
         }
@@ -529,11 +559,80 @@ export const SPECTRUM_LABEL_SHORT = {
     right: 'Derecha',
 };
 
-/** Clasifica una orientación numérica en uno de los tres espectros. */
+/**
+ * CÓMO SE NOMBRA LA AUSENCIA DE MEDICIÓN, en un solo sitio.
+ *
+ * Desde que `classifySpectrum` devuelve `null` (2026-09-18) hay cuatro estados
+ * que llegan a pantalla y solo tres tenían nombre. Escribir «Sin medir» suelto
+ * en cada componente es como empezaron «de centro» y «orientación mixta» a
+ * divergir, y esa divergencia tardó meses en descubrirse.
+ *
+ * Y el nombre dice lo que es: que no se ha medido, no que sea neutral. «Sin
+ * clasificar» o «Otros» insinuarían una cuarta categoría de medio; esto
+ * declara un estado del catálogo, y el que lo saca de ahí es el juicio
+ * editorial firmado.
+ */
+export const SIN_MEDIR_LABEL = 'Sin medir';
+
+/**
+ * La etiqueta de un espectro incluyendo el `null`.
+ *
+ * `SPECTRUM_LABEL[null]` devolvía `undefined`, que en JSX se pinta como nada:
+ * una pastilla vacía al lado del nombre del medio. Esta función es la que hay
+ * que usar en pantalla; el objeto queda para los tres espectros medidos.
+ *
+ * @param {'left'|'center'|'right'|null|undefined} spectrum
+ */
+export function etiquetaDeEspectro(spectrum) {
+    return spectrum ? SPECTRUM_LABEL[spectrum] : SIN_MEDIR_LABEL;
+}
+
+/**
+ * La clase CSS de un espectro incluyendo el `null`.
+ *
+ * Existe porque `className={`badge ${spectrum}`}` escribía literalmente
+ * «badge null» —una clase que no existe, así que la pastilla salía sin color y
+ * sin que nada fallara—. Todo lo que pinte el «sin medir» usa el mismo nombre.
+ *
+ * @param {'left'|'center'|'right'|null|undefined} spectrum
+ */
+export function claseDeEspectro(spectrum) {
+    return spectrum ?? 'sin-medir';
+}
+
+/**
+ * ¿Este medio tiene el sesgo medido?
+ *
+ * `null`, `undefined` y cualquier cosa que no sea un número finito son «sin
+ * medir», que es un estado declarado del catálogo desde la decisión de Jose del
+ * 2026-09-16 y no un dato que falte por descuido.
+ */
+export function sesgoMedido(bias) {
+    return typeof bias === 'number' && Number.isFinite(bias);
+}
+
+/**
+ * Clasifica una orientación numérica en uno de los tres espectros, o en
+ * `null` cuando no hay orientación medida.
+ *
+ * DEVUELVE `null` Y ANTES DEVOLVÍA «MIXTA», y ese es el arreglo del
+ * 2026-09-18. La línea que había —`… ? bias : 0`— leía la ausencia de medición
+ * como un cero, así que un medio SIN MEDIR quedaba en la banda del medio sin
+ * que nadie lo hubiera decidido. Es exactamente lo que `factuality` ya tenía
+ * curado: un default silencioso convierte una ausencia en afirmación, y la
+ * afirmación que fabricaba era la única que este sitio se niega a hacer —que
+ * un medio está en el centro—.
+ *
+ * Lo obliga la decisión de Jose del 2026-09-16, que marcó «sin medir» a
+ * Vorágine, Cuestión Pública, Revista RAYA y RTVC. Y obliga de paso a que CADA
+ * consumidor diga qué hace con el `null` —contarlo aparte, dejarlo fuera del
+ * reparto o declararlo en pantalla—, porque `null` no indexa los objetos de
+ * conteo: rompe en voz alta en vez de callar.
+ */
 export function classifySpectrum(bias) {
-    const value = typeof bias === 'number' && Number.isFinite(bias) ? bias : 0;
-    if (value <= -SPECTRUM_THRESHOLD) return SPECTRUM.LEFT;
-    if (value >= SPECTRUM_THRESHOLD) return SPECTRUM.RIGHT;
+    if (!sesgoMedido(bias)) return null;
+    if (bias <= -SPECTRUM_THRESHOLD) return SPECTRUM.LEFT;
+    if (bias >= SPECTRUM_THRESHOLD) return SPECTRUM.RIGHT;
     return SPECTRUM.CENTER;
 }
 
@@ -554,7 +653,14 @@ export function classifySpectrum(bias) {
  * esas bandas miden es intensidad —una inclinación leve—, y así se dicen.
  */
 export function describirOrientacionMedia(bias) {
-    const value = typeof bias === 'number' && Number.isFinite(bias) ? bias : 0;
+    /**
+     * SIN MEDIR NO ES «MIXTA» (2026-09-18). Esta función recibe la media de los
+     * sesgos de quienes cubrieron, y esa media es `null` cuando ninguno de
+     * ellos tiene sesgo medido. Devolver «Orientación mixta» ahí era describir
+     * una cobertura que no se ha medido como si se hubiera medido.
+     */
+    if (!sesgoMedido(bias)) return 'Orientación sin medir';
+    const value = bias;
     if (value <= -0.3) return 'Inclinación izquierda';
     if (value < -0.1) return 'Izquierda moderada';
     if (value <= 0.1) return 'Orientación mixta';
@@ -638,9 +744,11 @@ function distributePercentages(counts, total) {
  * @param {Array<{name?: string, bias?: number}>} sources
  * @returns {{
  *   total: number,
+ *   medidos: number,
+ *   sinMedir: number,
  *   counts: {left: number, center: number, right: number},
  *   percentages: {left: number, center: number, right: number},
- *   meanBias: number,
+ *   meanBias: number|null,
  *   polarization: number,
  *   isHighlyPolarized: boolean,
  *   dominantSpectrum: 'left'|'center'|'right'|null,
@@ -652,8 +760,27 @@ function distributePercentages(counts, total) {
  */
 export function analyzeCoverage(sources, tasasDeAusencia = null) {
     const list = Array.isArray(sources) ? sources : [];
-    const biases = list
-        .map((s) => (typeof s?.bias === 'number' && Number.isFinite(s.bias) ? s.bias : 0));
+
+    /**
+     * ─────────────────────────────────────────────────────────────────────────
+     * DOS TAMAÑOS, Y NO UNO (2026-09-18)
+     * ─────────────────────────────────────────────────────────────────────────
+     *
+     * `total`   — CUÁNTOS MEDIOS CUBREN el hecho. Es lo que el sitio enseña en
+     *             la tarjeta y por lo que ordena las tendencias, y un medio sin
+     *             sesgo medido cubre igual que cualquier otro: descontarlo de
+     *             aquí sería esconder cobertura real.
+     * `medidos` — de esos, CUÁNTOS TIENEN ORIENTACIÓN MEDIDA. Es la unidad de
+     *             todo lo que habla de espectros: el reparto, la media, la
+     *             polarización y el umbral para poder afirmar una ausencia.
+     *
+     * Antes había un solo número porque todo medio tenía sesgo. Desde que
+     * existe el «sin medir» (decisión de Jose del 2026-09-16), mezclarlos haría
+     * lo mismo por los dos lados: un porcentaje que no suma 100 si el sin medir
+     * entra en el denominador, o una cobertura más pequeña de la real si sale
+     * del recuento de medios.
+     */
+    const biases = list.map((s) => s?.bias).filter((b) => sesgoMedido(b));
 
     const counts = { left: 0, center: 0, right: 0 };
     for (const bias of biases) {
@@ -661,11 +788,18 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
     }
 
     const total = list.length;
-    const percentages = distributePercentages(counts, total);
+    const medidos = biases.length;
+    const sinMedir = total - medidos;
+    const percentages = distributePercentages(counts, medidos);
 
-    const meanBias = total
-        ? Number((biases.reduce((sum, b) => sum + b, 0) / total).toFixed(3))
-        : 0;
+    /**
+     * `null` Y NO 0 CUANDO NADIE APORTA SESGO. Cero es una posición —la banda
+     * mixta— y era la que se estaba fabricando para una historia que solo
+     * cubren medios sin medir. `describirOrientacionMedia` ya sabe decirlo.
+     */
+    const meanBias = medidos
+        ? Number((biases.reduce((sum, b) => sum + b, 0) / medidos).toFixed(3))
+        : null;
 
     const polarization = Number(stddev(biases).toFixed(3));
 
@@ -676,10 +810,16 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         dominantSpectrum = ordered[0][0];
     }
 
-    const insufficientCoverage = total < BLINDSPOT_MIN_SOURCES;
+    /**
+     * SE MIDE SOBRE `medidos`, no sobre `total` (2026-09-18). Lo que este
+     * campo decide es si se puede AFIRMAR algo sobre los espectros, y una
+     * fuente sin orientación medida no ayuda a afirmarlo: cuatro medios de los
+     * que dos están sin medir sostienen lo mismo que dos medios.
+     */
+    const insufficientCoverage = medidos < BLINDSPOT_MIN_SOURCES;
 
-    const leftRatio = total ? counts.left / total : 0;
-    const rightRatio = total ? counts.right / total : 0;
+    const leftRatio = medidos ? counts.left / medidos : 0;
+    const rightRatio = medidos ? counts.right / medidos : 0;
 
     /**
      * ¿Sorprende que falte este espectro bajo la nula de catálogo?
@@ -740,6 +880,20 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
         presentes === 0
             ? `Ninguno ${DE_ESPECTRO[espectro]} lo reportó.`
             : `Solo ${presentes} ${DE_ESPECTRO[espectro]} ${presentes === 1 ? 'lo reporta' : 'lo reportan'}.`;
+
+    /**
+     * SOBRE CUÁNTOS SE ESTÁ CONTANDO, dicho en la propia frase (2026-09-18).
+     *
+     * Cuando todos los medios que cubren tienen sesgo medido —el caso normal—
+     * la frase no cambia ni una letra: son «los N medios que cubren el hecho».
+     * Cuando alguno no lo tiene, el denominador de estas cuentas ya no es ese, y
+     * callarlo invitaría a restar: «4 de 9 son de izquierda o mixta» haría
+     * pensar que los otros 5 son de derecha, cuando de esos 5 hay tres que no
+     * están en ninguna banda.
+     */
+    const universo = sinMedir > 0
+        ? `${medidos} medios con orientación medida`
+        : `${total} medios que cubren el hecho`;
 
     /**
      * La frase que impide que el veredicto mienta.
@@ -815,7 +969,7 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
                     : etiquetaDe(SPECTRUM.RIGHT, counts.right),
                 etiquetaAusencia: etiquetaDe(SPECTRUM.RIGHT, counts.right),
                 description:
-                    `${counts.left + counts.center} de ${total} medios que cubren el hecho ` +
+                    `${counts.left + counts.center} de ${universo} ` +
                     `son de izquierda o de orientación mixta. ` +
                     cuantosReportaron(SPECTRUM.RIGHT, counts.right),
             });
@@ -833,7 +987,7 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
                     : etiquetaDe(SPECTRUM.LEFT, counts.left),
                 etiquetaAusencia: etiquetaDe(SPECTRUM.LEFT, counts.left),
                 description:
-                    `${counts.right + counts.center} de ${total} medios que cubren el hecho ` +
+                    `${counts.right + counts.center} de ${universo} ` +
                     `son de derecha o de orientación mixta. ` +
                     cuantosReportaron(SPECTRUM.LEFT, counts.left),
             });
@@ -851,19 +1005,27 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
              * puede afirmar un punto ciego de izquierda o de derecha, esa
              * afirmación es más fuerte y tiene prioridad.
              */
-            total >= SOLO_EJE_MIN_SOURCES &&
+            medidos >= SOLO_EJE_MIN_SOURCES &&
             counts.center <= BLINDSPOT_MAX_PRESENTES &&
             counts.left + counts.right >= BLINDSPOT_MIN_COBERTURA_LADO
         ) {
             candidatos.push({
                 spectrum: SPECTRUM.CENTER,
                 presentes: counts.center,
-                label: counts.center === 0
+                /**
+                 * «SOLO MEDIOS DE IZQUIERDA Y DERECHA» SE CALLA SI ALGUNO DE
+                 * LOS QUE CUBREN ESTÁ SIN MEDIR (2026-09-18): ese «solo» sería
+                 * literalmente falso —el medio sin medir no es de izquierda ni
+                 * de derecha— y es la única de las tres etiquetas que afirma
+                 * algo sobre TODOS los que cubren y no sobre una banda. El
+                 * hecho sigue diciéndose, con la etiqueta que sí es cierta.
+                 */
+                label: counts.center === 0 && sinMedir === 0
                     ? 'Solo medios de izquierda y derecha'
                     : etiquetaDe(SPECTRUM.CENTER, counts.center),
                 etiquetaAusencia: etiquetaDe(SPECTRUM.CENTER, counts.center),
                 description:
-                    `${counts.left + counts.right} de ${total} medios que cubren el hecho ` +
+                    `${counts.left + counts.right} de ${universo} ` +
                     'se sitúan en el eje izquierda-derecha. ' +
                     cuantosReportaron(SPECTRUM.CENTER, counts.center),
             });
@@ -913,7 +1075,7 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
                             ? 'Énfasis de la izquierda'
                             : 'Énfasis de la derecha',
                     description:
-                        `${n} de ${total} medios que cubren el hecho son de ` +
+                        `${n} de ${universo} son de ` +
                         `${espectro === SPECTRUM.LEFT ? 'izquierda' : 'derecha'} ` +
                         `(${Math.round(ratio * 100)} %). La cobertura se concentra en un solo lado.`,
                 };
@@ -924,6 +1086,8 @@ export function analyzeCoverage(sources, tasasDeAusencia = null) {
 
     return {
         total,
+        medidos,
+        sinMedir,
         counts,
         percentages,
         meanBias,

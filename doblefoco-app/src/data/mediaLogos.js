@@ -44,10 +44,18 @@ function logoFor(id) {
  * el borde quedaba literalmente invisible. Ahora usa una variable de tema.
  */
 export function getBiasSpectrumColor(bias) {
-    const spectrum = classifySpectrum(typeof bias === 'number' ? bias : 0);
+    const spectrum = classifySpectrum(bias);
     if (spectrum === 'left') return 'var(--bias-left)';
     if (spectrum === 'right') return 'var(--bias-right)';
-    return 'var(--text-muted)';
+    /**
+     * SIN MEDIR Y MIXTA NO SE PINTAN IGUAL (2026-09-18). Los dos eran
+     * `--text-muted` porque antes del «sin medir» solo había una banda callada.
+     * Ahora son dos cosas distintas —una medición que no se sitúa en el eje, y
+     * la ausencia de medición— y el borde del logo es el único sitio donde el
+     * lector ve la orientación de un medio suelto, fuera del mapa.
+     */
+    if (spectrum === 'center') return 'var(--text-muted)';
+    return 'var(--bias-unmeasured)';
 }
 
 function toPresentation(media) {

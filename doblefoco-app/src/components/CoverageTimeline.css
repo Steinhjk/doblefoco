@@ -77,6 +77,9 @@
 .timeline-left   { color: var(--bias-left); }
 .timeline-center { color: var(--text-muted); }
 .timeline-right  { color: var(--bias-right); }
+/* Sin medir: el punto existe —el medio publicó y a esa hora— pero no lleva el
+   color de ninguna banda, porque no está en ninguna. */
+.timeline-sin-medir { color: var(--bias-unmeasured); }
 
 .timeline-entry-body { color: var(--text-color, inherit); }
 
@@ -102,6 +105,11 @@
 .timeline-spectrum-left   { background: var(--bias-left-soft); color: var(--bias-left); }
 .timeline-spectrum-center { background: var(--bias-objective-soft); color: var(--text-muted); }
 .timeline-spectrum-right  { background: var(--bias-right-soft); color: var(--bias-right); }
+.timeline-spectrum-sin-medir {
+    background: var(--bias-unmeasured-soft);
+    color: var(--bias-unmeasured);
+    border: 1px dashed var(--bias-unmeasured);
+}
 
 .timeline-offset {
     font-size: 0.74rem;

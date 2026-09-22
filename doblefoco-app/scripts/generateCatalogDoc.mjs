@@ -103,8 +103,12 @@ push(wrap(
 push();
 
 const byBand = new Map(SPECTRUM_BANDS.map((band) => [band.id, []]));
+/** Los que el catálogo declara «sin medir»: no caben en ninguna banda. */
+const sinBanda = [];
 for (const media of MEDIA_REGISTRY) {
-    byBand.get(getBand(media.bias).id).push(media);
+    const band = getBand(media.bias);
+    if (!band) { sinBanda.push(media); continue; }
+    byBand.get(band.id).push(media);
 }
 
 for (const band of SPECTRUM_BANDS) {
@@ -135,6 +139,39 @@ for (const band of SPECTRUM_BANDS) {
 
         push(`  ${media.name}  ·  sesgo ${fmtBias(media.bias)}  ·  factualidad ${fmtFactuality(media.factuality)}`);
         push(`    ${media.domain} · ${media.group} · ${media.country} · ${feed} · ${review}`);
+        push(wrap(media.biasRationale, 66, '    '));
+        push();
+    }
+}
+
+/*
+ * LOS «SIN MEDIR» TIENEN SU PROPIA SECCIÓN, y no es un apéndice: este
+ * documento es el que leen las IA que resumen el catálogo, y un medio ausente
+ * de todas las bandas se leería como un medio que no existe. Va después de las
+ * bandas porque no es una de ellas.
+ */
+if (sinBanda.length) {
+    push('-'.repeat(70));
+    const cuenta = `${sinBanda.length} ${sinBanda.length === 1 ? 'medio' : 'medios'}`;
+    push(`SIN MEDIR  —  ${cuenta}`);
+    push('-'.repeat(70));
+    push();
+    push(wrap(
+        'Estos medios están en el catálogo y se ingieren como cualquier otro, ' +
+        'pero su línea editorial NO tiene valor asignado. No es un olvido ni un ' +
+        'valor intermedio: es la constancia de que la evidencia disponible no ' +
+        'alcanza para firmar un número. Mientras sigan aquí no cuentan en el ' +
+        'reparto por espectro ni pueden sostener —ni desmentir— un punto ciego.',
+        66, '  '
+    ));
+    push();
+
+    for (const media of sinBanda) {
+        const feed = media.feed?.url
+            ? (media.feed.via === 'gnews' ? 'vía Google News' : 'RSS propio')
+            : 'sin feed (solo referencia)';
+        push(`  ${media.name}  ·  sesgo sin medir  ·  factualidad ${fmtFactuality(media.factuality)}`);
+        push(`    ${media.domain} · ${media.group} · ${media.country} · ${feed}`);
         push(wrap(media.biasRationale, 66, '    '));
         push();
     }

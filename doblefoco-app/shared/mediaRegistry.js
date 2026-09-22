@@ -185,7 +185,18 @@ export const MEDIA_REGISTRY = [
     {
         id: 'colombia-informa', name: 'Colombia Informa', shortName: 'Col. Informa',
         domain: 'colombiainforma.info', country: 'CO', group: 'Comunicación popular',
-        bias: -0.65, factuality: 0.78, reviewedAt: null,
+        /**
+         * DE −0,65 A −0,55, decisión de Jose del 2026-09-16 sobre la ficha
+         * (`fichas/colombia-informa.md`). La duda era de banda, no de decimales:
+         * lo que empujaba a −0,65 era la misión declarada (nivel 4) sobre diez
+         * piezas de un mes con terremoto y Catatumbo — con esa muestra no se
+         * afirma «sostenidamente», y la regla 2 empuja a la banda suave ante la
+         * duda. SE RE-MIDE cuando el corpus tenga un mes sin catástrofe
+         * (orientativo: mediados de octubre de 2026); si el léxico de
+         * movimiento se sostiene sin la agenda del desastre, la ficha vuelve a
+         * proponer la banda fuerte.
+         */
+        bias: -0.55, factuality: 0.78, reviewedAt: null,
         biasRationale: 'Agencia de comunicación popular ligada a procesos sociales y campesinos; encuadre explícito desde movimientos de base.',
         feed: { url: 'https://www.colombiainforma.info/feed/', via: 'direct', category: 'Política' },
     },
@@ -245,6 +256,21 @@ export const MEDIA_REGISTRY = [
     {
         id: 'casa-macondo', name: 'CasaMacondo', shortName: 'CasaMacondo',
         domain: 'casamacondo.co', country: 'CO', group: 'Investigación independiente',
+        /**
+         * NO NOTICIOSO — decisión de Jose del 2026-09-16, y es un TIPO nuevo
+         * del catálogo, no una marca de este medio. Los medios cuyo producto es
+         * la investigación o el análisis —no el ciclo noticioso diario— no
+         * compiten en el mapa mediático, y por eso salen de él: sus números
+         * eran colocaciones relativas que el expediente de Vorágine demostró
+         * insostenibles. SIGUEN en la ingesta y en el agrupamiento: cuando
+         * investigan un hecho que los demás cubren, su presencia en la historia
+         * es valor, no ruido. Tendrán acceso propio en un panel del inicio
+         * (pendiente en la minuta, no construido). Lo llevan seis: este,
+         * Volcánicas, Revista RAYA, Vorágine, Cuestión Pública y Razón
+         * Pública. Las2Orillas y Cambio se quedan en el mapa a propósito:
+         * son mucho más frecuentes en el ciclo diario.
+         */
+        noNoticioso: true,
         bias: -0.35, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Declara HOY como compromiso editorial «promover la justicia social, la divulgación ambiental y la complejidad cultural», con periodismo de investigación y ambiental. Valor derivado de esa declaración vigente, no de su historia.',
         feed: { url: 'https://casamacondo.co/feed/', via: 'direct', category: 'Judicial' },
@@ -262,6 +288,8 @@ export const MEDIA_REGISTRY = [
          */
         id: 'volcanicas', name: 'Volcánicas', shortName: 'Volcánicas',
         domain: 'volcanicas.com', country: 'CO', group: 'Periodismo feminista independiente',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
         bias: -0.50, factuality: 0.88, reviewedAt: null,
         biasRationale: 'Revista de periodismo feminista latinoamericano que declara HOY como misión «usar las herramientas del periodismo para avanzar los derechos de las mujeres». Es periodismo de causa declarada, y el valor se deriva de esa declaración vigente.',
         feed: { url: 'https://volcanicas.com/feed/', via: 'direct', category: 'Política' },
@@ -269,27 +297,58 @@ export const MEDIA_REGISTRY = [
     {
         id: 'revista-raya', name: 'Revista RAYA', shortName: 'Revista RAYA',
         domain: 'revistaraya.com', country: 'CO', group: 'Investigación independiente',
-        bias: -0.55, factuality: 0.89, reviewedAt: null,
-        biasRationale: 'Medio de investigación periodística independiente enfocado en derechos humanos, fiscalización del poder político y conflicto armado.',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
+        /**
+         * SIN MEDIR — decisión de Jose del 2026-09-16, aplicada el 2026-09-18.
+         * Llevaba −0,55. El porqué es común a los tres del trío y está escrito
+         * entero en `fichas/voragine.md`; en corto: los tres llevaban números
+         * distintos —−0,45, −0,50 y −0,55— y al medirlos no había con qué
+         * separarlos. Tres decimales distintos sobre tres reportajes son una
+         * precisión que el material no sostiene.
+         */
+        bias: null, factuality: 0.89, reviewedAt: null,
+        biasRationale: 'SIN MEDIR. Medio de investigación periodística independiente enfocado en derechos humanos, fiscalización del poder político y conflicto armado. Eso describe su materia, no sitúa su línea en el eje: el volumen que publica no permite medirla, y el valor que llevaba era una colocación relativa frente a los otros dos medios de investigación.',
         feed: { url: gnews('revistaraya.com'), via: 'gnews', category: 'Judicial' },
     },
     {
         id: 'voragine', name: 'Vorágine', shortName: 'Vorágine',
         domain: 'voragine.co', country: 'CO', group: 'Investigación independiente',
-        bias: -0.50, factuality: 0.90, reviewedAt: null,
-        biasRationale: 'Periodismo de investigación centrado en poder económico, conflicto armado y derechos humanos.',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
+        /**
+         * SIN MEDIR — decisión de Jose del 2026-09-16, aplicada el 2026-09-18.
+         * Llevaba −0,50, y su expediente es el que abrió la pregunta: de sus 5
+         * piezas del corpus, una es un cómic en inglés y otra la convocatoria a
+         * un taller. **Quedan tres reportajes**, y sobre tres reportajes no se
+         * afirma una línea editorial. El expediente entero, en
+         * `fichas/voragine.md`, con las tres salidas que se consideraron.
+         */
+        bias: null, factuality: 0.90, reviewedAt: null,
+        biasRationale: 'SIN MEDIR. Periodismo de investigación centrado en poder económico, conflicto armado y derechos humanos. Su materia está clara y su línea no: publica una pieza cada 80 horas, y lo que cabe en la ventana del sitio no alcanza para firmar un número.',
         feed: { url: 'https://voragine.co/feed/', via: 'direct', category: 'Judicial' },
     },
     {
         id: 'cuestion-publica', name: 'Cuestión Pública', shortName: 'C. Pública',
         domain: 'cuestionpublica.com', country: 'CO', group: 'Investigación independiente',
-        bias: -0.45, factuality: 0.89, reviewedAt: null,
-        biasRationale: 'Investigación sobre corrupción y captura del Estado; enfoque de veeduría al poder establecido.',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        noNoticioso: true,
+        /**
+         * SIN MEDIR — decisión de Jose del 2026-09-16, aplicada el 2026-09-18.
+         * Llevaba −0,45, el del medio de los tres, y era el que MENOS evidencia
+         * tenía: 7 artículos en el corpus limpio. Ver `fichas/voragine.md`.
+         */
+        bias: null, factuality: 0.89, reviewedAt: null,
+        biasRationale: 'SIN MEDIR. Investigación sobre corrupción y captura del Estado; enfoque de veeduría al poder establecido. Fiscalizar al poder de turno no sitúa a un medio en el eje —lo haga quien lo haga— y su volumen no da para distinguir una cosa de la otra.',
         feed: { url: 'https://cuestionpublica.com/feed/', via: 'direct', category: 'Judicial' },
     },
     {
         id: 'razon-publica', name: 'Razón Pública', shortName: 'R. Pública',
         domain: 'razonpublica.com', country: 'CO', group: 'Fundación académica',
+        // No noticioso (2026-09-16): la explicación del tipo, en CasaMacondo.
+        // Resuelve además la pregunta del 08-09 —¿un medio que solo publica
+        // análisis entra al agrupamiento?—: sí entra, y no compite en el mapa.
+        noNoticioso: true,
         bias: -0.40, factuality: 0.92, reviewedAt: null,
         biasRationale: 'Análisis académico con énfasis en política social y crítica al modelo económico vigente.',
         feed: { url: 'https://razonpublica.com/feed/', via: 'direct', category: 'Economía' },
@@ -397,8 +456,29 @@ export const MEDIA_REGISTRY = [
     {
         id: 'rtvc', name: 'RTVC Noticias', shortName: 'RTVC',
         domain: 'rtvcnoticias.com', country: 'CO', group: 'Medio público nacional',
-        bias: -0.35, factuality: 0.82, reviewedAt: null,
-        biasRationale: 'Sistema de medios públicos; su línea editorial sigue al gobierno de turno, lo que hace este valor especialmente volátil.',
+        /**
+         * SIN MEDIR — decisión de Jose del 2026-09-16, aplicada el 2026-09-18.
+         * Llevaba −0,35, heredado del gobierno anterior.
+         *
+         * LA TENSIÓN QUE RESUELVE, y que estaba escrita en dos reglas que no
+         * podían tener razón a la vez: la regla 3 dice «sin evidencia de nivel
+         * 1-3 no se mueve el número», y su ficha de propiedad decía «esto caduca
+         * el 7 de agosto», el día que terminó el período presidencial. Dejar el
+         * −0,35 era publicar la línea de un gobierno que ya no está; moverlo a
+         * ojo era inventar la del que llegó.
+         *
+         * QUÉ HABÍA PARA MEDIR, medido el 2026-09-09: 6 piezas, ninguna de
+         * política, la última del 2026-09-01. La previsión que Jose dejó escrita
+         * el 2026-08-08 —que pasaría a cubrir desde una posición oficialista—
+         * NO se puede ni confirmar ni desmentir con eso, y una previsión sin
+         * material que la confirme no es una medición.
+         *
+         * SE RE-MIDE A PRINCIPIOS DE OCTUBRE, con ~30 días de su feed propio
+         * —el `/noticias/rss.xml` que se encontró el 2026-09-09— y con las
+         * piezas delante. El número se moverá si las piezas lo dicen.
+         */
+        bias: null, factuality: 0.82, reviewedAt: null,
+        biasRationale: 'SIN MEDIR desde el 2026-09-16. Sistema de medios públicos: su línea sigue al gobierno de turno, y el período presidencial cambió el 7 de agosto de 2026. El valor anterior (−0,35) describía la etapa anterior; el nuevo se mide a principios de octubre con un mes de su feed propio, y hasta entonces el catálogo prefiere decir que no lo sabe.',
         /**
          * REACTIVADO 2026-07-30, por decisión de Jose: no se silencia a ningún
          * medio del catálogo. Estuvo retirado desde el 2026-07-28.
@@ -1965,11 +2045,19 @@ export function getIngestFeeds() {
     return feeds;
 }
 
-/** Banda del espectro a la que pertenece un sesgo. */
+/**
+ * Banda del espectro a la que pertenece un sesgo, o `null` si no hay sesgo
+ * medido.
+ *
+ * DEVOLVÍA LA BANDA DEL 0 PARA UN MEDIO SIN MEDIR (corregido el 2026-09-18), y
+ * eso ponía en su ficha y en la tabla del mapa el nombre de una banda que nadie
+ * le había asignado. Es el mismo default silencioso que se quitó de
+ * `classifySpectrum`; aquí se veía además con todas las letras.
+ */
 export function getBand(bias) {
-    const value = typeof bias === 'number' ? bias : 0;
+    if (typeof bias !== 'number' || !Number.isFinite(bias)) return null;
     return (
-        SPECTRUM_BANDS.find((b) => value >= b.min && value < b.max) ??
+        SPECTRUM_BANDS.find((b) => bias >= b.min && bias < b.max) ??
         SPECTRUM_BANDS[SPECTRUM_BANDS.length - 1]
     );
 }

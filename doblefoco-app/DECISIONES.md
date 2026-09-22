@@ -48,6 +48,20 @@ sin catástrofe, en la condición de revisión extraordinaria de la ficha.
 ninguna ficha firmada hasta noviembre. −0,55 es el valor prudente según la
 regla 2, y la re-medición puede moverlo en cualquier dirección.
 
+### 3 · Semana: el rumbo es la banda Derecha (≥ +0,60)
+
+Jose, el mismo día: «hay suficiente evidencia empírica para posicionarlo
+indiscutiblemente a la derecha», y al preguntarle qué número: **subir a la
+banda Derecha**, que hoy está vacía. **Es un rumbo, no una firma.** La
+evidencia reunida ese día está en `fichas/semana.md`, sección «Evidencia
+añadida el 2026-09-22». Lo que pasa las reglas: el medio y la familia del
+dueño financiaron el 88 % de la recolección de firmas de Vicky Dávila; la
+amplificación de 133 videos de campaña sin marcarlos, que es una sola fuente
+todavía sin comprobar; y la asimetría medida con el gobierno entrante. Lo que
+se descartó con motivo: la biografía de Dávila, el crédito de GNB (le prestó
+también a Petro en 2018 y 2022) y el recuento de menciones. Quedan abiertos el
+número dentro de la banda, la ficha de El Nuevo Siglo y la revisión externa.
+
 ---
 
 ## 2026-09-08 · Las historias archivadas por recomposición se borran, y un «aceptado» caduca

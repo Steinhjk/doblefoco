@@ -15,6 +15,19 @@ contenido sino de horizonte: aquel ordenaba lo identificado; este dice además
 etapas 3 y 4 dependen de lo que ahí se decida. La cuenta la lleva `MINUTA.md`,
 como siempre: este archivo puede quedarse quieto sin mentir.
 
+> **Puesta al día del 2026-09-22 — y lo sucede `PLAN_LANZAMIENTO_MVP.md`.**
+> Quedarse quieto sin mentir resultó cierto a medias: las tablas seguían
+> diciendo «Quién / Cuánto» de tareas cerradas hace tres semanas, y quien las
+> leyera sin la minuta al lado creería pendiente casi todo. Así que cada tabla
+> lleva ahora una columna **Estado al 22-09**, comprobada contra `origin/main`
+> (`ab60db4`), contra el código y contra `gh`, no copiada de la minuta. **De
+> las 29 filas, 21 están cerradas** (20 hechas y una decidida de otra forma); lo que queda es corto y casi todo tiene
+> fecha o es de Jose. Y la comprobación destapó dos cosas que no estaban en
+> ningún sitio: **el desfase ha vuelto** (issue #38, abierto desde el 17: los
+> commits del bot de auditoría y del centinela tocan ficheros que entran en la
+> imagen y no disparan el despliegue) y **Vorágine volvió a `abierto`** en la
+> pasada del 17. Las dos están anotadas en `MINUTA.md` y en el plan nuevo.
+
 ---
 
 ## El criterio de orden, en una frase
@@ -33,19 +46,19 @@ Objetivo verificable: **ningún eslabón manual en el ciclo de publicación, y
 ningún vigilante sin timbre.** Al cerrar esta etapa, el sistema se despliega,
 se vigila y reclama atención él solo.
 
-| # | Tarea | Origen | Quién | Cuánto |
-|---|---|---|---|---|
-| 0.1 | Crear `FLY_API_TOKEN` y ponerlo como secreto | I-1 / 0-B | **Jose** | 10 min |
-| 0.2 | Desplegar el motor y cerrar el desfase de hoy (3 commits) | I-1 | automático tras 0.1 | — |
-| 0.3 | Que `desfase.yml` abra issue como los otros vigilantes | I-2 | código | 1 h |
-| 0.4 | Issues de vigilantes con `--assignee` para que llegue correo | I-3 | código | 30 min |
-| 0.5 | Hombre-muerto de la copia en la vigilancia (última exitosa < 48 h) | I-4 | código | 2–3 h |
-| 0.6 | Aviso si la ingesta lleva horas viniendo solo de la red de 2 h | I-8 | código | 2 h |
-| 0.7 | Handshake de versión cliente↔motor con degradación visible | I-7 / 2-B | código | 1–2 días |
-| 0.8 | Limpieza: `_headers`, `_redirects`, `securityService.js`, comentario de `.env.example`, `.gitignore` | I-5, I-10 | código | 2 h |
-| 0.9 | Decidir `api.doblefoco.co`: crear el CNAME o quitarlo de la CSP | I-6 | Jose (1 frase) + código | 30 min |
-| 0.10 | Leer el issue #4 del centinela (Chocó 7 Días; Telecafé y Diario del Norte desde local) | 0-C | **Jose** | 20 min |
-| 0.11 | Excluir el proyecto de la sincronización de OneDrive | I-9 | **Jose** | 15 min |
+| # | Tarea | Origen | Quién | Cuánto | Estado al 22-09 |
+|---|---|---|---|---|---|
+| 0.1 | Crear `FLY_API_TOKEN` y ponerlo como secreto | I-1 / 0-B | **Jose** | 10 min | ✅ **Hecho 02-09.** `desplegar-motor.yml`: las cinco últimas ejecuciones con éxito (la más reciente, 16-09) |
+| 0.2 | Desplegar el motor y cerrar el desfase de hoy (3 commits) | I-1 | automático tras 0.1 | — | ⚠️ **Hecho 02-09, y el desfase ha vuelto.** Issue #38 abierto desde el 17-09: Fly sirve `1c892be` y `main` está en `ab60db4`. Lo causan los commits del bot (auditoría, centinela), que tocan JSON de la imagen y no disparan despliegue. Pasa a M0.1 del plan MVP |
+| 0.3 | Que `desfase.yml` abra issue como los otros vigilantes | I-2 | código | 1 h | ✅ Hecho 01-09. El #38 prueba que suena |
+| 0.4 | Issues de vigilantes con `--assignee` para que llegue correo | I-3 | código | 30 min | ✅ Hecho 01-09 en los seis flujos. Los issues #4 y #5, anteriores al cambio, siguen sin asignar |
+| 0.5 | Hombre-muerto de la copia en la vigilancia (última exitosa < 48 h) | I-4 | código | 2–3 h | ✅ Hecho 01-09 (`vigilancia.yml`, copia y archivo) |
+| 0.6 | Aviso si la ingesta lleva horas viniendo solo de la red de 2 h | I-8 | código | 2 h | ✅ Hecho 01-09 (`ingest_runs.actor`, aviso a las 3 h) |
+| 0.7 | Handshake de versión cliente↔motor con degradación visible | I-7 / 2-B | código | 1–2 días | ✅ Hecho 01-09. Primer ciclo real el 16-09 (PR #35): se encendió y se apagó solo |
+| 0.8 | Limpieza: `_headers`, `_redirects`, `securityService.js`, comentario de `.env.example`, `.gitignore` | I-5, I-10 | código | 2 h | ✅ Hecho 01-09 |
+| 0.9 | Decidir `api.doblefoco.co`: crear el CNAME o quitarlo de la CSP | I-6 | Jose (1 frase) + código | 30 min | ✅ Hecho 02-09: se creó el dominio |
+| 0.10 | Leer el issue #4 del centinela (Chocó 7 Días; Telecafé y Diario del Norte desde local) | 0-C | **Jose** | 20 min | ⏳ **Pendiente.** El #4 sigue abierto desde el 24-08, y el 21-09 sumó dos piezas de La Libertad. Pasa a M0.3 |
+| 0.11 | Excluir el proyecto de la sincronización de OneDrive | I-9 | **Jose** | 15 min | ↩️ **Decidido otra cosa el 16-09:** se queda en OneDrive, con la receta del `index.lock` |
 
 De Jose son tres gestos cortos (0.1, 0.10, 0.11) y una frase (0.9). Todo lo
 demás es código que no necesita permiso y cabe en una semana.
@@ -90,30 +103,30 @@ van juntos porque se condicionan entre sí— y que cada decisión se anote en
 
 Puede empezar hoy, en paralelo con las etapas 0 y 1.
 
-| # | Tarea | Origen | Cuánto |
-|---|---|---|---|
-| 2.1 | **Grabar la cadencia por medio** — solo acumular, sin usar. **Hecha y estrenada el 2026-09-01** (PR #7); ver `MINUTA.md` | 2-A / T2-3 | 1 día, **y es urgente por calendario**: su utilidad llega sola a los 30–90 días |
-| 2.2 | Check de `group`/`controlGroup` en `check:registry` — **ya estaba hecho desde el 2026-08-24 (`3f35b9d`)**; ver `MINUTA.md` | 2-C / D-3 | — |
-| 2.3 | Una sola consulta compartida en la portada | 2-D / T2-2 | 2–3 días |
-| 2.4 | Serializador único de rehidratación + prueba de ida y vuelta | Kimi E-3 | 1 día |
-| 2.5 | Fichas nuevas según la prioridad que salga de 1.6 — el alta ya no espera a la ficha, pero la deuda se paga | 1-G | continuo, por tandas |
+| # | Tarea | Origen | Cuánto | Estado al 22-09 |
+|---|---|---|---|---|
+| 2.1 | **Grabar la cadencia por medio** — solo acumular, sin usar. **Hecha y estrenada el 2026-09-01** (PR #7); ver `MINUTA.md` | 2-A / T2-3 | 1 día, **y es urgente por calendario**: su utilidad llega sola a los 30–90 días | ✅ Hecho 01-09. El 1 de octubre se cumplen los 30 días de serie |
+| 2.2 | Check de `group`/`controlGroup` en `check:registry` — **ya estaba hecho desde el 2026-08-24 (`3f35b9d`)**; ver `MINUTA.md` | 2-C / D-3 | — | ✅ Hecho 24-08 |
+| 2.3 | Una sola consulta compartida en la portada | 2-D / T2-2 | 2–3 días | ✅ Hecho 09-09 (punto 13). En el aire desde el 15-09 |
+| 2.4 | Serializador único de rehidratación + prueba de ida y vuelta | Kimi E-3 | 1 día | ✅ Hecho 09-09 (punto 14). `db:contrato` verde en producción el 15-09 |
+| 2.5 | Fichas nuevas según la prioridad que salga de 1.6 — el alta ya no espera a la ficha, pero la deuda se paga | 1-G | continuo, por tandas | 🔶 **Parcial.** 65 fichas de 78 medios, tras tres tandas entre el 08 y el 09-09; la izquierda tiene ficha en 12 de 13. **Firmadas por Jose: 5, todas del 18-08 y ninguna de izquierda.** Pasa a M1.1 |
 
 # ETAPA 3 · Ejecutar lo decidido — dos a cuatro semanas
 
 Fijado por la sesión del 2026-09-02. Es código y no espera a nadie, salvo la
 regla por cadencia, que espera a la serie.
 
-| # | Tarea | Decisión | Cuánto |
-|---|---|---|---|
-| 3.1 | **Retención interna de 30 días sin páginas permanentes**: `articles` vive 30 d; portada, agrupamiento y URL siguen en 72 h. Separar ventana de estimación y de agrupamiento. Medir el tamaño de la base al cerrar. | 1 (C) | 3–5 días |
-| 3.2 | **Punto ciego que dice la verdad**: rama de la izquierda «no medible» con el 78 % en pantalla; énfasis con su ceguera direccional escrita; ramas 1 y 3 con número fijo de medios en vez del 15 %. Actualizar `/transparencia` y el doc del modelo. | 3 | 3–5 días |
-| 3.3 | **Techo por feed**: `ITEMS_PER_FEED` por defecto 15 y valor propio para quien publique más de 15 en 30 min (Infobae; medir Semana). Declararlo en la metodología. | 4 (B) | 1 día |
-| 3.4 | **La regla de quien dirige**, escrita en el protocolo, y los avisos con fecha de La Libertad y La Nación (Neiva) en el texto que ve el lector. | 5 | 1–2 días |
-| 3.5 | **Fichas de los 11 de izquierda**, por tandas de 3 o 4, cada tanda firmada por Jose. | 6 | continuo |
-| 3.6 | **Estrenar `aceptado`** con Vorágine y su nota en `hallazgos.json`. | 7 | 1 h |
-| 3.7 | **Marcador con logo** para historias sin imagen; nunca foto relacionada. `npm run mirar` como juez. | 8a | 1 día |
-| 3.8 | **Contacto para medios en `/transparencia`** (`doblefoco.co@gmail.com`) y el procedimiento escrito: acuse 5 días, respuesta 15, publicación junto a la ficha. | 8c | medio día |
-| 3.9 | **Regla uniforme por cadencia**: se implementa cuando `cadencia_piezas` tenga 30 días (≈ 1 de octubre de 2026). | 2 | 2–3 días |
+| # | Tarea | Decisión | Cuánto | Estado al 22-09 |
+|---|---|---|---|---|
+| 3.1 | **Retención interna de 30 días sin páginas permanentes**: `articles` vive 30 d; portada, agrupamiento y URL siguen en 72 h. Separar ventana de estimación y de agrupamiento. Medir el tamaño de la base al cerrar. | 1 (C) | 3–5 días | ✅ Hecho 02-09. `/api/health` hoy: 90 415 artículos, 6 461 historias, 2 831 archivadas. **Medir el tamaño: 2 de octubre** (punto 21) |
+| 3.2 | **Punto ciego que dice la verdad**: rama de la izquierda «no medible» con el 78 % en pantalla; énfasis con su ceguera direccional escrita; ramas 1 y 3 con número fijo de medios en vez del 15 %. Actualizar `/transparencia` y el doc del modelo. | 3 | 3–5 días | ✅ Hecho 02-09 (`RAMAS_NO_MEDIBLES`). **En la PR #37** el «sin medir» baja la izquierda medible de 13 a 9 medios |
+| 3.3 | **Techo por feed**: `ITEMS_PER_FEED` por defecto 15 y valor propio para quien publique más de 15 en 30 min (Infobae; medir Semana). Declararlo en la metodología. | 4 (B) | 1 día | ✅ Hecho 02-09. Infobae con `techo` 60 |
+| 3.4 | **La regla de quien dirige**, escrita en el protocolo, y los avisos con fecha de La Libertad y La Nación (Neiva) en el texto que ve el lector. | 5 | 1–2 días | ✅ Hecho 02-09. Se publicó La Libertad; La Nación (Neiva) no cumple la regla y no lleva aviso |
+| 3.5 | **Fichas de los 11 de izquierda**, por tandas de 3 o 4, cada tanda firmada por Jose. | 6 | continuo | 🔶 **Parcial.** Las fichas están escritas; **la firma, no**. El 16-09 Jose dictó los números (Colombia Informa a −0,55; el trío y RTVC «sin medir») pero `reviewedAt` sigue en `null`. Pasa a M1.1 |
+| 3.6 | **Estrenar `aceptado`** con Vorágine y su nota en `hallazgos.json`. | 7 | 1 h | ⚠️ **Hecho 02-09, y reabierto.** La pasada del 17-09 lo dejó en `abierto`/roto (222 h sin pieza). Se revisa el 1 de octubre (punto 22) |
+| 3.7 | **Marcador con logo** para historias sin imagen; nunca foto relacionada. `npm run mirar` como juez. | 8a | 1 día | ✅ Hecho 02-09 (`MarcadorSinImagen`) |
+| 3.8 | **Contacto para medios en `/transparencia`** (`doblefoco.co@gmail.com`) y el procedimiento escrito: acuse 5 días, respuesta 15, publicación junto a la ficha. | 8c | medio día | ✅ Hecho 02-09 (`/transparencia/limitaciones` y la sección 7 del protocolo) |
+| 3.9 | **Regla uniforme por cadencia**: se implementa cuando `cadencia_piezas` tenga 30 días (≈ 1 de octubre de 2026). | 2 | 2–3 días | 📅 **Con fecha: 2 de octubre.** Aún no hay código que la aplique; `cadencia_piezas` solo se escribe y se respalda. Pasa a M2.1 |
 
 **Y una revisión con fecha, no una tarea:** cuando haya **90 días de serie**
 (≈ diciembre de 2026), **revisar si se hace la opción B** —archivo permanente
@@ -121,6 +134,15 @@ con página por historia, ficha fechada y buscador, 25 USD/mes—. Jose lo pidi�
 anotado: B no se descartó, se aplazó.
 
 # ETAPA 4 · Pulido de producto final — el cierre
+
+> **Estado al 22-09, bloque por bloque** (el texto original sigue debajo):
+>
+> | Bloque | Estado | Lo que falta |
+> |---|---|---|
+> | Catálogo | 🔶 Parcial | **Sucre:** nadie ha escrito. **Feeds:** Telecafé arreglado; El Manduco fuera de la ingesta a propósito; Telecaribe y W Radio `aceptado` hasta el 13-10, y W Radio dejó de publicar texto hacia el 01-09. **Internacionales:** La Vanguardia y CNN en Español entraron el 16-09; NYT, FT y Reuters esperan la capa entre idiomas; WSJ tiene el feed congelado. **Fuentes rotas:** las de El Pilón y Boyacá Digital llevan más de 30 días abiertas, y eso incumple la línea 4 de la lista de cierre |
+> | Eficiencia | 🔶 Parcial | H4 hecho y medido en producción (`6367 hist. (620 escritas)`, `enlaces +676 −122`). **La región `bog` sigue sin evaluar**: `fly.toml` sigue en `gru` |
+> | Interfaz | 🔶 Parcial | Marcador sin imagen hecho. **Siguen pendientes la revisión móvil del mapa cartesiano y la de `/noticia` en móvil**; `mirar` no incluye `/noticia/:id` |
+> | Papeles | 🔶 Parcial | En `DUDAS_ABIERTAS` siguen sin cerrar la 5 (cifra de patrocinio), la 6 (moderadas huérfanas) y la 9 (Google News). La metodología tendrá que decir «sin medir» y «no noticioso» cuando entre la PR #37. `ROADMAP.txt` se congeló el 22-09 como documento histórico |
 
 - **Catálogo:** escribir a Korraleja o El Meridiano por Sucre (lo único que lo
   abre); **otra vía de feed para Telecaribe, El Manduco, W Radio y Telecafé**
@@ -142,6 +164,14 @@ anotado: B no se descartó, se aplazó.
 
 El producto se declara terminado cuando todo esto sea verdad a la vez, y cada
 línea es comprobable sin interpretar:
+
+> **Cómo estaba el 22-09:** (1) **no**: hay desfase, #38; (2) **sí** para
+> los ocho puntos del 02-09, y las seis decisiones del 16-09 esperan a la
+> PR #37; (3) **sí**; (4) **no**: hay dos fuentes rotas de más de 30 días,
+> Vorágine volvió a romperse y Sucre sigue sin decisión; (5) **a medias**:
+> hay fichas, pero ninguna de izquierda está firmada; (6) **sí**, desde H4.
+> **Tres de seis se cumplen, una a medias y dos no.** El plan MVP no espera a que esta lista
+> esté entera: toma de ella lo que hace falta para salir a la calle.
 
 1. **Autosuficiente:** un push a `main` publica cliente Y motor sin ningún gesto
    manual; los cinco vigilantes tienen timbre que llega a una bandeja leída; la

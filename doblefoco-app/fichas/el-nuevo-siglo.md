@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Valor actual** | **+0,55** · `reviewedAt: null` |
-| **Propuesta** | **NO FIRMAR +0,55.** Su justificación es histórica en la parte que decide. La evidencia del presente lo sitúa en la banda Derecha moderada, **sin nada que lo separe de sus vecinos por arriba**. El número dentro de la banda lo decide Jose |
+| **Propuesta** | **NO FIRMAR +0,55 todavía.** Su justificación es histórica en la parte que decide. **DECIDIDO por Jose el 2026-09-22: se mantiene +0,55 hasta la revisión externa, y El Colombiano va a la misma revisión** para calibrar los dos juntos (regla 3: sin nivel 1-3 no se mueve, tampoco a la baja) |
 | **Firma** | ☐ pendiente — Jose Arbeláez |
 | **Fecha** | 2026-09-22 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |

@@ -62,6 +62,22 @@ se descartó con motivo: la biografía de Dávila, el crédito de GNB (le prest�
 también a Petro en 2018 y 2022) y el recuento de menciones. Quedan abiertos el
 número dentro de la banda, la ficha de El Nuevo Siglo y la revisión externa.
 
+**Puesta al día, el mismo día.** Con la ficha de El Nuevo Siglo delante, Jose
+decidió los números que van a la revisión externa:
+
+- **Semana: +0,70.** Es la propuesta que se lleva a la revisión, no un valor
+  publicado: el registro sigue en +0,45 hasta la firma. La ficha tiene que
+  argumentar por qué +0,70 y no el borde de +0,60 que pide la regla 2, y el
+  CONTRA lo dice.
+- **El Nuevo Siglo: se mantiene +0,55 hasta la revisión**, que tiene que
+  contestar si hoy existe un vínculo orgánico con el Partido Conservador. Es la
+  regla 3 aplicada en los dos sentidos: sin nivel 1 a 3, el número no se mueve,
+  tampoco hacia abajo.
+- **El Colombiano (+0,35, firmado el 18-08) vuelve a revisión junto con El
+  Nuevo Siglo.** La ficha de El Nuevo Siglo lo usó como vara de medir, así que
+  los dos se calibran juntos. **Su firma sigue en pie** mientras la revisión no
+  la cambie. Es una revisión por réplica (§7), no una retirada.
+
 ---
 
 ## 2026-09-08 · Las historias archivadas por recomposición se borran, y un «aceptado» caduca

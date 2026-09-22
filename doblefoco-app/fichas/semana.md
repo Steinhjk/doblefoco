@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Valor actual** | **+0,45** · `reviewedAt: null` |
-| **Propuesta** | **SUBIR A LA BANDA DERECHA (≥ +0,60): es el rumbo que marcó Jose el 2026-09-22.** El número exacto y la firma se deciden con la evidencia de ese día (abajo) y tras la revisión externa. ~~Firmable con una condición~~ |
+| **Propuesta** | **+0,70, en la banda Derecha: propuesta de Jose del 2026-09-22 para la revisión externa.** El registro sigue en +0,45 hasta la firma. ~~Firmable con una condición~~ |
 | **Firma** | ☐ pendiente — Jose Arbeláez |
 | **Fecha** | 2026-08-12 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` |
@@ -304,8 +304,17 @@ del extremo del eje.
 **Puesta al día del 2026-09-22.** Jose marcó el rumbo: **banda Derecha (≥ +0,60)**.
 La evidencia del día está arriba. Antes de firmar faltan cuatro cosas:
 
-1. **El número dentro de la banda.** La regla 2 empuja al valor más cercano a la
-   mixta, +0,60, salvo que la evidencia sostenga más. Lo decide Jose.
+1. ~~El número dentro de la banda~~ **DECIDIDO por Jose: +0,70** como
+   propuesta para la revisión. **El argumento para pasar del borde:** la
+   evidencia no es de afinidad editorial sino de **participación en campaña**,
+   y en tres formas independientes. (a) El medio y la familia del dueño
+   financiaron el 88 % de una candidatura. (b) Amplificó 133 piezas de
+   propaganda sin marcarlas. (c) Trata con asimetría al gobierno entrante. Un
+   medio de derecha moderada toma partido en editoriales; este puso dinero y
+   canal. **El CONTRA de ese número:** la regla 2 pide el valor más cercano a la
+   mixta ante la duda; (b) es una sola fuente sin comprobar; y (c) son dos
+   semanas. Si la revisión externa tumba (b), el argumento para +0,70 pierde
+   una de sus tres patas, y hay que volver a decidir entre +0,60 y +0,70.
 2. **Comprobar lo de los 133 videos**, que hoy es una sola fuente y de un medio
    del catálogo. La revisión externa debe intentar confirmarlo o refutarlo.
 3. **Una ficha para El Nuevo Siglo**, porque la distancia se mide contra su

@@ -578,6 +578,34 @@
     .map-controls { justify-content: flex-start; }
 }
 
+/*
+ * EL GRÁFICO CABE ENTERO EN UN TELÉFONO (2026-09-22).
+ *
+ * Antes tenía `min-width: 560px` y se desplazaba de lado dentro de su caja: a
+ * 412 px el eje acababa en +0,00 y la mitad derecha del espectro no se veía,
+ * sin ninguna pista de que hubiera más. Ahora se encoge al ancho disponible.
+ *
+ * Al encogerse, el `viewBox` de 720 unidades queda a la mitad, y con él los
+ * textos y los puntos. Por eso aquí se agrandan en unidades del SVG, en la
+ * misma proporción: lo que se lee a 9,5 unidades en escritorio se leería a
+ * menos de 5 px en el teléfono. El radio de los puntos lo cambia la propiedad
+ * CSS `r`, que gana al atributo, y deja un blanco que se puede tocar con el
+ * dedo.
+ */
+.map-band-label-corta { display: none; }
+
+@media (max-width: 640px) {
+    .map-svg { min-width: 0; }
+    .map-band-label-larga { display: none; }
+    .map-band-label-corta { display: inline; }
+    .map-band-label { font-size: 17px; }
+    .map-tick { font-size: 18px; }
+    .map-axis-label { font-size: 18px; }
+    .map-point { r: 11px; }
+    .map-point.matched { r: 14px; }
+    .map-point.selected { r: 17px; }
+}
+
 /* ── Distintivo de control: a quién responde la redacción ────────────────── */
 /* Los dos extremos que un lector pregunta —grupo económico e independiente—
    llevan `duenio-enfasis` y se ven con color pleno. Los otros tres van en tono

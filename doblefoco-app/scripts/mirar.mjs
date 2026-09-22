@@ -48,8 +48,9 @@ import { chromium } from 'playwright';
  * página no dice que esté bien: dice que no la ha mirado, y las dos cosas se
  * leen igual en la salida.
  *
- * `/noticia/:id` y `/buscar` siguen fuera porque necesitan un id o una consulta
- * que no se puede fijar aquí sin inventarse datos. `/admin` está fuera a
+ * `/noticia/:id` se añade al arrancar con un id real que se pide a la API (ver
+ * `rutaDeNoticia`, 2026-09-22). `/buscar` sigue fuera porque necesita una
+ * consulta que no se puede fijar sin inventarla. `/admin` está fuera a
  * propósito.
  */
 const RUTAS_POR_DEFECTO = [
@@ -271,7 +272,52 @@ const vistas = movil
     : [{ nombre: 'escritorio', w: 1440, h: 1000 }];
 
 let total = 0;
-const aRevisar = rutas.length ? rutas : RUTAS_POR_DEFECTO;
+
+/**
+ * LA PÁGINA DE NOTICIA, CON UNA NOTICIA DE VERDAD (2026-09-22).
+ *
+ * `/noticia/:id` se quedaba fuera porque no hay un id fijo que no sea
+ * inventado. Pero era la página que más se comparte, y la revisión en móvil
+ * de M1.5 la pedía. El id se toma aquí, de la misma API a la que apunta
+ * todo lo demás: la historia del feed con más medios, que es la que más
+ * columnas llena. Si la API no contesta, se dice, y no se inventa ninguna.
+ */
+const rutaDeNoticia = async () => {
+    /*
+     * TRES INTENTOS, porque la primera petición justo después de arrancar Vite
+     * puede fallar mientras el proxy se prepara: pasó el mismo día en que se
+     * escribió esto, y sin reintento el vigilante parpadea, que es la forma más
+     * rápida de que se ignore.
+     */
+    for (let intento = 1; intento <= 3; intento += 1) {
+        try {
+            const r = await fetch(`${url}/api/feed?limit=40`);
+            const { stories = [] } = await r.json();
+            const medios = (s) => (Array.isArray(s.sources) ? s.sources.length : 0);
+            const mejor = [...stories].sort((a, b) => medios(b) - medios(a))[0];
+            if (mejor) return `/noticia/${mejor.id}`;
+        } catch {
+            // se reintenta abajo
+        }
+        await new Promise((listo) => setTimeout(listo, 3_000));
+    }
+    return null;
+};
+
+const aRevisar = rutas.length ? rutas : [...RUTAS_POR_DEFECTO];
+if (!rutas.length) {
+    const noticia = await rutaDeNoticia();
+    if (noticia) {
+        aRevisar.push(noticia);
+        SENALES[noticia] = [
+            { que: 'el titular de la noticia', selector: '.detail-title', minimo: 1 },
+            { que: 'las columnas por espectro', selector: '.stacked-perspective-card', minimo: 3 },
+        ];
+    } else {
+        console.log('⚠  sin noticia que mirar: la API no devolvió historias\n');
+        total += 1;
+    }
+}
 
 for (const vista of vistas) {
     const ctx = await navegador.newContext({ viewport: { width: vista.w, height: vista.h } });

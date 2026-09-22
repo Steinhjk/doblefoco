@@ -55,6 +55,25 @@ const HEIGHT = 460;
 const PAD = { top: 28, right: 24, bottom: 52, left: 62 };
 
 const PLOT_W = WIDTH - PAD.left - PAD.right;
+
+/**
+ * El nombre de cada banda cuando el gráfico se encoge a lo ancho de un teléfono.
+ *
+ * HASTA EL 2026-09-22, EN MÓVIL SE VEÍA MEDIO ESPECTRO. El gráfico tenía
+ * `min-width: 560px` dentro de una caja con desplazamiento lateral, y a 412 px
+ * el eje acababa en +0,00 sin que nada avisara de que había más. En un mapa
+ * cuyo propósito es ver el espectro entero, quien entraba desde el teléfono no
+ * veía la derecha. Ahora el gráfico cabe entero, y los nombres largos
+ * («Izquierda moderada») no caben en una banda de ese ancho: de ahí estos.
+ * Qué se muestra lo decide el CSS; aquí solo se escriben los dos.
+ */
+const BANDA_CORTA = {
+    left: 'Izq.',
+    'center-left': 'Izq. mod.',
+    center: 'Mixta',
+    'center-right': 'Der. mod.',
+    right: 'Der.',
+};
 const PLOT_H = HEIGHT - PAD.top - PAD.bottom;
 
 /** Rango del eje Y. Arranca en 0.7 porque ningún medio del catálogo baja de ahí. */
@@ -772,9 +791,17 @@ const MediaMap = () => {
                                 <text
                                     x={(xScale(band.min) + xScale(band.max)) / 2}
                                     y={PAD.top - 10}
-                                    className="map-band-label"
+                                    className="map-band-label map-band-label-larga"
                                 >
                                     {band.label}
+                                </text>
+                                <text
+                                    x={(xScale(band.min) + xScale(band.max)) / 2}
+                                    y={PAD.top - 10}
+                                    className="map-band-label map-band-label-corta"
+                                    aria-hidden="true"
+                                >
+                                    {BANDA_CORTA[band.id] ?? band.label}
                                 </text>
                             </g>
                         ))}

@@ -180,7 +180,14 @@ app.use((req, res, next) => {
  * aplicación. Conviene no confundir una cosa con la otra.
  */
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 120;
+/*
+ * 120 en producción. La variable existe para el SIMULACRO DE TRÁFICO (M1.4 del
+ * plan del MVP, 2026-09-22): el generador de carga sale de una sola IP, y con el
+ * límite puesto el simulacro mediría este contador en vez de la capacidad del
+ * servidor y de la base. Solo se relaja en la app de prueba (`doblefoco-carga`),
+ * que se borra al terminar. Un valor que no sea un número positivo deja el 120.
+ */
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX) > 0 ? Number(process.env.RATE_LIMIT_MAX) : 120;
 const hits = new Map();
 
 app.use((req, res, next) => {

@@ -213,9 +213,10 @@ minuta.
    `rutasDeLaImagen.js` habría sido mentir. En su lugar, tras su `git push`,
    los dos flujos lanzan `desplegar-motor.yml` por `workflow_dispatch`, la
    excepción que GitHub deja pasar con `GITHUB_TOKEN`.
-   **Queda por hacer:** (a) la PR solo toca `.github/`, así que al fusionarla
-   no despliega nada, y hay que forzar un despliegue a mano una vez para
-   cerrar el #38; (b) comprobar que se lanza sola el jueves 24-09, con la
+   **(a) Hecho el 2026-09-22:** Jose fusionó la #40 (`adc9d57`) y lanzó a mano
+   un despliegue forzado. Fly pasó a servir `adc9d57` con 77/77 feeds, y
+   `desfase.yml`, lanzado a mano, salió en verde y cerró solo el #38.
+   **Queda por hacer:** (b) comprobar que se lanza sola el jueves 24-09, con la
    auditoría, y el lunes 28-09, con el centinela.
 2. **Vorágine volvió a `abierto`/roto** en la pasada del 17-09, con 222 h sin
    pieza. Había pasado a `resuelto` el 03-09. Su `revisarEl` sigue siendo el

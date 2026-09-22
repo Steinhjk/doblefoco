@@ -881,6 +881,11 @@ const GRACIA_MS = 12 * 60 * 60 * 1000;
  * cabe todo hay que elegir, y se elige por comparabilidad. Mientras el corpus
  * quepa bajo el techo, no se expulsa nada.
  */
+/**
+ * @returns {number} cuántos artículos DENTRO de la ventana expulsó el techo. Es
+ *   la única medida honesta de «el techo mordió» (ver `desalojadosPorTecho` en
+ *   el informe del ciclo); los que salen por edad no cuentan.
+ */
 function pruneArticles() {
     const cutoff = Date.now() - RETENTION_MS;
 
@@ -891,7 +896,7 @@ function pruneArticles() {
         }
     }
 
-    if (articlesByLink.size <= MAX_ARTICLES) return;
+    if (articlesByLink.size <= MAX_ARTICLES) return 0;
 
     const ahora = Date.now();
 
@@ -918,6 +923,7 @@ function pruneArticles() {
     for (const [link, article] of sorted.slice(0, MAX_ARTICLES)) {
         articlesByLink.set(link, article);
     }
+    return sorted.length - MAX_ARTICLES;
 }
 
 // ---------------------------------------------------------------------------
@@ -1264,7 +1270,7 @@ export async function runIngestionBatch() {
             }
         );
 
-        pruneArticles();
+        const desalojadosPorTecho = pruneArticles();
         buildMultisourceStories();
 
         // La persistencia va DESPUÉS de construir las historias y antes de
@@ -1364,14 +1370,33 @@ export async function runIngestionBatch() {
         const ventanaHoras = Number.isFinite(masAntiguo)
             ? Math.round(((Date.now() - masAntiguo) / 3_600_000) * 10) / 10
             : null;
-        const ventanaRecortada =
-            ventanaHoras !== null && ventanaHoras < (RETENTION_MS / 3_600_000) - 1;
+        /*
+         * ¿MORDIÓ EL TECHO? Se decide por lo que expulsó, no por la edad.
+         *
+         * Hasta el 2026-09-22 el aviso saltaba cuando la ventana efectiva bajaba
+         * de 71 h, y parecía parpadear: el 2026-09-15 los ciclos iban entre 70,4
+         * y 71,9 h (MINUTA, punto 27). Se llegó a leer como ruido de horario.
+         * **Medido ese día, no lo era**: el corpus estuvo en 8 000 artículos, el
+         * techo exacto, en los 48 ciclos del 15-09, y en el techo desde el
+         * 2026-08-13. La base guardaba 11 326 artículos publicados en las
+         * últimas 72 h: el techo dejaba fuera del agrupamiento cerca de un 29 %
+         * de la ventana. La edad sube y baja con la hora porque lo expulsado
+         * varía, pero el recorte es continuo.
+         *
+         * Por eso el aviso ya no compara edades, que cruzan el umbral a ratos,
+         * sino el recuento exacto de `pruneArticles()`: cuántos artículos DENTRO
+         * de la ventana expulsó el techo en este ciclo. Si el techo muerde, lo
+         * dice siempre, y con el número. `ventanaHoras` se sigue publicando cada
+         * ciclo y en la serie.
+         */
+        const ventanaRecortada = desalojadosPorTecho > 0;
 
         const report = {
             startedAt: new Date(startedAt).toISOString(),
             durationMs: Date.now() - startedAt,
             ventanaHoras,
             ventanaRecortada,
+            desalojadosPorTecho,
             newArticles: perFeed.reduce((sum, f) => sum + f.added, 0),
             filteredArticles,
             discardedByRule,
@@ -1437,7 +1462,7 @@ export async function runIngestionBatch() {
             // encontrárselo por primera vez el día malo obliga a averiguar
             // entonces si es raro o normal.
             (report.ventanaHoras !== null
-                ? ` · ventana ${report.ventanaHoras} h${report.ventanaRecortada ? ' ⚠ RECORTADA POR EL TECHO' : ''}`
+                ? ` · ventana ${report.ventanaHoras} h${report.ventanaRecortada ? ` ⚠ RECORTADA POR EL TECHO (−${report.desalojadosPorTecho})` : ''}`
                 : '')
         );
 

@@ -30,6 +30,34 @@ terminar.** Costo: unos 40 minutos de tres máquinas pequeñas, por debajo de
 > **El sitio se satura hacia las 2 visitas por segundo**: unas 120 personas por
 > minuto llegando a la vez. Un tuit que funcione trae más que eso.
 
+## Después del arreglo: de 2 a 12 visitas por segundo
+
+Se repitió el mismo día contra una copia de la API con `cacheDeRespuestas.js`
+(ver «La receta» abajo). **Contra producción, pero con cuidado**, por decisión
+de Jose: una sola máquina, un máximo de 3 conexiones a la base y parada al
+primer 1 % de fallos. Se descartó copiar la base porque incluye datos
+personales (la lista de espera, los usuarios del panel y los reportes).
+
+| Visitas/s | Sin memoria | Memoria de 60 s | Memoria + JSON ya serializado |
+|---|---|---|---|
+| 1 | p95 1,1 s | p95 0,06 s | — |
+| 2 | **se rompe** (p95 8,1 s) | p95 0,06 s | — |
+| 4 | — | p95 0,06 s | — |
+| 8 | — | p95 0,06 s | p95 0,08 s |
+| 12 | — | **se rompe** (p95 8,1 s) | **p95 0,08 s, 0 fallos** |
+| 16 | — | — | **se rompe** |
+
+- **Durante esas dos corridas, producción no dio ni un solo
+  `EMAXCONNSESSION`**: la base dejó de ser el límite.
+- Con la base fuera del camino, el techo pasó a ser **la CPU**: `res.json`
+  convertía 1,4 MB a texto en cada respuesta. Por eso la caché guarda el texto
+  ya serializado, que es la tercera columna.
+- **Hoy, con una máquina `shared-cpu-1x`, el sitio aguanta unas 12 visitas por
+  segundo**, unas 43 000 por hora. El siguiente techo es la CPU compartida de
+  esa máquina. Ahora **sí** escalar ayudaría, porque ya no se pelean por la
+  base: `fly scale count api=2` o una máquina con más CPU. Hay que medirlo
+  antes de afirmarlo.
+
 ## Qué cede primero: la conexión a la base, no la máquina
 
 Los registros de la segunda corrida lo dicen literalmente:
@@ -67,11 +95,31 @@ unos 4 minutos de portadas que fallaban o salían degradadas. Con un sitio ya
 lanzado, esto no se habría podido correr así. **La próxima vez: contra una
 copia de la base**, no contra producción.
 
-**Aparte, y sin relación con el simulacro:** el vigilante que medía producción
-cada 10 s registró tiempos agotados sueltos (20 s sin respuesta) **antes,
-durante y después** de la prueba, y siguió viéndolos con la copia ya borrada
-(1 de cada 20). Esos no dejan ningún error de base en los registros. Queda
-abierto, y hay que mirarlo antes de lanzar.
+**Aparte, y sin relación con el simulacro, tres cosas vistas ese día:**
+
+1. **Tiempos agotados sueltos contra la API**: 20 s sin conexión, más o menos
+   1 de cada 20 peticiones, antes, durante y después de las pruebas. **No dejan
+   error en el servidor.** Se investigó y tiene dos capas:
+   - **IPv6**: la red desde la que se probó **no tiene IPv6 para ningún sitio**
+     (tampoco Google ni Cloudflare), y `curl` a veces probaba IPv6 primero. Los
+     navegadores prueban las dos vías a la vez y usan la que responde, así que
+     **esto no afecta a lectores**.
+   - **IPv4**: forzando IPv4 siguió pasando, y **en ese mismo instante Vercel y
+     Google respondían**. Falla solo la conexión a la IP compartida de Fly desde
+     esa red: 4 de 55 en una sonda de 8 minutos. Desde dentro de Fly, la
+     generadora no vio ni un fallo. **Queda abierto**: puede ser el camino entre
+     ese proveedor y Fly. Hay que comprobar si pasa desde otras redes (el móvil
+     con datos, o `vigilancia.yml` desde GitHub). Si se confirma, una IPv4
+     dedicada en Fly cuesta unos 2 USD al mes.
+2. **Vercel activó su «Security Checkpoint»** (`X-Vercel-Mitigated:
+   challenge`), el mismo del 2026-07-29 (duda 8). Al final de la sesión, todas
+   las peticiones automáticas a `doblefoco.co` recibían 403, incluidas las que
+   se presentaban como Googlebot o como un Chrome normal, y las que salían de
+   los servidores de Anthropic. **No se sabe si lo disparó el tráfico de las
+   sondas o si afecta a todo el mundo**, y eso decide si Google y las tarjetas
+   de WhatsApp y X están bloqueados. Se comprueba en el panel de Vercel →
+   Firewall, y abriendo el sitio desde un navegador normal y desde el móvil con
+   datos.
 
 ---
 
@@ -79,13 +127,12 @@ abierto, y hay que mirarlo antes de lanzar.
 
 ### Antes de lanzar (trabajo de código, no de emergencia)
 
-1. **Guardar las respuestas unos segundos en memoria.** Si `/api/feed`,
-   `/api/portada`, `/api/panorama` y `/api/departamentos` se calculan una vez y
-   se sirven desde memoria durante 60 s —y se recalcula uno solo aunque lleguen
-   cien a la vez—, la base recibe **una consulta por minuto en vez de una por
-   visita**. Los datos cambian cada 30 minutos, así que 60 s de retraso no se
-   notan. **Es el arreglo que cambia el orden de magnitud**, y hay que volver a
-   medirlo con el simulacro después.
+1. ~~**Guardar las respuestas unos segundos en memoria.**~~ **HECHO y medido el
+   2026-09-22** (`server/cacheDeRespuestas.js`): feed, portada, panorama,
+   departamentos y la historia de cada noticia, 60 s y ya serializadas; y 15 s
+   lo que `/api/health` consulta a la base. Cuando una entrada caduca, cien
+   peticiones a la vez calculan una sola vez. **De 2 a 12 visitas por
+   segundo.** `CACHE_RESPUESTAS_MS=0` la apaga.
 2. **Que la API y el motor no pasen juntos de 15 conexiones.** Por ejemplo,
    `DATABASE_POOL_MAX=5` para la API y `4` para el motor. O pasar al pooler en
    modo transacción de Supabase (puerto 6543), que reparte muchas más
@@ -96,11 +143,14 @@ abierto, y hay que mirarlo antes de lanzar.
 
 1. **Mirar** `https://api.doblefoco.co/api/health` y
    `fly logs -a doblefoco | grep EMAXCONN`. Si aparece ese error, es la base.
-2. **No escalar máquinas** (`fly scale count`): con la base como límite,
-   empeora.
-3. Con el arreglo 1 hecho, una máquina debería aguantar muchísimo más. Hay que
-   **volver a correr el simulacro** para saber cuánto, y escribir aquí el número
-   nuevo.
+2. **Si NO aparece ese error y la API va lenta, es la CPU**: con la caché
+   puesta, `fly scale count api=2 -a doblefoco` reparte la carga. **Hay que
+   bajar antes `DATABASE_POOL_MAX`**: cada máquina de más reserva conexiones, y
+   la API y el motor ya suman 16 contra un tope de 15.
+3. **Si aparece `EMAXCONNSESSION`, no escalar**: más máquinas son más
+   conexiones peleándose por las mismas 15.
+4. **La cifra de hoy: unas 12 visitas por segundo con una máquina.** Un pico
+   que pase de ahí es la señal para el paso 2.
 
 ## Cómo repetirlo
 

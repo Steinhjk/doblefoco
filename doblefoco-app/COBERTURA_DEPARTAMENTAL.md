@@ -25,8 +25,16 @@
 > posesionó como concejal de Inírida». Si es la misma persona, es materia de
 > la regla de quien dirige.
 >
-> Todo lo buscado —dominios, feeds y sitios probados el 2026-09-23— está en el
-> informe de la búsqueda, en `MINUTA.md` del mismo día.
+> **Dónde se buscó**, para no repetirlo, todo el 2026-09-23. En Guainía no
+> conectó ningún dominio: `enterateyaguainia.com/.co`, `iniridaenvivo.com/.co`,
+> `guainianoticias.com`, `noticiasguainia.com`, `iniridanoticias.com` y
+> `guainiadigital.com`; `vicinirida.com` es del Vicariato y está parado hace
+> ~1,6 años. En Vaupés tampoco: `lamarandua.com/.co/.com.co`,
+> `periodicolamarandua.com`, `yuruparistereo.com/.co`, `mitualdia.com`,
+> `vaupesaldia.com`, `lavozdelvaupes.com/.org`, `vaupesnoticias.com` y
+> `noticiasvaupes.com`; `lamarandua.blogspot.com` es un blog personal sin
+> relación, con su última entrada de 2016. En Amazonas se descartaron
+> `zonastereofm.com` (reproductor sin notas) y `tropicalstereo.com` (sin feed).
 
 > **Actualización del 2026-08-26, y es la que manda.** El catálogo tiene hoy
 > medios propios en **29 de los 33 departamentos**. Faltan cuatro, y cada uno por

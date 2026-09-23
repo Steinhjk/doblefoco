@@ -150,6 +150,27 @@ Medir su opinión sin depender de la URL, al menos para los 22 medios de raíz
 plana. Hasta entonces, **el valor se queda en −0,35 con `reviewedAt: null`**, que
 es lo que ya dice: un juicio argumentado y sin firmar.
 
+> **HECHO el 2026-09-23 (punto 25 de la minuta), y la primera condición de la
+> REFUTACIÓN se cumple.** Desde el 2026-09-15 el motor marca la opinión también
+> por la etiqueta que pone el medio en su feed, y el 100 % de sus piezas
+> nuevas la traen. Medido solo sobre las piezas desde esa fecha, con la opinión
+> ya fuera del agrupamiento:
+>
+> | | Piezas | Opinión marcada | Historias | Compartidas | Socios |
+> |---|---:|---:|---:|---:|---:|
+> | **Las2Orillas** | 122 | **29** (24 %) | 29 | **4 (14 %)** | **6** |
+> | Pares de volumen parecido (NTN24, Cablenoticias, El Universal, CNN, Telemedellín), mediana | 105–134 | — | — | 66 % | 31 |
+>
+> **El aislamiento se mantiene con solo la reportería**, incluso más marcado
+> que antes (6 socios frente a 31, cuando el 08-09 eran 13 frente a 30). **No
+> era nuestro filtro: es su agenda.** El nivel 2 queda limpio.
+>
+> **Lo que esto NO resuelve** lo dice el ARGUMENTO: tener agenda propia dice
+> que **se aparta, no hacia dónde**. El −0,35 sigue siendo una colocación
+> relativa hasta que haya evidencia de dirección de nivel 1 a 3. Y la muestra
+> es de 8 días: al 15 de octubre, cuando las piezas sin etiqueta salgan de la
+> ventana de 30 días, se puede repetir sobre el mes entero.
+
 ---
 
 ## REVISIÓN EXTERNA

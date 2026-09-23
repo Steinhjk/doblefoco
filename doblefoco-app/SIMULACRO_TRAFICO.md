@@ -139,11 +139,12 @@ copia de la base**, no contra producción.
    lo que `/api/health` consulta a la base. Cuando una entrada caduca, cien
    peticiones a la vez calculan una sola vez. **De 2 a 12 visitas por
    segundo.** `CACHE_RESPUESTAS_MS=0` la apaga.
-2. **Que la API y el motor no pasen juntos de 15 conexiones.** Por ejemplo,
-   `DATABASE_POOL_MAX=5` para la API y `4` para el motor. O pasar al pooler en
-   modo transacción de Supabase (puerto 6543), que reparte muchas más
-   conexiones. Esto último cambia la cadena de conexión: **es gesto de Jose**,
-   con el procedimiento de rotación de la credencial.
+2. ~~**Que la API y el motor no pasen juntos de 15 conexiones.**~~ **HECHO el
+   2026-09-22:** `DATABASE_POOL_MAX` pasa a 4 por defecto. API + motor + una
+   tarea programada = 12. Si algún día hace falta más, la salida es el pooler
+   en modo transacción de Supabase (puerto 6543), que reparte muchas más
+   conexiones. Cambia la cadena de conexión, así que **es gesto de Jose**, con
+   el procedimiento de rotación de la credencial.
 
 ### El día de un pico
 

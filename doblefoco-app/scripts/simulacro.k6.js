@@ -52,7 +52,8 @@ export const options = {
         },
     },
     thresholds: {
-        http_req_failed: [{ threshold: 'rate<0.10', abortOnFail: true, delayAbortEval: '20s' }],
+        // MAX_FALLOS: 0,10 por defecto. Contra producción se baja (0,01 el 2026-09-22).
+        http_req_failed: [{ threshold: `rate<${Number(__ENV.MAX_FALLOS ?? 0.10)}`, abortOnFail: true, delayAbortEval: '20s' }],
         http_req_duration: [{ threshold: 'p(95)<8000', abortOnFail: true, delayAbortEval: '20s' }],
     },
     summaryTrendStats: ['med', 'p(95)', 'p(99)', 'max'],

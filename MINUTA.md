@@ -86,7 +86,7 @@ informe completo, con cifras y cómo repetirlo, está en
 |---|---|---|
 | a | **Fusionar la PR #48** | Jose |
 | b | ~~`DATABASE_POOL_MAX`~~ **HECHO el mismo día** (en la PR #48): 4 por defecto. El motor procesa 4 feeds a la vez, así que no necesita más. API + motor + una tarea programada = 12, frente a un tope de 15 | código |
-| c | **Tiempos agotados por IPv4 hacia la IP compartida de Fly** desde la red de casa: 5 de 80, mientras Vercel y Google respondían. Desde dentro de Fly, cero. Comprobar desde otra red, por ejemplo desde GitHub Actions | código |
+| c | **Tiempos agotados por IPv4 hacia la IP compartida de Fly** desde la red de casa: 5 de 80, mientras Vercel y Google respondían. **Acotado el mismo día: es el camino desde esa red, no el servidor.** Desde dentro de Fly, cero fallos. Desde GitHub, `vigilancia.yml` hizo ~40 corridas en 10 días, sin reintentos y con cero fallos de conexión; su única falla fue de datos. Desde casa, las peticiones entraban a Fly por **iad** (Virginia), no por gru. **Lo que falta saber es si otros usuarios del mismo proveedor lo sufren.** Si pasa, las salidas son una IPv4 dedicada (~2 USD/mes, sin garantía de cambiar la ruta) o servir la API a través de Vercel, que es decisión de producto | Jose, si reaparece |
 | d | Volver a medir con el simulacro cuando cambie algo grande. **El número de referencia hoy: 12 visitas/s** | — |
 
 ---

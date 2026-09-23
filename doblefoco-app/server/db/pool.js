@@ -128,7 +128,17 @@ export function getPool() {
     pool = new Pool({
         connectionString: CONNECTION_STRING,
         ssl: sslConfig(CONNECTION_STRING),
-        max: Number(process.env.DATABASE_POOL_MAX) || 8,
+        /*
+         * 4, no 8 (2026-09-22). El pooler de Supabase admite 15 clientes para TODO
+         * —API, motor y los flujos de Actions que abren la base (copia, archivo,
+         * vigilancia)—, y cada proceso reservaba hasta 8: la API y el motor ya
+         * sumaban 16 sin tráfico. El simulacro lo hizo saltar
+         * (`EMAXCONNSESSION`, SIMULACRO_TRAFICO.md). Con 4: API + motor + una
+         * tarea programada = 12. El motor no usa más: procesa 4 feeds a la vez
+         * (`FEED_CONCURRENCY`), y la API, con la caché de respuestas, casi nunca
+         * tiene más de un cálculo en curso por clave.
+         */
+        max: Number(process.env.DATABASE_POOL_MAX) || 4,
         idleTimeoutMillis: 30_000,
         connectionTimeoutMillis: 10_000,
         application_name: 'doblefoco',

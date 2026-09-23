@@ -124,7 +124,7 @@ copia de la base**, no contra producción.
    casa, el sitio cargó normal. El desafío era **solo contra la IP desde la que
    corrieron las sondas**: la de la sonda pasó de 200 a 403 a mitad de camino
    (32 respuestas 200 y luego 48 de 403), cuando llevaba minutos pidiendo
-    cada 6 s. **No afecta al público.** La lección: las sondas
+   `robots.txt` cada 6 s. **No afecta al público.** La lección: las sondas
    largas contra Vercel se hacen con pausas amplias, o no se hacen desde casa.
 
 ---

@@ -104,8 +104,27 @@ abierto, y hay que mirarlo antes de lanzar.
 
 ## Cómo repetirlo
 
-`scripts/simulacro.k6.js` explica el guion. La orden para la máquina generadora
-y la configuración de la copia (solo el proceso `api`, con
-`RATE_LIMIT_MAX` alto y **sin el motor**, para no duplicar la ingesta) están
-descritas en `MINUTA.md`, 2026-09-22. **La copia hay que borrarla al terminar:
-sus conexiones abiertas le quitan cupo a producción.**
+`scripts/simulacro.k6.js` explica el guion. Los pasos de la copia, desde
+`doblefoco-app/`:
+
+1. **Configuración aparte**: una copia de `fly.toml` con `app =
+   'doblefoco-carga'`, **sin el proceso `worker` ni su `[[vm]]`** —si no, habría
+   dos motores ingiriendo en la base de producción— y con `RATE_LIMIT_MAX =
+   '1000000'` en `[env]`. No se versiona.
+2. `fly apps create doblefoco-carga -o personal`, y `fly secrets set --stage`
+   con `DATABASE_URL`, **leída de `.env.local` a una variable y nunca escrita en
+   pantalla**, y con `ALLOWED_ORIGINS`.
+3. `fly deploy -a doblefoco-carga --config <la copia> --ha=false --remote-only`.
+4. La generadora: `fly machine run grafana/k6:latest -a doblefoco-carga -r gru
+   --vm-size shared-cpu-2x --vm-memory 1024 --restart no --rm --file-local
+   /simulacro.js=scripts/simulacro.k6.js --file-local /simulacro.sh=<bucle>
+   --entrypoint sh --detach -- /simulacro.sh`. El bucle corre `k6 run -q -e
+   BASE=https://doblefoco-carga.fly.dev -e RATE=$r /simulacro.js` por cada
+   escalón y se detiene al primer fallo. Cada escalón deja una línea
+   `RESULTADO {…}` en `fly logs -a doblefoco-carga`.
+5. **`fly apps destroy doblefoco-carga` al terminar.** Sus conexiones abiertas
+   le quitan cupo a producción.
+
+(En este equipo, `flyctl` está en `~/.fly/bin/flyctl.exe`. El 2026-09-22
+estaba roto por una actualización a medias y se restauró copiando
+`flyctl.exe.old`.)

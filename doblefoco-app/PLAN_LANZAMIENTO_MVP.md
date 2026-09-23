@@ -19,6 +19,24 @@ funciones nuevas.
 `PROTOCOLO_JUICIO_EDITORIAL.md`): aquí se ponen la evidencia y las opciones, no
 el veredicto. La cuenta de lo pendiente la sigue llevando `MINUTA.md`.
 
+> **Avance del 2026-09-22, el mismo día en que se escribió.** Todo lo de
+> código de M0 y M1 está hecho y en PR, a falta de fusionar:
+>
+> | Tarea | Estado | Dónde |
+> |---|---|---|
+> | M0.1 desfase del bot | ✅ en producción | PR #40 |
+> | M0.2 migración + PR #37 | ✅ en producción | — |
+> | M0.3 issues #4 y #5 | ✅ cerrados | — |
+> | M0.4 aviso del techo | 🔶 el aviso ya cuenta lo que expulsa. **El techo de 8 000 deja fuera ~29 % de la ventana: decisión de Jose** | PR #43 |
+> | M0.5 «sin medir» y «no noticioso» en `/transparencia` | ✅ en PR | PR #44 |
+> | M0.6 enlaces que caducan | ✅ los multifuente sobreviven; la 404 dice por qué | PR #42 |
+> | M1.1 firmas | 🔶 decididas VOZ −0,80, Colombia Informa −0,55 y el rumbo de Semana (+0,70). **Falta la revisión externa, aplazada por Jose** | PR #41 |
+> | M1.2 analítica / M1.3 privacidad | ⏳ decisiones de Jose | — |
+> | M1.4 capacidad | ✅ **de 2 a 12 visitas/s** con la caché de respuestas; quedan el pool de conexiones y un fallo de red hacia Fly | PR #48, `SIMULACRO_TRAFICO.md` |
+> | M1.5 móvil | ✅ el mapa ya muestra el espectro entero; `mirar` incluye `/noticia` | PR #45 |
+> | M1.6 accesibilidad | ✅ de 146 fallos a 0 (con #44); `npm run accesibilidad` | PR #46 |
+> | M1.7 lo que se promete / M1.8 panel no noticiosos | ⏳ Jose | — |
+
 ---
 
 ## Dónde estamos, en un párrafo

@@ -176,6 +176,13 @@ const CACHE_MS = process.env.CACHE_RESPUESTAS_MS !== undefined && Number.isFinit
     : 60_000;
 const cache = crearCache({ ttlMs: CACHE_MS });
 
+/**
+ * Manda un JSON que YA es texto. Se guarda en la caché ya serializado porque el
+ * simulacro del 2026-09-22 mostró que, con la base fuera del camino, el techo
+ * pasaba a ser la CPU: `res.json` volvía a convertir 1,4 MB en cada respuesta.
+ */
+const enviarJson = (res, texto) => res.type('application/json').send(texto);
+
 /** La historia de una noticia, la pida la API o la página renderizada en servidor. */
 const leerHistoria = (id) => cache.obtener(`historia:${id}`, () => readStory(id));
 
@@ -671,15 +678,18 @@ app.get('/api/feed', async (req, res) => {
         const departamento = DEPARTAMENTOS.includes(pedido) ? pedido : null;
 
         const clave = `feed:${limit}:${offset}:${ambito}:${temas.join(',')}:${departamento ?? ''}`;
-        const [stories, counts] = await cache.obtener(clave, () => Promise.all([
-            readFeed({ limit, offset, ambito, temas, departamento }),
-            countFeed(),
-        ]));
+        const texto = await cache.obtener(clave, async () => {
+            const [stories, counts] = await Promise.all([
+                readFeed({ limit, offset, ambito, temas, departamento }),
+                countFeed(),
+            ]);
+            // `total` se conserva como campo suelto por compatibilidad con lo ya
+            // desplegado; `counts` es lo que necesita la portada para no confundir
+            // el tamaño de la página con el del catálogo.
+            return JSON.stringify({ success: true, total: counts.total, counts, limit, offset, stories });
+        });
 
-        // `total` se conserva como campo suelto por compatibilidad con lo ya
-        // desplegado; `counts` es lo que necesita la portada para no confundir
-        // el tamaño de la página con el del catálogo.
-        res.json({ success: true, total: counts.total, counts, limit, offset, stories });
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/feed', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -714,33 +724,33 @@ app.get('/api/portada', async (req, res) => {
 
         // Se guarda el cuerpo ENTERO, agrupamiento incluido: agrupar en sucesos es
         // el cálculo más caro de la API, y su entrada solo cambia con el ciclo.
-        const cuerpo = await cache.obtener(`portada:${limit}`, async () => {
-        const [historias, vocabulario] = await Promise.all([
-            readFeed({ limit, offset: 0 }),
-            vocabularioDelCorpus(),
-        ]);
+        const texto = await cache.obtener(`portada:${limit}`, async () => {
+            const [historias, vocabulario] = await Promise.all([
+                readFeed({ limit, offset: 0 }),
+                vocabularioDelCorpus(),
+            ]);
 
-        const sucesos = agruparEnSucesos(historias, { vocabulario })
-            .sort(porRelevanciaDeSuceso())
-            .map((s) => ({
-                id: s.id,
-                titular: s.titular,
-                medios: s.medios,
-                articulos: s.articulos,
-                angulos: s.angulos,
-                publishedAt: s.publishedAt,
-                // La pieza que se enseña. No siempre es la más cubierta: si esa
-                // es una galería de fotos o un explicativo, titula la siguiente.
-                // Ver `shared/titularDeSuceso.js`.
-                lider: s.representante,
-                // Los ángulos, sin repetir el que va entero arriba.
-                historias: s.historias.filter((h) => h.id !== s.id),
-            }));
+            const sucesos = agruparEnSucesos(historias, { vocabulario })
+                .sort(porRelevanciaDeSuceso())
+                .map((s) => ({
+                    id: s.id,
+                    titular: s.titular,
+                    medios: s.medios,
+                    articulos: s.articulos,
+                    angulos: s.angulos,
+                    publishedAt: s.publishedAt,
+                    // La pieza que se enseña. No siempre es la más cubierta: si esa
+                    // es una galería de fotos o un explicativo, titula la siguiente.
+                    // Ver `shared/titularDeSuceso.js`.
+                    lider: s.representante,
+                    // Los ángulos, sin repetir el que va entero arriba.
+                    historias: s.historias.filter((h) => h.id !== s.id),
+                }));
 
-        return { success: true, vocabulario: vocabulario.length, sucesos };
+            return JSON.stringify({ success: true, vocabulario: vocabulario.length, sucesos });
         });
 
-        res.json(cuerpo);
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/portada', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -761,8 +771,9 @@ app.get('/api/portada', async (req, res) => {
  */
 app.get('/api/departamentos', async (req, res) => {
     try {
-        const conteos = await cache.obtener('departamentos', () => countByDepartamento());
-        res.json({ success: true, conteos });
+        const texto = await cache.obtener('departamentos', async () =>
+            JSON.stringify({ success: true, conteos: await countByDepartamento() }));
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/departamentos', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -800,8 +811,9 @@ app.get('/api/story/:id', async (req, res) => {
  */
 app.get('/api/panorama', async (req, res) => {
     try {
-        const medios = await cache.obtener('panorama', () => countArticlesBySource());
-        res.json({ success: true, medios, retentionHours: 72 });
+        const texto = await cache.obtener('panorama', async () =>
+            JSON.stringify({ success: true, medios: await countArticlesBySource(), retentionHours: 72 }));
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/panorama', error);
         res.status(500).json({ success: false, error: 'Error interno' });

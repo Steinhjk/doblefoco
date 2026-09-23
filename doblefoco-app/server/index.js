@@ -35,6 +35,7 @@ import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
 import { countStored, dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
+import { crearCache } from './cacheDeRespuestas.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
 import {
@@ -164,6 +165,21 @@ app.use((req, res, next) => {
 });
 
 /**
+ * Cuánto se guarda en memoria cada respuesta de lectura (ver
+ * `cacheDeRespuestas.js` y SIMULACRO_TRAFICO.md). 60 s por defecto: los datos
+ * cambian cada 30 minutos, con el ciclo del motor, así que el retraso no se ve,
+ * y la base pasa de una consulta por visita a una por minuto. `0` lo apaga, que
+ * es lo que permite medir el antes y el después con el mismo binario.
+ */
+const CACHE_MS = process.env.CACHE_RESPUESTAS_MS !== undefined && Number.isFinite(Number(process.env.CACHE_RESPUESTAS_MS))
+    ? Math.max(0, Number(process.env.CACHE_RESPUESTAS_MS))
+    : 60_000;
+const cache = crearCache({ ttlMs: CACHE_MS });
+
+/** La historia de una noticia, la pida la API o la página renderizada en servidor. */
+const leerHistoria = (id) => cache.obtener(`historia:${id}`, () => readStory(id));
+
+/**
  * Límite general de peticiones por IP. EN MEMORIA, y a propósito (F2-06).
  *
  * Los límites que protegen algo valioso —intentos de acceso y escritura de
@@ -286,11 +302,14 @@ app.get('/api/health', async (req, res) => {
 
     // Nunca lanza: un fallo al leer la base es en sí mismo señal de degradado,
     // y health tiene que poder responder precisamente cuando algo va mal.
+    // Lo de la base, 15 s como mucho: lo pide cada visita (el apretón de manos
+    // de versión) y contaba el corpus entero cada vez. La versión y la hora sí
+    // se calculan en cada petición.
     const [ultimoCiclo, conteos] = isDatabaseEnabled()
-        ? await Promise.all([
+        ? await cache.obtener('salud:base', () => Promise.all([
             lastRunFromDb().catch(() => null),
             countStored().catch(() => null),
-        ])
+        ]), Math.min(CACHE_MS, 15_000))
         : [null, null];
 
     const lastRunAt = ultimoCiclo?.at ?? stats.lastRunAt;
@@ -651,10 +670,11 @@ app.get('/api/feed', async (req, res) => {
         const pedido = String(req.query.departamento ?? '').trim();
         const departamento = DEPARTAMENTOS.includes(pedido) ? pedido : null;
 
-        const [stories, counts] = await Promise.all([
+        const clave = `feed:${limit}:${offset}:${ambito}:${temas.join(',')}:${departamento ?? ''}`;
+        const [stories, counts] = await cache.obtener(clave, () => Promise.all([
             readFeed({ limit, offset, ambito, temas, departamento }),
             countFeed(),
-        ]);
+        ]));
 
         // `total` se conserva como campo suelto por compatibilidad con lo ya
         // desplegado; `counts` es lo que necesita la portada para no confundir
@@ -692,6 +712,9 @@ app.get('/api/portada', async (req, res) => {
         // dejarlo fuera del conjunto lo dejaría fuera del recuento.
         const limit = Math.min(Math.max(Number(req.query.limit) || 100, 10), 200);
 
+        // Se guarda el cuerpo ENTERO, agrupamiento incluido: agrupar en sucesos es
+        // el cálculo más caro de la API, y su entrada solo cambia con el ciclo.
+        const cuerpo = await cache.obtener(`portada:${limit}`, async () => {
         const [historias, vocabulario] = await Promise.all([
             readFeed({ limit, offset: 0 }),
             vocabularioDelCorpus(),
@@ -714,7 +737,10 @@ app.get('/api/portada', async (req, res) => {
                 historias: s.historias.filter((h) => h.id !== s.id),
             }));
 
-        res.json({ success: true, vocabulario: vocabulario.length, sucesos });
+        return { success: true, vocabulario: vocabulario.length, sucesos };
+        });
+
+        res.json(cuerpo);
     } catch (error) {
         console.error('[api] fallo en /api/portada', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -735,7 +761,7 @@ app.get('/api/portada', async (req, res) => {
  */
 app.get('/api/departamentos', async (req, res) => {
     try {
-        const conteos = await countByDepartamento();
+        const conteos = await cache.obtener('departamentos', () => countByDepartamento());
         res.json({ success: true, conteos });
     } catch (error) {
         console.error('[api] fallo en /api/departamentos', error);
@@ -749,7 +775,7 @@ app.get('/api/story/:id', async (req, res) => {
         // SE REDIRIGE: esto lo llama `fetch`, y una redirección a /noticia/... le
         // devolvería HTML donde espera JSON. La canonicalización es asunto de la
         // ruta de página, que es la que ve un buscador.
-        const story = await readStory(idDesdeRuta(req.params.id));
+        const story = await leerHistoria(idDesdeRuta(req.params.id));
 
         if (!story) {
             // También 404 si está retirada por moderación: el filtro va en la
@@ -774,7 +800,7 @@ app.get('/api/story/:id', async (req, res) => {
  */
 app.get('/api/panorama', async (req, res) => {
     try {
-        const medios = await countArticlesBySource();
+        const medios = await cache.obtener('panorama', () => countArticlesBySource());
         res.json({ success: true, medios, retentionHours: 72 });
     } catch (error) {
         console.error('[api] fallo en /api/panorama', error);
@@ -933,7 +959,7 @@ async function prepararSsr() {
 app.get('/noticia/:id', async (req, res) => {
     try {
         // El parámetro ya no es el id de la base: es «titular-legible-abc123».
-        const story = await readStory(idDesdeRuta(req.params.id));
+        const story = await leerHistoria(idDesdeRuta(req.params.id));
 
         /**
          * UNA SOLA DIRECCIÓN POR NOTICIA, con 301 hacia ella.

@@ -85,7 +85,7 @@ informe completo, con cifras y cómo repetirlo, está en
 | | Qué | Quién |
 |---|---|---|
 | a | **Fusionar la PR #48** | Jose |
-| b | **`DATABASE_POOL_MAX`**: la API y el motor reservan hasta 8 cada uno, 16 contra un tope de 15. Bajar la API, y comprobar cuántas usa de verdad el motor | código |
+| b | ~~`DATABASE_POOL_MAX`~~ **HECHO el mismo día** (en la PR #48): 4 por defecto. El motor procesa 4 feeds a la vez, así que no necesita más. API + motor + una tarea programada = 12, frente a un tope de 15 | código |
 | c | **Tiempos agotados por IPv4 hacia la IP compartida de Fly** desde la red de casa: 5 de 80, mientras Vercel y Google respondían. Desde dentro de Fly, cero. Comprobar desde otra red, por ejemplo desde GitHub Actions | código |
 | d | Volver a medir con el simulacro cuando cambie algo grande. **El número de referencia hoy: 12 visitas/s** | — |
 

@@ -911,9 +911,26 @@
         gap: 20px;
     }
 
-    .detail-body,
-    .detail-hero-header {
+    /*
+     * EN MÓVIL SE APILABAN TRES RELLENOS (hasta el 2026-09-22): la página 20 px,
+     * la tarjeta 24 px y la cabecera otros 20 px. Eran ~64 px por lado, y el
+     * titular y las columnas se apretaban en ~300 de 412 px. La tarjeta ya da
+     * el margen: la cabecera solo necesita su separación de abajo.
+     */
+    .news-detail-page {
+        padding: 16px 12px 48px;
+    }
+
+    .detail-main-col {
+        padding: 18px 16px;
+    }
+
+    .detail-body {
         padding: 20px;
+    }
+
+    .detail-hero-header {
+        padding: 0 0 20px;
     }
 }
 

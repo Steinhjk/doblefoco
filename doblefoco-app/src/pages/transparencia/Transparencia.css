@@ -157,6 +157,8 @@
 
 /* Variables globales del sitio, no hex propios: rojo izquierda, azul derecha,
    igual que el mapa mediático. */
-.tr-spectrum-left { border-left-color: var(--bias-left); }
-.tr-spectrum-right { border-left-color: var(--bias-right); }
-.tr-spectrum-center { border-left-color: var(--bias-objective); }
+/* Con el dt delante: `.tr-spectrum dt` es más específico que una clase sola y
+   dejaba las tres bandas con el borde gris de relleno hasta el 2026-09-22. */
+.tr-spectrum dt.tr-spectrum-left { border-left-color: var(--bias-left); }
+.tr-spectrum dt.tr-spectrum-right { border-left-color: var(--bias-right); }
+.tr-spectrum dt.tr-spectrum-center { border-left-color: var(--bias-objective); }

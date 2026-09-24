@@ -139,6 +139,38 @@ mueve a −0,70 y se declara que el catálogo no sabe distinguir por debajo de e
 Las dos son defendibles; lo que no lo es es firmar −0,80 sin decir cuál de las
 dos cosas se está haciendo.
 
+> **DECIDIDO por Jose el 2026-09-22: −0,80, con la magnitud como juicio.** La
+> dirección la fija lo medido: la propiedad del PCC y el aislamiento. **La
+> distancia exacta entre −0,65 y −0,80 es juicio editorial, no medición**, y
+> así se declara. Se descartó −0,70: la regla 2 se escribió para la duda entre
+> bandas, y aquí la banda no está en duda. Ver `DECISIONES.md`, 2026-09-22.
+> Queda la revisión externa antes de firmar.
+
+> **NUEVO EN EL CONTRA, 2026-09-23 (punto 25 de la minuta), y hay que leerlo
+> antes de firmar: con la opinión separada, el aislamiento ya no aparece.**
+> VOZ publica en la raíz, así que hasta el 15-09 sus columnas entraban al
+> agrupamiento sin marcar. Desde entonces el motor también las marca por la
+> etiqueta del feed. Medido solo sobre las piezas posteriores:
+>
+> | | Piezas | Opinión marcada | Historias | Compartidas | Socios |
+> |---|---:|---:|---:|---:|---:|
+> | **Semanario VOZ** | 26 | 5 | 9 | **3 (33 %)** | **2** |
+> | Pares de volumen parecido (Vive el Meta, Chocó 7 Días, La Patria, Noticias Uno, RTVC), mediana | 20–34 | — | — | 27 % | 3 |
+>
+> El 08-09 decía «0 socios donde sus pares tienen entre 2 y 14». Hoy comparte
+> historias **como sus pares**. **De los dos pilares del ARGUMENTO —propiedad
+> partidista y aislamiento medido—, el segundo no se sostiene** con los datos
+> limpios.
+>
+> **Lo que NO cambia:** la banda. El nivel 1, órgano del Partido Comunista que
+> hoy lo posee, fija la dirección por sí solo, y es lo que la ficha dice desde
+> el principio. **Lo que sí cambia es el apoyo del −0,80 frente a −0,70**: el
+> ARGUMENTO decía «VOZ no participa: publica otra conversación», y con los
+> datos limpios participa como un medio de su tamaño. **La muestra es de 9
+> historias en 8 días**, poca para concluir; al 15 de octubre se puede repetir
+> sobre el mes entero. **Jose tiene que ver esto antes de firmar**, porque la
+> decisión del 22-09 se apoyó en el aislamiento.
+
 ---
 
 ## REFUTACIÓN — qué observación concreta cambiaría el número

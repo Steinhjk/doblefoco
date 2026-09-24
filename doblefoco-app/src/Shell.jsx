@@ -62,9 +62,17 @@ export default function Shell() {
                 <footer>
                     <div className="footer-container">
                         <Link to="/" className="footer-logo">DobleFoco<span>.co</span></Link>
+                        {/*
+                          Decía «Cobertura periodística contrastada». Se retiró el
+                          2026-09-22 por la misma razón que «Información Objetiva y
+                          Moderna» del `twitter:title` (2026-09-01) y «Cobertura
+                          contrastada» del texto de compartir (2026-09-15): afirma una
+                          cualidad que la medición no sostiene. El lema de ahora es el
+                          del `og:title`, y describe lo que el sitio hace.
+                        */}
                         <p className="footer-copy">
-                            &copy; {new Date().getFullYear()} DobleFoco.co — Cobertura
-                            periodística contrastada.
+                            &copy; {new Date().getFullYear()} DobleFoco.co — Quién está
+                            contando esta noticia, y quién no.
                         </p>
                     </div>
                 </footer>

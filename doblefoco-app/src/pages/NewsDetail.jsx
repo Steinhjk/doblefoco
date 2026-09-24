@@ -252,7 +252,18 @@ const NewsDetail = () => {
             <div className="news-detail-page">
                 <div className="detail-not-found">
                     <h1>Noticia no encontrada</h1>
-                    <p>La noticia que buscas no existe o ya no está disponible.</p>
+                    {/*
+                      Un enlace compartido que caduca tiene que decir por qué. Si no,
+                      parece un sitio roto. Las historias de un solo medio se retiran
+                      a las 72 h; las de varios medios se archivan y siguen
+                      respondiendo (comprobado en producción el 2026-09-22, M0.6 del
+                      plan del MVP).
+                    */}
+                    <p>
+                        Puede que haya caducado: las noticias que cubrió un solo medio
+                        se retiran a las 72 horas. Las que cubrieron varios medios se
+                        conservan en el archivo.
+                    </p>
                     <Link to="/" className="back-link">Volver al inicio</Link>
                 </div>
             </div>

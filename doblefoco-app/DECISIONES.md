@@ -17,6 +17,41 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-24 · El techo sube a 9 000, y el enlace de una historia recompuesta lleva a su sucesora
+
+Jose, con las cifras y los costos delante: «Ambas».
+
+1. **`MAX_ARTICLES` pasa de 8 000 a 9 000** (M0.4 del plan del MVP, opción A).
+   La cifra del 29 % que se manejaba el 22-09 era engañosa. Medido el 24-09,
+   el techo expulsaba 5 560 de 13 560 artículos, pero **4 956 eran cable
+   internacional sin cobertura**, que sale a propósito por la decisión del
+   2026-08-07. El recorte real eran **604 piezas prioritarias, casi todas
+   nacionales**: lo nacional se veía en ~67 h y no en 72.
+   - **Costo:** cero en dinero. Agrupar ~1 000 artículos más cuesta un 12 % de
+     tiempo (16,8 s frente a 15,0 s, medido en local), con memoria de sobra.
+   - **De paso, el aviso `RECORTADA POR EL TECHO` pasa a contar solo lo
+     prioritario.** Contando el total habría saltado en todos los ciclos.
+   - **Descartado:** bajar el techo por ciclo de Infobae (B). Sería una regla
+     sobre quién publica, y la de agosto la evitó a propósito. Solo declararlo
+     (D) no arreglaba nada.
+   - **Queda para medir, no descartado:** acortar la gracia de 12 h del cable
+     (C). Hay 1 066 piezas de cable que solo son prioritarias por ella, 903 de
+     Infobae. Antes hay que saber cuánto tarda un medio colombiano en cubrir un
+     hecho internacional.
+2. **El enlace a una historia que el agrupamiento recompuso redirige a su
+   sucesora**, la historia viva que se quedó con más artículos suyos. Sale del
+   arreglo del mismo día (PR #53): las recompuestas multifuente se quedaban
+   vivas y duplicadas; ahora se borran, y su enlace se habría muerto en horas.
+   - **Costo:** una tabla y una migración, que Jose corre antes de fusionar.
+   - **Descartado:** solo corregir el texto de «Noticia no encontrada»
+     (dejaría morir enlaces compartidos después del lanzamiento) y dejarlo
+     como estaba.
+
+Dónde: `MAX_ARTICLES` y `pruneArticles` en `server/services/ingestDaemon.js`;
+la redirección, en su PR.
+
+---
+
 ## 2026-09-23 · Amazonas entra con LeticiaHoy; Guainía y Vaupés se declaran sin medio con sitio
 
 Jose pidió buscar al menos un medio para cada uno de los tres departamentos.

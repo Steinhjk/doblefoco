@@ -1,5 +1,35 @@
 # Por dónde seguir
 
+## 2026-09-23 · Todo el código del plan del MVP (M0 y M1) está en el aire
+
+**Lo primero al volver: leer la entrada «Cierre de dos días de trabajo» en
+`MINUTA.md`**, la más alta de ABIERTO. Tiene lo que entró, las decisiones
+pendientes de Jose con su orden y lo que tiene fecha.
+
+**El plan vivo es `PLAN_LANZAMIENTO_MVP.md`**, con su tabla de avance al
+principio. `ROADMAP.txt` quedó congelado como histórico.
+
+**En una frase:** lo que separa el sitio del lanzamiento ya no es código. Son
+cinco decisiones de Jose:
+1. la revisión con Kimi y las firmas;
+2. la analítica;
+3. el responsable de los datos;
+4. el techo de artículos;
+5. qué se promete.
+
+Y la puerta del 27 de octubre, con sus nueve líneas.
+
+**Tres cosas que no se deducen del código:**
+- La herramienta de Fly está en `~/.fly/bin/flyctl.exe`, fuera del `PATH` de
+  esta terminal. Se restauró el 22-09 copiando `flyctl.exe.old`, porque una
+  actualización la había dejado rota. La sesión de Fly sigue abierta.
+- **El simulacro de tráfico**, en `SIMULACRO_TRAFICO.md`, se hace contra
+  producción solo con permiso de Jose. **Nunca copiando la base**, que tiene
+  datos personales. El número de referencia: 12 visitas/s con una máquina.
+- **Jose no siempre escribe los comandos con `!`.** Si pega un comando como
+  mensaje, preguntar antes de ejecutarlo: el 23-09 pegó uno sin saber qué
+  hacía.
+
 ## 2026-09-15 · La tanda está en el aire, y el día del despliegue ya se ejecutó
 
 **Lo primero al volver ya no es fusionar.** La tanda del 8 de septiembre entró a

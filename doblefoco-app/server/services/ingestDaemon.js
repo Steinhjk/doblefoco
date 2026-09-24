@@ -176,8 +176,28 @@ export const RETENCION_BASE_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
  *
  * QUÉ VIGILAR: `duration_ms` en la serie. Si el ciclo se acercara a los minutos,
  * el cuello sería el agrupamiento y la respuesta ya no es subir el techo.
+ *
+ * 9 000 DESDE EL 2026-09-24 (decisión de Jose, M0.4 del plan del MVP). El techo
+ * estaba en 8 000 exactos desde el 13-08. Medido ese día, la base tenía 13 560
+ * artículos en 72 h, y los prioritarios (lo nacional, lo comparable y lo que
+ * está en su gracia) sumaban 8 604: **604 no cabían**, casi todos nacionales,
+ * y lo nacional se veía en ~67 h y no en 72. Lo demás que queda fuera (4 956
+ * piezas) es cable sin cobertura, que sale a propósito. De ese cable, 1 066
+ * piezas solo son prioritarias por la gracia de 12 h, 903 de ellas de Infobae,
+ * que ya publica 5 730 piezas en 72 h. Acortar la gracia quedó para medir, no
+ * para suponer.
+ *
+ * LO QUE CUESTA, medido el mismo día en local sobre el corpus real: agrupar
+ * 8 824 artículos tarda 16,8 s frente a 15,0 s con 7 876 (+12 %), y la memoria
+ * residente llega a ~240 MB de los 512 del worker. En producción el ciclo entero
+ * tardaba 56 s de media, así que se esperan unos segundos más.
+ *
+ * EL MARGEN ES CORTO, Y ESO ES A PROPÓSITO: ~400 plazas. Esta vez el aviso
+ * cuenta solo lo prioritario (ver `pruneArticles`), así que si Infobae sigue
+ * creciendo, el ciclo lo dirá con el número. No hará falta descubrirlo un mes
+ * después.
  */
-const MAX_ARTICLES = 8_000;
+const MAX_ARTICLES = 9_000;
 
 /*
  * El User-Agent vive en `shared/userAgent.js`, en un solo sitio.
@@ -882,9 +902,16 @@ const GRACIA_MS = 12 * 60 * 60 * 1000;
  * quepa bajo el techo, no se expulsa nada.
  */
 /**
- * @returns {number} cuántos artículos DENTRO de la ventana expulsó el techo. Es
- *   la única medida honesta de «el techo mordió» (ver `desalojadosPorTecho` en
- *   el informe del ciclo); los que salen por edad no cuentan.
+ * @returns {{ total: number, prioritarios: number }} cuántos artículos DENTRO de
+ *   la ventana expulsó el techo, y cuántos de ellos eran prioritarios. Los que
+ *   salen por edad no cuentan.
+ *
+ *   SOLO `prioritarios` DICE QUE EL TECHO MORDIÓ (2026-09-24). Que salga el
+ *   cable internacional sin cobertura es el diseño, no un recorte: medido ese
+ *   día, de 5 560 expulsados, 4 956 eran eso. Un aviso que los contara saltaría
+ *   en todos los ciclos aunque el techo sobrara, y ya se sabe lo que pasa con
+ *   un vigilante que grita siempre. El daño real son los otros: 604 piezas,
+ *   casi todas nacionales, que dejaban lo nacional en ~67 h en vez de 72.
  */
 function pruneArticles() {
     const cutoff = Date.now() - RETENTION_MS;
@@ -896,7 +923,7 @@ function pruneArticles() {
         }
     }
 
-    if (articlesByLink.size <= MAX_ARTICLES) return 0;
+    if (articlesByLink.size <= MAX_ARTICLES) return { total: 0, prioritarios: 0 };
 
     const ahora = Date.now();
 
@@ -919,11 +946,15 @@ function pruneArticles() {
         return (b[1].ingestedAtMs ?? 0) - (a[1].ingestedAtMs ?? 0);
     });
 
+    const fuera = sorted.slice(MAX_ARTICLES);
     articlesByLink.clear();
     for (const [link, article] of sorted.slice(0, MAX_ARTICLES)) {
         articlesByLink.set(link, article);
     }
-    return sorted.length - MAX_ARTICLES;
+    return {
+        total: fuera.length,
+        prioritarios: fuera.filter(([link, article]) => prioritario(link, article)).length,
+    };
 }
 
 // ---------------------------------------------------------------------------
@@ -1270,7 +1301,7 @@ export async function runIngestionBatch() {
             }
         );
 
-        const desalojadosPorTecho = pruneArticles();
+        const { total: desalojadosPorTecho, prioritarios: desalojadosPrioritarios } = pruneArticles();
         buildMultisourceStories();
 
         // La persistencia va DESPUÉS de construir las historias y antes de
@@ -1388,8 +1419,13 @@ export async function runIngestionBatch() {
          * de la ventana expulsó el techo en este ciclo. Si el techo muerde, lo
          * dice siempre, y con el número. `ventanaHoras` se sigue publicando cada
          * ciclo y en la serie.
+         *
+         * Y DESDE EL 2026-09-24 SOLO CUENTA LO PRIORITARIO. El recuento total
+         * mezclaba el recorte con el diseño: el 89 % de lo expulsado era cable
+         * internacional que ningún otro medio cubrió, que sale a propósito
+         * (decisión del 2026-08-07). El total se sigue diciendo, sin alarma.
          */
-        const ventanaRecortada = desalojadosPorTecho > 0;
+        const ventanaRecortada = desalojadosPrioritarios > 0;
 
         const report = {
             startedAt: new Date(startedAt).toISOString(),
@@ -1397,6 +1433,7 @@ export async function runIngestionBatch() {
             ventanaHoras,
             ventanaRecortada,
             desalojadosPorTecho,
+            desalojadosPrioritarios,
             newArticles: perFeed.reduce((sum, f) => sum + f.added, 0),
             filteredArticles,
             discardedByRule,
@@ -1462,8 +1499,9 @@ export async function runIngestionBatch() {
             // encontrárselo por primera vez el día malo obliga a averiguar
             // entonces si es raro o normal.
             (report.ventanaHoras !== null
-                ? ` · ventana ${report.ventanaHoras} h${report.ventanaRecortada ? ` ⚠ RECORTADA POR EL TECHO (−${report.desalojadosPorTecho})` : ''}`
-                : '')
+                ? ` · ventana ${report.ventanaHoras} h${report.ventanaRecortada ? ` ⚠ RECORTADA POR EL TECHO (−${report.desalojadosPrioritarios} prioritarios)` : ''}`
+                : '') +
+            (report.desalojadosPorTecho ? ` · techo −${report.desalojadosPorTecho}` : '')
         );
 
         return report;

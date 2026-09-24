@@ -1,5 +1,10 @@
 # ¿Tiene cada departamento un medio propio que funcione?
 
+> **DECIDIDO por Jose el mismo día: LeticiaHoy entra, y Amazonas deja de estar
+> en blanco. El catálogo pasa a 30 de 33.** Guainía y Vaupés quedan declarados
+> sin medio propio con sitio, y Sucre sigue como estaba. Ver `DECISIONES.md`,
+> 2026-09-23.
+>
 > **Actualización del 2026-09-23 sobre Amazonas, Guainía y Vaupés: el motivo
 > que daba la de abajo era inexacto.** Se buscó otra vez a petición de Jose, y
 > esta vez con una fuente que las búsquedas anteriores no tenían: el censo

@@ -7,7 +7,7 @@ para decidir, o se deriva de ella y del catálogo. Si los dos pudieran
 divergir, esta página no serviría de nada — y ya divergió dos veces
 este mes, que es la razón de que exista.
 
-Generado: 2026-09-18
+Generado: 2026-09-23
 
 
 1. QUÉ MIDE ESTE MODELO, Y QUÉ NO
@@ -50,13 +50,13 @@ en ninguna historia, así que meterlo en el denominador inventaría
 competidores que no compiten — y haría más fácil declarar ausente a
 quien nunca pudo estar.
 
-    Izquierda ...................    9    12,3 %
-    Orientación mixta ...........   42    57,5 %
-    Derecha .....................   18    24,7 %
-    Sin medir ...................    4     5,5 %
+    Izquierda ...................    9    12,2 %
+    Orientación mixta ...........   43    58,1 %
+    Derecha .....................   18    24,3 %
+    Sin medir ...................    4     5,4 %
     ----------------------------------------
-    Con feed ....................   73
-    En el registro ..............   78
+    Con feed ....................   74
+    En el registro ..............   79
 
 
 4. CUÁNDO SE DICE QUE A UNA HISTORIA LE FALTA UN LADO

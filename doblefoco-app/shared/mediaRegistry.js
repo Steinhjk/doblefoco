@@ -249,7 +249,7 @@ export const MEDIA_REGISTRY = [
         bias: -0.35, factuality: 0.80, reviewedAt: null,
         biasRationale:
             'Portal nativo digital de analisis y columna con linea editorial critica del establecimiento y del poder economico regional; publica firmas de varias corrientes pero su seleccion y encuadre son sostenidamente progresistas. Valor propuesto por comparacion con CasaMacondo (-0,35) y por debajo de la investigacion militante (Voragine, Cuestion Publica). SIN FIRMAR.',
-        feed: { url: 'https://www.las2orillas.co/feed/', via: 'direct', category: 'Politica' },
+        feed: { url: 'https://www.las2orillas.co/feed/', via: 'direct', category: 'Política' },
         // Sirve sus imagenes desde su propio WordPress, no por CDN externo.
         imageHosts: ['las2orillas.co'],
     },
@@ -1189,6 +1189,44 @@ export const MEDIA_REGISTRY = [
         bias: 0.0, factuality: null, reviewedAt: null,
         biasRationale: 'Corporación sin ánimo de lucro de Puerto Carreño que cubre Vichada y Guainía. Único medio sin ánimo de lucro de la tanda departamental; orientación mixta provisional — ver fichas/el-morichal.md.',
         feed: { url: 'https://elmorichal.com/feed/', via: 'direct', category: 'Política' },
+    },
+    {
+        /**
+         * LETICIAHOY — alta del 2026-09-23, a petición de Jose. Primer medio de
+         * AMAZONAS.
+         *
+         * Amazonas figuraba desde agosto como «sin medios web, solo radio». El
+         * censo de la Fundación Gabo y la FLIP («Desiertos de noticias
+         * locales») lo corrigió: allí hay periodismo digital, pero casi todo
+         * vive en Facebook. Este es el único con sitio y feed vivos. Periódico
+         * Umarí, el que se había probado, lleva ~18 meses caído. Ver
+         * COBERTURA_DEPARTAMENTAL.md, 2026-09-23.
+         *
+         * EL FEED ES EL DE SU SECCIÓN LETICIA, NO EL GENERAL. El sitio
+         * (`taleoi.com`, un Drupal) mezcla ciencia genérica y noticias de Brasil
+         * y Perú en español y portugués, y su `rss.xml` general está parado
+         * desde 2025-08. `feed:descubrir` solo encontraba ese. La sección tiene
+         * el suyo en la ruta de taxonomía, con 10 ítems y el último del
+         * 2026-09-22 al darlo de alta, y responde a nuestro User-Agent.
+         *
+         * ENTRA CON TRES DEBILIDADES DICHAS, no escondidas:
+         *   · no se sabe de quién es (ver su ausencia declarada en
+         *     mediaOwnership.js);
+         *   · las piezas van firmadas por la cuenta de la casa, son cortas y no
+         *     citan fuentes: se leen como notas de veeduría ciudadana;
+         *   · la cadencia es irregular (7 piezas del 07 al 22-09, antes una al
+         *     mes), así que a menudo no tendrá nada dentro de las 72 h.
+         * Jose decidió que un departamento con un medio débil y declarado es
+         * mejor que uno en blanco.
+         *
+         * EN 0,00 POR LA REGLA 2: ausencia de evidencia, no evidencia de
+         * equilibrio. Mismo criterio que La Razón.co y los tres del 12-08.
+         */
+        id: 'leticia-hoy', name: 'LeticiaHoy', shortName: 'LeticiaHoy',
+        domain: 'taleoi.com', departamento: 'Amazonas', country: 'CO', group: null,
+        bias: 0.0, factuality: null, reviewedAt: null,
+        biasRationale: 'Medio digital de Leticia (sitio taleoi.com, dominio de 2012) con notas locales cortas, firmadas por la cuenta de la casa y sin fuentes citadas. Sin dueño documentado. Orientación mixta provisional por ausencia de evidencia — ver COBERTURA_DEPARTAMENTAL.md.',
+        feed: { url: 'https://www.taleoi.com/taxonomy/term/5/feed', via: 'direct', category: 'Política' },
     },
     {
         id: 'boyaca-digital', name: 'Boyacá Digital', shortName: 'Boyacá Digital',

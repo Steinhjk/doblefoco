@@ -7,8 +7,8 @@ aquí es exactamente el valor con el que el sistema clasifica cada
 noticia. Si los dos pudieran divergir, esta página no serviría de
 nada.
 
-Generado: 2026-09-18
-Medios en el catálogo: 78
+Generado: 2026-09-24
+Medios en el catálogo: 79
 
 ESTADO DE REVISIÓN: ninguno de estos valores ha pasado todavía por
 revisión editorial formal. Son juicios documentados —cada uno lleva
@@ -81,7 +81,7 @@ IZQUIERDA MODERADA  [−0.60 a −0.20)  —  8 medios
     Diario estadounidense de referencia con línea editorial liberal.
 
 ----------------------------------------------------------------------
-ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
+ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  47 medios
 ----------------------------------------------------------------------
 
   El País (España)  ·  sesgo −0.20  ·  factualidad 88%
@@ -183,6 +183,14 @@ ORIENTACIÓN MIXTA  [−0.20 a +0.20)  —  46 medios
     y Guainía. Único medio sin ánimo de lucro de la tanda
     departamental; orientación mixta provisional — ver
     fichas/el-morichal.md.
+
+  LeticiaHoy  ·  sesgo +0.00  ·  factualidad sin medir
+    taleoi.com · null · CO · RSS propio · PROVISIONAL
+    Medio digital de Leticia (sitio taleoi.com, dominio de 2012) con
+    notas locales cortas, firmadas por la cuenta de la casa y sin
+    fuentes citadas. Sin dueño documentado. Orientación mixta
+    provisional por ausencia de evidencia — ver
+    COBERTURA_DEPARTAMENTAL.md.
 
   Boyacá Digital  ·  sesgo +0.00  ·  factualidad sin medir
     boyacadigital.com · Holding Consultants · CO · RSS propio · PROVISIONAL

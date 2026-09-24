@@ -2361,6 +2361,44 @@ export const OWNERSHIP_PROFILES = {
         ],
     },
 
+    'leticia-hoy': {
+        ownerType: null,
+        holdings: [
+            'Medio digital de Leticia (Amazonas). Publica en taleoi.com, un sitio Drupal titulado «Social Tabatinga Leticia Iquitos», al que redirige leticiahoy.com, dominio registrado en enero de 2012. Tiene Facebook, Instagram y YouTube con el mismo nombre.',
+        ],
+        notes: [
+            'Las piezas van firmadas por la cuenta «leticiahoy», sin periodista nombrado. El único contacto público es una dirección de Gmail.',
+        ],
+        sources: [
+            'https://www.taleoi.com/periodico',
+            'https://www.taleoi.com/taxonomy/term/5/feed',
+        ],
+        verifiedAt: null,
+
+        // ── Ausencia declarada ──────────────────────────────────────────────
+        consultadoEl: '2026-09-23',
+        buscadoEn: [
+            {
+                fuente: 'Registro de los dominios (RDAP)',
+                resultado: 'taleoi.com y leticiahoy.com están registrados en GoDaddy a través de Domains By Proxy, que oculta al titular.',
+                url: 'https://rdap.org/domain/leticiahoy.com',
+            },
+            {
+                fuente: 'Sus propias páginas de presentación y de términos',
+                resultado: 'No nombran sociedad, responsable ni director. El único contacto es leticiahoy@gmail.com.',
+                url: 'https://www.taleoi.com/taleoi',
+            },
+            {
+                fuente: 'Búsqueda web y censo «Desiertos de noticias locales» (Fundación Gabo y FLIP)',
+                resultado: 'Ninguna fuente consultada nombra a quien lo opera.',
+                url: 'https://desiertosdenoticiaslocales.fundaciongabo.org/dashboard/',
+            },
+        ],
+        falta: [
+            'Quién lo opera: preguntarlo por su correo o por sus redes, o buscar un establecimiento a su nombre en la Cámara de Comercio del Amazonas.',
+        ],
+    },
+
     /*
      * ── LOS TRES QUE LA REGLA VIEJA DEJABA FUERA (2026-08-12) ────────────────
      *

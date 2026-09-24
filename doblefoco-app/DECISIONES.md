@@ -17,6 +17,29 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-23 · Amazonas entra con LeticiaHoy; Guainía y Vaupés se declaran sin medio con sitio
+
+Jose pidió buscar al menos un medio para cada uno de los tres departamentos.
+Con lo encontrado delante, decidió: «que vaina que hayan deptos sin medios por
+web. Entonces sí, continuemos con lo propuesto».
+
+1. **Amazonas: alta de LeticiaHoy** (`leticia-hoy`), solo con el feed de su
+   sección Leticia. Entra con sus tres debilidades dichas: sin dueño
+   documentado (`ownerType: null`, con dónde y cuándo se buscó), notas cortas
+   sin fuentes citadas, y cadencia irregular. **El catálogo pasa a 30 de 33
+   departamentos con medio propio.**
+2. **Guainía y Vaupés: se declaran sin medio propio con sitio web.** La razón
+   no es «solo hay radio», como decía el documento de agosto. Es que su
+   periodismo digital local vive en Facebook y WhatsApp: lo nombra, medio por
+   medio, el censo «Desiertos de noticias locales» de la Fundación Gabo y la
+   FLIP.
+   **Descartado**: contar para Guainía las piezas de El Morichal (de Vichada),
+   que cambiaría la regla de «medio propio».
+
+Detalle y dónde se buscó: `COBERTURA_DEPARTAMENTAL.md`, 2026-09-23.
+
+---
+
 ## 2026-09-22 · La primera tanda de firma de la izquierda: VOZ en −0,80 y Colombia Informa en −0,55
 
 Jose las decidió el 2026-09-22 con cada ficha delante, al preparar la tarea

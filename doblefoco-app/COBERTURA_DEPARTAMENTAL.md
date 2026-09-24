@@ -1,5 +1,46 @@
 # ¿Tiene cada departamento un medio propio que funcione?
 
+> **DECIDIDO por Jose el mismo día: LeticiaHoy entra, y Amazonas deja de estar
+> en blanco. El catálogo pasa a 30 de 33.** Guainía y Vaupés quedan declarados
+> sin medio propio con sitio, y Sucre sigue como estaba. Ver `DECISIONES.md`,
+> 2026-09-23.
+>
+> **Actualización del 2026-09-23 sobre Amazonas, Guainía y Vaupés: el motivo
+> que daba la de abajo era inexacto.** Se buscó otra vez a petición de Jose, y
+> esta vez con una fuente que las búsquedas anteriores no tenían: el censo
+> **«Desiertos de noticias locales»** de la Fundación Gabo y la FLIP
+> ([tablero](https://desiertosdenoticiaslocales.fundaciongabo.org/dashboard/),
+> [datos](https://desiertosdenoticiaslocales.fundaciongabo.org/data.json)), que
+> nombra uno por uno los medios de Leticia (2024), Inírida (2025) y Mitú (2025).
+> **No es que allí solo haya radio: hay periodismo digital local, pero vive en
+> Facebook y WhatsApp, sin un sitio que se pueda sindicar.**
+>
+> | Departamento | Resultado |
+> |---|---|
+> | **Amazonas** | **Hay un candidato: LeticiaHoy** (`taleoi.com`, dominio de 2012). Su sección Leticia tiene un feed vivo (`taleoi.com/taxonomy/term/5/feed`: 10 ítems, el último del 22-09, comprobado con nuestro User-Agent). El `rss.xml` general está parado desde 2025-08, y `feed:descubrir` solo encontraba ese. **Debilidades:** dueño oculto tras Domains By Proxy, con un solo contacto de Gmail, así que sería `ownerType: null` declarado; piezas cortas firmadas por la cuenta de la casa, sin fuentes citadas; y cadencia irregular (7 piezas del 07 al 22-09, antes una al mes). Periódico Umarí, el que se había probado, lleva ~18 meses caído (último 200 en Wayback: 2025-03-21). Amazonas News Radio no publica desde el 2026-05-18. `noticiasamazonas.com` y `amazoniaaldia.com` son del Amazonas **peruano** |
+> | **Guainía** | **Ningún medio propio con sitio.** El censo nombra 8 en Inírida: dos emisoras de Policía y Ejército, una educativa, la Iglesia, El Morichal (de Vichada) y tres nativos digitales que trabajan «principalmente en Facebook» (Inírida En Vivo, Entérate Ya Guainía, Inírida-Guainía Tendencia Digital). Ninguno con dominio. `guainiaaldia.com` es una página de «próximo lanzamiento»: **volver a mirar**. Una salida posible, **decisión de Jose**: el feed de la categoría Guainía de **El Morichal** (`elmorichal.com/category/guainia/feed/`) está vivo, con 7 piezas del 26-08 al 18-09. No sería un medio nuevo, sino dejar que las piezas de Guainía de un medio de Vichada cuenten en Guainía |
+> | **Vaupés** | **Ningún medio con sitio.** El censo nombra 6 en Mitú: La Marandúa (periódico, en Facebook), Yuruparí Estéreo (comunitaria), el magazín Arú Pacomá, el grupo de WhatsApp Mitú Al Día y dos emisoras de Policía y Ejército; todos «de manera voluntaria». Ningún dominio conecta. **Trampa de nombre:** `marandua.com.co` es una emisora de **Guaviare** |
+>
+> **Consonante**, el laboratorio de periodismo local de la FLIP, tiene
+> secciones con feed vivo para Amazonas y Guainía, pero publica una o dos
+> piezas al mes y es una red nacional, no un medio del departamento. Se deja
+> como ficha de candidatura, si acaso. **Y un dato para esa ficha, sin
+> confirmar:** su reportera de Inírida figura como «Esperanza Castro Torres»,
+> y El Morichal publicó el 26-08 que «la periodista María Esperanza Castro se
+> posesionó como concejal de Inírida». Si es la misma persona, es materia de
+> la regla de quien dirige.
+>
+> **Dónde se buscó**, para no repetirlo, todo el 2026-09-23. En Guainía no
+> conectó ningún dominio: `enterateyaguainia.com/.co`, `iniridaenvivo.com/.co`,
+> `guainianoticias.com`, `noticiasguainia.com`, `iniridanoticias.com` y
+> `guainiadigital.com`; `vicinirida.com` es del Vicariato y está parado hace
+> ~1,6 años. En Vaupés tampoco: `lamarandua.com/.co/.com.co`,
+> `periodicolamarandua.com`, `yuruparistereo.com/.co`, `mitualdia.com`,
+> `vaupesaldia.com`, `lavozdelvaupes.com/.org`, `vaupesnoticias.com` y
+> `noticiasvaupes.com`; `lamarandua.blogspot.com` es un blog personal sin
+> relación, con su última entrada de 2016. En Amazonas se descartaron
+> `zonastereofm.com` (reproductor sin notas) y `tropicalstereo.com` (sin feed).
+
 > **Actualización del 2026-08-26, y es la que manda.** El catálogo tiene hoy
 > medios propios en **29 de los 33 departamentos**. Faltan cuatro, y cada uno por
 > un motivo distinto que conviene no confundir: **Amazonas, Guainía y Vaupés no

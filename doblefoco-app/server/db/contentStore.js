@@ -797,12 +797,28 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
                 [ids, Math.round(ventanaMs * MADUREZ_PARA_ARCHIVAR)]
             );
 
+            /*
+             * Y LO QUE SE RECOMPUSO SE BORRA, TENGA LOS MEDIOS QUE TENGA
+             * (2026-09-24).
+             *
+             * El 2026-09-08 se dejó de archivar lo que el agrupamiento recompuso,
+             * pero el borrado siguió pidiendo `source_count <= 1`. Así una
+             * multifuente recompuesta no se archivaba NI se borraba: se quedaba
+             * VIVA, sin volver a calcularse, con los mismos artículos que su
+             * sucesora. Medido el 2026-09-24 en producción: **564 artículos en
+             * más de una historia viva**, y **82 de las 100 primeras historias
+             * del feed** compartían artículos con otra. El traslado de los 76
+             * presos de las ACSN salía como ocho historias.
+             *
+             * Este borrado va DESPUÉS del sellado, así que lo maduro ya lleva
+             * `archivada_el` y no entra aquí. Lo que queda sin producir y vivo
+             * es exactamente lo que se recompuso, sea de uno o de varios medios.
+             */
             const { rowCount: removed } = await client.query(
                 `
                 DELETE FROM stories
                  WHERE id <> ALL($1::text[])
                    AND archivada_el IS NULL
-                   AND source_count <= 1
                    AND id NOT IN (SELECT story_id FROM moderation)
                 `,
                 [ids]

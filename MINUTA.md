@@ -91,6 +91,64 @@ informe completo, con cifras y cómo repetirlo, está en
 
 ---
 
+## 2026-09-24 · La misma noticia, ocho veces en portada: las recompuestas no se borraban (ABIERTO)
+
+**Salió de la vigilancia en rojo del 24-09 (issue #51)**, siguiendo el hilo de
+un invariante que parecía menor. La historia del huracán Polo estaba enlazada a
+un artículo que colgaba a la vez de **otra** historia viva. Medido ese mismo día
+en producción:
+
+- **564 artículos** de 46 medios cuelgan de más de una historia viva. El
+  2026-09-09 se midieron **cero**.
+- **82 de las 100 primeras historias del feed público** comparten artículos con
+  otra historia viva. El traslado de los 76 presos de las ACSN salía como
+  **ocho** historias.
+
+**La causa**, en `persistStories`: el arreglo del 2026-09-08 (`e56b72d`, «solo
+se archiva lo que envejeció») dejó de sellar las multifuente que el
+agrupamiento recompone. Pero el borrado siguió pidiendo `source_count <= 1`. Así
+una multifuente recompuesta **ni se archivaba ni se borraba**: seguía viva, sin
+recalcularse, con los mismos artículos que su sucesora. El commit y la prueba
+decían «se borra», y el código no lo hacía. La prueba solo miraba la mitad del
+archivo. **En producción desde el 15-09**, con la tanda de la #32.
+
+**El arreglo**, en la rama `investigacion/articulo-en-dos-historias`:
+- El borrado deja de filtrar por número de medios. Va después del sellado, así
+  que lo maduro ya está archivado y no entra.
+- La prueba exige que el borrado no mire `source_count` y que vaya después del
+  sellado. Se comprobó que falla con el código de `main`.
+- **Invariante nuevo: «cada artículo está en una sola historia viva»**, en
+  `invariantes.mjs`, que corre con la vigilancia cada 6 h. Contra producción da
+  ✗, como debe.
+- No hay moderación ni reportes de lectores sobre historias, así que el borrado
+  en cascada no se lleva nada editorial. Comprobado el 24-09.
+
+### Lo que falta
+
+1. **Fusionar y mirar el primer ciclo.** Ese ciclo borrará de una vez las ~440
+   multifuente huérfanas: saldrá un `−N obsoletas` grande, y una sola vez.
+   Después, `node scripts/invariantes.mjs` debe dar 8/8, salvo el punto 3.
+2. **Decisión de Jose: el enlace a una historia recompuesta.** Con el arreglo
+   da «Noticia no encontrada», y el texto de esa página dice que las de varios
+   medios «se conservan en el archivo», lo que para estas deja de ser verdad. Ya
+   pasaba con las de un solo medio. Las salidas: (a) redirigir a la sucesora, la
+   historia viva que se quedó con más artículos suyos, lo que pide una tabla y
+   una migración; (b) corregir solo el texto; (c) dejarlo. Sin público todavía,
+   el daño es pequeño; después del lanzamiento, cada enlace de WhatsApp de una
+   historia recompuesta moriría en horas.
+3. **Aparte y menor: el invariante de la unión (#51).** La BBC actualiza el
+   artículo **bajo la misma URL**. La base guarda el titular del 22-09 («…en
+   tiempo récord»), clasificado como **«deportes»**, y el motor compone con el
+   titular de hoy, que no tiene tema. Quedan dos preguntas: qué hacer con una
+   pieza que cambia de titular sin cambiar de URL, y un falso positivo de
+   «récord».
+4. **La decisión del techo (M0.4) se midió el mismo día**, antes de encontrar
+   esto. Las cifras están en la conversación del 24-09 y se pasan al plan al
+   decidir. Las duplicadas no tocan el techo, porque el techo cuenta artículos
+   y no historias. Las dos cosas se deciden por separado.
+
+---
+
 ## 2026-09-16 · La sesión de decisiones: seis dictadas en una sentada, y un tipo nuevo de medio
 
 Jose pidió pasar las decisiones pendientes una por una, con su evidencia

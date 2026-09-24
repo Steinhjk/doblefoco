@@ -123,11 +123,24 @@ describe('el archivo de historias', () => {
         expect(antes).toMatch(/export async function readStory/);
     });
 
-    it('el ciclo sella las multifuente en vez de borrarlas, y solo borra las de una fuente', () => {
+    it('el ciclo sella las multifuente maduras, y borra todo lo demás que dejó de producir', () => {
         expect(CONTENT).toMatch(/UPDATE stories[\s\S]*SET archivada_el = now\(\)[\s\S]*source_count > 1/);
-        expect(CONTENT).toMatch(/DELETE FROM stories[\s\S]*source_count <= 1/);
+
+        /*
+         * El borrado NO puede filtrar por número de medios (2026-09-24). Con
+         * `source_count <= 1` una multifuente recompuesta no se sellaba ni se
+         * borraba: se quedaba viva y duplicada junto a su sucesora, y el
+         * 2026-09-24 eran 82 de las 100 primeras del feed. Lo maduro ya está
+         * fuera porque el sellado va antes y el borrado exige `archivada_el IS
+         * NULL`: el orden es parte del arreglo, y también se comprueba.
+         */
+        const borrado = CONTENT.slice(CONTENT.indexOf('DELETE FROM stories'));
+        const sentencia = borrado.slice(0, borrado.indexOf('`'));
+        expect(sentencia).toMatch(/archivada_el IS NULL/);
+        expect(sentencia).not.toMatch(/source_count/);
+        expect(CONTENT.indexOf('SET archivada_el = now()')).toBeLessThan(CONTENT.indexOf('DELETE FROM stories'));
         // La salvaguarda de moderación sigue en el borrado.
-        expect(CONTENT).toMatch(/DELETE FROM stories[\s\S]*NOT IN \(SELECT story_id FROM moderation\)/);
+        expect(sentencia).toMatch(/NOT IN \(SELECT story_id FROM moderation\)/);
     });
 
     it('solo sella lo que envejeció: una historia con artículos frescos se borra, no se archiva', () => {

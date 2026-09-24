@@ -42,7 +42,7 @@ footer {
 .footer-copy {
   font-size: 0.8rem;
   color: var(--text-muted);
-  opacity: 0.8;
+  /* Sin opacity: la tenía en 0.8 y el gris bajaba a 3,24 de contraste (axe, 2026-09-22). */
 }
 
 .footer-admin-link {

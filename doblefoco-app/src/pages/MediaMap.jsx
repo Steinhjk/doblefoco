@@ -771,7 +771,10 @@ const MediaMap = () => {
                     <svg
                         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
                         className="map-svg"
-                        role="img"
+                        /* «group» y no «img»: una imagen no puede tener dentro controles que
+                           se enfocan, y aquí cada punto es un botón que abre su ficha. Con
+                           «img» el lector de pantalla se saltaba los puntos (axe, 2026-09-22). */
+                        role="group"
                         aria-labelledby={titleId}
                     >
                         <title id={titleId}>

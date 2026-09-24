@@ -31,7 +31,7 @@
 
   /* Texto */
   --text-main: #f8fafc; /* Blanco Pizarra Luminoso */
-  --text-muted: #94a3b8; /* Slate 400 */
+  --text-muted: #9eadc1; /* Era #94a3b8 (Slate 400): 4,39 sobre --bg-subtle oscuro; así pasa de 4,5 (axe, 2026-09-22) */
 
   /* Bordes & Separadores */
   --border-color: rgba(255, 255, 255, 0.14);
@@ -44,6 +44,16 @@
 
   /* Colores de Espectro */
   --bias-left: #ef4444;
+  /* TINTA de espectro: el color para TEXTO (etiquetas, la leyenda de cobertura).
+     El de relleno se queda como está en barras y puntos, pero como texto no
+     llegaba a 4,5 sobre los fondos de cada tema (axe, 2026-09-22): en claro,
+     el rojo y el azul sobre su fondo suave; en oscuro, el rojo sobre la tarjeta. */
+  --bias-left-ink: #f87171;
+  --bias-right-ink: #60a5fa;
+  /* Relleno con texto BLANCO encima (segmentos del panorama). En oscuro, #ef4444
+     daba 3,76 y #3b82f6 daba 3,67; estos pasan de 4,5. */
+  --bias-left-solid: #dc2626;
+  --bias-right-solid: #2563eb;
   --bias-objective: #cbd5e1;
   --bias-right: #3b82f6;
 
@@ -136,13 +146,20 @@
   --bg-card: #ffffff;
   --bg-subtle: #f1f5f9;
   --text-main: #0f172a;
-  --text-muted: #64748b;
+  /* Era #64748b: daba 4,34 sobre --bg-subtle, por debajo del 4,5 de WCAG AA, y
+     fallaba en 140 textos a la vez (axe, 2026-09-22). #5c6a80 es el gris más
+     parecido que cumple sobre todos los fondos claros del sitio (4,65 en el peor). */
+  --text-muted: #5c6a80;
   --border-color: rgba(15, 23, 42, 0.16);
   --border-light: rgba(15, 23, 42, 0.08);
   --border-hover: rgba(15, 23, 42, 0.28);
   --glass-bg: rgba(248, 250, 252, 0.92);
   --glass-border: rgba(15, 23, 42, 0.14);
   --bias-left: #dc2626;
+  --bias-left-ink: #b91c1c;
+  --bias-right-ink: #1d4ed8;
+  --bias-left-solid: #dc2626;
+  --bias-right-solid: #2563eb;
   --bias-objective: #0f172a;
   --bias-right: #2563eb;
   --bias-unmeasured: #94a3b8;

@@ -807,7 +807,7 @@
 
 .card-spectrum-badge.left {
     background-color: rgba(239, 68, 68, 0.15);
-    color: var(--bias-left);
+    color: var(--bias-left-ink);
 }
 
 .card-spectrum-badge.center {
@@ -817,7 +817,7 @@
 
 .card-spectrum-badge.right {
     background-color: rgba(59, 130, 246, 0.15);
-    color: var(--bias-right);
+    color: var(--bias-right-ink);
 }
 
 .card-source-tag {

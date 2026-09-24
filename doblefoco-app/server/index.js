@@ -35,6 +35,7 @@ import { dailySummary } from './services/metricsStore.js';
 import { isDatabaseEnabled } from './db/pool.js';
 import { countStored, dailySummaryFromDb, lastRunFromDb } from './db/contentStore.js';
 import { prepareStorage } from './bootstrap.js';
+import { crearCache } from './cacheDeRespuestas.js';
 import authRoutes, { requireSession } from './auth/routes.js';
 import moderationRoutes from './moderationRoutes.js';
 import {
@@ -164,6 +165,28 @@ app.use((req, res, next) => {
 });
 
 /**
+ * Cuánto se guarda en memoria cada respuesta de lectura (ver
+ * `cacheDeRespuestas.js` y SIMULACRO_TRAFICO.md). 60 s por defecto: los datos
+ * cambian cada 30 minutos, con el ciclo del motor, así que el retraso no se ve,
+ * y la base pasa de una consulta por visita a una por minuto. `0` lo apaga, que
+ * es lo que permite medir el antes y el después con el mismo binario.
+ */
+const CACHE_MS = process.env.CACHE_RESPUESTAS_MS !== undefined && Number.isFinite(Number(process.env.CACHE_RESPUESTAS_MS))
+    ? Math.max(0, Number(process.env.CACHE_RESPUESTAS_MS))
+    : 60_000;
+const cache = crearCache({ ttlMs: CACHE_MS });
+
+/**
+ * Manda un JSON que YA es texto. Se guarda en la caché ya serializado porque el
+ * simulacro del 2026-09-22 mostró que, con la base fuera del camino, el techo
+ * pasaba a ser la CPU: `res.json` volvía a convertir 1,4 MB en cada respuesta.
+ */
+const enviarJson = (res, texto) => res.type('application/json').send(texto);
+
+/** La historia de una noticia, la pida la API o la página renderizada en servidor. */
+const leerHistoria = (id) => cache.obtener(`historia:${id}`, () => readStory(id));
+
+/**
  * Límite general de peticiones por IP. EN MEMORIA, y a propósito (F2-06).
  *
  * Los límites que protegen algo valioso —intentos de acceso y escritura de
@@ -180,7 +203,14 @@ app.use((req, res, next) => {
  * aplicación. Conviene no confundir una cosa con la otra.
  */
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 120;
+/*
+ * 120 en producción. La variable existe para el SIMULACRO DE TRÁFICO (M1.4 del
+ * plan del MVP, 2026-09-22): el generador de carga sale de una sola IP, y con el
+ * límite puesto el simulacro mediría este contador en vez de la capacidad del
+ * servidor y de la base. Solo se relaja en la app de prueba (`doblefoco-carga`),
+ * que se borra al terminar. Un valor que no sea un número positivo deja el 120.
+ */
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX) > 0 ? Number(process.env.RATE_LIMIT_MAX) : 120;
 const hits = new Map();
 
 app.use((req, res, next) => {
@@ -279,11 +309,14 @@ app.get('/api/health', async (req, res) => {
 
     // Nunca lanza: un fallo al leer la base es en sí mismo señal de degradado,
     // y health tiene que poder responder precisamente cuando algo va mal.
+    // Lo de la base, 15 s como mucho: lo pide cada visita (el apretón de manos
+    // de versión) y contaba el corpus entero cada vez. La versión y la hora sí
+    // se calculan en cada petición.
     const [ultimoCiclo, conteos] = isDatabaseEnabled()
-        ? await Promise.all([
+        ? await cache.obtener('salud:base', () => Promise.all([
             lastRunFromDb().catch(() => null),
             countStored().catch(() => null),
-        ])
+        ]), Math.min(CACHE_MS, 15_000))
         : [null, null];
 
     const lastRunAt = ultimoCiclo?.at ?? stats.lastRunAt;
@@ -644,15 +677,19 @@ app.get('/api/feed', async (req, res) => {
         const pedido = String(req.query.departamento ?? '').trim();
         const departamento = DEPARTAMENTOS.includes(pedido) ? pedido : null;
 
-        const [stories, counts] = await Promise.all([
-            readFeed({ limit, offset, ambito, temas, departamento }),
-            countFeed(),
-        ]);
+        const clave = `feed:${limit}:${offset}:${ambito}:${temas.join(',')}:${departamento ?? ''}`;
+        const texto = await cache.obtener(clave, async () => {
+            const [stories, counts] = await Promise.all([
+                readFeed({ limit, offset, ambito, temas, departamento }),
+                countFeed(),
+            ]);
+            // `total` se conserva como campo suelto por compatibilidad con lo ya
+            // desplegado; `counts` es lo que necesita la portada para no confundir
+            // el tamaño de la página con el del catálogo.
+            return JSON.stringify({ success: true, total: counts.total, counts, limit, offset, stories });
+        });
 
-        // `total` se conserva como campo suelto por compatibilidad con lo ya
-        // desplegado; `counts` es lo que necesita la portada para no confundir
-        // el tamaño de la página con el del catálogo.
-        res.json({ success: true, total: counts.total, counts, limit, offset, stories });
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/feed', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -685,29 +722,35 @@ app.get('/api/portada', async (req, res) => {
         // dejarlo fuera del conjunto lo dejaría fuera del recuento.
         const limit = Math.min(Math.max(Number(req.query.limit) || 100, 10), 200);
 
-        const [historias, vocabulario] = await Promise.all([
-            readFeed({ limit, offset: 0 }),
-            vocabularioDelCorpus(),
-        ]);
+        // Se guarda el cuerpo ENTERO, agrupamiento incluido: agrupar en sucesos es
+        // el cálculo más caro de la API, y su entrada solo cambia con el ciclo.
+        const texto = await cache.obtener(`portada:${limit}`, async () => {
+            const [historias, vocabulario] = await Promise.all([
+                readFeed({ limit, offset: 0 }),
+                vocabularioDelCorpus(),
+            ]);
 
-        const sucesos = agruparEnSucesos(historias, { vocabulario })
-            .sort(porRelevanciaDeSuceso())
-            .map((s) => ({
-                id: s.id,
-                titular: s.titular,
-                medios: s.medios,
-                articulos: s.articulos,
-                angulos: s.angulos,
-                publishedAt: s.publishedAt,
-                // La pieza que se enseña. No siempre es la más cubierta: si esa
-                // es una galería de fotos o un explicativo, titula la siguiente.
-                // Ver `shared/titularDeSuceso.js`.
-                lider: s.representante,
-                // Los ángulos, sin repetir el que va entero arriba.
-                historias: s.historias.filter((h) => h.id !== s.id),
-            }));
+            const sucesos = agruparEnSucesos(historias, { vocabulario })
+                .sort(porRelevanciaDeSuceso())
+                .map((s) => ({
+                    id: s.id,
+                    titular: s.titular,
+                    medios: s.medios,
+                    articulos: s.articulos,
+                    angulos: s.angulos,
+                    publishedAt: s.publishedAt,
+                    // La pieza que se enseña. No siempre es la más cubierta: si esa
+                    // es una galería de fotos o un explicativo, titula la siguiente.
+                    // Ver `shared/titularDeSuceso.js`.
+                    lider: s.representante,
+                    // Los ángulos, sin repetir el que va entero arriba.
+                    historias: s.historias.filter((h) => h.id !== s.id),
+                }));
 
-        res.json({ success: true, vocabulario: vocabulario.length, sucesos });
+            return JSON.stringify({ success: true, vocabulario: vocabulario.length, sucesos });
+        });
+
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/portada', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -728,8 +771,9 @@ app.get('/api/portada', async (req, res) => {
  */
 app.get('/api/departamentos', async (req, res) => {
     try {
-        const conteos = await countByDepartamento();
-        res.json({ success: true, conteos });
+        const texto = await cache.obtener('departamentos', async () =>
+            JSON.stringify({ success: true, conteos: await countByDepartamento() }));
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/departamentos', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -742,7 +786,7 @@ app.get('/api/story/:id', async (req, res) => {
         // SE REDIRIGE: esto lo llama `fetch`, y una redirección a /noticia/... le
         // devolvería HTML donde espera JSON. La canonicalización es asunto de la
         // ruta de página, que es la que ve un buscador.
-        const story = await readStory(idDesdeRuta(req.params.id));
+        const story = await leerHistoria(idDesdeRuta(req.params.id));
 
         if (!story) {
             // También 404 si está retirada por moderación: el filtro va en la
@@ -767,8 +811,9 @@ app.get('/api/story/:id', async (req, res) => {
  */
 app.get('/api/panorama', async (req, res) => {
     try {
-        const medios = await countArticlesBySource();
-        res.json({ success: true, medios, retentionHours: 72 });
+        const texto = await cache.obtener('panorama', async () =>
+            JSON.stringify({ success: true, medios: await countArticlesBySource(), retentionHours: 72 }));
+        enviarJson(res, texto);
     } catch (error) {
         console.error('[api] fallo en /api/panorama', error);
         res.status(500).json({ success: false, error: 'Error interno' });
@@ -926,7 +971,7 @@ async function prepararSsr() {
 app.get('/noticia/:id', async (req, res) => {
     try {
         // El parámetro ya no es el id de la base: es «titular-legible-abc123».
-        const story = await readStory(idDesdeRuta(req.params.id));
+        const story = await leerHistoria(idDesdeRuta(req.params.id));
 
         /**
          * UNA SOLA DIRECCIÓN POR NOTICIA, con 301 hacia ella.

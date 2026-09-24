@@ -47,6 +47,50 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-22 · El simulacro de tráfico: conclusiones, y lo que queda (M1.4, ABIERTO)
+
+Lo autorizó Jose: «a cualquier hora, igual no he lanzado la página». El
+informe completo, con cifras y cómo repetirlo, está en
+`doblefoco-app/SIMULACRO_TRAFICO.md` (PR #48, que sustituye a la #47).
+
+### Las conclusiones
+
+1. **Sin caché, el sitio se saturaba en 2 visitas por segundo.** Lo que cedía
+   era el pooler de Supabase (`EMAXCONNSESSION … pool_size: 15`), no la
+   máquina: cada visita recalculaba el feed completo contra la base, aunque
+   los datos cambian cada 30 minutos. **Escalar máquinas empeoraba**: con 3,
+   el sitio se caía a las 3 visitas por segundo.
+2. **Con `server/cacheDeRespuestas.js`** (60 s, ya serializado y de un solo
+   vuelo) **aguanta 12 visitas por segundo con p95 de 0,08 s**: unas 43 000
+   por hora con una sola `shared-cpu-1x`. Durante esas corridas, producción no
+   dio ni un `EMAXCONNSESSION`. El siguiente techo es la CPU, y ahí escalar sí
+   ayudaría.
+3. **La segunda corrida sin caché le dio unos 4 minutos de errores de
+   conexión a producción** (00:04 a 00:08 UTC), porque la copia leía la misma
+   base. Sin público, no hubo daño. Queda la regla: **contra producción, solo
+   con permiso y con cuidado. Contra una copia de la base, no, porque tiene
+   datos personales** (lista de espera, usuarios del panel, reportes). Esto
+   último lo frenó el sistema de permisos y lo decidió Jose.
+4. **Descartado: los tiempos agotados por IPv6.** La red de casa no tiene
+   IPv6 para ningún sitio, y los navegadores lo esquivan solos.
+5. **Descartado: Vercel bloqueando el sitio.** Su Security Checkpoint se
+   encendió solo contra la IP de las sondas, que pasó de 200 a 403 a mitad de
+   camino. Desde el móvil con datos, el sitio cargó normal.
+6. **El costo quedó en cero.** La app de prueba se borró con sus máquinas e
+   IPs. Producción quedó igual que antes: 1 API de 256 MB, el motor de 512 MB
+   y su reserva apagada. Gasto total: centavos de dólar.
+
+### Lo que queda abierto, con dueño
+
+| | Qué | Quién |
+|---|---|---|
+| a | **Fusionar la PR #48** | Jose |
+| b | ~~`DATABASE_POOL_MAX`~~ **HECHO el mismo día** (en la PR #48): 4 por defecto. El motor procesa 4 feeds a la vez, así que no necesita más. API + motor + una tarea programada = 12, frente a un tope de 15 | código |
+| c | **Tiempos agotados por IPv4 hacia la IP compartida de Fly** desde la red de casa: 5 de 80, mientras Vercel y Google respondían. **Acotado el mismo día: es el camino desde esa red, no el servidor.** Desde dentro de Fly, cero fallos. Desde GitHub, `vigilancia.yml` hizo ~40 corridas en 10 días, sin reintentos y con cero fallos de conexión; su única falla fue de datos. Desde casa, las peticiones entraban a Fly por **iad** (Virginia), no por gru. **Lo que falta saber es si otros usuarios del mismo proveedor lo sufren.** Si pasa, las salidas son una IPv4 dedicada (~2 USD/mes, sin garantía de cambiar la ruta) o servir la API a través de Vercel, que es decisión de producto | Jose, si reaparece |
+| d | Volver a medir con el simulacro cuando cambie algo grande. **El número de referencia hoy: 12 visitas/s** | — |
+
+---
+
 ## 2026-09-16 · La sesión de decisiones: seis dictadas en una sentada, y un tipo nuevo de medio
 
 Jose pidió pasar las decisiones pendientes una por una, con su evidencia

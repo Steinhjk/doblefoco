@@ -8,6 +8,7 @@
 | **Fecha** | 2026-08-12 |
 | **Protocolo** | `PROTOCOLO_JUICIO_EDITORIAL.md` §2, regla del presente |
 | **Audiencia** | **15.º del tramo prioritario** — estimado por volumen propio, **no medido** |
+| **Revisión abierta** | **2026-09-22, por decisión de Jose:** vuelve a la revisión externa junto con El Nuevo Siglo (+0,55), porque la ficha de este lo usa como vara de medir y los dos se calibran juntos. **La firma sigue en pie** mientras la revisión no la cambie. Pregunta para el revisor: ¿qué separa hoy a El Colombiano de El Nuevo Siglo, y en qué sentido? |
 
 > Está en la lista de `revision-externa/pendientes.md` como uno de los **cuatro con
 > justificación que apela al pasado**. Esta ficha confirma que sí, y con un matiz:

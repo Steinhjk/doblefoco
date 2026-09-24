@@ -268,6 +268,34 @@ Queda en esta misma rama.
 
 ---
 
+## 2026-09-22 · Primera tanda de firma (M1.1): decidida, y en espera de la revisión externa (ABIERTO)
+
+Jose decidió los números con cada ficha delante. El detalle está en
+`DECISIONES.md` (2026-09-22) y en cada ficha. **No hay nada firmado ni se tocó
+el registro**: lo que el sitio muestra cambia al firmar.
+
+| Medio | Lo que va a revisión | Pregunta para el revisor |
+|---|---|---|
+| Semanario VOZ | −0,80, con la magnitud declarada como juicio | — |
+| Colombia Informa | −0,55 (dictado el 16-09); re-medición a mediados de octubre | — |
+| Semana | **+0,70**, banda Derecha (hoy +0,45) | Confirmar o refutar que Semana difundió **133 videos** de campaña sin marcarlos |
+| El Nuevo Siglo | +0,55, ficha nueva: su justificación era historia | ¿Existe hoy un vínculo orgánico con el Partido Conservador? |
+| El Colombiano | +0,35, reabierta como réplica; la firma sigue en pie | ¿Qué lo separa hoy de El Nuevo Siglo? |
+
+**Lo que falta, en orden:**
+1. **Jose pega los cinco envíos en Kimi K3**, con búsqueda web y una
+   conversación por medio. **Se aplazó el 2026-09-22 por decisión suya.** Los
+   envíos se regeneran ese día con `npm run envio -- <medio>`: no valen los de
+   hoy, porque son una foto con fecha.
+2. Se comprueban sus fuentes y se escribe la tabla de objeciones de cada ficha.
+3. Jose firma: `reviewedAt` en el registro y ☑ en la ficha.
+
+**Ojo con Tania Gilinski Bacal**, nombrada embajadora en Israel el 21-09. Hay
+que confirmar su parentesco con el dueño de Semana antes de escribirlo en
+`mediaOwnership.js`.
+
+---
+
 ## 2026-09-22 · El estado real, vuelto a medir, y el plan del MVP (ABIERTO)
 
 Jose pidió revisar el estado del proyecto, poner al día las tablas de
@@ -455,8 +483,8 @@ queda abierto de código es lo que abrió ese mismo trabajo:
 
 | | Qué |
 |---|---|
-| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer. **Desde el 2026-09-15 ya no espera a la fusión: el motor que pone las marcas está sirviendo, así que lo único que falta es ciclo** |
-| 27 | **El aviso `⚠ RECORTADA POR EL TECHO` parpadea.** Salta cuando la ventana efectiva baja de 71 h, y el 2026-09-15 los ciclos iban entre **70,4 y 71,9 h**: se enciende y se apaga solo. No es el estrechamiento a ~62 h para el que se escribió —ese sí importaba—, es el margen de una hora quedándose corto. **Un vigilante que parpadea se ignora, y entonces sobra**, que es la regla que este proyecto ya se aplicó a `mirar` en el CI. O el umbral se mueve donde signifique algo, o el aviso pasa a la serie y deja de gritar en cada ciclo |
+| 25 | **Volver a medir el aislamiento de los seis medios de izquierda de raíz plana** cuando sus marcas de opinión hayan entrado. Es lo que invalidaba su nivel 2, y hasta que el corpus esté marcado la cifra vieja sigue sin valer. **Desde el 2026-09-15 ya no espera a la fusión: el motor que pone las marcas está sirviendo, así que lo único que falta es ciclo.** **MEDIDO el 2026-09-23**, solo sobre las piezas desde el 15-09, cuando el 100 % ya trae etiqueta del feed. El filtro los ve: Las2Orillas 29 de 122 son opinión, Razón Pública 5 de 18, VOZ 5 de 26, Volcánicas 1 de 10. **Ninguna pieza de opinión entra en una historia.** En aislamiento frente a pares de volumen parecido: **Las2Orillas sigue aislada** (14 % de historias compartidas y 6 socios, frente a 66 % y 31), así que es su agenda y no nuestro filtro. **VOZ ya no sale aislada** (33 % y 2 socios, frente a 27 % y 3), y eso debilita uno de los dos pilares del −0,80 decidido el 22-09; está escrito en su CONTRA, **para que Jose lo vea antes de firmar**. Razón Pública y Volcánicas comparten como sus pares o más. Colombia Informa y Cuestión Pública tienen muestras mínimas (3 y 0 historias). **Muestra de 8 días: repetir sobre el mes entero hacia el 15 de octubre**, cuando las piezas sin etiqueta salgan de la ventana |
+| 27 | **El aviso `⚠ RECORTADA POR EL TECHO` parpadea.** Salta cuando la ventana efectiva baja de 71 h, y el 2026-09-15 los ciclos iban entre **70,4 y 71,9 h**: se enciende y se apaga solo. No es el estrechamiento a ~62 h para el que se escribió —ese sí importaba—, es el margen de una hora quedándose corto. **Un vigilante que parpadea se ignora, y entonces sobra**, que es la regla que este proyecto ya se aplicó a `mirar` en el CI. O el umbral se mueve donde signifique algo, o el aviso pasa a la serie y deja de gritar en cada ciclo. **CORREGIDO EL DIAGNÓSTICO el 2026-09-22: no parpadeaba, el techo muerde siempre.** El corpus del motor estuvo en **8 000 artículos, el techo exacto, en los 48 ciclos del 15-09**, y en el techo desde el **2026-08-13**. La base tiene **11 326 artículos publicados en las últimas 72 h**, y el motor agrupa 8 000: **cerca del 29 % de la ventana declarada queda fuera del agrupamiento**. La ventana efectiva baja hasta **64,8 h**; Infobae pone 4 944 de los 11 326. El aviso ahora cuenta lo que expulsa el techo (`desalojadosPorTecho`, PR del 22-09) en vez de comparar edades. **Lo que queda abierto es una decisión, y cuesta**: subir `MAX_ARTICLES` (el ciclo ya tarda 55 s de media y 88 s como máximo, frente a 19 s con 5 000, y el worker tiene 512 MB), bajar el techo de Infobae, o declarar en `/transparencia` que la ventana real es menor de 72 h. Es M0.4 del plan del MVP |
 | 26 | ~~**El resumen que es el titular repetido más el usuario del gestor**~~ · **HECHO el 2026-09-10**: eran 1 018, la causa principal era Google News y no el gestor, y de paso apareció la firma de WordPress en español, que nadie quitaba. Entrada en CERRADO |
 
 ### Con fecha, y no dependen de nadie

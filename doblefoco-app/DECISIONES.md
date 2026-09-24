@@ -17,6 +17,69 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-22 · La primera tanda de firma de la izquierda: VOZ en −0,80 y Colombia Informa en −0,55
+
+Jose las decidió el 2026-09-22 con cada ficha delante, al preparar la tarea
+M1.1 del plan del MVP. De 59 fichas, estas eran las únicas dos de izquierda
+cuya propia propuesta es firmar. **Todavía no están firmadas.** Falta la
+revisión externa del §3 del protocolo, y `reviewedAt` se escribe al firmar, no
+antes.
+
+### 1 · Semanario VOZ: −0,80, con la magnitud declarada como juicio
+
+Su ficha dejaba dos salidas defendibles ante su CONTRA: firmar −0,80 aceptando
+por escrito que la magnitud es juicio, o bajar a −0,70 y declarar que el
+catálogo no distingue por debajo de eso. **Jose sostiene −0,80.** La dirección
+es medida: la propiedad declarada del Partido Comunista y el aislamiento de
+cero socios. La distancia exacta entre −0,65 y −0,80 es **juicio editorial**, y
+la ficha lo dice así.
+
+**Descartado:** −0,70. La regla 2 (ante la duda, hacia la mixta) se escribió
+para la duda entre bandas, y aquí la banda no está en duda.
+
+### 2 · Colombia Informa: se firma −0,55 ahora, sin esperar a octubre
+
+El −0,55 lo dictó Jose el 2026-09-16: la banda fuerte la empujaba la misión
+declarada, que es nivel 4, sobre un mes con catástrofe. Hoy se decide
+**firmarlo ya**, y convertir la re-medición de mediados de octubre, con un mes
+sin catástrofe, en la condición de revisión extraordinaria de la ficha.
+
+**Descartado:** esperar a octubre sin firma. Dejaría la banda de izquierda sin
+ninguna ficha firmada hasta noviembre. −0,55 es el valor prudente según la
+regla 2, y la re-medición puede moverlo en cualquier dirección.
+
+### 3 · Semana: el rumbo es la banda Derecha (≥ +0,60)
+
+Jose, el mismo día: «hay suficiente evidencia empírica para posicionarlo
+indiscutiblemente a la derecha», y al preguntarle qué número: **subir a la
+banda Derecha**, que hoy está vacía. **Es un rumbo, no una firma.** La
+evidencia reunida ese día está en `fichas/semana.md`, sección «Evidencia
+añadida el 2026-09-22». Lo que pasa las reglas: el medio y la familia del
+dueño financiaron el 88 % de la recolección de firmas de Vicky Dávila; la
+amplificación de 133 videos de campaña sin marcarlos, que es una sola fuente
+todavía sin comprobar; y la asimetría medida con el gobierno entrante. Lo que
+se descartó con motivo: la biografía de Dávila, el crédito de GNB (le prestó
+también a Petro en 2018 y 2022) y el recuento de menciones. Quedan abiertos el
+número dentro de la banda, la ficha de El Nuevo Siglo y la revisión externa.
+
+**Puesta al día, el mismo día.** Con la ficha de El Nuevo Siglo delante, Jose
+decidió los números que van a la revisión externa:
+
+- **Semana: +0,70.** Es la propuesta que se lleva a la revisión, no un valor
+  publicado: el registro sigue en +0,45 hasta la firma. La ficha tiene que
+  argumentar por qué +0,70 y no el borde de +0,60 que pide la regla 2, y el
+  CONTRA lo dice.
+- **El Nuevo Siglo: se mantiene +0,55 hasta la revisión**, que tiene que
+  contestar si hoy existe un vínculo orgánico con el Partido Conservador. Es la
+  regla 3 aplicada en los dos sentidos: sin nivel 1 a 3, el número no se mueve,
+  tampoco hacia abajo.
+- **El Colombiano (+0,35, firmado el 18-08) vuelve a revisión junto con El
+  Nuevo Siglo.** La ficha de El Nuevo Siglo lo usó como vara de medir, así que
+  los dos se calibran juntos. **Su firma sigue en pie** mientras la revisión no
+  la cambie. Es una revisión por réplica (§7), no una retirada.
+
+---
+
 ## 2026-09-08 · Las historias archivadas por recomposición se borran, y un «aceptado» caduca
 
 Dos decisiones de Jose, tomadas con lo medido delante y anotadas el mismo día.

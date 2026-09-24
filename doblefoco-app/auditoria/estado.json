@@ -1,10 +1,10 @@
 {
     "version": 1,
-    "ultimaPasada": "2026-09-17",
+    "ultimaPasada": "2026-09-24",
     "medios": {
         "diario-la-libertad": {
             "nombre": "La Libertad",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -12,12 +12,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 14.6,
-                "piezasPorDia": 80.6,
+                "ventanaHoras": 18.3,
+                "piezasPorDia": 64.3,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 8.93,
-                "margenRed": 2.23,
+                "edadMasNuevoHoras": 0.3,
+                "margen": 11.21,
+                "margenRed": 2.8,
                 "vias": [
                     {
                         "url": "https://diariolalibertad.com/feed/",
@@ -122,7 +122,7 @@
         },
         "semanario-voz": {
             "nombre": "Semanario VOZ",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -130,12 +130,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 22.2,
-                "piezasPorDia": 9.7,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0,
-                "margen": 73.91,
-                "margenRed": 18.48,
+                "ventanaHoras": 25.6,
+                "piezasPorDia": 8.4,
+                "huecoTipicoHoras": 1,
+                "edadMasNuevoHoras": 0.6,
+                "margen": 85.28,
+                "margenRed": 21.32,
                 "vias": [
                     {
                         "url": "https://semanariovoz.com/feed/",
@@ -195,20 +195,20 @@
         },
         "colombia-informa": {
             "nombre": "Col. Informa",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 3,
+                "frescos": 5,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 260.9,
-                "piezasPorDia": 0.8,
-                "huecoTipicoHoras": 21,
-                "edadMasNuevoHoras": 23.7,
-                "margen": 869.76,
-                "margenRed": 217.44,
+                "ventanaHoras": 190.4,
+                "piezasPorDia": 1.1,
+                "huecoTipicoHoras": 19.1,
+                "edadMasNuevoHoras": 1.4,
+                "margen": 634.75,
+                "margenRed": 158.69,
                 "vias": [
                     {
                         "url": "https://www.colombiainforma.info/feed/",
@@ -250,26 +250,26 @@
         },
         "casa-macondo": {
             "nombre": "CasaMacondo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "revisar",
-                "motivo": "publica despacio —una pieza cada 48,1 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
+                "estado": "roto",
+                "motivo": "el feed está parado: publica una pieza cada 24,0 h y lo más nuevo es de hace 118 h",
                 "items": 10,
                 "frescos": 0,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 410.7,
-                "piezasPorDia": 0.5,
-                "huecoTipicoHoras": 48.1,
-                "edadMasNuevoHoras": 122,
-                "margen": 1368.9,
-                "margenRed": 342.23,
+                "ventanaHoras": 335.9,
+                "piezasPorDia": 0.6,
+                "huecoTipicoHoras": 24,
+                "edadMasNuevoHoras": 118.3,
+                "margen": 1119.72,
+                "margenRed": 279.93,
                 "vias": [
                     {
                         "url": "https://casamacondo.co/feed/",
                         "via": "direct",
-                        "estado": "revisar",
-                        "motivo": "publica despacio —una pieza cada 48,1 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto"
+                        "estado": "roto",
+                        "motivo": "el feed está parado: publica una pieza cada 24,0 h y lo más nuevo es de hace 118 h"
                     }
                 ]
             },
@@ -296,7 +296,7 @@
         },
         "volcanicas": {
             "nombre": "Volcánicas",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -304,12 +304,12 @@
                 "frescos": 3,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 1008.6,
+                "ventanaHoras": 1010.4,
                 "piezasPorDia": 0.9,
-                "huecoTipicoHoras": 20.2,
-                "edadMasNuevoHoras": 19.3,
-                "margen": 775.86,
-                "margenRed": 193.97,
+                "huecoTipicoHoras": 19.5,
+                "edadMasNuevoHoras": 20.7,
+                "margen": 777.24,
+                "margenRed": 194.31,
                 "vias": [
                     {
                         "url": "https://volcanicas.com/feed/",
@@ -351,20 +351,20 @@
         },
         "revista-raya": {
             "nombre": "Revista RAYA",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "revisar",
                 "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 1,
+                "frescos": 2,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 35785.7,
+                "ventanaHoras": 36014.2,
                 "piezasPorDia": 0.1,
-                "huecoTipicoHoras": 161.6,
-                "edadMasNuevoHoras": 25.7,
-                "margen": 10844.14,
-                "margenRed": 2711.04,
+                "huecoTipicoHoras": 144,
+                "edadMasNuevoHoras": 19.8,
+                "margen": 10913.4,
+                "margenRed": 2728.35,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Arevistaraya.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -424,26 +424,26 @@
         },
         "voragine": {
             "nombre": "Vorágine",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "roto",
-                "motivo": "el feed está parado: publica una pieza cada 65,6 h y lo más nuevo es de hace 222 h",
+                "estado": "revisar",
+                "motivo": "publica despacio —una pieza cada 65,6 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
                 "items": 10,
                 "frescos": 0,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 768.2,
-                "piezasPorDia": 0.3,
+                "ventanaHoras": 929.4,
+                "piezasPorDia": 0.2,
                 "huecoTipicoHoras": 65.6,
-                "edadMasNuevoHoras": 221.9,
-                "margen": 2560.56,
-                "margenRed": 640.14,
+                "edadMasNuevoHoras": 102.2,
+                "margen": 3097.91,
+                "margenRed": 774.48,
                 "vias": [
                     {
                         "url": "https://voragine.co/feed/",
                         "via": "direct",
-                        "estado": "roto",
-                        "motivo": "el feed está parado: publica una pieza cada 65,6 h y lo más nuevo es de hace 222 h"
+                        "estado": "revisar",
+                        "motivo": "publica despacio —una pieza cada 65,6 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto"
                     }
                 ]
             },
@@ -488,7 +488,7 @@
         },
         "cuestion-publica": {
             "nombre": "C. Pública",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -496,12 +496,12 @@
                 "frescos": 1,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 318,
+                "ventanaHoras": 331.3,
                 "piezasPorDia": 0.7,
                 "huecoTipicoHoras": 28.7,
-                "edadMasNuevoHoras": 42,
-                "margen": 1059.94,
-                "margenRed": 264.98,
+                "edadMasNuevoHoras": 25.3,
+                "margen": 1104.19,
+                "margenRed": 276.05,
                 "vias": [
                     {
                         "url": "https://cuestionpublica.com/feed/",
@@ -543,26 +543,26 @@
         },
         "razon-publica": {
             "nombre": "R. Pública",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "roto",
-                "motivo": "el feed está parado: publica una pieza cada 0,0 h y lo más nuevo es de hace 88 h",
+                "estado": "sano",
+                "motivo": null,
                 "items": 10,
-                "frescos": 0,
+                "frescos": 3,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 0.1,
-                "piezasPorDia": 1577.3,
-                "huecoTipicoHoras": 0,
-                "edadMasNuevoHoras": 87.6,
-                "margen": 0.46,
-                "margenRed": 0.11,
+                "ventanaHoras": 83.5,
+                "piezasPorDia": 2.6,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 2.9,
+                "margen": 278.18,
+                "margenRed": 69.54,
                 "vias": [
                     {
                         "url": "https://razonpublica.com/feed/",
                         "via": "direct",
-                        "estado": "roto",
-                        "motivo": "el feed está parado: publica una pieza cada 0,0 h y lo más nuevo es de hace 88 h"
+                        "estado": "sano",
+                        "motivo": null
                     }
                 ]
             },
@@ -598,7 +598,7 @@
         },
         "cambio": {
             "nombre": "Cambio",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -606,12 +606,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 53.7,
-                "piezasPorDia": 8.5,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": -42.2,
-                "margen": 84.82,
-                "margenRed": 21.2,
+                "ventanaHoras": 29.8,
+                "piezasPorDia": 15.3,
+                "huecoTipicoHoras": 0.5,
+                "edadMasNuevoHoras": -11.2,
+                "margen": 47.06,
+                "margenRed": 11.77,
                 "vias": [
                     {
                         "url": "https://cambiocolombia.com/feeds/articulos/",
@@ -662,7 +662,7 @@
         },
         "noticias-uno": {
             "nombre": "Noticias Uno",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "roto",
                 "motivo": "el feed está parado: publica una pieza cada 0,0 h y lo más nuevo es de hace 84 h",
@@ -673,7 +673,7 @@
                 "ventanaHoras": 0.3,
                 "piezasPorDia": 762.4,
                 "huecoTipicoHoras": 0,
-                "edadMasNuevoHoras": 83.8,
+                "edadMasNuevoHoras": 84,
                 "margen": 0.94,
                 "margenRed": 0.24,
                 "vias": [
@@ -735,7 +735,7 @@
         },
         "telemedellin": {
             "nombre": "Telemedellín",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -743,12 +743,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 4,
-                "piezasPorDia": 53.4,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 63.2,
-                "margen": 13.48,
-                "margenRed": 3.37,
+                "ventanaHoras": 3.7,
+                "piezasPorDia": 58.6,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 63.9,
+                "margen": 12.29,
+                "margenRed": 3.07,
                 "vias": [
                     {
                         "url": "https://www.telemedellin.tv/feed/",
@@ -759,10 +759,10 @@
                 ]
             },
             "rutas": {
-                "estado": "no-comprobable",
-                "respondeATodo": null,
-                "motivo": "403: nos cierra la puerta. Repetir en local",
-                "status": 403,
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
                 "titulo": null,
                 "bytes": null
             },
@@ -781,7 +781,7 @@
         },
         "canal-capital": {
             "nombre": "Canal Capital",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -789,12 +789,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 22.7,
-                "piezasPorDia": 9.5,
-                "huecoTipicoHoras": 1.1,
-                "edadMasNuevoHoras": 18.7,
-                "margen": 75.51,
-                "margenRed": 18.88,
+                "ventanaHoras": 40.8,
+                "piezasPorDia": 5.3,
+                "huecoTipicoHoras": 3,
+                "edadMasNuevoHoras": 4,
+                "margen": 135.98,
+                "margenRed": 34,
                 "vias": [
                     {
                         "url": "https://www.canalcapital.gov.co/feed/",
@@ -827,7 +827,7 @@
         },
         "telecaribe": {
             "nombre": "Telecaribe",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "revisar",
                 "motivo": "publica despacio —una pieza cada 144,3 h— y por eso nada suyo entra en la ventana. Es su cadencia, no una avería: aporta poco y no está roto",
@@ -838,7 +838,7 @@
                 "ventanaHoras": 2180.3,
                 "piezasPorDia": 0.1,
                 "huecoTipicoHoras": 144.3,
-                "edadMasNuevoHoras": 143.3,
+                "edadMasNuevoHoras": 311.6,
                 "margen": 7267.6,
                 "margenRed": 1816.9,
                 "vias": [
@@ -873,20 +873,20 @@
         },
         "telecafe": {
             "nombre": "Telecafé",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 8,
+                "frescos": 1,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 260.4,
-                "piezasPorDia": 0.8,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0.3,
-                "margen": 868,
-                "margenRed": 217,
+                "ventanaHoras": 122.5,
+                "piezasPorDia": 1.8,
+                "huecoTipicoHoras": 0.5,
+                "edadMasNuevoHoras": 71.7,
+                "margen": 408.33,
+                "margenRed": 102.08,
                 "vias": [
                     {
                         "url": "https://telecafe.gov.co/feed/",
@@ -928,20 +928,20 @@
         },
         "rtvc": {
             "nombre": "RTVC",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 2,
+                "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 73,
-                "piezasPorDia": 3,
-                "huecoTipicoHoras": 3.6,
-                "edadMasNuevoHoras": 43.9,
-                "margen": 243.42,
-                "margenRed": 60.86,
+                "ventanaHoras": 19.8,
+                "piezasPorDia": 10.9,
+                "huecoTipicoHoras": 0.6,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 66.16,
+                "margenRed": 16.54,
                 "vias": [
                     {
                         "url": "https://www.rtvcnoticias.com/noticias/rss.xml",
@@ -992,7 +992,7 @@
         },
         "el-espectador": {
             "nombre": "El Espectador",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1000,12 +1000,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 1.7,
-                "piezasPorDia": 273.6,
+                "ventanaHoras": 2.3,
+                "piezasPorDia": 200.3,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 1.7,
-                "margen": 2.63,
-                "margenRed": 0.66,
+                "edadMasNuevoHoras": 0.5,
+                "margen": 3.59,
+                "margenRed": 0.9,
                 "vias": [
                     {
                         "url": "https://www.elespectador.com/arc/outboundfeeds/discover/?outputType=xml",
@@ -1065,7 +1065,7 @@
         },
         "la-silla-vacia": {
             "nombre": "La Silla",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1073,12 +1073,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 16.2,
-                "piezasPorDia": 13.4,
-                "huecoTipicoHoras": 0.7,
-                "edadMasNuevoHoras": 0.6,
-                "margen": 53.86,
-                "margenRed": 13.46,
+                "ventanaHoras": 9.4,
+                "piezasPorDia": 22.9,
+                "huecoTipicoHoras": 0.5,
+                "edadMasNuevoHoras": 1.2,
+                "margen": 31.48,
+                "margenRed": 7.87,
                 "vias": [
                     {
                         "url": "https://www.lasillavacia.com/feed/",
@@ -1129,7 +1129,7 @@
         },
         "el-tiempo": {
             "nombre": "El Tiempo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1137,12 +1137,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 2.2,
-                "piezasPorDia": 100.3,
-                "huecoTipicoHoras": 0.2,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 7.18,
-                "margenRed": 1.8,
+                "ventanaHoras": 1.8,
+                "piezasPorDia": 117.1,
+                "huecoTipicoHoras": 0.1,
+                "edadMasNuevoHoras": 0.6,
+                "margen": 6.15,
+                "margenRed": 1.54,
                 "vias": [
                     {
                         "url": "https://www.eltiempo.com/rss/colombia.xml",
@@ -1220,7 +1220,7 @@
         },
         "w-radio": {
             "nombre": "W Radio",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "roto",
                 "motivo": "respondió sin artículos",
@@ -1293,7 +1293,7 @@
         },
         "caracol-radio": {
             "nombre": "Caracol Radio",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1301,12 +1301,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 20.6,
-                "piezasPorDia": 115.1,
+                "ventanaHoras": 48.5,
+                "piezasPorDia": 49,
                 "huecoTipicoHoras": 0,
                 "edadMasNuevoHoras": 0.1,
-                "margen": 6.26,
-                "margenRed": 1.56,
+                "margen": 14.71,
+                "margenRed": 3.68,
                 "vias": [
                     {
                         "url": "https://caracol.com.co/arc/outboundfeeds/rss/?outputType=xml",
@@ -1366,20 +1366,20 @@
         },
         "noticias-caracol": {
             "nombre": "Not. Caracol",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "revisar",
                 "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 9,
+                "frescos": 4,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 23066.2,
-                "piezasPorDia": 0.1,
-                "huecoTipicoHoras": 0.9,
-                "edadMasNuevoHoras": 2.5,
-                "margen": 6989.74,
-                "margenRed": 1747.44,
+                "ventanaHoras": 113426.5,
+                "piezasPorDia": 0,
+                "huecoTipicoHoras": 0.8,
+                "edadMasNuevoHoras": 0.7,
+                "margen": 34371.66,
+                "margenRed": 8592.92,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Anoticiascaracol.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -1439,7 +1439,7 @@
         },
         "portafolio": {
             "nombre": "Portafolio",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1447,12 +1447,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 4.9,
-                "piezasPorDia": 44.2,
-                "huecoTipicoHoras": 0.5,
-                "edadMasNuevoHoras": 0.3,
-                "margen": 16.29,
-                "margenRed": 4.07,
+                "ventanaHoras": 2.6,
+                "piezasPorDia": 84.4,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 8.53,
+                "margenRed": 2.13,
                 "vias": [
                     {
                         "url": "https://www.portafolio.co/rss/economia.xml",
@@ -1503,7 +1503,7 @@
         },
         "valora-analitik": {
             "nombre": "Valora",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1511,12 +1511,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 24.1,
-                "piezasPorDia": 48.7,
+                "ventanaHoras": 24.5,
+                "piezasPorDia": 48,
                 "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0,
-                "margen": 14.78,
-                "margenRed": 3.7,
+                "edadMasNuevoHoras": 0.5,
+                "margen": 15,
+                "margenRed": 3.75,
                 "vias": [
                     {
                         "url": "https://www.valoraanalitik.com/feed/",
@@ -1576,26 +1576,26 @@
         },
         "infobae-co": {
             "nombre": "Infobae",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "revisar",
-                "motivo": "publica más de lo que cabe en un sondeo (margen 0,13×): se pierden piezas",
+                "motivo": "publica más de lo que cabe en un sondeo (margen 0,15×): se pierden piezas",
                 "items": 100,
                 "frescos": 60,
                 "tomados": 60,
                 "conImagen": 60,
-                "ventanaHoras": 0.4,
-                "piezasPorDia": 5346,
+                "ventanaHoras": 0.5,
+                "piezasPorDia": 4824.4,
                 "huecoTipicoHoras": 0,
                 "edadMasNuevoHoras": 0.1,
-                "margen": 0.13,
-                "margenRed": 0.03,
+                "margen": 0.15,
+                "margenRed": 0.04,
                 "vias": [
                     {
                         "url": "https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml",
                         "via": "direct",
                         "estado": "revisar",
-                        "motivo": "publica más de lo que cabe en un sondeo (margen 0,13×): se pierden piezas"
+                        "motivo": "publica más de lo que cabe en un sondeo (margen 0,15×): se pierden piezas"
                     }
                 ]
             },
@@ -1649,7 +1649,7 @@
         },
         "la-republica": {
             "nombre": "La República",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -1658,9 +1658,9 @@
                 "tomados": 15,
                 "conImagen": 0,
                 "ventanaHoras": 11.7,
-                "piezasPorDia": 120.5,
+                "piezasPorDia": 120.6,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0,
+                "edadMasNuevoHoras": 0.2,
                 "margen": 5.97,
                 "margenRed": 1.49,
                 "vias": [
@@ -1713,26 +1713,26 @@
         },
         "el-heraldo": {
             "nombre": "El Heraldo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "sano",
-                "motivo": null,
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 15,
+                "frescos": 12,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 24.6,
-                "piezasPorDia": 96.6,
+                "ventanaHoras": 49055.3,
+                "piezasPorDia": 0,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 7.45,
-                "margenRed": 1.86,
+                "edadMasNuevoHoras": 46.3,
+                "margen": 14865.24,
+                "margenRed": 3716.31,
                 "vias": [
                     {
                         "url": "https://www.elheraldo.co/arc/outboundfeeds/rss/",
                         "via": "direct",
-                        "estado": "sano",
-                        "motivo": null
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
                     }
                 ]
             },
@@ -1742,7 +1742,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "ELHERALDO.CO",
-                "bytes": 1274587
+                "bytes": 1210394
             },
             "fuentes": [
                 {
@@ -1777,26 +1777,26 @@
         },
         "el-universal": {
             "nombre": "El Universal",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "sano",
-                "motivo": null,
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 15,
+                "frescos": 12,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 261.9,
-                "piezasPorDia": 9.1,
+                "ventanaHoras": 49055.3,
+                "piezasPorDia": 0,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 29.3,
-                "margen": 79.35,
-                "margenRed": 19.84,
+                "edadMasNuevoHoras": 46.3,
+                "margen": 14865.24,
+                "margenRed": 3716.31,
                 "vias": [
                     {
                         "url": "https://www.eluniversal.com.co/arc/outboundfeeds/rss/?outputType=xml",
                         "via": "direct",
-                        "estado": "sano",
-                        "motivo": null
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
                     }
                 ]
             },
@@ -1850,26 +1850,26 @@
         },
         "blu-radio": {
             "nombre": "Blu Radio",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "revisar",
-                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
+                "estado": "sano",
+                "motivo": null,
                 "items": 100,
-                "frescos": 14,
+                "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 73.8,
-                "piezasPorDia": 32.2,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 1.3,
-                "margen": 22.37,
-                "margenRed": 5.59,
+                "ventanaHoras": 65.3,
+                "piezasPorDia": 36.4,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 1,
+                "margen": 19.8,
+                "margenRed": 4.95,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Abluradio.com&hl=es-419&gl=CO&ceid=CO:es-419",
                         "via": "gnews",
-                        "estado": "revisar",
-                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                        "estado": "sano",
+                        "motivo": null
                     }
                 ]
             },
@@ -1923,20 +1923,20 @@
         },
         "noticias-rcn": {
             "nombre": "RCN",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "revisar",
                 "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 11,
+                "frescos": 3,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 497124.8,
+                "ventanaHoras": 100294.4,
                 "piezasPorDia": 0,
-                "huecoTipicoHoras": 4.4,
-                "edadMasNuevoHoras": 4,
-                "margen": 150643.86,
-                "margenRed": 37660.97,
+                "huecoTipicoHoras": 2.8,
+                "edadMasNuevoHoras": 18.9,
+                "margen": 30392.24,
+                "margenRed": 7598.06,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Anoticiasrcn.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -2005,7 +2005,7 @@
         },
         "la-patria": {
             "nombre": "La Patria",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2013,12 +2013,12 @@
                 "frescos": 9,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 3552.6,
+                "ventanaHoras": 3719.9,
                 "piezasPorDia": 0.1,
-                "huecoTipicoHoras": 0.6,
-                "edadMasNuevoHoras": 2.7,
-                "margen": 11842.14,
-                "margenRed": 2960.53,
+                "huecoTipicoHoras": 0.2,
+                "edadMasNuevoHoras": 3.6,
+                "margen": 12399.76,
+                "margenRed": 3099.94,
                 "vias": [
                     {
                         "url": "https://www.lapatria.com/rss.xml",
@@ -2060,26 +2060,26 @@
         },
         "vanguardia": {
             "nombre": "Vanguardia",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "sano",
-                "motivo": null,
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 15,
+                "frescos": 14,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 20.7,
-                "piezasPorDia": 114.7,
-                "huecoTipicoHoras": 0,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 6.28,
-                "margenRed": 1.57,
+                "ventanaHoras": 88896.8,
+                "piezasPorDia": 0,
+                "huecoTipicoHoras": 0.1,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 26938.43,
+                "margenRed": 6734.61,
                 "vias": [
                     {
                         "url": "https://www.vanguardia.com/arc/outboundfeeds/rss/",
                         "via": "direct",
-                        "estado": "sano",
-                        "motivo": null
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
                     }
                 ]
             },
@@ -2142,7 +2142,7 @@
         },
         "la-opinion": {
             "nombre": "La Opinión",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2150,12 +2150,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 6.3,
-                "piezasPorDia": 34,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 1.5,
-                "margen": 21.15,
-                "margenRed": 5.29,
+                "ventanaHoras": 1.5,
+                "piezasPorDia": 145,
+                "huecoTipicoHoras": 0.1,
+                "edadMasNuevoHoras": 0.7,
+                "margen": 4.96,
+                "margenRed": 1.24,
                 "vias": [
                     {
                         "url": "https://www.laopinion.com.co/rss.xml",
@@ -2206,7 +2206,7 @@
         },
         "el-pais-cali": {
             "nombre": "El País Cali",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2214,12 +2214,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 38.4,
-                "piezasPorDia": 61.9,
+                "ventanaHoras": 36.9,
+                "piezasPorDia": 64.4,
                 "huecoTipicoHoras": 0.2,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 11.64,
-                "margenRed": 2.91,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 11.17,
+                "margenRed": 2.79,
                 "vias": [
                     {
                         "url": "https://www.elpais.com.co/arc/outboundfeeds/rss/",
@@ -2279,7 +2279,7 @@
         },
         "kienyke": {
             "nombre": "KienyKe",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2287,12 +2287,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 13.1,
-                "piezasPorDia": 16.4,
+                "ventanaHoras": 12,
+                "piezasPorDia": 18,
                 "huecoTipicoHoras": 0.3,
                 "edadMasNuevoHoras": 0.7,
-                "margen": 43.8,
-                "margenRed": 10.95,
+                "margen": 40.01,
+                "margenRed": 10,
                 "vias": [
                     {
                         "url": "https://www.kienyke.com/feed",
@@ -2343,26 +2343,26 @@
         },
         "la-fm": {
             "nombre": "La FM",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "sano",
-                "motivo": null,
+                "estado": "revisar",
+                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 15,
+                "frescos": 13,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 159.3,
-                "piezasPorDia": 14.9,
-                "huecoTipicoHoras": 0.9,
-                "edadMasNuevoHoras": 2.6,
-                "margen": 48.27,
-                "margenRed": 12.07,
+                "ventanaHoras": 86814.7,
+                "piezasPorDia": 0,
+                "huecoTipicoHoras": 1.1,
+                "edadMasNuevoHoras": 4.8,
+                "margen": 26307.49,
+                "margenRed": 6576.87,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Alafm.com.co&hl=es-419&gl=CO&ceid=CO:es-419",
                         "via": "gnews",
-                        "estado": "sano",
-                        "motivo": null
+                        "estado": "revisar",
+                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
                     }
                 ]
             },
@@ -2416,7 +2416,7 @@
         },
         "el-colombiano": {
             "nombre": "El Colombiano",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2424,12 +2424,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 20.7,
-                "piezasPorDia": 114.9,
+                "ventanaHoras": 23.3,
+                "piezasPorDia": 102.1,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 6.27,
-                "margenRed": 1.57,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 7.05,
+                "margenRed": 1.76,
                 "vias": [
                     {
                         "url": "https://www.elcolombiano.com/rss/portada.xml",
@@ -2489,7 +2489,7 @@
         },
         "el-pilon": {
             "nombre": "El Pilón",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2497,12 +2497,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 19.6,
-                "piezasPorDia": 23.3,
-                "huecoTipicoHoras": 0.2,
-                "edadMasNuevoHoras": 0.4,
-                "margen": 30.96,
-                "margenRed": 7.74,
+                "ventanaHoras": 17.4,
+                "piezasPorDia": 26.3,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 27.42,
+                "margenRed": 6.85,
                 "vias": [
                     {
                         "url": "https://elpilon.com.co/api/rss",
@@ -2544,7 +2544,7 @@
         },
         "diario-del-huila": {
             "nombre": "Diario del Huila",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2552,12 +2552,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 7.6,
-                "piezasPorDia": 28.6,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 0.6,
-                "margen": 25.17,
-                "margenRed": 6.29,
+                "ventanaHoras": 8.2,
+                "piezasPorDia": 26.2,
+                "huecoTipicoHoras": 0.5,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 27.43,
+                "margenRed": 6.86,
                 "vias": [
                     {
                         "url": "https://diariodelhuila.com/feed/",
@@ -2599,7 +2599,7 @@
         },
         "diario-del-norte": {
             "nombre": "Diario del Norte",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2607,12 +2607,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 91,
-                "piezasPorDia": 26.1,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 0.7,
-                "margen": 27.59,
-                "margenRed": 6.9,
+                "ventanaHoras": 91.7,
+                "piezasPorDia": 25.9,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 0.2,
+                "margen": 27.79,
+                "margenRed": 6.95,
                 "vias": [
                     {
                         "url": "https://diariodelnorte.net/feed",
@@ -2645,7 +2645,7 @@
         },
         "el-diario-pereira": {
             "nombre": "El Diario",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2653,12 +2653,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 73,
-                "piezasPorDia": 32.2,
-                "huecoTipicoHoras": 0.2,
-                "edadMasNuevoHoras": 1.6,
-                "margen": 22.35,
-                "margenRed": 5.59,
+                "ventanaHoras": 76.8,
+                "piezasPorDia": 30.6,
+                "huecoTipicoHoras": 0.1,
+                "edadMasNuevoHoras": 0.6,
+                "margen": 23.52,
+                "margenRed": 5.88,
                 "vias": [
                     {
                         "url": "https://www.eldiario.com.co/feed/",
@@ -2700,7 +2700,7 @@
         },
         "proclama-del-pacifico": {
             "nombre": "Proclama",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2708,12 +2708,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 24,
-                "piezasPorDia": 19,
-                "huecoTipicoHoras": 0.7,
-                "edadMasNuevoHoras": 3,
-                "margen": 37.93,
-                "margenRed": 9.48,
+                "ventanaHoras": 47.3,
+                "piezasPorDia": 9.6,
+                "huecoTipicoHoras": 0.8,
+                "edadMasNuevoHoras": 1.6,
+                "margen": 74.67,
+                "margenRed": 18.67,
                 "vias": [
                     {
                         "url": "https://proclamadelpacifico.com/feed/",
@@ -2755,20 +2755,20 @@
         },
         "choco-7-dias": {
             "nombre": "Chocó 7 Días",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 6,
+                "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 88.5,
-                "piezasPorDia": 2.4,
-                "huecoTipicoHoras": 5.3,
-                "edadMasNuevoHoras": 3,
-                "margen": 294.87,
-                "margenRed": 73.72,
+                "ventanaHoras": 35.4,
+                "piezasPorDia": 6.1,
+                "huecoTipicoHoras": 1.8,
+                "edadMasNuevoHoras": 3.1,
+                "margen": 118.03,
+                "margenRed": 29.51,
                 "vias": [
                     {
                         "url": "https://choco7dias.com/feed/",
@@ -2801,7 +2801,7 @@
         },
         "el-manduco": {
             "nombre": "El Manduco",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "no-comprobable",
                 "motivo": "el medio no tiene feed",
@@ -2840,7 +2840,7 @@
         },
         "miputumayo": {
             "nombre": "MiPutumayo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2848,12 +2848,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 19.2,
-                "piezasPorDia": 11.3,
-                "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.1,
-                "margen": 63.99,
-                "margenRed": 16,
+                "ventanaHoras": 20,
+                "piezasPorDia": 10.8,
+                "huecoTipicoHoras": 0,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 66.7,
+                "margenRed": 16.67,
                 "vias": [
                     {
                         "url": "https://miputumayo.com.co/feed/",
@@ -2876,30 +2876,30 @@
                     "url": "https://miputumayo.com.co/quienes-somos/",
                     "institucional": true,
                     "status": 200,
-                    "uaLimpio": false,
+                    "uaLimpio": true,
                     "titulo": "Quienes Somos - MiPutumayo Noticias",
                     "estado": "sano",
                     "motivo": null
                 }
             ],
-            "reintentoUaLimpio": false
+            "reintentoUaLimpio": true
         },
         "el-morichal": {
             "nombre": "El Morichal",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 3,
+                "frescos": 5,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 351.4,
-                "piezasPorDia": 0.6,
-                "huecoTipicoHoras": 22.8,
-                "edadMasNuevoHoras": 2.5,
-                "margen": 1171.36,
-                "margenRed": 292.84,
+                "ventanaHoras": 163.2,
+                "piezasPorDia": 1.3,
+                "huecoTipicoHoras": 16.3,
+                "edadMasNuevoHoras": 0.5,
+                "margen": 544.07,
+                "margenRed": 136.02,
                 "vias": [
                     {
                         "url": "https://elmorichal.com/feed/",
@@ -2932,7 +2932,7 @@
         },
         "boyaca-digital": {
             "nombre": "Boyacá Digital",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -2940,12 +2940,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 16.5,
-                "piezasPorDia": 27.6,
+                "ventanaHoras": 14.5,
+                "piezasPorDia": 31.5,
                 "huecoTipicoHoras": 0.5,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 26.09,
-                "margenRed": 6.52,
+                "edadMasNuevoHoras": 0.5,
+                "margen": 22.89,
+                "margenRed": 5.72,
                 "vias": [
                     {
                         "url": "https://www.boyacadigital.com/rss.xml",
@@ -3005,7 +3005,7 @@
         },
         "la-razon-cordoba": {
             "nombre": "La Razón.co",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3013,12 +3013,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 1.4,
-                "piezasPorDia": 150.1,
-                "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 4.8,
-                "margenRed": 1.2,
+                "ventanaHoras": 17,
+                "piezasPorDia": 12.7,
+                "huecoTipicoHoras": 0.8,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 56.55,
+                "margenRed": 14.14,
                 "vias": [
                     {
                         "url": "https://larazon.co/feed/",
@@ -3060,7 +3060,7 @@
         },
         "el-diario-boyaca": {
             "nombre": "EL DIARIO",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3068,12 +3068,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 17.4,
-                "piezasPorDia": 12.4,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 0.8,
-                "margen": 57.91,
-                "margenRed": 14.48,
+                "ventanaHoras": 18.2,
+                "piezasPorDia": 11.9,
+                "huecoTipicoHoras": 0.8,
+                "edadMasNuevoHoras": 1.7,
+                "margen": 60.6,
+                "margenRed": 15.15,
                 "vias": [
                     {
                         "url": "https://eldiarioboyaca.com/feed/",
@@ -3115,7 +3115,7 @@
         },
         "vive-el-meta": {
             "nombre": "Vive el Meta",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3123,12 +3123,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 64,
-                "piezasPorDia": 3.4,
-                "huecoTipicoHoras": 2.6,
-                "edadMasNuevoHoras": 2.1,
-                "margen": 213.41,
-                "margenRed": 53.35,
+                "ventanaHoras": 47,
+                "piezasPorDia": 4.6,
+                "huecoTipicoHoras": 2.9,
+                "edadMasNuevoHoras": 2.8,
+                "margen": 156.73,
+                "margenRed": 39.18,
                 "vias": [
                     {
                         "url": "https://viveelmeta.com/feed/",
@@ -3179,7 +3179,7 @@
         },
         "lente-regional": {
             "nombre": "Lente Regional",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3187,12 +3187,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 24.8,
-                "piezasPorDia": 8.7,
-                "huecoTipicoHoras": 0.6,
-                "edadMasNuevoHoras": 1.5,
-                "margen": 82.65,
-                "margenRed": 20.66,
+                "ventanaHoras": 16.3,
+                "piezasPorDia": 13.3,
+                "huecoTipicoHoras": 1,
+                "edadMasNuevoHoras": 25.8,
+                "margen": 54.18,
+                "margenRed": 13.54,
                 "vias": [
                     {
                         "url": "https://lenteregional.com/feed/",
@@ -3234,7 +3234,7 @@
         },
         "el-nuevo-dia": {
             "nombre": "El Nuevo Día",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3242,12 +3242,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 2,
-                "piezasPorDia": 107.4,
-                "huecoTipicoHoras": 0.2,
-                "edadMasNuevoHoras": 0.7,
-                "margen": 6.71,
-                "margenRed": 1.68,
+                "ventanaHoras": 2.5,
+                "piezasPorDia": 87,
+                "huecoTipicoHoras": 0.3,
+                "edadMasNuevoHoras": 0.8,
+                "margen": 8.27,
+                "margenRed": 2.07,
                 "vias": [
                     {
                         "url": "https://www.elnuevodia.com.co/rss.xml",
@@ -3325,7 +3325,7 @@
         },
         "periodismo-publico": {
             "nombre": "P. Público",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3333,12 +3333,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 0,
-                "ventanaHoras": 24.6,
-                "piezasPorDia": 8.8,
-                "huecoTipicoHoras": 1.4,
-                "edadMasNuevoHoras": 1.5,
-                "margen": 82.11,
-                "margenRed": 20.53,
+                "ventanaHoras": 28.1,
+                "piezasPorDia": 7.7,
+                "huecoTipicoHoras": 1.6,
+                "edadMasNuevoHoras": 0.3,
+                "margen": 93.54,
+                "margenRed": 23.38,
                 "vias": [
                     {
                         "url": "https://periodismopublico.com/feed",
@@ -3389,7 +3389,7 @@
         },
         "seguimiento": {
             "nombre": "Seguimiento",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "no-comprobable",
                 "motivo": "no se pudo llegar (Request timed out after 20000ms). Repetir en local antes de darlo por roto",
@@ -3415,8 +3415,8 @@
             "rutas": {
                 "estado": "no-comprobable",
                 "respondeATodo": null,
-                "motivo": "sin respuesta en 20000 ms",
-                "status": null,
+                "motivo": "403: nos cierra la puerta. Repetir en local",
+                "status": 403,
                 "titulo": null,
                 "bytes": null
             },
@@ -3424,11 +3424,11 @@
                 {
                     "url": "https://seguimiento.co/quienes-somos/",
                     "institucional": true,
-                    "status": 0,
+                    "status": 403,
                     "uaLimpio": false,
-                    "titulo": null,
+                    "titulo": "Just a moment...",
                     "estado": "no-comprobable",
-                    "motivo": "sin respuesta en 20000 ms"
+                    "motivo": "403: nos cierra la puerta. Repetir en local antes de darla por rota"
                 },
                 {
                     "url": "https://seguimiento.co/contacto/",
@@ -3444,7 +3444,7 @@
         },
         "prensa-libre-casanare": {
             "nombre": "P. Libre Casanare",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3455,8 +3455,8 @@
                 "ventanaHoras": 24,
                 "piezasPorDia": 9,
                 "huecoTipicoHoras": 0.5,
-                "edadMasNuevoHoras": 7.3,
-                "margen": 79.99,
+                "edadMasNuevoHoras": 7.5,
+                "margen": 79.98,
                 "margenRed": 20,
                 "vias": [
                     {
@@ -3490,7 +3490,7 @@
         },
         "quindio-noticias": {
             "nombre": "Quindío Noticias",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3498,12 +3498,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 21.8,
-                "piezasPorDia": 9.9,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 1.3,
-                "margen": 72.6,
-                "margenRed": 18.15,
+                "ventanaHoras": 3.9,
+                "piezasPorDia": 55.5,
+                "huecoTipicoHoras": 0.4,
+                "edadMasNuevoHoras": 0.9,
+                "margen": 12.98,
+                "margenRed": 3.24,
                 "vias": [
                     {
                         "url": "https://quindionoticias.com/feed",
@@ -3519,7 +3519,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "Inicio | Quindío Noticias",
-                "bytes": 123796
+                "bytes": 118260
             },
             "fuentes": [
                 {
@@ -3536,26 +3536,26 @@
         },
         "archipielago-press": {
             "nombre": "Archipielago Press",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "revisar",
-                "motivo": "margen estrecho (1,5×): un día movido desborda el sondeo",
+                "estado": "sano",
+                "motivo": null,
                 "items": 10,
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 0.4,
-                "piezasPorDia": 488.1,
-                "huecoTipicoHoras": 0,
-                "edadMasNuevoHoras": 67.2,
-                "margen": 1.48,
-                "margenRed": 0.37,
+                "ventanaHoras": 0.9,
+                "piezasPorDia": 238.1,
+                "huecoTipicoHoras": 0.1,
+                "edadMasNuevoHoras": 22.6,
+                "margen": 3.02,
+                "margenRed": 0.76,
                 "vias": [
                     {
                         "url": "https://www.thearchipielagopress.co/feed/",
                         "via": "direct",
-                        "estado": "revisar",
-                        "motivo": "margen estrecho (1,5×): un día movido desborda el sondeo"
+                        "estado": "sano",
+                        "motivo": null
                     }
                 ]
             },
@@ -3591,7 +3591,7 @@
         },
         "abra-noticias": {
             "nombre": "Abra Noticias",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3599,12 +3599,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 38.8,
-                "piezasPorDia": 5.6,
-                "huecoTipicoHoras": 2.1,
-                "edadMasNuevoHoras": 2.2,
-                "margen": 129.49,
-                "margenRed": 32.37,
+                "ventanaHoras": 49.8,
+                "piezasPorDia": 4.3,
+                "huecoTipicoHoras": 3.3,
+                "edadMasNuevoHoras": 15,
+                "margen": 165.89,
+                "margenRed": 41.47,
                 "vias": [
                     {
                         "url": "https://abranoticias.com/feed/",
@@ -3637,20 +3637,20 @@
         },
         "al-aire-noticias": {
             "nombre": "Al Aire",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 10,
-                "frescos": 4,
+                "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 179.5,
-                "piezasPorDia": 1.2,
-                "huecoTipicoHoras": 6.2,
-                "edadMasNuevoHoras": 14.5,
-                "margen": 598.29,
-                "margenRed": 149.57,
+                "ventanaHoras": 67,
+                "piezasPorDia": 3.2,
+                "huecoTipicoHoras": 3.2,
+                "edadMasNuevoHoras": 0.7,
+                "margen": 223.39,
+                "margenRed": 55.85,
                 "vias": [
                     {
                         "url": "https://alairenoticias.com/feed/",
@@ -3701,7 +3701,7 @@
         },
         "la-nacion-neiva": {
             "nombre": "La Nación",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3709,12 +3709,12 @@
                 "frescos": 10,
                 "tomados": 10,
                 "conImagen": 10,
-                "ventanaHoras": 8.3,
-                "piezasPorDia": 26.1,
+                "ventanaHoras": 7.6,
+                "piezasPorDia": 28.6,
                 "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 2.8,
-                "margen": 27.61,
-                "margenRed": 6.9,
+                "edadMasNuevoHoras": 2.7,
+                "margen": 25.17,
+                "margenRed": 6.29,
                 "vias": [
                     {
                         "url": "https://www.lanacion.com.co/feed/",
@@ -3765,7 +3765,7 @@
         },
         "cablenoticias": {
             "nombre": "Cablenoticias",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3773,12 +3773,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 46.2,
-                "piezasPorDia": 25.4,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 28.29,
-                "margenRed": 7.07,
+                "ventanaHoras": 72.4,
+                "piezasPorDia": 16.2,
+                "huecoTipicoHoras": 0.5,
+                "edadMasNuevoHoras": 1.6,
+                "margen": 44.34,
+                "margenRed": 11.08,
                 "vias": [
                     {
                         "url": "https://www.cablenoticias.com/rss",
@@ -3794,7 +3794,7 @@
                 "motivo": "devuelve 200 a una ruta inventada: aquí un 200 no prueba que la página exista",
                 "status": 200,
                 "titulo": "Home — CABLENOTICIAS",
-                "bytes": 221094
+                "bytes": 223989
             },
             "fuentes": [
                 {
@@ -3838,20 +3838,20 @@
         },
         "pulzo": {
             "nombre": "Pulzo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
-                "items": 127,
+                "items": 600,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 25.9,
-                "piezasPorDia": 116.6,
+                "ventanaHoras": 477.1,
+                "piezasPorDia": 30.1,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 5.3,
-                "margen": 6.17,
-                "margenRed": 1.54,
+                "edadMasNuevoHoras": 5.1,
+                "margen": 23.9,
+                "margenRed": 5.97,
                 "vias": [
                     {
                         "url": "https://www.pulzo.com/rss/nacion",
@@ -3911,7 +3911,7 @@
         },
         "semana": {
             "nombre": "Semana",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -3919,12 +3919,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 12.6,
-                "piezasPorDia": 188.2,
+                "ventanaHoras": 13,
+                "piezasPorDia": 182.2,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 3.83,
-                "margenRed": 0.96,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 3.95,
+                "margenRed": 0.99,
                 "vias": [
                     {
                         "url": "https://www.semana.com/arc/outboundfeeds/rss/",
@@ -3993,7 +3993,7 @@
         },
         "el-nuevo-siglo": {
             "nombre": "N. Siglo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -4001,12 +4001,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 26,
-                "piezasPorDia": 45.2,
+                "ventanaHoras": 24.4,
+                "piezasPorDia": 48.2,
                 "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0.3,
-                "margen": 15.92,
-                "margenRed": 3.98,
+                "edadMasNuevoHoras": 0.7,
+                "margen": 14.95,
+                "margenRed": 3.74,
                 "vias": [
                     {
                         "url": "https://www.elnuevosiglo.com.co/rss.xml",
@@ -4048,7 +4048,7 @@
         },
         "bbc-mundo": {
             "nombre": "BBC Mundo",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -4056,12 +4056,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 118.2,
-                "piezasPorDia": 6.7,
+                "ventanaHoras": 220,
+                "piezasPorDia": 3.6,
                 "huecoTipicoHoras": 1.6,
-                "edadMasNuevoHoras": 0.3,
-                "margen": 107.45,
-                "margenRed": 26.86,
+                "edadMasNuevoHoras": 3,
+                "margen": 200.02,
+                "margenRed": 50,
                 "vias": [
                     {
                         "url": "https://feeds.bbci.co.uk/mundo/rss.xml",
@@ -4112,20 +4112,20 @@
         },
         "dw-es": {
             "nombre": "DW",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
-                "items": 24,
+                "items": 20,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 52.3,
-                "piezasPorDia": 10.6,
-                "huecoTipicoHoras": 0.8,
-                "edadMasNuevoHoras": 0.6,
-                "margen": 68.24,
-                "margenRed": 17.06,
+                "ventanaHoras": 48.8,
+                "piezasPorDia": 9.3,
+                "huecoTipicoHoras": 1.3,
+                "edadMasNuevoHoras": 1.2,
+                "margen": 77.08,
+                "margenRed": 19.27,
                 "vias": [
                     {
                         "url": "https://rss.dw.com/rdf/rss-sp-all",
@@ -4176,20 +4176,20 @@
         },
         "france24-es": {
             "nombre": "France 24",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
                 "items": 24,
                 "frescos": 15,
                 "tomados": 15,
-                "conImagen": 15,
-                "ventanaHoras": 17.6,
-                "piezasPorDia": 31.4,
+                "conImagen": 13,
+                "ventanaHoras": 13.4,
+                "piezasPorDia": 41.3,
                 "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0.3,
-                "margen": 22.95,
-                "margenRed": 5.74,
+                "edadMasNuevoHoras": 0.1,
+                "margen": 17.44,
+                "margenRed": 4.36,
                 "vias": [
                     {
                         "url": "https://www.france24.com/es/rss",
@@ -4240,7 +4240,7 @@
         },
         "euronews-es": {
             "nombre": "Euronews",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -4248,12 +4248,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 11.4,
-                "piezasPorDia": 103.6,
-                "huecoTipicoHoras": 0.2,
+                "ventanaHoras": 8,
+                "piezasPorDia": 147.1,
+                "huecoTipicoHoras": 0.1,
                 "edadMasNuevoHoras": 0.5,
-                "margen": 6.95,
-                "margenRed": 1.74,
+                "margen": 4.9,
+                "margenRed": 1.22,
                 "vias": [
                     {
                         "url": "https://es.euronews.com/rss",
@@ -4304,20 +4304,20 @@
         },
         "el-pais-es": {
             "nombre": "El País",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
-                "items": 155,
+                "items": 151,
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 16837.2,
-                "piezasPorDia": 0.2,
+                "ventanaHoras": 839.3,
+                "piezasPorDia": 4.3,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 0.2,
-                "margen": 3279.97,
-                "margenRed": 819.99,
+                "edadMasNuevoHoras": 0,
+                "margen": 167.86,
+                "margenRed": 41.96,
                 "vias": [
                     {
                         "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada",
@@ -4328,8 +4328,8 @@
                     {
                         "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america-colombia/portada",
                         "via": "direct",
-                        "estado": "no-comprobable",
-                        "motivo": "no se pudo llegar (Request timed out after 20000ms). Repetir en local antes de darlo por roto"
+                        "estado": "sano",
+                        "motivo": null
                     }
                 ]
             },
@@ -4363,11 +4363,11 @@
                 {
                     "url": "https://www.bolsamania.com/noticias/insiders/amber-capital-compra-300000-acciones-prisa-alcanza-2984-capital--7231734.html",
                     "institucional": false,
-                    "status": 0,
+                    "status": 200,
                     "uaLimpio": false,
                     "titulo": null,
-                    "estado": "no-comprobable",
-                    "motivo": "sin respuesta en 20000 ms"
+                    "estado": "sano",
+                    "motivo": null
                 },
                 {
                     "url": "https://theobjective.com/medios/2025-01-29/accionistas-moncloa-prisa-arrinconar-oughourlian/",
@@ -4401,20 +4401,20 @@
         },
         "efe": {
             "nombre": "EFE",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "revisar",
                 "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
                 "items": 100,
-                "frescos": 13,
+                "frescos": 14,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 87512.2,
-                "piezasPorDia": 0,
-                "huecoTipicoHoras": 0.9,
+                "ventanaHoras": 35193.3,
+                "piezasPorDia": 0.1,
+                "huecoTipicoHoras": 0.7,
                 "edadMasNuevoHoras": 0.5,
-                "margen": 26518.84,
-                "margenRed": 6629.71,
+                "margen": 10664.65,
+                "margenRed": 2666.16,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Aefe.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -4465,7 +4465,7 @@
         },
         "reuters": {
             "nombre": "Reuters",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "no-comprobable",
                 "motivo": "el medio no tiene feed",
@@ -4513,7 +4513,7 @@
         },
         "cnn-es": {
             "nombre": "CNN",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -4521,12 +4521,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 162.6,
-                "piezasPorDia": 14.6,
-                "huecoTipicoHoras": 0.4,
-                "edadMasNuevoHoras": 0.7,
-                "margen": 49.27,
-                "margenRed": 12.32,
+                "ventanaHoras": 166.5,
+                "piezasPorDia": 14.3,
+                "huecoTipicoHoras": 1.1,
+                "edadMasNuevoHoras": 0.9,
+                "margen": 50.45,
+                "margenRed": 12.61,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Acnnespanol.cnn.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -4595,7 +4595,7 @@
         },
         "nyt": {
             "nombre": "NYT",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "no-comprobable",
                 "motivo": "el medio no tiene feed",
@@ -4643,7 +4643,7 @@
         },
         "wsj": {
             "nombre": "WSJ",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "no-comprobable",
                 "motivo": "el medio no tiene feed",
@@ -4691,7 +4691,7 @@
         },
         "financial-times": {
             "nombre": "FT",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "no-comprobable",
                 "motivo": "el medio no tiene feed",
@@ -4739,26 +4739,26 @@
         },
         "la-vanguardia-es": {
             "nombre": "La Vanguardia",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
-                "estado": "revisar",
-                "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da",
-                "items": 139,
-                "frescos": 14,
+                "estado": "sano",
+                "motivo": null,
+                "items": 142,
+                "frescos": 15,
                 "tomados": 15,
                 "conImagen": 15,
-                "ventanaHoras": 1787.8,
-                "piezasPorDia": 1.9,
+                "ventanaHoras": 1659.7,
+                "piezasPorDia": 2,
                 "huecoTipicoHoras": 0.1,
-                "edadMasNuevoHoras": 1.1,
-                "margen": 388.65,
-                "margenRed": 97.16,
+                "edadMasNuevoHoras": 0.4,
+                "margen": 353.13,
+                "margenRed": 88.28,
                 "vias": [
                     {
                         "url": "https://www.lavanguardia.com/rss/home.xml",
                         "via": "direct",
-                        "estado": "revisar",
-                        "motivo": "ordenado por relevancia: hay piezas nuevas que no nos da"
+                        "estado": "sano",
+                        "motivo": null
                     }
                 ]
             },
@@ -4794,7 +4794,7 @@
         },
         "las2orillas": {
             "nombre": "Las2Orillas",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -4802,12 +4802,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 190.9,
-                "piezasPorDia": 18.7,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 0.8,
-                "margen": 38.44,
-                "margenRed": 9.61,
+                "ventanaHoras": 214.7,
+                "piezasPorDia": 16.7,
+                "huecoTipicoHoras": 0.4,
+                "edadMasNuevoHoras": 2.5,
+                "margen": 43.23,
+                "margenRed": 10.81,
                 "vias": [
                     {
                         "url": "https://www.las2orillas.co/feed/",
@@ -4840,7 +4840,7 @@
         },
         "ntn24": {
             "nombre": "NTN24",
-            "comprobadoEl": "2026-09-17",
+            "comprobadoEl": "2026-09-24",
             "feed": {
                 "estado": "sano",
                 "motivo": null,
@@ -4848,12 +4848,12 @@
                 "frescos": 15,
                 "tomados": 15,
                 "conImagen": 0,
-                "ventanaHoras": 154.2,
-                "piezasPorDia": 15.4,
-                "huecoTipicoHoras": 0.3,
-                "edadMasNuevoHoras": 13.8,
-                "margen": 46.74,
-                "margenRed": 11.69,
+                "ventanaHoras": 198.3,
+                "piezasPorDia": 12,
+                "huecoTipicoHoras": 0.4,
+                "edadMasNuevoHoras": 3.7,
+                "margen": 60.1,
+                "margenRed": 15.02,
                 "vias": [
                     {
                         "url": "https://news.google.com/rss/search?q=site%3Antn24.com&hl=es-419&gl=CO&ceid=CO:es-419",
@@ -4874,6 +4874,61 @@
             "fuentes": [
                 {
                     "url": "https://colombia.mom-gmr.org/en/owners/companies/detail/company/company/show/organizacion-ardila-luelle-sa/",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                }
+            ],
+            "reintentoUaLimpio": false
+        },
+        "leticia-hoy": {
+            "nombre": "LeticiaHoy",
+            "comprobadoEl": "2026-09-24",
+            "feed": {
+                "estado": "sano",
+                "motivo": null,
+                "items": 10,
+                "frescos": 2,
+                "tomados": 10,
+                "conImagen": 0,
+                "ventanaHoras": 2268.7,
+                "piezasPorDia": 0.1,
+                "huecoTipicoHoras": 53.3,
+                "edadMasNuevoHoras": 50.7,
+                "margen": 7562.49,
+                "margenRed": 1890.62,
+                "vias": [
+                    {
+                        "url": "https://www.taleoi.com/taxonomy/term/5/feed",
+                        "via": "direct",
+                        "estado": "sano",
+                        "motivo": null
+                    }
+                ]
+            },
+            "rutas": {
+                "estado": "sano",
+                "respondeATodo": false,
+                "motivo": null,
+                "status": 404,
+                "titulo": null,
+                "bytes": null
+            },
+            "fuentes": [
+                {
+                    "url": "https://www.taleoi.com/periodico",
+                    "institucional": false,
+                    "status": 200,
+                    "uaLimpio": false,
+                    "titulo": null,
+                    "estado": "sano",
+                    "motivo": null
+                },
+                {
+                    "url": "https://www.taleoi.com/taxonomy/term/5/feed",
                     "institucional": false,
                     "status": 200,
                     "uaLimpio": false,

@@ -47,6 +47,77 @@ Las dos reglas del cruce:
 
 # ABIERTO
 
+## 2026-09-23 · Cierre de dos días de trabajo: todo el código de M0 y M1 está en el aire (ABIERTO)
+
+**Lo que quedó en producción el 22 y 23 de septiembre** (commit `aac3660`,
+comprobado al cerrar):
+- Motor y cliente iguales.
+- 78 de 78 feeds bien.
+- `mirar` 22 de 22 en escritorio y móvil.
+- 900 de 900 pruebas.
+- `npm run accesibilidad` sin nada que reportar.
+
+| PR | Qué |
+|---|---|
+| #39 | Plan del MVP y tablas de implementación al día |
+| #40 | Los bots de auditoría y centinela también despliegan: se acabó el desfase semanal |
+| #37 | La sesión del 16-09 («sin medir», «no noticioso», resumen del motor), con su migración |
+| #41 | Decisiones de firma: VOZ −0,80, Colombia Informa −0,55, Semana hacia +0,70, El Nuevo Siglo y El Colombiano a revisión. Punto 25 medido |
+| #42 | La noticia caducada dice por qué; el pie ya no dice «contrastada» |
+| #43 | El aviso del techo cuenta lo que expulsa |
+| #44 | `/transparencia` explica «sin medir» y «no noticioso»; arreglado el menú que no se veía |
+| #45 | El mapa en móvil muestra el espectro entero; `mirar` revisa `/noticia` |
+| #46 | Accesibilidad: de 146 fallos a 0 |
+| #48 | Caché de respuestas y pool de 4: **de 2 a 12 visitas/s** |
+| #49 | **Amazonas con LeticiaHoy: 30 de 33**; «Politica» sin tilde corregido |
+
+Issues cerrados: #4 (centinela), #5 (auditoría) y #38 (desfase). **No quedan
+issues ni PR abiertos.**
+
+### Lo que falta, por dueño
+
+**De Jose, decisiones** (el plan del MVP las tiene con sus opciones):
+1. **Revisión externa con Kimi** de VOZ, Colombia Informa, Semana, El Nuevo
+   Siglo y El Colombiano. Aplazada por él el 22-09. Los envíos se regeneran ese
+   día con `npm run envio -- <medio>`. **Antes de firmar VOZ, leer lo nuevo de
+   su CONTRA: con la opinión separada ya no sale aislado.**
+2. **M1.2 analítica**: Plausible, Umami o la de Vercel.
+3. **M1.3 responsable del tratamiento de datos** (Ley 1581): lo pide la lista
+   de espera del boletín.
+4. **M0.4 el techo de 8 000 artículos**: deja fuera cerca del 29 % de la
+   ventana de 72 h, y la ventana real baja hasta ~65 h. Las opciones: subir
+   `MAX_ARTICLES`, bajar el techo de Infobae o declararlo en `/transparencia`.
+5. **M1.7** qué se promete al lanzar, y **M1.8** el panel de los no noticiosos.
+
+**Con fecha, y no dependen de nadie:**
+- 1-10: Vorágine.
+- 2-10: tamaño de la base y regla por cadencia (3.9).
+- Principios de octubre: re-medir RTVC.
+- 13-10: Telecaribe y W Radio.
+- Hacia el 15-10:
+  - re-medir el punto 25 sobre el mes entero;
+  - re-medir Colombia Informa;
+  - repetir la medición de Las2Orillas.
+- Diciembre: opción B del archivo.
+
+**Para vigilar, sin trabajo que hacer:**
+- Los despliegues automáticos tras la auditoría del jueves y el centinela del
+  lunes, lo nuevo de la #40. Si vuelve a abrirse un issue de desfase, falló.
+- Fallos de conexión hacia la IPv4 compartida de Fly desde la red de casa,
+  ~6 %. Desde GitHub y desde Fly, cero. Si lo reporta un lector, las salidas
+  están en la entrada del simulacro.
+- Tania Gilinski Bacal, embajadora en Israel desde el 21-09: confirmar el
+  parentesco antes de escribirlo en la ficha de propiedad de Semana.
+
+**Dos avisos para quien siga:**
+- **Los scripts de captura que lanzan Vite con `shell: true` dejan el servidor
+  vivo al terminar**, y su `esbuild.exe` bloquea luego `npm ci` con EPERM.
+  Pasó el 23-09. Lanzar Vite con `process.execPath`, como hacen `mirar` y
+  `accesibilidad`, o cerrar el proceso al terminar.
+- **Vercel desafía por IP a quien le pide mucho y seguido**: una sonda cada
+  6 s lo encendió contra la red de casa. Al público no le afecta, pero las
+  sondas contra `doblefoco.co` desde casa se hacen con pausas amplias.
+
 ## 2026-09-22 · El simulacro de tráfico: conclusiones, y lo que queda (M1.4, ABIERTO)
 
 Lo autorizó Jose: «a cualquier hora, igual no he lanzado la página». El

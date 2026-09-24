@@ -318,6 +318,72 @@ invariante(
     invarianteDeLaUnion,
 );
 
+/**
+ * UN ARTÍCULO, UNA HISTORIA VIVA (2026-09-24).
+ *
+ * El agrupamiento reparte los artículos: cada uno cae en un grupo y solo en
+ * uno. Si una pieza cuelga de dos historias vivas, la portada cuenta dos veces
+ * el mismo hecho, y es imposible por construcción que lo haya producido el ciclo.
+ *
+ * Se midió a mano el 2026-09-08 y dio cero, pero no se dejó vigilado. Una
+ * semana después, el arreglo del archivo (e56b72d) dejó de sellar las
+ * multifuente recompuestas sin empezar a borrarlas, y se quedaron vivas junto a
+ * su sucesora. El 2026-09-24 eran 564 artículos, y 82 de las 100 primeras
+ * historias del feed estaban afectadas. Nueve días en producción sin que nada
+ * avisara.
+ *
+ * Lo archivado no cuenta: una historia sellada guarda sus artículos a
+ * propósito, y la misma pieza puede estar en ella y en una viva.
+ */
+async function invarianteDeLaParticion() {
+    if (!process.env.DATABASE_URL?.trim()) {
+        return { ok: null, detalle: 'sin DATABASE_URL: no se pudo comprobar' };
+    }
+
+    const pool = new pg.Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: /localhost|127\.0\.0\.1/.test(process.env.DATABASE_URL)
+            ? false
+            : { rejectUnauthorized: false },
+        max: 1,
+    });
+
+    try {
+        const { rows } = await pool.query(`
+            SELECT sa.article_id, array_agg(sa.story_id ORDER BY sa.story_id) AS historias
+              FROM story_articles sa
+              JOIN stories s ON s.id = sa.story_id AND s.archivada_el IS NULL
+             GROUP BY sa.article_id
+            HAVING count(*) > 1
+        `);
+
+        if (rows.length === 0) {
+            return { ok: true, detalle: 'ningún artículo cuelga de más de una historia viva' };
+        }
+
+        const muestra = rows
+            .slice(0, 5)
+            .map((r) => `${r.article_id} en ${r.historias.join(', ')}`)
+            .join('; ');
+        return {
+            ok: false,
+            detalle:
+                `${rows.length} artículo(s) cuelgan de más de una historia viva: la portada ` +
+                `cuenta dos veces el mismo hecho — ${muestra}`,
+        };
+    } catch (error) {
+        return { ok: null, detalle: `no se pudo consultar la base: ${error?.message}` };
+    } finally {
+        await pool.end().catch(() => {});
+    }
+}
+
+invariante(
+    'cada artículo está en una sola historia viva',
+    'el agrupamiento reparte los artículos: cada uno cae en un grupo y solo en uno',
+    invarianteDeLaParticion,
+);
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  Recorrido
 // ─────────────────────────────────────────────────────────────────────────────

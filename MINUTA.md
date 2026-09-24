@@ -128,24 +128,29 @@ archivo. **En producción desde el 15-09**, con la tanda de la #32.
 1. **Fusionar y mirar el primer ciclo.** Ese ciclo borrará de una vez las ~440
    multifuente huérfanas: saldrá un `−N obsoletas` grande, y una sola vez.
    Después, `node scripts/invariantes.mjs` debe dar 8/8, salvo el punto 3.
-2. **Decisión de Jose: el enlace a una historia recompuesta.** Con el arreglo
-   da «Noticia no encontrada», y el texto de esa página dice que las de varios
-   medios «se conservan en el archivo», lo que para estas deja de ser verdad. Ya
-   pasaba con las de un solo medio. Las salidas: (a) redirigir a la sucesora, la
-   historia viva que se quedó con más artículos suyos, lo que pide una tabla y
-   una migración; (b) corregir solo el texto; (c) dejarlo. Sin público todavía,
-   el daño es pequeño; después del lanzamiento, cada enlace de WhatsApp de una
-   historia recompuesta moriría en horas.
+2. ~~**Decisión de Jose: el enlace a una historia recompuesta.**~~ **DECIDIDO
+   el mismo día: (a), redirigir a la sucesora** (`DECISIONES.md`, 2026-09-24).
+   **HECHO en la rama `enlaces/sucesora-de-la-recompuesta`**, que va encima de
+   la #53:
+   - Tabla `historias_sucesoras`. Antes de borrar se apunta la historia de ese
+     ciclo que se quedó con más artículos de la borrada.
+   - `/noticia/<id>` responde con 301 a la sucesora, y la API la sirve. La
+     cadena A → B → C se sigue al leer.
+   - Probado de extremo a extremo contra un Postgres local (PGlite): 10 de 10.
+   - **Gesto de Jose: `npm run db:migrate` contra producción ANTES de
+     fusionarla.** Si se olvida, el ciclo no se cae: avisa y sigue sin
+     redirecciones.
 3. **Aparte y menor: el invariante de la unión (#51).** La BBC actualiza el
    artículo **bajo la misma URL**. La base guarda el titular del 22-09 («…en
    tiempo récord»), clasificado como **«deportes»**, y el motor compone con el
    titular de hoy, que no tiene tema. Quedan dos preguntas: qué hacer con una
    pieza que cambia de titular sin cambiar de URL, y un falso positivo de
    «récord».
-4. **La decisión del techo (M0.4) se midió el mismo día**, antes de encontrar
-   esto. Las cifras están en la conversación del 24-09 y se pasan al plan al
-   decidir. Las duplicadas no tocan el techo, porque el techo cuenta artículos
-   y no historias. Las dos cosas se deciden por separado.
+4. **El techo (M0.4) se decidió el mismo día: sube a 9 000** (PR #54). El
+   «29 %» era engañoso: de 5 560 artículos expulsados, 4 956 eran cable sin
+   cobertura, que sale por diseño. El recorte real eran 604 piezas
+   prioritarias. El aviso ahora cuenta solo esas. **Queda para medir la
+   opción C**: acortar la gracia de 12 h del cable.
 
 ---
 

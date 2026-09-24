@@ -813,7 +813,60 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
              * Este borrado va DESPUÉS del sellado, así que lo maduro ya lleva
              * `archivada_el` y no entra aquí. Lo que queda sin producir y vivo
              * es exactamente lo que se recompuso, sea de uno o de varios medios.
+             *
+             * ANTES DE BORRAR SE APUNTA ADÓNDE FUE (2026-09-24, decisión de
+             * Jose). La sucesora es la historia de este ciclo que se quedó con
+             * más artículos de la borrada: sus vínculos siguen en
+             * `story_articles` hasta el DELETE, y los de este ciclo acaban de
+             * escribirse en la misma transacción. Una historia que no comparte
+             * ningún artículo con lo producido no tiene sucesora, y su enlace
+             * da «no encontrada», que entonces es verdad.
+             *
+             * LA TABLA LLEGA CON UNA MIGRACIÓN, y si el motor nuevo arrancara
+             * antes de `db:migrate`, un fallo aquí tumbaría el guardado de todas
+             * las historias del ciclo. Por eso se pregunta primero si existe:
+             * sin ella se avisa y se sigue, sin provocar el error. Y por si
+             * fallara otra cosa, va en un SAVEPOINT: se pierden las
+             * redirecciones, no el ciclo.
              */
+            let sucesoras = 0;
+            const { rows: [{ hayTabla }] } = await client.query(
+                `SELECT to_regclass('historias_sucesoras') IS NOT NULL AS "hayTabla"`
+            );
+            if (!hayTabla) {
+                console.warn('[db] falta la tabla historias_sucesoras: corre `npm run db:migrate`');
+            } else {
+                await client.query('SAVEPOINT sucesoras');
+                try {
+                    const { rowCount } = await client.query(
+                        `
+                        INSERT INTO historias_sucesoras (id, sucesora)
+                        SELECT DISTINCT ON (vieja.story_id) vieja.story_id, nueva.story_id
+                          FROM story_articles vieja
+                          JOIN stories s ON s.id = vieja.story_id
+                          JOIN story_articles nueva
+                            ON nueva.article_id = vieja.article_id
+                           AND nueva.story_id = ANY($1::text[])
+                         WHERE s.id <> ALL($1::text[])
+                           AND s.archivada_el IS NULL
+                           AND s.id NOT IN (SELECT story_id FROM moderation)
+                         GROUP BY vieja.story_id, nueva.story_id
+                         ORDER BY vieja.story_id, count(*) DESC, nueva.story_id
+                        ON CONFLICT (id) DO UPDATE SET sucesora = EXCLUDED.sucesora, at = now()
+                        `,
+                        [ids]
+                    );
+                    sucesoras = rowCount ?? 0;
+                    await client.query(
+                        `DELETE FROM historias_sucesoras WHERE at < now() - interval '30 days'`
+                    );
+                    await client.query('RELEASE SAVEPOINT sucesoras');
+                } catch (error) {
+                    await client.query('ROLLBACK TO SAVEPOINT sucesoras');
+                    console.warn(`[db] no se apuntaron las sucesoras: ${error.message}`);
+                }
+            }
+
             const { rowCount: removed } = await client.query(
                 `
                 DELETE FROM stories
@@ -830,7 +883,7 @@ export async function persistStories(entrada, ventanaMs = 72 * 60 * 60 * 1000) {
              * registro de cada ciclo para que el ahorro se vea el mismo dia que
              * se despliegue en vez de tener que fiarse de este comentario.
              */
-            return { stories: stories.length, escritas, links, enlacesBorrados, removed, archived };
+            return { stories: stories.length, escritas, links, enlacesBorrados, removed, archived, sucesoras };
         });
     } catch (error) {
         console.warn(`[db] guardado de historias falló: ${error.message}`);

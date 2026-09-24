@@ -136,6 +136,7 @@ const EXCLUIDAS = {
         '~200 MB diarios de titulares no compra nada que esas dos tablas no den.',
     stories: 'Derivadas de los artículos; se recalculan en el primer ciclo.',
     story_articles: 'Igual que stories.',
+    historias_sucesoras: 'Redirecciones hacia historias, que tampoco se respaldan: sin ellas no llevan a ningún sitio.',
     sources: 'Proyección de shared/mediaRegistry.js. `db:migrate` la regenera.',
     errores: 'Telemetría operativa. Útil en vivo, sin valor una vez restaurado.',
     ingest_requests: 'Cola de solicitudes del panel. Efímera por definición.',

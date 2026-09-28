@@ -727,3 +727,21 @@ describe('canonicalizeLink', () => {
             .toBe('https://medio.co/nota?id=7');
     });
 });
+
+describe('el techo del corpus', () => {
+    const FUENTE = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), 'ingestDaemon.js'), 'utf8');
+
+    it('es de 9 000 (M0.4, 2026-09-24)', () => {
+        expect(FUENTE).toMatch(/const MAX_ARTICLES = 9_000;/);
+    });
+
+    it('el aviso solo salta cuando expulsa lo prioritario, no el cable que sale por diseño', () => {
+        /*
+         * El 89 % de lo que expulsa el techo es cable internacional sin
+         * cobertura, que sale a propósito. Un aviso que lo contara gritaría en
+         * todos los ciclos, y un vigilante que grita siempre no avisa de nada.
+         */
+        expect(FUENTE).toMatch(/const ventanaRecortada = desalojadosPrioritarios > 0;/);
+        expect(FUENTE).toMatch(/prioritarios: fuera\.filter\(\(\[link, article\]\) => prioritario\(link, article\)\)\.length/);
+    });
+});

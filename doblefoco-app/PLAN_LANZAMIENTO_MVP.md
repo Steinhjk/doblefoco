@@ -31,11 +31,12 @@ el veredicto. La cuenta de lo pendiente la sigue llevando `MINUTA.md`.
 > | M0.5 «sin medir» y «no noticioso» en `/transparencia` | ✅ en PR | PR #44 |
 > | M0.6 enlaces que caducan | ✅ los multifuente sobreviven; la 404 dice por qué | PR #42 |
 > | M1.1 firmas | 🔶 decididas VOZ −0,80, Colombia Informa −0,55 y el rumbo de Semana (+0,70). **Falta la revisión externa, aplazada por Jose** | PR #41 |
-> | M1.2 analítica / M1.3 privacidad | ⏳ decisiones de Jose | — |
+> | M1.2 analítica / M1.3 privacidad | ✅ decididas el 28-09: Vercel Analytics y Jose como responsable. **Falta que Jose active Analytics en el panel de Vercel** | PR de `mvp/analitica-privacidad-panel` |
+> | M1.8 panel no noticiosos | 🔶 **entra en el MVP** (Jose, 28-09) | — |
 > | M1.4 capacidad | ✅ **de 2 a 12 visitas/s** con la caché de respuestas; quedan el pool de conexiones y un fallo de red hacia Fly | PR #48, `SIMULACRO_TRAFICO.md` |
 > | M1.5 móvil | ✅ el mapa ya muestra el espectro entero; `mirar` incluye `/noticia` | PR #45 |
 > | M1.6 accesibilidad | ✅ de 146 fallos a 0 (con #44); `npm run accesibilidad` | PR #46 |
-> | M1.7 lo que se promete / M1.8 panel no noticiosos | ⏳ Jose | — |
+> | M1.7 lo que se promete | ⏳ Jose | — |
 
 ---
 

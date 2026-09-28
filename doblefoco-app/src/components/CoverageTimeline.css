@@ -133,7 +133,8 @@ a.timeline-headline:hover { text-decoration: underline; }
     display: block;
     margin-top: 0.15rem;
     font-size: 0.72rem;
-    opacity: 0.6;
+    /* Era opacity: 0.6, que daba 2,45:1 sobre blanco (axe, 2026-09-28). */
+    color: var(--text-muted);
 }
 
 /* ── La advertencia ────────────────────────────────────────────────────────

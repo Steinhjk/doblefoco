@@ -12,9 +12,10 @@ import { fraseDeCobertura } from '../../shared/repartoDeCobertura.js';
  * lector pegados detrás (`?ambito=…`). La URL sale de la historia, siempre.
  *
  * Y NO SE AÑADEN PARÁMETROS DE RASTREO. Decidido el 2026-09-15: sin analítica no
- * medirían nada, y ponerle `utm_*` al lector es precisamente la decisión de
- * coherencia que este proyecto tiene abierta en `PLANEACION.md`. Si algún día se
- * decide medir, este es el sitio donde se añadirían — y el único.
+ * medirían nada. Desde el 2026-09-28 hay analítica (M1.2, `lib/analitica.js`,
+ * que conserva los `utm_*` y quita el resto), así que añadirlos ya no es inútil,
+ * pero sigue sin decidirse. Si se decide, este es el sitio donde se añadirían —
+ * y el único.
  */
 
 /** Dominio de producción. Solo se usa si no hay navegador, o sea al renderizar. */

@@ -554,7 +554,18 @@ export const TEMAS = [
             /\b(fichaje|fichajes|traspaso|refuerzo)\b/,
             /\b(entrenador|tecnico del|director tecnico|dt del)\b/,
             /\b(torneo|campeonato|clasificacion|final del)\b/,
-            /\b(medalla|podio|record|campeon|campeona)\b/,
+            /\b(medalla|podio|campeon|campeona)\b/,
+            /**
+             * `record` EXIGE CONTEXTO (2026-09-28), por la misma lección que
+             * `millonarios`. Suelto, y siendo débil —que basta para decidir—,
+             * mandó a deportes una pieza de la BBC sobre algo hecho «en tiempo
+             * récord», y así se quedó en la base. Las cifras récord, las
+             * ventas récord y los tiempos récord son economía o nada.
+             */
+            /\brecord (mundial|del mundo|de mundo|olimpico|sudamericano|suramericano|panamericano|nacional|personal)\b/,
+            /\brecord (del club|del campo|de goles|de asistencias|de victorias|de titularidades|de puntos)\b/,
+            // Lo que quedaba sin tema al quitar `record` suelto y es deporte sin duda.
+            /\b(pole|pole position|laliga)\b/,
             /\b(estadio|hincha|hinchada|barra brava)\b/,
         ],
     },

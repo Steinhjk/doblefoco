@@ -44,6 +44,7 @@ import { recordIngestRun } from './metricsStore.js';
 import { getPool, isDatabaseEnabled } from '../db/pool.js';
 import {
     hydrateArticles,
+    articulosGuardadosPorEnlace,
     backfillImages,
     persistArticles,
     persistStories,
@@ -1303,6 +1304,22 @@ export async function runIngestionBatch() {
             }
         );
 
+        /*
+         * LO QUE LA MEMORIA OLVIDÓ Y LA BASE NO (2026-09-28). Un enlace que
+         * salió de la memoria —por el techo, o porque la rehidratación trae
+         * menos de lo que la base guarda— vuelve como si fuera nuevo, con el
+         * titular que tenga HOY. La base conserva el primero. Aquí se adopta el
+         * guardado, antes de podar y de agrupar, para que motor y base digan
+         * lo mismo de cada artículo. Ver `adoptarLoGuardado`.
+         */
+        const frescosDelCiclo = perFeed.flatMap((f) => f.fresh ?? []);
+        if (isDatabaseEnabled() && frescosDelCiclo.length) {
+            const guardados = await articulosGuardadosPorEnlace(frescosDelCiclo.map((a) => a.link));
+            for (const article of adoptarLoGuardado(frescosDelCiclo, guardados)) {
+                articlesByLink.set(article.link, article);
+            }
+        }
+
         const { total: desalojadosPorTecho, prioritarios: desalojadosPrioritarios } = pruneArticles();
         buildMultisourceStories();
 
@@ -1319,9 +1336,11 @@ export async function runIngestionBatch() {
         // hacía que /api/health y la base dieran cifras distintas sin que
         // ninguna de las dos estuviera mal. La ventana de retención tiene que
         // significar lo mismo en los dos sitios.
-        const fresh = perFeed
-            .flatMap((f) => f.fresh ?? [])
-            .filter((article) => articlesByLink.has(article.link));
+        // Se toma de la memoria y no del feed: si arriba se adoptó la versión
+        // guardada, es esa la que tiene que viajar a la base.
+        const fresh = frescosDelCiclo
+            .filter((article) => articlesByLink.has(article.link))
+            .map((article) => articlesByLink.get(article.link));
 
         const persisted = await persistToDatabase(fresh);
 
@@ -1642,6 +1661,42 @@ export function elegirTitularReciente(items, ventanaHoras = VENTANA_TITULAR_HORA
         if (centro !== 0) return centro;
         return Date.parse(b.publishedAt) - Date.parse(a.publishedAt);
     })[0] ?? null;
+}
+
+/**
+ * EL PRIMER TITULAR GANA, TAMBIÉN DESPUÉS DE OLVIDARLO (2026-09-28).
+ *
+ * De cada artículo recién leído del feed que la base ya tenía, devuelve la
+ * versión GUARDADA: su titular, sus temas, su fecha. Es la regla que la casa ya
+ * seguía en los dos sitios por separado —`persistArticles` no reescribe un
+ * titular publicado y la memoria descarta lo que ya conoce— y que fallaba justo
+ * en la costura: cuando la memoria había olvidado el enlace y la base no.
+ *
+ * Por qué la guardada y no la nueva. Un titular que el lector ya vio no cambia
+ * por debajo; la fecha tampoco, porque de ella depende el orden de la portada.
+ * Y la alternativa —reescribir la base con lo de hoy— es precisamente lo que
+ * `persistArticles` decidió no hacer.
+ *
+ * Lo único que se toma del feed es la imagen, y solo si la guardada no tenía:
+ * la misma excepción que ya hace el `ON CONFLICT` de `persistArticles`.
+ *
+ * Pura, para poder probarla sin base.
+ *
+ * @param {Array<any>} frescos artículos que el ciclo acaba de construir
+ * @param {Array<any>} guardados los mismos enlaces, leídos de la base
+ * @returns {Array<any>} las versiones guardadas que sustituyen a las frescas
+ */
+export function adoptarLoGuardado(frescos, guardados) {
+    const porEnlace = new Map(guardados.map((g) => [g.link, g]));
+    const adoptados = [];
+
+    for (const fresco of frescos) {
+        const guardado = porEnlace.get(fresco.link);
+        if (!guardado) continue;
+        adoptados.push({ ...guardado, imageUrl: guardado.imageUrl ?? fresco.imageUrl ?? null });
+    }
+
+    return adoptados;
 }
 
 /** Agrupa los artículos ingeridos en historias multifuente. */

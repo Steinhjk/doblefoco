@@ -217,6 +217,32 @@ archivo. **En producción desde el 15-09**, con la tanda de la #32.
    titular de hoy, que no tiene tema. Quedan dos preguntas: qué hacer con una
    pieza que cambia de titular sin cambiar de URL, y un falso positivo de
    «récord».
+
+   **RESUELTO EN CÓDIGO el 2026-09-28** (rama
+   `arreglo/titular-que-cambia-bajo-la-misma-url`), con las dos respuestas:
+   - **La causa era más ancha que la BBC.** La memoria olvida antes que la
+     base: rehidrata como mucho 9 000 y el techo expulsa, pero la base guarda
+     30 días. Un enlace olvidado que el feed volvía a enseñar entraba como
+     nuevo, con el titular y los temas de hoy, y `persistArticles` no lo
+     reescribe. Los fallos del 26, 27 y 28-09 fueron las «Tabla del descenso»,
+     que cambian de titular en cada fecha. Y el 28-09 había un caso vivo:
+     `story_q9h0v` decía «Alias ‘Araña’ fue extraditado…» (justicia), y su
+     artículo guardado, «Presidente De La Espriella llega…» (política).
+   - **La regla: el primer titular gana, también después de olvidarlo.** El
+     ciclo busca en la base los enlaces «nuevos» y, si ya estaban, adopta la
+     versión guardada antes de podar y de agrupar (`adoptarLoGuardado`). Del
+     feed solo toma la imagen, y solo si faltaba. Es la regla que ya seguían
+     la memoria y `persistArticles` por separado.
+   - **`récord` suelto sale de deportes.** Medido sobre los 390 titulares
+     guardados con la palabra: 151 estaban en deportes sin serlo (turismo,
+     bolsa, calor, cosechas, Guinness). Ahora exige contexto («récord
+     mundial», «nacional», «del club»…). Se añadieron `pole` y `LaLiga`, que
+     recuperan 40 piezas deportivas sin ningún falso positivo. Unas 8 piezas
+     deportivas de verdad quedan sin tema, como «Raphinha, un ‘9’ de récord».
+   - Pruebas: 7 nuevas que fallan con `main` y pasan con el arreglo. Suite
+     entera 916/916; lint, tipos y comentarios, en verde.
+   - **Lo que no cambia:** los temas ya guardados no se reclasifican. El
+     recategorizador solo toca lo que nunca se clasificó.
 4. **El techo (M0.4) se decidió el mismo día: sube a 9 000** (PR #54). El
    «29 %» era engañoso: de 5 560 artículos expulsados, 4 956 eran cable sin
    cobertura, que sale por diseño. El recorte real eran 604 piezas

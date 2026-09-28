@@ -164,6 +164,49 @@ export async function hydrateArticles({ retentionMs, max }) {
     return result.rows.map(articuloDesdeFila);
 }
 
+/**
+ * Los artículos que la base YA tiene, buscados por enlace (2026-09-28).
+ *
+ * EL FALLO QUE CIERRA. La memoria no guarda todo lo que guarda la base: la
+ * rehidratación trae como mucho `MAX_ARTICLES` y el techo expulsa, pero la base
+ * conserva 30 días. Cuando un enlace que salió de la memoria vuelve a aparecer
+ * en el feed, el motor lo trataba como nuevo: titular de hoy, temas de hoy. Y
+ * `persistArticles` no lo reescribe —el titular publicado no se toca—, así que
+ * la base se quedaba con el de ayer. El mismo `id` decía dos cosas.
+ *
+ * Medido el 2026-09-28: `story_q9h0v` se titulaba «Alias ‘Araña’ fue
+ * extraditado…» (justicia) mientras su único artículo en la base decía
+ * «Presidente De La Espriella llega a Barranquilla…» (política). Y las tablas
+ * del descenso, que cambian de titular con cada fecha bajo la misma URL,
+ * rompieron el invariante de la unión el 26, el 27 y el 28 de septiembre.
+ *
+ * Quien pregunta adopta lo guardado: la misma regla que ya aplica la memoria
+ * con `articlesByLink.has(link)`, ahora también para lo que la memoria olvidó.
+ *
+ * @param {string[]} enlaces
+ * @returns {Promise<Array<object>>} vacío si no hay base o la consulta falla
+ */
+export async function articulosGuardadosPorEnlace(enlaces) {
+    if (!enlaces.length) return [];
+
+    const result = await safeQuery(
+        `
+        SELECT ${columnasParaLeer('a')},
+               s.name AS source_name, s.domain AS source_domain,
+               s.bias, s.factuality
+          FROM articles a
+          JOIN sources s ON s.id = a.source_id
+         WHERE a.canonical_url = ANY($1::text[])
+        `,
+        [enlaces],
+        'artículos ya guardados'
+    );
+
+    if (!result) return [];
+
+    return result.rows.map(articuloDesdeFila);
+}
+
 // ---------------------------------------------------------------------------
 // Escritura: artículos
 // ---------------------------------------------------------------------------

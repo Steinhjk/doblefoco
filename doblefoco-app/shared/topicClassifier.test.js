@@ -111,6 +111,34 @@ describe('términos ambiguos — regresiones de falsos positivos reales', () => 
         expect(temas('Millonarios FC anunció a su nuevo entrenador')).toContain('deportes');
     });
 
+    /**
+     * «récord» suelto era débil, y un débil suelto decide: medido el 2026-09-28
+     * sobre los 390 titulares guardados con la palabra, 151 estaban en deportes
+     * sin serlo —turismo, bolsa, olas de calor, cosechas, récords Guinness—, y
+     * uno de ellos rompió el invariante de la unión (#51).
+     */
+    it('«en tiempo récord» y las cifras récord no son Deportes', () => {
+        expect(
+            temas('En tiempo récord Policía recupera vehículo que había sido robado con un bulldog francés adentro')
+        ).not.toContain('deportes');
+        expect(temas('Austria registra entre junio y julio un récord de 646 muertes por calor extremo'))
+            .not.toContain('deportes');
+        expect(temas('Brasil exporta un valor récord de café para agosto con 1.331 millones de dólares'))
+            .not.toContain('deportes');
+    });
+
+    it('el récord deportivo sí se reconoce cuando lleva contexto', () => {
+        expect(temas('El nadador Juan Manuel Morales rompe otro récord nacional y completa su colección en Brasil'))
+            .toContain('deportes');
+        expect(temas('La keniana Agnes Ngetich bate el récord de mundo de medio maratón en carrera solo de mujeres'))
+            .toContain('deportes');
+    });
+
+    it('la «pole» y LaLiga son Deportes', () => {
+        expect(temas("Gasly firma la 'pole', por delante de Russell y Piastri, en Monza")).toContain('deportes');
+        expect(temas('Mallorca y Tenerife se enganchan a la cabeza de LaLiga Hypermotion')).toContain('deportes');
+    });
+
     it('«líder digital de la campaña» no es Tecnología', () => {
         expect(
             temas('Líder digital de la campaña enfrenta denuncia por presuntos delitos informáticos')

@@ -7,6 +7,7 @@ import {
     canonicalizeLink,
     cleanHeadline,
     elegirTitularReciente,
+    adoptarLoGuardado,
     observarPieza,
     techoDelFeed,
     ITEMS_PER_FEED,
@@ -743,5 +744,71 @@ describe('el techo del corpus', () => {
          */
         expect(FUENTE).toMatch(/const ventanaRecortada = desalojadosPrioritarios > 0;/);
         expect(FUENTE).toMatch(/prioritarios: fuera\.filter\(\(\[link, article\]\) => prioritario\(link, article\)\)\.length/);
+    });
+});
+
+/**
+ * UN ENLACE, UNA VERSIÓN (2026-09-28, #51).
+ *
+ * La memoria olvida antes que la base: la rehidratación trae como mucho el techo
+ * y la base guarda 30 días. Un enlace olvidado que el feed volvía a enseñar
+ * entraba con el titular y los temas de HOY, mientras la base conservaba los del
+ * primer día. `story_q9h0v` se titulaba «Alias ‘Araña’ fue extraditado…»
+ * (justicia) y su artículo guardado decía «Presidente De La Espriella llega a
+ * Barranquilla…» (política). Con las tablas del descenso, que cambian de titular
+ * en cada fecha, eso rompió el invariante de la unión tres días seguidos.
+ */
+describe('adoptarLoGuardado', () => {
+    const LINK = 'https://www.lafm.com.co/judicial/traslado-alias-arana';
+    const guardado = {
+        id: articleId(LINK),
+        link: LINK,
+        headline: 'Presidente De La Espriella llega a Barranquilla por traslado de alias ‘Araña’ a EE. UU.',
+        topics: ['politica'],
+        publishedAt: '2026-09-25T14:57:06.000Z',
+        imageUrl: null,
+    };
+    const fresco = {
+        id: articleId(LINK),
+        link: LINK,
+        headline: 'Alias ‘Araña’ fue extraditado a Estados Unidos: así fue el traslado desde Bogotá hasta Barranquilla',
+        topics: ['justicia'],
+        publishedAt: '2026-09-28T10:00:00.000Z',
+        imageUrl: 'https://www.lafm.com.co/foto.jpg',
+    };
+
+    it('lo que la base ya tenía vuelve con su titular, sus temas y su fecha', () => {
+        const [adoptado] = adoptarLoGuardado([fresco], [guardado]);
+        expect(adoptado.headline).toBe(guardado.headline);
+        expect(adoptado.topics).toEqual(['politica']);
+        expect(adoptado.publishedAt).toBe(guardado.publishedAt);
+    });
+
+    it('del feed solo toma la imagen, y solo si la guardada no tenía', () => {
+        expect(adoptarLoGuardado([fresco], [guardado])[0].imageUrl).toBe(fresco.imageUrl);
+        const conFoto = { ...guardado, imageUrl: 'https://www.lafm.com.co/primera.jpg' };
+        expect(adoptarLoGuardado([fresco], [conFoto])[0].imageUrl).toBe(conFoto.imageUrl);
+    });
+
+    it('lo que la base no tiene sigue siendo nuevo', () => {
+        expect(adoptarLoGuardado([fresco], [])).toEqual([]);
+    });
+});
+
+describe('el ciclo adopta lo guardado antes de podar y de agrupar', () => {
+    const FUENTE = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), 'ingestDaemon.js'), 'utf8');
+
+    it('consulta la base por enlace y sustituye en la memoria antes de construir las historias', () => {
+        const consulta = FUENTE.indexOf('await articulosGuardadosPorEnlace(');
+        const poda = FUENTE.indexOf('= pruneArticles();');
+        const agrupa = FUENTE.indexOf('buildMultisourceStories();', poda);
+        expect(consulta).toBeGreaterThan(-1);
+        expect(consulta).toBeLessThan(poda);
+        expect(poda).toBeLessThan(agrupa);
+        expect(FUENTE).toMatch(/for \(const article of adoptarLoGuardado\(frescosDelCiclo, guardados\)\) \{\s*articlesByLink\.set\(article\.link, article\);/);
+    });
+
+    it('a la base viaja la versión de la memoria, no la del feed', () => {
+        expect(FUENTE).toMatch(/\.map\(\(article\) => articlesByLink\.get\(article\.link\)\)/);
     });
 });

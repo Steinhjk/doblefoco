@@ -5,6 +5,7 @@ import { ThemeProvider } from './components/ThemeProvider'
 import { DatosInicialesContext } from './hooks/datosInicialesContext'
 import './index.css'
 import App from './App.jsx'
+import { iniciarAnalitica } from './lib/analitica.js'
 
 const container = document.getElementById('root');
 
@@ -54,6 +55,11 @@ if (container.hasChildNodes()) {
     hydrateRoot(container, appJsx);
 } else {
     createRoot(container).render(appJsx);
+}
+
+// Analítica sin cookies (M1.2). Solo en el bundle de producción.
+if (typeof window !== 'undefined' && (/** @type {any} */ (import.meta)).env?.PROD) {
+    iniciarAnalitica();
 }
 
 // Registro de Service Worker para caché offline y rendimiento

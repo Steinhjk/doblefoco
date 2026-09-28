@@ -17,6 +17,32 @@ con riesgo de perder matices. Lo que se decida a partir de ahora se anota aquí.
 
 ---
 
+## 2026-09-28 · Analítica de Vercel, Jose como responsable de los datos, y el panel de los no noticiosos entra en el MVP
+
+Tres decisiones del plan del MVP que eran de Jose, dictadas juntas con sus
+opciones delante.
+
+1. **M1.2: la analítica es Vercel Analytics.** Sin cookies ni perfilado, como
+   las otras dos opciones. Pesó que el sitio ya vive en Vercel: no hace falta
+   un servidor más, y el script y sus envíos van al mismo origen, así que la
+   CSP no se abre a nadie.
+   - **Descartado:** Plausible, que cuesta dinero al mes. Umami, que sería una
+     pieza más que mantener en Fly. Google Analytics ya estaba descartado desde
+     el plan: no encaja en un sitio que habla de manipulación.
+   - **Se declara en `/transparencia/datos`**, y con ella se desbloquea `utm_*`
+     en el texto que se comparte (decisión del 15-09).
+2. **M1.3: el responsable del tratamiento (Ley 1581) es Jose Arbelaez, como
+   persona natural.** Aparece con su nombre, la finalidad y un canal de
+   contacto en `/transparencia/datos`. Si más adelante hay una empresa, se
+   cambia el nombre y nada más.
+3. **M1.8: el panel de los no noticiosos entra en el MVP**, con el estilo
+   actual. Cuando llegue el frente estético se rehace con él. Hasta entonces,
+   los seis siguen nombrados en la nota del mapa.
+   - **Descartado:** dejarlo para después del MVP, que era la recomendación.
+     Jose prefirió que al salir se vean.
+
+---
+
 ## 2026-09-24 · El techo sube a 9 000, y el enlace de una historia recompuesta lleva a su sucesora
 
 Jose, con las cifras y los costos delante: «Ambas».

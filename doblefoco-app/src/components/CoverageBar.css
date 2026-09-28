@@ -106,5 +106,7 @@
    una aclaración de la barra, no una cuarta banda —esos medios no tienen sitio
    en el reparto porque nadie ha medido dónde ponerlos—. */
 .coverage-sin-medir-nota {
-    color: var(--bias-unmeasured);
+    /* Era --bias-unmeasured, un gris de relleno: 2,56:1 como texto sobre blanco
+       (axe, 2026-09-28). El gris de texto de la paleta pasa en los dos temas. */
+    color: var(--text-muted);
 }

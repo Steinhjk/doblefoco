@@ -592,6 +592,45 @@ export async function readStory(id) {
     return historias[0] ?? null;
 }
 
+/**
+ * La historia que heredó los artículos de una que el agrupamiento recompuso, o
+ * null (2026-09-24). Solo se consulta cuando `readStory` no encuentra el id.
+ *
+ * SIGUE LA CADENA: la sucesora también puede haberse recompuesto después, y
+ * entonces su fila apunta a otra. Se para en la primera que exista en
+ * `stories`, viva o archivada. El tope de saltos es por si alguna vez se
+ * formara un ciclo, que no debería pasar pero colgaría la consulta.
+ *
+ * Devuelve la historia entera, con el mismo filtro de moderación que
+ * `readStory`: redirigir a una retirada sería publicarla por la puerta de atrás.
+ */
+export async function readSucesora(id) {
+    const resultado = await safeQuery(
+        `
+        WITH RECURSIVE cadena AS (
+            SELECT sucesora, 1 AS saltos FROM historias_sucesoras WHERE id = $1
+            UNION ALL
+            SELECT h.sucesora, c.saltos + 1
+              FROM cadena c
+              JOIN historias_sucesoras h ON h.id = c.sucesora
+             WHERE c.saltos < 10
+        )
+        -- ARCHIVO A PROPÓSITO: la sucesora puede estar archivada ya, y su
+        -- página sigue existiendo, como en readStory.
+        SELECT c.sucesora
+          FROM cadena c
+          JOIN stories s ON s.id = c.sucesora
+         ORDER BY c.saltos
+         LIMIT 1
+        `,
+        [id],
+        'sucesora de una historia'
+    );
+
+    const sucesora = resultado?.rows[0]?.sucesora;
+    return sucesora ? readStory(sucesora) : null;
+}
+
 /** Cuántas historias visibles hay. Para la paginación. */
 /**
  * Historias para el sitemap: solo id y fecha de modificación.

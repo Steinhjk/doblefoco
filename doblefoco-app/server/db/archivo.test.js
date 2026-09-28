@@ -175,3 +175,38 @@ describe('el archivo de historias', () => {
         );
     });
 });
+
+describe('la historia recompuesta redirige a su sucesora (2026-09-24)', () => {
+    const INDEX = readFileSync(resolve(AQUI, '../index.js'), 'utf8');
+    const BACKUP = readFileSync(resolve(AQUI, '../../scripts/backup.mjs'), 'utf8');
+
+    it('la tabla existe en el esquema, antes de cerrar la API de Supabase', () => {
+        const cierre = SCHEMA.indexOf('Cerrar la API pública de Supabase');
+        expect(SCHEMA.indexOf('CREATE TABLE IF NOT EXISTS historias_sucesoras')).toBeGreaterThan(0);
+        expect(SCHEMA.indexOf('CREATE TABLE IF NOT EXISTS historias_sucesoras')).toBeLessThan(cierre);
+    });
+
+    it('la sucesora se apunta ANTES de borrar: después ya no quedan vínculos que comparar', () => {
+        expect(CONTENT.indexOf('INSERT INTO historias_sucesoras')).toBeGreaterThan(0);
+        expect(CONTENT.indexOf('INSERT INTO historias_sucesoras')).toBeLessThan(CONTENT.indexOf('DELETE FROM stories'));
+    });
+
+    it('sin la migración, el ciclo no se cae: pregunta si la tabla existe antes de escribir', () => {
+        expect(CONTENT).toMatch(/to_regclass\('historias_sucesoras'\)/);
+        expect(CONTENT).toMatch(/ROLLBACK TO SAVEPOINT sucesoras/);
+    });
+
+    it('la página redirige con 301 y la API sirve la sucesora', () => {
+        expect(INDEX).toMatch(/leerSucesora\(idDesdeRuta\(req\.params\.id\)\)[\s\S]{0,200}res\.redirect\(301, rutaDeHistoria\(sucesora\)\)/);
+        expect(INDEX).toMatch(/\(await leerHistoria\(id\)\) \?\? \(await leerSucesora\(id\)\)/);
+    });
+
+    it('la sucesora pasa por readStory, que es donde está el filtro de moderación', () => {
+        // Redirigir a una historia retirada sería publicarla por la puerta de atrás.
+        expect(FEED).toMatch(/return sucesora \? readStory\(sucesora\) : null;/);
+    });
+
+    it('la copia de seguridad sabe qué hacer con la tabla', () => {
+        expect(BACKUP).toMatch(/historias_sucesoras: '/);
+    });
+});

@@ -980,7 +980,9 @@ async function persistToDatabase(fresh) {
     if (stories?.links || stories?.enlacesBorrados) {
         parts.push(`enlaces +${stories.links} −${stories.enlacesBorrados}`);
     }
-    if (stories?.removed) parts.push(`−${stories.removed} obsoletas`);
+    if (stories?.removed) {
+        parts.push(`−${stories.removed} obsoletas${stories.sucesoras ? ` (${stories.sucesoras} con sucesora)` : ''}`);
+    }
     // Lo archivado se informa aparte de lo borrado: son cosas distintas y la
     // diferencia es el producto entero. Ver el bloque del archivo en schema.sql.
     if (stories?.archived) parts.push(`${stories.archived} archivadas`);

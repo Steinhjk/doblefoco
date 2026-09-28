@@ -806,6 +806,28 @@ CREATE TABLE IF NOT EXISTS cadencia_huecos (
 ALTER TABLE ingest_runs ADD COLUMN IF NOT EXISTS cadencia_nuevas INTEGER;
 
 
+-- ── 12b. Adónde fue una historia recompuesta (2026-09-24) ────────────────────
+--
+-- Cuando el agrupamiento recompone una historia, su id deja de producirse y el
+-- ciclo la borra: sus artículos cuelgan ya de otra. Pero su enlace puede estar
+-- en un WhatsApp de hace dos horas. Sin esto daría «Noticia no encontrada» de
+-- una noticia que sigue en portada con otro nombre (decisión de Jose,
+-- DECISIONES.md, 2026-09-24).
+--
+-- `sucesora` es la historia producida en ese ciclo que se quedó con más
+-- artículos suyos. SIN CLAVE FORÁNEA, a propósito: la sucesora también puede
+-- recomponerse después, y entonces esta fila apunta a otra fila de esta misma
+-- tabla. La cadena se sigue al leer (`readSucesora`), no se reescribe al
+-- borrar. Se purga a los 30 días, como los artículos.
+CREATE TABLE IF NOT EXISTS historias_sucesoras (
+    id        TEXT PRIMARY KEY,
+    sucesora  TEXT NOT NULL,
+    at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS historias_sucesoras_at_idx ON historias_sucesoras (at);
+
+
 -- ── 13. Cerrar la API pública de Supabase ────────────────────────────────────
 --
 -- QUÉ PASABA. Supabase publica una API REST sobre el esquema `public` y le da

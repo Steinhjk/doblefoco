@@ -27,6 +27,7 @@ import {
     readFeed,
     readSitemapEntries,
     readStory,
+    readSucesora,
     vocabularioDelCorpus,
     countByDepartamento,
 } from './db/feedStore.js';
@@ -185,6 +186,12 @@ const enviarJson = (res, texto) => res.type('application/json').send(texto);
 
 /** La historia de una noticia, la pida la API o la página renderizada en servidor. */
 const leerHistoria = (id) => cache.obtener(`historia:${id}`, () => readStory(id));
+
+/**
+ * Adónde fue una historia que el agrupamiento recompuso (2026-09-24). Solo se
+ * pregunta cuando `leerHistoria` no la encuentra. Ver `readSucesora`.
+ */
+const leerSucesora = (id) => cache.obtener(`sucesora:${id}`, () => readSucesora(id));
 
 /**
  * Límite general de peticiones por IP. EN MEMORIA, y a propósito (F2-06).
@@ -786,7 +793,10 @@ app.get('/api/story/:id', async (req, res) => {
         // SE REDIRIGE: esto lo llama `fetch`, y una redirección a /noticia/... le
         // devolvería HTML donde espera JSON. La canonicalización es asunto de la
         // ruta de página, que es la que ve un buscador.
-        const story = await leerHistoria(idDesdeRuta(req.params.id));
+        const id = idDesdeRuta(req.params.id);
+        // Si se recompuso, se sirve su sucesora: la página de /noticia ya
+        // redirige, y la navegación dentro del sitio no debe dar otra respuesta.
+        const story = (await leerHistoria(id)) ?? (await leerSucesora(id));
 
         if (!story) {
             // También 404 si está retirada por moderación: el filtro va en la
@@ -991,6 +1001,21 @@ app.get('/noticia/:id', async (req, res) => {
          * —no dos minutos como el HTML— porque una redirección no referencia
          * ningún /assets/*.js que un despliegue pueda dejar muerto.
          */
+        /*
+         * LA RECOMPUESTA REDIRIGE A SU SUCESORA (2026-09-24). Un enlace
+         * compartido de una historia que el agrupamiento rehízo con otro id
+         * lleva a la que se quedó con sus artículos. 301, como las demás: la
+         * mudanza es definitiva. Si la sucesora vuelve a recomponerse, su
+         * propia fila sigue la cadena.
+         */
+        if (!story) {
+            const sucesora = await leerSucesora(idDesdeRuta(req.params.id));
+            if (sucesora) {
+                res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=3600');
+                return res.redirect(301, rutaDeHistoria(sucesora));
+            }
+        }
+
         if (story && !esRutaCanonica(req.params.id, story)) {
             res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=3600');
             return res.redirect(301, rutaDeHistoria(story));

@@ -155,14 +155,14 @@ informe completo, con cifras y cómo repetirlo, está en
 
 | | Qué | Quién |
 |---|---|---|
-| a | **Fusionar la PR #48** | Jose |
+| a | ~~**Fusionar la PR #48**~~ **HECHO el 2026-09-23** | Jose |
 | b | ~~`DATABASE_POOL_MAX`~~ **HECHO el mismo día** (en la PR #48): 4 por defecto. El motor procesa 4 feeds a la vez, así que no necesita más. API + motor + una tarea programada = 12, frente a un tope de 15 | código |
 | c | **Tiempos agotados por IPv4 hacia la IP compartida de Fly** desde la red de casa: 5 de 80, mientras Vercel y Google respondían. **Acotado el mismo día: es el camino desde esa red, no el servidor.** Desde dentro de Fly, cero fallos. Desde GitHub, `vigilancia.yml` hizo ~40 corridas en 10 días, sin reintentos y con cero fallos de conexión; su única falla fue de datos. Desde casa, las peticiones entraban a Fly por **iad** (Virginia), no por gru. **Lo que falta saber es si otros usuarios del mismo proveedor lo sufren.** Si pasa, las salidas son una IPv4 dedicada (~2 USD/mes, sin garantía de cambiar la ruta) o servir la API a través de Vercel, que es decisión de producto | Jose, si reaparece |
 | d | Volver a medir con el simulacro cuando cambie algo grande. **El número de referencia hoy: 12 visitas/s** | — |
 
 ---
 
-## 2026-09-24 · La misma noticia, ocho veces en portada: las recompuestas no se borraban (ABIERTO)
+## 2026-09-24 · La misma noticia, ocho veces en portada: las recompuestas no se borraban (CERRADO el 28-09, salvo el punto 3)
 
 **Salió de la vigilancia en rojo del 24-09 (issue #51)**, siguiendo el hilo de
 un invariante que parecía menor. La historia del huracán Polo estaba enlazada a
@@ -196,9 +196,21 @@ archivo. **En producción desde el 15-09**, con la tanda de la #32.
 
 ### Lo que falta
 
-1. **Fusionar y mirar el primer ciclo.** Ese ciclo borrará de una vez las ~440
-   multifuente huérfanas: saldrá un `−N obsoletas` grande, y una sola vez.
-   Después, `node scripts/invariantes.mjs` debe dar 8/8, salvo el punto 3.
+> **Cerrado el 2026-09-28, salvo el punto 3.** Fusionadas en este orden: #53,
+> migración contra producción, #59 (reabre la #55, que GitHub cerró al borrarse
+> su rama base), #54 y #50. Comprobado en producción al terminar:
+> - `node scripts/invariantes.mjs` da **8/8**, con «cada artículo está en una
+>   sola historia viva».
+> - `historias_sucesoras` tiene 40 filas, y `/noticia/story_zppn3y` responde
+>   **301** a su sucesora, tanto en `doblefoco.co` como en la API.
+>
+> Queda como aviso: **una PR apilada sobre otra se cierra sola si se fusiona la
+> de abajo con `--delete-branch`.** No se pierde nada, pero hay que reabrirla
+> contra `main`.
+
+1. ~~**Fusionar y mirar el primer ciclo.**~~ **HECHO el 2026-09-28.** Ese ciclo
+   borró de una vez las ~440 multifuente huérfanas. Después,
+   `node scripts/invariantes.mjs` dio 8/8.
 2. ~~**Decisión de Jose: el enlace a una historia recompuesta.**~~ **DECIDIDO
    el mismo día: (a), redirigir a la sucesora** (`DECISIONES.md`, 2026-09-24).
    **HECHO en la rama `enlaces/sucesora-de-la-recompuesta`**, que va encima de
@@ -208,16 +220,17 @@ archivo. **En producción desde el 15-09**, con la tanda de la #32.
    - `/noticia/<id>` responde con 301 a la sucesora, y la API la sirve. La
      cadena A → B → C se sigue al leer.
    - Probado de extremo a extremo contra un Postgres local (PGlite): 10 de 10.
-   - **Gesto de Jose: `npm run db:migrate` contra producción ANTES de
-     fusionarla.** Si se olvida, el ciclo no se cae: avisa y sigue sin
-     redirecciones.
-3. **Aparte y menor: el invariante de la unión (#51).** La BBC actualiza el
+   - ~~**Gesto de Jose: `npm run db:migrate` contra producción ANTES de
+     fusionarla.**~~ **HECHO el 2026-09-28**, antes de fusionar la #59.
+3. **Aparte y menor: el invariante de la unión (#51). SIGUE ABIERTO.** Falló a
+   ratos en la vigilancia del 27 y del 28-09, y el 28-09 volvió a pasar. La BBC actualiza el
    artículo **bajo la misma URL**. La base guarda el titular del 22-09 («…en
    tiempo récord»), clasificado como **«deportes»**, y el motor compone con el
    titular de hoy, que no tiene tema. Quedan dos preguntas: qué hacer con una
    pieza que cambia de titular sin cambiar de URL, y un falso positivo de
    «récord».
-4. **El techo (M0.4) se decidió el mismo día: sube a 9 000** (PR #54). El
+4. **El techo (M0.4) se decidió el mismo día: sube a 9 000** (PR #54,
+   **fusionada el 2026-09-28**). El
    «29 %» era engañoso: de 5 560 artículos expulsados, 4 956 eran cable sin
    cobertura, que sale por diseño. El recorte real eran 604 piezas
    prioritarias. El aviso ahora cuenta solo esas. **Queda para medir la

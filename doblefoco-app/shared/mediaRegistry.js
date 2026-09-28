@@ -264,8 +264,8 @@ export const MEDIA_REGISTRY = [
          * eran colocaciones relativas que el expediente de Vorágine demostró
          * insostenibles. SIGUEN en la ingesta y en el agrupamiento: cuando
          * investigan un hecho que los demás cubren, su presencia en la historia
-         * es valor, no ruido. Tendrán acceso propio en un panel del inicio
-         * (pendiente en la minuta, no construido). Lo llevan seis: este,
+         * es valor, no ruido. Tienen acceso propio en un panel del inicio
+         * (`src/components/PanelNoNoticiosos.jsx`, M1.8, 2026-09-28). Lo llevan seis: este,
          * Volcánicas, Revista RAYA, Vorágine, Cuestión Pública y Razón
          * Pública. Las2Orillas y Cambio se quedan en el mapa a propósito:
          * son mucho más frecuentes en el ciclo diario.

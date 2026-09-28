@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PieChart, EyeOff, RotateCcw, Award, Layers, Mail, Info } from 'lucide-react';
+import { PieChart, EyeOff, RotateCcw, Award, Layers, Mail, Info, BookOpen } from 'lucide-react';
 import { topCoveredStories } from '../lib/story';
 import { useHistorias } from '../hooks/historiasContext';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
 import { BLINDSPOT_MIN_SOURCES } from '../../shared/biasAnalysis.js';
 import NewsletterWidget from './NewsletterWidget';
+import PanelNoNoticiosos from './PanelNoNoticiosos';
 import './Sidebar.css';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
 
@@ -216,6 +217,11 @@ const Sidebar = () => {
                         )}
                     </p>
                 )}
+            </div>
+
+            <div className="sidebar-section">
+                <h3><BookOpen size={18} className="section-icon" aria-hidden="true" /> Investigación y análisis</h3>
+                <PanelNoNoticiosos stories={stories} />
             </div>
 
             <NewsletterWidget />

@@ -1,0 +1,64 @@
+/* Panel de los no noticiosos (M1.8). Solo tokens de la paleta: se rehará con
+   el frente estético, y hasta entonces tiene que parecer parte del lateral. */
+
+.panel-nn-nota {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin-bottom: 12px;
+}
+
+.panel-nn-nota a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.panel-nn-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.panel-nn-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.panel-nn-item:last-child {
+    border-bottom: none;
+}
+
+.panel-nn-medio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.92rem;
+}
+
+.panel-nn-medio:hover .panel-nn-nombre {
+    text-decoration: underline;
+}
+
+.panel-nn-grupo {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.panel-nn-historia {
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--text-main);
+    text-decoration: none;
+    margin-top: 2px;
+}
+
+.panel-nn-historia:hover {
+    text-decoration: underline;
+}

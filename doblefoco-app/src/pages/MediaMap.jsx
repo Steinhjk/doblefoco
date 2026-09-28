@@ -274,7 +274,7 @@ const ES_COLOMBIANO = (medio) => medio.country === 'CO';
  * investigación o el análisis no está en esa carrera, y sus números eran
  * colocaciones relativas que el expediente de Vorágine demostró insostenibles.
  * No es silencio: siguen en la ingesta y en las historias, la nota de abajo los
- * nombra, y tendrán acceso propio en un panel del inicio (pendiente).
+ * nombra, y tienen acceso propio en el panel del inicio (`PanelNoNoticiosos`).
  */
 const NO_NOTICIOSOS = MEDIA_REGISTRY.filter((medio) => medio.noNoticioso);
 const MEDIOS_COLOMBIANOS = MEDIA_REGISTRY

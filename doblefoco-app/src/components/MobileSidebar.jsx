@@ -4,6 +4,7 @@ import { RotateCcw, Award, EyeOff, Info } from 'lucide-react';
 import { topCoveredStories } from '../lib/story';
 import { useHistorias } from '../hooks/historiasContext';
 import { getHistory, clearHistory, subscribeToHistory, summarizeDiet } from '../lib/readingHistory';
+import PanelNoNoticiosos from './PanelNoNoticiosos';
 import './MobileSidebar.css';
 import { rutaDeHistoria } from '../../shared/storyPath.js';
 
@@ -37,6 +38,7 @@ const MobileSidebar = () => {
         { id: 'trends', label: 'Temas frecuentes' },
         { id: 'diet', label: 'Mi dieta informativa' },
         { id: 'blindspots', label: 'Puntos ciegos' },
+        { id: 'investigacion', label: 'Investigación y análisis' },
     ];
 
     return (
@@ -158,6 +160,8 @@ const MobileSidebar = () => {
                                         </p>
                                     )
                                 )}
+
+                                {id === 'investigacion' && <PanelNoNoticiosos stories={stories} />}
                             </div>
                         )}
                     </div>
